@@ -31,3 +31,7 @@ Site-Karol-Sevilla/
 ## ▶️ Como visualizar
 
 Abra o arquivo `index.html` no navegador ou utilize o **Live Server** no Visual Studio Code.
+
+## 🌐 Ver o site online
+
+Acesse o projeto publicado no GitHub Pages: [**Abrir Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/)

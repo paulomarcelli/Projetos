@@ -1,0 +1,104 @@
+:root {
+--azul: #69b9ff;
+--branco: #ffffff;
+--preto : #000000;
+--rosa : #ff69b4;
+
+}
+
+
+h1 {
+    color: var(--azul);
+    font-size: 36px;
+    text-align: center;
+}
+
+h2 {
+    color: var(--branco);
+    font-size: 15px;
+    border-bottom: 2px solid var(--azul); /* Adiciona uma borda inferior azul */
+}
+
+/* h1 → seletor: "quero modificar os <h1>"
+{ } → dentro delas ficam as regras
+color → propriedade: cor do texto
+var(--azul) → valor da propriedade */
+
+
+body {
+    background-color: var(--preto); /* cor de fundo do site */
+    padding: 20px; /* espaçamento interno */
+    margin: 0; /* remove a margem padrão do body */
+
+/*
+┌──────────────────────────────┐
+│          MARGIN              │
+│   ┌──────────────────────┐   │
+│   │       PADDING        │   │
+│   │   ┌──────────────┐   │   │
+│   │   │   CONTEÚDO   │   │   │
+│   │   └──────────────┘   │   │
+│   └──────────────────────┘   │
+└──────────────────────────────┘
+
+MARGIN  → espaço externo do elemento
+PADDING → espaço interno do elemento
+CONTEÚDO → texto, imagem ou outros elementos
+*/
+
+    
+}
+
+   
+p {
+    color: var(--branco); /* cor do texto */
+    font-size: 18px; /* tamanho da fonte */
+    line-height: 1.6; /* altura da linha */
+}
+
+img {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 25%;
+    border: 2px solid var(--azul);
+    padding: 5px;
+}
+
+#imagemMusica {
+    margin-top: 20px;
+    display: none; /* Oculta a imagem inicialmente */
+}
+
+
+ul {
+    color: var(--branco); /* cor do texto */
+    list-style-type: none; /* Define o estilo da lista como "disc" (bolinhas) */
+    padding: 0; /* Remove o espaçamento padrão da lista */
+}
+
+a {
+    color: var(--azul); /* cor do link */
+    text-decoration: none; /* remove o sublinhado do link */
+    font-size: 18px; /* tamanho da fonte */
+    margin: 0 12px; /* espaçamento entre os links */
+}
+
+a:hover {
+    color: var(--rosa); /* cor do link com mouse em cima */
+    font-size: 20px; /* tamanho da fonte com mouse em cima */
+}
+
+li {
+    margin-bottom: 10px; /* espaçamento entre os itens da lista */
+}
+
+#redes-sociais {
+    text-align: center; /* centraliza os links horizontalmente */
+    margin-top: 20px; /* espaçamento acima dos links */
+}
+
+li:hover {
+    color: var(--rosa); /* cor do item da lista com mouse em cima */
+    cursor: pointer; /* muda o cursor para indicar que é clicável */
+}

@@ -24,6 +24,11 @@ Projetos/
 | Projeto | Tecnologias | Status |
 |---|---|---|
 | [Luna AI](Projetos/Luna-AI) | Python · Inteligência Artificial | Em desenvolvimento |
-| [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Em publicação |
+| [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicação automática |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
+
+
+## 🌐 Site online
+
+O GitHub Pages publica automaticamente o conteúdo de `Projetos/Site-Karol-Sevilla` a cada atualização na branch `main`.

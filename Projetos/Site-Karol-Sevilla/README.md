@@ -6,17 +6,25 @@
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
 </div>
 
+<p align="center">
+  <b>Um site simples criado para homenagear uma das minhas grandes ídolas.</b>
+</p>
+
+---
+
 ## 📌 Sobre o projeto
 
-Site desenvolvido com **HTML, CSS e JavaScript**, organizado como um projeto independente dentro do repositório principal `Projetos`.
+O **Site Karol Sevilla** é o meu primeiro projeto web. Criei esta página para homenagear a Karol Sevilla, atriz, cantora e compositora que admiro, e para praticar os primeiros conceitos de desenvolvimento web.
+
+O site apresenta informações sobre a artista, uma lista de músicas e links para suas redes sociais. Ao selecionar uma música, o JavaScript exibe uma mensagem e carrega uma imagem relacionada à escolha.
 
 ## 🛠️ Tecnologias utilizadas
 
 | Tecnologia | Utilização |
 |---|---|
-| HTML5 | Estrutura e conteúdo das páginas |
-| CSS3 | Estilos, layout e responsividade |
-| JavaScript | Interatividade e comportamento da página |
+| HTML5 | Estrutura e conteúdo da página |
+| CSS3 | Estilos, layout e aparência visual |
+| JavaScript | Interações e comportamento da página |
 
 ## 📁 Arquivos
 
@@ -35,3 +43,11 @@ Abra o arquivo `index.html` no navegador ou utilize o **Live Server** no Visual 
 ## 🌐 Ver o site online
 
 Acesse o projeto publicado no GitHub Pages: [**Abrir Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/)
+
+## 👤 Autor
+
+Desenvolvido por **Paulo Marcelli** — Estudante de ADS na **FECAP**.
+
+## 📍 Localização
+
+Este projeto está organizado em `Projetos/Site-Karol-Sevilla` dentro do repositório principal `Projetos`.

@@ -1,5 +1,25 @@
-# Site Karol Sevilla
+# 🌐 Site Karol Sevilla
 
-Projeto desenvolvido com HTML, CSS e JavaScript.
+Site desenvolvido com **HTML, CSS e JavaScript**, organizado como um projeto independente dentro da pasta `Projetos`.
 
-Coloque nesta pasta os arquivos do site, como `index.html`, `style.css`, `script.js` e as imagens utilizadas.
+## 🛠️ Tecnologias
+
+- HTML5
+- CSS3
+- JavaScript
+
+## 📁 Arquivos esperados
+
+```text
+Site-Karol-Sevilla/
+├── index.html
+├── style.css
+├── script.js
+└── README.md
+```
+
+## ▶️ Como visualizar
+
+Abra o arquivo `index.html` no navegador ou utilize a extensão Live Server no Visual Studio Code.
+
+> Os arquivos do site devem ser adicionados nesta pasta: `Projetos/Site-Karol-Sevilla`.

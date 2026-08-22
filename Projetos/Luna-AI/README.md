@@ -43,3 +43,8 @@ python3 LUNA.py
 ## 👤 Autor
 
 Desenvolvido por **Paulo Marcelli** — Estudante de ADS na **FECAP**.
+
+
+## 📁 Localização
+
+Este projeto está organizado em `Projetos/Luna-AI`.

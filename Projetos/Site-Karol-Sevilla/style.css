@@ -86,7 +86,7 @@ a {
 
 a:hover {
     color: var(--rosa); /* cor do link com mouse em cima */
-    
+    font-size: 20px; /* tamanho da fonte com mouse em cima */
 }
 
 li {

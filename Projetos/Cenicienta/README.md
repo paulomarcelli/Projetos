@@ -29,6 +29,8 @@ Cenicienta/
 ├── index.html
 ├── style.css
 ├── script.js
+├── images.jpg
+├── cenicienta.mp4
 └── README.md
 ```
 

@@ -15,8 +15,13 @@ Projetos/
 │   ├── style.css
 │   ├── script.js
 │   └── README.md
-└── Joken-Po-Python/
-    ├── jokenpo.py
+├── Joken-Po-Python/
+│   ├── jokenpo.py
+│   └── README.md
+└── Cenicienta/
+    ├── index.html
+    ├── style.css
+    ├── script.js
     └── README.md
 ```
 
@@ -27,11 +32,12 @@ Projetos/
 | [Luna AI](Projetos/Luna-AI) | Python · Inteligência Artificial | Em desenvolvimento |
 | [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicado |
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
+| [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | Publicado |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 
 ## 🌐 Site online
 
-O GitHub Pages publica automaticamente o conteúdo de `Projetos/Site-Karol-Sevilla` a cada atualização na branch `main`.
+O GitHub Pages publica automaticamente o conteúdo de `Projetos/Cenicienta` a cada atualização na branch `main`.
 
-[**Abrir Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/)
+[**Abrir Site Cenicienta**](https://paulomarcelli.github.io/Projetos/)

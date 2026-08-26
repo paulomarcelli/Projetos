@@ -12,7 +12,7 @@
 
 ## 📌 Sobre o projeto
 
-O **Site Cenicienta** é um novo projeto web em desenvolvimento. Esta página será utilizada para apresentar o projeto Cenicienta e praticar conceitos de desenvolvimento web.
+O **Site Cenicienta** é um projeto web publicado no GitHub Pages. Esta página será utilizada para apresentar o projeto Cenicienta e praticar conceitos de desenvolvimento web.
 
 ## 🛠️ Tecnologias utilizadas
 

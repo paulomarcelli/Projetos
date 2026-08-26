@@ -1,0 +1,98 @@
+:root {
+--azul: #69b9ff;
+--branco: #ffffff;
+--preto : #000000;
+--rosa : #ff69b4;
+--cinza: #1a1a1a;
+}
+
+@media (max-width: 768px) { /* aplica estilos para telas com largura máxima de 768px (como tablets e celulares) 
+    deixar mais responsivo, empilhando as seções verticalmente em telas menores
+    */
+    #bloco-flex {
+        flex-direction: column; /* empilha as seções verticalmente em telas menores */
+    }
+}
+    
+ body {
+    background-color: var(--preto); /* cor de fundo do site */
+     color:var(--preto)
+}
+
+h2 {
+    color:var(--rosa)
+    
+}
+
+h3 {
+    color:var(--rosa)
+    
+}
+
+p {
+     color: var(--branco); /* cor do texto */
+     font-size: 18px; /* tamanho da fonte */
+}
+
+#video-background {
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    position: relative; /* NOVO: cria um "limite" pro iframe */
+}
+
+iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 300%;
+    transform: translate(-50%, -50%);
+}
+
+a {
+     color: var(--branco);
+     margin: 10px;  /* espaço entre os links */
+     text-decoration: none; /* remove o sublinhado dos links */
+    
+}
+
+a:hover {
+    color: var(--rosa);
+    
+}
+
+#bloco-flex {
+    display: flex; /* posiciona os elementos filhos lado a lado*/
+    
+}
+
+#sobre-karol-sevilla {
+    flex: 1; /* cada seção ocupa metade do espaço disponível */
+    padding: 20px; /* espaço interno */
+    background-color: var(--cinza); /* cor de fundo das seções */
+    
+}
+
+#sobre-musica {
+    flex: 1; /* cada seção ocupa metade do espaço disponível */
+    padding: 20px; /* espaço interno */
+    background-color: var(--cinza); /* cor de fundo das seções */
+    
+}
+
+#redes-sociais {
+    background-color: var(--preto); /* cor de fundo da seção de redes sociais */
+    
+}
+
+#sobre-karol-sevilla, #sobre-musica  {
+    opacity: 0; /* deixa as seções um pouco transparentes */
+    transform: translateY(30px); /* move as seções um pouco para baixo */
+    transition: opacity 1s ease-out, transform 1s ease-out; /* adiciona uma transição suave para a opacidade e a posição */
+    
+}
+#sobre-karol-sevilla.visible, #sobre-musica.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

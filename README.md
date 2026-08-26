@@ -25,8 +25,8 @@ Projetos/
 | Projeto | Tecnologias | Status |
 |---|---|---|
 | [Luna AI](Projetos/Luna-AI) | Python · Inteligência Artificial | Em desenvolvimento |
-| [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicação automática |
-| [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Em desenvolvimento |
+| [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicado |
+| [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 

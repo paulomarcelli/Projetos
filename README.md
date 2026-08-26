@@ -38,6 +38,6 @@ A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fi
 
 ## 🌐 Site online
 
-O GitHub Pages publica automaticamente o conteúdo de `Projetos/Cenicienta` a cada atualização na branch `main`.
+O GitHub Pages publica automaticamente o conteúdo do repositório a cada atualização na branch `main`, mantendo a estrutura de pastas dos projetos.
 
-[**Abrir Site Cenicienta**](https://paulomarcelli.github.io/Projetos/)
+[**Abrir Site Cenicienta**](https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/)

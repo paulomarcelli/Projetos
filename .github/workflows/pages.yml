@@ -26,7 +26,7 @@ jobs:
       - name: Preparar arquivos do site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: Projetos/Cenicienta
+          path: .
       - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

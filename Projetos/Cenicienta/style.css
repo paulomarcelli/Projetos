@@ -9,8 +9,48 @@
 @media (max-width: 768px) { /* aplica estilos para telas com largura máxima de 768px (como tablets e celulares) 
     deixar mais responsivo, empilhando as seções verticalmente em telas menores
     */
+    body {
+        overflow-x: hidden;
+    }
+
+    #video-background {
+        height: 280px;
+    }
+
+    #video-background video {
+        width: auto;
+        min-width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
     #bloco-flex {
         flex-direction: column; /* empilha as seções verticalmente em telas menores */
+    }
+
+    #sobre-karol-sevilla,
+    #sobre-musica {
+        min-width: 0;
+        padding: 16px;
+        overflow-wrap: anywhere;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    #sobre-musica img {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    a {
+        display: inline-block;
+        margin: 8px;
     }
 }
     

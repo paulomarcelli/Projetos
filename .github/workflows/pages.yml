@@ -23,10 +23,17 @@ jobs:
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
-      - name: Preparar arquivos do site
+      - name: Montar os dois sites originais
+        run: |
+          rm -rf _site
+          mkdir -p _site/Projetos/Cenicienta
+          cp -a Projetos/Site-Karol-Sevilla/. _site/
+          cp -a Projetos/Cenicienta/. _site/Projetos/Cenicienta/
+          touch _site/.nojekyll
+      - name: Preparar arquivos dos dois sites
         uses: actions/upload-pages-artifact@v3
         with:
-          path: Projetos/Site-Karol-Sevilla
+          path: _site
       - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -41,7 +41,7 @@ p {
     position: relative; /* NOVO: cria um "limite" pro iframe */
 }
 
-iframe {
+iframe, video {
     position: absolute;
     top: 50%;
     left: 50%;

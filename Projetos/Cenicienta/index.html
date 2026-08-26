@@ -26,17 +26,21 @@
 <body>
     <div id="video-background">
 
-        <!--essa div traz o video em bckground , atraves de iframe ( pelo youtube )-->
+        <!-- Esta div mantém o vídeo local como plano de fundo da página. -->
 
-        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/s7nbxbbAsvQ?start=48&autoplay=1&mute=1&controls=0&loop=1&playlist=s7nbxbbAsvQ&rel=0&playsinline=1&modestbranding=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <!-- A tag <video> reproduz um arquivo de vídeo local, sem depender do YouTube. -->
+        <video width="560" height="315" autoplay muted loop playsinline>
+            <!-- autoplay inicia o vídeo automaticamente quando a página é carregada. -->
+            <!-- muted inicia o vídeo sem som, permitindo o autoplay nos navegadores. -->
+            <!-- loop reinicia o vídeo automaticamente quando ele termina. -->
+            <!-- playsinline mantém o vídeo dentro da página, especialmente em celulares. -->
+            <source src="cenicienta.mp4" type="video/mp4">
+            <!-- src aponta para o arquivo MP4 localizado na mesma pasta deste index.html. -->
+            <!-- type informa ao navegador que o arquivo utilizado é um vídeo MP4. -->
+            Seu navegador não suporta a reprodução de vídeos em HTML5.
+        </video>
 
-         <!--
-     start=89 → onde o vídeo começa (no segundo 89)
-     autoplay=1 → se ele começa sozinho, sem precisar clicar em play
-     controls=0 → remove os botoes de controle
-     loop=1&playlist=pCgq0ZMoUg4 - loop infinito 
-     mute=1 → o vídeo começa sem som
-     -->   
+         <!-- O vídeo local substitui o iframe e não exibe anúncios de serviços externos. -->
 
 
         </div>

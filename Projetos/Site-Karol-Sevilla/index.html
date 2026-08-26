@@ -1,42 +1,52 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html> <!-- Emmet= ! - enter -->
+<html lang="pt-BR"> <!-- lang= pt-BR - enter -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Site em homenagem à artista Karol Sevilla.">
-    <title>Karol Sevilla | Homenagem</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <title>Karol Sevilla</title>
+
+<!--  Conectar o CSS ao HTML -->
+    <link rel="stylesheet" href="style.css"> 
+
+    <script src="script.js" defer></script> <!-- Conectar o JS ao HTML -->
+
 </head>
+
 <body>
-    <main class="container">
-        <header class="hero">
-            <p class="eyebrow">Site de homenagem</p>
-            <h1>Karol Sevilla</h1>
-            <p class="intro">Karol Sevilla é uma atriz, cantora e compositora mexicana, conhecida principalmente por interpretar Luna Valente na série <em>Soy Luna</em>. Ao longo de sua carreira, ela lançou músicas e realizou shows, conquistando fãs em diversos países da América Latina.</p>
-            <img class="foto-artista" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-Wkx6KmxLlyPqezyb325omkOaTGCCmdCO1ZEcRZcerZmVOKvUGaST2Fs&s=10" alt="Karol Sevilla sentada em um estúdio" loading="lazy">
-        </header>
 
-        <section class="musicas" aria-labelledby="titulo-musicas">
-            <h2 id="titulo-musicas">Melhores músicas</h2>
-            <p class="instrucao">Selecione uma música para ver uma mensagem especial.</p>
-            <ul class="lista-musicas">
-                <li><button type="button" data-musica="Mariposas" data-imagem="https://static.wikia.nocookie.net/soyluna/images/5/58/VaRAlbum1.jpg/revision/latest?cb=20260714131735">Mariposas</button></li>
-                <li><button type="button" data-musica="Mas Linda" data-imagem="https://static.wikia.nocookie.net/soyluna/images/5/58/VaRAlbum1.jpg/revision/latest?cb=20260714131735">Mas Linda</button></li>
-                <li><button type="button" data-musica="Otro Mood" data-imagem="https://i.scdn.co/image/ab67616d0000b27357170d220209e59f8f03ae77">Otro Mood</button></li>
-                <li><button type="button" data-musica="Una noche más" data-imagem="https://i.scdn.co/image/ab67616d0000b273ebf2fb016fea94ae8ecb252a">Una noche más</button></li>
-            </ul>
-            <div class="resultado" aria-live="polite">
-                <p id="mensagem"></p>
-                <img id="imagemMusica" src="" alt="" hidden>
-            </div>
-        </section>
+ <h1>Karol Sevilla</h1>  <!--Titulo -->
 
-        <footer id="links-redes-sociais" aria-label="Redes sociais">
-            <a href="https://www.instagram.com/karolsevillaofc/?hl=pt" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="https://www.youtube.com/@KarolSevillaOF" target="_blank" rel="noopener noreferrer">YouTube</a>
-            <a href="https://www.facebook.com/karolsevillaoficial/?locale=pt_BR" target="_blank" rel="noopener noreferrer">Facebook</a>
-        </footer>
-    </main>
+ <p>Karol Sevilla é uma atriz, cantora e compositora mexicana, conhecida principalmente por interpretar Luna Valente na série Soy Luna. Ao longo de sua carreira, ela também lançou músicas e realizou shows, conquistando fãs em diversos países da América Latina. Desde muito jovem, Karol demonstrou interesse pela arte e começou a desenvolver seus talentos na televisão, na música e na atuação. Com seu carisma, sua energia e sua dedicação, ela conseguiu construir uma carreira de destaque no mundo do entretenimento. Além de interpretar personagens marcantes, Karol também utiliza suas músicas para expressar sentimentos, histórias e experiências, mantendo uma relação próxima com seus fãs. Seu trabalho continua sendo acompanhado por muitas pessoas que admiram sua personalidade, sua criatividade e sua trajetória artística. Atualmente, ela é reconhecida como uma artista talentosa e inspiradora, especialmente entre o público jovem.
+</p> <!--Paragrafo -->
+
+ <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-Wkx6KmxLlyPqezyb325omkOaTGCCmdCO1ZEcRZcerZmVOKvUGaST2Fs&s=10" alt="Karol Sevilla">
+
+ <img id="imagemMusica"  src="" alt="Imagem da música" > <!--Imagem da música -->
+   
+
+ <h2>Melhores músicas:</h2> <!--Subtitulo -->
+ 
+ <ul> <!--Listas -->
+    <li id="Mariposas">Mariposas</li> 
+    <li id="Mas-Linda">Mas Linda</li>
+    <li id="Otro-Mood">Otro Mood</li>
+    <li id="Una-noche-mas">Una noche mas</li>
+</ul>
+
+<p id="mensagem"></p>
+
+<div id="links-redes-sociais"> <!-- Divisão Links das redes sociais -->
+ 
+<a href="https://www.instagram.com/karolsevillaofc/?hl=pt"  target="_blank" rel="noopener noreferrer">Instagram da Karol Sevilla</a>
+
+<a href="https://www.youtube.com/@KarolSevillaOF" target="_blank" rel="noopener noreferrer">Canal do Youtube</a> <!-- a= link | href= destino do link    -->
+
+<a href="https://www.facebook.com/karolsevillaoficial/?locale=pt_BR" target="_blank" rel="noopener noreferrer">Facebook da Karol Sevilla</a>
+
+</div> <!-- Fecha a divisao Links das redes sociais -->
+
 </body>
 </html>
+
+<!--target="_blank" → abre o link em uma nova aba.
+rel="noopener noreferrer" → adiciona uma camada de segurança e privacidade ao abrir o link.-->

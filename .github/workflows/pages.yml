@@ -1,4 +1,4 @@
-name: Publicar Site Cenicienta
+name: Publicar Site Karol Sevilla
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
       - name: Preparar arquivos do site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: Projetos/Site-Karol-Sevilla
       - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

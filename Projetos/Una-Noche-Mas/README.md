@@ -38,11 +38,11 @@ Una-Noche-Mas/
 
 ## ▶️ Como visualizar
 
-Quando os arquivos do site forem adicionados, abra o arquivo `index.html` no navegador ou utilize o **Live Server** no Visual Studio Code.
+Abra o arquivo `index.html` no navegador ou utilize o **Live Server** no Visual Studio Code.
 
 ## 🌐 Ver o site online
 
-O projeto ainda está em desenvolvimento e será publicado nesta pasta quando a primeira versão estiver pronta.
+Acesse o projeto publicado no GitHub Pages: [**Abrir Site Una Noche Más**](https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/)
 
 ## 👤 Autor
 

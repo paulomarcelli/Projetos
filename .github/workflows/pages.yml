@@ -1,4 +1,4 @@
-name: Publicar Site Karol Sevilla
+name: Publicar três sites no GitHub Pages
 
 on:
   push:
@@ -23,14 +23,15 @@ jobs:
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
-      - name: Montar os dois sites originais
+      - name: Montar os três sites
         run: |
           rm -rf _site
-          mkdir -p _site/Projetos/Cenicienta
+          mkdir -p _site/Projetos/Cenicienta _site/Projetos/Una-Noche-Mas
           cp -a Projetos/Site-Karol-Sevilla/. _site/
           cp -a Projetos/Cenicienta/. _site/Projetos/Cenicienta/
+          cp -a Projetos/Una-Noche-Mas/. _site/Projetos/Una-Noche-Mas/
           touch _site/.nojekyll
-      - name: Preparar arquivos dos dois sites
+      - name: Preparar arquivos dos três sites
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site

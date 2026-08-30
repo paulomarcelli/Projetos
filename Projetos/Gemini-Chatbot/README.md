@@ -2,7 +2,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/Gemini%20API-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini API" />
-  <img src="https://img.shields.io/badge/Status-Em_Desenvolvimento-blue?style=for-the-badge" alt="Status: Em desenvolvimento" />
+  <img src="https://img.shields.io/badge/Status-Publicado-brightgreen?style=for-the-badge" alt="Status: Publicado" />
 </div>
 <p align="center">
   <b>Um chatbot simples desenvolvido para explorar a API do Google Gemini.</b>

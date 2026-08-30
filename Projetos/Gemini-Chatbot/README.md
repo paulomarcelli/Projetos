@@ -8,7 +8,7 @@
   <b>Um chatbot simples desenvolvido para explorar a API do Google Gemini.</b>
 </p>
 ---
-## 📌 Sobre o projeto
+📌 Sobre o projeto
 O **Gemini Chatbot** é um projeto pessoal criado para desenvolver um chatbot simples utilizando a API do Google Gemini. A proposta é praticar integração com APIs, envio de mensagens e construção de interações com Inteligência Artificial.
 
 A implementação do chatbot será adicionada posteriormente pelo autor. A chave da API deverá ser configurada de forma segura no ambiente de execução e não deve ser publicada no repositório.

@@ -23,13 +23,17 @@ Projetos/
 │   ├── style.css
 │   ├── script.js
 │   └── README.md
-└── Una-Noche-Mas/
+├── Una-Noche-Mas/
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   ├── nochemas.png
+│   ├── unanochemas.mp4
+│   └── README.md
+└── Role-peoes/
     ├── index.html
     ├── style.css
-    ├── script.js
-    ├── nochemas.png
-    ├── unanochemas.mp4
-    └── README.md
+    └── script.js
 ```
 
 ## 🗂️ Projetos
@@ -40,6 +44,7 @@ Projetos/
 | [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicado |
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
 | [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | Publicado |
+| [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | Publicado |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 
@@ -50,3 +55,5 @@ O GitHub Pages publica automaticamente o conteúdo do repositório a cada atuali
 [**Abrir Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/)
 
 [**Abrir Site Cenicienta**](https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/)
+
+[**Abrir Rolê dos Peões**](https://paulomarcelli.github.io/Projetos/Projetos/Role-peoes/)

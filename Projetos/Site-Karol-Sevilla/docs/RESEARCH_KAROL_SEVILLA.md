@@ -1,26 +1,41 @@
 # Pesquisa — Karol Sevilla
 
 > Dossiê biográfico e narrativo para o site sobre Karol Sevilla (Karol Itzitery Piña Cisneros).
-> Data de referência da pesquisa: 2026-10-16. Idioma: português do Brasil.
+> Data de referência: 2026-10-16. Idioma: português do Brasil.
+> **Versão 2:** rodada de verificação com leitura integral das fontes, feita em 2026-10-16.
 
 ---
 
 ## Metodologia e legenda de classificação
 
-**Como a pesquisa foi feita**
+**Rodada 1 (pesquisa)**
+- Buscas na web em espanhol, inglês e português, cruzando Wikipedia com imprensa (Infobae, Excélsior, Publimetro, UnoTV, El Imparcial, Los Andes, Perfil, Milenio, Time Out México, Los40 etc.), streaming (Apple Music, Spotify, Deezer, Amazon, iHeart) e Wikimedia Commons.
+- Nesta rodada, nenhuma página pôde ser aberta (erro de DNS/proxy). Tudo veio de resumos do buscador.
 
-- Buscas na web (modo padrão; modo estendido quando o resultado veio fraco) em espanhol, inglês e português, cruzando Wikipedia com imprensa (Infobae, Excélsior, Publimetro, UnoTV, El Imparcial, Los Andes, Perfil, Milenio, Time Out México, Los40 etc.), páginas de lojas e streaming (Apple Music, Spotify, Deezer, Amazon, iHeart) e Wikimedia Commons.
-- **Limitação técnica importante:** neste ambiente, a leitura direta de páginas (WebFetch/curl) falhou para todos os domínios testados (erro de DNS/proxy em es.wikipedia.org, en.wikipedia.org, excelsior.com.mx, soyluna.fandom.com). Por isso, **as informações vêm dos resumos e trechos retornados pelo mecanismo de busca para cada URL**, não da leitura integral das páginas. Cada URL listada foi retornada pela busca, mas o texto completo não foi aberto. Antes de publicar, recomenda-se abrir as fontes principais (marcadas com ★ na lista de Fontes) e conferir.
-- Citações literais foram evitadas; quando aparecem, são curtas e vêm entre aspas exatamente como apareceram no título ou trecho da fonte. O restante é paráfrase.
-- Nenhuma letra de música foi reproduzida. Só citamos títulos e descrevemos temas.
+**Rodada 2 (verificação, 2026-10-16)**
+- Com a rede liberada, as fontes principais foram baixadas com `curl` e lidas na íntegra. O WebFetch continuou sem resolver DNS, mas o `curl` funcionou. Também foram lidos:
+  - o wikitext das Wikipedias em inglês e espanhol;
+  - a API e o wikitext de cada arquivo do Wikimedia Commons;
+  - os dados estruturados das páginas da Apple Music (selo ℗, data, compositores por faixa);
+  - a página "About" do canal oficial no YouTube, que lista os links oficiais da artista;
+  - o perfil do TikTok;
+  - os títulos e canais dos vídeos, via oEmbed do YouTube.
+- Os fatos confirmados com leitura integral estão marcados **✓ verificado na página em 2026-10-16**. Os que continuam apoiados só em resumo de busca não têm essa marca.
+- Não foi possível ler:
+  - o artigo "Soy Luna" da Wikipedia em inglês [8] e a API do Wikidata (limite de requisições da Wikimedia, HTTP 429);
+  - as páginas do fandom *Soy Luna Wiki* [40][41][50] (HTTP 403);
+  - o Instagram (HTTP 429);
+  - o perfil no X e o Facebook (exigem login; não deu para ler o conteúdo).
+- Citações literais são curtas e foram conferidas no texto da fonte. Nenhuma letra de música foi reproduzida.
 
 **Legenda**
 
 | Marcador | Significado |
 |---|---|
-| **[FATO DOCUMENTADO]** | Dado verificável (data, crédito, lançamento, elenco) presente em pelo menos uma fonte jornalística, oficial ou de referência. |
-| **[DECLARAÇÃO DA ARTISTA]** | Algo que Karol disse em entrevista ou rede social, na versão da imprensa. É relato pessoal, não fato verificado por terceiros. |
-| **[INTERPRETAÇÃO NARRATIVA]** | Leitura editorial nossa, para dar costura ao texto do site. Não deve ser apresentada como fala dela nem como fato. |
+| **[FATO DOCUMENTADO]** | Dado verificável (data, crédito, lançamento, elenco) em pelo menos uma fonte jornalística, oficial ou de referência. |
+| **[DECLARAÇÃO DA ARTISTA]** | O que Karol disse em entrevista ou rede social. É relato pessoal, não fato verificado por terceiros. |
+| **[INTERPRETAÇÃO NARRATIVA]** | Leitura editorial nossa. Não deve ser apresentada como fala dela nem como fato. |
+| ✓ | Conferido com leitura integral da fonte em 2026-10-16. |
 | [n] | Número da fonte na seção "Fontes". |
 
 ---
@@ -29,186 +44,197 @@
 
 | Ano | Evento | Classificação | Fonte |
 |---|---|---|---|
-| 1999 | Nasce na Cidade do México, com o nome Karol Itzitery Piña Cisneros. **Divergência:** 9 de novembro (maioria das fontes em espanhol) ou 8 de novembro (citado para a Wikipedia em inglês). | FATO DOCUMENTADO (data com divergência) | [1][2][3] |
-| Infância | Cresce em Iztacalco (Cidade do México), segundo matéria da UnoTV que traz o relato da própria artista. | DECLARAÇÃO DA ARTISTA | [4] |
-| c. 2005–2006 | A avó, Berta, a leva a uma audição para figurantes de *Plaza Sésamo* (a versão mexicana de Vila Sésamo). Lá ela é notada pela diretora do CEA Infantil, que a convida para um teste na escola. | DECLARAÇÃO DA ARTISTA | [4][6] |
-| 2006–2008 | Estuda atuação no Centro de Educación Artística (CEA) da Televisa. Fontes biográficas dizem que começou aos seis anos em comerciais de TV. | FATO DOCUMENTADO (fontes biográficas secundárias) | [2][4] |
-| 2008 | Estreia em novela: *Querida enemiga* (Televisa), como Gina. | FATO DOCUMENTADO | [1][2][4] |
-| 2008–2014 (datas variam) | Participações nas séries antológicas *La rosa de Guadalupe* e *Como dice el dicho*. A Wikipedia em inglês situa *Como dice el dicho* em 2012. Outro wiki lista episódios entre 2012 e 2014. | FATO DOCUMENTADO (datas e número de episódios divergem) | [1][72] |
-| 2015 | É escalada como protagonista de *Soy Luna* (Disney Channel América Latina e Pol-ka). Conta que deixou um projeto ligado a *El señor de los cielos* para aceitar o papel. Também diz que a seleção passou por milhares de candidatas e que ela disse saber patinar sem saber. | FATO DOCUMENTADO (escalação) + DECLARAÇÃO DA ARTISTA (bastidores) | [5][6][7][10] |
-| 2016 | *Soy Luna* estreia em 14/03/2016 no Disney Channel América Latina (pré-estreia VIP em 06/03, segundo uma fonte). Karol interpreta Luna Valente. Ela se muda para Buenos Aires, onde a série é gravada. | FATO DOCUMENTADO | [8][7] |
-| 2017 | Turnê latino-americana *Soy Luna en Concierto*. Uma fonte dá a estreia em 18 de abril em Lima (Jockey Club). Outra fala em início na Argentina. Reportagem cita mais de 407 mil espectadores em 11 países e 20 cidades. | FATO DOCUMENTADO (data de início diverge) | [10][11] |
-| 2018 | Turnê europeia *Soy Luna Live*, de 05/01/2018 (Barcelona, Palau Sant Jordi) a 09/04/2018 (Bruxelas). Segundo a Wikipedia, foram 49 shows e público de cerca de 273 mil pessoas. | FATO DOCUMENTADO | [9] |
-| 2018 | Recebe o Kids' Choice Awards Argentina 2018 de atriz favorita, segundo La Capital (Rosario). | FATO DOCUMENTADO (fonte única) | [11] |
-| 2018 | *Soy Luna* termina sua exibição original (último episódio em 17/08/2018, segundo a Wikipedia). Em entrevista ao Los Andes, Karol anuncia o início da carreira solo. | FATO DOCUMENTADO + DECLARAÇÃO DA ARTISTA | [8][75] |
-| 2019 | Começa como cantora solo e faz shows pela América Latina com a turnê #QueSePareElMundo, segundo a Infobae. | FATO DOCUMENTADO | [74] |
-| 2020 | Assina com o selo mexicano OCESA Seitrack para lançar a carreira solo. | FATO DOCUMENTADO | [12][13] |
-| 2021 | Lança "Tus besos" (por volta de 8 de janeiro), primeiro single de uma fase pop urbana. Composição de Mango e Nabález; clipe gravado em Medellín. | FATO DOCUMENTADO | [13][14] |
-| 2021 | Em julho, lança "Nadie te entiende". Em entrevistas, diz que quis deixar para trás a imagem de "menina Disney". | FATO DOCUMENTADO + DECLARAÇÃO DA ARTISTA | [2][15][16] |
-| 2022 | Em 11 de março, lança "Dime dime", com Luis Fonsi (composição de Fonsi e Nabález, clipe dirigido por Paco Álvarez). | FATO DOCUMENTADO | [17][18] |
-| 2022 | Em 15 de junho, estreia no Disney+ (América Latina e Espanha) a série *Siempre fui yo*, gravada na Colômbia. Ela vive Lupe, ao lado de Pipe Bueno. | FATO DOCUMENTADO | [20][21] |
-| 2022 | Em entrevistas (Yordi Rosado, Javier Poza), fala de depressão depois de *Soy Luna*, de bullying na escola e de ansiedade causada por comentários sobre seu corpo. | DECLARAÇÃO DA ARTISTA | [52][53][54][55] |
-| 2023 | Em fevereiro, lança o single "Miedo de sentir", uma balada sobre amor-próprio composta por ela e Rodrigo Dávila (Motel). | FATO DOCUMENTADO | [19][64] |
-| 2024 | Em fevereiro, lança "Anónimo", com Mario Bautista. | FATO DOCUMENTADO | [30] |
-| 2024 | Em julho, lança "Cenicienta", apresentada no Festival Tecate. | FATO DOCUMENTADO | [29][73] |
-| 2024 | Em 1º de agosto, lança "Otro Mood" (single; selo TMBC Records na Apple Music). | FATO DOCUMENTADO | [27][28] |
-| 2024 | Anuncia a *Luminova Tour* e um álbum de 12 canções escritas por ela. Uma queda numa escada adia o início da turnê. | FATO DOCUMENTADO + DECLARAÇÃO DA ARTISTA | [24][25][26] |
-| 2024 | Em setembro, estreia no cinema com *Casi el paraíso* (dir. Edgar San Juan), no papel de Teresa Rondia. | FATO DOCUMENTADO | [22][23] |
-| 2025 | Em setembro, é anunciado o retorno de *Soy Luna* ao Disney+. | FATO DOCUMENTADO | [83] |
-| 2026 | Em janeiro, é anunciada como Lupita em *Mentiras, el musical*. | FATO DOCUMENTADO | [60][61] |
-| 2026 | Em 22 de maio, lança o álbum de estúdio *Imperfecta* (8 faixas, cerca de 20 min, selo KIVA Music). | FATO DOCUMENTADO | [31][32][78] |
-| 2026 | Em 8 de julho, sai a trilha *Soy Luna: Volver a rodar (Banda Sonora Original)*, que inclui "Más linda" (faixa 3) e "Mariposas" (faixa 9). | FATO DOCUMENTADO | [40][41][50] |
-| 2026 | Em 24 de julho, estreia no Disney+ *Soy Luna: Volver a rodar*, quarta e última temporada, com 12 episódios. Karol volta a viver Luna Valente. | FATO DOCUMENTADO | [37][38][39][76] |
-| 2026 | Em agosto (Mario Pergolini) e outubro (Infobae), volta a falar da depressão e da perda de identidade depois do sucesso de *Soy Luna*. | DECLARAÇÃO DA ARTISTA | [33][34] |
-| 2026 | Em outubro, a *Soy Luna Tour – El Último Show* percorre a América Latina a partir de 7/10 em Buenos Aires (Movistar Arena), com datas na Arena Ciudad de México em 16 e 17/10. | FATO DOCUMENTADO | [33][35][50] |
+| 1999 | Nasce em 9 de novembro, na Cidade do México, com o nome Karol Itzitery Piña Cisneros. **Histórico da divergência:** na rodada 1, "8 de novembro" apareceu atribuído à Wikipedia em inglês. A leitura mostrou que é uma **inconsistência interna** desse artigo: o infobox diz 9/11/1999 e a seção "Early life" diz 8/11. A Wikipedia em espanhol usa 9/11 no infobox e no texto, e as fontes jornalísticas da busca também. **Adotamos 9/11/1999.** Em out./2026 a Infobae diz que ela tem 26 anos, o que é compatível. | FATO DOCUMENTADO (✓ nas Wikipedias) | [1][96][2][33] |
+| Infância | Ela situa sua origem em Iztacalco (Cidade do México). A mãe trabalhava como secretária e ela e o irmão ficavam com a avó. | DECLARAÇÃO DA ARTISTA ✓ | [4] |
+| c. 2005–2006 | Com cerca de 6 anos, a avó a leva escondida da mãe a uma seleção de figurantes de *Plaza Sésamo*. Lá, Lili Garza, diretora do CEA Infantil, a convida para um teste. A avó morre na época em que ela é aceita, e a mãe a princípio recusa a vaga. Depois a menina entra no CEA. | DECLARAÇÃO DA ARTISTA ✓ | [4][5] |
+| 2006–2008 | Estuda atuação no Centro de Educación Artística (CEA) da Televisa. A Wikipedia registra *Plaza Sésamo* (2006, figurante) como primeiro trabalho. | FATO DOCUMENTADO (✓ Wikipedia, fonte secundária) | [1][96][2] |
+| 2008 | Estreia em novela em *Querida enemiga*, como Gina Liñán Mendiola. | FATO DOCUMENTADO ✓ | [1][96] |
+| 2008–2015 | Pequenos papéis na TV, segundo a filmografia da Wikipedia em inglês:<br>• *La rosa de Guadalupe*: 11 episódios (2008–2015)<br>• *Mujeres asesinas*: 2009<br>• *Para volver a amar*: 2010–2011<br>• *Amorcito corazón*: 2011<br>• *Como dice el dicho*: 2 episódios (2012–2014)<br>• *Qué bonito amor*: 2013 na tabela; o texto diz 2012<br>No teatro musical: *La novicia rebelde*, *Anita la huerfanita*, *El mago de Oz*, *Fantabulosa*, *Caperucita Roja*. **Atenção:** a seção de filmografia do artigo tem o aviso "BLP unreferenced section". | FATO DOCUMENTADO (✓ Wikipedia; sem referências próprias) | [1][96] |
+| 2015 | Em maio, é escolhida para protagonizar *Soy Luna*. Conta que, no teste, disse que sabia patinar quando nunca tinha subido em patins. Conta também que um ex-empresário rasgou seu passaporte para impedir que ela viajasse para a Argentina. | FATO DOCUMENTADO (✓ Wikipedia) + DECLARAÇÃO DA ARTISTA ✓ | [1][5][4][6] |
+| 2016 | *Soy Luna* estreia em 14/03/2016 no Disney Channel América Latina. Karol vive Luna Valente e se muda para Buenos Aires aos 15 anos. Em 26/02/2016 sai a primeira trilha da série (Walt Disney Records). | FATO DOCUMENTADO (data de estreia não relida: [8] deu HTTP 429; trilha ✓ [1]) | [8][1][33] |
+| 2017 | Turnê latino-americana *Soy Luna en Concierto*. Uma fonte dá a estreia em 18 de abril em Lima; outra fala em início na Argentina. Em 2017 ela também grava "La Bikina", ligada a *Coco* (Disney/Pixar). | FATO DOCUMENTADO (data de início da turnê diverge; "La Bikina" ✓ [1]) | [10][11][1] |
+| 2018 | Turnê europeia *Soy Luna Live*, de 05/01 (Barcelona) a 09/04/2018 (Bruxelas). Dubla Dani Fernández em *WiFi Ralph* (*Ralph Breaks the Internet*). Recebe o Kids' Choice Awards Argentina como atriz favorita (fonte única). | FATO DOCUMENTADO | [9][1][11] |
+| 2018 | Fim de *Soy Luna*. Em 10/11/2018 anuncia a carreira solo e a turnê *Que se pare el mundo*, a partir de dezembro, com datas no Chile e no Brasil. | DECLARAÇÃO DA ARTISTA ✓ | [75] |
+| 2019 | É jurada da 4ª temporada de *Pequeños gigantes* (Televisa). Lança o single "Mil besos por segundo". | FATO DOCUMENTADO (✓ Wikipedia; ✓ Apple Music) | [1][86] |
+| 2020 | Lança "Vuélveme a mirar así" (tema de *Soltero con hijas*) e "Coro de amor", com Emilio Osorio. Fecha com a OCESA Seitrack: a Wikipedia em espanhol cita um acordo de "management y booking", não necessariamente um contrato de gravadora. | FATO DOCUMENTADO (✓ Wikipedia) | [96][12] |
+| 2021 | Em janeiro, lança "Tus besos", composta por Mango e Nabález. O clipe foi gravado em Medellín pela 36Grados, com direção de Ronny Xavier, e a capa tem crédito "OCESA Seitrak". Ela diz que a música chegou a 1 milhão de reproduções no segundo dia. | FATO DOCUMENTADO ✓ + DECLARAÇÃO DA ARTISTA ✓ | [13] |
+| 2021 | Em 26/02 estreia no Disney+ *Soy Luna: El último concierto*. No mesmo ano lança "Nadie te entiende" (julho), "Pase lo que pase" com Joey Montana e "Desde hoy" (campanha de princesas da Disney). | FATO DOCUMENTADO (✓ Wikipedia; ✓ Apple Music) | [1][96][86] |
+| 2022 | Em 11/03 lança "Dime dime", composta por Luis Fonsi e Nabález, com clipe de Paco Álvarez. Em 15/06 estreia no Disney+ a série *Siempre fui yo*, em que ela vive Lupe. | FATO DOCUMENTADO | [17][18][20][21] |
+| 2022 | Em entrevistas, fala de depressão depois de *Soy Luna*, bullying e ansiedade causada por comentários sobre o corpo. | DECLARAÇÃO DA ARTISTA | [52][53][54][55] |
+| 2023 | Em 10/02 lança "Miedo de sentir", composta por ela e Rodrigo Dávila. Depois disso, segundo a Wikipedia em espanhol, deixa a OCESA Seitrack e passa a lançar pelo próprio selo. Lança também "Salud hermana". | FATO DOCUMENTADO (✓ Wikipedia; ✓ Apple Music) | [19][96][86] |
+| 2023 | Em 15/12 sai "Anónimo", com Mario Bautista (Warner Music México). **Correção:** a versão 1 dizia "fevereiro de 2024". | FATO DOCUMENTADO ✓ | [89] |
+| 2024 | Em 17/01 sai a trilha de *Siempre fui yo 2*. Em 16/07 lança "Cenicienta" (TMBC Records) e em 01/08 "Otro Mood" (TMBC Records). | FATO DOCUMENTADO ✓ | [1][90][27] |
+| 2024 | Em 09/08 sai "Weekend" (feat. ZΩRBA), com Timmy Trumpet e FAULHABER, pelo selo Smash The House. Karol é uma das compositoras. **Resolvido:** a versão 1 deixava "Weekend" pendente. | FATO DOCUMENTADO ✓ | [88] |
+| 2024 | Anuncia a *Luminova Tour*; uma queda adia o início. Dubla Victoria em *Gigantes* (*Storm Crashers*). Em setembro estreia no cinema com *Casi el paraíso*, no papel de Teresa Rondia. | FATO DOCUMENTADO | [24][25][26][1][22][23] |
+| 2024 | Em 05/12 sai "Una noche más", com Alan Navarro (Universal Music Group México). Karol não está entre os compositores. **Resolvido:** a versão 1 deixava esse item pendente. | FATO DOCUMENTADO ✓ | [87] |
+| 2024–2025 | Em 23/10/2024, em entrevista à Radio Disney, confirma uma 4ª temporada de *Soy Luna*. As gravações começam em junho de 2025. | FATO DOCUMENTADO (✓ Wikipedia) | [1][96][83] |
+| 2026 | Em janeiro, é anunciada como Lupita em *Mentiras, el musical*. | FATO DOCUMENTADO (✓ Wikipedia) | [1][60][61] |
+| 2026 | Em 22/05 lança o álbum *Imperfecta* (℗ 2026 KIVA Music, 8 faixas). | FATO DOCUMENTADO ✓ | [31][96] |
+| 2026 | Em 08/07 sai a trilha *Soy Luna: Volver a rodar (Banda Sonora Original)*, com ℗ 2026 Walt Disney Records e 17 faixas. Entre elas estão "Más linda" (faixa 3) e "Mariposas" (faixa 9). | FATO DOCUMENTADO ✓ | [85] |
+| 2026 | Em 24/07 estreia no Disney+ *Soy Luna: Volver a rodar*: 12 episódios, quarta e última temporada. Karol volta a viver Luna Valente. | FATO DOCUMENTADO ✓ | [35][37][38] |
+| 2026 | Em 19/08 (programa de Mario Pergolini) e em 04/10 (Infobae), fala da depressão e da perda de identidade depois de *Soy Luna*. | DECLARAÇÃO DA ARTISTA (✓ só na Infobae [33]) | [33][34] |
+| 2026 | Turnê *Soy Luna Tour – El Último Show*: estreia em 7 e 8/10 no Movistar Arena (Buenos Aires) e segue no México. Segundo Karol, a primeira data esgotou em 24 horas na pré-venda. | FATO DOCUMENTADO ✓ + DECLARAÇÃO DA ARTISTA ✓ | [33] |
 
 ---
 
 ## Capítulo 1 — O começo de um sonho
 
-Karol Itzitery Piña Cisneros nasceu na Cidade do México em novembro de 1999. A maioria das fontes indica 9 de novembro e a Wikipedia em inglês aparece citada com 8 de novembro [1][2][3]. **[FATO DOCUMENTADO, com divergência de um dia]** Em entrevista retomada pela UnoTV, ela situa suas origens em Iztacalco, bairro da capital mexicana [4]. **[DECLARAÇÃO DA ARTISTA]**
+Karol Itzitery Piña Cisneros nasceu na Cidade do México em 9 de novembro de 1999 [1][96]. **[FATO DOCUMENTADO ✓]** Numa entrevista de 2022 retomada pela UnoTV, ela contou que a mãe trabalhava como secretária e que ela e o irmão passavam os dias com a avó, Bertha [4]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
-Pelo relato de Karol, o primeiro passo veio da avó, Berta. Ela viu um anúncio que procurava figurantes para *Plaza Sésamo* e levou a neta à audição. Ali, a menina chamou a atenção da diretora do CEA Infantil, que pediu que voltassem para um teste na escola [4][6]. **[DECLARAÇÃO DA ARTISTA]** Fontes biográficas registram que ela estudou atuação no Centro de Educación Artística da Televisa entre 2006 e 2008 e que começou aos seis anos fazendo comerciais [2][4]. **[FATO DOCUMENTADO, em fontes secundárias]**
+Foi a avó quem viu o anúncio que procurava figurantes para *Plaza Sésamo*. Comprou roupas baratas numa feira e levou a neta, de uns seis anos, à gravação. Karol lembra, rindo, que fez o papel de uma árvore no meio de centenas de crianças. Ali, Lili Garza, diretora do CEA Infantil, pediu que ela voltasse para um teste na escola, e tudo foi feito em segredo da mãe [4]. Em outra entrevista, de 2018, Karol contou que foi aceita na mesma época em que a avó morreu e que só então revelou à mãe o que tinham escondido. A mãe a princípio recusou, mas depois aceitou [4][5]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
-A estreia em novela foi em 2008, em *Querida enemiga*, no papel de Gina [1][2][4]. **[FATO DOCUMENTADO]** Depois vieram participações em séries de episódios independentes muito populares no México, como *La rosa de Guadalupe* e *Como dice el dicho*. As fontes divergem sobre os anos exatos e o número de episódios [1][72]. **[FATO DOCUMENTADO, datas a validar]**
+Entre 2006 e 2008, ela estudou atuação no Centro de Educación Artística da Televisa [1][96]. Estreou em novela em 2008, em *Querida enemiga*, como Gina [1][96]. Nos anos seguintes acumulou pequenos papéis em produções como *La rosa de Guadalupe*, *Mujeres asesinas* e *Como dice el dicho*. Também protagonizou musicais infantis como *Anita la huerfanita* e *El mago de Oz* [1]. **[FATO DOCUMENTADO, com base na Wikipedia; a filmografia do artigo em inglês não tem referências próprias.]** Em 2021, ela disse que é grata à Televisa pela formação, embora não pretendesse voltar a trabalhar na emissora [59]. **[DECLARAÇÃO DA ARTISTA]**
 
-Anos depois, Karol disse que se sente grata à Televisa pela formação que recebeu ainda criança, embora tenha afirmado em 2021 que não pretendia voltar a trabalhar na emissora [59]. **[DECLARAÇÃO DA ARTISTA]**
-
-**[INTERPRETAÇÃO NARRATIVA]** O começo de Karol não teve nada de glamouroso. Foram testes, figuração, comerciais e pequenos papéis em produções de grande audiência. É uma trajetória típica de quem se forma desde cedo nas escolas de TV mexicanas, e foi esse repertório que a preparou para a oportunidade que mudaria tudo.
+**[INTERPRETAÇÃO NARRATIVA]** O começo de Karol tem pouco glamour e muito empenho: uma avó que acreditou nela, roupas compradas na feira, figuração, testes e papéis pequenos. Foi esse repertório, construído desde criança, que a preparou para a oportunidade que mudaria tudo.
 
 ---
 
 ## Capítulo 2 — O caminho até o reconhecimento
 
-Em 2015, a Disney Channel América Latina e a produtora argentina Pol-ka procuravam a protagonista de uma nova série musical sobre patinação, *Soy Luna*. Em entrevista ao *Clarín*, reproduzida pelo *Los Andes*, Karol contou que houve um primeiro teste com milhares de meninas no México sem que ninguém fosse escolhida. Os produtores teriam procurado na Argentina e voltado ao México, onde ela fez o teste. Perguntaram se sabia cantar e dançar, e ela disse que sim. Quando perguntaram se sabia patinar, ela admite que mentiu [5]. **[DECLARAÇÃO DA ARTISTA]** Em outra entrevista, a Yordi Rosado, contou que estava prestes a fechar contrato com outra produção (*El señor de los cielos*) e escolheu a Disney [6][7]. **[DECLARAÇÃO DA ARTISTA]**
+Em 2015, a Disney Channel América Latina procurava a protagonista de uma série musical sobre patinação. Em reportagem do *Los Andes* de 2018, Karol contou que os produtores fizeram testes no México, procuraram na Argentina e voltaram ao México. Ela também contou um detalhe do teste: disse que sabia cantar e dançar, o que era verdade, e que sabia patinar, o que não era [5]. **[DECLARAÇÃO DA ARTISTA ✓]** Ela relata ainda que um ex-empresário rasgou seu passaporte para impedir a viagem à Argentina [4] e que deixou outro projeto para aceitar o da Disney [6][7]. **[DECLARAÇÃO DA ARTISTA]** A escolha para o papel foi confirmada em maio de 2015 [1]. **[FATO DOCUMENTADO ✓]**
 
-*Soy Luna* estreou em 14 de março de 2016 no Disney Channel América Latina, com Karol como Luna Valente, uma jovem mexicana que se muda para Buenos Aires e encontra na patinação sua paixão [8]. **[FATO DOCUMENTADO]** A série teve três temporadas, exibidas até 2018 [8]. **[FATO DOCUMENTADO]**
+*Soy Luna* estreou em março de 2016 no Disney Channel América Latina, com Karol, aos 15 anos, como Luna Valente [8][33]. A série teve três temporadas e 220 capítulos até 2018 [35]. **[FATO DOCUMENTADO]** O elenco subiu aos palcos com *Soy Luna en Concierto* na América Latina (2017) e *Soy Luna Live* na Europa (2018) [9][10][11]. A primeira trilha teve certificação de ouro e platina em vários países, segundo a Wikipedia [1]. **[FATO DOCUMENTADO]**
 
-O sucesso levou o elenco aos palcos. Em 2017, a turnê *Soy Luna en Concierto* percorreu a América Latina, e reportagens falam em mais de 400 mil espectadores [10][11]. Em 2018, *Soy Luna Live* fez 49 shows na Europa, de Barcelona a Bruxelas [9]. **[FATO DOCUMENTADO]** No mesmo ano, Karol recebeu o prêmio de atriz favorita no Kids' Choice Awards Argentina [11]. **[FATO DOCUMENTADO, fonte única]**
+Em 2018, terminada a série, ela anunciou a carreira solo e a turnê *Que se pare el mundo*, montada a partir dos seus vídeos no YouTube [75]. **[DECLARAÇÃO DA ARTISTA ✓]** Em janeiro de 2021 lançou "Tus besos", seu primeiro pop urbano. Na época, disse à AP que ainda tinha medo de o público não gostar [13]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
-Ao fim da série, ela anunciou a carreira solo [75]. Em 2020, assinou com o selo OCESA Seitrack [12]. Em janeiro de 2021 lançou "Tus besos", primeiro passo de uma sonoridade pop urbana [13][14]. **[FATO DOCUMENTADO]** Depois vieram "Dime dime", com Luis Fonsi (2022) [17][18], a série *Siempre fui yo* no Disney+ (2022) [20][21] e a estreia no cinema com *Casi el paraíso* (2024) [22][23]. **[FATO DOCUMENTADO]**
+Vieram depois "Dime dime", com Luis Fonsi (2022) [17], a série *Siempre fui yo* no Disney+ (2022) [20], colaborações com Mario Bautista (2023), Timmy Trumpet e Alan Navarro (2024) [89][88][87] e a estreia no cinema com *Casi el paraíso* (2024) [22]. **[FATO DOCUMENTADO]**
 
-**[INTERPRETAÇÃO NARRATIVA]** A virada de Karol foi uma combinação de preparo e coragem. Ela aceitou o risco de um papel que exigia uma habilidade que ainda não tinha e transformou a chance em um fenômeno de alcance internacional. Depois, trocou a segurança do personagem por uma carreira com o próprio nome.
+**[INTERPRETAÇÃO NARRATIVA]** A virada de Karol junta preparo e coragem. Ela topou um papel que exigia uma habilidade que ainda não tinha, transformou a chance num fenômeno internacional e depois trocou a segurança da personagem por uma carreira com o próprio nome.
 
 ---
 
 ## Capítulo 3 — A evolução, a identidade e a superação
 
-O reconhecimento cobrou um preço. Karol falou dele em público várias vezes. Em 2022, contou a Yordi Rosado que, ao terminar *Soy Luna*, passou por uma depressão forte e sentiu que tinha perdido a própria identidade. Também disse que sofreu bullying na escola [52][55]. **[DECLARAÇÃO DA ARTISTA]** No mesmo ano, falou de uma crise de ansiedade provocada por comentários sobre seu corpo nas redes sociais e pediu que parassem de opinar sobre ele [53][54]. **[DECLARAÇÃO DA ARTISTA]** Em 2024, disse que ser famosa desde muito nova afetou sobretudo seu amor-próprio [51]. **[DECLARAÇÃO DA ARTISTA]**
+O reconhecimento cobrou um preço, e Karol fala dele em público. Em entrevista à Infobae em outubro de 2026, contou que, ao voltar ao México no fim da última turnê de *Soy Luna*, entrou numa depressão profunda. Disse que sentia não ter personalidade própria: não tinha amigos e não entendia a si mesma [33]. Percebeu que ria, falava e se comportava como a personagem, e resumiu que "me comió el personaje" [33]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
-Em 2026, em reportagem da Infobae e no programa de Mario Pergolini, retomou o assunto. Contou que, ao voltar ao México no fim da última turnê, cancelou uma turnê com o apoio da mãe. Disse que por um tempo se pegava falando e agindo como a personagem, porque ainda não tinha construído uma personalidade própria, e que a depressão deixou nela uma ansiedade social [33][34]. Hoje se descreve como mais tranquila e com objetivos claros [33]. **[DECLARAÇÃO DA ARTISTA]**
+A mãe a apoiou quando ela cancelou a primeira turnê solo, um dia antes do show [33]. Karol conta que saiu dessa fase aos poucos, perto da família e aprendendo a se ouvir. Diz que a depressão deixou uma ansiedade social que a faz desmaiar em multidões, mas que hoje sabe reconhecer os sinais e tem um "sinal" combinado com a mãe [33]. **[DECLARAÇÃO DA ARTISTA ✓]** Em entrevistas de 2022 ela já tinha falado de bullying na escola e de ansiedade causada por comentários sobre seu corpo [52][53][54]. **[DECLARAÇÃO DA ARTISTA]**
 
-A transição de imagem também aparece em suas falas. Em 2021, disse que foi um trabalho grande fazer o público entender que ela já não era "a menina Disney", e que adaptar a voz ao pop urbano foi difícil [15][16]. **[DECLARAÇÃO DA ARTISTA]** Em 2023, o single "Miedo de sentir", composto por ela, foi apresentado pela imprensa como uma canção sobre amor-próprio [19]. Em 2026, lançou *Imperfecta*, seu primeiro álbum de estúdio [31][32]. **[FATO DOCUMENTADO]**
+A mudança de imagem também foi trabalhosa. Em 2021, disse que foi difícil fazer o público entender que ela já não era "a menina Disney" [15][16]. **[DECLARAÇÃO DA ARTISTA]** Em 2026 lançou *Imperfecta*, primeiro álbum de estúdio [31]. À Infobae, disse que no disco mostra seu coração, seus traumas e seus erros, e que era uma boa hora para as pessoas verem que ela é "imperfecta" [33]. **[FATO DOCUMENTADO ✓ + DECLARAÇÃO DA ARTISTA ✓]**
 
-No mesmo ano, voltou a Luna em *Soy Luna: Volver a rodar*. Disse que de início recusou a proposta. Aceitou porque a nova história trata de enfrentar medos e momentos sombrios, e queria guardar o projeto como algo bonito. A Excélsior deu à entrevista o título "Volver a ser Luna fue sanador" [35][36]. **[DECLARAÇÃO DA ARTISTA]**
+No mesmo ano voltou a Luna. À Excélsior, contou que recusou o convite várias vezes. Aceitou porque a história fala de enfrentar medos e momentos sombrios, e porque queria guardar o projeto como algo bonito. Disse não se arrepender e que voltar a interpretar Luna foi "sanador" [35]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
-**[INTERPRETAÇÃO NARRATIVA]** A história de Karol pode ser lida como a de alguém que precisou se separar de uma personagem para se encontrar e, já adulta, voltou a ela por escolha própria. Não é uma superação linear nem "concluída". É um processo que ela mesma descreve, aos poucos, em público.
+**[INTERPRETAÇÃO NARRATIVA]** É a história de alguém que precisou se separar de uma personagem para se encontrar e que, adulta, voltou a ela por escolha própria. Não é uma superação linear nem "concluída": é um processo que ela mesma vai descrevendo em público.
 
 ---
 
 ## O que Karol tem a nos ensinar?
 
-> Lições formuladas por nós **[INTERPRETAÇÃO NARRATIVA]**, cada uma ancorada num fato ou declaração. Não atribuem a Karol pensamentos que ela não expressou.
+> As lições são formuladas por nós **[INTERPRETAÇÃO NARRATIVA]** e cada uma se apoia num fato ou numa declaração. Nenhuma atribui a Karol pensamentos que ela não expressou.
 
 1. **Aceitar a oportunidade antes de estar 100% pronta**
    Karol fez o teste para *Soy Luna* sem saber patinar e aprendeu depois. Às vezes a coragem de tentar vem antes da habilidade.
-   *Base factual:* ela contou que mentiu ao dizer que sabia patinar no teste para a série [5]. **[DECLARAÇÃO DA ARTISTA]**
+   *Base factual:* contou que mentiu ao dizer que sabia patinar no teste [5]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
 2. **Pedir pausa também é cuidado**
-   Mesmo no auge, ela interrompeu planos quando percebeu que não estava bem. Parar pode ser uma decisão responsável.
-   *Base factual:* contou que cancelou uma turnê, com apoio da mãe, durante a depressão depois de *Soy Luna* [33][34][55]. **[DECLARAÇÃO DA ARTISTA]**
+   No começo da carreira solo, ela cancelou uma turnê quando percebeu que não estava bem. Parar pode ser uma decisão responsável.
+   *Base factual:* contou que cancelou a turnê um dia antes do show, com o apoio da mãe [33]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
 3. **A gente é maior que o personagem**
-   Karol descreve ter confundido a própria personalidade com a de Luna e diz que levou tempo para construir quem queria ser. Identidade se constrói.
-   *Base factual:* relato à Infobae (2026) sobre agir como a personagem e ainda não ter uma personalidade própria [33]. **[DECLARAÇÃO DA ARTISTA]**
+   Karol diz que confundiu a própria personalidade com a de Luna e levou tempo para descobrir quem queria ser. Identidade se constrói.
+   *Base factual:* entrevista à Infobae (2026) [33]. **[DECLARAÇÃO DA ARTISTA ✓]**
 
 4. **O corpo não é tema de debate público**
-   Ela falou publicamente da ansiedade causada por comentários sobre seu corpo e pediu que parassem. Em 2026, respondeu às críticas dizendo que se sente bem consigo mesma.
-   *Base factual:* entrevistas de 2022 [53][54] e matéria da Infobae de 2026, com o título "Me siento exquisita" [56]. **[DECLARAÇÃO DA ARTISTA]**
+   Ela falou da ansiedade causada por comentários sobre seu corpo e pediu que parassem. Em 2026, respondeu às críticas dizendo que se sente bem consigo mesma.
+   *Base factual:* entrevistas de 2022 [53][54] e matéria da Infobae de 2026 ("Me siento exquisita") [56]. **[DECLARAÇÃO DA ARTISTA]**
 
 5. **Mudar de fase exige trabalho, não só vontade**
-   Deixar a imagem de "menina Disney" foi, nas palavras dela, um processo trabalhoso, inclusive na técnica vocal.
-   *Base factual:* entrevista à VíaPaís e ao Perfil (2021) sobre a transição para o pop urbano [15][16]. **[DECLARAÇÃO DA ARTISTA]**
+   Deixar a imagem de "menina Disney" foi, nas palavras dela, um processo trabalhoso. Ela também admitiu o medo de estrear num gênero novo.
+   *Base factual:* entrevistas à VíaPaís e ao Perfil [15][16] e à AP/La Hora [13]. **[DECLARAÇÃO DA ARTISTA; [13] ✓]**
 
 6. **Voltar ao passado com outros olhos**
-   Ela aceitou retomar Luna para ressignificar a experiência e disse ter vivido o retorno de forma leve e agradecida.
-   *Base factual:* entrevistas à Excélsior e ao Perfil (2026) [35][36]. **[DECLARAÇÃO DA ARTISTA]**
+   Ela aceitou retomar Luna para ressignificar a experiência e disse que o retorno foi "sanador".
+   *Base factual:* entrevista à Excélsior (24/07/2026) [35]. **[DECLARAÇÃO DA ARTISTA ✓]**
+
+---
+
+## Relação com os fãs (complemento verificado)
+
+- Karol diz que gosta de ser reconhecida e abraçada na rua. Também diz que uma geração cresceu com ela, que outra está chegando agora e que gosta de ser vista "como una amiga" [33]. **[DECLARAÇÃO DA ARTISTA ✓]**
+- Conta que, com as músicas novas, recebeu "millones de mensajes" de fãs dizendo que ela os tinha salvado, e que gosta de usar as redes para mensagens positivas e causas [33]. **[DECLARAÇÃO DA ARTISTA ✓]**
+- Agradece aos fãs e aos pais deles por tornarem possível a turnê de despedida de *Soy Luna* [33]. **[DECLARAÇÃO DA ARTISTA ✓]**
+- Para o site, evitar polêmicas com outras artistas (por exemplo, Ángela Aguilar, 2025–2026) [82].
 
 ---
 
 ## Universo musical — Mariposas e Más Linda
 
-### Contexto comum [FATO DOCUMENTADO]
+### Contexto comum [FATO DOCUMENTADO ✓ [85]]
 
-- As duas faixas fazem parte de **Soy Luna: Volver a rodar (Banda Sonora Original)**, lançada em **8 de julho de 2026**. É a trilha da quarta e última temporada de *Soy Luna*, que estreou no Disney+ em 24/07/2026 [40][41][50][37].
-- O selo aparece como **Walt Disney Records** no fan-wiki e nos resumos de streaming [40][41]. Um resultado de busca observou que não há confirmação explícita do selo em fonte oficial. A distribuição da faixa no YouTube aparece como "Provided to YouTube by Universal Music Group" [45]. **→ Validar o selo na página oficial do álbum.**
-- Na trilha, as músicas são interpretadas por Karol Sevilla **como Luna Valente** (crédito "Elenco de Soy Luna, Disney & Karol Sevilla" no Shazam) [42][43].
-- A trilha tem 17 faixas: 11 inéditas e 6 regravações de músicas clássicas da série [39]. O primeiro single foi "De ti me enamoré" [39].
-- As duas músicas estão no repertório da *Soy Luna Tour – El Último Show*, que começou em 7/10/2026 em Buenos Aires: "Mariposas" é a 5ª do setlist, segundo o fan-wiki [50].
+- As duas faixas estão em **Soy Luna: Volver a rodar (Banda Sonora Original)**, lançada em **8 de julho de 2026**.
+- O selo é **℗ 2026 Walt Disney Records**, confirmado na página da Apple Music. A dúvida da versão 1 (Disney ou UMG) foi resolvida: a menção "Provided to YouTube by Universal Music Group" vem do canal "Topic" no YouTube, ligado à distribuição digital, e não muda o selo.
+- O crédito de intérprete nas duas faixas é **"Elenco de Soy Luna, Disney & Karol Sevilla"**. Na série, Karol canta como Luna Valente.
+- A trilha tem 17 faixas, com músicas novas e "Versiones 2026" de clássicos da série. O single principal é "De ti me enamoré" [39][85].
+- A temporada estreou no Disney+ em 24/07/2026 [35]. As duas músicas estão no repertório da turnê de despedida, segundo o fan-wiki [50] (não relido: HTTP 403).
 
 ### "Mariposas"
 
 | Item | Informação | Classificação | Fonte |
 |---|---|---|---|
-| Lançamento | 08/07/2026, faixa 9 da trilha *Volver a rodar* | FATO DOCUMENTADO | [40][45] |
-| Intérprete | Karol Sevilla (como Luna) | FATO DOCUMENTADO | [40][42] |
-| Composição | **Divergência:** o fan-wiki e a página de letra do Letras.com creditam só Karol Sevilla. O Shazam lista José Ricardo Cortés Salsedo, Karol Sevilla e Víctor Meza. A página de significado do Letras.com lista Karol Sevilla, Federico San Millán, José María Lassaga, José Ricardo Cortés Salsedo e Víctor Meza. Em todas as versões, **Karol aparece como coautora**. | FATO DOCUMENTADO (coautoria) / créditos completos a validar | [40][42][44] |
-| Origem | Um perfil de fãs (Karol Sevilla Brasil, no X) afirma que a música foi escrita para o álbum *Imperfecta* e acabou "presenteada" a Luna. O *tracklist* de *Imperfecta* (8 faixas) de fato não inclui "Mariposas" [31][78], mas **a origem não foi confirmada por fonte oficial**. | Precisa de validação | [49] |
-| Vídeo | Não encontramos um **videoclipe oficial**. Encontramos um áudio oficial (distribuído pela UMG) e um *lyric video*, este último sem confirmação de que seja oficial. | FATO DOCUMENTADO (ausência de clipe nos resultados) | [45][48] |
-| Tema | Segundo o Letras.com (texto editorial do site, não da artista), a música fala de assumir uma "nova versão" de si, manter a criança interior, levantar depois das quedas, deixar ir o que machuca e ser fiel à própria essência. | Leitura de terceiros (Letras.com) | [44] |
+| Lançamento | 08/07/2026, faixa 9 da trilha, cerca de 2:45 | FATO DOCUMENTADO ✓ | [85] |
+| Intérprete | Elenco de Soy Luna, Disney & Karol Sevilla (Luna) | FATO DOCUMENTADO ✓ | [85] |
+| Composição | **Karol Sevilla, José Ricardo Cortés Salsedo e Víctor Meza**, segundo os metadados da Apple Music. **Histórico da divergência:** o Shazam [42] tinha a mesma lista de três nomes, e é a que a fonte oficial confirma. O fan-wiki [40] e a página de letra do Letras.com creditavam só Karol (incompleto). A página de significado do Letras.com [44] listava cinco nomes, dois deles (Federico San Millán e José María Lassaga) não confirmados pela Apple. **Resolvido:** Karol é coautora, com os outros dois. | FATO DOCUMENTADO ✓ | [85][42] |
+| Origem | Um perfil de fãs no X diz que a música foi escrita para *Imperfecta* e "presenteada" a Luna. O *tracklist* de *Imperfecta* (✓ 8 faixas) não tem "Mariposas", e na entrevista de out./2026 à Infobae ela não fala da música. **Continua sem confirmação oficial.** | Precisa de validação | [49][31][33] |
+| Vídeos oficiais | • **Momento musical da série:** "Mariposas (De 'Soy Luna: Volver a rodar' \| Disney+ \| Momento Musical / Luna)", canal DisneyMusicLAVEVO: https://www.youtube.com/watch?v=DdBbqWoR5wg<br>• **Lyric video oficial:** canal DisneyMusicLAVEVO: https://www.youtube.com/watch?v=Dou-DcI5oeE<br>• **Áudio:** canal automático "Elenco de Soy Luna - Topic": https://www.youtube.com/watch?v=2KVWI5c4PPw<br>**Correção:** o vídeo NXxYNd9A-SU, citado na versão 1, é de um canal de terceiros ("The Daily Soundtrack") e **não é oficial**. Não usar. | FATO DOCUMENTADO ✓ (oEmbed) | [93][94][45] |
+| Tema | Segundo o Letras.com, em texto editorial do site e não da artista: assumir uma "nova versão" de si, manter a criança interior, levantar depois das quedas, deixar ir o que machuca. | Leitura de terceiros | [44] |
 
-**[INTERPRETAÇÃO NARRATIVA]** A borboleta é uma metáfora clássica de transformação. Na trilha de uma temporada sobre voltar a patinar depois de um trauma, "Mariposas" funciona como um hino de recomeço. Se a coautoria de Karol for confirmada, ganha uma camada extra, porque a artista que falou publicamente sobre ter "se perdido" depois da série escreve, para a mesma personagem, uma canção sobre renascer. Essa conexão é **leitura nossa**. Karol não fez essa associação em nenhuma fonte encontrada.
+**[INTERPRETAÇÃO NARRATIVA]** A borboleta é uma metáfora clássica de transformação. Numa temporada sobre voltar a patinar depois de um trauma, "Mariposas" soa como um hino de recomeço. Agora que a coautoria de Karol está confirmada, a canção ganha outra camada: a artista que contou ter "se perdido" depois da série coescreve, para a mesma personagem, uma canção sobre renascer. Essa ligação é **leitura nossa**. Karol não fez essa associação em nenhuma fonte lida.
 
 ### "Más linda"
 
 | Item | Informação | Classificação | Fonte |
 |---|---|---|---|
-| Lançamento | 08/07/2026, faixa 3 da trilha (depois de "Jet" e antes de "Pasión") | FATO DOCUMENTADO | [41][39][43] |
-| Intérprete | Karol Sevilla (como Luna) | FATO DOCUMENTADO | [41][43] |
-| Composição/produção | **Não encontrada** nas fontes consultadas | Precisa de validação | — |
-| Vídeo | Há dois vídeos no YouTube intitulados "Más linda (De 'Soy Luna: Volver a rodar')". Um resumo de busca menciona um clipe do Disney+ em que Luna canta a música num casamento. Não confirmamos qual dos vídeos é o oficial nem a cena exata. | FATO DOCUMENTADO (existência dos vídeos) / contexto a validar | [46][47] |
-| Tema | Não encontramos descrição do tema feita pela artista ou pela imprensa. Pelo título, parece ser uma canção de afeto ou autoestima, mas **isso é suposição, não verificamos**. | Precisa de validação | — |
-
-**[INTERPRETAÇÃO NARRATIVA]** Por enquanto, o site deve apresentar "Más linda" de forma factual (trilha, ano, intérprete, faixa) e evitar atribuir uma mensagem a ela até que haja uma fonte.
+| Lançamento | 08/07/2026, faixa 3 da trilha, cerca de 2:40 | FATO DOCUMENTADO ✓ | [85] |
+| Intérprete | Elenco de Soy Luna, Disney & Karol Sevilla (Luna) | FATO DOCUMENTADO ✓ | [85] |
+| Composição | **Karol Sevilla, Christian Alexander Schmidt Guzmán, Andier, Claudia Quinteros e Rafael Rojas Wuilfran**, segundo os metadados da Apple Music. **Resolvido** (na versão 1 estava "não encontrado"). Karol também é coautora desta faixa. | FATO DOCUMENTADO ✓ | [85] |
+| Produção | Não encontrada nos metadados lidos. | Precisa de validação | — |
+| Vídeos oficiais | • **Momento musical da série:** "Más linda (De 'Soy Luna: Volver a rodar' \| Disney+ \| Luna canta en la boda)", canal DisneyMusicLAVEVO: https://www.youtube.com/watch?v=tzAXoT9LTU8<br>• **Lyric video oficial:** canal DisneyMusicLAVEVO: https://www.youtube.com/watch?v=vJ1FhZPRC5Q | FATO DOCUMENTADO ✓ (oEmbed) | [46][47] |
+| Contexto na série | Pelo título oficial do vídeo, Luna canta a música **num casamento** na série. | FATO DOCUMENTADO ✓ | [46] |
+| Tema | Não encontramos descrição feita pela artista ou pela imprensa. **Não atribuir mensagem.** | Precisa de validação | — |
 
 ### Importância das duas faixas [INTERPRETAÇÃO NARRATIVA]
 
-As duas canções marcam o reencontro de Karol com Luna dez anos depois da estreia da série. Para os fãs que cresceram com *Soy Luna*, elas são a ponte entre a menina de 2016 e a artista adulta de 2026, que no mesmo ano lançou seu primeiro álbum autoral.
+As duas marcam o reencontro de Karol com Luna dez anos depois da estreia, agora também como **compositora**: ela assina as duas, segundo os créditos oficiais. Para quem cresceu com *Soy Luna*, são a ponte entre a menina de 2016 e a artista adulta de 2026, que no mesmo ano lançou seu primeiro álbum.
 
-### Links oficiais encontrados
+### Links oficiais
 
-- "Mariposas" (áudio oficial, "Provided to YouTube by Universal Music Group"): https://www.youtube.com/watch?v=2KVWI5c4PPw [45]
-- "Mariposas" (*lyric video*, oficialidade não confirmada): https://www.youtube.com/watch?v=NXxYNd9A-SU [48]
-- "Mariposas" no Shazam: https://www.shazam.com/song/6781474378/mariposas [42]
-- "Más linda (De 'Soy Luna: Volver a rodar')": https://www.youtube.com/watch?v=tzAXoT9LTU8 e https://www.youtube.com/watch?v=vJ1FhZPRC5Q (conferir qual é o canal oficial) [46][47]
-- "Más linda" no Shazam: https://www.shazam.com/song/6781474355/m%C3%A1s-linda [43]
-- Uma faixa da trilha na Apple Music: https://music.apple.com/song/6781474426 [84]. Não confirmamos a qual faixa corresponde. **Não encontramos o link do álbum completo no Spotify.**
+- Álbum na Apple Music: https://music.apple.com/es/album/soy-luna-volver-a-rodar-banda-sonora-original/6781473556 [85]
+- "Mariposas" na Apple Music: https://music.apple.com/es/song/mariposas/6781474378
+- "Más linda" na Apple Music: https://music.apple.com/es/song/m%C3%A1s-linda/6781474355
+- Vídeos oficiais: veja as tabelas acima (DisneyMusicLAVEVO).
+- A página do álbum no Spotify não foi identificada. Use a página de artista (abaixo).
 
 ---
 
 ## Outras músicas relevantes
 
-| Música | Ano | Detalhes | Classificação | Fonte |
+| Música | Data | Detalhes | Classificação | Fonte |
 |---|---|---|---|---|
-| "Tus besos" | 2021 (jan.) | Primeiro single da fase pop urbana, pela OCESA Seitrack. Composição de Mango e Nabález; clipe em Medellín, direção de Ronny Xavier. | FATO DOCUMENTADO | [13][14] |
-| "Nadie te entiende" | 2021 (jul.) | Single solo. | FATO DOCUMENTADO (fonte biográfica) | [2] |
-| "Dime dime" (com Luis Fonsi) | 2022 (11/03) | Composição de Fonsi e Nabález (este também produtor). Clipe de Paco Álvarez, com Karol no papel de paparazzi. | FATO DOCUMENTADO | [17][18] |
-| "Miedo de sentir" | 2023 (fev.) | Balada sobre amor-próprio, composta por Karol e Rodrigo Dávila (Motel). | FATO DOCUMENTADO | [19][64] |
-| "Anónimo" (com Mario Bautista) | 2024 (fev.) | Dueto. | FATO DOCUMENTADO | [30] |
-| "Cenicienta" | 2024 (jul.) | Lançada no Festival Tecate. A imprensa a descreve como uma mensagem de empoderamento: a protagonista recusa depender financeiramente de um parceiro. **Confirmamos que é dela.** | FATO DOCUMENTADO | [29][73] |
-| "Otro Mood" | 2024 (01/08) | Single, selo TMBC Records na Apple Music. Composição de Oscar Andrés Hernández Cadena e Karol Itzitery Piña Cisneros. **Confirmamos que é dela.** Clipe oficial no YouTube. | FATO DOCUMENTADO | [27][28][63][77] |
-| "Una noche más" | ? | **Não confirmado.** Kiddle lista "Una Noche Más (com Alan Navarro)", e um resumo do Deezer associa a faixa ao perfil de Alan Navarro, sem Karol entre os compositores. Uma busca específica não encontrou fonte jornalística. | Precisa de validação | [72] |
-| *Imperfecta* (álbum) | 2026 (22/05) | Primeiro álbum de estúdio: 8 faixas, cerca de 20 min, selo KIVA Music. Faixas: "Amiga, ¡Date Cuenta!", "Segunda Parte", "2AM", "Ya Te Vi", "Solteras", "Despedida", "Imperfecto", "Hubiera". | FATO DOCUMENTADO | [31][32][78] |
-| "De ti me enamoré" | 2026 | Primeiro single da trilha de *Volver a rodar* (elenco). | FATO DOCUMENTADO | [39] |
-| Trilhas de *Soy Luna* (2016–2018) | 2016–2018 | Karol interpreta Luna nas trilhas originais da série. A lista de faixas não foi levantada nesta pesquisa. | FATO DOCUMENTADO (genérico) | [8][9] |
+| "Mil besos por segundo" | 2019 | Single | FATO DOCUMENTADO ✓ | [86] |
+| "Vuélveme a mirar así" | 2020 | Tema da novela *Soltero con hijas* | FATO DOCUMENTADO ✓ | [86][1] |
+| "Tus besos" | jan. 2021 | Composição de Mango e Nabález. Clipe de Ronny Xavier (36Grados, Medellín). Capa com crédito OCESA Seitrak. | FATO DOCUMENTADO ✓ | [13] |
+| "Nadie te entiende" | jul. 2021 | Single | FATO DOCUMENTADO ✓ | [86][96] |
+| "Dime dime" (com Luis Fonsi) | 11/03/2022 | Composição de Fonsi e Nabález. Clipe de Paco Álvarez. | FATO DOCUMENTADO | [17][18] |
+| "Miedo de sentir" | 10/02/2023 | Balada sobre amor-próprio, composta por Karol e Rodrigo Dávila | FATO DOCUMENTADO (data ✓ [96]) | [19][96] |
+| "Anónimo" (Mario Bautista & Karol Sevilla) | 15/12/2023 | ℗ Warner Music México. Composição de 8 autores, entre eles Karol. **Corrigido** (antes: fev./2024). | FATO DOCUMENTADO ✓ | [89] |
+| "Cenicienta" | 16/07/2024 | ℗ TMBC Records. Composição de Aitor Humberto García López, José Luis Roma, Andrés "Chano" Guardado e Karol Itzitery Piña Cisneros. Mensagem de independência e empoderamento, segundo a imprensa. **É dela.** | FATO DOCUMENTADO ✓ | [90][29][96] |
+| "Otro Mood" | 01/08/2024 | ℗ TMBC Records. Composição de Oscar Andrés Hernández Cadena e Karol Itzitery Piña Cisneros. **É dela.** | FATO DOCUMENTADO ✓ | [27][28] |
+| "Weekend" (Timmy Trumpet, Karol Sevilla & FAULHABER, feat. ZΩRBA) | 09/08/2024 | ℗ Smash The House. Karol está entre os compositores. Primeira faixa eletrônica dela, segundo a Wikipedia. | FATO DOCUMENTADO ✓ | [88][1] |
+| "Una noche más" (Alan Navarro & Karol Sevilla) | 05/12/2024 | ℗ Universal Music Group México. Composição de Valentina Fernández, Emiliano Fernández, Galdino Meraz Mujica e Juan Pablo Castillo Contreras. **É uma parceria dela com Alan Navarro**, confirmada na Apple Music. | FATO DOCUMENTADO ✓ | [87] |
+| *Imperfecta* (álbum) | 22/05/2026 | ℗ 2026 KIVA Music. Faixas: "Amiga, ¡Date Cuenta!", "Segunda Parte", "2AM", "Ya Te Vi", "Solteras", "Despedida", "Imperfecto", "Hubiera". | FATO DOCUMENTADO ✓ | [31] |
+| "De ti me enamoré" | 2026 | Single principal da trilha de *Volver a rodar* | FATO DOCUMENTADO ✓ | [85][39] |
+| Trilhas de *Soy Luna* | 2016–2018 | *Soy Luna* (26/02/2016), *Música en ti* (26/08/2016), *La vida es un sueño* (03/03/2017), *Modo amar* (06/04/2018), todas pela Walt Disney Records | FATO DOCUMENTADO (✓ Wikipedia) | [1] |
 
-Links:
-- "Otro Mood" (clipe oficial): https://www.youtube.com/watch?v=DSOi6436aCQ. Outro upload: https://www.youtube.com/watch?v=4yR7GVSqvxs [63]
-- "Otro Mood" no Spotify: https://open.spotify.com/intl-es/track/3sBi1AWJPDLGGugGfhRR1v. Single: https://open.spotify.com/intl-es/album/02kufg8vQsGs63dvpyKYcX [77]
-- "Otro Mood" na Apple Music: https://music.apple.com/mx/album/otro-mood-single/1759632240 [27]
-- "Miedo de sentir" (clipe oficial): https://www.youtube.com/watch?v=tEJg-fMGk8s [64]
-- *Imperfecta* na Apple Music: https://music.apple.com/es/album/imperfecta/1895675218 [31]
-- "Imperfecto" no Spotify: https://open.spotify.com/track/0m05zUbXfkkyn984Mg82LZ [78]
+**Clipes oficiais no canal da artista** (✓ título e canal conferidos via oEmbed ou página do canal):
+- "Tus Besos": https://www.youtube.com/watch?v=eRAWRO_-r4c
+- "Dime Dime": https://www.youtube.com/watch?v=VSoIDgLAOGU
+- "Miedo de Sentir": https://www.youtube.com/watch?v=tEJg-fMGk8s
+- "Cenicienta": https://www.youtube.com/watch?v=s7nbxbbAsvQ
+- "Otro Mood": https://www.youtube.com/watch?v=DSOi6436aCQ. O vídeo 4yR7GVSqvxs, citado na versão 1, não respondeu ao oEmbed; não usar.
+
+Streaming:
+- "Otro Mood" no Spotify: https://open.spotify.com/intl-es/track/3sBi1AWJPDLGGugGfhRR1v
+- *Imperfecta* na Apple Music: https://music.apple.com/es/album/imperfecta/1895675218
+- Link oficial de pré-save/streaming de *Imperfecta* (bio do TikTok oficial): https://kivamusic.lnk.to/Imperfecta
 
 ---
 
@@ -224,105 +250,142 @@ Links:
 **Subtítulos de seção**
 - Origem → "Onde tudo começou: Cidade do México, anos 2000."
 - Soy Luna → "2016–2018: a série que levou Karol a palcos da América Latina e da Europa."
-- Carreira solo → "Depois da Disney: pop urbano, baladas e um álbum autoral."
+- Carreira solo → "Depois da Disney: pop urbano, baladas, eletrônica e um álbum autoral."
 - Identidade → "Crescer diante das câmeras, nas palavras dela."
-- Músicas → "Mariposas e Más linda: as canções da volta de Luna (2026)."
+- Músicas → "Mariposas e Más linda: as canções da volta de Luna (2026), coescritas por Karol."
 - Fãs → "Uma geração que cresceu patinando junto."
 
 **Legendas de cartões**
 - "2008 · Estreia em novelas com *Querida enemiga*."
 - "2016 · Protagonista de *Soy Luna* (Disney Channel)."
-- "2018 · *Soy Luna Live*: 49 shows na Europa."
+- "2018 · *Soy Luna Live*: turnê pela Europa."
 - "2021 · 'Tus besos' inaugura a fase solo."
 - "2022 · *Siempre fui yo*, no Disney+."
 - "2024 · Estreia no cinema com *Casi el paraíso*."
 - "2026 · *Imperfecta*, primeiro álbum de estúdio."
 - "2026 · *Soy Luna: Volver a rodar* no Disney+."
-- "Mariposas · Trilha de *Volver a rodar*, 2026."
-- "Más linda · Trilha de *Volver a rodar*, 2026."
+- "Mariposas · Trilha de *Volver a rodar*, 2026 · coautoria de Karol."
+- "Más linda · Trilha de *Volver a rodar*, 2026 · coautoria de Karol."
 
-**Aviso de rodapé (sugestão)**
+**Rodapé**
 - "Site de fã, sem vínculo oficial com Karol Sevilla, Disney ou gravadoras."
+- Créditos de imagem: ver a seção de imagens.
 
 ---
 
 ## Links oficiais
 
+> Fonte principal: a seção de links da página "About" do **canal oficial no YouTube** [91]. Esses links foram cadastrados pela própria artista. ✓ verificado em 2026-10-16.
+
 | Plataforma | URL | Status |
 |---|---|---|
-| YouTube | https://www.youtube.com/@KarolSevillaOF | Canal da artista, segundo os resultados de busca [62]. Conferir o selo de verificação. |
-| Instagram | https://www.instagram.com/karolsevillaofc/ | Handle **@karolsevillaofc**, segundo agregadores (Heepsy), com cerca de 17 milhões de seguidores em set./2026 [65]. Conferir na plataforma. |
-| TikTok | ? | Handle **não confirmado**. A Heepsy usa a URL @karolsevillaokay, mas o perfil exibido aparece como karolsevillaofc [65]. A Bloomberg Línea citou mais de 23,5 milhões de seguidores em 2021 [66]. **Precisa de validação.** |
-| X (Twitter) | ? | Ela usa a plataforma, segundo a UnoTV, mas o handle **não apareceu** nos resultados. **Precisa de validação.** |
-| Facebook | ? | Não encontrado. **Precisa de validação.** |
-| Site oficial | ? | Nenhum site oficial encontrado. |
-| Spotify (artista) | ? | Página de artista não retornada pela busca. Só links de faixa ou single (ver acima). |
-| Apple Music (artista) | — | Encontramos só páginas de álbum e faixa [27][31]. |
-| Deezer (artista) | https://www.deezer.com/artist/9871180 | Retornado pela busca [28]. |
-| Amazon Music (artista) | https://music.amazon.com/artists/B01BOHNLF8/karol-sevilla | Retornado pela busca [78]. |
+| YouTube | https://www.youtube.com/@KarolSevillaOF | ✓ Canal oficial (ID UCt3-Ge4aevIeHYTIOUdpvJQ), cerca de 8,51 milhões de inscritos em 16/10/2026. Publica os clipes oficiais. [91] |
+| Instagram | https://instagram.com/karolsevillaofc/ | ✓ Listado no canal oficial [91] e na Wikipedia em inglês [1]. A página não abriu (HTTP 429). |
+| TikTok | https://www.tiktok.com/@karolsevillaokay | ✓ Listado no canal oficial [91]. Perfil com selo **verificado**, cerca de 28,7 milhões de seguidores e apelido "karolsevillaofc"; a bio traz e-mail de contato e o link de *Imperfecta* [92]. **Resolvido:** o handle é @karolsevillaokay. O perfil @karolsevillaofc no TikTok é de outra pessoa (315 seguidores). |
+| X (Twitter) | https://twitter.com/karolsevilla (x.com/karolsevilla) | ✓ Listado no canal oficial [91]. O conteúdo exige login e não foi lido. |
+| Facebook | https://www.facebook.com/karolsevillaoficial/ | ✓ Listado no canal oficial [91]. O conteúdo exige login e não foi lido. |
+| Spotify (artista) | https://open.spotify.com/artist/6aBoKzSTjuIi0sY69XHLk3 | ✓ Listado no canal oficial [91]. O embed retorna o nome "Karol Sevilla" [99]. |
+| Apple Music (artista) | https://music.apple.com/es/artist/karol-sevilla/1098278064 | ✓ [86] |
+| Deezer (artista) | https://www.deezer.com/artist/9871180 | Só retornado pela busca [28]. |
+| Site oficial | https://www.karolsevilla.mx/ | A Wikipedia em espanhol o cita, mas em 16/10/2026 a página **mostra só o aviso padrão de hospedagem**, sem conteúdo [100]. **Não usar como link oficial.** |
 
 ---
 
 ## Imagens com licença aberta
 
-> **Atenção:** não conseguimos abrir as páginas do Commons. Autor, licença e proporção abaixo vêm dos trechos de busca e **precisam ser conferidos na página de cada arquivo** antes do uso. Arquivos derivados do YouTube costumam usar CC BY 3.0, que exige atribuição.
+> Dados lidos na API do Wikimedia Commons (`imageinfo` + `extmetadata`) e no wikitext de cada arquivo em 2026-10-16. ✓
+> As URLs abaixo são diretas (upload.wikimedia.org). Quando o original tem menos de 960 px de largura, a URL aponta para o original. Nos arquivos maiores, usamos a miniatura de 960 px que a própria API devolveu: o pedido foi de 800 px, mas a Wikimedia passou a servir tamanhos padronizados.
+> Arquivos tirados do YouTube com "YouTubeReview" ainda pendente estão marcados ⚠: a licença foi declarada por quem enviou o arquivo, mas ainda não foi confirmada por um revisor do Commons.
 
-| Arquivo | Autor (segundo os trechos) | Licença | Descrição | Proporção |
-|---|---|---|---|---|
-| Categoria geral: https://commons.wikimedia.org/wiki/Category:Karol_Sevilla | — | Varia por arquivo | Categoria com vários arquivos | — |
-| https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_3.jpg | Indicado como "Karol Sevilla", provavelmente o canal de YouTube de origem | **CC BY 3.0** segundo os dados estruturados do arquivo irmão (_4); a confirmar | Imagem de uma sessão/vídeo para a marca Sedal, 2021 | Não verificada |
-| https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg | Idem | **CC BY 3.0** (dados estruturados). Revisão de licença do vídeo de origem confirmada em maio/2023, segundo a página espelhada no Vikidia [71] | Idem, 2021. Provavelmente é a foto do infobox da Wikipedia ("Sevilla in 2021") | Não verificada |
-| https://commons.wikimedia.org/wiki/File:Karol_Sevilla_(2016).png | Captura de um vídeo do YouTube de 2016 (canal não identificado) | **Não confirmada** | Captura de vídeo de 2016, usada em várias edições da Wikipedia | Não verificada |
+### Recomendadas (licença confirmada)
 
-Recomendação: usar de preferência os arquivos "Sedal 2021", com crédito no formato *"Karol Sevilla Sedal 2021 4.jpg", via Wikimedia Commons, CC BY 3.0*, ajustado ao campo "Author" da página. Imagens da Disney, de clipes ou de redes sociais **não** têm licença aberta.
+| # | Fase | Arquivo (página) | URL direta | Autor | Licença | Dimensões (original) | Atribuição pronta |
+|---|---|---|---|---|---|---|---|
+| A | Soy Luna, 2017 (show de 18 anos) | [Karol_Sevilla_en_concierto_2017.png](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_en_concierto_2017.png) | https://upload.wikimedia.org/wikipedia/commons/4/46/Karol_Sevilla_en_concierto_2017.png | Melina (canal no YouTube) | CC BY 3.0. YouTubeReview ✓ (Victuallers, 13/07/2020) | 646 × 900 (vertical) | "Karol Sevilla em show, 2017" — foto: Melina, via Wikimedia Commons, CC BY 3.0 |
+| B | Carreira solo, 2021 | [Karol_Sevilla_Sedal_2021_4.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg) | https://upload.wikimedia.org/wikipedia/commons/a/aa/Karol_Sevilla_Sedal_2021_4.jpg | Karol Sevilla (canal oficial no YouTube, UCt3-Ge4aevIeHYTIOUdpvJQ) | CC BY 3.0. YouTubeReview ✓ (Yann, 24/05/2023) | 676 × 794 (vertical). É a foto do infobox das Wikipedias. | "Karol Sevilla, 2021" — Karol Sevilla (YouTube), via Wikimedia Commons, CC BY 3.0 |
+| C | Carreira solo, 2021 | [Karol_Sevilla_Sedal_2021_3.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_3.jpg) | https://upload.wikimedia.org/wikipedia/commons/5/56/Karol_Sevilla_Sedal_2021_3.jpg | Karol Sevilla (canal oficial no YouTube) | CC BY 3.0 (mesmo vídeo de origem de B) | 697 × 844 (vertical) | "Karol Sevilla, 2021" — Karol Sevilla (YouTube), via Wikimedia Commons, CC BY 3.0 |
+| D | Cinema, 2024 | [Karol_Sevilla_at_the_premiere_of_Casi_el_Paraíso.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_at_the_premiere_of_Casi_el_Para%C3%ADso.jpg) | https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Karol_Sevilla_at_the_premiere_of_Casi_el_Para%C3%ADso.jpg/960px-Karol_Sevilla_at_the_premiere_of_Casi_el_Para%C3%ADso.jpg | Ivan Joatzay (obra própria) | **CC BY-SA 4.0** (exige compartilhar pela mesma licença qualquer versão alterada da imagem) | 1526 × 2289 (2:3, vertical) | "Karol Sevilla na pré-estreia de *Casi el paraíso*, 2024" — foto: Ivan Joatzay, via Wikimedia Commons, CC BY-SA 4.0 |
+| E | Cinema, 2024 | [Karol_Sevilla_poses_at_de_premiere_of_Casi_el_Paraíso.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_poses_at_de_premiere_of_Casi_el_Para%C3%ADso.jpg) | https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Karol_Sevilla_poses_at_de_premiere_of_Casi_el_Para%C3%ADso.jpg/960px-Karol_Sevilla_poses_at_de_premiere_of_Casi_el_Para%C3%ADso.jpg | Ivan Joatzay (obra própria) | CC BY-SA 4.0 | 1600 × 2400 (2:3, vertical) | "Karol Sevilla na pré-estreia de *Casi el paraíso*, 2024" — foto: Ivan Joatzay, via Wikimedia Commons, CC BY-SA 4.0 |
+
+### Utilizáveis com ressalva (⚠ licença declarada, revisão pendente ou não registrada)
+
+| Fase | Arquivo | URL direta | Autor | Licença | Dimensões | Observação |
+|---|---|---|---|---|---|---|
+| Soy Luna, 2016 | [Karol_Sevilla_(2016).png](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_(2016).png) | https://upload.wikimedia.org/wikipedia/commons/f/f7/Karol_Sevilla_%282016%29.png | Alis Channel (YouTube) | CC BY 3.0 | 609 × 645 | Captura de vídeo, baixa resolução |
+| Soy Luna, 2017 (Argentina Comic Con) | [Karol_Sevilla_Argentina_Comic_Con_2017_2.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Argentina_Comic_Con_2017_2.jpg) | https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Karol_Sevilla_Argentina_Comic_Con_2017_2.jpg/960px-Karol_Sevilla_Argentina_Comic_Con_2017_2.jpg | Flor Castillo (YouTube) | CC BY 3.0 (sem YouTubeReview no wikitext) | 1600 × 900 (16:9) | Boa para banner horizontal. Há também as versões "…2017.jpg" (1600 × 827), "…_3" (675 × 484) e "…_4" (951 × 630), do mesmo autor e com a mesma licença. |
+| Soy Luna, 2017 (show) | [Karol_Sevilla_en_concierto_02.png](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_en_concierto_02.png) | https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Karol_Sevilla_en_concierto_02.png/960px-Karol_Sevilla_en_concierto_02.png | Melina (YouTube) | CC BY 3.0 | 1600 × 900 (16:9) | Mesmo vídeo de A. Também existem "…en_concierto_03.png" (1600 × 900) e "…en_concierto.png" (644 × 900). |
+| *Siempre fui yo*, 2022 | [Karol_Sevilla_-_Siempre_fui_yo_Q&A.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_-_Siempre_fui_yo_Q%26A.jpg) | https://upload.wikimedia.org/wikipedia/commons/4/44/Karol_Sevilla_-_Siempre_fui_yo_Q%26A.jpg | Grace Alvarez (YouTube) | CC BY 3.0 ⚠ YouTubeReview pendente | 584 × 675 | Há também "…Q&A_02" (493 × 637) e três com Pipe Bueno (cerca de 1260 × 700). |
+| *Volver a rodar*, 2026 | [Karol_Sevilla_en_2026.png](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_en_2026.png) | https://upload.wikimedia.org/wikipedia/commons/a/a3/Karol_Sevilla_en_2026.png | Tele Urban (YouTube) | CC BY 4.0 ⚠ YouTubeReview pendente | 570 × 914 | Há também "…en_2026_02.png" (545 × 562). |
+| Carreira solo, 2021 | [Karol_Sevilla_Sedal_2021.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021.jpg) / [Karol_Sevilla_Sedal_2021_2.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_2.jpg) / [Karol_Sevilla_en_2021.jpg](https://commons.wikimedia.org/wiki/File:Karol_Sevilla_en_2021.jpg) | https://upload.wikimedia.org/wikipedia/commons/b/b9/Karol_Sevilla_Sedal_2021.jpg · https://upload.wikimedia.org/wikipedia/commons/e/ef/Karol_Sevilla_Sedal_2021_2.jpg · https://upload.wikimedia.org/wikipedia/commons/2/2c/Karol_Sevilla_en_2021.jpg | Karol Sevilla (YouTube) | CC BY 3.0 | 646 × 741 / 593 × 733 / 563 × 770 | Mesma origem de B e C |
+
+### Não recomendadas
+
+- **Karol_sevilla_2026.jpg**: declarada como CC0, com autoria "Karol Sevilla" e origem em stories do Instagram. A licença declarada é **improvável**, porque nada indica que a artista tenha liberado a imagem. **Não usar.**
+- **Karol_Sevilla_firma.png**: assinatura, enviada por "Karolsevillaokey" como obra própria (CC BY-SA 4.0). É um dado pessoal e não ajuda no site. **Não usar.**
+
+Observações:
+- As URLs com `/thumb/…/960px-…` foram devolvidas pela própria API.
+- Num teste de acesso, algumas URLs responderam HTTP 429 (limite de requisições da Wikimedia) e outras 200 (image/jpeg). O formato das URLs está correto. No site, é melhor **hospedar uma cópia local** das imagens, mantendo os créditos.
+- Licenças CC BY e CC BY-SA exigem crédito visível, com autor, licença e link. Na CC BY-SA, qualquer versão alterada (recorte com filtro, por exemplo) precisa sair sob a mesma licença.
 
 ---
 
 ## Precisa de validação
 
-1. Data exata de nascimento: 8 ou 9 de novembro de 1999 [1][2].
-2. Anos e número de episódios em *Como dice el dicho* e *La rosa de Guadalupe* [1][72].
-3. Participação como figurante em *Plaza Sésamo* (só relato dela e um wiki de fãs) [4][72].
-4. Data de início da turnê *Soy Luna en Concierto* 2017: 18/04 em Lima ou início na Argentina [10][11].
-5. Single "Sonreír y amar" (2016), citado só em biografia secundária [12].
-6. "Weekend", com Timmy Trumpet (ago./2024), citado só em biografia secundária. Uma busca específica não encontrou confirmação.
-7. "Una noche más", com Alan Navarro: não confirmamos a participação de Karol, o ano nem o selo [72].
-8. Créditos completos de composição e produção de "Mariposas" (divergência entre Shazam e Letras.com) [42][44].
-9. Que "Mariposas" tenha sido escrita para *Imperfecta* (só um perfil de fãs) [49].
-10. Compositores, produção, clipe oficial e tema de "Más linda".
-11. Selo da trilha *Volver a rodar*: Walt Disney Records ou distribuição pela UMG [40][45].
-12. Handles oficiais de TikTok, X e Facebook, e a página de artista no Spotify.
-13. Licença, autor e proporção dos arquivos do Commons.
-14. Nome do álbum anunciado em 2024 com "12 canções" [24], que não coincide com as 8 faixas de *Imperfecta* (2026). Pode ser outro projeto.
-15. **La Casa de los Famosos:** não há evidência de que Karol tenha participado do reality. O nome dela aparece na imprensa só por causa do ex-namorado Emilio Osorio, participante do programa [79]. **Não citar como participação.**
-16. "Quiero volver" e "Juego de mentiras": **nenhuma fonte encontrada** ligando Karol a esses títulos. Não incluir. As séries confirmadas depois de *Soy Luna* são *Siempre fui yo* (2022) e *Soy Luna: Volver a rodar* (2026). No cinema, *Casi el paraíso* (2024). No teatro, *Mentiras, el musical* (2026).
-17. Gravadoras: OCESA Seitrack (2020–2021) [12][13], TMBC Records ("Otro Mood", 2024) [27] e KIVA Music (*Imperfecta*, 2026) [31]. Não encontramos contrato com Universal, Sony ou Warner.
-18. Relação com os fãs: as fontes encontradas são poucas e em parte ligadas a polêmicas (Ángela Aguilar, 2025–2026) [82]. Para o site, recomenda-se só o fato neutro de que ela agradeceu publicamente aos fãs pelo apoio e diz conversar muito com eles [57][82], sem entrar na polêmica.
+> Itens resolvidos nesta rodada estão marcados ✅. Os demais continuam pendentes. O histórico foi mantido.
+
+1. ✅ **Data de nascimento:** 9/11/1999 adotado (infobox das duas Wikipedias e texto da versão em espanhol). O 8/11 é um erro interno do artigo em inglês. Ainda não há documento primário, como uma postagem da artista.
+2. *Como dice el dicho* e *La rosa de Guadalupe*: a Wikipedia em inglês informa 2 episódios em *Como dice el dicho* (2012–2014) e 11 em *La rosa de Guadalupe* (2008–2015), mas a seção não tem referências. **Pendente.**
+3. ✅ *Plaza Sésamo*: relato da própria artista, conferido na UnoTV [4] e no *Los Andes* [5]. A Wikipedia registra o ano de 2006. Seguir apresentando como relato dela.
+4. Data de início da turnê *Soy Luna en Concierto* 2017 (Lima, 18/04, ou Argentina). **Pendente.**
+5. "Sonreír y amar" (2016): citado na Wikipedia em inglês (seção de música, sem referência). **Parcial.**
+6. ✅ "Weekend": confirmado na Apple Music (09/08/2024, Smash The House) [88].
+7. ✅ "Una noche más": confirmado como parceria de Alan Navarro e Karol Sevilla (05/12/2024, UMG México) [87].
+8. ✅ Créditos de "Mariposas": Karol Sevilla, José Ricardo Cortés Salsedo e Víctor Meza [85].
+9. Que "Mariposas" tenha sido escrita para *Imperfecta*: só um perfil de fãs [49]. **Pendente.**
+10. ✅ Compositores de "Más linda": Karol Sevilla, Christian Alexander Schmidt Guzmán, Andier, Claudia Quinteros e Rafael Rojas Wuilfran [85]. ✅ Clipe oficial (cena do casamento) e lyric video [46][47]. **Ainda pendentes:** produtor e o tema descrito por alguma fonte.
+11. ✅ Selo da trilha *Volver a rodar*: Walt Disney Records [85].
+12. ✅ Contas oficiais: TikTok @karolsevillaokay, X @karolsevilla, Facebook /karolsevillaoficial, Spotify 6aBoKzSTjuIi0sY69XHLk3 [91][92].
+13. ✅ Licenças e dimensões das imagens do Commons. **Ainda pendente:** a revisão de licença ⚠ de alguns arquivos.
+14. O álbum anunciado em 2024 com "12 canções" [24] não bate com as 8 faixas de *Imperfecta* (2026). Não confirmamos se é o mesmo projeto reformulado. **Pendente.**
+15. **La Casa de los Famosos:** não há evidência de que Karol tenha participado. Ela aparece nas notícias só por causa de Emilio Osorio [79]. **Não citar.**
+16. **"Quiero volver" e "Juego de mentiras":** nenhuma fonte liga esses títulos a ela. **Não incluir.**
+17. Gravadoras e selos:
+    - Walt Disney Records: trilhas de 2016–2018 e de 2026.
+    - OCESA Seitrack: 2020–2023. Pela Wikipedia em espanhol, era um acordo de *management* e *booking*; a capa de "Tus besos" credita "OCESA Seitrak".
+    - TMBC Records: 2024.
+    - KIVA Music: 2026.
+    - Colaborações: Warner Music México em "Anónimo", UMG México em "Una noche más" e Smash The House em "Weekend".
+    - A Wikipedia em espanhol também cita "Universal Music Group" e "Warner Music Group" como gravadoras. Isso provavelmente se refere a essas colaborações. **Não afirmar que ela tem contrato próprio com esses grupos.**
+18. Kids' Choice Awards Argentina 2018: fonte única [11]. **Pendente.**
+19. Data exata de estreia de *Soy Luna* (14/03/2016): não foi relida, porque [8] deu HTTP 429. Vem de resumos de busca e é consistente entre eles. **Baixo risco.**
+20. Entrevistas de 2022 sobre depressão e corpo [52]–[55]: lidas só pelo resumo da busca. O relato equivalente de 2026 foi verificado na íntegra [33].
 
 ---
 
 ## Fontes
 
-Data de acesso de todas: **2026-10-16**. Lidas via resultados de busca. ★ = abrir e conferir antes de publicar.
+Data de acesso: **2026-10-16**.
+✓ = lida na íntegra na rodada 2. ✗ = tentativa de leitura falhou (código entre parênteses). Sem marca = lida só pelo resumo do buscador.
 
-1. ★ Karol Sevilla — Wikipedia (en) — https://en.wikipedia.org/wiki/Karol_Sevilla
+1. ✓ Karol Sevilla — Wikipedia (en), wikitext — https://en.wikipedia.org/wiki/Karol_Sevilla
 2. Biografía de Karol Sevilla — Buscabiografías — https://www.buscabiografias.com/biografia/verDetalle/10528
 3. Karol Sevilla — EcuRed — https://www.ecured.cu/Karol_Sevilla
-4. ★ De Iztacalco a la fama internacional con Disney: Karol Sevilla recuerda el inicio de su carrera — UnoTV — https://www.unotv.com/entretenimiento/karol-sevilla-recuerda-el-inicio-de-su-carrera-y-su-exito-con-disney/
-5. ★ Chica lunar: el boom de Disney (08/08/2018) — Los Andes — https://www.losandes.com.ar/chica-lunar-el-boom-de-disney
+4. ✓ De Iztacalco a la fama internacional con Disney: Karol Sevilla recuerda el inicio de su carrera (22/03/2022) — UnoTV — https://www.unotv.com/entretenimiento/karol-sevilla-recuerda-el-inicio-de-su-carrera-y-su-exito-con-disney/
+5. ✓ Soy Luna en Mendoza: el boom de Disney pondrá a bailar a todos en el Parque (08/08/2018; URL com slug "chica-lunar-el-boom-de-disney") — Los Andes — https://www.losandes.com.ar/chica-lunar-el-boom-de-disney
 6. ¿Qué proyecto abandonó Karol Sevilla para protagonizar Soy Luna? (27/03/2022) — Publimetro México — https://www.publimetro.com.mx/entretenimiento/2022/03/27/que-proyecto-abandono-karol-sevilla-para-protagonizar-soy-luna/
 7. Why Karol Sevilla almost ran out of starring in Soy Luna (21/03/2022) — Infobae — https://www.infobae.com/en/2022/03/21/why-karol-sevilla-almost-ran-out-of-starring-in-soy-luna/
-8. ★ Soy Luna — Wikipedia (en) — https://en.wikipedia.org/wiki/Soy_Luna
+8. ✗ (HTTP 429) Soy Luna — Wikipedia (en) — https://en.wikipedia.org/wiki/Soy_Luna
 9. Soy Luna Live — Wikipedia (en) — https://en.wikipedia.org/wiki/Soy_Luna_Live
-10. Karol Sevilla: "Estoy muy ansiosa de recorrer Latinoamérica" — América TV (Peru) — https://www.americatv.com.pe/noticias/espectaculos/karol-sevilla-estoy-muy-ansiosa-recorrer-latinoamerica-n268557
+10. Karol Sevilla: "Estoy muy ansiosa de recorrer Latinoamérica" — América TV — https://www.americatv.com.pe/noticias/espectaculos/karol-sevilla-estoy-muy-ansiosa-recorrer-latinoamerica-n268557
 11. Karol Sevilla, la estrella de "Soy Luna", en Rosario — La Capital — https://www.lacapital.com.ar/zoom/karol-sevilla-la-estrella-soy-luna-rosario-n1723913.html
 12. Karol Sevilla, de ser una chica Disney a crecer en el ambiente de la música — Minuto Uno — https://www.minutouno.com/espectaculos/disney/karol-sevilla-ser-una-chica-crecer-el-ambiente-la-musica-n5244869
-13. ★ Karol Sevilla comienza el año con un toque urbano (19/01/2021, AP) — La Hora — https://lahora.gt/secciones-para-ti/cultura/wpcomvip/2021/01/19/karol-sevilla-comienza-el-ano-con-un-toque-urbano/
-14. Karol Sevilla lanzó "Tus besos"… nueva etapa artística — Ciudad.com.ar — https://www.ciudad.com.ar/espectaculos/karol-sevilla-lanzo-tus-besos-nuevo-single-arranca-nueva-etapa-artistica_158272
+13. ✓ Karol Sevilla comienza el año con un toque urbano (19/01/2021, AP) — La Hora — https://lahora.gt/secciones-para-ti/cultura/wpcomvip/2021/01/19/karol-sevilla-comienza-el-ano-con-un-toque-urbano/
+14. Karol Sevilla lanzó "Tus besos"… — Ciudad.com.ar — https://www.ciudad.com.ar/espectaculos/karol-sevilla-lanzo-tus-besos-nuevo-single-arranca-nueva-etapa-artistica_158272
 15. Karol Sevilla: "Fue un gran trabajo que la gente entendiera que ya no soy la chica Disney" — VíaPaís — https://viapais.com.ar/argentina/karol-sevilla-fue-un-gran-trabajo-que-la-gente-entendiera-que-ya-no-soy-la-chica-disney/
 16. Karol Sevilla: "Es difícil dejar de ser la chica Disney" — Noticias/Perfil — https://noticias.perfil.com/noticias/personajes/karol-sevilla-es-dificil-dejar-de-ser-la-chica-disney.phtml
 17. Karol Sevilla se convierte en paparazzi para cantar "Dime dime" (16/03/2022) — Publimetro — https://www.publimetro.com.mx/entretenimiento/2022/03/16/karol-sevilla-se-convierte-en-paparazzi-para-cantar-dime-dime/
-18. Karol Sevilla se niega a sexualizar el reguetón… "Dime dime" — Vanguardia — https://vanguardia.com.mx/show/karol-sevilla-se-niega-a-sexualizar-el-reggeaton-y-lo-demuestra-en-dime-dime-una-colaboracion-con-luis-fonsi-FL2085887
+18. Karol Sevilla se niega a sexualizar el reguetón… — Vanguardia — https://vanguardia.com.mx/show/karol-sevilla-se-niega-a-sexualizar-el-reggeaton-y-lo-demuestra-en-dime-dime-una-colaboracion-con-luis-fonsi-FL2085887
 19. Karol Sevilla, sin miedo al bullying (09/02/2023) — El Imparcial — https://www.elimparcial.com/espectaculos/2023/02/09/karol-sevilla-sin-miedo-al-bullying/
 20. Siempre fui yo — Time Out México — https://www.timeoutmexico.mx/ciudad-de-mexico/cine/karol-sevilla-y-pibe-bueno-presentan-siempre-fui-yo
 21. Mira la nueva serie de Karol Sevilla — Radio Disney — https://radiodisney.disneylatino.com/nota/mira-la-nueva-serie-de-karol-sevilla
@@ -330,31 +393,31 @@ Data de acesso de todas: **2026-10-16**. Lidas via resultados de busca. ★ = ab
 23. Karol Sevilla le entra a la política mexicana en la cinta Casi el paraíso — Chilango — https://www.chilango.com/cine-y-tv/karol-sevilla-entra-politica-mexicana-casi-paraiso/
 24. Karol Sevilla aclara si dedicó una canción a Emilio Osorio en su nuevo disco (12/08/2024) — El Imparcial — https://www.elimparcial.com/espectaculos/2024/08/12/karol-sevilla-aclara-si-dedico-una-cancion-a-emilio-osorio-en-su-nuevo-disco/
 25. Karol Sevilla presentó tour Luminova — Crónica — https://www.cronica.com.mx/escenario/karol-sevilla-presento-tour-luminova-actualidad-inicios-luna.html
-26. ¿Qué le pasó a Karol Sevilla? Un fuerte accidente… pospuso su gira — SDP Noticias — https://www.sdpnoticias.com/espectaculos/famosos/que-le-paso-a-karol-sevilla-un-fuerte-accidente-en-las-escaleras-pospuso-su-gira/
+26. ¿Qué le pasó a Karol Sevilla? … pospuso su gira — SDP Noticias — https://www.sdpnoticias.com/espectaculos/famosos/que-le-paso-a-karol-sevilla-un-fuerte-accidente-en-las-escaleras-pospuso-su-gira/
 27. Otro Mood – Single — Apple Music — https://music.apple.com/mx/album/otro-mood-single/1759632240
 28. Karol Sevilla – Otro Mood — Deezer — https://www.deezer.com/en/album/620988431
 29. Karol Sevilla: de Cenicienta a superestrella del pop latino (24/07/2024, coluna de opinião) — Publimetro — https://www.publimetro.com.mx/opinion/2024/07/24/karol-sevilla-de-cenicienta-a-super-estrella-del-pop-latino-por-ricardo-tinajero/
 30. Karol Sevilla y Mario Bautista estrenan canción — Milenio — https://www.milenio.com/espectaculos/famosos/karol-sevilla-y-mario-bautista-estrenan-cancion-confirman-romance
-31. ★ Imperfecta – Álbum de Karol Sevilla — Apple Music — https://music.apple.com/es/album/imperfecta/1895675218
-32. Anexo: Discografía de Karol Sevilla — Wikipedia (es) — https://es.wikipedia.org/wiki/Anexo:Discograf%C3%ADa_de_Karol_Sevilla
-33. ★ Karol Sevilla: "Entré en una depresión gigante y en una etapa de no tener personalidad" (04/10/2026) — Infobae — https://www.infobae.com/reportajes/2026/10/04/karol-sevilla-entre-en-una-depresion-gigante-y-en-una-etapa-de-no-tener-personalidad/
+31. ✓ Imperfecta – Álbum de Karol Sevilla (℗ 2026 KIVA Music; 22/05/2026) — Apple Music — https://music.apple.com/es/album/imperfecta/1895675218
+32. ✗ (erro do servidor) Anexo: Discografía de Karol Sevilla — Wikipedia (es) — https://es.wikipedia.org/wiki/Anexo:Discograf%C3%ADa_de_Karol_Sevilla
+33. ✓ Karol Sevilla: "Entré en una depresión gigante y en una etapa de no tener personalidad" (04/10/2026) — Infobae — https://www.infobae.com/reportajes/2026/10/04/karol-sevilla-entre-en-una-depresion-gigante-y-en-una-etapa-de-no-tener-personalidad/
 34. Karol Sevilla le confesó a Mario Pergolini la crisis que afrontó luego del éxito de Soy Luna (19/08/2026) — Infobae — https://www.infobae.com/teleshow/2026/08/19/karol-sevilla-le-confeso-a-mario-pergolini-la-crisis-que-afronto-luego-del-exito-de-soy-luna-no-era-yo/
-35. ★ Karol Sevilla rompe el silencio sobre el regreso de 'Soy Luna': "Volver a ser Luna fue sanador" — Excélsior — https://www.excelsior.com.mx/espectaculos/karol-sevilla-rompe-silencio-sobre-regreso-soy-luna-volver-ser-luna-fue-sanador
+35. ✓ Karol Sevilla rompe el silencio sobre el regreso de 'Soy Luna': "Volver a ser Luna fue sanador" (24/07/2026) — Excélsior — https://www.excelsior.com.mx/espectaculos/karol-sevilla-rompe-silencio-sobre-regreso-soy-luna-volver-ser-luna-fue-sanador
 36. Karol Sevilla: "El tren regresó y esta vez no pienso bajarme más" — Perfil — https://www.perfil.com/noticias/espectaculos/karol-sevilla-el-tren-regreso-y-esta-vez-no-pienso-bajarme-mas.phtml
 37. Disney+ confirmó la fecha de estreno de "Soy Luna: Volver a Rodar" — Señal News — https://senalnews.com/es/digital/disney-confirmo-la-fecha-de-estreno-de-soy-luna-volver-a-rodar
 38. Regreso de Soy Luna: fecha de estreno, reparto… (22/07/2026) — El Financiero — https://www.elfinanciero.com.mx/entretenimiento/2026/07/22/regreso-de-soy-luna-fecha-de-estreno-reparto-donde-ver-y-lo-que-debes-saber/
 39. Todo lo que tienes que saber de la nueva temporada de Soy Luna (20/07/2026) — Los40 México — https://los40.com.mx/2026/07/20/todo-lo-que-tienes-que-saber-de-la-nueva-temporada-de-soy-luna-antes-de-su-estreno/
-40. Mariposas — Soy Luna Wiki (Fandom) — https://soyluna.fandom.com/wiki/Mariposas
-41. Más linda — Soy Luna Wiki (Fandom) — https://soyluna.fandom.com/wiki/M%C3%A1s_linda
+40. ✗ (HTTP 403) Mariposas — Soy Luna Wiki (Fandom) — https://soyluna.fandom.com/wiki/Mariposas
+41. ✗ (HTTP 403) Más linda — Soy Luna Wiki (Fandom) — https://soyluna.fandom.com/wiki/M%C3%A1s_linda
 42. Mariposas — Shazam — https://www.shazam.com/song/6781474378/mariposas
 43. Más linda — Shazam — https://www.shazam.com/song/6781474355/m%C3%A1s-linda
 44. Significado de la canción Mariposas (Soy Luna) — Letras.com — https://www.letras.com/soy-luna/mariposas/significado.html
-45. Mariposas (áudio, Provided to YouTube by UMG) — YouTube — https://www.youtube.com/watch?v=2KVWI5c4PPw
-46. Más linda (De "Soy Luna: Volver a rodar") — YouTube — https://www.youtube.com/watch?v=tzAXoT9LTU8
-47. Más linda (De "Soy Luna: Volver a rodar") — YouTube — https://www.youtube.com/watch?v=vJ1FhZPRC5Q
-48. Karol Sevilla, Elenco de Soy Luna – Mariposas (lyric video) — YouTube — https://www.youtube.com/watch?v=NXxYNd9A-SU
+45. ✓ Mariposas (áudio) — YouTube, canal "Elenco de Soy Luna - Topic" — https://www.youtube.com/watch?v=2KVWI5c4PPw
+46. ✓ Más linda (De "Soy Luna: Volver a rodar" | Disney+ | Luna canta en la boda) — YouTube, DisneyMusicLAVEVO — https://www.youtube.com/watch?v=tzAXoT9LTU8
+47. ✓ Más linda (De "Soy Luna: Volver a rodar" | Disney+ | Lyric Video) — YouTube, DisneyMusicLAVEVO — https://www.youtube.com/watch?v=vJ1FhZPRC5Q
+48. ✓ (canal de terceiros, NÃO oficial) Karol Sevilla, Elenco de Soy Luna – Mariposas (Lyrics) — YouTube, The Daily Soundtrack — https://www.youtube.com/watch?v=NXxYNd9A-SU
 49. Post sobre "Mariposas" — Karol Sevilla Brasil (fã-clube) no X — https://x.com/sevillakbrasil/status/2074986030982218188
-50. Volver a rodar (soundtrack) / Soy Luna Tour – El Último Show — Soy Luna Wiki — https://soyluna.fandom.com/wiki/Volver_a_rodar_(soundtrack) ; https://soyluna.fandom.com/wiki/Soy_Luna_Tour_-_El_%C3%9Altimo_Show
+50. ✗ (HTTP 403) Volver a rodar (soundtrack) / Soy Luna Tour – El Último Show — Soy Luna Wiki — https://soyluna.fandom.com/wiki/Volver_a_rodar_(soundtrack)
 51. Karol Sevilla comparte que ser actriz infantil ha afectado su salud mental (31/07/2024) — Publimetro — https://www.publimetro.com.mx/entretenimiento/2024/07/31/karol-sevilla-comparte-ser-actriz-infantil-ha-afectado-salud-mental
 52. Karol Sevilla confiesa que tuvo una fuerte depresión y que sufrió bullying (21/03/2022) — Publimetro — https://www.publimetro.com.mx/entretenimiento/2022/03/21/karol-sevilla-confiesa-que-tuvo-una-fuerte-depresion-y-que-sufrio-bullying/
 53. Karol Sevilla llora al pedir que no opinen sobre su cuerpo (24/03/2022) — Publimetro — https://www.publimetro.com.mx/entretenimiento/2022/03/24/karol-sevilla-llora-al-pedir-que-no-opinen-sobre-su-cuerpo/
@@ -366,26 +429,42 @@ Data de acesso de todas: **2026-10-16**. Lidas via resultados de busca. ★ = ab
 59. Karol Sevilla descarta trabajar en Televisa (26/10/2021) — La República — https://larepublica.pe/espectaculos/2021/10/26/karol-sevilla-descarta-trabajar-en-televisa-siento-que-mis-retos-son-mucho-mas-que-eso
 60. Karol Sevilla será Lupita en 'Mentiras' — Excélsior — https://www.excelsior.com.mx/espectaculos/karol-sevilla-sera-lupita-mentiras-luce-querida-secretaria
 61. Karol Sevilla debuta en Mentiras, el musical — Chilango — https://www.chilango.com/que-hacer/musica/karol-sevilla-debuta-en-mentiras-el-musical-asi-sera-su-lupita/
-62. Karol Sevilla — canal no YouTube — https://www.youtube.com/@KarolSevillaOF
-63. Karol Sevilla – Otro Mood (Video Oficial) — YouTube — https://www.youtube.com/watch?v=DSOi6436aCQ ; https://www.youtube.com/watch?v=4yR7GVSqvxs
-64. Karol Sevilla – Miedo de Sentir (Video Oficial) — YouTube — https://www.youtube.com/watch?v=tEJg-fMGk8s
+62. ✓ Karol Sevilla — canal oficial no YouTube — https://www.youtube.com/@KarolSevillaOF
+63. ✓ Karol Sevilla – Otro Mood (Video Oficial) — YouTube — https://www.youtube.com/watch?v=DSOi6436aCQ
+64. ✓ Karol Sevilla – Miedo de Sentir (Video Oficial) — YouTube — https://www.youtube.com/watch?v=tEJg-fMGk8s
 65. Instagram statistics for @karolsevillaofc — Heepsy — https://www.heepsy.com/instagram-profile/karolsevillaofc
 66. Karol Sevilla (13/12/2021) — Bloomberg Línea — https://www.bloomberglinea.com/2021/12/13/karol-sevilla-2/
-67. Category:Karol Sevilla — Wikimedia Commons — https://commons.wikimedia.org/wiki/Category:Karol_Sevilla
-68. File:Karol Sevilla (2016).png — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Karol_Sevilla_(2016).png
-69. File:Karol Sevilla Sedal 2021 3.jpg — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_3.jpg
-70. File:Karol Sevilla Sedal 2021 4.jpg — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg
-71. Fichier:Karol Sevilla Sedal 2021 4.jpg — Vikidia (espelho com dados de licença) — https://fr.vikidia.org/wiki/Fichier:Karol_Sevilla_Sedal_2021_4.jpg
+67. ✓ Category:Karol Sevilla — Wikimedia Commons (25 arquivos, via API) — https://commons.wikimedia.org/wiki/Category:Karol_Sevilla
+68. ✓ File:Karol Sevilla (2016).png — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Karol_Sevilla_(2016).png
+69. ✓ File:Karol Sevilla Sedal 2021 3.jpg — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_3.jpg
+70. ✓ File:Karol Sevilla Sedal 2021 4.jpg — Wikimedia Commons — https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg
+71. Fichier:Karol Sevilla Sedal 2021 4.jpg — Vikidia — https://fr.vikidia.org/wiki/Fichier:Karol_Sevilla_Sedal_2021_4.jpg
 72. Karol Sevilla facts for kids — Kiddle — https://kids.kiddle.co/Karol_Sevilla
 73. Karol Sevilla (Cenicienta / Festival Tecate) — El Siglo de Torreón — https://www.elsiglodetorreon.com.mx/noticias/karol-sevilla.html
 74. Karol Sevilla en su nueva faceta como cantante (16/02/2019) — Infobae — https://www.infobae.com/parati/para-teens/2019/02/16/karol-sevilla-en-su-nueva-faceta-como-cantante-quiero-hacer-un-feat-con-lali/
-75. Karol Sevilla: "Ahora comienzo mi carrera solista" (10/11/2018) — Los Andes — https://www.losandes.com.ar/karol-sevilla-ahora-comienzo-mi-carrera-solista/
+75. ✓ Karol Sevilla: "Ahora comienzo mi carrera solista" (10/11/2018) — Los Andes — https://www.losandes.com.ar/karol-sevilla-ahora-comienzo-mi-carrera-solista/
 76. Karol Sevilla se despide con la cuarta temporada de "Soy Luna" (23/07/2026) — Diario de Yucatán — https://www.yucatan.com.mx/espectaculos/2026/07/23/soy-luna-dice-adios-a-sus-fans.html
 77. Otro Mood — Spotify — https://open.spotify.com/intl-es/track/3sBi1AWJPDLGGugGfhRR1v
-78. Imperfecta — Amazon / iHeart / Spotify ("Imperfecto") — https://www.amazon.com/Imperfecta-Karol-Sevilla/dp/B0GYQMYNJB ; https://www.iheart.com/artist/karol-sevilla-31870562/albums/imperfecta-403193491/ ; https://open.spotify.com/track/0m05zUbXfkkyn984Mg82LZ ; https://music.amazon.com/artists/B01BOHNLF8/karol-sevilla
+78. Imperfecta — Amazon / iHeart / Spotify ("Imperfecto") — https://www.amazon.com/Imperfecta-Karol-Sevilla/dp/B0GYQMYNJB ; https://www.iheart.com/artist/karol-sevilla-31870562/albums/imperfecta-403193491/ ; https://open.spotify.com/track/0m05zUbXfkkyn984Mg82LZ
 79. ¿Quién es Karol Sevilla, supuesta novia de Emilio Osorio, de "La Casa de los Famosos"? — UnoTV — https://www.unotv.com/entretenimiento/quien-es-karol-sevilla-supuesta-novia-de-emilio-osorio-de-la-casa-de-los-famosos/
 80. Karol Sevilla vuelve a ponerse los patines en "Soy Luna: Volver a Rodar" — La Prensa (Honduras) — https://www.laprensa.hn/fotogalerias/farandula/karol-sevilla-estreno-soy-luna-volver-rodar-disney-serie-nueva-temporada-mexico-IM30961944
 81. Karol Sevilla: depresión tras Soy Luna (ago./2026) — El Intransigente — https://elintransigente.com/2026/08/karol-sevilla-depresion-soy-luna/
 82. ¿Amigas o rivales? Crece la polémica entre Karol Sevilla y Ángela Aguilar (30/03/2026) — Publimetro — https://www.publimetro.com.mx/entretenimiento/2026/03/30/amigas-o-rivales-crece-la-polemica-entre-karol-sevilla-y-angela-aguilar-en-redes-sociales/
 83. Karol Sevilla celebra el regreso de Soy Luna con nueva temporada en Disney+ para 2026 (08/09/2025) — El Imparcial — https://www.elimparcial.com/espectaculos/2025/09/08/karol-sevilla-celebra-el-regreso-de-soy-luna-con-nueva-temporada-en-disney-para-2026/
-84. Soy Luna: Volver a rodar (faixa) — Apple Music — https://music.apple.com/song/6781474426
+84. Soy Luna: Volver a rodar (uma faixa) — Apple Music — https://music.apple.com/song/6781474426
+85. ✓ Soy Luna: Volver a rodar (Banda Sonora Original) — ℗ 2026 Walt Disney Records, 08/07/2026, 17 faixas, com compositores por faixa — Apple Music — https://music.apple.com/es/album/soy-luna-volver-a-rodar-banda-sonora-original/6781473556
+86. ✓ Karol Sevilla — página de artista — Apple Music — https://music.apple.com/es/artist/karol-sevilla/1098278064
+87. ✓ Una Noche Más – Single (Alan Navarro & Karol Sevilla; ℗ 2024 UMG México; 05/12/2024) — Apple Music — https://music.apple.com/es/album/una-noche-m%C3%A1s-single/1781956871
+88. ✓ Weekend (feat. ZΩRBA) – Single (Timmy Trumpet, Karol Sevilla & FAULHABER; ℗ 2024 Smash The House; 09/08/2024) — Apple Music — https://music.apple.com/es/album/weekend-feat-z%CF%89rba-single/1757641991
+89. ✓ Anónimo – Single (Mario Bautista & Karol Sevilla; ℗ 2023 Warner Music México; 15/12/2023) — Apple Music — https://music.apple.com/es/album/an%C3%B3nimo-single/1720126667
+90. ✓ Cenicienta – Single (℗ 2024 TMBC Records; 16/07/2024) — Apple Music — https://music.apple.com/es/album/cenicienta-single/1757376422
+91. ✓ Karol Sevilla — página "About" do canal oficial (links oficiais) — YouTube — https://www.youtube.com/@KarolSevillaOF/about
+92. ✓ @karolsevillaokay — perfil oficial verificado — TikTok — https://www.tiktok.com/@karolsevillaokay
+93. ✓ Mariposas (De "Soy Luna: Volver a rodar" | Disney+ | Momento Musical / Luna) — YouTube, DisneyMusicLAVEVO — https://www.youtube.com/watch?v=DdBbqWoR5wg
+94. ✓ Mariposas (De "Soy Luna: Volver a rodar" | Disney+ | Lyric Video) — YouTube, DisneyMusicLAVEVO — https://www.youtube.com/watch?v=Dou-DcI5oeE
+95. ✓ Karol Sevilla | Cenicienta | (Video Oficial) — YouTube — https://www.youtube.com/watch?v=s7nbxbbAsvQ
+96. ✓ Karol Sevilla — Wikipedia (es), wikitext — https://es.wikipedia.org/wiki/Karol_Sevilla
+97. ✓ Arquivos do Commons usados na seção de imagens (wikitext e API) — https://commons.wikimedia.org/wiki/Category:Karol_Sevilla
+98. Emilio Osorio presenta a su nueva novia… (26/11/2023; menciona o aniversário dela) — Posta — https://www.posta.com.mx/entretenimiento/emilio-osorio-presenta-a-su-nueva-novia-a-dias-de-su-truene-con-karol-sevilla/vl1522252
+99. ✓ Karol Sevilla — página de artista (embed) — Spotify — https://open.spotify.com/artist/6aBoKzSTjuIi0sY69XHLk3
+100. ✓ karolsevilla.mx — página padrão de hospedagem, sem conteúdo — https://www.karolsevilla.mx/

@@ -293,8 +293,9 @@
         </header>
 
         <!-- Linha do tempo: cada marco é um link para o trecho do capítulo (clique ou Enter). -->
-        <nav class="timeline" aria-label="Linha do tempo">
-          <ol class="timeline__list">
+        <nav class="timeline shelf__viewport" aria-label="Linha do tempo">
+          <button class="shelf__arrow shelf__arrow--prev timeline__arrow js-only" type="button" aria-label="Rolar a linha do tempo para a esquerda" aria-controls="lista-marcos"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg></button>
+          <ol class="timeline__list" id="lista-marcos">
             <li class="timeline__item" data-chapter="1"><a class="timeline__link" href="#cap1-origem" data-marco="1999"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">1999</span><span class="timeline__label">Nasce na Cidade do México</span><span class="timeline__chapter">Capítulo 1</span></a></li>
             <li class="timeline__item" data-chapter="1"><a class="timeline__link" href="#cap1-avo" data-marco="2006"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">c. 2006</span><span class="timeline__label">Figurante em <cite>Plaza Sésamo</cite>, levada pela avó</span><span class="timeline__chapter">Capítulo 1</span></a></li>
             <li class="timeline__item" data-chapter="1"><a class="timeline__link" href="#cap1-primeiros-papeis" data-marco="2008"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2008</span><span class="timeline__label">Estreia em novela: <cite>Querida enemiga</cite></span><span class="timeline__chapter">Capítulo 1</span></a></li>
@@ -308,6 +309,7 @@
             <li class="timeline__item" data-chapter="3"><a class="timeline__link" href="#cap3-imperfecta" data-marco="2026a"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2026</span><span class="timeline__label">Lança <cite>Imperfecta</cite>, primeiro álbum</span><span class="timeline__chapter">Capítulo 3</span></a></li>
             <li class="timeline__item" data-chapter="3"><a class="timeline__link" href="#cap3-volta" data-marco="2026b"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2026</span><span class="timeline__label">Volta a Luna em <cite>Volver a rodar</cite></span><span class="timeline__chapter">Capítulo 3</span></a></li>
           </ol>
+          <button class="shelf__arrow shelf__arrow--next timeline__arrow js-only" type="button" aria-label="Rolar a linha do tempo para a direita" aria-controls="lista-marcos"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
         </nav>
 
         <section class="shelf" aria-labelledby="titulo-os-capitulos">

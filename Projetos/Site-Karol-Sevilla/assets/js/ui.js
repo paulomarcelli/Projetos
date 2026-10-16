@@ -34,7 +34,7 @@
     });
 
     // Desabilita a seta quando não há mais para onde rolar
-    document.querySelectorAll('.shelf__list').forEach(function (lista) {
+    document.querySelectorAll('.shelf__list, .timeline__list').forEach(function (lista) {
       var anterior = document.querySelector('.shelf__arrow--prev[aria-controls="' + lista.id + '"]');
       var proxima = document.querySelector('.shelf__arrow--next[aria-controls="' + lista.id + '"]');
       if (!anterior || !proxima) return;

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Imagem pendente">
+  <!-- Espaço reservado para imagem ainda não autorizada (design system §5.14) -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#69B9FF" stop-opacity=".22"/>
+      <stop offset=".5" stop-color="#B79CFF" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#FF69B4" stop-opacity=".22"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" fill="#1B1B27"/>
+  <rect width="320" height="320" fill="url(#g)"/>
+  <g transform="translate(124 124) scale(3)" fill="none" stroke="#B9B9CC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".8">
+    <path d="M12 8c-1.5-3.5-7-6-8.5-3.5S5 11 9 11.5c-3 1-4 4.5-2.5 5.5S11 15 12 12c1 3 4 6 5.5 5s.5-4.5-2.5-5.5c4-.5 7-4.5 5.5-7S13.5 4.5 12 8z"/>
+    <path d="M12 8v11"/>
+  </g>
+</svg>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Traço Geométrico</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#101a46">
+        <link rel="icon" type="image/svg+xml" href="images/icon-v2.svg">
+        <link rel="stylesheet" href="style.css">
+
+        <!-- Carrega a biblioteca do Phaser via CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    </head>
+
+    <body>
+        <main id="game-shell" aria-label="Traço Geométrico">
+            <div id="game-canvas"></div>
+
+            <!-- Menu Principal -->
+            <section id="menu" aria-labelledby="game-title">
+                <header class="menu-header"><span class="brand-mark"></span><span>UM SALTO DE CADA VEZ.</span></header>
+                <div class="menu-content">
+                    <h1 id="game-title">TRAÇO<span>GEOMÉTRICO</span></h1>
+                    <p class="tagline">O próximo salto é seu.</p>
+                    <!-- Linha de botões grandes (como nos jogos de ritmo): Heróis · JOGAR · Como jogar -->
+                    <div class="menu-botoes">
+                        <!-- Painel com os heróis e as habilidades -->
+                        <button id="herois-button" class="botao-redondo" type="button"><span class="icone-cubo" aria-hidden="true"></span><b>HERÓIS</b></button>
+                        <!-- Botão principal (abre a seleção de fases) -->
+                        <div class="play-orbit"><button id="play-button" type="button" aria-label="Jogar" disabled><span
+                                    class="play-icon" aria-hidden="true"></span></button></div>
+                        <!-- Painel "como jogar" (elementos clássicos e controles) -->
+                        <button id="ajuda-button" class="botao-redondo" type="button"><span class="icone-ajuda" aria-hidden="true">?</span><b>COMO JOGAR</b></button>
+                    </div>
+                    <p class="play-label">JOGAR</p>
+                    <p class="keyboard-hint" id="menu-status" role="status">Carregando o jogo…</p>
+                </div>
+                <!-- Botão de som no canto (liga/desliga a música e os efeitos) -->
+                <button id="som-button" class="botao-canto" type="button" aria-label="Ligar ou desligar o som">SOM</button>
+                <footer class="menu-footer"><span>PROJETO POO · FEITO EM EQUIPE</span><span>01 / INÍCIO</span></footer>
+            </section>
+
+            <!-- Painel: heróis e habilidades (preenchido pelo cenas.js a partir do config.js) -->
+            <section id="painel-herois" class="painel" hidden aria-labelledby="painel-herois-titulo" role="dialog">
+                <h2 id="painel-herois-titulo">HERÓIS</h2>
+                <div id="lista-herois" class="lista-herois"></div>
+                <button class="painel-fechar" type="button">Fechar <span>ESC</span></button>
+            </section>
+
+            <!-- Painel: como jogar (controles e elementos clássicos) -->
+            <section id="painel-ajuda" class="painel" hidden aria-labelledby="painel-ajuda-titulo" role="dialog">
+                <h2 id="painel-ajuda-titulo">COMO JOGAR</h2>
+                <ul class="lista-ajuda">
+                    <li><i class="ic ic-pulo"></i><b>Espaço / clique</b> pula · o cubo corre sozinho</li>
+                    <li><i class="ic ic-hab"></i><b>E</b> usa a habilidade do herói da fase</li>
+                    <li><i class="ic ic-pad"></i><b>Pad amarelo</b> no chão: lança alto sozinho</li>
+                    <li><i class="ic ic-orbe"></i><b>Orbe amarelo</b> no ar: aperte pra pular de novo</li>
+                    <li><i class="ic ic-grav"></i><b>Portal azul</b> inverte a gravidade · <b>laranja</b> volta ao normal</li>
+                    <li><i class="ic ic-vel"></i><b>Portal »»</b> acelera · <b>»</b> volta à velocidade normal</li>
+                    <li><i class="ic ic-modo"></i><b>Portal ● bola</b>: aperte encostado pra trocar de lado · <b>◓ UFO</b>: cada toque é um pulinho · <b>■</b> volta a cubo</li>
+                    <li><i class="ic ic-azul"></i><b>Pad / orbe azul</b> troca o lado da gravidade (chão ↔ teto)</li>
+                    <li><i class="ic ic-pratica"></i><b>Modo prática</b> (na pausa): <b>Z</b> marca um diamante verde, <b>X</b> apaga · não conta recorde</li>
+                    <li><i class="ic ic-serra"></i><b>Serra</b> e espinho matam: pule</li>
+                    <li><i class="ic ic-cp"></i><b>Bandeira</b> = checkpoint · <b>ESC</b> pausa · <b>R</b> reinicia</li>
+                </ul>
+                <button class="painel-fechar" type="button">Fechar <span>ESC</span></button>
+            </section>
+
+            <!-- Menu de Fases: carrossel com um cartão por vez (setas ◀ ▶ ou teclado) -->
+            <section id="level-select" hidden aria-labelledby="level-title">
+                <h2 id="level-title" class="level-heading">SELECIONE UMA FASE</h2>
+                <div class="carrossel">
+                <!-- Fase anterior -->
+                <button id="sel-ant" class="seta" type="button" aria-label="Fase anterior">◀</button>
+                <div class="level-grid">
+                    <!-- data-level = nome do herói que o main.js usa pra escolher a habilidade -->
+                    <button class="level-btn" data-level="Homem-Aranha"   type="button">Homem-Aranha<small>Balanço: segure no ar para lançar teia</small></button>
+                    <button class="level-btn" data-level="Homem de Ferro" type="button">Homem de Ferro<small>Voo: segure para subir · E dispara</small></button>
+                    <button class="level-btn" data-level="Hulk"           type="button">Hulk<small>Fúria: cresça e atravesse o que quebra</small></button>
+                    <button class="level-btn" data-level="Gaviao"         type="button">Gavião Arqueiro<small>Mira: acerte alvos para abrir caminho</small></button>
+                    <button class="level-btn" data-level="DrEstranho"     type="button">Doutor Estranho<small>Portais, dimensão espelho e Joia do Tempo</small></button>
+                    <!-- Cada cartão ganha as cores do herói pelo CSS ([data-level="..."]) -->
+                    <button class="level-btn" data-level="Wanda" type="button">Wanda Maximoff<small>Realidade: troque entre vermelha ◆ e azul ●</small></button>
+                </div>
+                <!-- Próxima fase -->
+                <button id="sel-prox" class="seta" type="button" aria-label="Próxima fase">▶</button>
+                </div>
+                <!-- Bolinhas: qual fase está aparecendo -->
+                <div id="sel-pontos" class="pontos" aria-hidden="true"></div>
+                <p class="sel-dica">◀ ▶ trocam de fase · Enter joga · ESC volta</p>
+            </section>
+
+            <!-- Tela de pausa (ESC / P / botão ⏸ durante a partida) -->
+            <section id="pausa" hidden role="dialog" aria-labelledby="pausa-titulo">
+                <h2 id="pausa-titulo">PAUSADO</h2>
+                <p id="pausa-info"></p>
+                <div class="pausa-botoes">
+                    <button id="pausa-continuar" type="button">▶ Continuar <span>ESC</span></button>
+                    <button id="pausa-reiniciar" type="button">↻ Reiniciar <span>R</span></button>
+                    <button id="pausa-selecao" type="button">☰ Seleção de fases</button>
+                    <button id="pausa-som" type="button">Som</button>
+                    <button id="pausa-pratica" type="button">◆ Modo prática</button>
+                </div>
+            </section>
+
+            <!-- Botão de voltar (seleção de fases → menu, ou partida → menu) -->
+            <button id="back-button" type="button" hidden>← Menu <span>ESC</span></button>
+
+            <!-- Tela de fase concluída (aparece ao cruzar a linha de chegada) -->
+            <section id="fase-concluida" hidden aria-labelledby="fc-titulo" role="dialog">
+                <!-- Título da tela -->
+                <h2 id="fc-titulo">FASE CONCLUÍDA</h2>
+                <!-- Nome do herói da fase -->
+                <p id="fc-heroi" class="fc-heroi"></p>
+                <!-- Estatísticas da tentativa -->
+                <dl class="fc-dados">
+                    <!-- Número de tentativas -->
+                    <div><dt>Tentativas</dt><dd id="fc-tentativas">1</dd></div>
+                    <!-- Tempo desta tentativa -->
+                    <div><dt>Tempo</dt><dd id="fc-tempo">0:00.0</dd></div>
+                    <!-- Melhor tempo já feito nessa fase -->
+                    <div><dt>Melhor tempo</dt><dd id="fc-melhor">0:00.0</dd></div>
+                </dl>
+                <!-- Botões: próxima fase, jogar de novo ou voltar pra seleção (ESC) -->
+                <div class="fc-botoes">
+                    <!-- Próxima fase na ordem da seleção (some na última) -->
+                    <button id="fc-proxima" type="button">Próxima fase →</button>
+                    <button id="fc-de-novo" type="button">Jogar de novo</button>
+                    <button id="fc-escolher" type="button">Escolher fase <span>ESC</span></button>
+                </div>
+            </section>
+
+            <!-- Botão da habilidade do herói (aparece só durante a partida; útil no celular) -->
+            <button id="ability-button" type="button" hidden>HABILIDADE <span>E</span></button>
+
+            <!-- Botões do modo prática (aparecem só na prática; útil no celular) -->
+            <button id="pratica-marcar" class="botao-pratica" type="button" hidden>◆ Marcar <span>Z</span></button>
+            <button id="pratica-apagar" class="botao-pratica" type="button" hidden>✕ Apagar <span>X</span></button>
+        </main>
+
+        <noscript>Ative o JavaScript no navegador para jogar.</noscript>
+        <!-- Scripts do jogo, nesta ordem (cada um usa o que veio antes) -->
+        <script src="js/config.js"></script>          <!-- Configurações, temas e fases -->
+        <script src="js/som.js"></script>             <!-- Sons sintetizados (Web Audio) -->
+        <script src="js/efeitos.js"></script>         <!-- Efeitos visuais reaproveitáveis -->
+        <script src="js/progresso.js"></script>       <!-- Progresso salvo (fases concluídas) -->
+        <script src="js/obstaculos.js"></script>      <!-- Classe Obstaculo e obstáculos comuns -->
+        <script src="js/classicos.js"></script>       <!-- Pad, orbe, portais de gravidade/velocidade e serra -->
+        <script src="js/habilidade.js"></script>      <!-- Classe base Habilidade -->
+        <script src="js/player.js"></script>          <!-- Classe Player (o cubo) -->
+        <script src="js/barraProgresso.js"></script>  <!-- Barra de progresso percentual (HUD) -->
+        <script src="js/fases/fase.js"></script>      <!-- Classe base Fase -->
+        <script src="js/fases/hulk.js"></script>      <!-- Fase do Hulk -->
+        <script src="js/fases/ferro.js"></script>     <!-- Fase do Homem de Ferro -->
+        <script src="js/fases/gaviao.js"></script>    <!-- Fase do Gavião Arqueiro -->
+        <script src="js/fases/aranha.js"></script>    <!-- Fase do Homem-Aranha -->
+        <script src="js/fases/estranho.js"></script>  <!-- Fase do Doutor Estranho -->
+        <script src="js/fases/wanda.js"></script>     <!-- Fase da Wanda -->
+        <script src="js/cenas.js"></script>           <!-- Cenas: Menu e Game -->
+        <script src="main.js"></script>               <!-- Inicia o Phaser -->
+    </body>
+</html>

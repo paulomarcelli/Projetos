@@ -1,0 +1,817 @@
+/* ================================================================
+   VARIÁVEIS E BASE
+   ================================================================ */
+
+:root {
+    color-scheme: dark;                          /* Avisa o navegador que o site é escuro (barras de rolagem e inputs escuros) */
+    font-family: Arial, Helvetica, sans-serif;   /* Fonte padrão de todo o site */
+    color: #eef5ff;                              /* Cor padrão do texto (branco azulado) */
+    background: #080d21;                         /* Cor de fundo atrás do jogo */
+}
+
+* {
+    box-sizing: border-box;                      /* Padding e borda contam dentro da largura (evita estouro) */
+}
+
+html, body {
+    height: 100%;                                /* Página ocupa a tela toda */
+    overflow: hidden;                            /* Impede rolagem da página enquanto joga */
+}
+
+body {
+    margin: 0;                                   /* Remove a margem padrão do navegador */
+    min-height: 100svh;                          /* Ocupa pelo menos a altura visível da tela (svh = considera a barra do celular) */
+    display: grid;                               /* Usa grid pra centralizar o jogo */
+    place-items: center;                         /* Centraliza na horizontal e na vertical */
+    background: #080d21;                         /* Fundo explícito no body */
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+             env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); /* Respeita o "notch" dos celulares */
+    -webkit-user-select: none;                   /* Impede selecionar texto ao tocar rápido (Safari) */
+    user-select: none;                           /* Impede selecionar texto ao tocar rápido */
+}
+
+button {
+    font: inherit;                               /* Botões usam a mesma fonte do resto */
+    cursor: pointer;                             /* Mãozinha ao passar o mouse */
+    -webkit-tap-highlight-color: transparent;    /* Tira o "flash" azul ao tocar no celular */
+    touch-action: manipulation;                  /* Tira o atraso de toque duplo nos botões */
+}
+
+[hidden] {
+    display: none !important;                    /* Garante que elementos com hidden sumam mesmo */
+}
+
+/* ================================================================
+   ÁREA DO JOGO
+   ================================================================ */
+
+#game-shell {
+    position: relative;                          /* Referência pros elementos absolutos de dentro (menu, botão voltar) */
+    width: min(100vw, 1600px, calc(100svh * 16 / 9)); /* Cabe na largura E na altura da tela, sem cortar */
+    aspect-ratio: 16 / 9;                        /* Mantém o formato widescreen */
+    max-width: 100%;                             /* Nunca passa da largura disponível */
+    overflow: hidden;                            /* Esconde o que passar da borda */
+    background: #101a46;                         /* Cor de fundo do jogo (igual à câmera do Phaser) */
+    container-type: inline-size;                 /* Permite usar "cqw" (1% da largura do jogo) nas medidas de dentro */
+}
+
+#game-canvas {
+    position: absolute;                          /* Fica por cima de tudo dentro do shell */
+    inset: 0;                                    /* Encosta nas 4 bordas */
+}
+
+canvas {
+    display: block;                              /* Tira o espacinho que aparece embaixo de elementos inline */
+    touch-action: none;                          /* Tocar no jogo não dá zoom nem rola a página */
+    -webkit-touch-callout: none;                 /* Segurar o dedo não abre o menu do iPhone */
+}
+
+canvas:focus-visible {
+    outline: 2px solid #b7f65b;                  /* Contorno verde quando o canvas recebe foco pelo teclado */
+    outline-offset: -2px;                        /* Desenha o contorno pra dentro */
+}
+
+/* ================================================================
+   MENU PRINCIPAL
+   ================================================================ */
+
+#menu {
+    position: absolute; inset: 0;                /* Cobre a área do jogo inteira */
+    display: flex; flex-direction: column;       /* Cabeçalho, conteúdo e rodapé empilhados */
+    padding: 3.2% 4%;                            /* Espaço interno proporcional */
+    background: radial-gradient(ellipse at 50% 40%, #395dc13b, transparent 65%); /* Brilho azul no centro */
+    transition: opacity 480ms ease, transform 480ms cubic-bezier(.55,0,1,.45); /* Animação de saída */
+}
+
+#menu.is-leaving {
+    opacity: 0;                                  /* Some ao sair */
+    transform: scale(1.16);                      /* Dá um zoom ao sair */
+    pointer-events: none;                        /* Não aceita cliques durante a saída */
+}
+
+.menu-header, .menu-footer {
+    display: flex;                               /* Itens lado a lado */
+    justify-content: space-between;              /* Um na esquerda, outro na direita */
+    align-items: center;                         /* Alinhados no meio verticalmente */
+    gap: 1em;                                    /* Espaço mínimo entre os textos em telas estreitas */
+    color: #95a9d5;                              /* Azul acinzentado */
+    font-size: clamp(8px, 1cqw, 14px);           /* Tamanho que acompanha a largura do jogo, com mínimo e máximo */
+    letter-spacing: .18em;                       /* Letras espaçadas */
+    font-weight: 700;                            /* Negrito */
+}
+
+.brand-mark {
+    font-size: clamp(14px, 2cqw, 28px);          /* Tamanho proporcional */
+    color: #b7f65b;                              /* Verde do jogador */
+    letter-spacing: -.05em;                      /* Letras mais juntas */
+}
+
+.menu-content {
+    flex: 1;                                     /* Ocupa todo o espaço entre cabeçalho e rodapé */
+    display: flex;                               /* Flex pra centralizar */
+    flex-direction: column;                      /* Itens um embaixo do outro */
+    justify-content: center;                     /* Centraliza na vertical */
+    align-items: center;                         /* Centraliza na horizontal */
+    text-align: center;                          /* Texto centralizado */
+}
+
+.eyebrow {
+    margin: 0 0 1.5cqw;                          /* Espaço só embaixo */
+    color: #7fe8ee;                              /* Ciano */
+    font-size: clamp(8px, 1cqw, 14px);           /* Tamanho proporcional */
+    font-weight: 700;                            /* Negrito */
+    letter-spacing: .4em;                        /* Bem espaçado */
+}
+
+h1 {
+    margin: 0;                                   /* Sem margem padrão */
+    font-size: clamp(24px, 6cqw, 90px);          /* Título grande e proporcional */
+    line-height: .98; font-weight: 900;          /* Linhas coladas e peso máximo */
+    letter-spacing: -.055em;                     /* Letras apertadas */
+    transform: skew(-5deg);                      /* Inclinação de "velocidade" */
+    text-shadow: 0 .055em 0 #4c70b4, 0 .11em 0 #060e2b; /* Sombra em camadas (efeito 3D) */
+}
+
+h1 span {
+    display: block;                              /* "GEOMÉTRICO" vai pra linha de baixo */
+    color: #b7f65b;                              /* Verde */
+    font-size: .87em;                            /* Um pouco menor que "TRAÇO" */
+    text-shadow: 0 .055em 0 #55883b, 0 .11em 0 #060e2b; /* Sombra 3D verde */
+}
+
+.tagline {
+    margin: 1.9cqw 0 2.2cqw;                     /* Espaço em cima e embaixo */
+    font-size: clamp(10px, 1.3cqw, 19px);        /* Tamanho proporcional */
+    color: #a9bde2;                              /* Azul claro */
+}
+
+.play-orbit {
+    display: grid;                               /* Grid pra centralizar o botão */
+    place-items: center;                         /* Centraliza */
+    padding: .9cqw;                              /* Espaço entre o botão e o anel */
+    border: 1px solid #b7f65b33;                 /* Anel verde transparente */
+    border-radius: 50%;                          /* Redondo */
+    position: relative;                          /* Referência pro ::before */
+}
+
+.play-orbit::before {
+    content: '';                                 /* Pseudo-elemento vazio (só o anel) */
+    position: absolute;                          /* Posicionado em relação ao .play-orbit */
+    inset: -.65cqw;                              /* Um pouco maior que o anel de dentro */
+    border: 1px solid #b7f65b17;                 /* Anel ainda mais transparente */
+    border-radius: 50%;                          /* Redondo */
+    animation: pulse 2.6s ease-in-out infinite;  /* Pulsa sem parar */
+    pointer-events: none;                        /* Não bloqueia cliques */
+}
+
+#play-button {
+    display: grid;                               /* Grid pra centralizar o ícone */
+    place-items: center;                         /* Centraliza */
+    width: clamp(56px, 8cqw, 120px);             /* Tamanho mínimo bom pro dedo */
+    aspect-ratio: 1;                             /* Quadrado (vira círculo com o radius) */
+    border-radius: 50%;                          /* Redondo */
+    border: 3px solid #e5ffb5;                   /* Borda verde clara */
+    background: linear-gradient(145deg, #d6ff82, #96dc3a); /* Gradiente verde */
+    box-shadow: 0 .5cqw 0 #467523, 0 0 3cqw #b7f65b28;     /* Sombra sólida embaixo + brilho */
+    transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease; /* Animações suaves */
+}
+
+@media (hover: hover) {                          /* Hover só em aparelhos com mouse (no celular o hover fica "preso") */
+    #play-button:hover:not(:disabled) {
+        transform: translateY(-3px) scale(1.07); /* Sobe e cresce um pouco */
+        filter: brightness(1.08);                /* Fica mais claro */
+        box-shadow: 0 .7cqw 0 #467523, 0 0 4cqw #b7f65b55; /* Sombra e brilho maiores */
+    }
+
+    #back-button:hover {
+        background: #28427c;                     /* Fundo mais claro no hover */
+    }
+}
+
+#play-button:active:not(:disabled) {
+    transform: translateY(3px) scale(.97);       /* Afunda ao clicar */
+    box-shadow: 0 .15cqw 0 #467523;              /* Sombra diminui (parece apertado) */
+}
+
+#play-button:focus-visible, #back-button:focus-visible {
+    outline: 3px solid white;                    /* Contorno branco no foco do teclado */
+    outline-offset: 6px;                         /* Afastado do botão */
+}
+
+#play-button:disabled {
+    cursor: default;                             /* Sem mãozinha enquanto carrega */
+}
+
+.play-icon {
+    width: 0;                                    /* Triângulo feito com bordas: largura zero */
+    height: 0;                                   /* Altura zero */
+    margin-left: .6cqw;                          /* Empurra pra direita (centro visual do "play") */
+    border-top: 1.5cqw solid transparent;        /* Borda de cima invisível */
+    border-bottom: 1.5cqw solid transparent;     /* Borda de baixo invisível */
+    border-left: 2.3cqw solid #193d2a;           /* Borda da esquerda = o triângulo */
+    filter: drop-shadow(0 2px 0 #ffffff55);      /* Brilhinho embaixo */
+}
+
+.play-label {
+    margin: 1.4cqw 0 .6cqw;                      /* Espaço em cima e embaixo */
+    font-size: clamp(10px, 1.3cqw, 18px);        /* Tamanho proporcional */
+    font-weight: 800;                            /* Bem negrito */
+    letter-spacing: .25em;                       /* Espaçado */
+}
+
+.keyboard-hint {
+    margin: 0;                                   /* Sem margem */
+    color: #90a4ce;                              /* Azul acinzentado */
+    font-size: clamp(8px, .95cqw, 14px);         /* Tamanho proporcional */
+}
+
+kbd {
+    font: inherit;                               /* Mesma fonte do texto */
+    padding: .15em .4em;                         /* Espaço dentro da "tecla" */
+    border: 1px solid #7890bf66;                 /* Borda da "tecla" */
+    border-radius: 4px;                          /* Cantos arredondados */
+}
+
+.menu-footer {
+    font-size: clamp(7px, .85cqw, 12px);         /* Rodapé um pouco menor */
+    letter-spacing: .1em;                        /* Menos espaçado que o cabeçalho */
+}
+
+/* ================================================================
+   BOTÃO DE VOLTAR (aparece durante a partida)
+   ================================================================ */
+
+#back-button {
+    position: absolute;                          /* Fica por cima do jogo */
+    top: 4%; left: 3%;                           /* Canto superior esquerdo */
+    min-height: 44px;                            /* Altura mínima boa pro dedo */
+    padding: .7em 1em;                           /* Espaço interno */
+    border: 1px solid #6f8ac366;                 /* Borda azul transparente */
+    border-radius: 8px;                          /* Cantos arredondados */
+    color: #eaf3ff;                              /* Texto claro */
+    background: #101a46cc;                       /* Fundo azul meio transparente */
+    font-size: clamp(11px, 1.2cqw, 18px);        /* Tamanho proporcional, com mínimo legível */
+}
+
+#back-button span {
+    margin-left: 1em;                            /* Afasta o "ESC" da seta */
+    color: #8ca4d4;                              /* Mais apagado */
+    font-size: .7em;                             /* Menor */
+}
+
+/* ================================================================
+   TELA DE SELEÇÃO DE FASES
+   ================================================================ */
+
+#level-select {
+    position: absolute;                          /* Fica por cima do jogo */
+    inset: 0;                                    /* Ocupa a área toda */
+    display: flex;                               /* Flex pra organizar título e botões */
+    flex-direction: column;                      /* Um embaixo do outro */
+    justify-content: center;                     /* Centraliza na vertical */
+    align-items: center;                         /* Centraliza na horizontal */
+    padding: 4%;                                 /* Espaço nas bordas */
+    background: transparent;                     /* Deixa ver o fundo do Phaser */
+    transition: opacity 400ms ease;              /* Some suavemente ao começar a fase */
+}
+
+.level-heading {
+    margin: 0 0 2.5cqw;                          /* Espaço só embaixo (proporcional ao jogo) */
+    color: #b7f65b;                              /* Verde do jogador */
+    font-size: clamp(18px, 4cqw, 48px);          /* Tamanho proporcional */
+    letter-spacing: .2em;                        /* Letras espaçadas */
+    text-align: center;                          /* Centralizado mesmo quando quebra linha */
+    text-shadow: 0 4px 0 #060e2b;                /* Sombra sólida embaixo */
+}
+
+.level-grid {
+    display: flex;                               /* Botões lado a lado */
+    flex-wrap: wrap;                             /* Quebram linha se não couberem */
+    gap: 1.5cqw;                                 /* Espaço entre os botões */
+    justify-content: center;                     /* Centralizados */
+    max-width: 90%;                              /* Não encostam nas bordas */
+}
+
+.level-btn {
+    --c1: #192a6b;                               /* Cor principal do herói (cada botão troca abaixo) */
+    --c2: #0a1233;                               /* Cor secundária (fundo do degradê) */
+    --brilho: #668eff;                           /* Cor da borda e do brilho */
+    display: flex;                               /* Flex pra empilhar nome e descrição */
+    flex-direction: column;                      /* Nome em cima, habilidade embaixo */
+    align-items: flex-start;                     /* Alinhados à esquerda (cartão) */
+    gap: .35em;                                  /* Espaço entre nome e habilidade */
+    width: 15em;                                 /* Todos os cartões do mesmo tamanho */
+    min-height: 44px;                            /* Altura mínima boa pro dedo */
+    background: linear-gradient(135deg, var(--c1), var(--c2)); /* Degradê nas cores do herói */
+    border: 2px solid var(--brilho);             /* Borda na cor do herói */
+    border-left-width: 8px;                      /* Faixa grossa à esquerda (identidade do herói) */
+    border-radius: 10px;                         /* Cantos arredondados */
+    color: #ffffff;                              /* Texto claro */
+    padding: 1.2cqw 1.6cqw;                      /* Espaço interno proporcional */
+    font-size: clamp(12px, 1.5cqw, 21px);        /* Tamanho proporcional */
+    font-weight: bold;                           /* Negrito */
+    text-align: left;                            /* Texto à esquerda */
+    text-transform: uppercase;                   /* Tudo maiúsculo */
+    text-shadow: 0 2px 0 #00000088;              /* Sombra no texto (legível em qualquer cor) */
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; /* Animações suaves */
+    box-shadow: 0 4px 0 #00000066;               /* Sombra sólida embaixo */
+}
+
+.level-btn small {
+    color: #ffffffcc;                            /* Descrição um pouco apagada */
+    font-size: .62em;                            /* Menor que o nome */
+    font-weight: normal;                         /* Sem negrito */
+    text-transform: none;                        /* Escrita normal */
+}
+
+/* Cores de cada herói (cartão) */
+.level-btn[data-level="Homem-Aranha"]   { --c1: #b3122e; --c2: #1f3a93; --brilho: #ff5a6e; } /* Vermelho e azul */
+.level-btn[data-level="Homem de Ferro"] { --c1: #8f1219; --c2: #b8860b; --brilho: #ffc23d; } /* Vermelho e dourado */
+.level-btn[data-level="Hulk"]           { --c1: #2f7d1f; --c2: #14310e; --brilho: #6fdc4a; } /* Verde */
+.level-btn[data-level="Gaviao"]         { --c1: #4b2a7a; --c2: #15101f; --brilho: #a77bff; } /* Roxo tático e preto */
+.level-btn[data-level="DrEstranho"]     { --c1: #1d2a6b; --c2: #6b3a0a; --brilho: #3dff8a; } /* Azul místico, laranja e verde do tempo */
+.level-btn[data-level="Wanda"]          { --c1: #4a0716; --c2: #0d0205; --brilho: #ff2a4d; } /* Vermelho escuro e preto */
+
+@media (hover: hover) {                          /* Hover só em aparelhos com mouse */
+    .level-btn:hover {
+        transform: translateY(-3px) scale(1.03); /* Sobe e cresce um pouco (selecionado) */
+        filter: brightness(1.15);                /* Fica mais claro */
+        box-shadow: 0 7px 0 #00000066, 0 0 22px var(--brilho); /* Brilho na cor do herói */
+    }
+}
+
+.level-btn:focus-visible {
+    transform: translateY(-3px) scale(1.03);     /* Mesmo destaque do hover pra quem usa teclado */
+    box-shadow: 0 7px 0 #00000066, 0 0 22px var(--brilho); /* Brilho na cor do herói */
+}
+
+.level-btn:active {
+    transform: translateY(2px);                  /* Afunda ao clicar */
+    box-shadow: 0 2px 0 #0a1233;                 /* Sombra menor */
+}
+
+.level-btn:focus-visible, #ability-button:focus-visible {
+    outline: 3px solid white;                    /* Contorno branco no foco do teclado */
+    outline-offset: 4px;                         /* Afastado do botão */
+}
+
+/* ================================================================
+   BOTÃO DE HABILIDADE (aparece durante a partida)
+   ================================================================ */
+
+#ability-button {
+    position: absolute;                          /* Fica por cima do jogo */
+    right: 3%; bottom: 14%;                      /* Canto inferior direito, acima do chão */
+    min-height: 44px;                            /* Altura mínima boa pro dedo */
+    padding: .7em 1.2em;                         /* Espaço interno */
+    border: 2px solid var(--cor-hab, #b7f65b);   /* Borda na cor da habilidade da fase (verde se não tiver) */
+    border-radius: 8px;                          /* Cantos arredondados */
+    color: #120a14;                              /* Texto escuro (legível em qualquer cor de fundo) */
+    background: var(--cor-hab, #b7f65b);         /* Fundo na cor da habilidade da fase */
+    font-size: clamp(11px, 1.2cqw, 18px);        /* Tamanho proporcional */
+    font-weight: 800;                            /* Bem negrito */
+    letter-spacing: .1em;                        /* Um pouco espaçado */
+}
+
+#ability-button.recarregando {
+    opacity: .45;                                /* Fica apagado enquanto recarrega */
+}
+
+#ability-button span {
+    margin-left: .8em;                           /* Afasta a tecla do texto */
+    font-size: .75em;                            /* Menor */
+    opacity: .7;                                 /* Mais apagado */
+}
+
+/* ================================================================
+   BOTÕES DO MODO PRÁTICA (diamante verde)
+   ================================================================ */
+.botao-pratica {
+    position: absolute;                          /* Fica por cima do jogo */
+    bottom: 14%;                                 /* Mesma altura do botão de habilidade */
+    min-height: 44px;                            /* Altura mínima boa pro dedo */
+    padding: .7em 1.1em;                         /* Espaço interno */
+    border: 2px solid #3dff8a;                   /* Borda verde (cor do diamante) */
+    border-radius: 8px;                          /* Cantos arredondados */
+    color: #eafff1;                              /* Texto claro */
+    background: #0b2a1acc;                       /* Fundo verde-escuro meio transparente */
+    font-size: clamp(11px, 1.1cqw, 16px);        /* Tamanho proporcional */
+    font-weight: 800;                            /* Bem negrito */
+}
+#pratica-marcar { left: 3%; }                    /* Canto inferior esquerdo */
+#pratica-apagar { left: calc(3% + 9.5em); }      /* Ao lado do "Marcar" */
+.botao-pratica span { margin-left: .6em; font-size: .75em; opacity: .7; }
+.botao-pratica:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+
+
+/* ================================================================
+   FASE CONCLUÍDA (✓ na seleção e tela de conclusão)
+   ================================================================ */
+
+.level-btn {
+    position: relative;                          /* Referência pro ✓ no canto */
+}
+
+.level-btn.concluida {
+    box-shadow: 0 4px 0 #00000066, inset 0 0 0 2px #3bff7a; /* Contorno verde por dentro = concluída (a cor do herói continua) */
+}
+
+.level-btn.concluida::after {
+    content: '✓';                                /* Marca de concluída */
+    position: absolute;                          /* Fica no canto do botão */
+    top: -10px; right: -10px;                    /* Canto superior direito, um pouco pra fora */
+    width: 24px; height: 24px;                   /* Bolinha de 24 px */
+    display: grid; place-items: center;          /* Centraliza o ✓ */
+    border-radius: 50%;                          /* Redonda */
+    background: #3bff7a;                         /* Verde */
+    color: #0a1233;                              /* ✓ escuro */
+    font-size: 14px;                             /* Tamanho do ✓ */
+}
+
+#fase-concluida {
+    position: absolute;                          /* Fica por cima do jogo */
+    inset: 0;                                    /* Ocupa a área toda */
+    display: flex;                               /* Flex pra centralizar */
+    flex-direction: column;                      /* Um embaixo do outro */
+    justify-content: center;                     /* Centraliza na vertical */
+    align-items: center;                         /* Centraliza na horizontal */
+    gap: 1.4cqw;                                 /* Espaço entre os itens */
+    padding: 4%;                                 /* Espaço nas bordas */
+    background: #050816cc;                       /* Escurece o jogo atrás */
+    text-align: center;                          /* Texto centralizado */
+}
+
+#fase-concluida h2 {
+    margin: 0;                                   /* Sem margem padrão */
+    color: #3bff7a;                              /* Verde de vitória */
+    font-size: clamp(22px, 5cqw, 64px);          /* Título grande e proporcional */
+    letter-spacing: .12em;                       /* Letras espaçadas */
+    text-shadow: 0 4px 0 #060e2b;                /* Sombra sólida */
+}
+
+.fc-heroi {
+    margin: 0;                                   /* Sem margem padrão */
+    color: #eef5ff;                              /* Texto claro */
+    font-size: clamp(14px, 2cqw, 26px);          /* Tamanho proporcional */
+    font-weight: 800;                            /* Bem negrito */
+    letter-spacing: .2em;                        /* Espaçado */
+}
+
+.fc-dados {
+    display: flex;                               /* Os 3 dados lado a lado */
+    flex-wrap: wrap;                             /* Quebram linha em tela estreita */
+    justify-content: center;                     /* Centralizados */
+    gap: 3cqw;                                   /* Espaço entre eles */
+    margin: .5em 0;                              /* Espaço em cima e embaixo */
+}
+
+.fc-dados div {
+    display: flex;                               /* Nome em cima, valor embaixo */
+    flex-direction: column;                      /* Empilhados */
+    gap: .3em;                                   /* Espaço entre nome e valor */
+}
+
+.fc-dados dt {
+    color: #9fb4e0;                              /* Nome apagado */
+    font-size: clamp(10px, 1.1cqw, 15px);        /* Pequeno */
+    letter-spacing: .15em;                       /* Espaçado */
+    text-transform: uppercase;                   /* Maiúsculo */
+}
+
+.fc-dados dd {
+    margin: 0;                                   /* Sem recuo padrão do <dd> */
+    color: #ffffff;                              /* Valor branco */
+    font-size: clamp(16px, 2.6cqw, 34px);        /* Grande */
+    font-weight: 800;                            /* Bem negrito */
+    font-variant-numeric: tabular-nums;          /* Números alinhados */
+}
+
+.fc-botoes {
+    display: flex;                               /* Botões lado a lado */
+    flex-wrap: wrap;                             /* Quebram em tela estreita */
+    justify-content: center;                     /* Centralizados */
+    gap: 1.5cqw;                                 /* Espaço entre eles */
+}
+
+.fc-botoes button {
+    min-height: 44px;                            /* Altura boa pro dedo */
+    padding: .8em 1.6em;                         /* Espaço interno */
+    border: 2px solid #3657bc;                   /* Borda azul */
+    border-radius: 8px;                          /* Cantos arredondados */
+    background: #192a6b;                         /* Azul escuro */
+    color: #eef5ff;                              /* Texto claro */
+    font-size: clamp(12px, 1.5cqw, 20px);        /* Tamanho proporcional */
+    font-weight: bold;                           /* Negrito */
+    box-shadow: 0 4px 0 #0a1233;                 /* Sombra sólida */
+}
+
+#fc-proxima {
+    background: #b7f65b;                         /* Botão principal verde */
+    border-color: #e5ffb5;                       /* Borda verde clara */
+    color: #193d2a;                              /* Texto escuro */
+}
+
+.fc-botoes button span {
+    margin-left: .6em;                           /* Afasta o "ESC" */
+    font-size: .7em;                             /* Menor */
+    opacity: .7;                                 /* Apagado */
+}
+
+.fc-botoes button:focus-visible {
+    outline: 3px solid white;                    /* Contorno no foco do teclado */
+    outline-offset: 4px;                         /* Afastado */
+}
+
+/* ================================================================
+   ANIMAÇÕES
+   ================================================================ */
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.09);                  /* No meio da animação o anel cresce */
+        opacity: .4;                             /* E fica mais transparente */
+    }
+}
+
+/* ================================================================
+   RESPONSIVO
+   ================================================================ */
+
+/* Aparelhos de toque (celular/tablet) */
+@media (pointer: coarse) {
+    .keyboard-hint {
+        display: none;                           /* Esconde "pressione Enter" (não tem teclado) */
+    }
+
+    #back-button span, #ability-button span {
+        display: none;                           /* Esconde o "ESC" e o "E" dos botões */
+    }
+}
+
+/* Celular deitado (tela larga mas baixinha) */
+@media (orientation: landscape) and (max-height: 500px) {
+    #menu {
+        padding: 2% 3%;                          /* Menos espaço nas bordas */
+    }
+
+    .tagline {
+        margin: 1.2cqw 0 1.6cqw;                 /* Menos espaço em volta da frase */
+    }
+
+    .play-label {
+        margin: 1cqw 0 .4cqw;                    /* Menos espaço em volta do "JOGAR" */
+    }
+}
+
+/* Celular em pé (tela estreita) */
+@media (max-width: 600px) and (orientation: portrait) {
+    #game-shell {
+        width: 100vw;                            /* Ocupa a largura toda */
+        aspect-ratio: 3 / 4;                     /* Formato mais alto pra caber o menu */
+    }
+
+    #menu {
+        padding: 7% 6%;                          /* Mais espaço nas bordas */
+    }
+
+    h1 {
+        font-size: 11cqw;                        /* Título maior pra aproveitar a largura */
+    }
+
+    .eyebrow {
+        margin-bottom: 5cqw;                     /* Mais espaço embaixo */
+        font-size: 10px;                         /* Tamanho fixo */
+    }
+
+    .tagline {
+        margin: 5cqw 0 8cqw;                     /* Mais espaço em volta */
+        font-size: 13px;                         /* Tamanho fixo legível */
+    }
+
+    #play-button {
+        width: 80px;                             /* Botão grande pro dedo */
+    }
+
+    .play-orbit {
+        padding: 10px;                           /* Anel mais afastado */
+    }
+
+    .play-icon {
+        border-top-width: 13px;                  /* Triângulo em px (cqw ficaria pequeno) */
+        border-bottom-width: 13px;               /* Idem */
+        border-left-width: 20px;                 /* Idem */
+    }
+
+    .play-label {
+        margin: 6cqw 0 3cqw;                     /* Mais espaço em volta */
+        font-size: 14px;                         /* Tamanho fixo legível */
+    }
+
+    .keyboard-hint {
+        font-size: 11px;                         /* Tamanho fixo */
+    }
+
+    .level-btn {
+        width: 44%;                              /* Dois cartões por linha no celular */
+        padding: 10px 8px;                       /* Espaço interno em px (cqw ficaria pequeno) */
+    }
+
+    .menu-header, .menu-footer {
+        font-size: 9px;                          /* Legível em tela pequena */
+        letter-spacing: .08em;                   /* Menos espaçado pra caber */
+    }
+}
+
+/* Acessibilidade: quem prefere menos movimento no sistema */
+@media (prefers-reduced-motion: reduce) {
+     *, *::before {
+        animation: none !important;              /* Desliga todas as animações CSS */
+        transition: none !important;             /* Desliga todas as transições */
+    }
+}
+
+/* ================================================================
+   VISUAL "JOGO DE RITMO" (inspirado na navegação clássica de jogos de plataforma
+   rítmicos: botões redondos e grossos, contorno escuro, cartão grande por fase).
+   Tudo desenhado com CSS próprio — nenhum asset de outro jogo.
+   ================================================================ */
+
+/* Título com letras grossas, amarelo-esverdeado e contorno escuro */
+#game-title {
+    -webkit-text-stroke: .045em #061026;         /* Contorno escuro nas letras */
+    paint-order: stroke fill;                    /* Contorno por baixo do preenchimento */
+}
+
+/* Linha com os três botões grandes do menu */
+.menu-botoes {
+    display: flex;                               /* Lado a lado */
+    align-items: center;                         /* Centralizados na vertical */
+    justify-content: center;                     /* Centralizados na horizontal */
+    gap: 4cqw;                                   /* Espaço entre eles */
+}
+
+/* Botões redondos laterais (Heróis / Como jogar) */
+.botao-redondo {
+    display: flex;                               /* Ícone em cima, texto embaixo */
+    flex-direction: column;                      /* Empilhados */
+    align-items: center;                         /* Centralizados */
+    justify-content: center;                     /* Centralizados */
+    gap: .3em;                                   /* Espaço entre ícone e texto */
+    width: clamp(64px, 9cqw, 130px);             /* Tamanho proporcional */
+    aspect-ratio: 1;                             /* Quadrado (vira círculo com o radius) */
+    border-radius: 50%;                          /* Redondo */
+    border: .35cqw solid #061026;                /* Contorno grosso escuro */
+    background: radial-gradient(circle at 50% 30%, #9cff4f, #3fae1b 70%); /* Verde com brilho em cima */
+    box-shadow: 0 .5cqw 0 #061026, inset 0 -.5cqw 0 #00000033; /* "Degrau" embaixo (botão de jogo) */
+    color: #ffffff;                              /* Texto branco */
+    font-size: clamp(8px, .95cqw, 13px);         /* Texto pequeno */
+    text-shadow: 0 2px 0 #061026;                /* Sombra no texto */
+    transition: transform .12s ease;             /* Animação ao apertar */
+}
+/* Hover/foco: cresce um pouco */
+.botao-redondo:hover, .botao-redondo:focus-visible { transform: scale(1.08); outline: none; }
+/* Clique: afunda */
+.botao-redondo:active { transform: translateY(.3cqw) scale(.97); }
+
+/* Ícone de cubo (Heróis) */
+.icone-cubo {
+    width: 34%; aspect-ratio: 1;                 /* Quadrado */
+    background: #ffd400;                         /* Amarelo */
+    border: 3px solid #061026;                   /* Contorno */
+    box-shadow: inset 0 0 0 4px #ff8a00;         /* Quadrado interno laranja */
+}
+/* Ícone de interrogação (Como jogar) */
+.icone-ajuda { font-size: 2.6em; font-weight: 900; line-height: 1; }
+
+/* Botão de som no canto superior direito */
+.botao-canto {
+    position: absolute; bottom: 12%; right: 3%;  /* Canto de baixo (não cobre o cabeçalho) */
+    padding: .5em 1em;                           /* Espaço interno */
+    border-radius: 999px;                        /* Pílula */
+    border: 2px solid #061026;                   /* Contorno */
+    background: #3ad1ff; color: #061026;         /* Azul com texto escuro */
+    font-weight: 900; font-size: clamp(9px, 1cqw, 14px); /* Texto forte */
+    box-shadow: 0 3px 0 #061026;                 /* Degrau */
+}
+/* Mudo: cinza */
+.botao-canto.mudo { background: #8892a6; }
+
+/* PAINÉIS (Heróis / Como jogar) */
+.painel {
+    position: absolute; inset: 7% 12%;           /* Caixa no meio da tela */
+    display: flex; flex-direction: column;       /* Empilhado */
+    align-items: center; justify-content: center; gap: 1.2cqw; /* Centralizado com espaço */
+    padding: 2.4cqw;                             /* Espaço interno */
+    background: #0b1640ee;                       /* Azul escuro quase opaco */
+    border: .35cqw solid #061026;                /* Contorno grosso */
+    border-radius: 2cqw;                         /* Cantos bem arredondados */
+    box-shadow: 0 .6cqw 0 #061026, inset 0 0 0 .25cqw #3ad1ff55; /* Degrau + borda interna */
+    overflow: auto;                              /* Rola se faltar espaço (celular) */
+}
+/* Título do painel */
+.painel h2 { margin: 0; color: #ffd400; font-size: clamp(18px, 3cqw, 40px); -webkit-text-stroke: .04em #061026; paint-order: stroke fill; }
+/* Botão de fechar */
+.painel-fechar, #pausa button {
+    padding: .6em 1.4em;                         /* Espaço interno */
+    border-radius: 999px;                        /* Pílula */
+    border: 2px solid #061026;                   /* Contorno */
+    background: #3fae1b; color: #fff;            /* Verde */
+    font-weight: 900;                            /* Forte */
+    box-shadow: 0 4px 0 #061026;                 /* Degrau */
+}
+.painel-fechar span, #pausa button span { opacity: .7; font-size: .8em; margin-left: .4em; } /* Tecla de atalho mais apagada */
+.painel-fechar:focus-visible, #pausa button:focus-visible { outline: 3px solid #ffd400; outline-offset: 3px; } /* Foco visível */
+
+/* Lista de heróis (grade de cartõezinhos) */
+.lista-herois { display: grid; grid-template-columns: repeat(auto-fit, minmax(14em, 1fr)); gap: 1cqw; width: 100%; }
+.heroi-item {
+    display: grid; grid-template-columns: auto 1fr; gap: .2em .8em; align-items: center; /* Cubo à esquerda, textos à direita */
+    padding: .8em; border-radius: 1cqw;          /* Espaço e cantos */
+    background: #ffffff0d; border: 2px solid var(--cor); /* Fundo leve e borda na cor do herói */
+    font-size: clamp(10px, 1.2cqw, 16px);        /* Texto proporcional */
+}
+.heroi-item b { color: var(--cor); }            /* Nome na cor do herói */
+.heroi-item span { grid-column: 2; color: #d7e2ff; font-size: .9em; } /* Habilidade embaixo do nome */
+.heroi-cubo { grid-row: span 2; width: 2.4em; aspect-ratio: 1; background: var(--cor); border: 3px solid #061026; box-shadow: inset 0 0 0 5px #ffffff55; } /* Cubo do herói */
+
+/* Lista "como jogar" com ícones desenhados em CSS */
+.lista-ajuda { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqw; font-size: clamp(10px, 1.3cqw, 18px); }
+.lista-ajuda li { display: flex; align-items: center; gap: .8em; }
+.lista-ajuda b { color: #ffd400; }
+.ic { width: 1.6em; height: 1.6em; flex: none; display: inline-block; } /* Base dos ícones */
+.ic-pulo { background: #b7f65b; border: 2px solid #061026; }                       /* Cubo */
+.ic-hab { background: radial-gradient(circle, #ffffff, #3ad1ff); border-radius: 50%; } /* Brilho */
+.ic-pad { height: .5em; align-self: end; background: #ffd400; border-radius: .4em .4em 0 0; } /* Pad */
+.ic-orbe { border-radius: 50%; border: 4px solid #ffd400; background: #ffd40044; } /* Orbe */
+.ic-grav { border-radius: 50%/30%; border: 3px solid #3ad1ff; }                   /* Portal */
+.ic-vel { border: 3px solid #3dff8a; }                                               /* Portal de velocidade */
+.ic-serra { border-radius: 50%; background: repeating-conic-gradient(#d9dde8 0 20deg, transparent 20deg 36deg); } /* Serra */
+.ic-cp { background: linear-gradient(90deg, #ffffff 0 3px, transparent 3px), linear-gradient(#3dff8a, #3dff8a) 3px 0 / 60% 55% no-repeat; } /* Bandeira */
+.ic-modo { border-radius: 50%; border: 4px solid #ff4d6d; box-shadow: inset 0 0 0 4px #c06bff; } /* Portais de modo (bola/UFO) */
+.ic-azul { border-radius: 50%; border: 4px solid #3ad1ff; background: #3ad1ff44; } /* Pad/orbe azul */
+.ic-pratica { width: 1.2em; height: 1.2em; margin: 0 .2em; transform: rotate(45deg); background: #3dff8a; border: 2px solid #ffffff; } /* Diamante */
+
+/* SELEÇÃO DE FASES EM CARROSSEL */
+.carrossel { display: flex; align-items: center; gap: 2cqw; width: 100%; justify-content: center; } /* Seta · cartão · seta */
+.carrossel .level-grid { max-width: none; }     /* O cartão decide a largura */
+/* Só o cartão ativo aparece */
+.level-select-oculto, #level-select .level-btn:not(.ativa) { display: none; }
+/* Cartão grande da fase */
+#level-select .level-btn {
+    width: min(62cqw, 760px);                    /* Bem largo */
+    min-height: 22cqw;                           /* Bem alto */
+    padding: 2cqw 2.6cqw;                        /* Espaço interno */
+    border: .4cqw solid #061026;                 /* Contorno grosso escuro */
+    border-radius: 2cqw;                         /* Cantos arredondados */
+    font-size: clamp(16px, 3.4cqw, 46px);        /* Nome grande */
+    -webkit-text-stroke: .03em #061026;          /* Contorno nas letras */
+    paint-order: stroke fill;                    /* Contorno por baixo */
+    box-shadow: 0 .7cqw 0 #061026, inset 0 0 0 .3cqw var(--brilho); /* Degrau + borda interna colorida */
+    justify-content: center;                     /* Conteúdo no meio */
+}
+#level-select .level-btn small { font-size: .38em; -webkit-text-stroke: 0; } /* Descrição */
+/* Bloco extra do cartão (dificuldade, barra, recordes) */
+.card-extra { display: grid; gap: .6cqw; width: 100%; font-size: .32em; -webkit-text-stroke: 0; text-transform: none; }
+.card-dif { display: inline-flex; align-items: center; gap: .5em; color: var(--dif); font-weight: 900; } /* Dificuldade */
+.card-dif em { font-style: normal; color: #ffd400; letter-spacing: .1em; } /* Estrelas */
+.dif-icone { width: 1.6em; aspect-ratio: 1; border-radius: 50%; background: var(--dif); border: 3px solid #061026; box-shadow: inset 0 -.3em 0 #00000040; } /* Ícone redondo da dificuldade */
+/* Barra de progresso do cartão (melhor % alcançado) */
+.card-barra { position: relative; display: block; height: 1.5em; border-radius: 999px; background: #061026aa; border: 2px solid #061026; overflow: hidden; }
+.card-barra i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(#9cff4f, #3fae1b); } /* Preenchimento verde */
+.card-barra em { position: relative; display: block; text-align: center; font-style: normal; font-weight: 900; line-height: 1.5em; } /* % no meio */
+.card-stats { color: #ffffffcc; font-weight: normal; }  /* Recordes */
+/* Setas grandes */
+.seta {
+    width: clamp(40px, 6cqw, 84px); aspect-ratio: 1; /* Quadradas */
+    border-radius: 50%; border: .3cqw solid #061026; /* Redondas com contorno */
+    background: radial-gradient(circle at 50% 30%, #9cff4f, #3fae1b 70%); /* Verde */
+    color: #fff; font-size: clamp(16px, 2.6cqw, 36px); /* Seta grande */
+    box-shadow: 0 .45cqw 0 #061026;              /* Degrau */
+}
+.seta:hover, .seta:focus-visible { transform: scale(1.08); outline: none; } /* Cresce */
+/* Bolinhas indicando a fase */
+.pontos { display: flex; gap: .8cqw; margin-top: 1.6cqw; }
+.pontos i { width: clamp(8px, 1cqw, 14px); aspect-ratio: 1; border-radius: 50%; background: #ffffff44; cursor: pointer; }
+.pontos i.ativa { background: #ffd400; transform: scale(1.3); }
+.sel-dica { margin: 1cqw 0 0; color: #a9bde2; font-size: clamp(9px, 1.1cqw, 15px); }
+
+/* TELA DE PAUSA */
+#pausa {
+    position: absolute; inset: 0;                /* Cobre o jogo */
+    display: flex; flex-direction: column;       /* Empilhado */
+    align-items: center; justify-content: center; gap: 1.4cqw; /* Centralizado */
+    background: #050816cc;                       /* Escurece o jogo atrás */
+}
+#pausa h2 { margin: 0; color: #ffd400; font-size: clamp(22px, 5cqw, 64px); -webkit-text-stroke: .04em #061026; paint-order: stroke fill; }
+#pausa-info { margin: 0; color: #d7e2ff; font-weight: 700; font-size: clamp(11px, 1.5cqw, 20px); }
+.pausa-botoes { display: grid; grid-template-columns: repeat(2, minmax(10em, 1fr)); gap: 1cqw; font-size: clamp(11px, 1.5cqw, 20px); }
+#pausa-selecao { background: #3ad1ff; color: #061026; } /* Azul */
+#pausa-som { background: #8892a6; }                     /* Cinza */
+#pausa-pratica { grid-column: 1 / -1; background: #3dff8a; color: #061026; } /* Verde (diamante), linha inteira */
+
+/* Celular em pé: botões empilham */
+@media (max-width: 600px) {
+    .menu-botoes { gap: 2cqw; }                  /* Menos espaço */
+    .pausa-botoes { grid-template-columns: 1fr; } /* Uma coluna */
+    #level-select .level-btn { width: 70cqw; }   /* Cartão quase a tela toda */
+}

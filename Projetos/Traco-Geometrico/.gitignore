@@ -1,0 +1,5 @@
+phaser.local.min.js
+tests/teste.html
+tests/screenshots/
+tests/resultado.json
+__pycache__/

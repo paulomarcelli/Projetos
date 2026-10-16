@@ -30,10 +30,14 @@ Projetos/
 │   ├── nochemas.png
 │   ├── unanochemas.mp4
 │   └── README.md
-└── Role-peoes/
-    ├── index.html
-    ├── style.css
-    └── script.js
+├── Role-peoes/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── Tarefa-POO-JavaScript/
+    ├── src/
+    │   └── main.js
+    └── README.md
 ```
 
 ## 🗂️ Projetos
@@ -45,6 +49,7 @@ Projetos/
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
 | [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | Publicado |
 | [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | Publicado |
+| [Tarefa de POO em JavaScript](Projetos/Tarefa-POO-JavaScript) | JavaScript · Node.js · Programação Orientada a Objetos | Em desenvolvimento |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 

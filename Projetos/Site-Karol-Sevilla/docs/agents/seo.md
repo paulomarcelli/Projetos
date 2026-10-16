@@ -27,7 +27,7 @@ Você é o revisor de SEO deste site estático (HTML + CSS + JS, GitHub Pages).
 
 ---
 
-## Resultado da revisão (2026-10-16, Agente 3)
+## Resultado da revisão (2026-10-16, Agente 3; atualizada na Fase 4)
 
 Medido no navegador (Playwright, `docs/TEST_REPORT.md` §4) e por leitura do código.
 
@@ -36,16 +36,18 @@ Medido no navegador (Playwright, `docs/TEST_REPORT.md` §4) e por leitura do có
 | 1 | `<title>` | ok | "Karol Sevilla: história, superação e música \| fã-site" (54 caracteres); por seção, o JS usa "Capítulo 2 · Karol Sevilla \| fã-site" | — |
 | 2 | Meta description | ok | 145 caracteres | — |
 | 3 | `lang` | ok | `pt-BR` | — |
-| 4 | Um `<h1>` e hierarquia | ok | 1 `h1` ("Karol Sevilla"); títulos de seção em `h2`, subtítulos em `h3`; 0 saltos de nível | — |
+| 4 | Um `<h1>` e hierarquia | ok, com ressalva (Fase 4, achado U11) | Cada view tem o seu `h1` (8 no HTML; **com JS só 1 fica visível por vez**, medido: 1 `h1` visível em 8/8 views). Títulos de seção em `h2`, cartões e destaques em `h3`; 0 saltos de nível em todas as views. Sem JS, as 8 views aparecem em sequência, cada uma com seu `h1` dentro de uma `<section>` (válido em HTML5). | Se o autor quiser rigorosamente um único `h1` no código-fonte, o caminho é trocar a navegação por páginas separadas. Para uma página única por hash, um `h1` por view é a opção mais acessível. |
 | 5 | HTML semântico | ok | `header` 1, `nav` 6 (lateral, abas, linha do tempo e navegação entre capítulos), `main` 1, `aside` (player) 1, `footer` 1, `section`/`article` por view | — |
-| 6 | Imagens | ok | 32 `<img>`, 0 sem `alt`, 0 sem `width`/`height`; fotos em WebP (12–56 KB); `loading="lazy"` em todas, menos o retrato do hero (`fetchpriority="high"`) | — |
+| 6 | Imagens | ok | 29 `<img>` (25 espaços pendentes e 4 fotos reais), 0 sem `alt`, 0 sem `width`/`height`; fotos em WebP (12–56 KB); `loading="lazy"` em todas, menos o retrato do hero (`fetchpriority="high"`) | — |
 | 7 | Viewport | ok | `width=device-width, initial-scale=1` (zoom liberado) | — |
 | 8 | Texto dos links | ok, com ressalva | Os links "Ver tudo" ficam ao lado do título da prateleira; "Detalhes" no player tem `aria-label` com o nome da faixa; links externos têm `aria-label` completo | Baixo impacto: se quiser, trocar "Ver tudo" por "Ver todos os capítulos" etc. |
 | 9 | Open Graph | ok | `og:type`, `og:locale`, `og:title`, `og:description`, `og:url`, `og:image` (1200×630, `assets/img/og-karol-sevilla.jpg`), `og:image:alt` | URLs absolutas supõem o endereço `https://paulomarcelli.github.io/Projetos/`. Se o endereço mudar, atualizar. |
 | 10 | Favicon | ok | `assets/img/favicon.svg` (borboleta própria) | — |
 | 11 | `sitemap.xml` / `robots.txt` | não feito (decisão) | O site é publicado como *project page* (`/Projetos/`); o `robots.txt` só vale na raiz do domínio (`paulomarcelli.github.io/robots.txt`), que fica fora deste repositório. O site é uma URL única, então o sitemap teria uma linha só. | Se o autor quiser indexação ativa: cadastrar a URL no Google Search Console. |
 | 12 | JSON-LD | não feito (decisão) | Um `Person` sobre a artista poderia sugerir site oficial. | Manter sem JSON-LD. |
-| 13 | Conteúdo em texto | ok | Todo o conteúdo está no HTML (22.733 caracteres visíveis sem JS), não em imagens nem injetado por JS | — |
+| 13 | Conteúdo em texto | ok | Todo o conteúdo está no HTML (22.648 caracteres visíveis sem JS), não em imagens nem injetado por JS | — |
 | 14 | Performance | ok | Sem frameworks; 2 CSS (≈ 40 KB) e 3 JS (≈ 17 KB) sem minificação; fontes com `display=swap` e `preconnect` | Opcional: rodar o PageSpeed Insights depois de publicado. |
+
+**Observação (Fase 4):** os ids das views agora têm o prefixo `view-` (ex.: `id="view-musica"`) para que o navegador não trate `#musica` como âncora de trecho; o roteador continua usando `#musica` na URL. Os trechos (`#cap2-teste`, `#fonte-33`) seguem como âncoras.
 
 **Conclusão:** o checklist "Essencial" passou por inteiro. Dos itens opcionais, Open Graph está feito; sitemap, robots e JSON-LD ficaram de fora de propósito (motivos acima).

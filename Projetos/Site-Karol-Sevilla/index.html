@@ -129,11 +129,12 @@
       <div class="notice notice--empty" id="aviso-rota" role="status" hidden></div>
 
       <!-- ===================== INÍCIO ===================== -->
-      <section class="view" id="inicio" aria-labelledby="titulo-inicio" data-title="Início">
+      <section class="view" id="view-inicio" data-view="inicio" aria-labelledby="titulo-inicio" data-title="Início">
         <div class="hero hero--artist">
-          <div class="hero__media">
+          <figure class="hero__media">
             <img class="hero__portrait" src="assets/img/karol-sevilla-2021-retrato.webp" width="480" height="564" alt="Karol Sevilla sorrindo, com cabelo castanho ondulado e blusa lilás de babados, em 2021" fetchpriority="high">
-          </div>
+            <figcaption class="hero__credit">Foto: Karol Sevilla (YouTube), via <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons<span class="sr-only"> (abre em nova aba)</span></a>, <a href="https://creativecommons.org/licenses/by/3.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY 3.0<span class="sr-only"> (abre em nova aba)</span></a></figcaption>
+          </figure>
           <div class="hero__text">
             <p class="eyebrow">Atriz · cantora · compositora</p>
             <h1 class="hero__title" id="titulo-inicio" tabindex="-1">Karol Sevilla</h1>
@@ -141,9 +142,8 @@
             <p class="hero__intro">Nascida na Cidade do México em 1999, ela começou como figurante ainda criança, protagonizou <cite>Soy Luna</cite> no Disney Channel e construiu uma carreira com o próprio nome. Este é um site de fã: toda informação tem fonte, e o que é opinião nossa aparece marcado. <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a><a class="ref" href="#fonte-96" aria-label="Fonte 96">[96]</a></p>
             <div class="hero__actions">
               <a class="btn btn--primary" href="#historia">Começar a história</a>
-              <a class="btn btn--secondary" href="#musica">Ouvir destaques</a>
+              <a class="btn btn--secondary" href="#musica">Conhecer as músicas</a>
             </div>
-            <p class="hero__credit">Foto: Karol Sevilla (YouTube), via <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons<span class="sr-only"> (abre em nova aba)</span></a>, <a href="https://creativecommons.org/licenses/by/3.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY 3.0<span class="sr-only"> (abre em nova aba)</span></a></p>
           </div>
         </div>
 
@@ -156,26 +156,25 @@
           <div class="shelf__viewport">
             <ul class="shelf__list" id="lista-capitulos">
               <li class="card card--chapter">
-                <div class="card__media">
-                  <!-- IMAGEM INFÂNCIA DE KAROL OU INÍCIO NA TV (CAPÍTULO 1): substituir pela URL direta de uma imagem autorizada. Proporção recomendada: 1:1. Cole a URL no atributo src abaixo e remova a classe is-pending. -->
-                  <img class="card__img is-pending" src="assets/img/pendente.svg" width="320" height="320" alt="Imagem pendente: Karol Sevilla na infância ou no início na TV" loading="lazy" decoding="async">
-                  <span class="card__badge" aria-hidden="true">01</span>
+                <div class="card__media card__media--editorial" aria-hidden="true">
+                  <span class="card__num">01</span>
+                  <svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>
                 </div>
                 <h3 class="card__title"><a class="card__link" href="#capitulo-1">O começo de um sonho</a></h3>
                 <p class="card__sub">1999–2014 · Cidade do México, figuração e primeiros papéis</p>
               </li>
               <li class="card card--chapter">
-                <div class="card__media">
-                  <img class="card__img" src="assets/img/karol-sevilla-show-2017.webp" width="500" height="697" alt="" loading="lazy" decoding="async">
-                  <span class="card__badge" aria-hidden="true">02</span>
+                <div class="card__media card__media--editorial" aria-hidden="true">
+                  <span class="card__num">02</span>
+                  <svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>
                 </div>
                 <h3 class="card__title"><a class="card__link" href="#capitulo-2">O caminho até o reconhecimento</a></h3>
                 <p class="card__sub">2015–2024 · <cite>Soy Luna</cite>, turnês e carreira solo</p>
               </li>
               <li class="card card--chapter">
-                <div class="card__media">
-                  <img class="card__img" src="assets/img/karol-sevilla-casi-el-paraiso-2024-pose.webp" width="640" height="960" alt="" loading="lazy" decoding="async">
-                  <span class="card__badge" aria-hidden="true">03</span>
+                <div class="card__media card__media--editorial" aria-hidden="true">
+                  <span class="card__num">03</span>
+                  <svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>
                 </div>
                 <h3 class="card__title"><a class="card__link" href="#capitulo-3">A evolução, a identidade e a superação</a></h3>
                 <p class="card__sub">2018–2026 · Identidade, <cite>Imperfecta</cite> e a volta a Luna</p>
@@ -286,9 +285,9 @@
       </section>
 
       <!-- ===================== HISTÓRIA ===================== -->
-      <section class="view" id="historia" aria-labelledby="titulo-historia" data-title="História">
+      <section class="view" id="view-historia" data-view="historia" aria-labelledby="titulo-historia" data-title="História">
         <header class="view__head">
-          <h2 class="view__title" id="titulo-historia" tabindex="-1">História</h2>
+          <h1 class="view__title" id="titulo-historia" tabindex="-1">História</h1>
           <p class="view__lead">Da Cidade do México para o mundo, de 1999 a 2026. Escolha um marco para ler o trecho correspondente no capítulo.</p>
         </header>
 
@@ -307,14 +306,14 @@
             <li class="timeline__item" data-chapter="2"><a class="timeline__link" href="#cap2-colaboracoes" data-marco="2024"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2022–24</span><span class="timeline__label">Parcerias, <cite>Siempre fui yo</cite> e estreia no cinema</span><span class="timeline__chapter">Capítulo 2</span></a></li>
             <li class="timeline__item" data-chapter="3"><a class="timeline__link" href="#cap3-cuidado" data-marco="2022"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2022</span><span class="timeline__label">Fala em público sobre saúde mental</span><span class="timeline__chapter">Capítulo 3</span></a></li>
             <li class="timeline__item" data-chapter="3"><a class="timeline__link" href="#cap3-imperfecta" data-marco="2026a"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2026</span><span class="timeline__label">Lança <cite>Imperfecta</cite>, primeiro álbum</span><span class="timeline__chapter">Capítulo 3</span></a></li>
-            <li class="timeline__item" data-chapter="3"><a class="timeline__link" href="#cap3-volta" data-marco="2026b"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2026</span><span class="timeline__label">Volta a Luna em <cite>Volver a rodar</cite></span><span class="timeline__chapter">Capítulo 3</span></a></li>
+            <li class="timeline__item" data-chapter="3"><a class="timeline__link" href="#cap3-volta" data-marco="2026b"><span class="timeline__dot" aria-hidden="true"></span><span class="timeline__year">2026</span><span class="timeline__label">Volta a ser Luna em <cite>Volver a rodar</cite></span><span class="timeline__chapter">Capítulo 3</span></a></li>
           </ol>
           <button class="shelf__arrow shelf__arrow--next timeline__arrow js-only" type="button" aria-label="Rolar a linha do tempo para a direita" aria-controls="lista-marcos"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
         </nav>
 
         <section class="shelf" aria-labelledby="titulo-os-capitulos">
           <div class="shelf__head">
-            <h3 class="shelf__title" id="titulo-os-capitulos">Os capítulos</h3>
+            <h2 class="shelf__title" id="titulo-os-capitulos">Os capítulos</h2>
           </div>
           <ol class="chapter-links">
             <li><a class="chapter-link" href="#capitulo-1"><span class="chapter-link__num" aria-hidden="true">01</span><span><span class="chapter-link__title">O começo de um sonho</span><span class="chapter-link__period">1999–2014</span></span></a></li>
@@ -327,12 +326,12 @@
       </section>
 
       <!-- ===================== CAPÍTULO 1 ===================== -->
-      <article class="view chapter" id="capitulo-1" aria-labelledby="titulo-cap1" data-title="Capítulo 1">
+      <article class="view chapter" id="view-capitulo-1" data-view="capitulo-1" aria-labelledby="titulo-cap1" data-title="Capítulo 1">
         <header class="hero hero--chapter">
           <span class="hero__num" aria-hidden="true">01</span>
           <div>
             <p class="eyebrow">Capítulo 1 · 1999–2014</p>
-            <h2 class="view__title" id="titulo-cap1" tabindex="-1">O começo de um sonho</h2>
+            <h1 class="view__title" id="titulo-cap1" tabindex="-1">O começo de um sonho</h1>
             <p class="view__lead">Onde tudo começou: Cidade do México, anos 2000.</p>
           </div>
         </header>
@@ -346,8 +345,8 @@
         <div class="prose">
           <p id="cap1-origem"><span class="tag tag--fact">Fato</span> Karol Itzitery Piña Cisneros nasceu na Cidade do México em 9 de novembro de 1999. <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a><a class="ref" href="#fonte-96" aria-label="Fonte 96">[96]</a></p>
           <p><span class="tag tag--said">Nas palavras dela</span> Numa entrevista de 2022 retomada pela UnoTV, ela contou que a mãe trabalhava como secretária e que ela e o irmão passavam os dias com a avó, Bertha. <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a></p>
-          <p id="cap1-avo"><span class="tag tag--said">Nas palavras dela</span> Foi a avó quem viu o anúncio que procurava figurantes para <cite>Plaza Sésamo</cite>. Comprou roupas baratas numa feira e levou a neta, de uns seis anos, à gravação. Karol lembra, rindo, que fez o papel de uma árvore no meio de centenas de crianças. Ali, Lili Garza, diretora do CEA Infantil, pediu que ela voltasse para um teste na escola, e tudo foi feito em segredo da mãe. <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a> Em outra entrevista, de 2018, Karol contou que foi aceita na mesma época em que a avó morreu e que só então revelou à mãe o que tinham escondido. A mãe a princípio recusou, mas depois aceitou. <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a><a class="ref" href="#fonte-5" aria-label="Fonte 5">[5]</a></p>
-          <p id="cap1-primeiros-papeis"><span class="tag tag--fact">Fato</span> Entre 2006 e 2008, ela estudou atuação no Centro de Educación Artística (CEA) da Televisa. Estreou em novela em 2008, em <cite>Querida enemiga</cite>, como Gina. Nos anos seguintes acumulou pequenos papéis em produções como <cite>La rosa de Guadalupe</cite>, <cite>Mujeres asesinas</cite> e <cite>Como dice el dicho</cite>, e protagonizou musicais infantis como <cite>Anita la huerfanita</cite> e <cite>El mago de Oz</cite>. <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a><a class="ref" href="#fonte-96" aria-label="Fonte 96">[96]</a> <span class="note">A lista de trabalhos vem da Wikipedia; a seção de filmografia do artigo em inglês não tem referências próprias.</span></p>
+          <p id="cap1-avo"><span class="tag tag--said">Nas palavras dela</span> Foi a avó quem viu o anúncio que procurava figurantes para <cite>Plaza Sésamo</cite>. Comprou roupas baratas numa feira e levou a neta, de uns seis anos, à gravação. Karol lembra que, na gravação, fez o papel de uma árvore, a de número 583. Ali, Lili Garza, diretora do CEA Infantil, pediu que ela voltasse para um teste na escola, e tudo foi feito em segredo da mãe. <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a> Em outra entrevista, de 2018, Karol contou que foi aceita na mesma época em que a avó morreu e que só então revelou à mãe o que tinham escondido. A mãe a princípio recusou, mas depois aceitou. <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a><a class="ref" href="#fonte-5" aria-label="Fonte 5">[5]</a></p>
+          <p id="cap1-primeiros-papeis"><span class="tag tag--fact">Fato</span> Na infância, ela estudou atuação no Centro de Educación Artística (CEA) da Televisa. Estreou em novela em 2008, em <cite>Querida enemiga</cite>, como Gina. Nos anos seguintes acumulou pequenos papéis em produções como <cite>La rosa de Guadalupe</cite>, <cite>Mujeres asesinas</cite> e <cite>Como dice el dicho</cite>, e protagonizou musicais infantis como <cite>Anita la huerfanita</cite> e <cite>El mago de Oz</cite>. <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a><a class="ref" href="#fonte-96" aria-label="Fonte 96">[96]</a> <span class="note">A lista de trabalhos vem da Wikipedia; a seção de filmografia do artigo em inglês não tem referências próprias.</span></p>
           <p><span class="tag tag--said">Nas palavras dela</span> Em 2021, ela disse que é grata à Televisa pela formação, embora não pretendesse voltar a trabalhar na emissora. <a class="ref" href="#fonte-59" aria-label="Fonte 59">[59]</a></p>
           <aside class="reading" aria-label="Nossa leitura">
             <span class="tag tag--ours">Nossa leitura</span>
@@ -362,18 +361,18 @@
       </article>
 
       <!-- ===================== CAPÍTULO 2 ===================== -->
-      <article class="view chapter" id="capitulo-2" aria-labelledby="titulo-cap2" data-title="Capítulo 2">
+      <article class="view chapter" id="view-capitulo-2" data-view="capitulo-2" aria-labelledby="titulo-cap2" data-title="Capítulo 2">
         <header class="hero hero--chapter">
           <span class="hero__num" aria-hidden="true">02</span>
           <div>
             <p class="eyebrow">Capítulo 2 · 2015–2024</p>
-            <h2 class="view__title" id="titulo-cap2" tabindex="-1">O caminho até o reconhecimento</h2>
-            <p class="view__lead">2016–2018: a série que levou Karol a palcos da América Latina e da Europa. Depois, a carreira com o próprio nome.</p>
+            <h1 class="view__title" id="titulo-cap2" tabindex="-1">O caminho até o reconhecimento</h1>
+            <p class="view__lead">Da escalação em 2015 às turnês de 2018, e depois a carreira com o próprio nome.</p>
           </div>
         </header>
 
         <div class="prose">
-          <p id="cap2-teste"><span class="tag tag--said">Nas palavras dela</span> Em 2015, a Disney Channel América Latina procurava a protagonista de uma série musical sobre patinação. Em reportagem do <cite>Los Andes</cite> de 2018, Karol contou que os produtores fizeram testes no México, procuraram na Argentina e voltaram ao México. Ela também contou um detalhe do teste: disse que sabia cantar e dançar, o que era verdade, e que sabia patinar, o que não era. <a class="ref" href="#fonte-5" aria-label="Fonte 5">[5]</a> Ela relata ainda que um ex-empresário rasgou seu passaporte para impedir a viagem à Argentina <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a> e que deixou outro projeto para aceitar o da Disney. <a class="ref" href="#fonte-6" aria-label="Fonte 6">[6]</a><a class="ref" href="#fonte-7" aria-label="Fonte 7">[7]</a></p>
+          <p id="cap2-teste"><span class="tag tag--said">Nas palavras dela</span> Em 2015, a Disney Channel América Latina procurava a protagonista de uma série musical sobre patinação. Em reportagem do <cite>Los Andes</cite> de 2018, Karol contou que os produtores fizeram testes no México, procuraram na Argentina e voltaram ao México. Ela também contou um detalhe do teste: disse que sabia cantar e dançar e que sabia patinar, mas nunca tinha subido em patins. <a class="ref" href="#fonte-5" aria-label="Fonte 5">[5]</a> Ela relata ainda que um ex-empresário rasgou seu passaporte para impedir a viagem à Argentina <a class="ref" href="#fonte-4" aria-label="Fonte 4">[4]</a> e que deixou outro projeto para aceitar o da Disney. <a class="ref" href="#fonte-6" aria-label="Fonte 6">[6]</a><a class="ref" href="#fonte-7" aria-label="Fonte 7">[7]</a></p>
           <p><span class="tag tag--fact">Fato</span> A escolha para o papel foi confirmada em maio de 2015. <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a></p>
 
           <figure class="figure figure--portrait">
@@ -382,7 +381,7 @@
             <figcaption>Imagem pendente: cenas da série não têm licença aberta.</figcaption>
           </figure>
 
-          <p id="cap2-soy-luna"><span class="tag tag--fact">Fato</span> <cite>Soy Luna</cite> estreou em março de 2016 no Disney Channel América Latina, com Karol, aos 15 anos, como Luna Valente. <a class="ref" href="#fonte-8" aria-label="Fonte 8">[8]</a><a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a> A série teve três temporadas e 220 capítulos até 2018. <a class="ref" href="#fonte-35" aria-label="Fonte 35">[35]</a></p>
+          <p id="cap2-soy-luna"><span class="tag tag--fact">Fato</span> <cite>Soy Luna</cite> estreou em março de 2016 no Disney Channel América Latina, com Karol como Luna Valente. <a class="ref" href="#fonte-8" aria-label="Fonte 8">[8]</a> Ela tinha chegado à Argentina para gravar a série aos 15 anos. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a> A série teve três temporadas e 220 capítulos até 2018. <a class="ref" href="#fonte-35" aria-label="Fonte 35">[35]</a></p>
           <p id="cap2-turnes"><span class="tag tag--fact">Fato</span> O elenco subiu aos palcos com <cite>Soy Luna en Concierto</cite> na América Latina (2017) e <cite>Soy Luna Live</cite> na Europa (2018). <a class="ref" href="#fonte-9" aria-label="Fonte 9">[9]</a><a class="ref" href="#fonte-10" aria-label="Fonte 10">[10]</a><a class="ref" href="#fonte-11" aria-label="Fonte 11">[11]</a> A primeira trilha teve certificação de ouro e platina em vários países, segundo a Wikipedia. <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a></p>
 
           <figure class="figure figure--portrait">
@@ -411,19 +410,19 @@
       </article>
 
       <!-- ===================== CAPÍTULO 3 ===================== -->
-      <article class="view chapter" id="capitulo-3" aria-labelledby="titulo-cap3" data-title="Capítulo 3">
+      <article class="view chapter" id="view-capitulo-3" data-view="capitulo-3" aria-labelledby="titulo-cap3" data-title="Capítulo 3">
         <header class="hero hero--chapter">
           <span class="hero__num" aria-hidden="true">03</span>
           <div>
             <p class="eyebrow">Capítulo 3 · 2018–2026</p>
-            <h2 class="view__title" id="titulo-cap3" tabindex="-1">A evolução, a identidade e a superação</h2>
+            <h1 class="view__title" id="titulo-cap3" tabindex="-1">A evolução, a identidade e a superação</h1>
             <p class="view__lead">Crescer diante das câmeras, nas palavras dela.</p>
           </div>
         </header>
 
         <div class="prose">
-          <p id="cap3-depressao"><span class="tag tag--said">Nas palavras dela</span> O reconhecimento cobrou um preço, e Karol fala dele em público. Em entrevista à Infobae em outubro de 2026, contou que, ao voltar ao México no fim da última turnê de <cite>Soy Luna</cite>, entrou numa depressão profunda. Disse que sentia não ter personalidade própria: não tinha amigos e não entendia a si mesma. Percebeu que ria, falava e se comportava como a personagem, e resumiu que <q lang="es">me comió el personaje</q>. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a></p>
-          <p><span class="tag tag--said">Nas palavras dela</span> A mãe a apoiou quando ela cancelou a primeira turnê solo, um dia antes do show. Karol conta que saiu dessa fase aos poucos, perto da família e aprendendo a se ouvir. Diz que a depressão deixou uma ansiedade social que a faz desmaiar em multidões, mas que hoje sabe reconhecer os sinais e tem um "sinal" combinado com a mãe. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a></p>
+          <p id="cap3-depressao"><span class="tag tag--said">Nas palavras dela</span> O reconhecimento cobrou um preço, e Karol fala dele em público. Em entrevista à Infobae em outubro de 2026, contou que, ao voltar ao México no fim da última turnê de <cite>Soy Luna</cite>, entrou numa depressão profunda. Disse que sentia não ter personalidade própria: não tinha amigos e não entendia a si mesma. Percebeu que ria, falava e se comportava como a personagem, e resumiu que <q lang="es">un poco me comió el personaje</q>. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a></p>
+          <p><span class="tag tag--said">Nas palavras dela</span> A mãe a apoiou quando ela cancelou a primeira turnê solo um dia antes do show; a turnê só aconteceu depois, quando ela já estava melhor. Karol conta que saiu dessa fase aos poucos, perto da família e aprendendo a se ouvir. Diz que a depressão deixou uma ansiedade social que a faz desmaiar em multidões, mas que hoje sabe reconhecer os sinais e tem um sinal combinado com a mãe para avisar. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a></p>
           <p id="cap3-cuidado"><span class="tag tag--said">Nas palavras dela</span> Em entrevistas de 2022 ela já tinha falado de bullying na escola e de ansiedade causada por comentários sobre seu corpo. <a class="ref" href="#fonte-52" aria-label="Fonte 52">[52]</a><a class="ref" href="#fonte-53" aria-label="Fonte 53">[53]</a><a class="ref" href="#fonte-54" aria-label="Fonte 54">[54]</a></p>
 
           <figure class="figure figure--portrait">
@@ -440,7 +439,7 @@
             <figcaption>Imagem pendente: ainda não há foto com licença aberta confirmada desta fase.</figcaption>
           </figure>
 
-          <p id="cap3-volta"><span class="tag tag--said">Nas palavras dela</span> No mesmo ano voltou a Luna, em <cite>Soy Luna: Volver a rodar</cite>, que estreou no Disney+ em 24 de julho de 2026. À Excélsior, contou que recusou o convite várias vezes. Aceitou porque a história fala de enfrentar medos e momentos sombrios, e porque queria guardar o projeto como algo bonito. Disse não se arrepender e que voltar a interpretar Luna foi <q lang="es">sanador</q>. <a class="ref" href="#fonte-35" aria-label="Fonte 35">[35]</a></p>
+          <p id="cap3-volta"><span class="tag tag--said">Nas palavras dela</span> No mesmo ano voltou a interpretar Luna, em <cite>Soy Luna: Volver a rodar</cite>, que estreou no Disney+ em 24 de julho de 2026. À Excélsior, contou que recusou o convite várias vezes. Aceitou porque a história fala de enfrentar medos e momentos sombrios, e porque queria guardar o projeto como algo bonito. Disse não se arrepender e que voltar a interpretar Luna foi <q lang="es">sanador</q>. <a class="ref" href="#fonte-35" aria-label="Fonte 35">[35]</a></p>
           <p id="cap3-fas"><span class="tag tag--said">Nas palavras dela</span> Sobre os fãs, ela diz que uma geração cresceu com ela, que outra está chegando agora e que gosta de ser vista <q lang="es">como una amiga</q>. Conta também que, com as músicas novas, recebeu muitas mensagens de fãs dizendo que ela os tinha salvado. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a></p>
 
           <aside class="reading" aria-label="Nossa leitura">
@@ -456,15 +455,15 @@
       </article>
 
       <!-- ===================== UNIVERSO MUSICAL ===================== -->
-      <section class="view" id="musica" aria-labelledby="titulo-musica" data-title="Universo musical">
+      <section class="view" id="view-musica" data-view="musica" aria-labelledby="titulo-musica" data-title="Universo musical">
         <header class="view__head">
-          <h2 class="view__title" id="titulo-musica" tabindex="-1">Universo musical</h2>
+          <h1 class="view__title" id="titulo-musica" tabindex="-1">Universo musical</h1>
           <p class="view__lead">Mariposas e Más linda: as canções da volta de Luna (2026), coescritas por Karol.</p>
           <p class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Este site não toca áudio. Os botões abrem as plataformas oficiais em nova aba.</p>
         </header>
 
         <section class="context" aria-labelledby="titulo-contexto">
-          <h3 id="titulo-contexto">A trilha de <cite>Soy Luna: Volver a rodar</cite></h3>
+          <h2 id="titulo-contexto">A trilha de <cite>Soy Luna: Volver a rodar</cite></h2>
           <p><span class="tag tag--fact">Fato</span> As duas faixas estão em <cite>Soy Luna: Volver a rodar (Banda Sonora Original)</cite>, lançada em 8 de julho de 2026 pela Walt Disney Records, com 17 faixas. O crédito de intérprete nas duas é "Elenco de Soy Luna, Disney &amp; Karol Sevilla": na série, Karol canta como Luna Valente. O single principal da trilha é "De ti me enamoré". <a class="ref" href="#fonte-85" aria-label="Fonte 85">[85]</a> A temporada estreou no Disney+ em 24 de julho de 2026. <a class="ref" href="#fonte-35" aria-label="Fonte 35">[35]</a></p>
         </section>
 
@@ -484,7 +483,7 @@
               </dl>
               <div class="reading reading--compact">
                 <span class="tag tag--ours">Nossa leitura</span>
-                <p>A borboleta é uma metáfora clássica de transformação. Numa temporada sobre voltar a patinar depois de um trauma, "Mariposas" soa como um hino de recomeço, coescrito pela artista que contou ter "se perdido" depois da série. Essa ligação é leitura nossa: Karol não a fez em nenhuma fonte lida.</p>
+                <p>A borboleta é uma metáfora clássica de transformação. Numa temporada sobre voltar a patinar depois de um trauma, "Mariposas" soa como um hino de recomeço, coescrito pela artista que contou ter perdido a própria identidade depois da série. Essa ligação é leitura nossa: Karol não a fez em nenhuma fonte lida.</p>
               </div>
               <div class="feature__actions">
                 <button class="btn btn--primary btn--sm js-only" type="button" data-select="mariposas" aria-pressed="false" aria-label="Selecionar Mariposas no player">
@@ -523,11 +522,11 @@
 
         <aside class="reading" aria-label="Nossa leitura">
           <span class="tag tag--ours">Nossa leitura</span>
-          <p>As duas faixas marcam o reencontro de Karol com Luna dez anos depois da estreia, agora também como compositora. Para quem cresceu com <cite>Soy Luna</cite>, são a ponte entre a menina de 2016 e a artista adulta de 2026, que no mesmo ano lançou seu primeiro álbum.</p>
+          <p>As duas faixas marcam o reencontro de Karol com Luna dez anos depois da estreia, agora também como coautora das canções da personagem. Para quem cresceu com <cite>Soy Luna</cite>, são a ponte entre a menina de 2016 e a artista adulta de 2026, que no mesmo ano lançou seu primeiro álbum.</p>
         </aside>
 
         <section class="tracks" aria-labelledby="titulo-faixas">
-          <h3 class="shelf__title" id="titulo-faixas">Faixas</h3>
+          <h2 class="shelf__title" id="titulo-faixas">Faixas</h2>
           <!-- Filtros: só funcionam com JS; sem JS, a lista inteira aparece -->
           <div class="chips js-only" role="group" aria-label="Filtrar músicas">
             <button class="chip" type="button" data-filtro="todas" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Todas</button>
@@ -706,12 +705,15 @@
               <img class="track__cover is-pending" src="assets/img/pendente.svg" width="40" height="40" alt="" loading="lazy" decoding="async">
               <div class="track__main">
                 <span class="track__title">Vuélveme a mirar así</span>
-                <span class="track__artist">Karol Sevilla · tema da novela <cite>Soltero con hijas</cite> <a class="ref" href="#fonte-86" aria-label="Fonte 86">[86]</a></span>
+                <span class="track__artist">Karol Sevilla · tema da novela <cite>Soltero con hijas</cite> <a class="ref" href="#fonte-1" aria-label="Fonte 1">[1]</a><a class="ref" href="#fonte-96" aria-label="Fonte 96">[96]</a></span>
                 <button class="track__select js-only" type="button" data-select="vuelveme" aria-pressed="false"><span class="sr-only">Selecionar Vuélveme a mirar así no player</span></button>
               </div>
               <span class="track__origin">Single</span>
               <span class="track__year">2020</span>
-              <p class="track__nolink">Sem link oficial confirmado nesta pesquisa</p>
+              <ul class="track__links" aria-label="Links oficiais de Vuélveme a mirar así">
+                <li><a class="btn btn--secondary btn--sm" href="https://www.youtube.com/watch?v=nXZ7WZTVZIw" target="_blank" rel="noopener noreferrer" aria-label="Ver o clipe de Vuélveme a mirar así no YouTube (abre em nova aba)">YouTube</a></li>
+                <li><a class="btn btn--secondary btn--sm" href="https://music.apple.com/es/album/vu%C3%A9lveme-a-mirar-as%C3%AD/1497160957?i=1497160960" target="_blank" rel="noopener noreferrer" aria-label="Ouvir Vuélveme a mirar así na Apple Music (abre em nova aba)">Apple Music</a></li>
+              </ul>
             </li>
             <li class="track" id="faixa-mil-besos" data-faixa="mil-besos" data-grupo="solo" data-titulo="Mil besos por segundo" data-contexto="Karol Sevilla, single · 2019">
               <span class="track__num" aria-hidden="true">13</span>
@@ -723,7 +725,9 @@
               </div>
               <span class="track__origin">Single</span>
               <span class="track__year">2019</span>
-              <p class="track__nolink">Sem link oficial confirmado nesta pesquisa</p>
+              <ul class="track__links" aria-label="Links oficiais de Mil besos por segundo">
+                <li><a class="btn btn--secondary btn--sm" href="https://music.apple.com/es/album/mil-besos-por-segundo/1453621714?i=1453621715" target="_blank" rel="noopener noreferrer" aria-label="Ouvir Mil besos por segundo na Apple Music (abre em nova aba)">Apple Music</a></li>
+              </ul>
             </li>
           </ol>
           <p class="note">Ouça também pela página oficial da artista no <a href="https://open.spotify.com/artist/6aBoKzSTjuIi0sY69XHLk3" target="_blank" rel="noopener noreferrer">Spotify<span class="sr-only"> (abre em nova aba)</span></a> <a class="ref" href="#fonte-99" aria-label="Fonte 99">[99]</a> e na <a href="https://music.apple.com/es/artist/karol-sevilla/1098278064" target="_blank" rel="noopener noreferrer">Apple Music<span class="sr-only"> (abre em nova aba)</span></a> <a class="ref" href="#fonte-86" aria-label="Fonte 86">[86]</a>. Datas e selos conferidos nas páginas oficiais das faixas na Apple Music.</p>
@@ -731,46 +735,46 @@
       </section>
 
       <!-- ===================== LIÇÕES ===================== -->
-      <section class="view" id="licoes" aria-labelledby="titulo-licoes" data-title="Lições">
+      <section class="view" id="view-licoes" data-view="licoes" aria-labelledby="titulo-licoes" data-title="Lições">
         <header class="view__head">
-          <h2 class="view__title" id="titulo-licoes" tabindex="-1">O que Karol tem a nos ensinar?</h2>
+          <h1 class="view__title" id="titulo-licoes" tabindex="-1">O que Karol tem a nos ensinar?</h1>
           <p class="view__lead"><span class="tag tag--ours">Nossa leitura</span> As lições são formuladas por nós e cada uma se apoia num fato ou numa declaração dela. Nenhuma atribui a Karol pensamentos que ela não expressou.</p>
         </header>
 
         <ol class="lessons">
           <li class="lesson" id="licao-1">
             <p class="lesson__num" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>01</p>
-            <h3 class="lesson__title">Aceitar a oportunidade antes de estar 100% pronta</h3>
+            <h2 class="lesson__title">Aceitar a oportunidade antes de estar 100% pronta</h2>
             <p>Karol fez o teste para <cite>Soy Luna</cite> sem saber patinar e aprendeu depois. Às vezes a coragem de tentar vem antes da habilidade.</p>
             <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> ela contou que disse saber patinar no teste, sem saber. <a class="ref" href="#fonte-5" aria-label="Fonte 5">[5]</a> <a class="lesson__more" href="#cap2-teste">Ler no Capítulo 2</a></p>
           </li>
           <li class="lesson" id="licao-2">
             <p class="lesson__num" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>02</p>
-            <h3 class="lesson__title">Pedir pausa também é cuidado</h3>
-            <p>No começo da carreira solo, ela cancelou uma turnê quando percebeu que não estava bem. Parar pode ser uma decisão responsável.</p>
-            <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> contou que cancelou a turnê um dia antes do show, com o apoio da mãe. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a> <a class="lesson__more" href="#cap3-depressao">Ler no Capítulo 3</a></p>
+            <h2 class="lesson__title">Pedir pausa também é cuidado</h2>
+            <p>No começo da carreira solo, ela suspendeu uma turnê quando percebeu que não estava bem e só a retomou quando se sentiu melhor. Parar pode ser uma decisão responsável.</p>
+            <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> contou que cancelou a turnê um dia antes do show, com o apoio da mãe, e que ela só aconteceu depois, quando já estava melhor. <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a> <a class="lesson__more" href="#cap3-depressao">Ler no Capítulo 3</a></p>
           </li>
           <li class="lesson" id="licao-3">
             <p class="lesson__num" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>03</p>
-            <h3 class="lesson__title">A gente é maior que o personagem</h3>
+            <h2 class="lesson__title">A gente é maior que o personagem</h2>
             <p>Karol diz que confundiu a própria personalidade com a de Luna e levou tempo para descobrir quem queria ser. Identidade se constrói.</p>
             <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> entrevista à Infobae (2026). <a class="ref" href="#fonte-33" aria-label="Fonte 33">[33]</a> <a class="lesson__more" href="#cap3-depressao">Ler no Capítulo 3</a></p>
           </li>
           <li class="lesson" id="licao-4">
             <p class="lesson__num" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>04</p>
-            <h3 class="lesson__title">O corpo não é tema de debate público</h3>
+            <h2 class="lesson__title">O corpo não é tema de debate público</h2>
             <p>Ela falou da ansiedade causada por comentários sobre seu corpo e pediu que parassem. Em 2026, respondeu às críticas dizendo que se sente bem consigo mesma.</p>
             <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> entrevistas de 2022 <a class="ref" href="#fonte-53" aria-label="Fonte 53">[53]</a><a class="ref" href="#fonte-54" aria-label="Fonte 54">[54]</a> e matéria da Infobae de 2026. <a class="ref" href="#fonte-56" aria-label="Fonte 56">[56]</a> <a class="lesson__more" href="#cap3-cuidado">Ler no Capítulo 3</a></p>
           </li>
           <li class="lesson" id="licao-5">
             <p class="lesson__num" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>05</p>
-            <h3 class="lesson__title">Mudar de fase exige trabalho, não só vontade</h3>
+            <h2 class="lesson__title">Mudar de fase exige trabalho, não só vontade</h2>
             <p>Deixar a imagem de "menina Disney" foi, nas palavras dela, um processo trabalhoso. Ela também admitiu o medo de estrear num gênero novo.</p>
-            <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> entrevistas à VíaPaís e ao Perfil <a class="ref" href="#fonte-15" aria-label="Fonte 15">[15]</a><a class="ref" href="#fonte-16" aria-label="Fonte 16">[16]</a> e à AP/La Hora. <a class="ref" href="#fonte-13" aria-label="Fonte 13">[13]</a> <a class="lesson__more" href="#cap3-imagem">Ler no Capítulo 3</a></p>
+            <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> entrevistas à VíaPaís e ao Perfil <a class="ref" href="#fonte-15" aria-label="Fonte 15">[15]</a><a class="ref" href="#fonte-16" aria-label="Fonte 16">[16]</a> e à AP/La Hora <a class="ref" href="#fonte-13" aria-label="Fonte 13">[13]</a>. <a class="lesson__more" href="#cap2-solo">Ler no Capítulo 2</a> · <a class="lesson__more" href="#cap3-imagem">Ler no Capítulo 3</a></p>
           </li>
           <li class="lesson" id="licao-6">
             <p class="lesson__num" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-butterfly"/></svg>06</p>
-            <h3 class="lesson__title">Voltar ao passado com outros olhos</h3>
+            <h2 class="lesson__title">Voltar ao passado com outros olhos</h2>
             <p>Ela aceitou retomar Luna para ressignificar a experiência e disse que o retorno foi "sanador".</p>
             <p class="lesson__base"><strong>Base factual</strong> <span class="tag tag--said">Nas palavras dela</span> entrevista à Excélsior (24/7/2026). <a class="ref" href="#fonte-35" aria-label="Fonte 35">[35]</a> <a class="lesson__more" href="#cap3-volta">Ler no Capítulo 3</a></p>
           </li>
@@ -778,21 +782,21 @@
 
         <aside class="reading reading--conclusion" aria-labelledby="titulo-conclusao">
           <span class="tag tag--ours">Nossa leitura</span>
-          <h3 id="titulo-conclusao">Conclusão</h3>
+          <h2 id="titulo-conclusao">Conclusão</h2>
           <p>A trajetória de Karol não é uma linha reta de sucesso. Tem uma avó que apostou nela, um teste feito com coragem antes da habilidade, uma personagem que a levou ao mundo e com a qual, segundo ela, chegou a se confundir, pausas necessárias e uma volta escolhida por ela. O que fica, para nós, é que crescer não é virar outra pessoa: é aprender, aos poucos e em voz alta, quem a gente é. Como as mariposas da canção que ela coescreveu, a transformação é um processo.</p>
         </aside>
       </section>
 
       <!-- ===================== CRÉDITOS E FONTES ===================== -->
-      <section class="view" id="creditos" aria-labelledby="titulo-creditos" data-title="Créditos e fontes">
+      <section class="view" id="view-creditos" data-view="creditos" aria-labelledby="titulo-creditos" data-title="Créditos e fontes">
         <header class="view__head">
-          <h2 class="view__title" id="titulo-creditos" tabindex="-1">Créditos e fontes</h2>
+          <h1 class="view__title" id="titulo-creditos" tabindex="-1">Créditos e fontes</h1>
           <p class="notice notice--strong"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Site de fã, sem vínculo oficial com Karol Sevilla, Disney, gravadoras ou Spotify.</p>
         </header>
 
         <div class="credits">
           <section class="credits__block" aria-labelledby="titulo-links-oficiais">
-            <h3 id="titulo-links-oficiais">Links oficiais</h3>
+            <h2 id="titulo-links-oficiais">Links oficiais</h2>
             <p>Links cadastrados pela própria artista na página "About" do canal oficial no YouTube, conferidos em 16/10/2026. <a class="ref" href="#fonte-91" aria-label="Fonte 91">[91]</a></p>
             <ul class="link-list">
               <li><a href="https://www.youtube.com/@KarolSevillaOF" target="_blank" rel="noopener noreferrer">YouTube: @KarolSevillaOF<span class="sr-only"> (abre em nova aba)</span></a></li>
@@ -806,20 +810,19 @@
           </section>
 
           <section class="credits__block" aria-labelledby="titulo-creditos-imagem">
-            <h3 id="titulo-creditos-imagem">Créditos de imagem</h3>
+            <h2 id="titulo-creditos-imagem">Créditos de imagem</h2>
             <p>Fotos do Wikimedia Commons, copiadas para este site e apenas redimensionadas e convertidas para WebP (sem filtros nem recortes no arquivo; o recorte circular e o enquadramento são feitos pelo CSS na tela). <a class="ref" href="#fonte-97" aria-label="Fonte 97">[97]</a></p>
             <ul class="image-credits">
               <li><strong>Karol Sevilla, 2021</strong> (retrato do Início e imagem de compartilhamento). Autor: Karol Sevilla (canal oficial no YouTube). Licença: <a href="https://creativecommons.org/licenses/by/3.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY 3.0<span class="sr-only"> (abre em nova aba)</span></a>. Arquivo: <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_4.jpg" target="_blank" rel="noopener noreferrer">Karol_Sevilla_Sedal_2021_4.jpg<span class="sr-only"> (abre em nova aba)</span></a>. A imagem de compartilhamento (<code>og-karol-sevilla.jpg</code>) é uma adaptação: a foto foi recortada e posta ao lado do título do site.</li>
               <li><strong>Karol Sevilla, 2021</strong> (Capítulo 3). Autor: Karol Sevilla (canal oficial no YouTube). Licença: <a href="https://creativecommons.org/licenses/by/3.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY 3.0<span class="sr-only"> (abre em nova aba)</span></a>. Arquivo: <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_Sedal_2021_3.jpg" target="_blank" rel="noopener noreferrer">Karol_Sevilla_Sedal_2021_3.jpg<span class="sr-only"> (abre em nova aba)</span></a>.</li>
-              <li><strong>Karol Sevilla em show, 2017</strong> (Capítulo 2 e cartão do capítulo). Autora: Melina (canal no YouTube). Licença: <a href="https://creativecommons.org/licenses/by/3.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY 3.0<span class="sr-only"> (abre em nova aba)</span></a>. Arquivo: <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_en_concierto_2017.png" target="_blank" rel="noopener noreferrer">Karol_Sevilla_en_concierto_2017.png<span class="sr-only"> (abre em nova aba)</span></a>.</li>
+              <li><strong>Karol Sevilla em show, 2017</strong> (Capítulo 2). Autoria: Melina (canal no YouTube). Licença: <a href="https://creativecommons.org/licenses/by/3.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY 3.0<span class="sr-only"> (abre em nova aba)</span></a>. Arquivo: <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_en_concierto_2017.png" target="_blank" rel="noopener noreferrer">Karol_Sevilla_en_concierto_2017.png<span class="sr-only"> (abre em nova aba)</span></a>.</li>
               <li><strong>Karol Sevilla na pré-estreia de <cite>Casi el paraíso</cite>, 2024</strong> (Capítulo 2). Autor: Ivan Joatzay (obra própria). Licença: <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0<span class="sr-only"> (abre em nova aba)</span></a>. Arquivo: <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_at_the_premiere_of_Casi_el_Para%C3%ADso.jpg" target="_blank" rel="noopener noreferrer">Karol_Sevilla_at_the_premiere_of_Casi_el_Paraíso.jpg<span class="sr-only"> (abre em nova aba)</span></a>. A cópia local só foi redimensionada e segue sob a mesma licença CC BY-SA 4.0.</li>
-              <li><strong>Karol Sevilla na pré-estreia de <cite>Casi el paraíso</cite>, 2024</strong> (cartão do Capítulo 3). Autor: Ivan Joatzay (obra própria). Licença: <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0<span class="sr-only"> (abre em nova aba)</span></a>. Arquivo: <a href="https://commons.wikimedia.org/wiki/File:Karol_Sevilla_poses_at_de_premiere_of_Casi_el_Para%C3%ADso.jpg" target="_blank" rel="noopener noreferrer">Karol_Sevilla_poses_at_de_premiere_of_Casi_el_Paraíso.jpg<span class="sr-only"> (abre em nova aba)</span></a>. A cópia local só foi redimensionada e segue sob a mesma licença CC BY-SA 4.0.</li>
               <li>Ícones, borboleta, favicon e espaços de "imagem pendente": desenhados para este projeto. Fontes tipográficas Fredoka e Figtree (SIL Open Font License), via Google Fonts.</li>
             </ul>
           </section>
 
           <section class="credits__block credits__block--sources" aria-labelledby="titulo-fontes">
-            <h3 id="titulo-fontes">Fontes</h3>
+            <h2 id="titulo-fontes">Fontes</h2>
             <p>A numeração é a mesma do dossiê de pesquisa do projeto; aqui aparecem só as fontes citadas no site. Data de acesso: 16/10/2026. Os textos das fontes em espanhol e inglês foram resumidos em português; nenhuma letra de música foi reproduzida.</p>
             <ol class="sources">
               <li value="1" id="fonte-1">Karol Sevilla — Wikipedia (en). <a href="https://en.wikipedia.org/wiki/Karol_Sevilla" target="_blank" rel="noopener noreferrer">en.wikipedia.org<span class="sr-only"> (abre em nova aba)</span></a></li>
@@ -864,8 +867,8 @@
           </section>
 
           <section class="credits__block" aria-labelledby="titulo-sobre">
-            <h3 id="titulo-sobre">Sobre o site</h3>
-            <p>Projeto de estudo de Paulo Marcelli, estudante de Análise e Desenvolvimento de Sistemas na FECAP. A navegação foi inspirada em players de música; cores, textos, ícones e marca são próprios. O site não toca áudio, não coleta dados e não usa cookies.</p>
+            <h2 id="titulo-sobre">Sobre o site</h2>
+            <p>Projeto de estudo de Paulo Marcelli, estudante de Análise e Desenvolvimento de Sistemas na FECAP. A navegação foi inspirada em players de música; cores, textos, ícones e marca são próprios. O site não toca áudio, não usa cookies nem ferramentas de análise. As fontes tipográficas são carregadas do Google Fonts.</p>
             <p><a href="primeira-versao/">Ver a primeira versão deste site</a></p>
           </section>
         </div>
@@ -896,7 +899,7 @@
       <div class="player__actions">
         <ul class="player__links" id="player-links" aria-label="Links oficiais da faixa selecionada"></ul>
         <a class="btn btn--secondary btn--sm player__details" id="player-detalhes" href="#musica">Ver músicas</a>
-        <button class="btn btn--primary btn--sm player__open js-only" type="button" id="player-abrir" aria-haspopup="dialog" hidden>Ouvir</button>
+        <button class="btn btn--primary btn--sm player__open js-only" type="button" id="player-abrir" aria-haspopup="dialog" hidden>Onde ouvir</button>
       </div>
     </aside>
 

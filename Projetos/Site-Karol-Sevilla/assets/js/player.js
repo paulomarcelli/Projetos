@@ -70,7 +70,7 @@
     el.detalhes.href = '#faixa-' + id;
     el.detalhes.setAttribute('aria-label', 'Detalhes de ' + faixa.titulo);
     el.abrir.hidden = false;
-    el.abrir.setAttribute('aria-label', 'Ouvir ' + faixa.titulo + ' nas plataformas oficiais');
+    el.abrir.setAttribute('aria-label', 'Onde ouvir ' + faixa.titulo + ', nas plataformas oficiais');
 
     // pequena animação na capa (desligada com movimento reduzido via CSS)
     if (!(opcoes && opcoes.silencioso)) {

@@ -2,7 +2,9 @@
    app.js — estado do site e roteador por hash (#inicio, #historia, ...)
    Como funciona:
    1. O endereço termina com um "hash" (ex.: #capitulo-2).
-   2. O roteador mostra a <section class="view"> com esse id e esconde as outras.
+   2. O roteador mostra a <section class="view" data-view="..."> com esse nome e esconde as outras.
+      (O id de cada view tem o prefixo "view-", ex.: id="view-inicio". Assim o navegador não trata
+      "#inicio" como âncora de fragmento e o 1º Tab continua indo para o link "Pular para o conteúdo".)
    3. Se o hash for o id de algo DENTRO de uma view (ex.: #cap2-teste ou #fonte-33),
       abre a view certa, rola até o elemento e o realça.
    4. Se o hash não existir, volta para #inicio e mostra um aviso.
@@ -29,7 +31,7 @@
   var main, aviso, tituloTopo, botaoAnterior, botaoProximo;
 
   function nomeDaView(id) {
-    var view = document.getElementById(id);
+    var view = document.getElementById('view-' + id);
     return view ? view.dataset.title : '';
   }
 
@@ -42,16 +44,17 @@
     var alvo = document.getElementById(id);
     if (!alvo || !main.contains(alvo)) return null;
     var view = alvo.closest('.view');
-    return view ? { view: view.id, alvo: alvo } : null;
+    return view ? { view: view.dataset.view, alvo: alvo } : null;
   }
 
   // Atualiza menus, título, botões ‹ › e foco
   function mostrarView(id, alvo, moverFoco) {
     var mudouDeView = id !== KS.state.view;
     KS.state.view = id;
+    document.documentElement.dataset.view = id; // o CSS usa para ajustes por view
 
     document.querySelectorAll('.view').forEach(function (view) {
-      view.classList.toggle('is-active', view.id === id);
+      view.classList.toggle('is-active', view.dataset.view === id);
     });
 
     // aria-current="page" no item certo da lateral e da barra de abas (F24)
@@ -86,7 +89,7 @@
     } else if (mudouDeView || moverFoco) {
       main.scrollTop = 0;
       if (moverFoco) {
-        var titulo = document.querySelector('#' + id + ' h1, #' + id + ' h2');
+        var titulo = document.querySelector('#view-' + id + ' h1');
         if (titulo) titulo.focus({ preventScroll: true });
       }
     }

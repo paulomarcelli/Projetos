@@ -71,7 +71,7 @@ Fallback: `ui-rounded, "Nunito", "Arial Rounded MT Bold", system-ui, sans-serif`
 
 ## 3. Tokens (três camadas: primitivo → semântico → componente)
 
-Arquivo sugerido: `assets/css/tokens.css`. Componentes **só** usam tokens semânticos ou de componente; primitivos não aparecem fora deste arquivo.
+Arquivo sugerido: `assets/css/tokens.css`. Componentes usam tokens semânticos ou de componente para **cor** (nenhum hex ou `rgb()` solto fora deste arquivo; fundos translúcidos e *scrims* também viram token). Para **espaçamento, tipografia, raio e duração**, `main.css` pode usar os primitivos (`--p-space-*`, `--p-fs-*`, `--p-lh-*`, `--p-radius-*`, `--p-dur-*`) diretamente (decisão da Fase 4, achado U18 da auditoria de interface).
 
 ```css
 :root {

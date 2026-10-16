@@ -686,6 +686,7 @@ a { color: var(--color-text-link); text-underline-offset: 3px; }
     scroll-padding: 0;
   }
   .card { padding: var(--card-pad); }                     /* F12: padding 12 */
+  .shelf__list--lessons { margin: 0; gap: var(--p-space-4); }  /* cartões com fundo: alinhados ao título e separados */
   .shelf__arrow { display: inline-flex; }
   .timeline__arrow { display: none; }              /* no tablet a linha do tempo é vertical */
 

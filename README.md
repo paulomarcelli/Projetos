@@ -46,8 +46,12 @@ Projetos/
 ├── Gemini-Chatbot/
 │   ├── .gitkeep
 │   └── README.md
-└── chatbot-AI/
-    └── chat.py
+├── chatbot-AI/
+│   └── chat.py
+└── Tarefa-POO-JavaScript/
+    ├── src/
+    │   └── main.js
+    └── README.md
 ```
 
 ## 🗂️ Projetos
@@ -62,6 +66,7 @@ Projetos/
 | [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | Publicado |
 | [Gemini Chatbot](Projetos/Gemini-Chatbot) | Python · Gemini API | Em desenvolvimento |
 | [Chatbot AI](Projetos/chatbot-AI) | Python · Gemini API (`google-genai`) | Em desenvolvimento |
+| [Tarefa de POO em JavaScript](Projetos/Tarefa-POO-JavaScript) | JavaScript · Node.js · Programação Orientada a Objetos | Em desenvolvimento |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 

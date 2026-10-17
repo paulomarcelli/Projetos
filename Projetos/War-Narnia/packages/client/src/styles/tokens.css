@@ -1,0 +1,289 @@
+/*
+ * TOKENS — WAR: As Crônicas de Nárnia
+ * Três camadas: primitivo (valor cru) → semântico (propósito) → componente.
+ * Componentes usam SÓ tokens semânticos ou de componente. Ver docs/DESIGN_SYSTEM.md.
+ */
+
+/* ============================== 1. PRIMITIVOS ============================== */
+:root {
+  /* Tinta (moldura escura do mapa, cromo da interface) */
+  --prim-ink-950: #0e1117;
+  --prim-ink-900: #151a23;
+  --prim-ink-800: #1e2531;
+  --prim-ink-700: #2a3242;
+  --prim-ink-600: #3a4459;
+  --prim-ink-300: #9aa3b5;
+  --prim-ink-100: #dde2ea;
+
+  /* Pergaminho (painéis, cartas) */
+  --prim-parchment-50: #fbf7ec;
+  --prim-parchment-100: #f4ead2;
+  --prim-parchment-200: #e9d9b0;
+  --prim-parchment-300: #d8c08a;
+  --prim-parchment-400: #bfa163;
+
+  /* Sépia / terra (texto sobre pergaminho) */
+  --prim-umber-900: #2b1e10;
+  --prim-umber-800: #3b2a17;
+  --prim-umber-700: #5a4127;
+  --prim-umber-600: #6e5233;
+  --prim-umber-500: #8c6c45;
+
+  /* Ouro (Aslan, moldura dourada) */
+  --prim-gold-200: #f1dfa0;
+  --prim-gold-300: #e6c866;
+  --prim-gold-400: #d4af37;
+  --prim-gold-500: #b08d2a;
+  --prim-gold-600: #8a6b17;
+
+  /* Floresta, carmim, céu */
+  --prim-forest-500: #2f7a4a;
+  --prim-forest-600: #1f5e38;
+  --prim-forest-700: #164a2c;
+  --prim-crimson-500: #c0392b;
+  --prim-crimson-600: #a12a22;
+  --prim-crimson-700: #7f1f19;
+  --prim-sky-600: #0b57d0;
+
+  /* Realces sobre a arte do mapa (sempre com halo escuro) */
+  --prim-flare-red: #ff6b57;
+  --prim-flare-green: #5be38f;
+  --prim-halo-dark: #1c1408;
+  --prim-halo-light: #f4f1ea;
+
+  /* Cores dos 6 jogadores (validadas para daltonismo — ver DESIGN_SYSTEM.md §4) */
+  --prim-player-vermelho: #d23c26;
+  --prim-player-azul: #3060d8;
+  --prim-player-verde: #0b5e40;
+  --prim-player-amarelo: #f4c430;
+  --prim-player-preto: #1c1c22;
+  --prim-player-branco: #f4f1ea;
+
+  /* Tipografia */
+  --prim-font-display: 'Cinzel', 'Trajan Pro', 'Cormorant SC', Georgia, 'Times New Roman', serif;
+  --prim-font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --prim-size-12: 0.75rem;
+  --prim-size-14: 0.875rem;
+  --prim-size-16: 1rem;
+  --prim-size-18: 1.125rem;
+  --prim-size-20: 1.25rem;
+  --prim-size-24: 1.5rem;
+  --prim-size-32: 2rem;
+  --prim-size-44: 2.75rem;
+
+  /* Espaço (base 4px) */
+  --prim-space-1: 4px;
+  --prim-space-2: 8px;
+  --prim-space-3: 12px;
+  --prim-space-4: 16px;
+  --prim-space-5: 20px;
+  --prim-space-6: 24px;
+  --prim-space-8: 32px;
+  --prim-space-10: 40px;
+  --prim-space-12: 48px;
+
+  /* Raios */
+  --prim-radius-2: 2px;
+  --prim-radius-4: 4px;
+  --prim-radius-8: 8px;
+  --prim-radius-12: 12px;
+  --prim-radius-full: 999px;
+
+  /* Curvas (Emil Kowalski) */
+  --prim-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --prim-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --prim-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ============================== 2. SEMÂNTICOS ============================== */
+:root {
+  /* Fundo e cromo (escuro, para o mapa brilhar) */
+  --color-bg: var(--prim-ink-950);
+  --color-chrome: var(--prim-ink-900);
+  --color-chrome-raised: var(--prim-ink-800);
+  --color-chrome-border: var(--prim-ink-700);
+  --color-on-chrome: var(--prim-parchment-100);
+  --color-on-chrome-muted: var(--prim-ink-300);
+
+  /* Superfícies de pergaminho */
+  --color-surface: var(--prim-parchment-100);
+  --color-surface-raised: var(--prim-parchment-50);
+  --color-surface-sunken: var(--prim-parchment-200);
+  --color-on-surface: var(--prim-umber-900);
+  --color-on-surface-muted: var(--prim-umber-700);
+  --color-border: var(--prim-parchment-400);
+  --color-border-strong: var(--prim-umber-600);
+  --color-frame: var(--prim-gold-500);
+
+  /* Ações */
+  --color-primary: var(--prim-gold-400);
+  --color-primary-hover: var(--prim-gold-300);
+  --color-primary-active: var(--prim-gold-500);
+  --color-primary-border: var(--prim-gold-600);
+  --color-on-primary: var(--prim-umber-900);
+  --color-danger: var(--prim-crimson-600);
+  --color-danger-hover: var(--prim-crimson-500);
+  --color-on-danger: var(--prim-parchment-50);
+  --color-success: var(--prim-forest-600);
+  --color-on-success: var(--prim-parchment-50);
+  --color-highlight: var(--prim-gold-300);
+
+  /* Feedback */
+  --color-error-text: var(--prim-crimson-600);
+  --color-success-text: var(--prim-forest-600);
+  --color-warning-bg: var(--prim-gold-200);
+  --color-warning-text: var(--prim-umber-900);
+
+  /* Foco: anel muda conforme a superfície (contraste ≥ 3:1 nas duas) */
+  --focus-ring-chrome: var(--prim-gold-300);
+  --focus-ring-surface: var(--prim-sky-600);
+  --focus-ring: var(--focus-ring-chrome);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  /* Mapa */
+  --map-sea: #17344f;
+  --map-halo-dark: var(--prim-halo-dark);
+  --map-halo-light: var(--prim-halo-light);
+  --map-selected: var(--prim-gold-300);
+  --map-target: var(--prim-flare-red);
+  --map-destination: var(--prim-flare-green);
+  --map-route-land: var(--prim-parchment-50);
+  --map-route-sea: var(--prim-parchment-50);
+
+  /* Jogadores (semântico = fundo do marcador + texto sobre ele) */
+  --player-vermelho: var(--prim-player-vermelho);
+  --player-azul: var(--prim-player-azul);
+  --player-verde: var(--prim-player-verde);
+  --player-amarelo: var(--prim-player-amarelo);
+  --player-preto: var(--prim-player-preto);
+  --player-branco: var(--prim-player-branco);
+  --on-player-dark: #ffffff;
+  --on-player-light: var(--prim-halo-dark);
+
+  /* Tipografia */
+  --font-display: var(--prim-font-display);
+  --font-ui: var(--prim-font-ui);
+  --text-caption: var(--prim-size-12);
+  --text-small: var(--prim-size-14);
+  --text-body: var(--prim-size-16);
+  --text-lead: var(--prim-size-18);
+  --text-title-sm: var(--prim-size-20);
+  --text-title: var(--prim-size-24);
+  --text-title-lg: var(--prim-size-32);
+  --text-hero: var(--prim-size-44);
+  --leading-tight: 1.2;
+  --leading-body: 1.5;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Espaço */
+  --space-2xs: var(--prim-space-1);
+  --space-xs: var(--prim-space-2);
+  --space-sm: var(--prim-space-3);
+  --space-md: var(--prim-space-4);
+  --space-lg: var(--prim-space-6);
+  --space-xl: var(--prim-space-8);
+  --space-2xl: var(--prim-space-12);
+
+  /* Raios */
+  --radius-sm: var(--prim-radius-4);
+  --radius-md: var(--prim-radius-8);
+  --radius-lg: var(--prim-radius-12);
+  --radius-full: var(--prim-radius-full);
+
+  /* Elevação */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.25);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.45);
+  --shadow-inset-parchment: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 0 24px rgb(139 102 52 / 0.12);
+
+  /* Camadas (z-index) */
+  --z-map: 0;
+  --z-map-controls: 10;
+  --z-panel: 20;
+  --z-topbar: 30;
+  --z-sheet: 40;
+  --z-banner: 50;
+  --z-dialog: 100;
+  --z-toast: 200;
+
+  /* Movimento */
+  --duration-instant: 0ms;
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+  --duration-dice: 320ms;
+  --ease-out: var(--prim-ease-out);
+  --ease-in-out: var(--prim-ease-in-out);
+  --ease-drawer: var(--prim-ease-drawer);
+  --press-scale: 0.97;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Sem deslocamento/escala; cor e opacidade continuam (curtas). */
+    --duration-slow: 120ms;
+    --duration-dice: 120ms;
+    --press-scale: 1;
+  }
+}
+
+/* ============================== 3. COMPONENTE ============================== */
+:root {
+  /* Botão */
+  --button-height: 44px;
+  --button-height-sm: 36px;
+  --button-pad-x: var(--space-md);
+  --button-radius: var(--radius-md);
+  --button-font: var(--font-ui);
+  --button-weight: var(--weight-semibold);
+
+  /* Painel */
+  --panel-bg: var(--color-surface);
+  --panel-fg: var(--color-on-surface);
+  --panel-border: var(--color-frame);
+  --panel-radius: var(--radius-md);
+  --panel-pad: var(--space-md);
+  --panel-title-font: var(--font-display);
+
+  /* Barra superior */
+  --topbar-height: 56px;
+  --topbar-bg: var(--color-chrome);
+  --topbar-fg: var(--color-on-chrome);
+
+  /* Barra lateral (desktop/tablet paisagem) */
+  --sidebar-width: 380px;
+
+  /* Marcador de território (tamanho fixo em px de TELA) */
+  --marker-radius: 17px;
+  --marker-font-size: 13px;
+  --marker-stroke-inner: 2px;
+  --marker-stroke-outer: 2px;
+
+  /* Dados */
+  --die-size: 40px;
+  --die-attack-bg: var(--prim-crimson-600);
+  --die-attack-fg: var(--prim-parchment-50);
+  --die-defense-bg: var(--prim-parchment-50);
+  --die-defense-fg: var(--prim-umber-900);
+
+  /* Toast */
+  --toast-bg: var(--color-chrome-raised);
+  --toast-fg: var(--color-on-chrome);
+}
+
+@media (max-width: 1279px) {
+  :root {
+    --sidebar-width: 340px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --topbar-height: 52px;
+    --marker-radius: 16px;
+  }
+}

@@ -40,6 +40,7 @@ export type ServerErrorCode =
   | 'NOT_HOST'
   | 'NOT_ENOUGH_PLAYERS'
   | 'INVALID_NAME'
+  | 'COLOR_TAKEN'
   | 'INVALID_TOKEN'
   | 'NOT_IN_ROOM'
   | 'STALE_VERSION'

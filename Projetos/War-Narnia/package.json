@@ -1,0 +1,16 @@
+{
+  "name": "war-narnia",
+  "private": true,
+  "version": "0.1.0",
+  "description": "WAR — As Crônicas de Nárnia: jogo de estratégia multiplayer no navegador",
+  "workspaces": ["packages/shared", "packages/server", "packages/client"],
+  "scripts": {
+    "dev": "npm run dev -w @war/server & npm run dev -w @war/client",
+    "build": "npm run build -w @war/client",
+    "start": "npm run start -w @war/server",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "playwright test -c tests/e2e/playwright.config.ts",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": { "node": ">=20" }
+}

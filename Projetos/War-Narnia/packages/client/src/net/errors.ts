@@ -6,6 +6,7 @@ export const SERVER_ERROR_TEXT: Record<ServerErrorCode, string> = {
   ROOM_NOT_FOUND: 'Sala não encontrada. Confira o código com quem convidou você.',
   ROOM_FULL: `Esta sala já está cheia (máximo de ${LIMITS.maxPlayers} jogadores).`,
   ROOM_ALREADY_STARTED: 'A partida desta sala já começou. Peça um novo convite.',
+  COLOR_TAKEN: 'Essa cor já foi escolhida por outro jogador. Escolha outra.',
   NOT_HOST: 'Só o anfitrião da sala pode fazer isso.',
   NOT_ENOUGH_PLAYERS: `São necessários pelo menos ${LIMITS.minPlayers} jogadores para começar.`,
   INVALID_NAME: `Digite um nome de 1 a ${LIMITS.nameMaxLength} caracteres.`,

@@ -86,10 +86,27 @@ As fotos vêm do **Wikimedia Commons**, com licenças abertas (CC BY 3.0 e CC BY
 
 Alguns espaços ainda não têm imagem com licença aberta (capas das músicas, cenas de *Soy Luna*, fotos da infância). Eles aparecem com uma borboleta e o aviso "Imagem pendente". Para trocar:
 
-1. No `index.html`, procure o comentário que começa com `<!-- IMAGEM`.
-2. Cole a URL direta de uma imagem autorizada no atributo `src` da tag `<img>` logo abaixo.
-3. Remova a classe `is-pending` e troque o texto do `alt` (tire o "Imagem pendente:" e descreva a foto).
-4. Acrescente o crédito da imagem na seção "Créditos de imagem".
+1. No `index.html`, aperte `Ctrl+Shift+F` e procure por `IMAGEM PENDENTE`. Cada espaço tem um comentário dizendo **qual imagem é**, **onde aparece** e **a proporção**.
+2. Cole a URL direta de uma imagem autorizada no atributo `src` da tag `<img>` logo abaixo (ou salve o arquivo em `assets/img/` e use `src="assets/img/nome.jpg"`).
+3. Remova a classe `is-pending` e escreva um `alt` que descreva a imagem.
+4. **Não apague o comentário**, ele ajuda a lembrar qual imagem é.
+5. Acrescente o crédito da imagem na seção "Créditos de imagem".
+
+### Lista dos espaços pendentes
+
+| Imagem | Onde aparece | Proporção | Nome sugerido |
+|---|---|---|---|
+| Capa de *Mariposas* | Início › Destaques musicais · Universo musical (destaque) | 1:1 | `mariposas.jpg` |
+| Capa de *Más linda* | Início › Destaques musicais · Universo musical (destaque) | 1:1 | `mas-linda.jpg` |
+| Capa do álbum *Imperfecta* | Início › Destaques musicais | 1:1 | `imperfecta.jpg` |
+| Capa de *Otro Mood* | Início › Destaques musicais | 1:1 | `otro-mood.jpg` |
+| Capa de *Cenicienta* | Início › Destaques musicais | 1:1 | `cenicienta.jpg` |
+| Capa de *Una noche más* | Início › Destaques musicais | 1:1 | `una-noche-mas.jpg` |
+| Karol na infância ou nos primeiros trabalhos na TV | Capítulo 1 | 16:9 | `cap1-infancia.jpg` |
+| Cena de *Soy Luna* com Luna nos patins | Capítulo 2 | 4:5 | `cap2-soy-luna.jpg` |
+| Karol como Luna em *Soy Luna: Volver a rodar* | Capítulo 3 | 4:5 | `cap3-volver-a-rodar.jpg` |
+| Miniaturas das 13 faixas | Universo musical › lista de faixas (40×40) | 1:1 | a mesma capa de cada música |
+| Capa da barra do player | Rodapé do site (48×48) | 1:1 | qualquer capa ou arte do site |
 
 ## 🧪 Testes
 

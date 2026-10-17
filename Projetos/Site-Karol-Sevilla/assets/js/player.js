@@ -63,6 +63,10 @@
 
     el.titulo.textContent = faixa.titulo;
     el.contexto.textContent = faixa.contexto;
+    // a capa do player acompanha a faixa escolhida (usa a miniatura da própria lista)
+    var miniatura = document.querySelector('#faixa-' + id + ' .track__cover');
+    var capa = el.player.querySelector('.player__cover');
+    if (miniatura && capa && miniatura.getAttribute('src')) capa.src = miniatura.getAttribute('src');
     el.player.classList.add('has-track');
     preencherLista(el.links, faixa);
 

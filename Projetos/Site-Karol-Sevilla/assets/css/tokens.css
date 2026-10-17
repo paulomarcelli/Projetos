@@ -1,0 +1,174 @@
+/* ==========================================================================
+   tokens.css — variáveis de design (DESIGN_SYSTEM.md §3)
+   Três camadas: 1) primitivos (valores crus), 2) semânticos (para que serve),
+   3) componentes. Os componentes em main.css usam só as camadas 2 e 3.
+   ========================================================================== */
+:root {
+  /* ============ 1. PRIMITIVOS ============ */
+  /* Neutros "noite" (preto azulado) */
+  --p-night-950: #07070D;
+  --p-night-900: #0D0D15;
+  --p-night-850: #11111A;
+  --p-night-800: #1B1B27;
+  --p-night-700: #262635;
+  --p-night-600: #3A3A4F;
+  --p-night-500: #7A7A94;
+  --p-night-400: #9494AB;
+  --p-night-300: #B9B9CC;
+  --p-white:     #FFFFFF;
+  --p-ink:       #0B0B14;
+
+  /* Acentos (paleta original do autor + ponte lilás) */
+  --p-blue-400:  #69B9FF;   /* azul Luna (original) */
+  --p-blue-300:  #8CCBFF;
+  --p-pink-400:  #FF69B4;   /* rosa (original) */
+  --p-pink-300:  #FF8CC6;
+  --p-lilac-400: #B79CFF;   /* mariposa */
+  --p-amber-300: #FFC56B;   /* "pendente/validar" */
+  --p-red-300:   #FF8A8A;
+
+  /* Tipografia */
+  --p-font-display: "Fredoka", ui-rounded, "Nunito", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --p-font-text: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --p-fs-12: 0.75rem;  --p-fs-14: 0.875rem; --p-fs-16: 1rem;   --p-fs-18: 1.125rem;
+  --p-fs-20: 1.25rem;  --p-fs-24: 1.5rem;   --p-fs-32: 2rem;   --p-fs-40: 2.5rem;
+  --p-fs-56: 3.5rem;   --p-fs-72: 4.5rem;
+  --p-fw-regular: 400; --p-fw-medium: 500; --p-fw-semibold: 600; --p-fw-bold: 700; --p-fw-black: 800;
+  --p-lh-tight: 1.1; --p-lh-snug: 1.3; --p-lh-normal: 1.5; --p-lh-relaxed: 1.65; --p-lh-loose: 2.2;   /* loose: legenda com etiquetas no meio do texto */
+
+  /* Espaçamento (base 4, alinhado à escala observada 4/8/12/16/24/32/48/64/96) */
+  --p-space-1: 4px;  --p-space-2: 8px;  --p-space-3: 12px; --p-space-4: 16px;
+  --p-space-5: 20px; --p-space-6: 24px; --p-space-8: 32px; --p-space-10: 40px;
+  --p-space-12: 48px; --p-space-16: 64px; --p-space-24: 96px;
+
+  /* Raios */
+  --p-radius-4: 4px; --p-radius-6: 6px; --p-radius-8: 8px; --p-radius-12: 12px;
+  --p-radius-16: 16px; --p-radius-pill: 9999px; --p-radius-circle: 50%;
+
+  /* Sombras */
+  --p-shadow-overlay: 0 4px 12px 0 rgb(0 0 0 / 0.30);   /* igual ao valor observado */
+  --p-shadow-float:   0 8px 16px 0 rgb(0 0 0 / 0.35);
+
+  /* Movimento */
+  --p-dur-100: 100ms; --p-dur-160: 160ms; --p-dur-200: 200ms; --p-dur-250: 250ms; --p-dur-300: 300ms;
+  --p-ease-out: cubic-bezier(0.23, 1, 0.32, 1);          /* entrada/feedback */
+  --p-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);       /* movimento na tela */
+  --p-ease-standard: cubic-bezier(0.3, 0, 0, 1);          /* cor/fundo (equivale ao "productive" observado) */
+
+  /* ============ 2. SEMÂNTICOS ============ */
+  /* Fundos e superfícies */
+  --color-bg-frame:      var(--p-night-950);  /* moldura do shell, barra superior */
+  --color-bg-base:       var(--p-night-850);  /* painéis lateral e principal */
+  --color-bg-elevated:   var(--p-night-800);  /* cartões, player, campos */
+  --color-bg-highlight:  var(--p-night-700);  /* hover de cartões e linhas */
+  --color-bg-press:      var(--p-night-900);  /* pressionado */
+  --color-bg-tinted:     rgb(255 255 255 / 0.07);
+  --color-scrim:         rgb(0 0 0 / 0.6);    /* fundo escurecido atrás da folha de links */
+
+  /* Texto */
+  --color-text-primary:   var(--p-white);
+  --color-text-secondary: var(--p-night-300);
+  --color-text-tertiary:  var(--p-night-400);
+  --color-text-on-accent: var(--p-ink);
+  --color-text-link:      var(--p-blue-400);
+  --color-text-link-hover:var(--p-pink-400);
+
+  /* Acentos */
+  --color-accent:          var(--p-blue-400);
+  --color-accent-hover:    var(--p-blue-300);
+  --color-accent-2:        var(--p-pink-400);
+  --color-accent-2-hover:  var(--p-pink-300);
+  --color-accent-3:        var(--p-lilac-400);
+  --gradient-mariposa: linear-gradient(90deg, var(--p-blue-400), var(--p-lilac-400) 50%, var(--p-pink-400));
+  --gradient-hero: linear-gradient(180deg, rgb(105 185 255 / 0.35) 0%, rgb(183 156 255 / 0.18) 45%, var(--p-night-850) 100%);
+
+  /* Estados e status */
+  --color-focus-ring:   var(--p-blue-400);
+  --color-selected:     var(--p-blue-400);
+  --color-pending:      var(--p-amber-300);
+  --color-error:        var(--p-red-300);
+  --opacity-disabled:   0.4;
+
+  /* Bordas */
+  --color-border-subtle: var(--p-night-600);  /* decorativa (divisores) — não informa estado */
+  --color-border-strong: var(--p-night-500);  /* contorno de controles (≥ 3:1) */
+
+  /* Tipografia semântica */
+  --font-display: var(--p-font-display);
+  --font-text:    var(--p-font-text);
+  --text-hero:    clamp(var(--p-fs-40), 6vw + 1rem, var(--p-fs-72));
+  --text-h1:      clamp(var(--p-fs-32), 3vw + 1rem, var(--p-fs-56));
+  --text-h2:      var(--p-fs-24);      /* título de prateleira [OBS 24/700] */
+  --text-h3:      var(--p-fs-18);
+  --text-body:    var(--p-fs-16);
+  --text-meta:    var(--p-fs-14);
+  --text-caption: var(--p-fs-12);
+
+  /* Layout */
+  --shell-gap: var(--p-space-2);          /* [OBS] 8 */
+  --shell-pad: var(--p-space-2);          /* [OBS] 8 */
+  --topbar-h: 64px;                       /* [OBS] 64 */
+  --topbar-h-mobile: 56px;                /* [OBS] 56 */
+  --sidebar-w: 280px;                     /* [OBS] mínimo 280 */
+  --sidebar-w-wide: 300px;                /* [DEC] entre 280 e 331 */
+  --sidebar-w-rail: 72px;                 /* [DEC] tablet */
+  --player-h: 72px;                       /* [DEC] faixa 66–86 observada */
+  --player-h-mobile: 56px;
+  --tabbar-h: 64px;                       /* [OBS] 70; [DEC] 64 + safe area */
+  --content-pad: var(--p-space-6);        /* 24 no celular→ 40 no desktop (via media query) */
+  --measure: 68ch;                        /* largura máxima de texto corrido */
+
+  /* Movimento semântico */
+  --motion-press:  var(--p-dur-100) var(--p-ease-out);
+  --motion-hover:  var(--p-dur-160) var(--p-ease-standard);
+  --motion-enter:  var(--p-dur-250) var(--p-ease-out);
+  --motion-exit:   var(--p-dur-200) var(--p-ease-out);
+  --motion-move:   var(--p-dur-300) var(--p-ease-in-out);
+  --hover-scale: 1.04;                    /* [OBS] --encore-button-hover-scale */
+  --press-scale: 0.97;
+
+  /* Z-index */
+  --z-base: 0; --z-sticky: 10; --z-sidebar: 20; --z-player: 30; --z-tabbar: 30;
+  --z-overlay: 40; --z-dialog: 50; --z-skiplink: 100;
+
+  /* ============ 3. COMPONENTES ============ */
+  --card-bg: transparent;
+  --card-bg-hover: var(--color-bg-highlight);
+  --card-pad: var(--p-space-3);           /* [OBS] 12 */
+  --card-radius: var(--p-radius-8);
+  --card-img-radius: var(--p-radius-6);   /* [OBS] 6 */
+  --card-gap: var(--p-space-2);           /* [OBS] 8 */
+  --card-w: clamp(160px, 14vw, 196px);    /* [OBS] 178–196 */
+
+  --btn-h: 48px;  --btn-h-sm: 36px;       /* [OBS] 48 / 32 → 36 para alvo de toque com margem */
+  --btn-pad-x: var(--p-space-8);          /* [OBS] 32 */
+  --btn-radius: var(--p-radius-pill);
+  --btn-primary-bg: var(--color-accent);
+  --btn-primary-bg-hover: var(--color-accent-hover);
+  --btn-primary-fg: var(--color-text-on-accent);
+  --btn-secondary-border: var(--color-border-strong);
+  --btn-icon-size: 48px;
+  --fab-size: 48px;                       /* botão "Selecionar" do cartão [OBS 48] */
+
+  --track-row-h: 56px;
+  --track-row-radius: var(--p-radius-6);
+  --track-thumb: 40px;
+
+  --player-bg: var(--color-bg-elevated);
+  --player-accent-line: var(--gradient-mariposa);
+
+  --timeline-dot: 14px;
+  --timeline-line: 2px;
+
+  --chip-h: 32px;  --chip-radius: var(--p-radius-pill);
+  --focus-ring: 0 0 0 2px var(--color-bg-base), 0 0 0 4px var(--color-focus-ring);
+}
+
+@media (min-width: 1024px) { :root { --content-pad: var(--p-space-10); } }  /* [OBS] inset ≈ 40 */
+@media (min-width: 1280px) { :root { --sidebar-w: var(--sidebar-w-wide); --card-w: clamp(180px, 14vw, 196px); } }  /* [DEC] F13: 180–200 em ≥ 1280 */
+@media (max-width: 767px) { :root { --content-pad: var(--p-space-4); } }  /* [OBS] gutter 16 no celular (F15) */
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --hover-scale: 1; --press-scale: 1; --motion-move: 1ms linear; --motion-enter: 120ms ease; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

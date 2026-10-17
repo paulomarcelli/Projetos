@@ -19,7 +19,8 @@ Veja a seção 9 de `PROJECT_BRIEF.md`.
 Nenhum. A rede foi liberada pelo usuário (acesso completo).
 
 ## Próxima ação
-Validação final antes de publicar: conferir de novo as checklists de SEO e segurança em `docs/agents/`, reler a fonte [8] se desejar (já confirmada em 14/03/2016 pelo wikitext) e fornecer as imagens autorizadas dos espaços pendentes (`TEST_REPORT.md` §12.6).
+Em 17/10/2026 o autor enviou as 16 imagens pelo painel e elas foram colocadas no site (25 espaços preenchidos, nenhum pendente). O site foi publicado na `main`.
+Resta: informar a autoria da foto do Capítulo 1, trocar as imagens pequenas (Capítulo 1 com 640 px e Capítulo 3 com 354 px) por versões maiores e, se quiser, usar capas individuais de *Mariposas* e *Más linda*.
 
 ## Regras de conteúdo
 - Use a versão mais recente de `RESEARCH_KAROL_SEVILLA.md`, com as fontes já verificadas: "Una noche más" foi confirmada (com Alan Navarro, 2024) e Karol é coautora de "Mariposas" e "Más linda".

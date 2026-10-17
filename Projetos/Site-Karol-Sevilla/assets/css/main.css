@@ -437,7 +437,7 @@ a { color: var(--color-text-link); text-underline-offset: 3px; }
 .figure { margin: var(--p-space-6) 0; }
 .figure__img { width: 100%; border-radius: var(--p-radius-8); }
 .figure--portrait { max-width: 360px; }
-.figure--wide { margin-top: var(--p-space-6); max-width: 960px; }
+.figure--wide { margin-top: var(--p-space-6); max-width: 720px; } /* a foto enviada tem 640 px: 720 evita esticar demais */
 .figure--wide .figure__img { aspect-ratio: 16 / 9; }
 .figure--portrait .is-pending { aspect-ratio: 4 / 5; }
 .figure figcaption { margin-top: var(--p-space-2); font-size: var(--p-fs-14); color: var(--color-text-secondary); }

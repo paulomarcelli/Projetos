@@ -82,31 +82,28 @@ Acesse o projeto publicado no GitHub Pages: [**Abrir Site Karol Sevilla**](https
 
 ## 🖼️ Imagens e créditos
 
-As fotos vêm do **Wikimedia Commons**, com licenças abertas (CC BY 3.0 e CC BY-SA 4.0). Eu só redimensionei e converti para WebP, e os créditos completos (autor, licença e link do arquivo) estão na seção **Créditos e fontes** do site.
+- **Fotos do Wikimedia Commons**, com licenças abertas (CC BY 3.0 e CC BY-SA 4.0): eu só redimensionei e converti para WebP. Os créditos completos (autor, licença e link do arquivo) estão na seção **Créditos e fontes** do site.
+- **Capas das músicas, imagens de divulgação de *Soy Luna* e a foto do Capítulo 1**: enviadas por mim. Os direitos pertencem aos respectivos titulares (artistas, gravadoras e Disney), e as imagens aparecem só para identificar e ilustrar as obras citadas. A autoria da foto do Capítulo 1 ainda não foi informada.
 
-Alguns espaços ainda não têm imagem com licença aberta (capas das músicas, cenas de *Soy Luna*, fotos da infância). No site eles aparecem só com a borboleta; quem explica qual imagem falta são os comentários no código. Para trocar:
+Todos os espaços de imagem já estão preenchidos. Em *Mariposas*, *Más linda*, na lista de faixas e no player aparece uma imagem de divulgação de *Soy Luna: Volver a rodar* (recortada em quadrado), porque não usei capas individuais dessas duas faixas.
 
-1. No `index.html`, aperte `Ctrl+Shift+F` e procure por `IMAGEM PENDENTE`. Cada espaço tem um comentário dizendo **qual imagem é**, **onde aparece** e **a proporção**.
-2. Cole a URL direta de uma imagem autorizada no atributo `src` da tag `<img>` logo abaixo (ou salve o arquivo em `assets/img/` e use `src="assets/img/nome.jpg"`).
-3. Remova a classe `is-pending` e escreva um `alt` que descreva a imagem.
-4. **Não apague o comentário**, ele ajuda a lembrar qual imagem é.
-5. Acrescente o crédito da imagem na seção "Créditos de imagem".
+### Como trocar uma imagem
 
-### Lista dos espaços pendentes
+1. No `index.html`, aperte `Ctrl+Shift+F` e procure por `IMAGEM PREENCHIDA`. Cada comentário diz **qual imagem é**, **onde aparece**, **a proporção** e **qual arquivo está em uso**.
+2. Salve a nova imagem em `assets/img/` (de preferência em WebP ou JPG, com até 640 px nas capas) e troque o `src` da tag `<img>` logo abaixo do comentário.
+3. Atualize o `alt` e, se a imagem for de outra fonte, o crédito na seção "Créditos de imagem".
+4. **Não apague os comentários**, eles ajudam a lembrar qual imagem é.
 
-| Imagem | Onde aparece | Proporção | Nome sugerido |
-|---|---|---|---|
-| Capa de *Mariposas* | Início › Destaques musicais · Universo musical (destaque) | 1:1 | `mariposas.jpg` |
-| Capa de *Más linda* | Início › Destaques musicais · Universo musical (destaque) | 1:1 | `mas-linda.jpg` |
-| Capa do álbum *Imperfecta* | Início › Destaques musicais | 1:1 | `imperfecta.jpg` |
-| Capa de *Otro Mood* | Início › Destaques musicais | 1:1 | `otro-mood.jpg` |
-| Capa de *Cenicienta* | Início › Destaques musicais | 1:1 | `cenicienta.jpg` |
-| Capa de *Una noche más* | Início › Destaques musicais | 1:1 | `una-noche-mas.jpg` |
-| Karol na infância ou nos primeiros trabalhos na TV | Capítulo 1 | 16:9 | `cap1-infancia.jpg` |
-| Cena de *Soy Luna* com Luna nos patins | Capítulo 2 | 4:5 | `cap2-soy-luna.jpg` |
-| Karol como Luna em *Soy Luna: Volver a rodar* | Capítulo 3 | 4:5 | `cap3-volver-a-rodar.jpg` |
-| Miniaturas das 13 faixas | Universo musical › lista de faixas (40×40) | 1:1 | a mesma capa de cada música |
-| Capa da barra do player | Rodapé do site (48×48) | 1:1 | qualquer capa ou arte do site |
+| Imagem | Onde aparece | Arquivo atual |
+|---|---|---|
+| *Mariposas* e *Más linda* | Início · Universo musical · lista de faixas · player | `capa-soy-luna-volver-a-rodar.webp` |
+| *Imperfecta*, *Otro Mood*, *Cenicienta*, *Una noche más* | Início · lista de faixas | `capa-<nome>.webp` |
+| *Weekend*, *Anónimo*, *Miedo de sentir*, *Dime dime*, *Tus besos*, *Vuélveme a mirar así*, *Mil besos por segundo* | Lista de faixas | `capa-<nome>.webp` |
+| Karol na infância | Capítulo 1 | `cap1-infancia.webp` |
+| Capa de um álbum de *Soy Luna* | Capítulo 2 | `cap2-soy-luna.webp` |
+| Arte da trilha de *Soy Luna* no Disney+ | Capítulo 3 | `cap3-volver-a-rodar.webp` |
+
+As imagens do Capítulo 1 (640 px) e do Capítulo 3 (354 px) são pequenas. Se tiver versões maiores, troque para o site ficar mais nítido.
 
 ## 🧪 Testes
 

@@ -84,7 +84,7 @@ Acesse o projeto publicado no GitHub Pages: [**Abrir Site Karol Sevilla**](https
 
 As fotos vêm do **Wikimedia Commons**, com licenças abertas (CC BY 3.0 e CC BY-SA 4.0). Eu só redimensionei e converti para WebP, e os créditos completos (autor, licença e link do arquivo) estão na seção **Créditos e fontes** do site.
 
-Alguns espaços ainda não têm imagem com licença aberta (capas das músicas, cenas de *Soy Luna*, fotos da infância). Eles aparecem com uma borboleta e o aviso "Imagem pendente". Para trocar:
+Alguns espaços ainda não têm imagem com licença aberta (capas das músicas, cenas de *Soy Luna*, fotos da infância). No site eles aparecem só com a borboleta; quem explica qual imagem falta são os comentários no código. Para trocar:
 
 1. No `index.html`, aperte `Ctrl+Shift+F` e procure por `IMAGEM PENDENTE`. Cada espaço tem um comentário dizendo **qual imagem é**, **onde aparece** e **a proporção**.
 2. Cole a URL direta de uma imagem autorizada no atributo `src` da tag `<img>` logo abaixo (ou salve o arquivo em `assets/img/` e use `src="assets/img/nome.jpg"`).

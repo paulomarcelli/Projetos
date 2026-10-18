@@ -39,7 +39,3 @@ export function regionOf(id: TerritoryId): Region | undefined {
 export function regionName(id: RegionId): string {
   return REGION_BY_ID.get(id)?.name ?? id;
 }
-
-export function areAdjacent(a: TerritoryId, b: TerritoryId): boolean {
-  return NEIGHBORS.get(a)?.some((n) => n.id === b) ?? false;
-}

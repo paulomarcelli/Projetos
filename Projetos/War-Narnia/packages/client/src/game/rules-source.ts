@@ -1,10 +1,13 @@
 /**
- * Números de regra usados SÓ para a interface (habilitar botões e limites de
- * seletores). Quando o motor publicar `RULES` (engine/rules-config.ts), estes
- * valores passam a vir de lá — ver docs/DESIGN_SYSTEM.md, "Pedidos ao Tech Lead".
+ * Números de regra usados pela interface (habilitar botões, limites de seletores).
+ * Vêm de `RULES` (packages/shared/src/engine/rules-config.ts) — o único lugar
+ * com números de regra. Aqui só damos nomes do ponto de vista da UI.
  */
+import { RULES } from '@war/shared';
+
 export const UI_RULES = {
-  maxAttackDice: 3,
-  minArmiesLeftBehind: 1,
-  mustTradeAtCards: 5,
+  maxAttackDice: RULES.maxAttackDice,
+  /** Precisa ter `minArmiesToAttack` para atacar, ou seja, sempre fica (min - 1) para trás. */
+  minArmiesLeftBehind: RULES.minArmiesToAttack - 1,
+  mustTradeAtCards: RULES.mustTradeAtHandSize,
 } as const;

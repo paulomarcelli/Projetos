@@ -16,53 +16,52 @@ const FASES = {
 // Cenário compartilhado que provê o fundo e elementos visuais reutilizáveis.
 class GeometricScene extends Phaser.Scene {
 
-    // Constrói o fundo do jogo com cor sólida, grade vetorial, formas flutuantes animadas e o chão visual base.
+    // Constrói o fundo do menu: cor sólida, brilho atrás do título, faixas de luz diagonais,
+    // cubos flutuando nas cores dos heróis e um chão com blocos e espinhos passando devagar
+    // (como na tela inicial dos jogos de plataforma musicais). Sem grade de "editor".
     // tema = conjunto de cores (TEMAS.padrao se não passar nada)
     createBackdrop(tema = TEMAS.padrao) {
         // Define a cor de fundo da câmera
         this.cameras.main.setBackgroundColor(tema.fundo);
+        const animar = !reducedMotion.matches;
 
-        // Desenha a grade de linhas de fundo
-        const grid = this.add.graphics();
-        grid.lineStyle(1, tema.grade, 0.08);
-        for (let x = 0; x <= 1280; x += 80) grid.lineBetween(x, 0, x, 720);
-        for (let y = 0; y <= 720; y += 80) grid.lineBetween(0, y, 1280, y);
+        // Brilho suave atrás do título (círculos sobrepostos bem transparentes)
+        for (let r = 460; r >= 140; r -= 40) this.add.circle(640, 300, r, 0x7fb4ff, 0.018);
 
-        // Renderiza retângulos flutuantes no cenário com animação tween suave
-        const floatingShapes = [
-          [100, 220, 76],
-          [1150, 180, 110],
-          [250, 460, 44],
-          [1040, 440, 58]
-        ];
-
-        floatingShapes.forEach(([x, y, size], i) => {
-            const shape = this.add
-            .rectangle(x, y, size, size, tema.forma, 0.12)
-            .setStrokeStyle(2, tema.bordaForma, 0.25)
-            .setAngle(15 + i * 12);
-
-            // Anima apenas se a preferência de movimento reduzido não estiver ativa
-            if (!reducedMotion.matches) {
-                this.tweens.add({
-                    targets: shape,
-                    y: y - 24,
-                    angle: shape.angle + 20,
-                    duration: 3200 + i * 600,
-                    yoyo: true,
-                    repeat: -1,
-                    ease: 'Sine.InOut'
-                });
-            }
+        // Faixas de luz diagonais (atravessam a tela de cima a baixo)
+        [[250, 120], [520, 60], [860, 150], [1120, 70]].forEach(([x, larg], i) => {
+            const faixa = this.add.rectangle(x, 360, larg, 1100, 0xffffff, 0.035).setAngle(24);
+            if (animar) this.tweens.add({ targets: faixa, alpha: 0.075, duration: 2600 + i * 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
         });
 
-        // Faixa e linha brilhante que formam a estética do chão no fundo
-        this.add.rectangle(640, 690, 1280, 60, tema.faixa);
-        this.add.rectangle(640, 661, 1280, 2, tema.linha, 0.8);
+        // Cubos flutuando com as cores dos heróis (contorno claro, miolo translúcido)
+        const cubos = [
+            [440, 110, 30, 0xff5a6e], [850, 96, 24, 0xffc23d], [420, 612, 22, 0x6fdc4a],
+            [880, 600, 28, 0xa77bff], [560, 64, 18, 0x3dff8a], [730, 640, 18, 0xff2a4d]
+        ];
+        cubos.forEach(([x, y, lado, cor], i) => {
+            const cubo = this.add.rectangle(x, y, lado, lado, cor, 0.22).setStrokeStyle(3, cor, 0.7).setAngle(15 + i * 12);
+            if (animar) this.tweens.add({ targets: cubo, y: y - 18, angle: cubo.angle + 90, duration: 3400 + i * 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+        });
 
-        // Faixa e linha brilhante do teto
-        this.add.rectangle(640, 50, 1280, 100, tema.faixa);
-        this.add.rectangle(640, 100, 1280, 2, tema.linha, 0.8);
+        // Chão: faixa escura com linha brilhante em cima
+        this.add.rectangle(640, 690, 1280, 60, tema.faixa);
+        this.add.rectangle(640, 661, 1280, 3, tema.linha, 0.9);
+        this.add.rectangle(640, 666, 1280, 8, tema.linha, 0.15);
+
+        // Silhuetas de blocos e espinhos em cima do chão, passando para a esquerda (loop de 640 px)
+        const silhueta = this.add.graphics().setAlpha(0.28);
+        silhueta.fillStyle(0x0a1650, 1);
+        for (let base = 0; base < 1920; base += 640) {
+            // Bloco, degrau, espinhos e bloco alto (mesmo desenho a cada 640 px)
+            silhueta.fillRect(base + 60, 621, 40, 40);
+            silhueta.fillRect(base + 100, 601, 40, 60);
+            [200, 230, 260].forEach((x) => silhueta.fillTriangle(base + x, 661, base + x + 15, 631, base + x + 30, 661));
+            silhueta.fillRect(base + 380, 581, 40, 80);
+            silhueta.fillTriangle(base + 470, 661, base + 485, 631, base + 500, 661);
+            silhueta.fillRect(base + 540, 621, 80, 40);
+        }
+        if (animar) this.tweens.add({ targets: silhueta, x: -640, duration: 9000, repeat: -1, ease: 'Linear' });
     }
 }
 
@@ -105,6 +104,9 @@ class MenuScene extends GeometricScene {
         // Reseta o estado inicial (caso o jogador tenha morrido e voltado pro menu)
         menu.hidden = false;
         menu.classList.remove('is-leaving');
+        // Animação de entrada do elenco e do título (só agora, não toda vez que um painel fecha)
+        menu.classList.add('entrada');
+        this.time.delayedCall(900, () => menu.classList.remove('entrada'));
         menu.inert = false;
         play.disabled = false;
         levelSelect.hidden = true;
@@ -153,7 +155,7 @@ class MenuScene extends GeometricScene {
         // Lista de heróis (gerada a partir do config.js, na ordem da seleção)
         document.getElementById('lista-herois').innerHTML = [...levelButtons].map((btn) => {
             const h = btn.getAttribute('data-level'), cfg = CONFIG_FASES[h], info = HEROIS_INFO[h];
-            return `<div class="heroi-item" style="--cor:${info.cor}"><i class="heroi-cubo"></i><b>${cfg.nome}</b><span>${info.habilidade}</span></div>`;
+            return `<div class="heroi-item" style="--cor:${info.cor}"><i class="heroi-foto" data-heroi="${h}"></i><b>${cfg.nome}</b><span>${info.habilidade}</span></div>`;
         }).join('');
         // Abre um painel (esconde o menu)
         const abrirPainel = (painel) => { som.tocar('clique'); menu.hidden = true; painel.hidden = false; painel.querySelector('.painel-fechar').focus({ preventScroll: true }); };
@@ -168,7 +170,7 @@ class MenuScene extends GeometricScene {
 
         // Botão de som do canto
         const botaoSom = document.getElementById('som-button');
-        const textoSom = () => { botaoSom.textContent = som.mudo ? 'SOM: OFF' : 'SOM: ON'; botaoSom.classList.toggle('mudo', som.mudo); };
+        const textoSom = () => { botaoSom.textContent = som.mudo ? 'SOM: DESLIGADO' : 'SOM: LIGADO'; botaoSom.classList.toggle('mudo', som.mudo); };
         const alternarSom = () => { som.alternarMudo(); textoSom(); };
         botaoSom.addEventListener('click', alternarSom); textoSom(); botaoSom.hidden = false;
 

@@ -79,6 +79,12 @@
 - **Homem-Aranha sem habilidade no E**: o puxão de teia foi retirado (classe `PuxaoTeia`, dica e texto de controles). A teia (segurar/soltar) é a mecânica toda; a fase não mostra botão de habilidade.
 - **Ordem das fases por dificuldade**: Homem-Aranha (Fácil) → Hulk → Gavião (Normal) → Homem de Ferro → Doutor Estranho (Difícil) → Wanda (Insano, por último). Vale pro carrossel, pro botão "Próxima fase" e pro painel de heróis.
 
+## Rodada 7: cenários, obstáculos e poderes (3 agentes em paralelo)
+- **Cenários** (`js/cenarios.js` + `criarParalaxe` de cada fase): fundos temáticos com várias camadas e elementos animados por herói (cidade noturna, metrópole futurista, ruínas gama, base tática, santuário místico do Estranho com círculos mágicos e portais ao fundo, subúrbio do caos da Wanda). `Fase.cenarioReagir(evento)` faz o fundo reagir aos poderes (Joia, portais, dimensão, fúria, repulsor, realidade).
+- **Obstáculos** (`js/obstaculosTematicos.js`): espinho que brota, laser de piso no ritmo, bloco que desliza até o lugar, torreta, minas flutuantes, carro arremessado e holofote-alvo, espalhados por fase e nas aberturas (símbolos `e` e `l`). Tudo determinístico e com aviso antes.
+- **Heróis e poderes** (`js/efeitosPoderes.js`): cubos próprios dos 6 heróis (mesma hitbox), rastros e pousos, efeitos novos de fúria, repulsor, flechas, teia, troca de realidade; portais místicos redesenhados (só visual) e Joia do Tempo esmeralda sincronizada com início, reverso e fim. Repulsor do Homem de Ferro: recarga de 400 ms para 150 ms, com disparo contínuo segurando E (`tests/teste_cadencia_ferro.py`).
+- Integração: os três trabalhos entraram sem conflito; a suíte completa passou na versão junta.
+
 ## Decisões
 - As habilidades dos heróis continuam sendo o centro de cada fase. Os elementos clássicos entram como preparação e ritmo entre os desafios da habilidade, nunca no lugar dela.
 - Portal de gravidade só no Hulk: o Doutor Estranho já tem a dimensão espelho, e a Wanda e o Aranha dependem do chão.

@@ -367,8 +367,8 @@ class FaseWanda extends Fase {
         // Tinta sutil de tela cheia (muda com a realidade)
         this.tinta = this.cena.add.rectangle(640, 380, 1280, 560, REALIDADES.A.tinta, 0.2).setScrollFactor(0).setDepth(-1);
         // Vinheta escura nas bordas (atmosfera opressiva)
-        const v = this.cena.add.graphics().setScrollFactor(0).setDepth(45);
-        for (let i = 0; i < 6; i++) { v.lineStyle(26, 0x000000, 0.12); v.strokeRect(13 + i * 22, 113 + i * 22, 1254 - i * 44, 534 - i * 44); }
+        // (rodada 8: degradê radial liso — os retângulos concêntricos de antes pareciam molduras/grade)
+        if (this.cena.textures.exists('vinheta')) this.cena.add.image(640, 380, 'vinheta').setDisplaySize(1280, 560).setScrollFactor(0).setDepth(45).setAlpha(0.6);
         // Névoa vermelha rasteira (partículas grandes e lentas, fixas na tela)
         this.cena.add.particles(0, 0, 'faisca', {
             x: { min: 0, max: 1280 }, y: { min: 560, max: 660 },           // Perto do chão

@@ -300,6 +300,18 @@ class GameScene extends Phaser.Scene {
         this.pratica = data.pratica || null;
     }
 
+    // Carrega só a arte de fundo do herói desta fase (CENARIOS_IMAGEM); sem ela, a fase usa o cenário procedural.
+    // Em file:// o WebGL recusa imagens de arquivo local, então só carrega por http(s) ou se vier embutida
+    // (window.DADOS_ASSETS, usado pela página de teste). Prefixo opcional: window.BASE_ASSETS.
+    preload() {
+        const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[this.heroi];
+        const chave = 'cena-' + this.heroi;
+        if (!def || this.textures.exists(chave)) return;
+        const embutida = window.DADOS_ASSETS && window.DADOS_ASSETS[def.arquivo];
+        if (!embutida && location.protocol === 'file:') return;
+        this.load.image(chave, embutida || (window.BASE_ASSETS || '') + def.arquivo);
+    }
+
     create() {
         // Garante que a física volta a rodar (ela é pausada quando o jogador morre)
         this.physics.resume();

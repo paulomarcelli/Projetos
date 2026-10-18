@@ -11,7 +11,7 @@
 //
 // Profundidades (todas atrás do véu de seção em -50):
 //   -99 céu · -98 nuvens/nebulosa · -96 silhuetas longe · -93 animados longe · -92 camada média
-//   -88 quadrados de fundo · -86 feixes · -84 camada perto · -80 animados perto · -60 reações
+//   -86 feixes (rodada 8: sem quadrados/grade de fundo) · -84 camada perto · -80 animados perto · -60 reações
 // ================================================================
 
 const Cenarios = {
@@ -49,12 +49,18 @@ const Cenarios = {
             }
             if (extra) extra(g, w, h);
         });
-        return fase.cena.add.image(640, 380, k).setScrollFactor(0).setDepth(-99);
+        const img = fase.cena.add.image(640, 380, k).setScrollFactor(0).setDepth(-99);
+        // Guardado pra sumir quando a fase tem arte de fundo (fundoImagem)
+        if (fase.estadoCenario) (fase.estadoCenario.ceus = fase.estadoCenario.ceus || []).push(img);
+        return img;
     },
 
     // Camada de paralaxe com as cores próprias (sem o tingimento da seção)
     camada(fase, fator, prof, desenhar, largura = 2048) {
-        return fase.camadaParalaxe(fator, prof, desenhar, largura, { tingir: false });
+        // estrutural = silhueta/prédio (some quando há arte de fundo); névoas marcam false
+        const tile = fase.camadaParalaxe(fator, prof, desenhar, largura, { tingir: false });
+        tile.estrutural = true;
+        return tile;
     },
 
     // Estrelas espalhadas (pontinhos de brilho variado) na parte de cima do céu
@@ -141,6 +147,47 @@ const Cenarios = {
     preparar(fase) {
         fase.cenarioDetalhado = true;
         fase.estadoCenario = { criadoEm: fase.cena.time.now };
+    },
+
+    // ---------------------------------------------------------------
+    // FUNDO EM IMAGEM (CENARIOS_IMAGEM em config.js; carregado no preload da GameScene)
+    // ---------------------------------------------------------------
+    // Chave da textura carregada e da textura dupla espelhada
+    chaveFundo(heroi) { return 'cena-' + heroi; },
+
+    // Põe a arte da fase atrás de tudo e esconde as camadas procedurais "de estrutura" (céu, silhuetas,
+    // prédios) que brigariam com ela. Partículas, névoa, luzes animadas e reações continuam por cima.
+    fundoImagem(fase) {
+        const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi];
+        const cena = fase.cena, chave = this.chaveFundo(fase.heroi);
+        if (!def || !cena.textures.exists(chave)) return null;   // sem imagem: fica o procedural
+        // Textura dupla [imagem | imagem espelhada], montada UMA vez: repete sem emenda visível
+        const dupla = chave + '-dupla';
+        if (!cena.textures.exists(dupla)) {
+            const src = cena.textures.get(chave).getSourceImage();
+            // Respeita o limite de textura da GPU (celulares costumam aceitar só 4096 px): reduz se precisar
+            const max = (cena.renderer && cena.renderer.getMaxTextureSize && cena.renderer.getMaxTextureSize()) || 4096;
+            const k = Math.min(1, Math.min(4096, max) / (src.width * 2)), w = Math.floor(src.width * k), h = Math.floor(src.height * k);
+            const tx = cena.textures.createCanvas(dupla, w * 2, h), ctx = tx.getContext();
+            ctx.drawImage(src, 0, 0, w, h);
+            ctx.save(); ctx.translate(w * 2, 0); ctx.scale(-1, 1); ctx.drawImage(src, 0, 0, w, h); ctx.restore();
+            tx.refresh();
+        }
+        const h = cena.textures.get(dupla).getSourceImage().height, escala = def.alto / h;
+        const fundo = cena.add.tileSprite(0, def.y, 1280, def.alto, dupla).setOrigin(0, 0).setScrollFactor(0)
+            .setDepth(-98.5).setTileScale(escala, escala).setTint(def.tom || 0xffffff);
+        fundo.fatorParalaxe = def.fator / escala;   // tilePosition é em pixels da textura
+        fundo.tingir = false; fundo.estrutural = false; fundo.fundoImagem = true;
+        (fase.camadas = fase.camadas || []).push(fundo);
+        // Esconde a estrutura procedural (marcada em ceu()/camada() ou pela fase em est.estruturais)
+        const est = fase.estadoCenario || {};
+        (fase.camadas || []).forEach((c) => { if (c.estrutural) c.setVisible(false); });
+        (est.estruturais || []).forEach((o) => o.setVisible(false));
+        (est.ceus || []).forEach((o) => o.setVisible(false));
+        if (fase.mandala) fase.mandala.setVisible(false);
+        est.fundo = fundo; fase.fundoArte = fundo;
+        fase.moverParalaxe();
+        return fundo;
     },
 
     // ---------------------------------------------------------------
@@ -247,84 +294,99 @@ const Cenarios = {
     },
 
     // ---------------------------------------------------------------
-    // HOMEM DE FERRO — metrópole futurista ao entardecer: sol baixo, torres com anéis,
-    // pontes aéreas, hologramas e trilhas de luz de carros voadores
+    // HOMEM DE FERRO — metrópole futurista de alta tecnologia à noite: arranha-céus de metal,
+    // veios de energia azul, frisos dourados, balizas piscando e tráfego aéreo em pontinhos
     // ---------------------------------------------------------------
     ferro(fase) {
+        // Rodada 8: METRÓPOLE FUTURISTA à noite — céu azul-noite, arranha-céus de metal (cinza, vermelho metálico
+        // e dourado), linhas de energia azul na arquitetura, luzes amarelas e tráfego aéreo em pontinhos.
+        // Sem lasers nem faixas que pareçam obstáculo, sem logos. Bem diferente da cidade do Aranha (prédios
+        // de tijolo e janelas) e do porto do Gavião.
         this.preparar(fase);
-        const cena = fase.cena;
-        this.ceu(fase, 'cen-ferro-ceu', [0x14030c, 0x6a0e1e, 0xff8a3a], (g, w, h) => {
-            this.estrelas(g, w, h, 'ferro-estrelas', 50, 0xffe2c0, 0.3);
-            // Sol baixo com faixas (o céu passa na frente em listras horizontais)
-            g.fillStyle(0xffb347, 0.12); g.fillCircle(820, 470, 190);
-            g.fillStyle(0xffc94d, 1); g.fillCircle(820, 470, 130);
-            for (let k = 0; k < 7; k++) { g.fillStyle(this.mistura(0xb8301c, 0xff8a3a, k / 7), 1); g.fillRect(690, 440 + k * 18, 260, 4 + k); }
-            // Nuvens alongadas douradas
+        const cena = fase.cena, est = fase.estadoCenario;
+        this.ceu(fase, 'cen-ferro-ceu2', [0x020409, 0x0a1428, 0x2a1c26], (g, w, h) => {
+            this.estrelas(g, w, h, 'ferro-estrelas', 40, 0xcfe0ff, 0.35);
+            // Brilho dourado e vermelho da cidade no horizonte
+            for (let i = 0; i < 8; i++) { g.fillStyle(i < 4 ? 0xffb347 : 0xff3a2a, 0.025); g.fillRect(0, h - 30 - i * 22, w, 30 + i * 22); }
+            // Nuvens finas iluminadas por baixo
             const rnd = new Phaser.Math.RandomDataGenerator(['ferro-nuvens']);
-            for (let i = 0; i < 10; i++) { g.fillStyle(0xffd38a, 0.08); g.fillEllipse(rnd.between(0, w), rnd.between(120, 380), rnd.between(200, 460), rnd.between(8, 18)); }
+            for (let i = 0; i < 8; i++) { g.fillStyle(0x6a7aa0, 0.06); g.fillEllipse(rnd.between(0, w), rnd.between(90, 300), rnd.between(260, 520), rnd.between(10, 22)); }
         });
-        // Torres distantes com topo arredondado, bordas douradas e uma torre com anel
-        this.camada(fase, 0.05, -96, (g, L) => {
-            const rnd = new Phaser.Math.RandomDataGenerator(['ferro-longe']);
-            for (let x = 0; x < L - 80; x += rnd.between(60, 120)) {
-                const w = rnd.between(34, 70), h = rnd.between(200, 430), y = 660 - h;
-                g.fillStyle(0x2a0710, 1); g.fillRect(x, y, w, h); g.fillCircle(x + w / 2, y, w / 2);
-                g.lineStyle(1, 0xffb347, 0.25); g.lineBetween(x + 2, y, x + 2, 660);
-                if (rnd.frac() > 0.85) { g.lineStyle(3, 0xffb347, 0.35); g.strokeEllipse(x + w / 2, y + 40, w + 70, 18); }
+        // Skyline distante: torres afuniladas com coroas e antenas (cinza-azulado), luzinhas douradas
+        this.camada(fase, 0.08, -96, (g, L) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['ferro-longe2']);
+            for (let x = 0; x < L - 60; x += rnd.between(44, 90)) {
+                const w = rnd.between(28, 56), h = rnd.between(180, 400), y = 660 - h, af = rnd.between(4, 12);
+                g.fillStyle(0x121a2a, 1); g.fillPoints([{ x, y: 660 }, { x: x + w, y: 660 }, { x: x + w - af, y }, { x: x + af, y }], true);
+                if (rnd.frac() > 0.5) g.fillRect(x + w / 2 - 1, y - rnd.between(20, 50), 2, 50);
+                g.lineStyle(1, 0x3a6aff, 0.18); g.lineBetween(x + w / 2, y + 6, x + w / 2, 660);
+                g.fillStyle(0xffd84a, 0.25); for (let k = 0; k < 4; k++) g.fillRect(x + rnd.between(6, w - 8), y + rnd.between(20, h - 20), 2, 2);
             }
         });
-        // Pontes aéreas e torres médias com faixas de janela
-        this.camada(fase, 0.17, -92, (g, L) => {
-            const rnd = new Phaser.Math.RandomDataGenerator(['ferro-meio']);
+        // Torres médias (desenho reaproveitado pra camada de energia, mesma semente)
+        const torresMedias = (g, L, soEnergia) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['ferro-meio2']);
             let anterior = null;
-            for (let x = 0; x < L - 140; x += rnd.between(160, 260)) {
-                const w = rnd.between(60, 100), h = rnd.between(220, 380), y = 660 - h;
-                g.fillStyle(0x3a0912, 1); g.fillRect(x, y, w, h);
-                g.fillStyle(0x52101a, 1); g.fillRect(x + 6, y - 20, w - 12, 20);
-                g.fillStyle(0xffc23d, 0.22);
-                for (let jy = y + 12; jy < 640; jy += 16) g.fillRect(x + 6, jy, w - 12, 3);
-                if (anterior && rnd.frac() > 0.3) {
-                    const py = Math.max(anterior.y, y) + 40;
-                    g.fillStyle(0x2a0710, 1); g.fillRect(anterior.x + anterior.w, py, x - anterior.x - anterior.w, 10);
-                    g.lineStyle(1, 0x29e3ff, 0.35); g.lineBetween(anterior.x + anterior.w, py + 5, x, py + 5);
+            for (let x = 20; x < L - 160; x += rnd.between(200, 300)) {
+                const w = rnd.between(70, 110), h = rnd.between(260, 430), y = 660 - h, chanfro = rnd.between(14, 30), vermelha = rnd.frac() > 0.5;
+                const corpo = [{ x, y: 660 }, { x: x + w, y: 660 }, { x: x + w, y: y + chanfro }, { x: x + w - chanfro, y }, { x: x + 10, y }, { x, y: y + 10 }];
+                if (!soEnergia) {
+                    g.fillStyle(0x1a1f2c, 1); g.fillPoints(corpo, true);
+                    // Painel lateral de metal vermelho ou cinza, com friso dourado
+                    g.fillStyle(vermelha ? 0x4a0e14 : 0x2a3040, 1); g.fillRect(x + w * 0.62, y + chanfro + 6, w * 0.3, h - chanfro - 6);
+                    g.lineStyle(2, 0xd4a43a, 0.45); g.lineBetween(x + w * 0.62, y + chanfro + 6, x + w * 0.62, 660);
+                    // Faixas de luz amarela verticais (andares iluminados), não grade de janelas
+                    g.fillStyle(0xffd84a, 0.16); g.fillRect(x + 12, y + 24, 4, h - 40); g.fillRect(x + 24, y + 40, 3, h - 60);
+                    // Coroa: anel dourado no topo e mastro
+                    g.fillStyle(0xd4a43a, 0.5); g.fillRect(x + 10, y + 6, w - chanfro - 10, 3);
+                    g.fillStyle(0x2a3040, 1); g.fillRect(x + w / 2 - 2, y - 36, 4, 36);
+                }
+                // Energia azul: veios correndo pela fachada e pela passarela
+                g.lineStyle(soEnergia ? 2 : 1, 0x3a7aff, soEnergia ? 0.7 : 0.3);
+                g.lineBetween(x + w * 0.45, y + chanfro, x + w * 0.45, 660);
+                g.lineBetween(x + 4, y + h * 0.35, x + w * 0.45, y + h * 0.35);
+                if (anterior && rnd.frac() > 0.35) {
+                    const py = Math.max(anterior.y, y) + 50;
+                    if (!soEnergia) { g.fillStyle(0x161b28, 1); g.fillRect(anterior.x + anterior.w, py, x - anterior.x - anterior.w, 9); }
+                    g.lineStyle(soEnergia ? 2 : 1, 0x3a7aff, soEnergia ? 0.6 : 0.3); g.lineBetween(anterior.x + anterior.w, py + 9, x, py + 9);
                 }
                 anterior = { x, y, w };
             }
-        });
-        // Plataformas de pouso perto, com luzes ciano
-        this.camada(fase, 0.42, -84, (g, L) => {
-            const rnd = new Phaser.Math.RandomDataGenerator(['ferro-perto']);
-            for (let x = 0; x < L - 220; x += rnd.between(260, 420)) {
-                const w = rnd.between(140, 220), y = 660 - rnd.between(60, 120);
-                g.fillStyle(0x1e050a, 1); g.fillRect(x, y, w, 660 - y);
-                g.fillStyle(0x3a0912, 1); g.fillRect(x - 10, y - 8, w + 20, 8);
-                g.fillStyle(0x29e3ff, 0.55); for (let k = 0; k < 5; k++) g.fillRect(x + 10 + k * (w - 20) / 4, y - 11, 4, 3);
+        };
+        this.camada(fase, 0.22, -92, (g, L) => torresMedias(g, L, false));
+        est.energia = this.camada(fase, 0.22, -91.5, (g, L) => torresMedias(g, L, true));
+        est.energia.setBlendMode('ADD').setAlpha(0.35);
+        // Perto: estruturas de metal baixas (pilares curvos e trilho suspenso com luz azul por baixo)
+        this.camada(fase, 0.5, -84, (g, L) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['ferro-perto2']);
+            g.fillStyle(0x0c0f18, 1); g.fillRect(0, 618, L, 8);
+            g.fillStyle(0x3a7aff, 0.22); g.fillRect(0, 626, L, 2);
+            for (let x = 30; x < L - 60; x += rnd.between(240, 380)) {
+                g.fillStyle(0x0c0f18, 1); g.fillPoints([{ x: x - 14, y: 660 }, { x: x + 14, y: 660 }, { x: x + 8, y: 626 }, { x: x - 8, y: 626 }], true);
+                g.lineStyle(2, 0xd4a43a, 0.35); g.lineBetween(x - 8, 628, x - 13, 658);
+                g.fillStyle(0xffd84a, 0.5); g.fillRect(x - 2, 630, 4, 3);
             }
         });
-        // Trilhas de luz: carros voadores cruzando a cidade em faixas (andam sozinhos)
-        const trilhas = [];
-        if (!reducedMotion.matches) for (let i = 0; i < 7; i++) {
-            const cor = i % 3 === 0 ? 0x29e3ff : 0xffd38a;
-            const r = cena.add.rectangle(0, 210 + i * 46, Phaser.Math.Between(40, 90), 2, cor, 0.55).setScrollFactor(0).setDepth(-91);
-            r.vel = (i % 2 ? -1 : 1) * Phaser.Math.Between(260, 520); r.x = Phaser.Math.Between(0, 1280);
-            trilhas.push(r);
-        }
-        this.animar(fase, (dt) => trilhas.forEach((t) => { t.x += t.vel * dt / 1000; if (t.x > 1360) t.x = -80; if (t.x < -80) t.x = 1360; }));
-        // Hologramas: painéis ciano com linhas de varredura que piscam
-        const hologramas = [0, 1, 2].map((i) => {
-            const g = cena.add.graphics().setScrollFactor(0).setDepth(-91);
-            g.lineStyle(2, 0x29e3ff, 0.6).strokeRect(-46, -30, 92, 60);
-            g.fillStyle(0x29e3ff, 0.08).fillRect(-46, -30, 92, 60);
-            g.lineStyle(1, 0x29e3ff, 0.35); for (let y = -24; y < 30; y += 8) g.lineBetween(-40, y, 40, y);
-            g.lineStyle(2, 0xffd38a, 0.5).strokeCircle(-20, 0, 12).lineBetween(0, -6, 34, -6).lineBetween(0, 6, 26, 6);
-            g.y = 260 + i * 60; g.baseX = i * 600 + 200; g.fase0 = i;
-            return g;
+        // Luzes de topo piscando (vermelho/dourado) e tráfego aéreo em pontinhos lentos
+        const balizas = [0, 1, 2, 3, 4, 5].map((i) => {
+            const c = cena.add.circle(0, 230 + (i * 47) % 160, 2.5, i % 2 ? 0xff3a2a : 0xffd84a).setScrollFactor(0).setDepth(-91);
+            c.baseX = i * 330 + 60; c.fase0 = i * 1.1; return c;
         });
-        this.reciclar(fase, hologramas, 0.17, 1800, 120);
-        fase.estadoCenario.brilhoHolo = 0;
+        this.reciclar(fase, balizas, 0.22, 1980, 40);
+        est.estruturais = balizas;   // presas às torres procedurais: somem junto quando há arte de fundo
+        const trafego = [];
+        if (!reducedMotion.matches) for (let i = 0; i < 6; i++) {
+            const c = cena.add.circle(Phaser.Math.Between(0, 1280), 180 + i * 38, 1.6, i % 3 ? 0xffe8a8 : 0x8ab4ff, 0.8).setScrollFactor(0).setDepth(-93);
+            c.vel = (i % 2 ? -1 : 1) * Phaser.Math.Between(30, 70); trafego.push(c);
+        }
+        est.poeira = this.particulas(fase, { tint: [0xffd84a, 0x8ab4ff], frequency: 260, scale: { start: 0.3, end: 0 }, alpha: { start: 0.35, end: 0 } }, -89);
+        est.brilhoHolo = 0;
         this.animar(fase, (dt, agora) => {
-            fase.estadoCenario.brilhoHolo = Math.max(0, fase.estadoCenario.brilhoHolo - dt / 300);
-            hologramas.forEach((h) => h.setAlpha(Math.min(1, (Math.sin(agora / 90 + h.fase0) > -0.85 ? 0.55 : 0.15) + fase.estadoCenario.brilhoHolo)));
+            trafego.forEach((t) => { t.x += t.vel * dt / 1000; if (t.x > 1300) t.x = -20; if (t.x < -20) t.x = 1300; });
+            balizas.forEach((b) => b.setAlpha(Math.sin(agora / 400 + b.fase0 * 2) > 0.2 ? 1 : 0.2));
+            // Energia "respira" e acende com o repulsor (reação 'repulsor')
+            est.brilhoHolo = Math.max(0, est.brilhoHolo - dt / 400);
+            est.energia.setAlpha(Math.min(1, 0.3 + 0.1 * Math.sin(agora / 900) + est.brilhoHolo));
         });
     },
 
@@ -526,8 +588,12 @@ const Cenarios = {
                 for (let x = 40; x < L - 260; x += rnd.between(240, 380)) {
                     const base = rnd.between(400, 520), w = rnd.between(120, 180), topo = base - rnd.between(110, 170);
                     // Ilha de pedra com degraus de rocha pendurada embaixo
+                    // (rocha afunilada com borda irregular — antes eram degraus que pareciam pixels/quadrados)
                     g.fillStyle(p.pedra, 1); g.fillRect(x - 20, base, w + 40, 18);
-                    for (let k = 1; k < 4; k++) g.fillRect(x - 20 + k * 14, base + 18 + (k - 1) * 14, w + 40 - k * 28, 14);
+                    const rocha = [{ x: x - 20, y: base + 18 }];
+                    for (let k = 1; k < 6; k++) { const t = k / 6; rocha.push({ x: x - 20 + (w + 40) * t, y: base + 18 + Math.sin(t * Math.PI) * (40 + rnd.between(-8, 10)) }); }
+                    rocha.push({ x: x + w + 20, y: base + 18 });
+                    g.fillPoints(rocha, true);
                     // Duas colunas com arco no meio (e um arco dourado por dentro)
                     g.fillRect(x, topo, 18, base - topo); g.fillRect(x + w - 18, topo, 18, base - topo);
                     g.lineStyle(14, p.pedra, 1); g.beginPath(); g.arc(x + w / 2, topo, w / 2 - 9, Math.PI, Math.PI * 2); g.strokePath();
@@ -563,8 +629,11 @@ const Cenarios = {
             const escadas = marca(virar(this.camada(fase, 0.36, dim === 'E' ? -83.5 : -84, (g, L) => {
                 const rnd = new Phaser.Math.RandomDataGenerator(['escadas' + dim]);
                 for (let x = 40; x < L - 220; x += rnd.between(280, 440)) {
-                    g.fillStyle(p.pedra2, 0.9);
-                    for (let d = 0; d < 7; d++) g.fillRect(x + d * 22, 600 - d * 28, 24, 12);
+                    // Escada contínua (perfil de degraus + viga por baixo), não blocos soltos
+                    const perfil = [{ x, y: 612 }];
+                    for (let d = 0; d < 7; d++) { perfil.push({ x: x + d * 22, y: 600 - d * 28 }); perfil.push({ x: x + d * 22 + 22, y: 600 - d * 28 }); }
+                    perfil.push({ x: x + 154, y: 600 - 6 * 28 + 14 }); perfil.push({ x: x + 10, y: 624 });
+                    g.fillStyle(p.pedra2, 0.85); g.fillPoints(perfil, true);
                     g.lineStyle(2, p.ouro, 0.22); g.lineBetween(x + 170, 330, x + 250, 290);
                 }
             }), dim));
@@ -581,6 +650,8 @@ const Cenarios = {
             return g;
         });
         est.portaisFundo = portais;
+        // Com arte de fundo (que já tem portais e arcos), o círculo mágico e os portais procedurais somem
+        est.estruturais = [est.anelExterno, est.anelInterno].concat(portais);
         this.reciclar(fase, portais, 0.1, 1920, 150);
         // Selos arcanos flutuando (círculos com quadrados girados e pontos)
         const selos = [0, 1, 2, 3, 4, 5].map((i) => {
@@ -657,7 +728,13 @@ const Cenarios = {
     mostrarDimensao(fase, dim) {
         const est = fase.estadoCenario;
         if (!est || !est.porDim) return;
-        ['N', 'E'].forEach((d) => est.porDim[d].forEach((o) => o.setVisible(d === dim)));
+        // Com arte de fundo, a estrutura procedural fica escondida; a própria arte vira de cabeça pra baixo
+        // e ganha a paleta magenta no Espelho (mesma conta do espelharY: y → 760 - y)
+        if (fase.fundoArte) {
+            const def = CENARIOS_IMAGEM[fase.heroi], f = fase.fundoArte;
+            f.setFlipY(dim === 'E').setTint(dim === 'E' ? 0xe08ad0 : (def.tom || 0xffffff));
+            f.y = dim === 'E' ? 760 - def.y - def.alto : def.y;
+        } else ['N', 'E'].forEach((d) => est.porDim[d].forEach((o) => o.setVisible(d === dim)));
         const p = dim === 'E'
             ? { neb: [0xff4ad2, 0x2ad0ff], ouro: 0xff7ad9, brilho: 0xffc2ee }
             : { neb: [0x7a2ad0, 0x10a08a], ouro: 0xffa53d, brilho: 0xffd27a };
@@ -665,87 +742,152 @@ const Cenarios = {
     },
 
     // ---------------------------------------------------------------
-    // WANDA — realidade do caos: céu carmesim com redemoinho hex, casas de subúrbio distorcidas,
-    // cercas e postes tortos, névoa escarlate correndo, fragmentos flutuando e ondas hex
+    // WANDA — floresta amaldiçoada pela magia do caos (rodada 8): céu quase preto com brasa vermelha no horizonte,
+    // lua encoberta por nuvens, floresta distante afogada na névoa, árvores gigantes retorcidas com galhos secos
+    // e raízes expostas, vegetação corrompida, filamentos orgânicos de energia escarlate e fragmentos flutuando.
+    // Nada de prédios, torres, portais dourados ou anéis/mandalas (identidade do Estranho). Centro da tela limpo.
     // ---------------------------------------------------------------
+
+    // Árvore retorcida (tronco afunilado por uma espinha curva + galhos secos recursivos + raízes expostas)
+    arvoreRetorcida(g, x0, base, altura, larg, rnd, c) {
+        const n = 14, fase0 = rnd.realInRange(0, 6), curva = rnd.realInRange(18, 46) * (rnd.frac() > 0.5 ? 1 : -1);
+        const esp = [];
+        for (let i = 0; i <= n; i++) { const t = i / n; esp.push({ x: x0 + Math.sin(t * Math.PI * 1.6 + fase0) * curva * t + curva * 0.3 * t, y: base - altura * t, w: larg * (1 - t * 0.8) / 2 }); }
+        const esq = esp.map((p) => ({ x: p.x - p.w, y: p.y })), dir = esp.map((p) => ({ x: p.x + p.w, y: p.y })).reverse();
+        // Raízes expostas (curvas grossas abrindo pros lados, por baixo do tronco)
+        for (let k = 0; k < 4; k++) {
+            const lado = k % 2 ? 1 : -1, alcance = rnd.between(40, 110) * (k < 2 ? 1 : 0.6);
+            const raiz = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(x0 + lado * larg * 0.2, base - rnd.between(30, 60)), new Phaser.Math.Vector2(x0 + lado * (larg * 0.5 + alcance * 0.4), base - 22), new Phaser.Math.Vector2(x0 + lado * (larg * 0.5 + alcance), base + 2));
+            g.lineStyle(k < 2 ? 9 : 5, c.tronco, 1).strokePoints(raiz.getPoints(10));
+        }
+        g.fillStyle(c.tronco, 1).fillPoints(esq.concat(dir), true);
+        // Luz vermelha batendo de um lado (aro) e veias de energia corrompida subindo pelo tronco
+        g.lineStyle(2, c.aro, c.aroA).strokePoints(dir);
+        if (c.veia) { g.lineStyle(1.5, c.veia, 0.35); g.strokePoints(esp.slice(0, 9).map((p, i) => ({ x: p.x + Math.sin(i * 1.7) * p.w * 0.5, y: p.y }))); }
+        // Galhos secos (recursivos, cada vez mais finos), saindo do terço de cima
+        const galho = (x, y, ang, comp, esp2, nivel) => {
+            const mx = x + Math.cos(ang) * comp * 0.5 + rnd.between(-8, 8), my = y + Math.sin(ang) * comp * 0.5 + rnd.between(-8, 8);
+            const fx = x + Math.cos(ang) * comp, fy = y + Math.sin(ang) * comp;
+            g.lineStyle(esp2, c.tronco, 1).strokePoints([{ x, y }, { x: mx, y: my }, { x: fx, y: fy }]);
+            if (nivel <= 0) return;
+            galho(fx, fy, ang - rnd.realInRange(0.3, 0.7), comp * 0.62, Math.max(1, esp2 * 0.6), nivel - 1);
+            galho(fx, fy, ang + rnd.realInRange(0.3, 0.7), comp * 0.62, Math.max(1, esp2 * 0.6), nivel - 1);
+        };
+        for (let k = 0; k < c.galhos; k++) {
+            const p = esp[Math.floor(n * rnd.realInRange(0.45, 0.95))], lado = k % 2 ? 1 : -1;
+            galho(p.x, p.y, -Math.PI / 2 + lado * rnd.realInRange(0.5, 1.2), altura * rnd.realInRange(0.22, 0.34), Math.max(2, larg * 0.18), 3);
+        }
+        const topo = esp[n]; galho(topo.x, topo.y, -Math.PI / 2 + rnd.realInRange(-0.3, 0.3), altura * 0.2, Math.max(2, larg * 0.14), 2);
+    },
+
     wanda(fase) {
         this.preparar(fase);
         const cena = fase.cena, est = fase.estadoCenario;
-        this.ceu(fase, 'cen-wanda-ceu', [0x050002, 0x22030a, 0x6a0a1c], (g, w, h) => {
-            this.estrelas(g, w, h, 'wanda-estrelas', 40, 0xffb3c0, 0.4);
-            for (let i = 0; i < 6; i++) { g.fillStyle(0xff2a3d, 0.03); g.fillRect(0, h - 50 - i * 28, w, 50 + i * 28); }
+        // Céu: breu no topo, roxo-vinho no meio e brasa carmesim no horizonte; lua pálida encoberta por nuvens
+        this.ceu(fase, 'cen-wanda-ceu4', [0x020003, 0x0f0214, 0x3e0616], (g, w, h) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['wanda-nebulosa']);
+            for (let i = 0; i < 12; i++) { g.fillStyle(rnd.pick([0x4a0a40, 0x2e0628, 0x6a0a22]), 0.07); g.fillEllipse(rnd.between(0, w), rnd.between(30, h * 0.55), rnd.between(280, 620), rnd.between(60, 150)); }
+            this.estrelas(g, w, h, 'wanda-estrelas', 26, 0xffb3c0, 0.4);
+            // Lua (halo rosado + disco) atrás de faixas de nuvem escura
+            const lx = 230, ly = 150;
+            for (let k = 5; k > 0; k--) { g.fillStyle(0xff4d6d, 0.03); g.fillCircle(lx, ly, 46 + k * 14); }
+            g.fillStyle(0xf2c6cf, 0.9); g.fillCircle(lx, ly, 44);
+            g.fillStyle(0xd89aa8, 0.5); g.fillCircle(lx - 12, ly - 8, 9); g.fillCircle(lx + 14, ly + 10, 6);
+            [[lx + 10, ly + 6, 200, 26], [lx - 30, ly + 30, 240, 22], [lx + 40, ly - 22, 150, 16]].forEach(([x, y, cw, ch]) => { g.fillStyle(0x12030f, 0.92); g.fillEllipse(x, y, cw, ch); });
+            g.fillStyle(0x2a0620, 0.6); g.fillEllipse(lx - 60, ly + 2, 180, 12);
+            // Brilho vermelho subindo do horizonte
+            for (let i = 0; i < 8; i++) { g.fillStyle(0xff1a3a, 0.022); g.fillRect(0, h - 40 - i * 22, w, 40 + i * 22); }
         });
-        // Redemoinho hex no céu (anéis hexagonais girando)
-        est.vortice = cena.add.graphics().setScrollFactor(0).setDepth(-97.5).setPosition(980, 230);
-        const desenharVortice = (cor) => {
-            est.vortice.clear();
-            for (let k = 0; k < 6; k++) est.vortice.lineStyle(3, cor, 0.05 + k * 0.025).strokePoints(this.poligono(6, 170 - k * 26, k * 0.25), true);
-            est.vortice.fillStyle(cor, 0.06).fillCircle(0, 0, 30);
-        };
-        est.desenharVortice = desenharVortice;
-        desenharVortice(0xff2a3d);
-        // Casas distorcidas ao longe
-        this.camada(fase, 0.05, -96, (g, L) => {
-            const rnd = new Phaser.Math.RandomDataGenerator(['wanda-longe']);
-            for (let x = 0; x < L - 120; x += rnd.between(90, 150)) {
-                const w = rnd.between(70, 110), h = rnd.between(70, 120), t = rnd.between(-18, 18), y = 660 - h;
-                g.fillStyle(0x16020a, 1); g.fillPoints([{ x, y: 660 }, { x: x + w, y: 660 }, { x: x + w + t, y }, { x: x + t, y }], true);
-                g.fillRect(x + t - 8, y - 12, w + 16, 12); g.fillRect(x + t + w * 0.65, y - 34, 12, 24);
+        // Feixes de luz vermelha caindo entre as copas (iluminação sutil e diagonal)
+        const kFeixes = this.textura(cena, 'cen-wanda-feixes', 1280, 560, (g, w, h) => {
+            [[420, 70], [760, 110], [1080, 60]].forEach(([x, l]) => {
+                for (let k = 0; k < 10; k++) { g.fillStyle(0xff2a4d, 0.011); g.fillPoints([{ x: x - k * 3, y: 0 }, { x: x + l + k * 3, y: 0 }, { x: x + l * 0.4 + 140 + k * 6, y: h }, { x: x - 110 - k * 6, y: h }], true); }
+            });
+        });
+        est.feixesVermelhos = cena.add.image(640, 380, kFeixes).setScrollFactor(0).setDepth(-97.8).setBlendMode('ADD');
+        // Floresta distante afogada na névoa (troncos finos e tortos, bem apagados)
+        this.camada(fase, 0.06, -96, (g, L) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['wanda-floresta-longe']);
+            for (let x = 10; x < L - 60; x += rnd.between(38, 80)) this.arvoreRetorcida(g, x, 640, rnd.between(170, 300), rnd.between(8, 16), rnd, { tronco: 0x1c0518, aro: 0xff2a4d, aroA: 0.08, galhos: 3 });
+            for (let i = 0; i < 10; i++) { g.fillStyle(0x3a0a2c, 0.35); g.fillEllipse(rnd.between(0, L), rnd.between(560, 640), rnd.between(400, 800), rnd.between(50, 90)); }
+        });
+        // Névoa vinho entre as camadas (profundidade)
+        const nevoaFundo = this.camada(fase, 0.12, -94, (g, L) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['wanda-nevoa-fundo']);
+            for (let i = 0; i < 12; i++) { g.fillStyle(0x7a0a3a, 0.07); g.fillEllipse(rnd.between(0, L), rnd.between(470, 640), rnd.between(360, 700), rnd.between(40, 90)); }
+        });
+        // Árvores gigantes retorcidas (galhos secos que emolduram o alto da tela) + arbustos corrompidos
+        this.camada(fase, 0.22, -92, (g, L) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['wanda-arvores']);
+            for (let x = 60; x < L - 200; x += rnd.between(340, 520)) {
+                this.arvoreRetorcida(g, x, 664, rnd.between(420, 540), rnd.between(42, 64), rnd, { tronco: 0x0e020a, aro: 0xff2a4d, aroA: 0.3, veia: 0xff2a4d, galhos: 5 });
+                // Arbusto corrompido: tufos de galhinhos curvos com brilho vinho
+                const bx = x + rnd.between(130, 220);
+                for (let k = 0; k < 7; k++) {
+                    const a = -Math.PI / 2 + (k - 3) * 0.32, cmp = rnd.between(24, 46);
+                    const curva = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(bx, 662), new Phaser.Math.Vector2(bx + Math.cos(a) * cmp * 0.6 + 8, 662 + Math.sin(a) * cmp * 0.6), new Phaser.Math.Vector2(bx + Math.cos(a) * cmp, 662 + Math.sin(a) * cmp));
+                    g.lineStyle(3, 0x14030e, 1).strokePoints(curva.getPoints(8));
+                }
+                g.fillStyle(0xb0103a, 0.18); g.fillCircle(bx, 650, 10); g.fillCircle(bx + 14, 646, 6);
             }
         });
-        // Rua de subúrbio no meio: casas com janelas acesas, cercas e postes tortos
-        this.camada(fase, 0.2, -92, (g, L) => {
-            const rnd = new Phaser.Math.RandomDataGenerator(['wanda']);
-            for (let x = 0; x < L - 200; x += rnd.between(180, 260)) {
-                const w = rnd.between(100, 140), h = rnd.between(100, 160), t = rnd.between(-14, 14), y = 660 - h;
-                g.fillStyle(0x1f030c, 1); g.fillPoints([{ x, y: 660 }, { x: x + w, y: 660 }, { x: x + w + t, y }, { x: x + t, y }], true);
-                g.fillRect(x + t - 10, y - 14, w + 20, 14); g.fillRect(x + w / 2 + t - 12, y - 40, 24, 26);
-                // Janelas com luz âmbar/carmesim e uma porta
-                g.fillStyle(0xff6a4d, 0.35); g.fillRect(x + 16, y + 24, 18, 22); g.fillRect(x + w - 34, y + 24, 18, 22);
-                g.fillStyle(0x0d0105, 1); g.fillRect(x + w / 2 - 10, 660 - 40, 20, 40);
-                // Cerca de estacas
-                g.fillStyle(0x2a0510, 1); for (let k = 0; k < 8; k++) g.fillRect(x + w + 10 + k * 10, 632, 5, 28);
-                g.fillRect(x + w + 8, 640, 82, 4);
-                // Poste torto com luz
-                const px = x + w + 100;
-                g.lineStyle(4, 0x2a0510, 1); g.lineBetween(px, 660, px + 14, 520); g.lineBetween(px + 14, 520, px + 34, 516);
-                g.fillStyle(0xff2a3d, 0.12); g.fillCircle(px + 34, 522, 20);
-            }
-        });
-        // Névoa escarlate correndo (anda sozinha além do paralaxe)
-        const nevoa = this.camada(fase, 0.3, -84, (g, L) => {
+        // Névoa perto (vinho e roxa) correndo
+        const nevoa = this.camada(fase, 0.32, -86, (g, L) => {
             const rnd = new Phaser.Math.RandomDataGenerator(['wanda-nevoa']);
-            for (let i = 0; i < 14; i++) { g.fillStyle(0xff2a4d, 0.05); g.fillEllipse(rnd.between(0, L), rnd.between(480, 650), rnd.between(320, 640), rnd.between(30, 70)); }
+            for (let i = 0; i < 14; i++) { g.fillStyle(rnd.pick([0xff2a4d, 0x9a1aff]), 0.045); g.fillEllipse(rnd.between(0, L), rnd.between(510, 655), rnd.between(320, 640), rnd.between(26, 60)); }
         });
-        est.nevoa = nevoa;
-        this.animar(fase, (dt) => { nevoa.tilePositionX += dt * 0.02; });
-        // Fragmentos flutuando (pedaços de parede e telha girando devagar)
+        // Primeiro plano: raízes retorcidas no pé da tela e galhos pendendo do alto (bordas; centro livre)
+        this.camada(fase, 0.55, -84, (g, L) => {
+            const rnd = new Phaser.Math.RandomDataGenerator(['wanda-perto']);
+            for (let x = 0; x < L - 200; x += rnd.between(380, 620)) {
+                for (let k = 0; k < 3; k++) {
+                    const x1 = x + k * 40, alto = rnd.between(18, 36);
+                    const raiz = new Phaser.Curves.CubicBezier(new Phaser.Math.Vector2(x1, 664), new Phaser.Math.Vector2(x1 + 30, 664 - alto), new Phaser.Math.Vector2(x1 + 90, 664 - alto), new Phaser.Math.Vector2(x1 + 130, 664));
+                    g.lineStyle(7 - k * 2, 0x080006, 1).strokePoints(raiz.getPoints(12));
+                    g.lineStyle(1, 0xff2a4d, 0.25).strokePoints(raiz.getPoints(12).map((p) => ({ x: p.x, y: p.y - 3 })));
+                }
+                if (rnd.frac() > 0.4) {
+                    const gx = x + rnd.between(150, 300), comp = rnd.between(40, 80);
+                    const pend = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(gx - 60, 100), new Phaser.Math.Vector2(gx, 100 + comp), new Phaser.Math.Vector2(gx + 50, 100 + comp * 0.6));
+                    g.lineStyle(5, 0x080006, 1).strokePoints(pend.getPoints(10));
+                    g.lineStyle(2, 0x080006, 1).lineBetween(gx, 100 + comp * 0.8, gx - 10, 100 + comp * 1.25).lineBetween(gx + 30, 100 + comp * 0.7, gx + 38, 100 + comp * 1.1);
+                }
+            }
+        });
+        est.nevoa = nevoa; est.nevoaFundo = nevoaFundo;
+        nevoa.estrutural = false; nevoaFundo.estrutural = false;   // névoa fica por cima da arte
+        this.animar(fase, (dt) => { nevoa.tilePositionX += dt * 0.02; nevoaFundo.tilePositionX -= dt * 0.008; });
+        // Filamentos orgânicos de energia escarlate (curvas desenhadas uma vez; só pulsam e flutuam)
+        const filamentos = [];
+        for (let i = 0; i < 6; i++) {
+            const g = cena.add.graphics().setScrollFactor(0).setDepth(-89).setBlendMode('ADD');
+            const rnd = new Phaser.Math.RandomDataGenerator(['filamento' + i]);
+            const pts = []; let x = 0, y = 0, a = rnd.realInRange(-0.6, 0.6);
+            for (let k = 0; k < 18; k++) { a += rnd.realInRange(-0.5, 0.5); x += Math.cos(a) * 9; y += Math.sin(a) * 9; pts.push({ x, y }); }
+            g.lineStyle(5, 0xff1f4b, 0.12).strokePoints(pts); g.lineStyle(1.5, 0xff8fa3, 0.6).strokePoints(pts);
+            g.fillStyle(0xffc2cd, 0.8).fillCircle(x, y, 2);
+            g.y0 = i % 2 ? 470 + (i * 37) % 120 : 150 + (i * 41) % 90; g.baseX = i * 330 + 90; g.fase0 = i * 1.3; filamentos.push(g);
+        }
+        est.filamentos = filamentos;
+        this.reciclar(fase, filamentos, 0.28, 1980, 120);
+        filamentos.forEach((f) => { f.y = f.y0; });
+        // Fragmentos flutuando (lascas de casca e pedra), escuros com aro escarlate
         const frags = [];
-        for (let i = 0; i < 9; i++) {
-            const r = cena.add.rectangle(0, 0, 10 + (i % 3) * 8, 6 + (i % 2) * 6, 0x3a0614).setStrokeStyle(1, 0xff2a3d, 0.4).setScrollFactor(0).setDepth(-90);
-            r.y0 = 170 + (i * 53) % 360; r.baseX = i * 200 + 40; r.fase0 = i * 0.9; frags.push(r);
+        for (let i = 0; i < 8; i++) {
+            const r = cena.add.rectangle(0, 0, 8 + (i % 3) * 6, 5 + (i % 2) * 5, 0x1e030c).setStrokeStyle(1, 0xff2a3d, 0.45).setScrollFactor(0).setDepth(-90);
+            r.y0 = 160 + (i * 59) % 360; r.baseX = i * 225 + 40; r.fase0 = i * 0.9; frags.push(r);
         }
         this.reciclar(fase, frags, 0.25, 1800, 60);
-        this.animar(fase, (dt, agora) => frags.forEach((f) => { f.rotation += dt / 1000 * (0.3 + f.fase0 * 0.05); f.y = f.y0 + Math.sin(agora / 900 + f.fase0) * 14; }));
-        // Ondas hex de tempos em tempos + redemoinho girando
-        est.proximaOnda = cena.time.now + 1500;
+        // Partículas mágicas: brasas escarlates subindo + motas roxas lentas (pequenas, atrás dos obstáculos)
+        est.brasas = this.particulas(fase, { tint: [0xff1f4b, 0xff6a85, 0xff3a00], blendMode: 'ADD', frequency: 110, scale: { start: 0.4, end: 0 }, alpha: { start: 0.7, end: 0 }, speedY: { min: -40, max: -12 }, speedX: { min: -10, max: 10 } }, -89);
+        est.motas = this.particulas(fase, { tint: [0xb03aff, 0xff4dd2], blendMode: 'ADD', frequency: 380, lifespan: 6000, scale: { start: 0.25, end: 0.6 }, alpha: { start: 0, end: 0.35, ease: 'Sine.InOut' }, speedY: { min: -8, max: 4 }, speedX: { min: -12, max: 12 } }, -91);
+        // Animação ambiente: tudo em senoides lentas (sem tranco); a luz "respira"
         this.animar(fase, (dt, agora) => {
-            est.vortice.rotation += dt / 1000 * 0.15;
-            if (agora > est.proximaOnda) { this.ondaHex(fase, Phaser.Math.Between(200, 1100), Phaser.Math.Between(200, 520), est.corOnda || 0xff2a3d); est.proximaOnda = agora + Phaser.Math.Between(2200, 3800); }
+            frags.forEach((f) => { f.rotation += dt / 1000 * (0.3 + f.fase0 * 0.05); f.y = f.y0 + Math.sin(agora / 900 + f.fase0) * 14; });
+            filamentos.forEach((f) => { f.y = f.y0 + Math.sin(agora / 1400 + f.fase0) * 12; f.rotation = Math.sin(agora / 2300 + f.fase0) * 0.25; f.setAlpha(0.55 + 0.45 * Math.sin(agora / 700 + f.fase0 * 2)); });
+            est.feixesVermelhos.setAlpha(0.75 + 0.25 * Math.sin(agora / 1700));
             // Troca de realidade detectada pelo estado real da fase
             if (fase.realidade && fase.realidade !== est.realidadeVista) Cenarios.reagir(fase, 'realidade', { realidade: fase.realidade });
-        });
-    },
-
-    // Onda hexagonal crescendo (posição na tela), atrás dos obstáculos
-    ondaHex(fase, x, y, cor, r1 = 160) {
-        if (reducedMotion.matches) return;
-        const g = fase.cena.add.graphics().setScrollFactor(0).setDepth(-88).setPosition(x, y);
-        const e = { r: 10, a: 0.35 };
-        fase.cena.tweens.add({
-            targets: e, r: r1, a: 0, duration: 1400, ease: 'Sine.Out',
-            onUpdate: () => { g.clear(); g.lineStyle(3, cor, e.a).strokePoints(this.poligono(6, e.r, 0.3), true); },
-            onComplete: () => g.destroy()
         });
     },
 
@@ -815,16 +957,21 @@ const Cenarios = {
                 est.brilhoHolo = 0.6;
                 break;
             }
-            // Wanda: onda hex grande e o céu muda de tom com a realidade
+            // Wanda: a luz da floresta muda de cor com a realidade (vermelha ↔ azul, claro só de olhar o fundo)
             case 'realidade': {
                 const real = (dados && dados.realidade) || fase.realidade;
                 if (real === est.realidadeVista) return;
                 const primeira = est.realidadeVista === undefined;
                 est.realidadeVista = real;
-                est.corOnda = real === 'B' ? 0x4a8aff : 0xff2a3d;
-                if (est.desenharVortice) est.desenharVortice(est.corOnda);
-                if (est.nevoa) est.nevoa.setTint(real === 'B' ? 0x8ab4ff : 0xffffff);
-                if (!primeira) { const pt = this.jogadorTela(fase); this.ondaHex(fase, pt.x, pt.y, est.corOnda, 420); }
+                const azul = real === 'B';
+                if (est.nevoa) est.nevoa.setTint(azul ? 0x8ab4ff : 0xffffff);
+                if (est.nevoaFundo) est.nevoaFundo.setTint(azul ? 0x6a8aff : 0xffffff);
+                if (est.feixesVermelhos) est.feixesVermelhos.setTint(azul ? 0x4a8aff : 0xffffff);
+                if (est.fundo) est.fundo.setTint(azul ? 0x6a8ae8 : (CENARIOS_IMAGEM.Wanda.tom || 0xffffff));
+                if (est.brasas) est.brasas.setParticleTint(azul ? 0x5ff2ff : 0xff1f4b);
+                if (est.motas) est.motas.setParticleTint(azul ? 0x7a9aff : 0xb03aff);
+                // Clarão curto (atrás dos obstáculos) na cor da nova realidade
+                if (!primeira) this.clarao(fase, azul ? 0x4a8aff : 0xff1f4b, 0.12, 300);
                 break;
             }
             // Flechas e teia: o cenário fica quieto (são frequentes demais pra piscar a tela)

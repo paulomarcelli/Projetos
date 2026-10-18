@@ -52,6 +52,14 @@ const Progresso = {
         try { localStorage.setItem(this.CHAVE, JSON.stringify(dados)); } catch (e) {}
     },
 
+    // Guarda a maior porcentagem alcançada no MODO PRÁTICA (barra "Prática" do cartão)
+    registrarPctPratica(heroi, pct) {
+        const dados = this.ler(), fase = dados[heroi] || {};
+        if ((fase.melhorPctPratica || 0) >= pct) return;
+        fase.melhorPctPratica = pct; dados[heroi] = fase;
+        try { localStorage.setItem(this.CHAVE, JSON.stringify(dados)); } catch (e) {}
+    },
+
     // Preenche cada cartão da seleção: dificuldade com estrelas, barra de progresso e recordes
     preencherCartoes() {
         // Lê o progresso
@@ -70,7 +78,8 @@ const Progresso = {
             // Conteúdo: dificuldade, barra e recordes
             extra.innerHTML =
                 `<span class="card-dif" style="--dif:${dif.cor}"><i class="dif-icone"></i>${cfg.dificuldade.toUpperCase()} <em>${'★'.repeat(dif.estrelas)}</em></span>` +
-                `<span class="card-barra"><i style="width:${pct}%"></i><em>${pct}%</em></span>` +
+                `<span class="card-modo">Normal</span><span class="card-barra"><i style="width:${pct}%"></i><em>${pct}%</em></span>` +
+                `<span class="card-modo">Prática</span><span class="card-barra pratica"><i style="width:${info.melhorPctPratica || 0}%"></i><em>${info.melhorPctPratica || 0}%</em></span>` +
                 `<span class="card-stats">${info.concluida ? `Melhor tempo ${this.formatar(info.melhorTempo)} · ${info.menosTentativas} tentativa(s)` : 'Ainda não concluída'}</span>`;
         });
     },

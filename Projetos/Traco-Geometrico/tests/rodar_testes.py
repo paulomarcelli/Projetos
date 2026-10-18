@@ -250,7 +250,8 @@ if (p.modo === 'ufo') {
 }
 const o = f.proximoAlvo();
 if (o && o.forma.x - p.x < 850 && f.habilidade.pronta(agora)) f.aoAcao();
-for (const e of f.obstaculos) if (e.ativo && e instanceof Espinho) { const dx = e.forma.x - 20 - (p.x + 20); if (dx > 20 && dx < 80) f.aoPressionar('teclado'); }
+// pula espinhos (no UFO não: lá o pulinho é só pra seguir o vão dos pilares)
+if (p.modo !== 'ufo') for (const e of f.obstaculos) if (e.ativo && e instanceof Espinho) { const dx = e.forma.x - 20 - (p.x + 20); if (dx > 20 && dx < 80) f.aoPressionar('teclado'); }
 """
 
 @teste('Gaviao')

@@ -529,7 +529,7 @@ class FaseHulk extends Fase {
             // Concreto que cai do teto
             case 'queda': obs = new BlocoQueda(this, ev.x); break;
             // Espinho de entulho
-            case 'espinho': new Espinho(this, ev.x, !!ev.teto, 0xd9e0d4, 0xffffff); break;
+            case 'espinho': new Espinho(this, ev.x, !!ev.teto); break;
             // Parede alta indestrutível (só passa com o pad de salto)
             case 'paredeAlta': obs = new Indestrutivel(this, ev.x, MOVIMENTO.chaoY - 170, 40, 170); break;
             // Tipos comuns (dica, bloco)
@@ -630,8 +630,8 @@ class FaseHulk extends Fase {
                 const h = rnd.between(160, 380), w = rnd.between(60, 120);
                 // Corpo do prédio
                 c1.fillRect(x, 660 - h, w, h);
-                // Topo serrilhado (prédio quebrado): triângulo
-                c1.fillTriangle(x, 660 - h, x + w * 0.4, 660 - h - rnd.between(10, 40), x + w * 0.6, 660 - h);
+                // Topo quebrado em degraus (sem triângulos: no jogo, triângulo é sempre perigo)
+                c1.fillRect(x + w * 0.15, 660 - h - rnd.between(10, 40), w * 0.35, 40);
             }
         });
         // Camada 2: prédios médios com janelas apagadas
@@ -659,8 +659,8 @@ class FaseHulk extends Fase {
         for (let x = 100; x < L - 260; x += rnd.between(300, 600)) {
             // Carro amassado: corpo inclinado
             c3.fillStyle(0x4a524a, 1); c3.fillRect(x, 628, 90, 26);
-            // Teto amassado (trapézio torto)
-            c3.fillStyle(0x3d443d, 1); c3.fillTriangle(x + 15, 628, x + 70, 628, x + 35, 606);
+            // Teto amassado (bloco baixo e torto)
+            c3.fillStyle(0x3d443d, 1); c3.fillRect(x + 15, 610, 50, 18);
             // Rodas
             c3.fillStyle(0x111311, 1); c3.fillCircle(x + 18, 656, 9); c3.fillCircle(x + 72, 656, 9);
             // Poste torto

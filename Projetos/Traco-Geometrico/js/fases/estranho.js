@@ -457,7 +457,7 @@ class FaseEstranho extends Fase {
         // Escolhe pelo tipo
         switch (ev.tipo) {
             // Espinho no piso da dimensão
-            case 'espinho': new Espinho(this, ev.x, e, e ? 0xff7ad9 : 0xff5d7a, 0xffffff); break;
+            case 'espinho': new Espinho(this, ev.x, e, e ? 0xff7ad9 : null, 0xffffff); break;
             // Serra girando no piso da dimensão (clássico: pule)
             case 'serra': new Serra(this, ev.x, e); break;
             // Variações: mini espinho e serra que desce (só no piso normal)
@@ -468,7 +468,7 @@ class FaseEstranho extends Fase {
                 // Topo no chão ou espelhado no teto
                 const topo = e ? MOVIMENTO.tetoY + (ev.andar || 0) * 40 : MOVIMENTO.chaoY - 40 - (ev.andar || 0) * 40;
                 // Cores por dimensão
-                new Bloco(this, ev.x, topo, 40, 40, e ? 0x4b1d6b : 0x2e3a8c, e ? 0xff7ad9 : 0xffa53d);
+                new BlocoNeon(this, ev.x, topo, 40, 40, null, e ? 0xff7ad9 : 0xffdcae, e ? 0xff7ad9 : 0xffa53d);
                 break;
             }
             // Portais
@@ -520,7 +520,7 @@ class FaseEstranho extends Fase {
             // Ângulo e posição
             const a = i * Math.PI / 4, x = Math.cos(a) * 32, y = Math.sin(a) * 32;
             // Alterna o tipo de glifo
-            if (i % 3 === 0) this.runas.fillTriangle(x - 4, y + 3, x + 4, y + 3, x, y - 4);
+            if (i % 3 === 0) this.runas.fillCircle(x, y, 3.5);
             else if (i % 3 === 1) this.runas.strokeRect(x - 3, y - 3, 6, 6);
             else this.runas.lineBetween(x - 4, y, x + 4, y);
         }
@@ -723,8 +723,8 @@ class FaseEstranho extends Fase {
                 for (let i = 0; i < 40; i++) {
                     // Posição e tamanho
                     const x = rnd.between(0, L - 40), y = Y(rnd.between(160, 600)), s = rnd.between(8, 22);
-                    // Triângulo
-                    g.fillStyle(borda, 0.15); g.fillTriangle(x, y, x + s, y + s * 0.4, x + s * 0.3, y + s);
+                    // Fragmento quadrado (cenário sem triângulos)
+                    g.fillStyle(borda, 0.15); g.fillRect(x, y, s, s * 0.7);
                 }
             });
             // Marca a dimensão da camada

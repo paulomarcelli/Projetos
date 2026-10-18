@@ -398,7 +398,7 @@ class FaseWanda extends Fase {
             for (let x = 0; x < L - 160; x += rnd.between(150, 230)) {
                 const w = rnd.between(90, 130), h = rnd.between(90, 160), t = rnd.between(-14, 14);
                 g.fillStyle(0x1a0309, 1); g.fillPoints([{ x, y: 660 }, { x: x + w, y: 660 }, { x: x + w + t, y: 660 - h }, { x: x + t, y: 660 - h }], true);
-                g.fillTriangle(x + t - 10, 660 - h, x + w + t + 10, 660 - h, x + w / 2 + t, 660 - h - 50);
+                g.fillRect(x + t - 10, 660 - h - 14, w + 20, 14); g.fillRect(x + w / 2 + t - 12, 660 - h - 40, 24, 26);
                 g.fillStyle(0xff2a4d, 0.18); g.fillRect(x + 16, 660 - h + 24, 16, 20); g.fillRect(x + w - 32, 660 - h + 24, 16, 20);
             }
         });

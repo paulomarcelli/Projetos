@@ -87,20 +87,88 @@ class Plataforma extends Bloco {
     }
 }
 
-// ESPINHO: triângulo que mata; noTeto = pendurado apontando pra baixo
+// ESPINHO: triângulo que mata; noTeto = pendurado apontando pra baixo.
+// Visual "neon" (rodada 6): preenchimento preto da fase, contorno claro e um halo na cor de destaque.
+//   cor = cor do halo (null = destaque da fase) · borda = contorno (null = neon da fase)
 class Espinho extends Obstaculo {
-    constructor(fase, x, noTeto = false, cor = 0xff5d7a, borda = 0xffc2cd, yBase = null) {
+    constructor(fase, x, noTeto = false, cor = null, borda = null, yBase = null) {
+        // Cores do tema (fases antigas sem objeto/neon caem no padrão)
+        const tema = fase.tema || {};
+        const corHalo = cor !== null ? cor : (tema.linha || 0xff5d7a);
+        const corBorda = borda !== null ? borda : (tema.neon || 0xffffff);
         // Y do centro: encostado no chão ou no teto (ou numa base informada)
         const y = yBase !== null ? yBase - 20 : (noTeto ? MOVIMENTO.tetoY + 20 : MOVIMENTO.chaoY - 20);
         // Pontas do triângulo: pra cima (chão) ou pra baixo (teto)
         const pontos = noTeto ? [0, 0, 40, 0, 20, 40] : [0, 40, 20, 0, 40, 40];
-        // Triângulo 40x40 com centro em (x+20, y)
-        const forma = fase.cena.add.triangle(x + 20, y, ...pontos, cor).setStrokeStyle(2, borda);
+        // Triângulo 40x40 com centro em (x+20, y): preto com contorno claro
+        const forma = fase.cena.add.triangle(x + 20, y, ...pontos, tema.objeto !== undefined ? tema.objeto : 0x0a0a12).setStrokeStyle(2, corBorda);
         // Chama a base como mortal
         super(fase, forma, 'mortal');
         // Hitbox menor que o desenho (mais justo pro jogador)
         forma.body.setSize(14, 22, false).setOffset(13, noTeto ? 2 : 16);
+        // Halo (contorno largo e transparente atrás do espinho)
+        this.halo = fase.cena.add.triangle(x + 20, y, ...pontos).setStrokeStyle(7, corHalo, 0.35).setDepth(-1);
+        this.halo.isFilled = false;
     }
+
+    // Halo acompanha o espinho (posição, transparência e visibilidade: fantasmas do Dr. Estranho, Wanda)
+    atualizar() { this.sincronizarHalo(); }
+    sincronizarHalo() {
+        if (!this.halo) return;
+        const f = this.forma;
+        this.halo.setPosition(f.x, f.y).setVisible(f.visible && this.ativo).setAlpha(f.alpha);
+    }
+
+    // Some com o halo
+    destruir() { if (this.halo) { this.halo.destroy(); this.halo = null; } super.destruir(); }
+}
+
+// BLOCO NEON: bloco preto em grade de ladrilhos com contorno claro e brilho (como os blocos dos jogos de ritmo)
+// neon = cor do contorno (padrão: neon da fase) · brilho = cor do halo (padrão: destaque da fase)
+class BlocoNeon extends Bloco {
+    constructor(fase, x, yTopo, largura, altura, id = null, neon = null, brilho = null) {
+        const tema = fase.tema || {};
+        const corNeon = neon !== null ? neon : (tema.neon || 0xffffff);
+        // Bloco preto com contorno claro
+        super(fase, x, yTopo, largura, altura, tema.objeto !== undefined ? tema.objeto : 0x0a0a12, corNeon, id);
+        // Grade de ladrilhos de 40 px + halo, num desenho só (centrado no bloco)
+        const g = fase.cena.add.graphics({ x: x + largura / 2, y: yTopo + altura / 2 }).setDepth(1);
+        const x0 = -largura / 2, y0 = -altura / 2;
+        // Halo largo atrás
+        g.lineStyle(8, brilho !== null ? brilho : (tema.linha || corNeon), 0.22).strokeRect(x0 - 2, y0 - 2, largura + 4, altura + 4);
+        // Ladrilhos
+        g.lineStyle(1, corNeon, 0.28);
+        for (let xx = 40; xx < largura - 2; xx += 40) g.lineBetween(x0 + xx, y0 + 3, x0 + xx, y0 + altura - 3);
+        for (let yy = 40; yy < altura - 2; yy += 40) g.lineBetween(x0 + 3, y0 + yy, x0 + largura - 3, y0 + yy);
+        // Brilho na borda de cima (luz)
+        g.lineStyle(2, corNeon, 0.9).lineBetween(x0 + 2, y0 + 2, x0 + largura - 2, y0 + 2);
+        this.grade = g;
+    }
+
+    // A grade acompanha o bloco (posição, transparência e visibilidade)
+    atualizar() {
+        const f = this.forma;
+        this.grade.setPosition(f.x, f.y).setVisible(f.visible && this.ativo).setAlpha(f.alpha * (f.fillAlpha === undefined ? 1 : Math.max(f.fillAlpha, 0.3)));
+    }
+
+    // Some com a grade
+    destruir() { this.grade.destroy(); super.destruir(); }
+}
+
+// PLATAFORMA SUSPENSA: plataforma neon presa no teto por duas correntes (só visual; pisa por cima)
+class PlataformaSuspensa extends Plataforma {
+    constructor(fase, x, yTopo, largura) {
+        const tema = fase.tema || {};
+        super(fase, x, yTopo, largura, tema.objeto !== undefined ? tema.objeto : 0x0a0a12, tema.neon || 0xffffff);
+        // Correntes: elos ovais do teto até a plataforma
+        const g = fase.cena.add.graphics().setDepth(1);
+        g.lineStyle(2, tema.linha || 0xffffff, 0.75);
+        [x + 14, x + largura - 14].forEach((cx) => {
+            for (let yy = MOVIMENTO.tetoY + 4; yy < yTopo - 6; yy += 14) g.strokeEllipse(cx, yy + 6, 7, 12);
+        });
+        this.correntes = g;
+    }
+    destruir() { this.correntes.destroy(); super.destruir(); }
 }
 
 // DICA: texto de tutorial no mundo, que aparece quando o jogador chega perto

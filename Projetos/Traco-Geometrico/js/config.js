@@ -19,51 +19,55 @@ const MOVIMENTO = {
 
 // TEMAS DE CORES: um por fase (usados no fundo, no chão, no fade e no HUD)
 const TEMAS = {
+    // Paleta refinada na rodada 6 (veja REA_ESQUEMA.md): fundo saturado por herói, objetos pretos
+    // (objeto) com contorno claro (neon) e brilho na cor de destaque (linha), como nos jogos de ritmo.
     // Tema azul padrão (menu)
     padrao: {
-        fundo: '#101a46',     // Cor de fundo da câmera
-        grade: 0x7096ef,      // Cor das linhas da grade
-        forma: 0x3657bc,      // Cor das formas flutuantes
-        bordaForma: 0x668eff, // Borda das formas flutuantes
-        faixa: 0x0a1233,      // Cor das faixas do chão e do teto
-        linha: 0x68e5ee,      // Cor das linhas brilhantes
+        fundo: '#1a2f9c',     // Cor de fundo da câmera
+        grade: 0x8fb0ff,      // Cor das linhas da grade
+        forma: 0x2a48c8,      // Cor das formas flutuantes
+        bordaForma: 0x9cc0ff, // Borda das formas flutuantes
+        faixa: 0x0e1c66,      // Cor das faixas do chão e do teto
+        linha: 0x6fe6ff,      // Cor das linhas brilhantes (destaque)
         texto: '#ecf4ff',     // Cor do texto do HUD
-        fade: [16, 26, 70]    // Cor (RGB) da transição de entrada/saída
+        fade: [26, 47, 156],  // Cor (RGB) da transição de entrada/saída
+        objeto: 0x070b22,     // Preenchimento dos objetos (blocos, espinhos)
+        neon: 0xffffff        // Contorno dos objetos
     },
-    // Homem-Aranha: cidade à noite
+    // Homem-Aranha: azul vivo com destaque vermelho (o uniforme)
     aranha: {
-        fundo: '#0b1026', grade: 0x5b6bb5, forma: 0x1e2652, bordaForma: 0x5b6bb5,
-        faixa: 0x05070f, linha: 0xff5a6e, texto: '#ffe3e7', fade: [40, 12, 40]
+        fundo: '#123aa6', grade: 0x8fb0ff, forma: 0x1d4bc4, bordaForma: 0xff6b80,
+        faixa: 0x0a1f5c, linha: 0xff3b55, texto: '#ffeef0', fade: [18, 58, 166], objeto: 0x070b1e, neon: 0xffffff
     },
-    // Homem de Ferro: cidade futurista
+    // Homem de Ferro: vermelho da armadura com dourado
     ferro: {
-        fundo: '#06141f', grade: 0x29e3ff, forma: 0x0f3b52, bordaForma: 0x29e3ff,
-        faixa: 0x041019, linha: 0x29e3ff, texto: '#e8f4ff', fade: [60, 30, 10]
+        fundo: '#4c0a10', grade: 0xffa040, forma: 0x7a1218, bordaForma: 0xffc23d,
+        faixa: 0x2e0508, linha: 0xffc23d, texto: '#fff3dc', fade: [76, 10, 16], objeto: 0x120305, neon: 0xffe2a0
     },
-    // Hulk: cidade em ruínas
+    // Hulk: verde (as seções do meio puxam pro roxo, as cores do herói)
     hulk: {
-        fundo: '#1a1d1a', grade: 0x8fae7a, forma: 0x3a403a, bordaForma: 0x6fdc4a,
-        faixa: 0x141614, linha: 0x8fae7a, texto: '#e6f5dc', fade: [26, 29, 26]
+        fundo: '#1f5216', grade: 0xb8ff8a, forma: 0x2f7a1f, bordaForma: 0x9dff5a,
+        faixa: 0x123a0c, linha: 0x9dff5a, texto: '#eeffe4', fade: [31, 82, 22], objeto: 0x061204, neon: 0xffffff
     },
-    // Gavião Arqueiro: base de segurança
+    // Gavião Arqueiro: roxo com destaque limão
     gaviao: {
-        fundo: '#120f1f', grade: 0x8c5cff, forma: 0x1f1a33, bordaForma: 0x8c5cff,
-        faixa: 0x0b0914, linha: 0x8c5cff, texto: '#e2d6ff', fade: [30, 20, 60]
+        fundo: '#4a1a8c', grade: 0xc9a6ff, forma: 0x5a24a6, bordaForma: 0xd6b8ff,
+        faixa: 0x24094a, linha: 0xb8ff5a, texto: '#f1e8ff', fade: [74, 26, 140], objeto: 0x0c0418, neon: 0xffffff
     },
-    // Doutor Estranho: dimensão normal
+    // Doutor Estranho: azul-noite com laranja místico
     estranho: {
-        fundo: '#0d0b1e', grade: 0x6b5cff, forma: 0x2a2060, bordaForma: 0xffa53d,
-        faixa: 0x07061a, linha: 0xffa53d, texto: '#fff1dc', fade: [60, 30, 10]
+        fundo: '#14306a', grade: 0x7aa0ff, forma: 0x1d3f8a, bordaForma: 0xffa53d,
+        faixa: 0x08183d, linha: 0xffa53d, texto: '#fff3e0', fade: [20, 48, 106], objeto: 0x060a1a, neon: 0xffdcae
     },
-    // Doutor Estranho: dimensão espelhada
+    // Doutor Estranho: dimensão espelhada (magenta)
     espelho: {
-        fundo: '#170a26', grade: 0xb46bff, forma: 0x4b1d6b, bordaForma: 0xff7ad9,
-        faixa: 0x0a0414, linha: 0xff7ad9, texto: '#ffe0f6', fade: [60, 10, 60]
+        fundo: '#5a1470', grade: 0xe0a6ff, forma: 0x6e1c8a, bordaForma: 0xff7ad9,
+        faixa: 0x2a0838, linha: 0xff7ad9, texto: '#ffe6f7', fade: [90, 20, 112], objeto: 0x14041c, neon: 0xffd6f2
     },
-    // Wanda: realidade carmesim
+    // Wanda: breu avermelhado com contorno vermelho (neon no escuro)
     wanda: {
-        fundo: '#0d0205', grade: 0x6b0f1f, forma: 0x3a0812, bordaForma: 0x8a1530,
-        faixa: 0x070103, linha: 0xb3122e, texto: '#ffd6dd', fade: [60, 0, 12]
+        fundo: '#22040a', grade: 0x8a1a2a, forma: 0x3a0812, bordaForma: 0xff2a3d,
+        faixa: 0x100104, linha: 0xff2a3d, texto: '#ffdde2', fade: [34, 4, 10], objeto: 0x0a0103, neon: 0xff4d5e
     }
 };
 
@@ -101,12 +105,12 @@ const DIFICULDADES = {
 // CORES POR SEÇÃO (como os "gatilhos de cor" dos jogos de ritmo): a cada checkpoint o cenário
 // muda de tom suavemente. Uma cor por trecho: início, depois do 1º, 2º, 3º (e 4º) checkpoint.
 const CORES_SECOES = {
-    'Homem-Aranha':   [0x1f3a93, 0x6a1b9a, 0xb3122e, 0x0b6e8a],
-    'Homem de Ferro': [0x8f1219, 0xb8860b, 0x0b6e8a, 0xff7b00],
-    'Hulk':           [0x2f7d1f, 0x6a8f12, 0x5a1f8f, 0x0f8f6a, 0x8f1f3a],
-    'Gaviao':         [0x4b2a7a, 0x1f5f8f, 0x8f2a4b, 0x2a8f5f, 0x6a2a8f],
-    'DrEstranho':     [0x1d2a6b, 0x6b3a0a, 0x0a6b4a, 0x5a0a6b],
-    'Wanda':          [0x4a0716, 0x7a0a2a, 0x2a0a4a, 0x8a0f1f]
+    'Homem-Aranha':   [0x1f5fff, 0x7a2aff, 0xff2a55, 0x00b4d8],
+    'Homem de Ferro': [0xff2a2a, 0xffb000, 0xff6a00, 0xffd84a],
+    'Hulk':           [0x4cff2a, 0x9dff00, 0xa02aff, 0x2affb0, 0xc22aff],
+    'Gaviao':         [0x8a3cff, 0xb8ff2a, 0xff3cd2, 0x3cd2ff, 0x6a2aff],
+    'DrEstranho':     [0x2a6aff, 0xff8a00, 0x00e0a0, 0xd02aff],
+    'Wanda':          [0xff1a3a, 0xff004c, 0x9a00ff, 0xff3a00]
 };
 
 // ABERTURA NO RITMO de cada fase (um símbolo por batida; legenda em criarAbertura no fase.js)

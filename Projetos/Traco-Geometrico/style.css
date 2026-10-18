@@ -815,3 +815,73 @@ kbd {
     .pausa-botoes { grid-template-columns: 1fr; } /* Uma coluna */
     #level-select .level-btn { width: 70cqw; }   /* Cartão quase a tela toda */
 }
+
+
+/* ================================================================
+   RODADA 6 — INTERFACE NO ESTILO DOS JOGOS DE RITMO (veja REA_ESQUEMA.md)
+   Letras grossas, botões chanfrados com contorno escuro, pausa redonda e painéis "de jogo".
+   ================================================================ */
+:root {
+    --contorno: #061026;                         /* Contorno escuro de botões e letras */
+    --verde-claro: #b6ff5c;                      /* Verde do topo dos botões */
+    --verde-escuro: #3a9e16;                     /* Verde da base dos botões */
+    --ciano: #3fe0ff;                            /* Ciano do chanfro */
+    --fonte-titulo: 'Bungee', 'Arial Black', Impact, sans-serif; /* Fonte de letras grossas, com reserva */
+}
+/* Título: letras grossas, verde com contorno escuro e degraus de sombra (efeito 3D) */
+#game-title {
+    font-family: var(--fonte-titulo);
+    font-weight: 400;                            /* A fonte já é grossa */
+    letter-spacing: .01em;
+    transform: none;
+    color: var(--verde-claro);
+    -webkit-text-stroke: .06em var(--contorno);
+    text-shadow: 0 .05em 0 var(--verde-escuro), 0 .1em 0 var(--contorno), 0 .16em .12em #00000066;
+}
+#game-title span { color: var(--verde-claro); font-size: .78em; text-shadow: 0 .05em 0 var(--verde-escuro), 0 .1em 0 var(--contorno), 0 .16em .12em #00000066; }
+.tagline, .play-label { font-family: var(--fonte-titulo); letter-spacing: .08em; }
+.tagline { color: #d8e6ff; text-shadow: 0 2px 0 var(--contorno); }
+
+/* Botões laterais do menu: ladrilhos quadrados chanfrados (borda ciano, miolo verde) */
+.botao-redondo {
+    border-radius: 22%;
+    border: .4cqw solid var(--contorno);
+    background:
+        linear-gradient(var(--verde-claro), var(--verde-escuro)) padding-box;
+    box-shadow: inset 0 0 0 .55cqw var(--ciano), inset 0 .9cqw 0 #ffffff44, 0 .55cqw 0 var(--contorno);
+    font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .04em;
+}
+/* Botão JOGAR: maior, redondo, com contorno grosso e chanfro */
+#play-button {
+    width: clamp(70px, 10.5cqw, 150px);
+    border: .45cqw solid var(--contorno);
+    background: radial-gradient(circle at 50% 32%, #e8ff9a, var(--verde-claro) 45%, var(--verde-escuro));
+    box-shadow: inset 0 0 0 .6cqw var(--ciano), inset 0 1cqw 0 #ffffff55, 0 .6cqw 0 var(--contorno), 0 0 3cqw #b7f65b40;
+}
+.play-icon { border-left-color: #ffd400; filter: drop-shadow(0 .25cqw 0 var(--contorno)) drop-shadow(0 0 1px var(--contorno)); }
+/* Botão de som: redondo com contorno grosso */
+.botao-canto { border: .3cqw solid var(--contorno); box-shadow: 0 .35cqw 0 var(--contorno), inset 0 .5cqw 0 #ffffff55; font-family: var(--fonte-titulo); font-weight: 400; }
+
+/* Pausa durante a partida: botão redondo verde */
+#back-button.botao-pausa {
+    width: clamp(40px, 4.4cqw, 64px); aspect-ratio: 1; min-height: 0; padding: 0;
+    display: grid; place-items: center;
+    border-radius: 50%; border: .3cqw solid var(--contorno);
+    background: radial-gradient(circle at 50% 30%, var(--verde-claro), var(--verde-escuro) 75%);
+    box-shadow: inset 0 0 0 .3cqw #ffffff55, 0 .3cqw 0 var(--contorno);
+    color: #ffffff; text-shadow: 0 2px 0 var(--contorno);
+}
+.pausa-icone { font-size: clamp(12px, 1.5cqw, 22px); letter-spacing: -.12em; font-weight: 900; }
+
+/* Tela de pausa: painel escuro com contorno grosso */
+#pausa h2, #fc-titulo { font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .04em; }
+#pausa .pausa-botoes { padding: 1.6cqw; border-radius: 1.6cqw; border: .35cqw solid var(--contorno); background: #0b1440e6; box-shadow: inset 0 0 0 .25cqw #ffffff22, 0 .5cqw 0 var(--contorno); }
+#pausa button { font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .03em; }
+
+/* Seleção de fases: título e nome da fase em letras grossas; barras de modo normal e prática */
+.level-heading { font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .08em; -webkit-text-stroke: .04em var(--contorno); paint-order: stroke fill; }
+#level-select .level-btn { font-family: var(--fonte-titulo); font-weight: 400; }
+#level-select .level-btn small, .card-extra { font-family: Arial, Helvetica, sans-serif; }
+.card-modo { font-weight: 900; font-size: .85em; letter-spacing: .08em; text-transform: uppercase; margin-bottom: -.3cqw; }
+.card-barra.pratica i { background: linear-gradient(#7dfcff, #1fa6d6); } /* Prática em ciano */
+.seta { border-radius: 22%; box-shadow: inset 0 0 0 .35cqw var(--ciano), 0 .45cqw 0 var(--contorno); }

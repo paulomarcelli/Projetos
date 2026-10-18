@@ -888,7 +888,12 @@ class FaseGaviao extends Fase {
             { x: 19300, tipo: 'dica', txt: 'Voando também dá pra atirar: abra a porta' },
             { x: 19750, tipo: 'alvo', y: 240, abre: 'p7' }, { x: 20000, tipo: 'porta', id: 'p7' },
             { x: 20350, tipo: 'pilar', centro: 380, vao: 190 },
-            { x: 20700, tipo: 'modo', modo: 'cubo' }
+            { x: 20700, tipo: 'modo', modo: 'cubo' },
+            // Poucos grupos curtos de espinhos no chão entre os pilares (castigam quem voa baixo demais)
+            // e a pirâmide invertida pendurada no teto (só obstáculos: triângulo sempre é perigo)
+            { x: 18420, ate: 18540, tipo: 'fileira' }, { x: 18870, ate: 18990, tipo: 'fileira' },
+            { x: 20120, ate: 20240, tipo: 'fileira' },
+            { x: 19300, tipo: 'piramide', linhas: [6, 4, 2] }
         ];
     }
 }

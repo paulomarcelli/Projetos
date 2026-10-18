@@ -66,6 +66,14 @@
 - Prática por herói: Wanda guarda a realidade, Estranho a dimensão, Gavião as flechas especiais e as portas abertas, e o Aranha só deixa marcar com os pés num telhado (não dá pra refazer a teia no ar).
 - Pilotos automáticos (`rodar_testes.py`): Hulk sabe jogar a bola e o orbe azul, e só pula espinho do lado em que está; Gavião voa o UFO mirando no vão do próximo pilar.
 
+## Rodada 6: visual neon, level design das capturas e interface (esquema em `REA_ESQUEMA.md`)
+- Base: 5 capturas de tela enviadas pela equipe, analisadas só por observação (nada extraído). O esquema completo está em `REA_ESQUEMA.md`.
+- **Objetos neon**: espinhos, serras e blocos genéricos agora são pretos (`tema.objeto`) com contorno claro (`tema.neon`) e halo na cor de destaque. `BlocoNeon` desenha a grade de ladrilhos; `PlataformaSuspensa` tem correntes.
+- **Cores das fases** refinadas (`TEMAS`, `CORES_SECOES`): Aranha azul/vermelho, Ferro vermelho/dourado, Hulk verde→roxo, Gavião roxo/limão, Estranho azul-noite/laranja (espelho magenta), Wanda breu/vermelho. O cenário de trás é tingido pela cor da seção; feixes de luz pulsam na batida; rastro de partículas no jogador.
+- **Level design novo**: tipos `fileira` (grupos de espinhos no chão/teto), `piramide` (pirâmide invertida com espinhos por baixo) e `plataformaSuspensa`. Gavião (UFO): 3 grupos curtos de espinhos + pirâmide. Ferro: corredor curto de espinhos no chão e no teto. Abertura: plataformas com correntes e blocos em grade.
+- **Regra da equipe**: triângulo = perigo, sempre. Tiramos triângulos do cenário (fundo, tufos de chão, topo dos prédios do Hulk, telhados da Wanda, fragmentos do Estranho) e reduzimos as fileiras de espinhos a grupos curtos com função.
+- **Interface**: título e botões com fonte de letras grossas (Bungee, Google Fonts, com reserva), botões chanfrados com contorno escuro, pausa redonda verde, painel de pausa e cartão da fase com duas barras (Normal e Prática). `Progresso.registrarPctPratica` guarda o melhor % da prática.
+
 ## Decisões
 - As habilidades dos heróis continuam sendo o centro de cada fase. Os elementos clássicos entram como preparação e ritmo entre os desafios da habilidade, nunca no lugar dela.
 - Portal de gravidade só no Hulk: o Doutor Estranho já tem a dimensão espelho, e a Wanda e o Aranha dependem do chão.
@@ -80,4 +88,4 @@
 - Os testes usam um piloto automático; a sensação de dificuldade para pessoas não foi medida.
 
 ## Retomada
-Testes: `python3 tests/rodar_testes.py`, `teste_rodada5.py`, `teste_checkpoints.py`, `teste_dificuldade.py`, `teste_classicos.py`, `testes_extras.py`, `testes_finais.py`, `teste_barra.py`.
+Esquema visual: `REA_ESQUEMA.md`. Testes: `python3 tests/rodar_testes.py`, `teste_rodada5.py`, `teste_checkpoints.py`, `teste_dificuldade.py`, `teste_classicos.py`, `testes_extras.py`, `testes_finais.py`, `teste_barra.py`.

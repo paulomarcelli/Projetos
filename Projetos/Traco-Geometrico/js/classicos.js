@@ -97,10 +97,12 @@ class OrbeSalto extends Obstaculo {
         // Variante e cor
         const variante = varianteClassico(rosa);
         const cor = { amarelo: CLASSICOS.corAmarelo, rosa: CLASSICOS.corRosa, azul: CLASSICOS.corAzul }[variante];
-        // Anel amarelo
-        const forma = fase.cena.add.circle(x, y, CLASSICOS.raioOrbe - 8, cor, 0.25).setStrokeStyle(4, cor).setDepth(4);
+        // Núcleo cheio na cor do orbe, com anel branco (visual da rodada 6: núcleo + anel + halo)
+        const forma = fase.cena.add.circle(x, y, CLASSICOS.raioOrbe - 12, cor, 0.95).setStrokeStyle(4, 0xffffff).setDepth(4);
         // Decoração (a fase confere a distância; não precisa de corpo)
         super(fase, forma, 'decoracao');
+        // Halo grande e suave atrás
+        this.halo = fase.cena.add.circle(x, y, CLASSICOS.raioOrbe + 8, cor, 0.16).setDepth(3);
         // Anel externo pulsando (mostra que é interativo)
         this.anel = fase.cena.add.circle(x, y, CLASSICOS.raioOrbe).setStrokeStyle(2, 0xffffff, 0.6).setDepth(4);
         // Última vez usado
@@ -143,13 +145,14 @@ class OrbeSalto extends Obstaculo {
         this.anel.setScale(1 + Math.sin(agora / 140) * 0.08);
         // Apagado (Wanda): transparente
         this.forma.setAlpha(this.ligado ? 1 : 0.2); this.anel.setAlpha(this.ligado ? 1 : 0.2);
+        this.halo.setAlpha(this.ligado ? 1 : 0.2).setScale(1 + Math.sin(agora / 220) * 0.1);
         // Encostando e apertou há pouco (ou segurando): usa
         const p = this.fase.player;
         if (this.alcance() && (this.fase.segurandoTecla || agora - p.ultimoAperto < CLASSICOS.janelaOrbe)) this.usar();
     }
 
     // Some com o anel
-    destruir() { this.anel.destroy(); super.destruir(); }
+    destruir() { this.anel.destroy(); this.halo.destroy(); super.destruir(); }
 }
 
 // PORTAL DE GRAVIDADE: azul inverte (o cubo corre no teto); laranja volta ao normal
@@ -253,19 +256,23 @@ class Serra extends Espinho {
     constructor(fase, x, noTeto = false, yBase = null) {
         // Usa o espinho como "caixa de colisão" (justa: menor que o desenho)
         super(fase, x, noTeto, 0xffffff, 0xffffff, yBase);
-        // O triângulo não aparece (só o corpo dele)
-        this.forma.setAlpha(0);
+        // O triângulo não aparece (só o corpo dele), nem o halo
+        this.forma.setAlpha(0); this.halo.destroy(); this.halo = null;
         // Centro do disco (meio enterrado no chão ou no teto)
         const cy = yBase !== null ? yBase - 12 : (noTeto ? MOVIMENTO.tetoY + 12 : MOVIMENTO.chaoY - 12);
-        // Desenho do disco com dentes
+        // Desenho do disco com dentes: preto com contorno claro e halo na cor da fase (visual neon)
+        const tema = fase.tema || {}, preto = tema.objeto !== undefined ? tema.objeto : 0x0a0a12, neon = tema.neon || 0xffffff;
         const g = fase.cena.add.graphics({ x: x + 20, y: cy }).setDepth(3);
-        // Disco cinza claro
-        g.fillStyle(0xd9dde8, 1); g.fillCircle(0, 0, 22);
-        // Dentes (triângulos em volta)
-        g.fillStyle(0xd9dde8, 1);
-        for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5; g.fillTriangle(Math.cos(a) * 20, Math.sin(a) * 20, Math.cos(a + 0.3) * 30, Math.sin(a + 0.3) * 30, Math.cos(a + 0.5) * 20, Math.sin(a + 0.5) * 20); }
-        // Miolo escuro e furo
-        g.fillStyle(0x2a2f3d, 1); g.fillCircle(0, 0, 10); g.fillStyle(0xd9dde8, 1); g.fillCircle(0, 0, 3);
+        // Contorno em estrela (10 dentes): pontas em r=30, vales em r=20
+        const estrela = [];
+        for (let i = 0; i < 20; i++) { const a = i * Math.PI / 10, r = i % 2 ? 20 : 30; estrela.push({ x: Math.cos(a) * r, y: Math.sin(a) * r }); }
+        // Halo
+        g.lineStyle(7, tema.linha || neon, 0.3).strokePoints(estrela, true);
+        // Corpo preto + contorno
+        g.fillStyle(preto, 1).fillPoints(estrela, true);
+        g.lineStyle(2, neon, 1).strokePoints(estrela, true);
+        // Miolo: anel e furo
+        g.lineStyle(2, neon, 0.8).strokeCircle(0, 0, 9); g.fillStyle(neon, 1).fillCircle(0, 0, 3);
         // Guarda
         this.disco = g;
     }
@@ -282,9 +289,10 @@ class Serra extends Espinho {
 class MiniEspinho extends Espinho {
     constructor(fase, x, yBase = MOVIMENTO.chaoY, noTeto = false) {
         // Espinho normal na mesma base
-        super(fase, x, noTeto, 0xff5d7a, 0xffc2cd, noTeto ? null : yBase);
+        super(fase, x, noTeto, null, null, noTeto ? null : yBase);
         // Desenho baixinho (triângulo de 20 px de altura, colado na base)
-        if (noTeto) this.forma.setTo(0, 0, 40, 0, 20, 20); else this.forma.setTo(0, 40, 20, 20, 40, 40);
+        if (noTeto) { this.forma.setTo(0, 0, 40, 0, 20, 20); this.halo.setTo(0, 0, 40, 0, 20, 20); }
+        else { this.forma.setTo(0, 40, 20, 20, 40, 40); this.halo.setTo(0, 40, 20, 20, 40, 40); }
         // Hitbox só na ponta baixa
         this.forma.body.setSize(14, 10, false).setOffset(13, noTeto ? 2 : 28);
     }

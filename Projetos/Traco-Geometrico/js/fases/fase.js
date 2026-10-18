@@ -192,6 +192,8 @@ class Fase {
     // CENÁRIO
     // ---------------------------------------------------------------
     criarCenario() {
+        // Cor que tinge o cenário de trás (cor da 1ª seção, clareada)
+        this.corTingimento = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) ? this.clarear(CORES_SECOES[this.heroi][0], 0.4) : null;
         // Cor de fundo da câmera
         this.cena.cameras.main.setBackgroundColor(this.tema.fundo);
         // Grade fixa na tela (não anda com a câmera)
@@ -232,6 +234,8 @@ class Fase {
         const tile = this.cena.add.tileSprite(0, 0, 1280, 720, chave).setOrigin(0, 0).setScrollFactor(0).setDepth(profundidade);
         // Guarda o fator de velocidade
         tile.fatorParalaxe = fator;
+        // Cenário monocromático: tingido com a cor da seção (clareada), como os fundos dos jogos de ritmo
+        if (this.corTingimento) tile.setTint(this.corTingimento);
         // Guarda na lista (o atualizar move todas)
         (this.camadas = this.camadas || []).push(tile);
         // Devolve (algumas fases mexem na camada)
@@ -293,7 +297,9 @@ class Fase {
             g.generateTexture('fundoGeo', 256, 256); g.destroy();
         }
         // TileSprite fixo na tela; a textura rola devagar com a câmera (paralaxe)
-        this.fundoGeo = this.cena.add.tileSprite(640, 400, 1280, 560, 'fundoGeo').setScrollFactor(0).setDepth(-88).setAlpha(0.28);
+        this.fundoGeo = this.cena.add.tileSprite(640, 400, 1280, 560, 'fundoGeo').setScrollFactor(0).setDepth(-88).setAlpha(0.3);
+        // Feixes de luz subindo do chão (pulsam na batida)
+        this.criarFeixes();
         // Cor da seção atual (muda junto com o véu)
         const cor = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) ? CORES_SECOES[this.heroi][0] : this.tema.linha;
         this.fundoGeo.setTint(cor);
@@ -301,6 +307,31 @@ class Fase {
         const rolar = () => { if (this.fundoGeo && this.fundoGeo.active) this.fundoGeo.tilePositionX = this.cena.cameras.main.scrollX * 0.12; };
         this.cena.events.on('postupdate', rolar);
         this.cena.events.once('shutdown', () => this.cena.events.off('postupdate', rolar));
+    }
+
+    // Feixes de luz verticais subindo do chão (camada fixa na tela, tingida pela cor da seção)
+    criarFeixes() {
+        if (!this.cena.textures.exists('feixes')) {
+            const g = this.cena.make.graphics({ add: false }), rnd = new Phaser.Math.RandomDataGenerator(['feixes']);
+            // Cada feixe: várias faixas finas empilhadas, mais fortes embaixo (degradê)
+            for (let x = 20; x < 1000; x += rnd.between(60, 150)) {
+                const alto = rnd.between(120, 340), larg = rnd.between(3, 9);
+                for (let k = 0; k < 12; k++) { g.fillStyle(0xffffff, 0.05 * (1 - k / 12)); g.fillRect(x, 560 - alto * (k + 1) / 12, larg, alto / 12 + 1); }
+            }
+            g.generateTexture('feixes', 1024, 560); g.destroy();
+        }
+        this.feixes = this.cena.add.tileSprite(640, 380, 1280, 560, 'feixes').setScrollFactor(0).setDepth(-86).setAlpha(0.8);
+        const cor = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) ? CORES_SECOES[this.heroi][0] : this.tema.linha;
+        this.feixes.setTint(cor);
+        const rolar = () => { if (this.feixes && this.feixes.active) this.feixes.tilePositionX = this.cena.cameras.main.scrollX * 0.25; };
+        this.cena.events.on('postupdate', rolar);
+        this.cena.events.once('shutdown', () => this.cena.events.off('postupdate', rolar));
+    }
+
+    // Mistura uma cor com branco (t = 0 nada, 1 branco) — usado pra tingir o cenário de trás
+    clarear(cor, t) {
+        const c = Phaser.Display.Color.IntegerToColor(cor);
+        return Phaser.Display.Color.GetColor(c.red + (255 - c.red) * t, c.green + (255 - c.green) * t, c.blue + (255 - c.blue) * t);
     }
 
     // Esta fase tem a abertura no ritmo? (o Homem de Ferro voa o tempo todo: não tem)
@@ -331,7 +362,7 @@ class Fase {
         // Marca o objeto como parte da abertura
         const marca = (o) => { o.abertura = true; return o; };
         // Espinho no topo do chão desse trecho
-        const esp = (x) => marca(new Espinho(this, Math.round(x), false, 0xff5d7a, 0xffc2cd, t));
+        const esp = (x) => marca(new Espinho(this, Math.round(x), false, null, null, t));
         // Dica inicial
         new Dica(this, this.xInicio + 120, 'Pule no ritmo da música!');
         // Larguras (iguais às de batidasAbertura)
@@ -350,11 +381,11 @@ class Fase {
                 case 'S': marca(new Serra(this, x, false, t)); break;
                 case 'D': marca(new SerraDescendo(this, x, t)); break;
                 // Bloco 40×40 (suba nele; bater de lado mata)
-                case 'B': marca(new Bloco(this, x, t - 40, 40, 40, this.tema.linha, 0xffffff)); break;
+                case 'B': marca(new BlocoNeon(this, x, t - 40, 40, 40)); break;
                 // Plataforma por cima de espinhos (suba e pule na beirada)
                 case '_': {
-                    const lp = Math.round(2.5 * P), pl = marca(new Plataforma(this, x, t - 70, lp, this.tema.linha, 0xffffff));
-                    pl.forma.setFillStyle(this.tema.linha, 0.55);
+                    // Plataforma presa no teto por correntes (visual da rodada 6)
+                    const lp = Math.round(2.5 * P); marca(new PlataformaSuspensa(this, x, t - 70, lp));
                     for (let xx = x + 20; xx < x + lp + 60; xx += 40) esp(xx);
                     break;
                 }
@@ -418,6 +449,13 @@ class Fase {
         this.desenharSkin(this.player.skin);
         // Esconde o retângulo da física (continua colidindo normalmente)
         this.player.setVisible(false);
+        // Rastro atrás do personagem (partículas na cor do cubo), desligado com movimento reduzido
+        if (!reducedMotion.matches) {
+            this.rastro = this.cena.add.particles(0, 0, 'faisca', {
+                follow: this.player, speedX: { min: -80, max: -30 }, speedY: { min: -15, max: 15 },
+                lifespan: 320, scale: { start: 0.9, end: 0 }, alpha: { start: 0.7, end: 0 }, frequency: 28, tint: [cor, borda]
+            }).setDepth(9);
+        }
     }
 
     // Gancho: cores do cubo [corpo, borda]
@@ -455,12 +493,34 @@ class Fase {
             // Espinho no chão (ou no teto)
             case 'espinho': new Espinho(this, ev.x, !!ev.teto); break;
             // Bloco 40x40 (andar = quantos blocos acima do chão)
-            case 'bloco': new Bloco(this, ev.x, MOVIMENTO.chaoY - 40 - (ev.andar || 0) * 40, 40, 40, this.tema.forma, this.tema.bordaForma, ev.id); break;
+            case 'bloco': new BlocoNeon(this, ev.x, MOVIMENTO.chaoY - 40 - (ev.andar || 0) * 40, 40, 40, ev.id); break;
+            // Fileira de espinhos colados no chão e/ou no teto, de x até ate (corredor de dentes)
+            case 'fileira': {
+                for (let xx = ev.x; xx + 40 <= ev.ate; xx += 40) {
+                    if (ev.chao !== false) new Espinho(this, xx, false);
+                    if (ev.teto) new Espinho(this, xx, true);
+                }
+                break;
+            }
+            // Pirâmide invertida presa no teto: linhas de blocos (de cima pra baixo) com espinhos por baixo
+            case 'piramide': {
+                const linhas = ev.linhas || [6, 4, 2], larg0 = linhas[0] * 40, meio = ev.x + larg0 / 2;
+                linhas.forEach((n, i) => {
+                    const y = MOVIMENTO.tetoY + i * 40, esq = meio - n * 20;
+                    new BlocoNeon(this, esq, y, n * 40, 40);
+                    // Parte de baixo exposta desta linha (onde a linha seguinte não cobre) ganha espinhos
+                    const prox = linhas[i + 1] || 0, cobreEsq = meio - prox * 20, cobreDir = meio + prox * 20;
+                    for (let xx = esq; xx < esq + n * 40; xx += 40) if (xx + 40 <= cobreEsq || xx >= cobreDir) new Espinho(this, xx, true, null, null, y + 80);
+                });
+                break;
+            }
+            // Plataforma presa no teto por correntes
+            case 'plataformaSuspensa': new PlataformaSuspensa(this, ev.x, ev.y || 520, ev.largura || 120); break;
             // Pilar duplo (trecho de UFO/nave): coluna do chão e coluna do teto com um vão no meio
             case 'pilar': {
                 const meio = (ev.vao || 200) / 2, larg = ev.largura || 60, topoVao = ev.centro - meio, baseVao = ev.centro + meio;
-                const cima = new Bloco(this, ev.x, MOVIMENTO.tetoY, larg, topoVao - MOVIMENTO.tetoY, this.tema.forma, this.tema.bordaForma);
-                const baixo = new Bloco(this, ev.x, baseVao, larg, MOVIMENTO.chaoY - baseVao, this.tema.forma, this.tema.bordaForma);
+                const cima = new BlocoNeon(this, ev.x, MOVIMENTO.tetoY, larg, topoVao - MOVIMENTO.tetoY);
+                const baixo = new BlocoNeon(this, ev.x, baseVao, larg, MOVIMENTO.chaoY - baseVao);
                 // Marca (pro piloto automático dos testes saber onde é o vão)
                 cima.pilar = baixo.pilar = { centro: ev.centro, x: ev.x, largura: larg };
                 break;
@@ -679,7 +739,7 @@ class Fase {
         // Botão voltar (DOM) — durante a partida vira o botão de PAUSA (⏸)
         const back = document.getElementById('back-button');
         // Mostra
-        back.hidden = false; back.innerHTML = '⏸ Pausa <span>ESC</span>';
+        back.hidden = false; back.innerHTML = '<span class="pausa-icone" aria-hidden="true">❚❚</span>'; back.setAttribute('aria-label', 'Pausa (ESC)'); back.classList.add('botao-pausa');
         // Botões da tela de pausa
         this.ligarPausa(onReiniciar);
         // Clique volta pro menu
@@ -695,7 +755,7 @@ class Fase {
         // Limpeza de listeners quando a cena acabar (reinício ou menu)
         this.cena.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
             // Esconde e desliga o botão voltar
-            back.hidden = true; back.removeEventListener('click', onMenu);
+            back.hidden = true; back.removeEventListener('click', onMenu); back.classList.remove('botao-pausa'); back.removeAttribute('aria-label');
             // Esconde e desliga o botão de habilidade
             this.botaoHabilidade.hidden = true; this.botaoHabilidade.removeEventListener('click', onAcao);
             // Remove os eventos do teclado
@@ -825,6 +885,8 @@ class Fase {
         this.efeitos.estilhacos(this.player.x, this.player.y, this.player.corBase, 14);
         // Gancho (ex.: desligar som contínuo)
         this.aoMorrer();
+        // Rastro para
+        if (this.rastro) this.rastro.stop();
         // Anima a morte (some em 260 ms)
         this.player.morrer();
         // Reinicia com a próxima tentativa meio segundo depois (pelo relógio do jogo),
@@ -1003,7 +1065,7 @@ class Fase {
         // Atualiza a barra percentual (animada)
         if (this.barraPct) this.barraPct.definir(porcentagem, true);
         // Guarda o melhor % alcançado nessa fase (aparece no cartão da seleção) — na prática não conta
-        if (!this.pratica) Progresso.registrarPct(this.heroi, porcentagem);
+        if (!this.pratica) Progresso.registrarPct(this.heroi, porcentagem); else if (Progresso.registrarPctPratica) Progresso.registrarPctPratica(this.heroi, porcentagem);
         // Avisa quem estiver ouvindo (barra, testes)
         this.cena.events.emit('checkpoint', { indice: i, total: this.listaCheckpoints.length, porcentagem });
     }
@@ -1132,6 +1194,7 @@ class Fase {
             // Brilho alvo desta batida (decai)
             this.brilhoChao = Math.max(0.55, (this.brilhoChao || 0.55) - dtReal / 350);
             this.linhasChao.forEach((l) => l.setAlpha(this.brilhoChao));
+            if (this.feixes) this.feixes.setAlpha(0.45 + 0.55 * this.brilhoChao);
         }
         // Cor da seção: vai suavemente até a cor do trecho atual
         if (this.coresSecoes) {
@@ -1144,8 +1207,11 @@ class Fase {
                 const nova = Phaser.Display.Color.GetColor(m.r, m.g, m.b);
                 this.corSecaoAtual = (nova === this.corSecaoAtual) ? alvo : nova;
                 this.veuSecao.setFillStyle(this.corSecaoAtual, 0.16);
-                // Fundo geométrico acompanha a cor
+                // Fundo geométrico, feixes e cenário de trás acompanham a cor
                 if (this.fundoGeo) this.fundoGeo.setTint(this.corSecaoAtual);
+                if (this.feixes) this.feixes.setTint(this.corSecaoAtual);
+                const tinta = this.clarear(this.corSecaoAtual, 0.4);
+                (this.camadas || []).forEach((t) => t.setTint(tinta));
             }
         }
     }
@@ -1194,6 +1260,7 @@ class Fase {
         this.efeitos.estilhacos(this.player.x, this.player.y, [this.tema.linha, 0xffffff], 30, 380);
         // Salva o progresso (uma vez só: concluir() só roda uma vez por causa do "concluida").
         // Na prática não salva: mostra só o melhor tempo que já existia (ou o desta corrida)
+        if (this.pratica && Progresso.registrarPctPratica) Progresso.registrarPctPratica(this.heroi, 100);
         const salvo = this.pratica ? (Progresso.ler()[this.heroi] || { melhorTempo: this.tempo }) : Progresso.salvar(this.heroi, this.tempo, this.tentativa);
         // Barra percentual chega a 100% SÓ aqui (vitória de verdade)
         if (this.barraPct) this.barraPct.definir(100, true);

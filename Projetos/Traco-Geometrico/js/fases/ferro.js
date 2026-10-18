@@ -620,6 +620,8 @@ class FaseFerro extends Fase {
             // MEIO
             { x: 3800, tipo: 'tunel', ate: 6000, vao: 200, pontos: [[3800, 380], [4400, 300], [5000, 470], [5600, 360], [6000, 380]] },
             { x: 6300, tipo: 'dica', txt: '! na borda = míssil chegando' },
+            // Corredor curto de espinhos no chão e no teto enquanto os mísseis passam (fique no meio)
+            { x: 6600, ate: 6840, tipo: 'fileira', teto: true },
             { x: 6400, tipo: 'missil', y: 300 }, { x: 6800, tipo: 'missil', y: 520 }, { x: 7150, tipo: 'missil', y: 380 },
             { x: 7900, tipo: 'barreiraDrones', ys: [160, 270, 380, 490, 600] },
             { x: 8800, tipo: 'gradeLaser', periodo: 2400 },

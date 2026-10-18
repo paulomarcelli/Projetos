@@ -2,7 +2,7 @@
 // aranha.js — FASE DO HOMEM-ARANHA: "Balance-se de âncora em âncora sobre os vãos da cidade"
 // Mecânica: física de pêndulo de verdade. No telhado o botão pula; NO AR, segurar lança a teia
 // na âncora destacada e SOLTAR larga a teia — a trajetória depende do momento em que você solta.
-// E = puxão (encurta a teia e ganha velocidade). Bater de lado num prédio não mata; cair no vão, sim.
+// Bater de lado num prédio não mata; cair no vão, sim. (Sem habilidade no E: a teia é a mecânica toda.)
 // ================================================================
 
 // Constantes da fase
@@ -18,8 +18,7 @@ const ARANHA = {
     velMaxBalanco: 900,    // velocidade máxima na ponta da corda
     velMinSoltar: 480,     // soltar sempre sai pelo menos com essa velocidade pra frente
     desaceleracao: 1400,   // px/s² pra voltar à velocidade base depois de pousar rápido
-    forcaPulo: 760,        // pulo um pouco mais alto
-    recargaPuxao: 2000     // ms de recarga do puxão
+    forcaPulo: 760         // pulo um pouco mais alto
 };
 
 // ÂNCORA: ponto no alto onde a teia pode prender (decorativa: o cálculo é feito pela fase)
@@ -151,25 +150,6 @@ class Antena extends Obstaculo {
     atualizar(dt, agora) { this.luz.setAlpha(Math.floor(agora / 400) % 2 ? 0.3 : 1); }
 }
 
-// HABILIDADE PUXÃO: encurta a teia (35%) e ganha velocidade (conserva o momento angular)
-class PuxaoTeia extends Habilidade {
-    constructor(fase) {
-        // Nome, recarga e cor
-        super(fase, { nome: 'PUXÃO', recarga: ARANHA.recargaPuxao, cor: 0xff5a6e });
-    }
-
-    usar() {
-        // Só funciona preso na teia
-        if (!this.fase.balanco) { this.fase.efeitos.textoFlutuante(this.fase.player.x, this.fase.player.y - 40, 'SÓ NA TEIA', '#ffe3e7'); return false; }
-        // Comprimento alvo: 65% do atual (mínimo 120)
-        this.fase.balanco.Lalvo = Math.max(120, this.fase.balanco.L * 0.65);
-        // Som
-        som.tom('sawtooth', 300, 900, 220, 0.05);
-        // Usou
-        return true;
-    }
-}
-
 // CLASSE FaseAranha
 class FaseAranha extends Fase {
     constructor(cena, heroi, tentativa) {
@@ -178,7 +158,7 @@ class FaseAranha extends Fase {
         // Bater de lado em prédio não mata (o cubo cai)
         this.morteLateral = false;
         // Controles
-        this.textoControles = 'SEGURE Espaço/clique: lança teia na âncora marcada  ·  SOLTE: voa  ·  Sem âncora: pula  ·  E: puxão';
+        this.textoControles = 'SEGURE Espaço/clique: lança teia na âncora marcada  ·  SOLTE: voa  ·  Sem âncora: pula';
         // Objetivo
         this.objetivo = 'Balance-se nas teias e solte no momento certo.';
         // Frases do encerramento (texto grande e subtítulo da tela final)
@@ -253,7 +233,6 @@ class FaseAranha extends Fase {
     }
 
     // Habilidade
-    criarHabilidade() { return new PuxaoTeia(this); }
 
     // Ao criar: linha da teia (desenhada todo frame) + vento contínuo
     aoCriar() {
@@ -583,7 +562,6 @@ class FaseAranha extends Fase {
             { x: 8500, tipo: 'ancora', y: 170 }, { x: 8850, tipo: 'ancora', y: 220 }, { x: 9200, tipo: 'ancora', y: 170 },
             { x: 8700, tipo: 'drone', y0: 680, y1: 740, periodo: 2400 }, { x: 9050, tipo: 'drone', y0: 480, y1: 640, periodo: 2400 },
             { x: 8000, tipo: 'dica', txt: 'Errou o tempo? O letreiro no meio do vão salva: pouse e pule' },
-            { x: 9500, tipo: 'dica', txt: 'E: puxão — encurta a teia e acelera' },
             // FINAL (vão grande)
             { x: 10100, tipo: 'ancora', y: 170 }, { x: 10450, tipo: 'guindaste', y: 200, amp: 100 }, { x: 10800, tipo: 'ancora', y: 160 },
             { x: 11150, tipo: 'guindaste', y: 200, amp: 80, periodo: 2200 }, { x: 11400, tipo: 'ancora', y: 180 },

@@ -86,10 +86,11 @@ const MODO_TESTE = { invencivel: false, semAbertura: false };
 
 // INFORMAÇÕES DOS HERÓIS (painel "Heróis" do menu e cartões da seleção)
 const HEROIS_INFO = {
-    'Homem-Aranha':   { habilidade: 'Teia: segure no ar pra balançar; E = puxão', cor: '#ff5a6e' },
-    'Homem de Ferro': { habilidade: 'Voo: segure pra subir; E = repulsor', cor: '#ffc23d' },
+    // Mesma ordem da seleção de fases (por dificuldade)
+    'Homem-Aranha':   { habilidade: 'Teia: segure no ar pra balançar e solte pra voar', cor: '#ff5a6e' },
     'Hulk':           { habilidade: 'Fúria: cresce e atravessa o que quebra (E)', cor: '#6fdc4a' },
     'Gaviao':         { habilidade: 'Arco: E ou clique acerta alvos e abre caminho', cor: '#a77bff' },
+    'Homem de Ferro': { habilidade: 'Voo: segure pra subir; E = repulsor', cor: '#ffc23d' },
     'DrEstranho':     { habilidade: 'Portais (Q), dimensão espelho e Joia do Tempo (E)', cor: '#3dff8a' },
     'Wanda':          { habilidade: 'Realidade: E troca entre vermelha ◆ e azul ●', cor: '#ff2a4d' }
 };

@@ -55,10 +55,10 @@ def ritmo_pausa(pg):
 def selecao(pg):
     pg.evaluate("Progresso.registrarPct('Hulk', 33); Progresso.registrarPct('Hulk', 25)")
     pg.keyboard.press('Enter'); avancar(pg, 100)
-    for _ in range(2): pg.keyboard.press('ArrowRight'); avancar(pg, 50)
+    for _ in range(1): pg.keyboard.press('ArrowRight'); avancar(pg, 50)
     txt = pg.evaluate("document.querySelector('.level-btn.ativa').innerText")
     registrar('Seleção: carrossel mostra 1 cartão por vez com dificuldade e melhor % (não diminui)', pg.evaluate("document.querySelectorAll('.level-btn.ativa').length") == 1 and 'HULK' in txt.upper() and '33%' in txt and 'NORMAL' in txt.upper(), txt.replace('\n', ' | ')[:120])
-    for _ in range(3): pg.keyboard.press('ArrowLeft'); avancar(pg, 50)
+    for _ in range(2): pg.keyboard.press('ArrowLeft'); avancar(pg, 50)
     registrar('Seleção: setas dão a volta (antes da 1ª vem a última)', pg.evaluate("document.querySelector('.level-btn.ativa').dataset.level") == 'Wanda')
 
 with sync_playwright() as pw:

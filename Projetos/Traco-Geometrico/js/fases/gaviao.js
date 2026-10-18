@@ -267,15 +267,35 @@ class Barricada extends Bloco {
 // ALJAVA: pegar ao encostar dá flechas especiais
 class Aljava extends Obstaculo {
     constructor(fase, x, tipoFlecha) {
-        // Retângulo laranja (explosiva) ou ciano (elétrica)
-        const forma = fase.cena.add.rectangle(x, MOVIMENTO.chaoY - 40, 24, 34, tipoFlecha === 'explosiva' ? 0xff9f1c : 0x5ce1ff).setStrokeStyle(2, 0xffffff);
+        // Área de toque invisível (o desenho da flecha fica por cima)
+        const forma = fase.cena.add.rectangle(x, MOVIMENTO.chaoY - 40, 30, 40, 0xffffff, 0);
         // Gatilho
         super(fase, forma, 'gatilho');
         // Tipo de flecha que dá
         this.tipoFlecha = tipoFlecha;
-        // Flutua um pouco
-        fase.cena.tweens.add({ targets: forma, y: forma.y - 8, yoyo: true, repeat: -1, duration: 600 });
+        // Desenho da flecha inclinada (laranja = explosiva, ciano = elétrica)
+        const cor = tipoFlecha === 'explosiva' ? 0xff9f1c : 0x5ce1ff;
+        const g = fase.cena.add.graphics({ x, y: forma.y }).setDepth(5).setAngle(-45).setScale(1.3);
+        // Brilho redondo atrás
+        g.fillStyle(cor, 0.2).fillCircle(0, 0, 22);
+        // Haste (contorno branco + cor)
+        g.lineStyle(7, 0xffffff, 1).lineBetween(-17, 0, 10, 0);
+        g.lineStyle(3, cor, 1).lineBetween(-17, 0, 10, 0);
+        // Ponta
+        g.fillStyle(cor, 1).fillTriangle(9, -8, 22, 0, 9, 8);
+        g.lineStyle(2, 0xffffff, 1).strokeTriangle(9, -8, 22, 0, 9, 8);
+        // Penas na traseira
+        g.fillStyle(0xffffff, 1).fillTriangle(-20, 0, -12, 0, -24, -8).fillTriangle(-20, 0, -12, 0, -24, 8);
+        // Símbolo do tipo no meio da haste (explosiva: bolinha; elétrica: raio curto)
+        if (tipoFlecha === 'explosiva') g.fillStyle(0xffffff, 1).fillCircle(-3, 0, 3.5);
+        else g.lineStyle(2, 0xffffff, 1).lineBetween(-6, -4, -2, 1).lineBetween(-2, 1, 1, -3);
+        this.desenho = g;
+        // Flutua um pouco (área de toque e desenho juntos)
+        fase.cena.tweens.add({ targets: [forma, g], y: forma.y - 8, yoyo: true, repeat: -1, duration: 600 });
     }
+
+    // Some com o desenho
+    destruir() { this.desenho.destroy(); super.destruir(); }
 
     // Pegou
     aoTocar() {

@@ -8,7 +8,7 @@ with sync_playwright() as p:
     nav = p.chromium.launch()
     # 4) Encerramentos: as 6 fases terminam com animação + tela; "Próxima fase" leva à fase seguinte
     pg, erros = T.nova_pagina(nav)
-    ordem = ['Homem-Aranha', 'Homem de Ferro', 'Hulk', 'Gaviao', 'DrEstranho', 'Wanda']
+    ordem = ['Homem-Aranha', 'Hulk', 'Gaviao', 'Homem de Ferro', 'DrEstranho', 'Wanda']
     for i, heroi in enumerate(ordem):
         # A primeira fase é aberta direto; as outras chegam pelo botão "Próxima fase" (fluxo real)
         if i == 0: T.iniciar_fase(pg, heroi, invencivel=True)

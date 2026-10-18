@@ -444,8 +444,8 @@ def testar_fluxo(navegador):
     avancar(pagina, 200)
     sel = pagina.evaluate("!document.getElementById('level-select').hidden")
     shot(pagina, 'selecao')
-    # Carrossel: → → chega no Hulk (3º cartão) e Enter joga
-    pagina.keyboard.press('ArrowRight'); avancar(pagina, 50); pagina.keyboard.press('ArrowRight'); avancar(pagina, 50)
+    # Carrossel (ordem por dificuldade): → chega no Hulk (2º cartão) e Enter joga
+    pagina.keyboard.press('ArrowRight'); avancar(pagina, 50)
     ativo = pagina.evaluate("document.querySelector('.level-btn.ativa').dataset.level")
     pagina.click('.level-btn.ativa')
     avancar(pagina, 900)
@@ -465,7 +465,7 @@ def testar_fluxo(navegador):
     pagina.keyboard.press('Escape'); avancar(pagina, 100)
     pagina.click('#pausa-selecao'); avancar(pagina, 500)
     selecao = pagina.evaluate("window.jogo.scene.isActive('Menu') && !document.getElementById('level-select').hidden")
-    registrar('Fluxo: menu → Enter → carrossel (→ →) → fase → R reinicia → ESC pausa/continua → seleção', sel and ativo == 'Hulk' and ok_jogo and tent == 2 and pausa and continua and selecao,
+    registrar('Fluxo: menu → Enter → carrossel (→) → fase → R reinicia → ESC pausa/continua → seleção', sel and ativo == 'Hulk' and ok_jogo and tent == 2 and pausa and continua and selecao,
               f"sel={sel} ativo={ativo} jogo={ok_jogo} tentativa={tent} pausa={pausa} continua={continua} selecao={selecao}")
     registrar('Fluxo: sem erros de console', not erros, '; '.join(erros[:5]))
     pagina.close()

@@ -74,12 +74,17 @@
 - **Regra da equipe**: triângulo = perigo, sempre. Tiramos triângulos do cenário (fundo, tufos de chão, topo dos prédios do Hulk, telhados da Wanda, fragmentos do Estranho) e reduzimos as fileiras de espinhos a grupos curtos com função.
 - **Interface**: título e botões com fonte de letras grossas (Bungee, Google Fonts, com reserva), botões chanfrados com contorno escuro, pausa redonda verde, painel de pausa e cartão da fase com duas barras (Normal e Prática). `Progresso.registrarPctPratica` guarda o melhor % da prática.
 
+## Ajustes pedidos pela equipe (depois da rodada 6)
+- **Aljavas do Gavião** agora são desenhadas como flecha (haste, ponta e penas, inclinada): laranja com bolinha = explosiva, ciano com raio = elétrica. A área de toque continua invisível por baixo.
+- **Homem-Aranha sem habilidade no E**: o puxão de teia foi retirado (classe `PuxaoTeia`, dica e texto de controles). A teia (segurar/soltar) é a mecânica toda; a fase não mostra botão de habilidade.
+- **Ordem das fases por dificuldade**: Homem-Aranha (Fácil) → Hulk → Gavião (Normal) → Homem de Ferro → Doutor Estranho (Difícil) → Wanda (Insano, por último). Vale pro carrossel, pro botão "Próxima fase" e pro painel de heróis.
+
 ## Decisões
 - As habilidades dos heróis continuam sendo o centro de cada fase. Os elementos clássicos entram como preparação e ritmo entre os desafios da habilidade, nunca no lugar dela.
 - Portal de gravidade só no Hulk: o Doutor Estranho já tem a dimensão espelho, e a Wanda e o Aranha dependem do chão.
 - Portal de velocidade só no Gavião: Hulk e Wanda dependem de distâncias calculadas para fúria e plataformas ⌛, e o Estranho já tem faixas rápidas.
 - A porcentagem continua vindo dos checkpoints (pedido anterior). O cartão mostra o melhor % alcançado.
-- Dificuldade dos cartões: Aranha Fácil, Hulk e Gavião Normal, Ferro e Estranho Difícil, Wanda Insano (`config.js`).
+- Dificuldade dos cartões: Aranha Fácil, Hulk e Gavião Normal, Ferro e Estranho Difícil, Wanda Insano (`config.js`). A seleção segue essa ordem (a mais difícil por último).
 
 ## Pendências / limites conhecidos
 - Modo prática existe (rodada 5), mas não tem música própria e os diamantes somem ao voltar pro menu.

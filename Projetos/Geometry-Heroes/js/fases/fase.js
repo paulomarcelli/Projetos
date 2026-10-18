@@ -255,6 +255,19 @@ class Fase {
         (this.camadas || []).forEach((t) => { t.tilePositionX = sx * t.fatorParalaxe; });
     }
 
+    // Vídeo de fundo (se houver): toca numa velocidade que faz o vídeo inteiro durar o tempo da fase e
+    // se reajusta pelo progresso do jogador quando sai do compasso (morte, checkpoint)
+    sincronizarVideo() {
+        const v = this.fundoVideo, el = v && v.video;
+        if (!el || !el.duration || !isFinite(el.duration)) return;
+        const rodando = this.player.vivo && !this.pausado && !this.concluida;
+        const alvo = Math.max(0, Math.min(1, this.player.x / this.cfg.comprimento)) * Math.max(0, el.duration - 0.2);
+        el.playbackRate = Math.max(0.0625, Math.min(4, el.duration / (this.cfg.comprimento / this.cfg.velocidade)));
+        if (Math.abs(el.currentTime - alvo) > 0.4) el.currentTime = alvo;
+        if (rodando && el.paused) { const pr = el.play(); if (pr && pr.catch) pr.catch(() => {}); }
+        else if (!rodando && !el.paused) el.pause();
+    }
+
     // Gancho: cada fase desenha suas camadas
     criarParalaxe() {}
 
@@ -826,6 +839,7 @@ class Fase {
         if (this.player.acabouDePousar) { this.player.acabouDePousar = false; this.efeitos.poeira(this.player.x, this.player.y + (this.player.invertido ? -20 : 20), this.tema.bordaForma, 4); this.aoPousar(); }
         // Fundo em camadas acompanha a câmera
         this.moverParalaxe();
+        this.sincronizarVideo();
         // Mecânica própria da fase (gancho)
         this.atualizarMecanica(agora, dtReal, dt);
         // Caiu no vão ou saiu da tela: morre

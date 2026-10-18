@@ -157,7 +157,29 @@ const Cenarios = {
 
     // Põe a arte da fase atrás de tudo e esconde as camadas procedurais "de estrutura" (céu, silhuetas,
     // prédios) que brigariam com ela. Partículas, névoa, luzes animadas e reações continuam por cima.
+    // Vídeo de fundo (VIDEOS_FUNDO): cobre a tela toda e é sincronizado com o progresso em sincronizarVideo()
+    fundoVideo(fase) {
+        const cena = fase.cena, chave = 'video-' + fase.heroi;
+        if (!cena.cache.video.exists(chave)) return null;
+        const def = (typeof CENARIOS_IMAGEM !== 'undefined' && CENARIOS_IMAGEM[fase.heroi]) || {};
+        const v = cena.add.video(0, 0, chave).setOrigin(0, 0).setScrollFactor(0).setDepth(-98.5)
+            .setTint(def.tom || 0xffffff);
+        v.setMute(true);
+        // Ajusta pra cobrir a tela (1280x720) assim que o tamanho do vídeo é conhecido
+        const ajustar = () => { if (v.width) { const k = Math.max(1280 / v.width, 720 / v.height); v.setScale(k); v.setPosition((1280 - v.width * k) / 2, (720 - v.height * k) / 2); } };
+        ajustar(); v.on('created', ajustar);
+        v.fundoVideo = true; fase.fundoVideo = v;
+        const est = fase.estadoCenario || {};
+        (fase.camadas || []).forEach((c) => { if (c.estrutural) c.setVisible(false); });
+        (est.estruturais || []).forEach((o) => o.setVisible(false));
+        (est.ceus || []).forEach((o) => o.setVisible(false));
+        if (fase.mandala) fase.mandala.setVisible(false);
+        est.fundo = v; fase.fundoArte = v;
+        return v;
+    },
+
     fundoImagem(fase) {
+        if (this.fundoVideo(fase)) return fase.fundoVideo;
         const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi];
         const cena = fase.cena, chave = this.chaveFundo(fase.heroi);
         if (!def || !cena.textures.exists(chave)) return null;   // sem imagem: fica o procedural
@@ -734,7 +756,7 @@ const Cenarios = {
         if (fase.fundoArte) {
             const def = CENARIOS_IMAGEM[fase.heroi], f = fase.fundoArte;
             f.setFlipY(dim === 'E').setTint(dim === 'E' ? 0xe08ad0 : (def.tom || 0xffffff));
-            f.y = dim === 'E' ? 760 - def.y - def.alto : def.y;
+            if (!f.fundoVideo) f.y = dim === 'E' ? 760 - def.y - def.alto : def.y;
         } else ['N', 'E'].forEach((d) => est.porDim[d].forEach((o) => o.setVisible(d === dim)));
         const p = dim === 'E'
             ? { neb: [0xff4ad2, 0x2ad0ff], ouro: 0xff7ad9, brilho: 0xffc2ee }

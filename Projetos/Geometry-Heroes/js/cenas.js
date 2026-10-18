@@ -306,6 +306,11 @@ class GameScene extends Phaser.Scene {
     // Em file:// o WebGL recusa imagens de arquivo local, então só carrega por http(s) ou se vier embutida
     // (window.DADOS_ASSETS, usado pela página de teste). Prefixo opcional: window.BASE_ASSETS.
     preload() {
+        // Vídeo de fundo (opcional, VIDEOS_FUNDO em config.js): sem áudio, só por http(s)
+        const vids = (typeof VIDEOS_FUNDO !== 'undefined') && VIDEOS_FUNDO[this.heroi];
+        if (vids && location.protocol !== 'file:' && !this.cache.video.exists('video-' + this.heroi)) {
+            this.load.video('video-' + this.heroi, vids, 'loadeddata', false, true);
+        }
         const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[this.heroi];
         const chave = 'cena-' + this.heroi;
         if (!def || this.textures.exists(chave)) return;

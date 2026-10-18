@@ -66,3 +66,27 @@ Em camadas 2, 3 e 4: "fundo 100% transparente (PNG com alfa), só os elementos".
 
 ---
 Depois de gerar: salve com os nomes acima e me avise. Eu ligo as 4 camadas ao parallax e aposento as imagens atuais de camada única.
+
+---
+
+# Alternativa: vídeo de 60 s por fase (Veo)
+
+O jogo aceita um vídeo de fundo por fase (`VIDEOS_FUNDO` em `js/config.js`). O começo do vídeo é a largada e o fim é a chegada.
+O jogo acelera ou segura o vídeo para casar com o tempo da fase (35 a 52 s), então 60 s sobram.
+
+Regras do vídeo: câmera lateral andando sempre para a DIREITA em velocidade constante (travelling), sem cortes,
+sem personagens, sem texto, sem triângulos, 16:9 (1280x720 ou maior), sem áudio, e o centro da imagem limpo.
+Salvar como MP4 (H.264) e, se possível, WebM também: `assets/backgrounds/<heroi>/<heroi>_video.mp4`.
+Se o gerador só faz clipes curtos (8 s), gere vários com o mesmo prompt e junte (o fim de um começa igual ao começo do próximo: peça "continue da última imagem").
+
+## Prompt base (cole antes do tema)
+```
+Vídeo de 60 segundos para fundo de jogo de plataforma 2D lateral. Câmera em travelling lateral lento e constante para a direita, sem cortes, sem zoom, sem tremor. Paralaxe natural: céu quase parado, silhuetas distantes lentas, plano médio e primeiro plano mais rápidos. Cores escuras e de baixo contraste. Sem personagens, sem pessoas, sem texto, sem logotipo, sem grade, sem triângulos. Centro da imagem limpo e vazio, detalhes nas bordas de cima e de baixo. Sem áudio. Tema:
+```
+
+- **Homem-Aranha:** noite em Nova York, azul e roxo, telhados de tijolo, caixas d'água, janelas acesas, fios de poste, lua grande, holofote varrendo o céu.
+- **Hulk:** ruínas industriais sob tempestade verde, chaminés quebradas, vigas tortas, poças de líquido verde brilhante, raios verdes ao longe.
+- **Gavião Arqueiro:** crepúsculo roxo e laranja, penhascos e pinheiros em camadas com neblina, torre de observação de madeira, redes de camuflagem.
+- **Homem de Ferro:** metrópole futurista à noite, ciano e dourado, arranha-céus de vidro, trilhos aéreos, painéis holográficos abstratos sem texto, drones distantes.
+- **Doutor Estranho:** vazio cósmico roxo e dourado, arcos e escadarias flutuando, círculos mágicos dourados girando devagar, fagulhas e fumaça.
+- **Wanda:** floresta amaldiçoada, céu preto-avermelhado, lua vermelha enorme, troncos retorcidos com runas vermelhas brilhando, névoa vermelha no chão.

@@ -131,6 +131,14 @@ const CENARIOS_IMAGEM = {
     'Wanda':          { arquivo: 'assets/backgrounds/wanda/wanda_cena.webp',                   fator: 0.12, y: 100, alto: 580, tom: 0x9c8a92 }
 };
 
+// VÍDEO DE FUNDO (opcional): se a fase tiver entrada aqui, o vídeo vira o fundo no lugar da imagem.
+// Ele é sincronizado com o progresso da fase (começo do vídeo = largada, fim = chegada), então é
+// pra ser uma câmera lateral andando pelo cenário (ideal ~60 s, sem personagens, sem emenda).
+// Funciona só por http(s); se faltar o arquivo ou falhar, cai na imagem e depois no cenário procedural.
+// Aceita mais de um formato (o navegador escolhe o que toca). Exemplo:
+//   'Hulk': ['assets/backgrounds/hulk/hulk_video.mp4', 'assets/backgrounds/hulk/hulk_video.webm']
+const VIDEOS_FUNDO = {};
+
 // ABERTURA NO RITMO de cada fase (um símbolo por batida; legenda em criarAbertura no fase.js)
 // Cada herói tem uma mistura diferente de obstáculos clássicos
 const ABERTURAS = {

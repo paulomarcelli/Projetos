@@ -862,6 +862,10 @@ class Fase {
     // Gancho: chamado no fim do criar()
     aoCriar() {}
 
+    // Gancho: o CENÁRIO reage a um poder ou momento da fase (ex.: 'joiaInicio', 'joiaFim', 'portalAbre',
+    // 'portalFecha', 'dimensao', 'furia', 'repulsor'...). Padrão: nada. Os cenários (cenarios.js) sobrescrevem.
+    cenarioReagir(evento, dados) {}
+
     // ---------------------------------------------------------------
     // MORTE, CONCLUSÃO, REINÍCIO
     // ---------------------------------------------------------------

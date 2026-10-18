@@ -53,6 +53,14 @@ class Player extends Phaser.GameObjects.Rectangle {
         this.modo = 'cubo';
         // Desenho do modo (anel da bola ou disco do UFO), por cima da skin
         this.adorno = null;
+        // true quando a corrida/pulo padrão (atualizar) controlou o cubo no último quadro.
+        // Fases com movimento próprio (voo do Ferro, balanço do Aranha) deixam false → o aperto não vira pulo de corrida.
+        this.emCorrida = false;
+        // Decide o pulo também a cada PASSO de física (60 por segundo, depois das colisões): o pulo guardado
+        // no buffer sai no passo exato em que o cubo encosta, e o coyote conta igual em 30, 60 ou 144 fps.
+        const mundo = scene.physics.world;
+        mundo.on('worldstep', this.aoPassoFisica, this);
+        this.once('destroy', () => mundo.off('worldstep', this.aoPassoFisica, this));
     }
 
     // Gravidade do corpo = mundo + extra. Total desejado: direção × fator do modo × gravidade
@@ -119,14 +127,71 @@ class Player extends Phaser.GameObjects.Rectangle {
 
     // Registra um aperto de pulo (chamado pelos eventos de tecla/clique)
     apertarPulo(time) {
-        // Só anota a hora; quem decide se pula é o atualizar()
+        // Guarda a hora do aperto (jump buffer)
         this.ultimoAperto = time;
+        // Resposta imediata: decide o pulo JÁ no evento. A tecla é lida antes do passo de física do quadro,
+        // então o cubo sai do chão neste mesmo quadro (antes só saía no quadro seguinte: +1 quadro de atraso).
+        if (this.emCorrida && this.vivo && this.body.enable) this.decidirPulo(time, false);
+    }
+
+    // Chamado pelo mundo de física depois de cada passo (colisões já resolvidas)
+    aoPassoFisica() {
+        // Só quando a corrida padrão está no controle
+        if (!this.emCorrida || !this.vivo || !this.body.enable) return;
+        // Atualiza o chão / usa o aperto guardado (segurar é tratado no atualizar, que sabe se está segurando)
+        this.decidirPulo(this.scene.time.now, false);
+    }
+
+    // Decide o pulo (ou a troca de lado da bola / pulinho do UFO). Devolve true se estava no chão.
+    // Pode ser chamado várias vezes por quadro sem pular duas vezes: cada pulo gasta o chão e o aperto.
+    decidirPulo(time, segurando) {
+        // Direção da gravidade: 1 = normal (pra baixo), -1 = invertida (pra cima)
+        const dir = this.invertido ? -1 : 1;
+        // Encostado no chão agora (flags do último passo de física)?
+        const noChao = this.isOnGround();
+        // Se está no chão, atualiza a hora do "último chão" (base do coyote time)
+        if (noChao) this.ultimoChao = time;
+        // Se o botão está segurado, conta como um aperto novo (pulo contínuo; no UFO segurar não repete)
+        if (segurando && this.modo !== 'ufo') this.ultimoAperto = time;
+        // Esteve no chão há pouco (coyote time) e apertou há pouco (jump buffer)?
+        const podePular = time - this.ultimoChao <= MOVIMENTO.coyoteTime;
+        const querPular = time - this.ultimoAperto <= MOVIMENTO.jumpBuffer;
+        if (this.modo === 'bola') {
+            // BOLA: troca o lado da gravidade
+            if (podePular && querPular) {
+                this.inverterGravidade(!this.invertido);
+                // Empurrão na direção do novo lado (sai do chão na hora)
+                this.body.setVelocityY(MODOS.bola.empurrao * (this.invertido ? -1 : 1));
+                this.ultimoChao = -Infinity; this.ultimoAperto = -Infinity;
+                som.tom('triangle', this.invertido ? 300 : 700, this.invertido ? 700 : 300, 90, 0.05);
+            }
+        } else if (this.modo === 'ufo') {
+            // UFO: cada aperto novo dá um pulinho (no ar também)
+            if (querPular) {
+                this.body.setVelocityY(-this.forcaPulo * MODOS.ufo.pulo * dir);
+                this.ultimoAperto = -Infinity;
+                som.tom('square', 520, 880, 70, 0.04);
+            }
+        } else if (podePular && querPular && (noChao || this.body.velocity.y * dir >= 0)) {
+            // CUBO: joga o cubo pra longe do chão (pra cima normal, pra baixo se invertido)
+            this.body.setVelocityY(-this.forcaPulo * dir);
+            // "Gasta" o chão e o aperto (não pula duas vezes com o mesmo coyote/buffer)
+            this.ultimoChao = -Infinity;
+            this.ultimoAperto = -Infinity;
+            // Corta o achatamento do pouso: o desenho já sai esticado no pulo, sem parecer "preso" no chão
+            this.pouso = 0;
+            // Som do pulo
+            som.tocar('pulo');
+        }
+        return noChao;
     }
 
     // Movimento padrão de corrida + pulo. time = relógio; delta = ms do frame; segurando = botão de pulo segurado
     atualizar(time, delta, segurando) {
         // Se morreu, não faz mais nada
         if (!this.vivo) return;
+        // A corrida padrão está no controle neste quadro (libera o pulo imediato no evento e no passo de física)
+        this.emCorrida = true;
 
         // Corre pra direita na velocidade da fase
         this.body.setVelocityX(this.velocidadeX);
@@ -134,67 +199,26 @@ class Player extends Phaser.GameObjects.Rectangle {
         // Direção da gravidade: 1 = normal (pra baixo), -1 = invertida (pra cima)
         const dir = this.invertido ? -1 : 1;
 
-        // Guarda se está no chão neste frame (usado duas vezes abaixo)
-        const noChao = this.isOnGround();
+        // Pulo / troca de lado / pulinho (com coyote time, jump buffer e segurar)
+        const noChao = this.decidirPulo(time, segurando);
 
-        // Se está no chão, atualiza a hora do "último chão" (base do coyote time)
-        if (noChao) this.ultimoChao = time;
-        // Modos especiais (bola, UFO) têm o próprio jeito de reagir ao aperto
-        if (this.modo === 'bola') { this.atualizarBola(time, delta, segurando, noChao); return; }
+        // Modos especiais (bola, UFO) têm o próprio jeito de girar/cair
+        if (this.modo === 'bola') { this.atualizarBola(time, delta); return; }
         if (this.modo === 'ufo') { this.atualizarUfo(time, delta, dir); return; }
-
-        // Se o botão está segurado, conta como um aperto novo (pulo contínuo)
-        if (segurando) this.ultimoAperto = time;
-
-        // Pode pular se esteve no chão há pouco tempo (coyote time)
-        const podePular = time - this.ultimoChao <= MOVIMENTO.coyoteTime;
-        // Quer pular se apertou há pouco tempo (jump buffer)
-        const querPular = time - this.ultimoAperto <= MOVIMENTO.jumpBuffer;
-
-        // Pula só se as duas coisas forem verdade e o cubo não estiver se afastando do chão
-        if (podePular && querPular && this.body.velocity.y * dir >= 0) {
-            // Joga o cubo pra longe do chão (pra cima normal, pra baixo se invertido)
-            this.body.setVelocityY(-this.forcaPulo * dir);
-            // "Gasta" o chão, pra não pular duas vezes no mesmo coyote time
-            this.ultimoChao = -Infinity;
-            // "Gasta" o aperto, pra não pular duas vezes com o mesmo buffer
-            this.ultimoAperto = -Infinity;
-            // Som do pulo
-            som.tocar('pulo');
-        }
 
         // Rotação: no ar gira, no chão encaixa no ângulo reto mais próximo
         this.girar(noChao && this.body.velocity.y * dir >= 0, delta, dir);
     }
 
-    // BOLA: apertar encostado no chão (ou no teto) troca o lado da gravidade. Segurar repete ao encostar.
-    atualizarBola(time, delta, segurando, noChao) {
-        // Segurar conta como aperto contínuo (igual ao cubo)
-        if (segurando) this.ultimoAperto = time;
-        // Encostado há pouco e apertou há pouco
-        const podeTrocar = time - this.ultimoChao <= MOVIMENTO.coyoteTime && time - this.ultimoAperto <= MOVIMENTO.jumpBuffer;
-        if (podeTrocar) {
-            // Troca o lado
-            this.inverterGravidade(!this.invertido);
-            // Empurrão na direção do novo lado (sai do chão na hora)
-            this.body.setVelocityY(MODOS.bola.empurrao * (this.invertido ? -1 : 1));
-            // Gasta chão e aperto
-            this.ultimoChao = -Infinity; this.ultimoAperto = -Infinity;
-            // Som
-            som.tom('triangle', this.invertido ? 300 : 700, this.invertido ? 700 : 300, 90, 0.05);
-        }
+    // BOLA: apertar encostado no chão (ou no teto) troca o lado da gravidade (decidirPulo). Segurar repete ao encostar.
+    // Aqui só a parte visual: rola conforme anda.
+    atualizarBola(time, delta) {
         // Rola: gira conforme anda (raio 20 px)
         this.angle += (this.velocidadeX * delta / 1000) / 20 * (180 / Math.PI) * (this.invertido ? -1 : 1);
     }
 
-    // UFO: cada APERTO novo dá um pulinho (no ar também); segurar não repete. Cai devagar.
+    // UFO: cada APERTO novo dá um pulinho no ar (decidirPulo); segurar não repete. Cai devagar.
     atualizarUfo(time, delta, dir) {
-        // Apertou há pouco: pulinho
-        if (time - this.ultimoAperto <= MOVIMENTO.jumpBuffer) {
-            this.body.setVelocityY(-this.forcaPulo * MODOS.ufo.pulo * dir);
-            this.ultimoAperto = -Infinity;
-            som.tom('square', 520, 880, 70, 0.04);
-        }
         // Velocidade máxima de queda
         if (this.body.velocity.y * dir > MODOS.ufo.quedaMax) this.body.setVelocityY(MODOS.ufo.quedaMax * dir);
         // Inclina um pouco conforme sobe/desce

@@ -65,7 +65,8 @@ def wanda(pg):
 def aranha(pg):
     iniciar_fase(pg, 'Homem-Aranha', True)
     x0 = F(pg, "f.ancoras.filter(a => a instanceof AncoraMovel).map(a => a.forma.x)")
-    avancar(pg, 700)
+    # 400 ms (e não 700): o gancho faz vai-e-vem e 700 ms podia cair em pontos simétricos do seno (mesma posição)
+    avancar(pg, 400)
     x1 = F(pg, "f.ancoras.filter(a => a instanceof AncoraMovel).map(a => a.forma.x)")
     registrar('Aranha: 4 ganchos de guindaste andando no trilho', len(x0) == 4 and all(abs(a - b) > 1 for a, b in zip(x0, x1)), f"{x0} → {x1}")
     registrar('Aranha: letreiros estreitos no meio dos vãos (rota de recuperação)', F(pg, "f.segmentosChao().filter(s => s[1] - s[0] <= 160).length === 2"))

@@ -136,14 +136,22 @@ Comum a todas: WebP opaca (sem canal alfa), 720 px de altura; desenhada como `ti
 
 Valores de controle: coyote time 90 ms e jump buffer 120 ms (mantidos). Medidos: aperto 60 ms antes de pousar pula, 210 ms antes não; 50 ms depois de sair da beirada pula, 150 ms depois não. Latência entrada→pulo a 60 fps: de 2 quadros (33,3 ms) para 1 quadro (16,7 ms).
 
-### Testes executados na versão integrada
-*(preenchido após a execução — ver seção 7)*
-
 ---
 
-## 7. Resultado dos testes (versão integrada)
+## 7. Resultado dos testes (versão integrada, depois do merge dos 3 agentes)
 
-Pendente de execução no momento da escrita desta seção.
+| Suíte | Resultado |
+|---|---|
+| `teste_pulo.py` (novo) | 46/46 |
+| `teste_rodada5.py` | 33/33 |
+| `teste_classicos.py` | 18/18 |
+| `rodar_testes.py` (pilotos concluem as 6 fases sem invencibilidade) | 48/48 |
+| `teste_checkpoints.py` | 90/90 |
+| `teste_dificuldade.py` | 18/19 na primeira execução; 19/19 depois de corrigir o teste |
+
+**A falha do `teste_dificuldade.py` era do teste, não do jogo.** Ele media os ganchos de guindaste do Homem-Aranha com 700 ms de intervalo. O gancho faz um vai-e-vem senoidal, e esse intervalo caiu em dois pontos simétricos do movimento, então a posição "não mudou". Conferido à parte que os 4 ganchos andam; o intervalo do teste passou para 400 ms.
+
+**Não executadas na versão integrada** (paradas a pedido da equipe, que fará os testes de jogabilidade): `testes_extras.py`, `testes_finais.py`, `teste_barra.py`, `teste_abertura.py` e `teste_cadencia_ferro.py`. Antes do merge, os agentes rodaram nas suas cópias: Agente 2 `teste_abertura.py` 20/20; Agente 3 `testes_extras.py` 18/18; a rodada 7 rodou `teste_cadencia_ferro.py` 6/6.
 
 ---
 

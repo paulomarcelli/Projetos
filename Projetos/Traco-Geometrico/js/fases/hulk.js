@@ -716,6 +716,8 @@ class FaseHulk extends Fase {
             { x: 450, tipo: 'dica', txt: 'E (ou clique): FÚRIA — você cresce e atravessa o que quebra' },
             { x: 1400, tipo: 'caixa', pilha: 2 }, { x: 1650, tipo: 'vidro' },
             { x: 2000, tipo: 'dica', txt: 'Listras amarelas NÃO quebram nem com fúria: pule' },
+            // Vergalhão que brota do entulho (pisca no chão antes de subir)
+            { x: 1950, tipo: 'emergente' },
             { x: 2400, tipo: 'vigaBaixa' },
             { x: 2700, tipo: 'dica', txt: 'Poça larga não quebra: pule e aperte de novo no ORBE amarelo' },
             { x: 3050, tipo: 'poca', largura: 300 }, { x: 3180, tipo: 'orbeSalto', y: 555 },
@@ -723,6 +725,8 @@ class FaseHulk extends Fase {
             { x: 4100, tipo: 'concreto' }, { x: 4400, tipo: 'vidro' }, { x: 4650, tipo: 'caixa', pilha: 3 }, { x: 4950, tipo: 'concreto2' },
             { x: 5150, tipo: 'dica', txt: 'Viga no alto: passe por baixo, não pule' },
             { x: 5300, tipo: 'vigaSuspensa', largura: 60 },
+            // Cabo de força partido soltando faísca no chão (liga e desliga no ritmo)
+            { x: 5470, tipo: 'laserPiso', largura: 100, padrao: '1110', cor: 0xffd34d },
             // ATO 2 — COMBINAÇÃO
             { x: 5750, tipo: 'dica', txt: 'Pad amarelo lança alto: passa a parede que não quebra' },
             { x: 5900, tipo: 'pad' }, { x: 6100, tipo: 'paredeAlta' },
@@ -739,6 +743,8 @@ class FaseHulk extends Fase {
             // Portal azul: corre no TETO (espinhos pendurados viram pulos pra baixo); laranja volta ao chão
             { x: 11600, tipo: 'gravidade', inverte: true }, { x: 12050, tipo: 'espinho', teto: true }, { x: 12300, tipo: 'espinho', teto: true },
             { x: 12550, tipo: 'gravidade', inverte: false },
+            // Carro arremessado do fundo: a sombra marca onde ele vai cair (pule ou esmague)
+            { x: 12930, tipo: 'carro' },
             // Grupo com bloco caindo no meio da fúria
             { x: 13350, tipo: 'concreto' }, { x: 13600, tipo: 'queda' }, { x: 13850, tipo: 'vidro' }, { x: 14050, tipo: 'caixa', pilha: 3 },
             { x: 14650, tipo: 'poca', largura: 500 },

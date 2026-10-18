@@ -558,6 +558,10 @@ class FaseAranha extends Fase {
             { x: 5250, tipo: 'dica', txt: 'Gancho amarelo de guindaste anda: prenda quando ele vier na sua direção' },
             { x: 5800, tipo: 'ancora', y: 170 }, { x: 6150, tipo: 'guindaste', y: 210, amp: 90 }, { x: 6400, tipo: 'ancora', y: 170 },
             { x: 6000, tipo: 'drone', y0: 680, y1: 740 },
+            // Laser de segurança no telhado (liga no ritmo da música)
+            { x: 5240, tipo: 'laserPiso', largura: 100, padrao: '1110' },
+            // Antena de para-raios que sobe do telhado
+            { x: 7950, tipo: 'emergente' },
             { x: 7380, tipo: 'ancora', y: 180 }, { x: 7600, tipo: 'placa', y: 300 },
             { x: 8500, tipo: 'ancora', y: 170 }, { x: 8850, tipo: 'ancora', y: 220 }, { x: 9200, tipo: 'ancora', y: 170 },
             { x: 8700, tipo: 'drone', y0: 680, y1: 740, periodo: 2400 }, { x: 9050, tipo: 'drone', y0: 480, y1: 640, periodo: 2400 },
@@ -570,7 +574,9 @@ class FaseAranha extends Fase {
             { x: 12150, tipo: 'ancora', y: 200 },
             { x: 12600, tipo: 'antena' },
             { x: 12980, tipo: 'ancora', y: 180 }, { x: 13350, tipo: 'guindaste', y: 170, amp: 90 }, { x: 13700, tipo: 'ancora', y: 200 },
-            { x: 13500, tipo: 'drone', y0: 680, y1: 740, periodo: 2200 }
+            { x: 13500, tipo: 'drone', y0: 680, y1: 740, periodo: 2200 },
+            // Corrida final no telhado: antena, laser no ritmo e antena (sem teia: só pulos certos)
+            { x: 14300, tipo: 'emergente' }, { x: 14560, tipo: 'laserPiso', largura: 110, padrao: '1101' }, { x: 14820, tipo: 'emergente' }
         ];
     }
 }

@@ -869,7 +869,8 @@ class FaseGaviao extends Fase {
             { x: 520, tipo: 'dica', txt: 'Clique no alvo (ou aperte E)' },
             { x: 1300, tipo: 'alvo', y: 300, abre: 'p1' }, { x: 1700, tipo: 'porta', id: 'p1' },
             { x: 2300, tipo: 'dica', txt: 'Alvos também desligam lasers' },
-            { x: 2700, tipo: 'alvo', y: 520, abre: 'l1' }, { x: 3000, tipo: 'laser', id: 'l1' },
+            // Holofote de segurança varrendo o corredor: a lâmpada é o alvo que desliga o laser
+            { x: 2700, tipo: 'holofote', y: 260, abre: 'l1' }, { x: 3000, tipo: 'laser', id: 'l1' },
             // No ritmo da música: espinho, espinho, serra (2 batidas entre cada)
             { x: 3250, tipo: 'ritmo', padrao: '^.^.S' },
             // MEIO
@@ -898,16 +899,20 @@ class FaseGaviao extends Fase {
             { x: 15500, tipo: 'aljava', flecha: 'explosiva' }, { x: 15900, tipo: 'barricada' },
             { x: 16400, tipo: 'seq', grupo: 's3', n: 1, y: 220 }, { x: 16460, tipo: 'seqMovel', grupo: 's3', n: 2, y: 380, amp: 70 },
             { x: 16520, tipo: 'seqTemp', grupo: 's3', n: 3, y: 520 }, { x: 16600, tipo: 'seq', grupo: 's3', n: 4, y: 300, abre: 'p6' },
+            // Laser de piso no ritmo e espinhos que brotam antes da última porta
+            { x: 16180, tipo: 'laserPiso', largura: 120, padrao: '1100' },
+            { x: 16700, tipo: 'emergente' }, { x: 16740, tipo: 'emergente' },
             { x: 17100, tipo: 'porta', id: 'p6' },
             // FINAL EXTRA — MODO UFO (portal ◓): cada toque é um pulinho; passe pelos vãos dos pilares
             { x: 17500, tipo: 'dica', txt: 'Portal ◓ = UFO: cada toque é um pulinho no ar' },
             { x: 17800, tipo: 'modo', modo: 'ufo' },
-            { x: 18250, tipo: 'pilar', centro: 470, vao: 200 }, { x: 18700, tipo: 'pilar', centro: 320, vao: 200 },
-            { x: 19150, tipo: 'pilar', centro: 500, vao: 190 },
+            // Os pilares deslizam do teto e do chão até o lugar quando você se aproxima
+            { x: 18250, tipo: 'pilar', centro: 470, vao: 200, entra: true }, { x: 18700, tipo: 'pilar', centro: 320, vao: 200, entra: true },
+            { x: 19150, tipo: 'pilar', centro: 500, vao: 190, entra: true },
             // Voando, a flecha ainda manda: acerte o alvo pra abrir a porta
             { x: 19300, tipo: 'dica', txt: 'Voando também dá pra atirar: abra a porta' },
-            { x: 19750, tipo: 'alvo', y: 240, abre: 'p7' }, { x: 20000, tipo: 'porta', id: 'p7' },
-            { x: 20350, tipo: 'pilar', centro: 380, vao: 190 },
+            { x: 19750, tipo: 'holofote', y: 240, abre: 'p7' }, { x: 20000, tipo: 'porta', id: 'p7' },
+            { x: 20350, tipo: 'pilar', centro: 380, vao: 190, entra: true },
             { x: 20700, tipo: 'modo', modo: 'cubo' },
             // Poucos grupos curtos de espinhos no chão entre os pilares (castigam quem voa baixo demais)
             // e a pirâmide invertida pendurada no teto (só obstáculos: triângulo sempre é perigo)

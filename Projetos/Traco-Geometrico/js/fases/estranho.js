@@ -486,6 +486,8 @@ class FaseEstranho extends Fase {
             case 'runa': this.runas_ = (this.runas_ || []).concat(new RunaPortal(this, ev.x, ev.destino, dim)); break;
             // Barreira dupla: selo nas DUAS dimensões (só passa pelo portal da runa)
             case 'barreira': this.dimCriando = 'N'; new Selo(this, ev.x).barreira = true; this.dimCriando = 'E'; new Selo(this, ev.x).barreira = true; break;
+            // Obstáculos temáticos (rodada 7) ficam na dimensão do evento
+            case 'emergente': case 'laserPiso': case 'blocoEntrada': criarTematico(this, ev); break;
             // Dica não tem dimensão
             default: this.dimCriando = null; super.criarElemento(ev);
         }
@@ -786,9 +788,12 @@ class FaseEstranho extends Fase {
             { x: 8800, tipo: 'lamina', dim: 'E' },
             { x: 9300, tipo: 'portalAnel', dim: 'E' },
             { x: 10200, tipo: 'selo', dim: 'E' }, { x: 9800, tipo: 'espinho', dim: 'E' },
-            { x: 9700, tipo: 'orbe' }, { x: 10000, tipo: 'bloco' },
+            // Bloco rúnico que desliza do alto até o lugar
+            { x: 9700, tipo: 'orbe' }, { x: 10000, tipo: 'blocoEntrada' },
             { x: 10600, tipo: 'faixaRapida', ate: 12000 },
-            { x: 10900, tipo: 'espinho' }, { x: 11400, tipo: 'bloco' }, { x: 11440, tipo: 'bloco', andar: 1 },
+            // Selo místico no chão que pulsa no ritmo (no lugar do antigo espinho da faixa rápida)
+            { x: 10860, tipo: 'laserPiso', largura: 100, padrao: '1110', cor: 0x3dff8a },
+            { x: 11400, tipo: 'bloco' }, { x: 11440, tipo: 'bloco', andar: 1 },
             { x: 11950, tipo: 'espinho' }, { x: 11990, tipo: 'espinho' },
             // FINAL
             { x: 12100, tipo: 'dica', txt: 'Nem todo portal é saída: leia o fantasma' },
@@ -806,7 +811,7 @@ class FaseEstranho extends Fase {
             { x: 17600, tipo: 'selo', dim: 'E' }, { x: 17300, tipo: 'espinho', dim: 'E' },
             { x: 17600, tipo: 'lamina' }, { x: 18100, tipo: 'orbe' }, { x: 18400, tipo: 'orbe', defasagem: 0.5 },
             { x: 18600, tipo: 'faixaRapida', ate: 19800 },
-            { x: 18900, tipo: 'espinho' }, { x: 19400, tipo: 'bloco' }, { x: 19950, tipo: 'espinho' }, { x: 19990, tipo: 'espinho' }, { x: 20300, tipo: 'serra' }
+            { x: 18900, tipo: 'emergente' }, { x: 19400, tipo: 'blocoEntrada' }, { x: 19950, tipo: 'espinho' }, { x: 19990, tipo: 'espinho' }, { x: 20300, tipo: 'serra' }
         ];
     }
 }

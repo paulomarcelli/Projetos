@@ -434,6 +434,8 @@ class FaseWanda extends Fase {
             // TUTORIAL
             { x: 450, tipo: 'dica', txt: 'Aperte E: troca a realidade (◆ vermelha ↔ ● azul)' },
             { x: 1000, tipo: 'parede', real: 'A' },
+            // Espinho de caos que brota do chão (pisca antes de subir)
+            { x: 1550, tipo: 'emergente' },
             { x: 1350, tipo: 'dica', txt: 'Contorno fraco = existe na OUTRA realidade' },
             { x: 1900, tipo: 'vao', ate: 2250 }, { x: 1900, tipo: 'ponte', real: 'A', ate: 2250 },
             { x: 2450, tipo: 'serraDesce' },
@@ -459,6 +461,8 @@ class FaseWanda extends Fase {
             // FINAL — tudo junto, trocando rápido
             { x: 12300, tipo: 'vao', ate: 13100 },
             { x: 12480, tipo: 'temporaria', real: 'B' }, { x: 12820, tipo: 'temporaria', real: 'A' },
+            // Runa carmesim no chão que pulsa no ritmo (pule, ou passe no instante apagado)
+            { x: 13280, tipo: 'laserPiso', largura: 120, padrao: '1110' },
             { x: 13500, tipo: 'campo', real: 'B', largura: 260 }, { x: 14050, tipo: 'portao', real: 'A' }, { x: 14450, tipo: 'parede', real: 'B' },
             { x: 14800, tipo: 'vao', ate: 15200 }, { x: 14800, tipo: 'ponte', real: 'A', ate: 15200 },
             { x: 15500, tipo: 'espinho', real: 'A' }, { x: 15540, tipo: 'espinho', real: 'A' }, { x: 15580, tipo: 'espinho', real: 'A' },

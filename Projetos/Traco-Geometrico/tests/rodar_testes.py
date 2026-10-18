@@ -145,7 +145,7 @@ if (p.isOnGround() && !p.invertido && (f.orbesClassicos || []).some(o => o.varia
 for (const o of f.obstaculos) {
   if (!o.ativo || !o.forma.body) continue;
   const fr = o.forma, esq = fr.x - fr.width/2, dx = esq - (p.x + 20);
-  const baixo = (o instanceof Indestrutivel && fr.y > 500 && fr.height < 150) || (o instanceof Espinho && (fr.y > 380) === !p.invertido) || o instanceof PocaToxica
+  const baixo = (o instanceof Indestrutivel && fr.y > 500 && fr.height < 150) || (o instanceof Espinho && (fr.y > 380) === !p.invertido) || o instanceof PocaToxica || (o.saltar && !(o instanceof BlocoQueda))
     || (o instanceof BlocoQueda && o.estado === 'no chão' && !f.emFuria());
   if (baixo && dx > 30 && dx < 95) f.aoPressionar('teclado');
   // ponte que desmorona: sobe na primeira e pula assim que pisa em cada uma
@@ -251,7 +251,7 @@ if (p.modo === 'ufo') {
 const o = f.proximoAlvo();
 if (o && o.forma.x - p.x < 850 && f.habilidade.pronta(agora)) f.aoAcao();
 // pula espinhos (no UFO não: lá o pulinho é só pra seguir o vão dos pilares)
-if (p.modo !== 'ufo') for (const e of f.obstaculos) if (e.ativo && e instanceof Espinho) { const dx = e.forma.x - 20 - (p.x + 20); if (dx > 20 && dx < 80) f.aoPressionar('teclado'); }
+if (p.modo !== 'ufo') for (const e of f.obstaculos) if (e.ativo && (e instanceof Espinho || e.saltar)) { const dx = e.forma.x - (e.saltar ? e.forma.width / 2 : 20) - (p.x + 20); if (dx > 20 && dx < 80) f.aoPressionar('teclado'); }
 """
 
 @teste('Gaviao')
@@ -297,7 +297,7 @@ if (f.balanco) { const pico = window.__wAnt > 0 && f.balanco.w <= 0 && f.balanco
 else if (f.ancoraEscolhida && (g ? borda < 90 : p.body.velocity.y > -150)) { f.segurandoTecla = true; f.aoPressionar('teclado'); }
 else { f.segurandoTecla = false;
   if (g && borda < window.__borda && seg[1] < f.cfg.comprimento) f.aoPressionar('teclado');
-  if (g) for (const o of f.obstaculos) if (o.ativo && (o instanceof Antena || o instanceof Espinho)) { const dx = o.forma.x - 4 - (p.x + 20); if (dx > 25 && dx < 75) f.aoPressionar('teclado'); } }
+  if (g) for (const o of f.obstaculos) if (o.ativo && (o instanceof Antena || o instanceof Espinho || o.saltar)) { const dx = o.forma.x - (o.saltar ? o.forma.width / 2 : 4) - (p.x + 20); if (dx > 25 && dx < 75) f.aoPressionar('teclado'); } }
 """
 
 @teste('Homem-Aranha')
@@ -341,7 +341,7 @@ if (portal) {
   else { if (precisa && dx < 80 + window.__j && dx > 45) pular = true; if (!precisa && dx < 220 && dx > -40) naoPular = true; }
 }
 const jmin = p.velocidadeX * 0.05, jmax = jmin + 55;
-for (const o of ativos) if (o instanceof Espinho || o instanceof Bloco) { const dx = o.forma.x - o.forma.width / 2 - (p.x + 20); if (dx > jmin && dx < jmax) pular = true; }
+for (const o of ativos) if (o instanceof Espinho || o instanceof Bloco || o.saltar) { const dx = o.forma.x - o.forma.width / 2 - (p.x + 20); if (dx > jmin && dx < jmax) pular = true; }
 if ((f.runas_ || []).some(r => r.alcancavel() && r.forma.x - p.x < 300)) f.abrirPortal();
 if ((f.runas_ || []).some(r => r.aberto && !r.usado && Math.abs(r.forma.x - p.x) < 200)) naoPular = true;
 // zona de portal livre: abre assim que o marcador fica verde; não pula com portal aberto
@@ -410,7 +410,7 @@ if (quer && quer !== R && f.habilidade.pronta(agora) && !(sob instanceof Element
 // orbe amarelo: aperta quando encosta no ar
 if (!g && (f.orbesClassicos || []).some(o => o.alcance())) f.aoPressionar('teclado');
 // serra/espinho comum no chão: pula
-if (g) for (const o of f.obstaculos) if (o.ativo && o instanceof Espinho) { const dx = esq(o) - (p.x + 20); if (dx > 25 && dx < 70) f.aoPressionar('teclado'); }
+if (g) for (const o of f.obstaculos) if (o.ativo && (o instanceof Espinho || o.saltar)) { const dx = esq(o) - (p.x + 20); if (dx > 25 && dx < 70) f.aoPressionar('teclado'); }
 // pulo na beirada do apoio
 if (g && sob) { const fim = dir(sob);
   const continua = f.obstaculos.some(o => o !== sob && vivo(o) && suporte(o) && esq(o) <= fim + 2 && dir(o) > fim + 10 && Math.abs(o.forma.body.top - sob.forma.body.top) < 30);

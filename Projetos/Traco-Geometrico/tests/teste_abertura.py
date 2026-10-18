@@ -18,6 +18,7 @@ for (const o of f.obstaculos) {
   const esq = o.forma.x - o.forma.width / 2, dx = esq - (p.x + 20);
   if (o instanceof Espinho && p.body.bottom > o.forma.y - 30 && dx > 20 && dx < 70) f.aoPressionar('teclado');
   if ((o instanceof MiniEspinho) && dx > 20 && dx < 70) f.aoPressionar('teclado');
+  if (o.saltar && p.isOnGround()) { const dl = o.forma.x - o.forma.width / 2 - (p.x + 20); if (dl > 20 && dl < 70) f.aoPressionar('teclado'); }
   if (o instanceof Bloco && !(o instanceof Plataforma) && p.body.bottom > o.forma.body.top + 4 && dx > 20 && dx < 60) f.aoPressionar('teclado');
   if (o instanceof Plataforma && dx > 10 && dx < 60) f.aoPressionar('teclado');
   if (o instanceof Plataforma && Math.abs(p.body.bottom - o.forma.body.top) < 4 && (o.forma.x + o.forma.width / 2) - (p.x + 20) < 18) f.aoPressionar('teclado');

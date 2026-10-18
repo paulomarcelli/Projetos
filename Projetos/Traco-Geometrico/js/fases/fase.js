@@ -348,13 +348,14 @@ class Fase {
     //   . pausa (1) · ^ espinho (1) · 2 duplo (1) · m mini espinho (1) · S serra (1) · 3 triplo (2)
     //   D serra que desce (2) · B bloco pra subir (2) · _ plataforma sobre espinhos (4)
     //   P pad amarelo + triplo (4) · p pad rosa + duplo (3) · O poço com orbe amarelo (4) · o poço curto com orbe rosa (3)
+    //   e espinho que brota do chão (1) · l laser de piso no ritmo (2)
     // Os objetos ficam marcados com .abertura (pros testes e pro piloto automático).
     padraoAbertura() { return (typeof ABERTURAS !== 'undefined' && ABERTURAS[this.heroi]) || '^.^.2.._P.O.'; }
 
     // Quantas batidas a sequência ocupa
     batidasAbertura(padrao = this.padraoAbertura()) {
         // Largura de cada símbolo em batidas
-        const larg = { '3': 2, 'D': 2, 'B': 2, '_': 4, 'P': 4, 'p': 3, 'O': 4, 'o': 3 };
+        const larg = { '3': 2, 'D': 2, 'B': 2, '_': 4, 'P': 4, 'p': 3, 'O': 4, 'o': 3, 'l': 2 };
         // Soma
         return [...padrao].reduce((t, ch) => t + (larg[ch] || 1), 0);
     }
@@ -369,7 +370,7 @@ class Fase {
         // Dica inicial
         new Dica(this, this.xInicio + 120, 'Pule no ritmo da música!');
         // Larguras (iguais às de batidasAbertura)
-        const larg = { '3': 2, 'D': 2, 'B': 2, '_': 4, 'P': 4, 'p': 3, 'O': 4, 'o': 3 };
+        const larg = { '3': 2, 'D': 2, 'B': 2, '_': 4, 'P': 4, 'p': 3, 'O': 4, 'o': 3, 'l': 2 };
         // Percorre o padrão, batida a batida
         let b = 0;
         for (const ch of this.padraoAbertura()) {
@@ -381,6 +382,9 @@ class Fase {
                 case '2': esp(x); esp(x + 40); break;
                 case '3': esp(x); esp(x + 40); esp(x + 80); break;
                 case 'm': marca(new MiniEspinho(this, x, t)); break;
+                // Rodada 7: espinho que brota do chão (1) e laser de piso no ritmo (2)
+                case 'e': if (typeof EspinhoEmergente !== 'undefined') marca(new EspinhoEmergente(this, x, t)); break;
+                case 'l': if (typeof LaserPiso !== 'undefined') marca(new LaserPiso(this, x, 100, '1110', t)); break;
                 case 'S': marca(new Serra(this, x, false, t)); break;
                 case 'D': marca(new SerraDescendo(this, x, t)); break;
                 // Bloco 40×40 (suba nele; bater de lado mata)
@@ -489,6 +493,8 @@ class Fase {
     criarElemento(ev) {
         // Elementos clássicos (pad, orbe, portais, serra) valem pra todas as fases
         if (typeof criarClassico !== 'undefined' && criarClassico(this, ev)) return;
+        // Obstáculos temáticos da rodada 7 (emergente, laser de piso, torreta, minas, carro, holofote...)
+        if (typeof criarTematico !== 'undefined' && criarTematico(this, ev)) return;
         // Escolhe pelo tipo
         switch (ev.tipo) {
             // Texto de tutorial
@@ -522,8 +528,9 @@ class Fase {
             // Pilar duplo (trecho de UFO/nave): coluna do chão e coluna do teto com um vão no meio
             case 'pilar': {
                 const meio = (ev.vao || 200) / 2, larg = ev.largura || 60, topoVao = ev.centro - meio, baseVao = ev.centro + meio;
-                const cima = new BlocoNeon(this, ev.x, MOVIMENTO.tetoY, larg, topoVao - MOVIMENTO.tetoY);
-                const baixo = new BlocoNeon(this, ev.x, baseVao, larg, MOVIMENTO.chaoY - baseVao);
+                // entra = os dois pedaços deslizam até o lugar (de cima e de baixo) quando o jogador se aproxima
+                const cima = ev.entra ? new BlocoEntrada(this, ev.x, MOVIMENTO.tetoY, larg, topoVao - MOVIMENTO.tetoY, -260) : new BlocoNeon(this, ev.x, MOVIMENTO.tetoY, larg, topoVao - MOVIMENTO.tetoY);
+                const baixo = ev.entra ? new BlocoEntrada(this, ev.x, baseVao, larg, MOVIMENTO.chaoY - baseVao, 260) : new BlocoNeon(this, ev.x, baseVao, larg, MOVIMENTO.chaoY - baseVao);
                 // Marca (pro piloto automático dos testes saber onde é o vão)
                 cima.pilar = baixo.pilar = { centro: ev.centro, x: ev.x, largura: larg };
                 break;

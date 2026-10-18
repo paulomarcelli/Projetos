@@ -117,9 +117,9 @@ const CORES_SECOES = {
 // ABERTURA NO RITMO de cada fase (um símbolo por batida; legenda em criarAbertura no fase.js)
 // Cada herói tem uma mistura diferente de obstáculos clássicos
 const ABERTURAS = {
-    'Hulk':         '^.^.2..B.S.._P.O.',
-    'Gaviao':       '^.m.^..2..p.D..O.',
-    'DrEstranho':   '^..3..D.._o..O.',
-    'Wanda':        '^.2..m.p.._.O.',
-    'Homem-Aranha': '^..S..2.._P.O.'
+    'Hulk':         '^.^.2..B.S.._P.e..O.',
+    'Gaviao':       '^.m.^..l..p.D..O.',
+    'DrEstranho':   '^..3..e..D.._o..O.',
+    'Wanda':        '^.2..m.l..p.._.O.',
+    'Homem-Aranha': '^..S..e..2.._P.O.'
 };

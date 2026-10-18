@@ -572,6 +572,8 @@ class FaseFerro extends Fase {
             { x: 1000, tipo: 'paredeChao', topo: 440 },
             { x: 1800, tipo: 'paredeTeto', base: 340 },
             { x: 2200, tipo: 'dica', txt: 'E ou botão direito: repulsor' },
+            // Torreta alta atirando no ritmo (desvie por baixo ou destrua com o repulsor)
+            { x: 2450, tipo: 'torreta', y: 250, intervalo: 900 },
             { x: 2700, tipo: 'drone', y: 380 },
             { x: 3200, tipo: 'drone', y: 260, amp: 60 },
             // Corredor clássico: serras no chão e no teto (fique no meio)
@@ -590,11 +592,15 @@ class FaseFerro extends Fase {
             { x: 11150, tipo: 'drone', y: 330 },
             { x: 12700, tipo: 'laserFixo', ate: 13700, y: 260 }, { x: 12700, tipo: 'laserFixo', ate: 13700, y: 500 },
             { x: 13300, tipo: 'drone', y: 380 },
+            // Torreta no meio do corredor de lasers: só o repulsor abre caminho
+            { x: 13650, tipo: 'torreta', y: 380, intervalo: 1000 },
             // FINAL
             { x: 13900, tipo: 'missilGuiado', y: 250 }, { x: 14200, tipo: 'missilGuiado', y: 520 },
             { x: 14700, tipo: 'gradeLaser', periodo: 2000 },
             { x: 15400, tipo: 'tunel', ate: 17600, vao: 175, pontos: [[15400, 380], [16000, 260], [16600, 470], [17200, 310], [17600, 390]] },
             { x: 17700, tipo: 'missilGuiado', y: 380 }, { x: 18300, tipo: 'barreiraDrones', ys: [160, 270, 380, 490, 600] },
+            // Coluna de minas flutuantes: exploda a do meio
+            { x: 18900, tipo: 'minas', ys: [190, 380, 570] },
             { x: 19400, tipo: 'portao', nucleos: [{ y: 250, hp: 1 }, { y: 510, hp: 1 }] },
             { x: 20000, tipo: 'paredeChao', topo: 280 }, { x: 20750, tipo: 'paredeTeto', base: 480 },
             { x: 21350, tipo: 'barreiraDrones', ys: [160, 270, 380, 490, 600] }

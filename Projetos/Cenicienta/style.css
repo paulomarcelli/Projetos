@@ -1,138 +1,1107 @@
+/* =====================================================================
+   style.css — BASE DO SITE "CENICIENTA"
+   ---------------------------------------------------------------------
+   Este arquivo é organizado em CAMADAS, da mais geral para a mais específica:
+     1. TOKENS      → as "variáveis" do design (cores, espaços, fontes...)
+     2. BASE        → reset leve e estilos das tags puras (body, h1, p, a...)
+     3. UTILITÁRIOS → classes de ajuda (.sr-only, .skip-link, .container)
+     4. LAYOUT      → as grandes áreas (header, hero, colunas, seções, footer)
+     5. COMPONENTES → peças reutilizáveis (.btn, .card, .chip, .ficha, .campo, .toast...)
+     6. RESPONSIVO  → ajustes para telas menores
+     7. ACESSIBILIDADE DE MOVIMENTO → respeita quem pede "menos animação"
+   Regra de ouro: NÃO escreva cores ou espaços "soltos" (ex.: 17px, #333).
+   Use sempre os tokens: var(--esp-4), var(--cor-destaque)...
+   Veja docs/DESIGN_SYSTEM.md para a explicação completa.
+   ===================================================================== */
+
+
+/* =====================================================================
+   1. TOKENS
+   :root é o elemento <html>. Variáveis criadas aqui valem no site inteiro.
+   ===================================================================== */
 :root {
---azul: #69b9ff;
---branco: #ffffff;
---preto : #000000;
---rosa : #ff69b4;
---cinza: #1a1a1a;
+    /* ---------- 1.1 Cores PRIMITIVAS (a "paleta" crua) ----------
+       São os valores de cor de verdade. Evite usá-las direto nos componentes:
+       prefira as cores SEMÂNTICAS logo abaixo. */
+    --preto: #000000;
+    --branco: #ffffff;
+    --rosa: #ff69b4;          /* rosa da identidade (títulos e destaques) */
+    --rosa-claro: #ff8cc6;    /* rosa um pouco mais claro, para o hover */
+    --rosa-escuro: #e0509a;   /* rosa mais fechado, para o "apertado" (active) */
+    --azul: #69b9ff;          /* azul da identidade */
+    --cinza-900: #0d0d0d;
+    --cinza-850: #141414;
+    --cinza-800: #1a1a1a;     /* cinza dos cartões (o mesmo de antes) */
+    --cinza-700: #262626;
+    --cinza-600: #3a3a3a;
+    --cinza-300: #b8b8b8;     /* texto secundário: contraste ~8.8:1 sobre #1a1a1a */
+    --vermelho: #ff6b6b;
+    --verde: #5ee0a0;
+
+    /* ---------- 1.2 Cores SEMÂNTICAS (o "papel" de cada cor) ----------
+       O nome diz PARA QUE serve, não qual cor é. Se um dia o rosa mudar,
+       basta trocar aqui. */
+    --cor-fundo: var(--preto);              /* fundo da página */
+    --cor-superficie: var(--cinza-800);     /* cartões */
+    --cor-superficie-2: var(--cinza-700);   /* algo "em cima" do cartão (campos, ficha) */
+    --cor-texto: var(--branco);             /* texto principal: 21:1 sobre o preto */
+    --cor-texto-suave: var(--cinza-300);    /* texto secundário: ≥ 8:1 (passa no AA 4.5:1) */
+    --cor-texto-sobre-destaque: var(--preto); /* texto em cima do rosa: ~7.9:1 */
+    --cor-destaque: var(--rosa);            /* títulos, links ativos, botão principal */
+    --cor-destaque-2: var(--azul);          /* detalhes secundários, rótulos, ícones */
+    --cor-borda: rgba(255, 255, 255, 0.12); /* linhas finas que separam as coisas */
+    --cor-borda-forte: rgba(255, 255, 255, 0.28);
+    --cor-foco: var(--azul);                /* anel de foco do teclado (contrasta com rosa e preto) */
+    --cor-erro: var(--vermelho);
+    --cor-sucesso: var(--verde);
+    --cor-overlay: rgba(0, 0, 0, 0.72);     /* camada escura por cima do vídeo */
+
+    /* ---------- 1.3 ESPAÇAMENTO (base de 4px) ----------
+       Use SEMPRE estes passos para margin, padding e gap.
+       1–3 → dentro de componentes pequenos (ícone + texto, chip)
+       4–5 → dentro de cartões, entre parágrafos, entre campos
+       6–7 → entre cartões e blocos
+       8–10 → entre seções grandes da página */
+    --esp-1: 0.25rem;  /*   4px */
+    --esp-2: 0.5rem;   /*   8px */
+    --esp-3: 0.75rem;  /*  12px */
+    --esp-4: 1rem;     /*  16px */
+    --esp-5: 1.5rem;   /*  24px */
+    --esp-6: 2rem;     /*  32px */
+    --esp-7: 3rem;     /*  48px */
+    --esp-8: 4rem;     /*  64px */
+    --esp-9: 6rem;     /*  96px */
+    --esp-10: 8rem;    /* 128px */
+
+    /* ---------- 1.4 TIPOGRAFIA ----------
+       clamp(MÍNIMO, IDEAL, MÁXIMO) → a fonte cresce com a largura da tela,
+       mas nunca fica menor que o mínimo nem maior que o máximo ("tipografia fluida"). */
+    --fonte-titulo: "Righteous", "Trebuchet MS", system-ui, sans-serif;
+    --fonte-texto: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    --fs-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);     /* 12–13px: legendas */
+    --fs-sm: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem);   /* 14–15px: rótulos, ajuda */
+    --fs-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);     /* 16–17px: texto corrido */
+    --fs-md: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);     /* 18–20px: subtítulo, h3 */
+    --fs-lg: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);        /* 20–24px */
+    --fs-xl: clamp(1.625rem, 1.4rem + 1vw, 2.25rem);         /* 26–36px: h2 */
+    --fs-2xl: clamp(2rem, 1.6rem + 2vw, 3rem);               /* 32–48px */
+    --fs-display: clamp(3.25rem, 1.9rem + 6.5vw, 7rem);      /* 52–112px: o h1 do hero */
+
+    --lh-justo: 1.1;    /* títulos grandes */
+    --lh-titulo: 1.25;  /* h2/h3 */
+    --lh-texto: 1.65;   /* texto corrido (confortável para ler) */
+
+    --peso-normal: 400;
+    --peso-medio: 500;
+    --peso-forte: 600;
+
+    --largura-leitura: 68ch;   /* largura máxima confortável de uma linha de texto */
+
+    /* ---------- 1.5 RAIOS (cantos arredondados) ---------- */
+    --raio-sm: 6px;
+    --raio-md: 12px;
+    --raio-lg: 20px;
+    --raio-pilula: 999px;  /* totalmente arredondado (botões e chips) */
+
+    /* ---------- 1.6 SOMBRAS E BRILHOS ----------
+       Estilo "Dark Mode (OLED)": pouca sombra, brilho rosa só nos destaques. */
+    --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.6);
+    --sombra-2: 0 10px 30px rgba(0, 0, 0, 0.55);
+    --brilho-texto: 0 0 18px rgba(255, 105, 180, 0.35);   /* text-shadow suave no rosa */
+    --brilho-caixa: 0 0 0 1px rgba(255, 105, 180, 0.35), 0 8px 28px rgba(255, 105, 180, 0.18);
+
+    /* ---------- 1.7 LAYOUT ---------- */
+    --largura-conteudo: 1120px;   /* largura máxima do miolo do site */
+    --gutter: var(--esp-4);       /* "margem lateral" no celular (16px) */
+    --altura-header: 4rem;        /* 64px: usado também no scroll-padding-top */
+    --toque-min: 44px;            /* tamanho mínimo de qualquer coisa clicável */
+
+    /* ---------- 1.8 CAMADAS (z-index) ----------
+       Quem tem número maior fica "por cima". Nomear evita a guerra do 9999. */
+    --z-base: 1;
+    --z-header: 100;
+    --z-menu: 110;
+    --z-topo: 120;
+    --z-toast: 130;
+    --z-skip: 200;
+
+    /* ---------- 1.9 MOVIMENTO (usado pelo motion.css) ---------- */
+    --dur-rapida: 150ms;   /* hover, foco, cliques */
+    --dur-media: 250ms;    /* menu, toast, botão de topo */
+    --dur-lenta: 600ms;    /* revelação das seções ao rolar */
+    --ease-saida: cubic-bezier(0.16, 1, 0.3, 1);    /* começa rápido e freia: para coisas que ENTRAM */
+    --ease-entrada: cubic-bezier(0.7, 0, 0.84, 0);  /* começa devagar e acelera: para coisas que SAEM */
 }
 
-@media (max-width: 768px) { /* aplica estilos para telas com largura máxima de 768px (como tablets e celulares) 
-    deixar mais responsivo, empilhando as seções verticalmente em telas menores
-    */
-    body {
-        overflow-x: hidden;
-    }
 
-    #video-background {
-        height: 280px;
-    }
+/* =====================================================================
+   2. BASE (reset leve + tags puras)
+   ===================================================================== */
 
-    #video-background video {
-        width: auto;
-        min-width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    #bloco-flex {
-        flex-direction: column; /* empilha as seções verticalmente em telas menores */
-    }
-
-    #sobre-karol-sevilla,
-    #sobre-musica {
-        min-width: 0;
-        padding: 16px;
-        overflow-wrap: anywhere;
-    }
-
-    p {
-        font-size: 16px;
-        line-height: 1.5;
-    }
-
-    #sobre-musica img {
-        display: block;
-        width: 100%;
-        max-width: 400px;
-        height: auto;
-        margin: 0 auto;
-    }
-
-    a {
-        display: inline-block;
-        margin: 8px;
-    }
+/* box-sizing: border-box → o padding e a borda ficam DENTRO da largura.
+   Assim "width: 100%" nunca estoura a tela. */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
-    
- body {
-    background-color: var(--preto); /* cor de fundo do site */
-     color:var(--preto)
+
+html {
+    -webkit-text-size-adjust: 100%;   /* impede o iPhone de aumentar a fonte sozinho ao girar */
+    scroll-behavior: smooth;          /* rolagem suave ao clicar nas âncoras do menu */
+    scroll-padding-top: calc(var(--altura-header) + var(--esp-4)); /* o header fixo não cobre o título */
+    background-color: var(--cor-fundo);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--cor-fundo);  /* cor de fundo do site */
+    color: var(--cor-texto);              /* cor do texto */
+    font-family: var(--fonte-texto);
+    font-size: var(--fs-base);
+    line-height: var(--lh-texto);
+    overflow-x: clip;                     /* garante que nada cria rolagem para o lado */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Títulos: fonte Righteous e cor rosa (a identidade do site) */
+h1, h2, h3 {
+    margin: 0 0 var(--esp-4);
+    font-family: var(--fonte-titulo);
+    font-weight: var(--peso-normal);   /* a Righteous só tem um peso */
+    line-height: var(--lh-titulo);
+    color: var(--cor-destaque);
+    text-wrap: balance;                /* equilibra as linhas do título */
 }
 
 h2 {
-    color:var(--rosa)
-    
+    font-size: var(--fs-xl);
+    text-shadow: var(--brilho-texto);
 }
 
 h3 {
-    color:var(--rosa)
-    
+    font-size: var(--fs-md);
 }
 
 p {
-     color: var(--branco); /* cor do texto */
-     font-size: 18px; /* tamanho da fonte */
+    margin: 0 0 var(--esp-4);
+    max-width: var(--largura-leitura);
+    text-wrap: pretty;  /* evita uma palavra sozinha na última linha */
 }
 
-#video-background {
-    width: 100%;
-    height: 500px;
-    overflow: hidden;
-    position: relative; /* NOVO: cria um "limite" pro iframe */
-}
-
-iframe, video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 300%;
-    transform: translate(-50%, -50%);
+p:last-child {
+    margin-bottom: 0;
 }
 
 a {
-     color: var(--branco);
-     margin: 10px;  /* espaço entre os links */
-     text-decoration: none; /* remove o sublinhado dos links */
-    
+    color: var(--cor-destaque-2);
+    text-underline-offset: 0.2em;
 }
 
 a:hover {
-    color: var(--rosa);
-    
+    color: var(--cor-destaque);
 }
 
-#bloco-flex {
-    display: flex; /* posiciona os elementos filhos lado a lado*/
-    
+img,
+video {
+    display: block;
+    max-width: 100%;
+    height: auto;
 }
 
-#sobre-karol-sevilla {
-    flex: 1; /* cada seção ocupa metade do espaço disponível */
-    padding: 20px; /* espaço interno */
-    background-color: var(--cinza); /* cor de fundo das seções */
-    
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-#sobre-musica {
-    flex: 1; /* cada seção ocupa metade do espaço disponível */
-    padding: 20px; /* espaço interno */
-    background-color: var(--cinza); /* cor de fundo das seções */
-    
+figure,
+dl,
+dd {
+    margin: 0;
 }
 
-#redes-sociais {
-    background-color: var(--preto); /* cor de fundo da seção de redes sociais */
-    
+/* Botões e campos herdam a fonte do site (por padrão o navegador usa outra) */
+button,
+input,
+textarea {
+    font: inherit;
+    color: inherit;
 }
 
-#sobre-karol-sevilla, #sobre-musica  {
-    opacity: 0; /* deixa as seções um pouco transparentes */
-    transform: translateY(30px); /* move as seções um pouco para baixo */
-    transition: opacity 1s ease-out, transform 1s ease-out; /* adiciona uma transição suave para a opacidade e a posição */
-    
+button {
+    cursor: pointer;
 }
-#sobre-karol-sevilla.visible, #sobre-musica.visible {
+
+/* Cor da seleção de texto */
+::selection {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-sobre-destaque);
+}
+
+/* ANEL DE FOCO: aparece quando a pessoa navega pelo TECLADO (Tab).
+   :focus-visible não aparece no clique do mouse, só quando é útil. */
+:focus-visible {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 3px;
+    border-radius: var(--raio-sm);
+}
+
+/* O <main> recebe foco pelo skip-link, mas não precisa mostrar o anel */
+main:focus {
+    outline: none;
+}
+
+
+/* =====================================================================
+   3. UTILITÁRIOS
+   ===================================================================== */
+
+/* .sr-only → esconde da TELA, mas o leitor de tela continua lendo */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Skip-link: fica fora da tela até receber foco pelo teclado */
+.skip-link {
+    position: fixed;
+    top: var(--esp-2);
+    left: var(--esp-2);
+    z-index: var(--z-skip);
+    padding: var(--esp-3) var(--esp-4);
+    border-radius: var(--raio-md);
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-sobre-destaque);
+    font-weight: var(--peso-forte);
+    text-decoration: none;
+    transform: translateY(-200%);  /* escondido acima da tela */
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    transform: translateY(0);      /* aparece */
+    color: var(--cor-texto-sobre-destaque);
+}
+
+/* .container → centraliza o conteúdo e limita a largura */
+.container {
+    width: 100%;
+    max-width: calc(var(--largura-conteudo) + 2 * var(--gutter));
+    margin-inline: auto;               /* margem automática dos dois lados = centralizado */
+    padding-inline: var(--gutter);
+}
+
+/* Palavra/trecho em destaque dentro de um texto */
+.destaque {
+    color: var(--cor-destaque);
+    font-weight: var(--peso-medio);
+}
+
+
+/* =====================================================================
+   4. LAYOUT
+   ===================================================================== */
+
+/* ---------- 4.1 Cabeçalho fixo ----------
+   Começa transparente (com um degradê leve para o texto ser legível sobre o vídeo).
+   Quando a página rola, o JS coloca .is-scrolled e ele fica sólido. */
+.site-header {
+    position: fixed;
+    inset: 0 0 auto 0;   /* = top:0; right:0; left:0 */
+    z-index: var(--z-header);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    border-bottom: 1px solid transparent;
+    background-origin: border-box;   /* sem isso o degradê se repete na borda e cria uma "linha" escura */
+}
+
+.site-header.is-scrolled {
+    background: rgba(0, 0, 0, 0.88);
+    border-bottom-color: var(--cor-borda);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);   /* desfoca o que passa por trás */
+}
+
+.site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-4);
+    min-height: var(--altura-header);
+}
+
+/* Logo em texto */
+.logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--toque-min);
+    font-family: var(--fonte-titulo);
+    font-size: var(--fs-lg);
+    color: var(--cor-destaque);
+    text-decoration: none;
+    text-shadow: var(--brilho-texto);
+}
+
+.logo:hover {
+    color: var(--rosa-claro);
+}
+
+/* Menu (no computador: links em linha) */
+.nav__lista {
+    display: flex;
+    gap: var(--esp-1);
+}
+
+.nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--toque-min);
+    padding-inline: var(--esp-3);
+    border-radius: var(--raio-pilula);
+    color: var(--cor-texto);
+    font-size: var(--fs-sm);
+    font-weight: var(--peso-medio);
+    text-decoration: none;
+}
+
+.nav__link:hover {
+    color: var(--cor-destaque);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Link da seção atual (o Agente 2 pode marcar com aria-current="true") */
+.nav__link[aria-current="true"],
+.nav__link[aria-current="page"] {
+    color: var(--cor-destaque);
+}
+
+/* O botão de menu só aparece no celular (ver seção 6).
+   ".site-header .menu-toggle" é mais específico que ".btn", por isso vence o display do botão. */
+.site-header .menu-toggle {
+    display: none;
+}
+
+/* ---------- 4.2 Hero (topo com o vídeo) ---------- */
+.hero {
+    position: relative;      /* "limite" para o vídeo e o overlay, que são absolutos */
+    isolation: isolate;      /* cria uma camada própria: o z-index de dentro não vaza */
+    display: flex;
+    align-items: flex-end;   /* texto encostado embaixo */
+    min-height: 560px;       /* reserva para navegadores antigos */
+    min-height: min(88svh, 760px);
+    overflow: hidden;
+    background-color: var(--cor-fundo);
+}
+
+/* O vídeo ocupa toda a área e é "cortado" para cobrir sem distorcer (object-fit: cover).
+   Isso substitui o antigo truque de height: 300%. */
+.hero__video {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center 35%;
+}
+
+/* Camada escura em degradê: mais escura embaixo (onde está o texto) e
+   preta no fim, para "derreter" o vídeo no fundo da página. */
+.hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(to top, var(--cor-fundo) 0%, rgba(0, 0, 0, 0.55) 35%, rgba(0, 0, 0, 0.15) 70%, rgba(0, 0, 0, 0.45) 100%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 65%);
+}
+
+.hero__conteudo {
+    padding-top: calc(var(--altura-header) + var(--esp-7));
+    padding-bottom: var(--esp-9);
+}
+
+.hero__titulo {
+    margin-bottom: var(--esp-2);
+    font-size: var(--fs-display);
+    line-height: var(--lh-justo);
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 28px rgba(255, 105, 180, 0.45), var(--sombra-1);
+}
+
+.hero__subtitulo {
+    margin-bottom: var(--esp-6);
+    font-size: var(--fs-md);
+    font-weight: var(--peso-medio);
+    color: var(--cor-texto);
+    text-shadow: var(--sombra-1);
+}
+
+.hero__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-3);
+}
+
+/* ---------- 4.3 Seções ---------- */
+.secao {
+    padding-block: var(--esp-8);
+}
+
+.secao__cabecalho {
+    margin-bottom: var(--esp-6);
+}
+
+.secao__cabecalho h2 {
+    margin-bottom: var(--esp-2);
+}
+
+.secao__descricao {
+    color: var(--cor-texto-suave);
+}
+
+/* ---------- 4.4 As duas colunas ----------
+   Grid de 2 colunas iguais (1fr 1fr). minmax(0, 1fr) impede textos longos de estourarem a coluna. */
+.duas-colunas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--esp-6);
+    align-items: start;
+}
+
+/* Cada coluna empilha seus cartões com um espaço entre eles */
+.coluna {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-6);
+    min-width: 0;
+}
+
+/* A coluna da música "gruda" no topo enquanto o texto da esquerda rola (só no computador) */
+.coluna--musica {
+    min-width: 0;
+    position: sticky;
+    top: calc(var(--altura-header) + var(--esp-4));
+}
+
+/* ---------- 4.5 Seção de mensagens ---------- */
+.secao--mensagens {
+    border-top: 1px solid var(--cor-borda);
+    background: linear-gradient(to bottom, var(--cinza-900), var(--cor-fundo));
+}
+
+.mensagens {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--esp-6);
+    align-items: start;
+}
+
+/* ---------- 4.6 Rodapé ---------- */
+.site-footer {
+    padding-block: var(--esp-7);
+    border-top: 1px solid var(--cor-borda);
+    color: var(--cor-texto-suave);
+    font-size: var(--fs-sm);
+}
+
+.site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-3) var(--esp-5);
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.logo--rodape {
+    font-size: var(--fs-md);
+    min-height: 0;
+}
+
+
+/* =====================================================================
+   5. COMPONENTES
+   Cada componente lista seus ESTADOS: padrão, :hover (mouse em cima),
+   :active (apertando), :focus-visible (teclado) e :disabled (desligado).
+   ===================================================================== */
+
+/* ---------- 5.1 Botão (.btn) ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--esp-2);
+    min-height: var(--toque-min);          /* nunca menor que 44px */
+    padding: var(--esp-3) var(--esp-5);
+    border: 2px solid transparent;
+    border-radius: var(--raio-pilula);
+    background: none;
+    font-size: var(--fs-base);
+    font-weight: var(--peso-forte);
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus-visible {
+    outline-offset: 3px;
+    border-radius: var(--raio-pilula);
+}
+
+.btn:active {
+    transform: translateY(1px);    /* "afunda" um pouquinho ao clicar */
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Primário: rosa cheio com texto preto (contraste ~7.9:1) */
+.btn--primario {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-sobre-destaque);
+    box-shadow: var(--brilho-caixa);
+}
+
+.btn--primario:hover {
+    background-color: var(--rosa-claro);
+    color: var(--cor-texto-sobre-destaque);
+}
+
+.btn--primario:active {
+    background-color: var(--rosa-escuro);
+}
+
+.btn--primario:disabled:hover {
+    background-color: var(--cor-destaque);
+}
+
+/* Secundário: só o contorno */
+.btn--secundario {
+    border-color: var(--cor-borda-forte);
+    background-color: rgba(0, 0, 0, 0.35);
+    color: var(--cor-texto);
+}
+
+.btn--secundario:hover {
+    border-color: var(--cor-destaque);
+    color: var(--cor-destaque);
+}
+
+.btn--secundario:active {
+    background-color: rgba(255, 105, 180, 0.12);
+}
+
+/* Botão só com ícone: quadrado/redondo de 44px */
+.btn--icone {
+    width: var(--toque-min);
+    height: var(--toque-min);
+    padding: 0;
+    border-color: var(--cor-borda-forte);
+    background-color: rgba(0, 0, 0, 0.55);
+    color: var(--cor-texto);
+    font-size: var(--fs-md);
+}
+
+.btn--icone:hover {
+    border-color: var(--cor-destaque);
+    color: var(--cor-destaque);
+}
+
+/* Botão que ocupa a largura toda */
+.btn--bloco {
+    width: 100%;
+}
+
+/* Estado "carregando": o JS coloca .is-loading enquanto envia */
+.btn.is-loading {
+    pointer-events: none;
+    opacity: 0.75;
+    cursor: progress;
+}
+
+/* ---------- 5.2 Botão de pausar/tocar o vídeo ----------
+   aria-pressed="false" → tocando → mostra o ícone de PAUSA
+   aria-pressed="true"  → pausado → mostra o ícone de PLAY */
+.video-toggle__icone--tocar {
+    display: none;
+}
+
+.video-toggle[aria-pressed="true"] .video-toggle__icone--pausar {
+    display: none;
+}
+
+.video-toggle[aria-pressed="true"] .video-toggle__icone--tocar {
+    display: inline-block;
+}
+
+/* Sem JavaScript o botão não teria função, então ele some */
+html:not(.js) .video-toggle {
+    display: none;
+}
+
+/* ---------- 5.3 Cartão (.card) ---------- */
+.card {
+    padding: var(--esp-6);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-lg);
+    background-color: var(--cor-superficie);
+    box-shadow: var(--sombra-2);
+    min-width: 0;
+    overflow-wrap: break-word;   /* palavras/links enormes quebram em vez de vazar */
+}
+
+.card > h3 {
+    margin-top: var(--esp-6);
+}
+
+/* Cartão de leitura: parágrafos com um pouco mais de respiro */
+.card--leitura p {
+    margin-bottom: var(--esp-5);
+}
+
+.card--leitura p:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- 5.4 Chip / tag ---------- */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esp-1);
+    padding: var(--esp-1) var(--esp-3);
+    border: 1px solid rgba(105, 185, 255, 0.4);
+    border-radius: var(--raio-pilula);
+    background-color: rgba(105, 185, 255, 0.1);
+    color: var(--cor-destaque-2);
+    font-size: var(--fs-xs);
+    font-weight: var(--peso-forte);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ---------- 5.5 Capa da música ---------- */
+.capa {
+    margin-block: var(--esp-5);
+}
+
+.capa img {
+    width: 100%;
+    max-width: 447px;   /* tamanho real da imagem: não esticar além disso */
+    margin-inline: auto;
+    border-radius: var(--raio-md);
+    box-shadow: var(--brilho-caixa);
+}
+
+/* ---------- 5.6 Ficha técnica (dl.ficha) ----------
+   Grade de 2 colunas; o item "largo" (compositores) ocupa a linha inteira. */
+.ficha {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--esp-2);
+}
+
+.ficha__item {
+    padding: var(--esp-3) var(--esp-4);
+    border-radius: var(--raio-md);
+    background-color: var(--cor-superficie-2);
+}
+
+.ficha__item--largo {
+    grid-column: 1 / -1;   /* do começo ao fim da grade */
+}
+
+.ficha dt {
+    color: var(--cor-destaque-2);
+    font-size: var(--fs-xs);
+    font-weight: var(--peso-forte);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ficha dd {
+    color: var(--cor-texto);
+    font-weight: var(--peso-medio);
+}
+
+/* ---------- 5.7 Redes sociais (.social__link) ---------- */
+.social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
+}
+
+.social__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esp-2);
+    min-height: var(--toque-min);
+    padding: var(--esp-2) var(--esp-4);
+    border: 1px solid var(--cor-borda-forte);
+    border-radius: var(--raio-pilula);
+    color: var(--cor-texto);
+    font-size: var(--fs-sm);
+    font-weight: var(--peso-medio);
+    text-decoration: none;
+}
+
+.social__link i {
+    font-size: 1.25em;
+    color: var(--cor-destaque-2);
+}
+
+.social__link:hover {
+    border-color: var(--cor-destaque);
+    color: var(--cor-destaque);
+    background-color: rgba(255, 105, 180, 0.08);
+}
+
+.social__link:hover i {
+    color: var(--cor-destaque);
+}
+
+.social__link:active {
+    background-color: rgba(255, 105, 180, 0.16);
+}
+
+.social__link:focus-visible {
+    border-radius: var(--raio-pilula);
+}
+
+/* ---------- 5.8 Campos de formulário (.campo) ---------- */
+.form-mensagem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+}
+
+.campo__rotulo {
+    font-size: var(--fs-sm);
+    font-weight: var(--peso-forte);
+    color: var(--cor-texto);
+}
+
+.campo__input {
+    width: 100%;
+    min-height: var(--toque-min);
+    padding: var(--esp-3) var(--esp-4);
+    border: 1px solid var(--cor-borda-forte);
+    border-radius: var(--raio-md);
+    background-color: var(--cinza-850);
+    color: var(--cor-texto);
+    font-size: var(--fs-base);   /* 16px+ evita o zoom automático no iPhone */
+    line-height: 1.5;
+}
+
+textarea.campo__input {
+    min-height: 7.5rem;
+    resize: vertical;
+}
+
+.campo__input::placeholder {
+    color: var(--cor-texto-suave);
+}
+
+.campo__input:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.campo__input:focus-visible {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 2px;
+    border-color: var(--cor-foco);
+    border-radius: var(--raio-md);
+}
+
+.campo__input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Texto de ajuda (ex.: contador de caracteres) */
+.campo__ajuda {
+    margin: 0;
+    color: var(--cor-texto-suave);
+    font-size: var(--fs-xs);
+}
+
+/* Mensagem de erro: vazia = não ocupa espaço */
+.campo__erro {
+    margin: 0;
+    color: var(--cor-erro);
+    font-size: var(--fs-sm);
+    font-weight: var(--peso-medio);
+}
+
+.campo__erro:empty {
+    display: none;
+}
+
+/* Estado inválido: a borda fica vermelha */
+.campo.is-invalid .campo__input,
+.campo__input[aria-invalid="true"] {
+    border-color: var(--cor-erro);
+}
+
+.campo.is-invalid .campo__rotulo {
+    color: var(--cor-erro);
+}
+
+/* ---------- 5.9 Mural de mensagens (.mensagem) ---------- */
+.mural__titulo {
+    margin-bottom: var(--esp-4);
+}
+
+.mural__lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+}
+
+/* Cada mensagem da lista */
+.mensagem {
+    padding: var(--esp-4) var(--esp-5);
+    border: 1px solid var(--cor-borda);
+    border-left: 3px solid var(--cor-destaque);
+    border-radius: var(--raio-md);
+    background-color: var(--cor-superficie);
+    overflow-wrap: anywhere;   /* nomes/textos sem espaço quebram em qualquer ponto */
+}
+
+/* Mensagem recém-chegada: destaque leve (a animação fica no motion.css) */
+.mensagem.is-new {
+    border-color: rgba(255, 105, 180, 0.45);
+    border-left-color: var(--cor-destaque);
+}
+
+/* Estado vazio: mostra o aviso só quando a lista não tem nenhum item */
+.mural__vazio {
+    padding: var(--esp-5);
+    border: 1px dashed var(--cor-borda-forte);
+    border-radius: var(--raio-md);
+    color: var(--cor-texto-suave);
+    text-align: center;
+    max-width: none;
+}
+
+.mural__lista:not(:empty) + .mural__vazio {
+    display: none;
+}
+
+/* ---------- 5.10 Toast (aviso rápido) ----------
+   Fica escondido até o JS colocar .is-shown. A transição é do motion.css. */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: var(--esp-5);
+    z-index: var(--z-toast);
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--gutter));
+    padding: var(--esp-3) var(--esp-5);
+    border: 1px solid var(--cor-borda-forte);
+    border-radius: var(--raio-md);
+    background-color: var(--cinza-700);
+    color: var(--cor-texto);
+    font-size: var(--fs-sm);
+    font-weight: var(--peso-medio);
+    box-shadow: var(--sombra-2);
+    transform: translate(-50%, 0);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.toast.is-shown {
     opacity: 1;
-    transform: translateY(0);
+    visibility: visible;
+}
+
+.toast--sucesso {
+    border-left: 4px solid var(--cor-sucesso);
+}
+
+.toast--erro {
+    border-left: 4px solid var(--cor-erro);
+}
+
+/* ---------- 5.11 Botão "voltar ao topo" ---------- */
+.topo {
+    position: fixed;
+    right: var(--esp-4);
+    bottom: var(--esp-4);
+    z-index: var(--z-topo);
+    opacity: 0;
+    visibility: hidden;   /* escondido também para o teclado */
+}
+
+.topo.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* =====================================================================
+   6. RESPONSIVO
+   Pontos de quebra testados: 1440, 1024, 768 e 375 px de largura.
+   ===================================================================== */
+
+/* ---------- Tablets e telas médias (até 1024px) ---------- */
+@media (max-width: 1024px) {
+    .duas-colunas {
+        gap: var(--esp-5);
+    }
+
+    .card {
+        padding: var(--esp-5);
+    }
+
+    .mensagens {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* ---------- Celulares e tablets em pé (até 768px) ---------- */
+@media (max-width: 768px) {
+    :root {
+        --altura-header: 3.5rem;   /* 56px */
+    }
+
+    .secao {
+        padding-block: var(--esp-7);
+    }
+
+    /* As duas colunas viram uma só (uma embaixo da outra) */
+    .duas-colunas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .coluna--musica {
+        position: static;   /* no celular não "gruda" */
+    }
+
+    .hero {
+        min-height: 480px;
+        min-height: min(72svh, 560px);
+    }
+
+    .hero__conteudo {
+        padding-bottom: var(--esp-7);
+    }
+
+    /* ----- Menu no celular -----
+       COM JavaScript (html.js): a lista vira um painel que abre pelo botão.
+       SEM JavaScript: os links continuam visíveis, em linha, com rolagem lateral só DENTRO do menu. */
+    .js .site-header .menu-toggle {
+        display: inline-flex;
+        margin-left: auto;   /* empurra o botão para a direita */
+    }
+
+    .js .nav__lista {
+        position: fixed;
+        top: var(--altura-header);
+        right: 0;
+        left: 0;
+        z-index: var(--z-menu);
+        flex-direction: column;
+        gap: var(--esp-1);
+        padding: var(--esp-4) var(--gutter) var(--esp-6);
+        border-bottom: 1px solid var(--cor-borda);
+        background-color: rgba(0, 0, 0, 0.96);
+        box-shadow: var(--sombra-2);
+        visibility: hidden;   /* fechado: invisível e fora do Tab */
+        opacity: 0;
+    }
+
+    .js #menu-principal.is-open {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .js .nav__link {
+        width: 100%;
+        min-height: 48px;
+        padding-inline: var(--esp-4);
+        border-radius: var(--raio-md);
+        font-size: var(--fs-md);
+    }
+
+    /* Sem JS */
+    html:not(.js) .nav {
+        min-width: 0;
+        overflow-x: auto;
+    }
+
+    html:not(.js) .nav__link {
+        padding-inline: var(--esp-2);
+        white-space: nowrap;
+    }
+
+    /* Com o menu aberto, a página de trás não rola */
+    body.menu-aberto {
+        overflow: hidden;
+    }
+
+    /* Com o menu aberto o header fica sólido */
+    body.menu-aberto .site-header {
+        background: rgba(0, 0, 0, 0.96);
+    }
+
+}
+
+/* ---------- Celulares pequenos (até 480px) ---------- */
+@media (max-width: 480px) {
+    /* A ficha técnica vira uma coluna só */
+    .ficha {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .card {
+        padding: var(--esp-5) var(--esp-4);
+        border-radius: var(--raio-md);
+    }
+
+    .hero__acoes .btn {
+        padding-inline: var(--esp-4);   /* botões um pouco mais estreitos para caberem lado a lado */
+    }
+
+    .hero__acoes .btn--primario {
+        flex: 1 1 auto;   /* o botão principal ocupa a largura que sobrar */
+    }
+}
+
+
+/* =====================================================================
+   7. MOVIMENTO REDUZIDO
+   Se a pessoa pediu ao sistema "reduzir movimento", a rolagem deixa de ser suave.
+   (As demais animações são tratadas no motion.css.)
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 }

@@ -1,0 +1,290 @@
+/* =====================================================================
+   components.css — COMPONENTES E FUNCIONALIDADES (Agente 2)
+   ---------------------------------------------------------------------
+   Aqui entram os estilos dos componentes interativos (menu, formulário,
+   mural, toast...) e a responsividade deles.
+   Use SEMPRE os tokens do style.css (var(--esp-4), var(--cor-destaque)...)
+   e siga o contrato de classes em docs/DESIGN_SYSTEM.md.
+   IMPORTANTE: aqui NÃO há transições nem animações — elas ficam no motion.css.
+   Este arquivo só diz COMO cada estado se parece.
+
+   Sumário:
+     1. Utilitários (hidden, sem JS)
+     2. Menu (link ativo)
+     3. Formulário de mensagens
+     4. Mural (cada mensagem)
+     5. Compartilhar
+     6. Toast
+     7. Botão "voltar ao topo"
+     8. Responsivo destes componentes (menu do celular em tela cheia, toast...)
+   ===================================================================== */
+
+
+/* =====================================================================
+   1. UTILITÁRIOS
+   ===================================================================== */
+
+/* O atributo "hidden" deveria esconder qualquer elemento, mas classes como
+   .btn (display: inline-flex) "vencem" o estilo padrão do navegador.
+   !important aqui é proposital: hidden SEMPRE tem que esconder. */
+[hidden] {
+    display: none !important;
+}
+
+/* Aviso "ative o JavaScript": só aparece quando NÃO há JS (html sem a classe .js) */
+.sem-js {
+    margin-bottom: var(--esp-6);
+    color: var(--cor-texto-suave);
+    max-width: none;
+}
+
+.js .sem-js {
+    display: none;
+}
+
+/* Sem JS o formulário não teria como salvar nada, então ele e o mural somem
+   (o aviso .sem-js explica o motivo). */
+html:not(.js) .mensagens {
+    display: none;
+}
+
+
+/* =====================================================================
+   2. MENU
+   ===================================================================== */
+
+/* Link da seção atual: além da cor rosa (que já vem do style.css),
+   ganha um sublinhado — assim a informação não depende SÓ da cor. */
+.nav__link[aria-current="true"] {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.4em;
+}
+
+
+/* =====================================================================
+   3. FORMULÁRIO DE MENSAGENS
+   ===================================================================== */
+
+/* Aviso "as mensagens ficam salvas só neste navegador" no topo do formulário */
+.form-mensagem__aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--esp-2);
+    padding: var(--esp-3) var(--esp-4);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-md);
+    background-color: var(--cor-superficie-2);
+    font-size: var(--fs-sm);
+    max-width: none;
+}
+
+.form-mensagem__aviso i {
+    margin-top: var(--esp-1);    /* alinha o ícone com a primeira linha do texto */
+    color: var(--cor-destaque-2);
+}
+
+/* Contador de caracteres perto do limite (o JS coloca as classes).
+   Além da cor, o JS escreve "faltam X" no texto → não depende só da cor. */
+.campo__contagem.is-perto {
+    color: var(--cor-destaque);
+    font-weight: var(--peso-forte);
+}
+
+.campo__contagem.is-limite {
+    color: var(--cor-erro);
+    font-weight: var(--peso-forte);
+}
+
+/* Erro com um sinal de alerta antes do texto (forma + cor, não só cor).
+   O "/ ''" no fim é o texto alternativo: o leitor de tela não lê o símbolo.
+   A primeira linha fica para navegadores que não entendem o texto alternativo. */
+.campo__erro::before {
+    content: "⚠ ";
+    content: "⚠ " / "";
+}
+
+
+/* =====================================================================
+   4. MURAL — cada mensagem (<li class="mensagem">)
+   Estrutura criada pelo script.js:
+     li.mensagem
+       div.mensagem__topo → strong.mensagem__nome + time.mensagem__data
+       p.mensagem__texto
+       button.mensagem__apagar
+   ===================================================================== */
+.mensagem {
+    display: grid;
+    gap: var(--esp-2);
+}
+
+.mensagem__topo {
+    display: flex;
+    flex-wrap: wrap;               /* no celular a data desce para a linha de baixo se faltar espaço */
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--esp-1) var(--esp-3);
+}
+
+.mensagem__nome {
+    color: var(--cor-destaque);
+    font-weight: var(--peso-forte);
+}
+
+.mensagem__data {
+    color: var(--cor-texto-suave);
+    font-size: var(--fs-xs);
+}
+
+.mensagem__texto {
+    margin: 0;
+    white-space: pre-line;         /* respeita as quebras de linha que a pessoa digitou */
+    max-width: none;
+}
+
+/* Botão "Apagar": discreto, mas com área de toque de 44px */
+.mensagem__apagar {
+    justify-self: end;             /* encosta à direita dentro da grade */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esp-2);
+    min-height: var(--toque-min);
+    min-width: var(--toque-min);
+    padding: var(--esp-2) var(--esp-3);
+    border: 1px solid transparent;
+    border-radius: var(--raio-pilula);
+    background: none;
+    color: var(--cor-texto-suave);
+    font-size: var(--fs-sm);
+    font-weight: var(--peso-medio);
+}
+
+.mensagem__apagar:hover {
+    border-color: var(--cor-erro);
+    color: var(--cor-erro);
+}
+
+.mensagem__apagar:active {
+    background-color: rgba(255, 107, 107, 0.12);   /* a cor de --cor-erro com 12% de opacidade */
+}
+
+.mensagem__apagar:focus-visible {
+    border-radius: var(--raio-pilula);
+}
+
+
+/* =====================================================================
+   5. COMPARTILHAR (botão no fim do cartão da música)
+   ===================================================================== */
+.compartilhar {
+    margin-top: var(--esp-5);
+}
+
+
+/* =====================================================================
+   6. TOAST
+   O style.css já posiciona e esconde o toast. Aqui:
+   - organizamos texto + botões lado a lado;
+   - o toast VISÍVEL aceita clique (o style.css desliga o clique para o
+     toast escondido não "roubar" toques de quem está embaixo dele);
+   - respeitamos a "área segura" do iPhone (env(safe-area-inset-bottom)).
+   ===================================================================== */
+.toast {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-2);
+    padding: var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);
+    bottom: calc(var(--esp-5) + env(safe-area-inset-bottom, 0px));
+    /* no computador: estreito o bastante para nunca encostar no botão de topo (canto direito) */
+    max-width: min(var(--largura-leitura), calc(100vw - 2 * (var(--toque-min) + var(--esp-4) * 2)));
+}
+
+.toast.is-shown {
+    pointer-events: auto;
+}
+
+.toast__texto {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.toast__acao,
+.toast__fechar {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--toque-min);
+    min-height: var(--toque-min);
+    border: 1px solid transparent;
+    border-radius: var(--raio-pilula);
+    background: none;
+    color: var(--cor-texto);
+}
+
+/* "Desfazer" em azul e sublinhado: parece um link de ação */
+.toast__acao {
+    padding-inline: var(--esp-3);
+    color: var(--cor-destaque-2);
+    font-weight: var(--peso-forte);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.toast__acao:hover,
+.toast__fechar:hover {
+    border-color: var(--cor-borda-forte);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.toast__acao:focus-visible,
+.toast__fechar:focus-visible {
+    border-radius: var(--raio-pilula);
+}
+
+
+/* =====================================================================
+   7. BOTÃO "VOLTAR AO TOPO"
+   Respeita a área segura do iPhone (barra de gestos / cantos arredondados).
+   ===================================================================== */
+.topo {
+    right: calc(var(--esp-4) + env(safe-area-inset-right, 0px));
+    bottom: calc(var(--esp-4) + env(safe-area-inset-bottom, 0px));
+}
+
+
+/* =====================================================================
+   8. RESPONSIVO destes componentes
+   ===================================================================== */
+@media (max-width: 768px) {
+    /* Menu do celular em TELA CHEIA (do header até o fim da tela).
+       overflow-y: auto → se a tela for baixinha (celular deitado), o menu rola sozinho.
+       overscroll-behavior: contain → a rolagem do menu não "vaza" para a página de trás. */
+    .js .nav__lista {
+        bottom: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: calc(var(--esp-6) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .js .nav__link {
+        min-height: calc(var(--toque-min) + var(--esp-3));   /* 56px: toque confortável */
+    }
+
+    /* Toast: no celular sobe para ficar ACIMA do botão de topo (que está no canto)
+       e usa a largura toda (menos as margens laterais). */
+    .toast {
+        bottom: calc(var(--esp-4) + var(--toque-min) + var(--esp-3) + env(safe-area-inset-bottom, 0px));
+        width: calc(100vw - 2 * var(--gutter));
+        max-width: calc(100vw - 2 * var(--gutter));
+    }
+}
+
+@media (max-width: 480px) {
+    /* No celular pequeno o botão de compartilhar ocupa a largura toda (mais fácil de tocar) */
+    .compartilhar__btn {
+        width: 100%;
+    }
+}

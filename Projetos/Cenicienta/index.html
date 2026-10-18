@@ -1,109 +1,394 @@
 <!DOCTYPE html>
+<!-- lang="pt-BR" avisa ao navegador (e aos leitores de tela) que a página está em português do Brasil.
+     A classe "js" é colocada aqui pelo script.js; sem JavaScript ela não existe e tudo aparece normalmente. -->
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <!-- Coloca a classe "js" o mais cedo possível (antes do CSS), para o navegador não pintar a página
+         e depois "piscar" quando as animações de entrada começarem. O script.js também confere isso. -->
+    <script>document.documentElement.classList.add('js');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cenicienta - Karol Sevilla</title>
+    <!-- O título aparece na aba e no resultado do Google: diga O QUE é a página, não só o nome. -->
+    <title>Cenicienta – Karol Sevilla | Site de fã do single de 2024</title>
 
-    <link rel="stylesheet" href="style.css"> <!-- Linkar o CSS -->
+    <!-- ===== SEO e compartilhamento =====
+         description → o resumo que aparece no Google.
+         theme-color → a cor da barra do navegador no celular (preto, igual ao fundo do site).
+         og:* (Open Graph) → o "cartãozinho" que aparece quando alguém cola o link no WhatsApp, Instagram etc.
+         O og:image precisa de endereço completo (com https://), por isso aponta para o site publicado. -->
+    <meta name="description" content="Site de fã sobre “Cenicienta”, single de 2024 de Karol Sevilla: a artista, o significado da música, ficha técnica e mensagens dos fãs.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Cenicienta - Karol Sevilla">
+    <meta property="og:description" content="Site de fã sobre “Cenicienta”, single de 2024 de Karol Sevilla.">
+    <meta property="og:image" content="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/assets/cenicienta-poster.webp">
+    <meta property="og:url" content="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/">
+    <meta property="og:site_name" content="Cenicienta – site de fã">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:image:alt" content="Karol Sevilla em cena do clipe de “Cenicienta”, com luz rosa ao fundo">
+    <!-- twitter:card → como o link aparece no X/Twitter (com imagem grande) -->
+    <meta name="twitter:card" content="summary_large_image">
 
-    <!--rel="stylesheet" → diz que tipo de arquivo está sendo conectado (uma folha de estilo)
-        href="style.css" → diz qual arquivo (o caminho até ele)-->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- canonical → diz ao Google qual é o endereço "oficial" desta página
+         (evita que a mesma página com ?algo=1 no fim seja vista como outra página). -->
+    <link rel="canonical" href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/">
 
-    <script src="script.js" defer></script> <!--Defer faz com que o HTML seja lido primeiro -->
-
-<!--</head> fecha a "cabeça" — onde ficam as configurações e conexões (CSS, JS, título, meta tags) 
-   que o usuário não vê diretamente na tela.-->
-
-<!--<body> é o corpo — onde fica tudo que aparece visualmente na página (textos, títulos, imagens, vídeos).-->
+    <!-- JSON-LD → a "ficha" da música num formato que o Google entende (dados estruturados).
+         Só entram fatos que já estão escritos na página.
+         Por que "inAlbum"? No vocabulário schema.org a gravadora (recordLabel) é um dado do
+         LANÇAMENTO (MusicRelease), não da gravação. Por isso a gravação fica "dentro" de um
+         lançamento do tipo single (SingleRelease) da TMBC Records.
+         PT2M40S = duração no formato ISO 8601: 2 minutos e 40 segundos. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MusicRecording",
+        "name": "Cenicienta",
+        "byArtist": { "@type": "Person", "name": "Karol Sevilla" },
+        "datePublished": "2024-07-16",
+        "duration": "PT2M40S",
+        "url": "https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/",
+        "inAlbum": {
+            "@type": "MusicAlbum",
+            "name": "Cenicienta",
+            "albumReleaseType": "https://schema.org/SingleRelease",
+            "byArtist": { "@type": "Person", "name": "Karol Sevilla" },
+            "albumRelease": {
+                "@type": "MusicRelease",
+                "name": "Cenicienta",
+                "datePublished": "2024-07-16",
+                "recordLabel": { "@type": "Organization", "name": "TMBC Records" }
+            }
+        }
+    }
+    </script>
 
     <link rel="icon" type="image/png" href="images.jpg"> <!--icone da aba do site-->
 
+    <!-- ===== Fontes do Google =====
+         preconnect → "abre a porta" com o servidor das fontes antes, para elas chegarem mais rápido.
+         display=swap → mostra o texto com uma fonte reserva enquanto a fonte bonita carrega (o texto nunca some).
+         Righteous = títulos | Poppins = textos. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Righteous&display=swap">
+
+    <!-- Ícones (Font Awesome 6.5.1)
+         integrity (SRI) → a "impressão digital" do arquivo. Se alguém alterar o arquivo na CDN,
+         a impressão digital não bate e o navegador se recusa a usá-lo (proteção contra ataque).
+         crossorigin="anonymous" → obrigatório para o SRI funcionar com arquivos de outro site.
+         referrerpolicy="no-referrer" → não conta para a CDN de qual página o visitante veio. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- ===== Nossos estilos (a ORDEM importa: o último pode sobrescrever o anterior) =====
+         style.css      → base: cores, espaçamentos, tipografia, layout e componentes básicos
+         components.css → componentes e funcionalidades (menu, formulário, toast...)
+         motion.css     → animações e transições
+         rel="stylesheet" → diz que tipo de arquivo está sendo conectado (uma folha de estilo)
+         href="style.css" → diz qual arquivo (o caminho até ele) -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="components.css">
+    <link rel="stylesheet" href="motion.css">
+
+    <!-- defer faz com que o HTML seja lido primeiro e os scripts rodem depois, na ordem em que aparecem. -->
+    <script src="script.js" defer></script>
+    <script src="motion.js" defer></script>
 </head>
 
-
+<!-- <body> é o corpo — onde fica tudo que aparece visualmente na página. -->
 <body>
-    <div id="video-background">
 
-        <!-- Esta div mantém o vídeo local como plano de fundo da página. -->
+    <!-- Link "pular para o conteúdo": fica escondido e só aparece quando alguém navega pelo teclado (Tab).
+         Assim quem usa teclado ou leitor de tela não precisa passar pelo menu toda vez. -->
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-        <!-- A tag <video> reproduz um arquivo de vídeo local, sem depender do YouTube. -->
-        <video width="560" height="315" autoplay muted loop playsinline>
-            <!-- autoplay inicia o vídeo automaticamente quando a página é carregada. -->
-            <!-- muted inicia o vídeo sem som, permitindo o autoplay nos navegadores. -->
-            <!-- loop reinicia o vídeo automaticamente quando ele termina. -->
-            <!-- playsinline mantém o vídeo dentro da página, especialmente em celulares. -->
-            <source src="cenicienta.mp4" type="video/mp4">
-            <!-- src aponta para o arquivo MP4 localizado na mesma pasta deste index.html. -->
-            <!-- type informa ao navegador que o arquivo utilizado é um vídeo MP4. -->
-            Seu navegador não suporta a reprodução de vídeos em HTML5.
-        </video>
+    <!-- ===================== CABEÇALHO ===================== -->
+    <header class="site-header">
+        <div class="container site-header__inner">
+            <!-- Logo em texto: um link que leva de volta ao topo -->
+            <a class="logo" href="#inicio">Cenicienta</a>
 
-         <!-- O vídeo local substitui o iframe e não exibe anúncios de serviços externos. -->
+            <!-- Botão do menu no celular.
+                 aria-expanded → diz ao leitor de tela se o menu está aberto (true) ou fechado (false).
+                 aria-controls → diz QUAL elemento esse botão abre (o id da lista do menu). -->
+            <button class="menu-toggle btn btn--icone" type="button" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
 
-
+            <!-- <nav> marca a área de navegação do site -->
+            <nav class="nav" aria-label="Principal">
+                <ul class="nav__lista" id="menu-principal">
+                    <li><a class="nav__link" href="#inicio">Início</a></li>
+                    <li><a class="nav__link" href="#karol">Karol</a></li>
+                    <li><a class="nav__link" href="#significado">Significado</a></li>
+                    <li><a class="nav__link" href="#musica">A música</a></li>
+                    <li><a class="nav__link" href="#mensagens">Mensagens</a></li>
+                </ul>
+            </nav>
         </div>
-    
+    </header>
 
-<div id="bloco-flex"> <!--Bloco flexível com a imagem e o texto-->
-    <div id="sobre-karol-sevilla"> <!--Seção sobre a Karol Sevilla-->
+    <!-- <main> guarda o conteúdo principal. O id="conteudo" é o destino do link "pular para o conteúdo". -->
+    <main id="conteudo" tabindex="-1">
 
-<h2>Sobre a Karol Sevilla</h2> <!--Subtitulo-->
+        <!-- ===================== HERO (topo com o vídeo) ===================== -->
+        <section class="hero" id="inicio" aria-labelledby="titulo-principal">
 
-<p>Karol Sevilla é uma atriz e cantora mexicana, nascida em 9 de novembro de 1999, 
-    na Cidade do México. Ficou mundialmente conhecida ao interpretar Luna Valente 
-    na série da Disney Channel "Soy Luna", papel que a transformou em um ídolo pop 
-    para milhões de fãs na América Latina e no mundo. Além da atuação, Karol construiu 
-    uma carreira musical sólida, lançando singles próprios como "Cenicienta", que 
-    reforça sua versatilidade também como compositora.</p> <!--Paragrafo-->
+            <!-- O vídeo é só decoração (aria-hidden="true"), por isso o leitor de tela o ignora.
+                 muted → sem som (exigência dos navegadores para tocar sozinho)
+                 loop → repete | playsinline → toca dentro da página no celular
+                 preload="metadata" → baixa só as informações básicas antes, economizando internet
+                 poster → imagem que aparece enquanto o vídeo não toca.
+                 SEM "autoplay" de propósito: quem dá o play é o script.js, que antes confere se a pessoa
+                 pediu "reduzir movimento" no sistema (aí o vídeo nem começa). Sem JavaScript também não
+                 haveria botão de pausar, então o vídeo fica parado mostrando o poster (mais acessível).
+                 Usamos a versão leve (assets/cenicienta-hero.mp4, ~7 MB) no lugar do original de 56 MB. -->
+            <video class="hero__video" muted loop playsinline preload="metadata"
+                   poster="assets/cenicienta-poster.webp" aria-hidden="true" tabindex="-1">
+                <!-- O navegador usa a primeira fonte que ele consegue tocar:
+                     WebM (VP9, ~6,4 MB) primeiro; MP4 (H.264) para quem não toca WebM, como Safari antigo. -->
+                <source src="assets/cenicienta-hero.webm" type="video/webm">
+                <source src="assets/cenicienta-hero.mp4" type="video/mp4">
+            </video>
 
-<h2>Significado de "Cenicienta"</h2> <!--Subtitulo-->
+            <!-- Camada escura em degradê por cima do vídeo, para o texto ficar legível -->
+            <div class="hero__overlay" aria-hidden="true"></div>
 
-<p>“Cenicienta” representa o momento em que uma pessoa percebe que não precisa ser salva por ninguém e passa a ser protagonista da própria história. A música fala sobre deixar para trás experiências ruins, aprender a soltar aquilo que não faz mais bem e transformar as dificuldades em aprendizado. A referência à Cinderela funciona justamente como uma quebra do conto de fadas tradicional: em vez de esperar um príncipe, a personagem escolhe sua própria felicidade, não se importa com dinheiro ou status e não aceita ser controlada. A ideia de que “à meia-noite a festa apenas começa” reforça essa mudança, mostrando que o passado não determina o futuro e que uma nova fase pode começar justamente quando decidimos assumir o controle da nossa própria vida. Por isso, mais do que uma música sobre relacionamentos, “Cenicienta” é uma celebração do crescimento, da autoestima, da liberdade e da coragem de viver de acordo com aquilo que realmente queremos.</p> <!--Paragrafo-->
+            <div class="container hero__conteudo" data-reveal>
+                <!-- tabindex="-1" → o título pode RECEBER foco pelo script (botão "voltar ao topo"),
+                     mas não entra na ordem do Tab. -->
+                <h1 class="hero__titulo" id="titulo-principal" tabindex="-1">Cenicienta</h1>
+                <p class="hero__subtitulo">Karol Sevilla · single de 2024</p>
 
-<h3>Siga a Karol nas redes:</h3> <!--Subtitulo-->
-<a href="https://www.instagram.com/karolsevillaofc/?hl=pt"  target="_blank" rel="noopener noreferrer">
+                <!-- Botões de ação (CTAs) -->
+                <div class="hero__acoes">
+                    <a class="btn btn--primario" href="#musica">
+                        <i class="fa-solid fa-music" aria-hidden="true"></i>
+                        <span>Conhecer a música</span>
+                    </a>
 
-<i class="fa-brands fa-instagram"></i> <!--icone do instagram-->
-</a>
-<a href="https://www.youtube.com/@KarolSevillaOF" target="_blank" rel="noopener noreferrer">
-<i class="fa-brands fa-youtube"></i> <!--icone do youtube-->
-</a>
+                    <!-- Botão de pausar/tocar o vídeo de fundo (um botão "liga/desliga").
+                         aria-pressed="false" → vídeo tocando | aria-pressed="true" → vídeo pausado.
+                         O CSS troca o ícone (pausa ↔ play) olhando para esse atributo.
+                         O nome (aria-label) NÃO muda: o leitor de tela fala "Pausar vídeo de fundo,
+                         botão alternar, pressionado/não pressionado". Se o nome também mudasse,
+                         "Tocar vídeo, pressionado" ficaria confuso (recomendação do W3C para toggles).
+                         aria-describedby → o leitor também lê o estado escrito no <span> logo abaixo. -->
+                    <button class="btn btn--secundario video-toggle" type="button" aria-pressed="false"
+                            aria-label="Pausar vídeo de fundo" aria-describedby="video-estado">
+                        <i class="fa-solid fa-pause video-toggle__icone video-toggle__icone--pausar" aria-hidden="true"></i>
+                        <i class="fa-solid fa-play video-toggle__icone video-toggle__icone--tocar" aria-hidden="true"></i>
+                        <span class="video-toggle__texto">Vídeo</span>
+                    </button>
+                    <!-- Texto só para leitor de tela; o script.js escreve "Vídeo tocando" / "Vídeo pausado..." -->
+                    <span class="sr-only" id="video-estado"></span>
+                </div>
+            </div>
+        </section>
 
-<a href="https://www.facebook.com/karolsevillaoficial/?locale=pt_BR" target="_blank" rel="noopener noreferrer">
-<i class="fa-brands fa-facebook"></i> <!--icone do facebook-->
-</a>
+        <!-- ===================== DUAS COLUNAS ===================== -->
+        <!-- Esquerda: Karol + Significado | Direita: a música.
+             No celular as colunas ficam uma embaixo da outra. -->
+        <div class="secao">
+            <div class="container duas-colunas">
 
-   </div>
-    
-<div id="sobre-musica"> <!--Seção sobre a música "Cenicienta"-->
+                <!-- Coluna da esquerda -->
+                <div class="coluna">
 
-    <h2>Sobre a música "Cenicienta"</h2> <!--Subtitulo-->
+                    <!-- Seção sobre a Karol Sevilla -->
+                    <section class="card" id="karol" aria-labelledby="titulo-karol" data-reveal>
+                        <h2 id="titulo-karol">Sobre a Karol Sevilla</h2> <!--Subtitulo-->
 
-<p>"Cenicienta" é um single solo de Karol Sevilla, lançado em 16 de julho de 2024 
-    pela gravadora TMBC Records. A música tem cerca de 2 minutos e 40 segundos de 
-    duração e foi composta pela própria Karol Sevilla em parceria com os compositores 
-    Aitor Humberto García López, José Luis Roma e Andrés Chano Guardado.</p> <!--Paragrafo-->
+                        <p>Karol Sevilla é uma atriz e cantora mexicana, nascida em 9 de novembro de 1999,
+                            na Cidade do México. Ficou mundialmente conhecida ao interpretar Luna Valente
+                            na série da Disney Channel "Soy Luna", papel que a transformou em um ídolo pop
+                            para milhões de fãs na América Latina e no mundo. Além da atuação, Karol construiu
+                            uma carreira musical sólida, lançando singles próprios como "Cenicienta", que
+                            reforça sua versatilidade também como compositora.</p> <!--Paragrafo-->
 
-    <img src="images.jpg" alt="Capa da música 'Cenicienta'" width="400"> <!--Capa da música 'Cenicienta'-->
+                        <h3>Siga a Karol nas redes:</h3> <!--Subtitulo-->
 
+                        <!-- Lista de redes sociais. Cada link tem ícone + nome visível.
+                             aria-label começa com o mesmo nome visível e avisa que abre em nova aba.
+                             target="_blank" → abre o link em uma nova aba.
+                             rel="noopener noreferrer" → adiciona uma camada de segurança e privacidade ao abrir o link. -->
+                        <ul class="social" data-reveal-stagger>
+                            <li>
+                                <a class="social__link" href="https://www.instagram.com/karolsevillaofc/?hl=pt" target="_blank" rel="noopener noreferrer" aria-label="Instagram da Karol Sevilla (abre em nova aba)">
+                                    <i class="fa-brands fa-instagram" aria-hidden="true"></i> <!--icone do instagram-->
+                                    <span>Instagram</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="social__link" href="https://www.youtube.com/@KarolSevillaOF" target="_blank" rel="noopener noreferrer" aria-label="YouTube da Karol Sevilla (abre em nova aba)">
+                                    <i class="fa-brands fa-youtube" aria-hidden="true"></i> <!--icone do youtube-->
+                                    <span>YouTube</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="social__link" href="https://www.facebook.com/karolsevillaoficial/?locale=pt_BR" target="_blank" rel="noopener noreferrer" aria-label="Facebook da Karol Sevilla (abre em nova aba)">
+                                    <i class="fa-brands fa-facebook" aria-hidden="true"></i> <!--icone do facebook-->
+                                    <span>Facebook</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
 
+                    <!-- Seção do significado. O texto original foi dividido em 3 parágrafos
+                         (sem mudar nenhuma palavra) para ficar mais confortável de ler. -->
+                    <section class="card card--leitura" id="significado" aria-labelledby="titulo-significado" data-reveal>
+                        <h2 id="titulo-significado">Significado de "Cenicienta"</h2> <!--Subtitulo-->
 
+                        <p>“Cenicienta” representa o momento em que uma pessoa percebe que não precisa ser salva por ninguém e passa a ser protagonista da própria história. A música fala sobre deixar para trás experiências ruins, aprender a soltar aquilo que não faz mais bem e transformar as dificuldades em aprendizado.</p>
 
+                        <p>A referência à Cinderela funciona justamente como uma quebra do conto de fadas tradicional: em vez de esperar um príncipe, a personagem escolhe sua própria felicidade, não se importa com dinheiro ou status e não aceita ser controlada. A ideia de que <span class="destaque">“à meia-noite a festa apenas começa”</span> reforça essa mudança, mostrando que o passado não determina o futuro e que uma nova fase pode começar justamente quando decidimos assumir o controle da nossa própria vida.</p>
 
-  </div>
+                        <p>Por isso, mais do que uma música sobre relacionamentos, “Cenicienta” é uma celebração do crescimento, da autoestima, da liberdade e da coragem de viver de acordo com aquilo que realmente queremos.</p>
+                    </section>
+                </div>
 
-</div>
+                <!-- Coluna da direita: seção sobre a música "Cenicienta" -->
+                <section class="card coluna--musica" id="musica" aria-labelledby="titulo-musica" data-reveal>
+                    <h2 id="titulo-musica">Sobre a música "Cenicienta"</h2> <!--Subtitulo-->
 
-<div id="redes-sociais">   <!--seção com os links das redes sociais-->
+                    <p>"Cenicienta" é um single solo de Karol Sevilla, lançado em 16 de julho de 2024
+                        pela gravadora TMBC Records. A música tem cerca de 2 minutos e 40 segundos de
+                        duração e foi composta pela própria Karol Sevilla em parceria com os compositores
+                        Aitor Humberto García López, José Luis Roma e Andrés Chano Guardado.</p> <!--Paragrafo-->
 
+                    <!-- Capa da música. width/height reservam o espaço antes da imagem carregar (a página não "pula").
+                         loading="lazy" → só baixa quando estiver perto de aparecer na tela.
+                         decoding="async" → o navegador decodifica a imagem sem travar o resto. -->
+                    <figure class="capa">
+                        <img src="images.jpg" alt="Capa do single “Cenicienta”: Karol Sevilla com as mãos no rosto e borboletas laranja no cabelo, sobre fundo azul, com o nome da música escrito em letra cursiva" width="447" height="447" loading="lazy" decoding="async">
+                    </figure>
 
+                    <!-- Ficha técnica: <dl> é uma "lista de definições" — <dt> é o nome do dado e <dd> é o valor.
+                         Todos os dados abaixo já estão no parágrafo acima. -->
+                    <dl class="ficha" data-reveal-stagger>
+                        <div class="ficha__item">
+                            <dt>Lançamento</dt>
+                            <dd>16 de julho de 2024</dd>
+                        </div>
+                        <div class="ficha__item">
+                            <dt>Gravadora</dt>
+                            <dd>TMBC Records</dd>
+                        </div>
+                        <div class="ficha__item">
+                            <dt>Duração</dt>
+                            <dd>~2:40</dd>
+                        </div>
+                        <div class="ficha__item ficha__item--largo">
+                            <dt>Composição</dt>
+                            <dd>Karol Sevilla, Aitor Humberto García López, José Luis Roma e Andrés Chano Guardado</dd>
+                        </div>
+                    </dl>
 
-<!--target="_blank" → abre o link em uma nova aba.
-rel="noopener noreferrer" → adiciona uma camada de segurança e privacidade ao abrir o link.
--->
-</div>
+                    <!-- Botão de compartilhar. Começa com "hidden" porque só funciona com JavaScript:
+                         o script.js tira o hidden quando carrega. No celular abre a janela de
+                         compartilhar do sistema; no computador copia o link. -->
+                    <div class="compartilhar">
+                        <button class="btn btn--secundario compartilhar__btn" type="button" hidden>
+                            <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+                            <span>Compartilhar</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ===================== MENSAGENS DOS FÃS ===================== -->
+        <!-- Aqui só está a ESTRUTURA. O funcionamento (salvar, contar caracteres, validar) fica no script.js. -->
+        <section class="secao secao--mensagens" id="mensagens" aria-labelledby="titulo-mensagens">
+            <div class="container">
+                <header class="secao__cabecalho" data-reveal>
+                    <h2 id="titulo-mensagens">Mensagens dos fãs</h2>
+                    <p class="secao__descricao">Deixe um recado sobre “Cenicienta”.</p>
+                </header>
+
+                <!-- Sem JavaScript o formulário não teria como salvar nada. Em vez de mostrar um
+                     formulário que "finge" funcionar, mostramos este aviso (o CSS esconde quando há JS). -->
+                <p class="sem-js card">Para escrever e ver as mensagens dos fãs, ative o JavaScript no seu navegador.</p>
+
+                <div class="mensagens">
+                    <!-- Formulário. Cada campo tem um <label> ligado pelo "for" = "id" do campo.
+                         novalidate → desliga os balões de erro do navegador; quem valida é o script.js,
+                         com mensagens em português, ao lado do campo e lidas pelo leitor de tela.
+                         aria-describedby liga o campo ao texto de ajuda e à mensagem de erro. -->
+                    <form class="form-mensagem card" id="form-mensagem" novalidate aria-describedby="aviso-local" data-reveal>
+                        <!-- Aviso honesto: não existe servidor, as mensagens ficam só no navegador da pessoa -->
+                        <p class="campo__ajuda form-mensagem__aviso" id="aviso-local">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            As mensagens ficam salvas só neste navegador: outras pessoas não as veem.
+                        </p>
+
+                        <div class="campo">
+                            <label class="campo__rotulo" for="campo-nome">Seu nome</label>
+                            <input class="campo__input" id="campo-nome" name="nome" type="text" autocomplete="name"
+                                   maxlength="40" required aria-describedby="ajuda-nome erro-nome">
+                            <p class="campo__ajuda" id="ajuda-nome">De 2 a 40 caracteres.</p>
+                            <p class="campo__erro" id="erro-nome"></p>
+                        </div>
+
+                        <div class="campo">
+                            <label class="campo__rotulo" for="campo-mensagem">Mensagem</label>
+                            <textarea class="campo__input" id="campo-mensagem" name="mensagem" rows="4"
+                                      maxlength="280" required aria-describedby="contador-mensagem erro-mensagem"></textarea>
+                            <!-- Contador de caracteres (o script.js atualiza o número).
+                                 Ele NÃO é aria-live para o leitor de tela não ler cada letra digitada;
+                                 o aviso falado fica no <span class="sr-only"> logo abaixo, só perto do limite. -->
+                            <p class="campo__ajuda campo__contagem" id="contador-mensagem"><span class="campo__contador">0</span>/280 caracteres (mínimo 5)</p>
+                            <span class="sr-only" id="contador-aviso" aria-live="polite"></span>
+                            <p class="campo__erro" id="erro-mensagem"></p>
+                        </div>
+
+                        <button class="btn btn--primario btn--bloco" type="submit">
+                            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                            <span class="btn__texto">Enviar mensagem</span>
+                        </button>
+                    </form>
+
+                    <!-- Mural onde as mensagens vão aparecer (a lista começa vazia).
+                         Cada mensagem nova será um <li class="mensagem">.
+                         O título tem tabindex="-1" para receber o foco quando a última mensagem é apagada. -->
+                    <div class="mural" data-reveal>
+                        <h3 class="mural__titulo" id="titulo-mural" tabindex="-1">Mural</h3>
+                        <ul class="mural__lista" id="lista-mensagens" aria-labelledby="titulo-mural"></ul>
+                        <!-- Estado vazio: o CSS esconde este texto quando a lista tiver algum item -->
+                        <p class="mural__vazio">Nenhuma mensagem ainda.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===================== RODAPÉ ===================== -->
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <p class="logo logo--rodape">Cenicienta</p>
+            <p>Site de fã, sem vínculo oficial com a artista.</p>
+        </div>
+    </footer>
+
+    <!-- Botão "voltar ao topo": aparece depois de rolar a página (classe .is-visible, colocada pelo JS). -->
+    <button class="topo btn btn--icone" type="button" aria-label="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <!-- Toast: aviso rápido que aparece embaixo da tela ("Mensagem enviada!").
+         O texto fica num <p> com role="status" + aria-live="polite" → o leitor de tela lê o aviso
+         sem interromper o usuário. Os botões ficam FORA dessa área "falada", para o leitor
+         não repetir "Desfazer, Fechar aviso" a cada aviso.
+         O script.js preenche o texto e mostra/esconde o botão "Desfazer". -->
+    <div class="toast">
+        <p class="toast__texto" role="status" aria-live="polite" aria-atomic="true"></p>
+        <button class="toast__acao" type="button" hidden>Desfazer</button>
+        <button class="toast__fechar" type="button" aria-label="Fechar aviso">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+    </div>
 
 </body>
 </html>

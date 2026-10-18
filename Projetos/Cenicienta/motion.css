@@ -1,0 +1,806 @@
+/* =====================================================================
+   motion.css — ANIMAÇÕES E TRANSIÇÕES (Agente 3)
+   ---------------------------------------------------------------------
+   Aqui entram as transições e animações: revelação ao rolar ([data-reveal],
+   [data-reveal-stagger]), hover dos botões, menu, toast, botão de topo...
+   Use os tokens de movimento do style.css: --dur-rapida, --dur-media,
+   --dur-lenta, --ease-saida, --ease-entrada.
+   Regras importantes:
+     - Só esconda conteúdo quando existir html.js (sem JS tudo aparece).
+     - Respeite @media (prefers-reduced-motion: reduce).
+
+   COMO ESTE ARQUIVO É ORGANIZADO
+     0. Tokens extras de movimento (só os que faltavam no style.css)
+     1. Transições de COR/OPACIDADE  → valem sempre (até com "reduzir movimento"),
+                                       porque não tiram nada do lugar.
+     2. MOVIMENTO (translate, scale, rotate, keyframes) → tudo dentro de
+        @media (prefers-reduced-motion: no-preference), ou seja, SÓ roda
+        quando a pessoa NÃO pediu para reduzir movimento.
+     3. Keyframes (as "receitas" das animações)
+     4. Ajustes finais para "reduzir movimento".
+
+   Três durações, cada uma com seu papel (não uma duração para tudo):
+     --dur-rapida  150ms → hover, foco, clique e as SAÍDAS
+     --dur-media   250ms → menu, toast, botão de topo, troca de ícone
+     --dur-lenta   600ms → entradas grandes (blocos ao rolar, hero, mensagem nova)
+   Regra de ouro: sair é sempre mais rápido do que entrar.
+
+   Por performance, quase tudo aqui anima só "transform" (ou as propriedades
+   irmãs "translate", "scale", "rotate") e "opacity": o navegador faz isso na
+   placa de vídeo, sem recalcular o layout da página.
+   ===================================================================== */
+
+
+/* =====================================================================
+   0. TOKENS EXTRAS DE MOVIMENTO
+   ===================================================================== */
+:root {
+    /* "Mola": passa um pouquinho do ponto e volta (para coisas que "pulam" para dentro). */
+    --ease-mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Intervalo entre um item e o próximo numa entrada em sequência (stagger). */
+    --passo-stagger: 60ms;
+    /* Distância curta que os blocos "sobem" ao aparecer. */
+    --distancia-reveal: 20px;
+}
+
+/* Navegadores novos entendem linear(), que desenha uma mola de verdade (vai, passa e volta
+   suave). Quem não entende fica com o cubic-bezier acima. */
+@supports (transition-timing-function: linear(0, 1)) {
+    :root {
+        --ease-mola: linear(0, 0.18 6%, 0.56 14%, 0.92 24%, 1.06 32%, 1.08 38%, 1.04 48%, 0.99 62%, 1);
+    }
+}
+
+
+/* =====================================================================
+   1. TRANSIÇÕES DE COR E OPACIDADE (valem sempre)
+   ===================================================================== */
+
+/* ---------- 1.1 Botões: cor, borda e brilho ---------- */
+.btn {
+    transition:
+        background-color var(--dur-rapida) var(--ease-saida),
+        border-color var(--dur-rapida) var(--ease-saida),
+        color var(--dur-rapida) var(--ease-saida),
+        box-shadow var(--dur-rapida) var(--ease-saida),
+        opacity var(--dur-rapida) var(--ease-saida);
+}
+
+/* O style.css "afunda" o botão 1px no clique. Aqui trocamos isso por um "aperto" com scale
+   (seção 2.3). transform: none desliga o efeito antigo para os dois não somarem. */
+.btn:active {
+    transform: none;
+}
+
+/* Brilho rosa no hover — só em quem tem mouse de verdade (no celular o hover "gruda"). */
+@media (hover: hover) {
+    .btn--primario:hover {
+        box-shadow: var(--brilho-caixa), 0 0 22px rgba(255, 105, 180, 0.45);
+    }
+
+    .btn--secundario:hover,
+    .btn--icone:hover {
+        box-shadow: 0 0 0 1px rgba(255, 105, 180, 0.25), 0 6px 20px rgba(255, 105, 180, 0.18);
+    }
+}
+
+/* ---------- 1.2 Botão carregando (.btn.is-loading) ----------
+   O texto e o ícone ficam INVISÍVEIS (opacity 0), mas continuam lá: por isso o botão
+   mantém a largura e o leitor de tela continua lendo o nome do botão.
+   O spinner é um pseudo-elemento (::after) desenhado só com borda. */
+.btn.is-loading {
+    position: relative;
+}
+
+.btn > * {
+    transition: opacity var(--dur-rapida) var(--ease-saida);
+}
+
+.btn.is-loading > * {
+    opacity: 0;
+}
+
+.btn.is-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.25em;
+    height: 1.25em;
+    margin: -0.625em 0 0 -0.625em;    /* metade do tamanho: centraliza sem usar transform */
+    border: 2px solid currentColor;
+    border-right-color: transparent;  /* o "pedaço que falta" é o que mostra o giro */
+    border-radius: 50%;
+    animation: motion-girar 700ms linear infinite;
+}
+
+/* ---------- 1.3 Links do menu: cor + sublinhado ----------
+   O sublinhado é um ::after com 2px de altura. Ele cresce com transform: scaleX
+   (de 0 a 1), que não mexe no layout. aria-current mantém o sublinhado aberto. */
+.nav__link {
+    position: relative;
+    transition:
+        color var(--dur-rapida) var(--ease-saida),
+        background-color var(--dur-rapida) var(--ease-saida);
+}
+
+.nav__link::after {
+    content: "";
+    position: absolute;
+    right: var(--esp-3);
+    bottom: var(--esp-2);
+    left: var(--esp-3);
+    height: 2px;
+    border-radius: var(--raio-pilula);
+    background-color: var(--cor-destaque);
+    transform: scaleX(0);
+    transform-origin: left center;    /* cresce da esquerda para a direita */
+    transition: transform var(--dur-media) var(--ease-saida);
+}
+
+.nav__link:hover::after,
+.nav__link:focus-visible::after,
+.nav__link[aria-current="true"]::after,
+.nav__link[aria-current="page"]::after {
+    transform: scaleX(1);
+}
+
+/* O components.css marca o link atual com text-decoration (sublinhado de texto).
+   No computador o nosso ::after já faz esse papel; sem isto apareceriam DOIS traços. */
+@media (min-width: 769px) {
+    .nav__link[aria-current="true"],
+    .nav__link[aria-current="page"] {
+        text-decoration: none;
+    }
+}
+
+/* ---------- 1.4 Redes sociais ---------- */
+.social__link {
+    transition:
+        border-color var(--dur-rapida) var(--ease-saida),
+        color var(--dur-rapida) var(--ease-saida),
+        background-color var(--dur-rapida) var(--ease-saida);
+}
+
+.social__link i {
+    display: inline-block;   /* transform não funciona em elementos "inline" puros */
+    transition: color var(--dur-rapida) var(--ease-saida);
+}
+
+/* ---------- 1.5 Cartões: brilho rosa no hover ----------
+   Animar box-shadow num elemento GRANDE é caro (o navegador repinta tudo a cada quadro).
+   Truque: o brilho já fica pronto num ::after e só a OPACIDADE dele muda. */
+.card:not(.coluna--musica) {
+    position: relative;   /* o ::after se posiciona em relação ao cartão */
+}
+/* (.coluna--musica já é "sticky", que também serve de referência; não podemos trocá-lo) */
+
+.card {
+    transition: border-color var(--dur-media) var(--ease-saida);
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: var(--brilho-caixa);
+    opacity: 0;
+    pointer-events: none;   /* o brilho nunca "rouba" o clique */
+    transition: opacity var(--dur-media) var(--ease-saida);
+}
+
+@media (hover: hover) {
+    .card:hover {
+        border-color: rgba(255, 105, 180, 0.3);
+    }
+
+    .card:hover::after {
+        opacity: 1;
+    }
+}
+
+/* ---------- 1.6 Campos do formulário ---------- */
+.campo__input {
+    transition:
+        border-color var(--dur-rapida) var(--ease-saida),
+        background-color var(--dur-rapida) var(--ease-saida);
+}
+
+.campo__rotulo,
+.campo__ajuda,
+.campo__contador,
+.campo__contagem {
+    /* Quando o contador chega perto do limite e muda de cor, a troca é suave. */
+    transition: color var(--dur-media) var(--ease-saida);
+}
+
+/* ---------- 1.7 Cabeçalho: transparente ↔ sólido (.site-header.is-scrolled) ----------
+   Um degradê não "vira" cor sólida aos poucos (o navegador não sabe misturar os dois).
+   Então usamos DUAS camadas atrás do conteúdo do header e trocamos só a opacidade:
+     ::before → o degradê do topo (some ao rolar)
+     ::after  → o fundo sólido com desfoque (aparece ao rolar)
+   As cores são as mesmas do style.css; só o jeito de trocar é que mudou. */
+.site-header,
+.site-header.is-scrolled {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+.site-header::before,
+.site-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;            /* atrás do logo e do menu, mas dentro do header */
+    pointer-events: none;
+    transition: opacity var(--dur-media) var(--ease-saida);
+}
+
+.site-header::before {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+.site-header::after {
+    background: rgba(0, 0, 0, 0.88);
+    opacity: 0;
+}
+
+.site-header.is-scrolled::before {
+    opacity: 0;
+}
+
+.site-header.is-scrolled::after {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+/* Menu do celular aberto: header sólido (igual ao style.css). */
+body.menu-aberto .site-header::after {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.96);
+}
+
+/* ---------- 1.8 Toast: aparecer/sumir ----------
+   Truque do "visibility": ao SUMIR, a visibilidade só muda DEPOIS da opacidade chegar a 0
+   (por isso o atraso igual à duração). Ao APARECER, ela muda na hora (0s). */
+.toast {
+    transition:
+        opacity var(--dur-rapida) var(--ease-entrada),
+        visibility 0s linear var(--dur-rapida);
+}
+
+.toast.is-shown {
+    transition:
+        opacity var(--dur-media) var(--ease-saida),
+        visibility 0s;
+}
+
+/* ---------- 1.9 Botão "voltar ao topo" (mesmo truque) ---------- */
+.topo {
+    transition:
+        opacity var(--dur-rapida) var(--ease-entrada),
+        visibility 0s linear var(--dur-rapida),
+        background-color var(--dur-rapida) var(--ease-saida),
+        border-color var(--dur-rapida) var(--ease-saida),
+        color var(--dur-rapida) var(--ease-saida),
+        box-shadow var(--dur-rapida) var(--ease-saida);
+}
+
+.topo.is-visible {
+    transition:
+        opacity var(--dur-media) var(--ease-saida),
+        visibility 0s,
+        background-color var(--dur-rapida) var(--ease-saida),
+        border-color var(--dur-rapida) var(--ease-saida),
+        color var(--dur-rapida) var(--ease-saida),
+        box-shadow var(--dur-rapida) var(--ease-saida);
+}
+
+/* ---------- 1.10 Menu do celular: aparecer/sumir (mesmo truque do toast) ---------- */
+@media (max-width: 768px) {
+    .js .nav__lista {
+        transition:
+            opacity var(--dur-rapida) var(--ease-entrada),
+            visibility 0s linear var(--dur-rapida);
+    }
+
+    .js #menu-principal.is-open {
+        transition:
+            opacity var(--dur-media) var(--ease-saida),
+            visibility 0s;
+    }
+
+    /* No painel do celular o link ocupa a largura toda, então um sublinhado de ponta a
+       ponta ficaria estranho: lá vale o sublinhado de texto do components.css. */
+    .js .nav__link::after {
+        content: none;
+    }
+
+    /* No celular a .coluna--musica deixa de ser sticky (vira static).
+       "relative" fica igualzinho na tela e mantém o brilho do ::after no lugar certo. */
+    .coluna--musica {
+        position: relative;
+    }
+}
+
+/* ---------- 1.11 Botão de pausar/tocar o vídeo: troca de ícone com crossfade ----------
+   O style.css troca os ícones com display:none (troca "seca"). Aqui os DOIS ícones ficam
+   empilhados na mesma célula de uma grade, e só a opacidade (e, com movimento, um giro)
+   muda. Assim um "dissolve" no outro. */
+.js .video-toggle {
+    display: inline-grid;
+    grid-template-columns: auto auto;   /* coluna 1: ícones empilhados | coluna 2: texto */
+}
+
+.js .video-toggle[aria-pressed] .video-toggle__icone {
+    display: inline-block;
+    grid-area: 1 / 1;                   /* os dois na mesma "casinha" da grade */
+    justify-self: center;
+    transition:
+        opacity var(--dur-media) var(--ease-saida),
+        transform var(--dur-media) var(--ease-saida);
+}
+
+.js .video-toggle[aria-pressed="false"] .video-toggle__icone--tocar,
+.js .video-toggle[aria-pressed="true"] .video-toggle__icone--pausar {
+    opacity: 0;
+}
+
+
+/* =====================================================================
+   2. MOVIMENTO — só quando a pessoa NÃO pediu "reduzir movimento"
+   ===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+
+    /* ---------- 2.1 Revelação ao rolar ([data-reveal] + .is-visible) ----------
+       Estado ESCONDIDO só existe com html.js. Se o JavaScript falhar, nada fica invisível.
+       O hero tem a própria entrada (seção 2.2), por isso fica de fora daqui. */
+    html.js [data-reveal]:not(.hero__conteudo) {
+        transition:
+            opacity var(--dur-lenta) var(--ease-saida),
+            transform var(--dur-lenta) var(--ease-saida),
+            border-color var(--dur-media) var(--ease-saida);
+    }
+
+    html.js [data-reveal]:not(.is-visible):not(.hero__conteudo) {
+        opacity: 0;
+        transform: translateY(var(--distancia-reveal));
+    }
+
+    /* Filhos de [data-reveal-stagger]: entram um depois do outro.
+       --i (0, 1, 2...) é colocado pelo motion.js em cada filho. */
+    html.js [data-reveal] [data-reveal-stagger] > * {
+        transition:
+            opacity var(--dur-lenta) var(--ease-saida),
+            transform var(--dur-lenta) var(--ease-saida);
+        transition-delay: calc(var(--dur-rapida) + var(--i, 0) * var(--passo-stagger));
+    }
+
+    html.js [data-reveal]:not(.is-visible) [data-reveal-stagger] > * {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    /* ---------- 2.2 Hero: entrada coreografada (menos de 1 segundo no total) ----------
+       Linha do tempo:
+         0ms   → título sobe e aparece (600ms)
+         100ms → brilho rosa do título "acende" e assenta (800ms)
+         150ms → subtítulo (600ms)
+         300ms → 1º botão, 360ms → 2º botão (600ms cada)  → tudo termina em ~960ms
+       "backwards" = antes de começar, já fica no 1º quadro (invisível);
+       depois de terminar, volta a valer o CSS normal (por isso o hover continua funcionando). */
+    html.js .hero__titulo {
+        animation:
+            motion-subir var(--dur-lenta) var(--ease-saida) backwards,
+            motion-acender 800ms var(--ease-saida) 100ms backwards;
+    }
+
+    html.js .hero__subtitulo {
+        animation: motion-subir var(--dur-lenta) var(--ease-saida) 150ms backwards;
+    }
+
+    html.js .hero__acoes > * {
+        animation: motion-subir var(--dur-lenta) var(--ease-saida) 300ms backwards;
+    }
+
+    html.js .hero__acoes > :nth-child(2) {
+        animation-delay: calc(300ms + var(--passo-stagger));
+    }
+
+    html.js .hero__acoes > :nth-child(n + 3) {
+        animation-delay: calc(300ms + 2 * var(--passo-stagger));
+    }
+
+    /* ---------- 2.3 Botões: levanta no hover, "aperta" no clique ----------
+       Usamos as propriedades separadas "translate" e "scale" (irmãs do transform).
+       Vantagem: o hover (translate) e o clique (scale) somam sem um apagar o outro,
+       e não brigam com outras animações que usam "transform". */
+    .btn {
+        transition:
+            background-color var(--dur-rapida) var(--ease-saida),
+            border-color var(--dur-rapida) var(--ease-saida),
+            color var(--dur-rapida) var(--ease-saida),
+            box-shadow var(--dur-rapida) var(--ease-saida),
+            opacity var(--dur-rapida) var(--ease-saida),
+            translate var(--dur-rapida) var(--ease-saida),
+            scale var(--dur-rapida) var(--ease-saida);
+    }
+
+    @media (hover: hover) {
+        .btn:hover:not(:disabled):not(.is-loading) {
+            translate: 0 -2px;
+        }
+    }
+
+    .btn:active:not(:disabled) {
+        scale: 0.97;
+        transition-duration: 80ms;   /* o aperto é quase instantâneo; a volta é suave */
+    }
+
+    /* Anel de foco: em vez de aparecer "seco", ele chega de um pouco mais longe e encosta. */
+    .btn:focus-visible,
+    .social__link:focus-visible,
+    .nav__link:focus-visible,
+    .campo__input:focus-visible,
+    .toast button:focus-visible {
+        animation: motion-anel var(--dur-rapida) var(--ease-saida);
+    }
+
+    /* ---------- 2.4 Redes sociais: o ícone dá um "pulinho" girando ---------- */
+    .social__link i {
+        transition:
+            color var(--dur-rapida) var(--ease-saida),
+            transform var(--dur-media) var(--ease-mola);
+    }
+
+    @media (hover: hover) {
+        .social__link:hover i {
+            transform: scale(1.18) rotate(-10deg);
+        }
+    }
+
+    .social__link:active i {
+        transform: scale(0.95);
+        transition-duration: 80ms;
+    }
+
+    /* ---------- 2.5 Capa da música: leve inclinação 3D + zoom ----------
+       Só em computador com mouse (hover + ponteiro fino).
+       --rx e --ry (graus) são atualizados pelo motion.js conforme o mouse se mexe. */
+    @media (hover: hover) and (pointer: fine) {
+        .capa img {
+            transition:
+                transform var(--dur-media) var(--ease-saida),
+                box-shadow var(--dur-media) var(--ease-saida);
+        }
+
+        .capa img:hover {
+            transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.03);
+            box-shadow: var(--brilho-caixa), 0 18px 40px rgba(255, 105, 180, 0.22);
+        }
+    }
+
+    /* ---------- 2.6 Mensagem nova no mural (.mensagem.is-new) ----------
+       Desce um pouquinho e "abre" (scale) enquanto aparece. --i vem do motion.js
+       quando chegam várias de uma vez (uma depois da outra). */
+    .mensagem.is-new {
+        transform-origin: top center;
+        animation: motion-mensagem var(--dur-lenta) var(--ease-saida) backwards;
+        animation-delay: calc(var(--i, 0) * var(--passo-stagger));
+    }
+
+    /* ---------- 2.7 Toast: sobe de baixo com mola; sai mais rápido ----------
+       O style.css já usa transform: translate(-50%, 0) para centralizar.
+       Aqui usamos "translate" e "scale" (separados), que SOMAM com aquele transform. */
+    .toast {
+        translate: 0 var(--esp-5);
+        scale: 0.96;
+        transition:
+            opacity var(--dur-rapida) var(--ease-entrada),
+            translate var(--dur-rapida) var(--ease-entrada),
+            scale var(--dur-rapida) var(--ease-entrada),
+            visibility 0s linear var(--dur-rapida);
+    }
+
+    .toast.is-shown {
+        translate: 0 0;
+        scale: 1;
+        transition:
+            opacity var(--dur-media) var(--ease-saida),
+            translate var(--dur-lenta) var(--ease-mola),
+            scale var(--dur-lenta) var(--ease-mola),
+            visibility 0s;
+    }
+
+    /* ---------- 2.8 Botão de topo: fade + scale ---------- */
+    .topo {
+        scale: 0.8;
+        transition:
+            opacity var(--dur-rapida) var(--ease-entrada),
+            scale var(--dur-rapida) var(--ease-entrada),
+            translate var(--dur-rapida) var(--ease-saida),
+            visibility 0s linear var(--dur-rapida),
+            background-color var(--dur-rapida) var(--ease-saida),
+            border-color var(--dur-rapida) var(--ease-saida),
+            color var(--dur-rapida) var(--ease-saida),
+            box-shadow var(--dur-rapida) var(--ease-saida);
+    }
+
+    .topo.is-visible {
+        scale: 1;
+        transition:
+            opacity var(--dur-media) var(--ease-saida),
+            scale var(--dur-media) var(--ease-mola),
+            translate var(--dur-rapida) var(--ease-saida),
+            visibility 0s,
+            background-color var(--dur-rapida) var(--ease-saida),
+            border-color var(--dur-rapida) var(--ease-saida),
+            color var(--dur-rapida) var(--ease-saida),
+            box-shadow var(--dur-rapida) var(--ease-saida);
+    }
+
+    .topo.is-visible:active {
+        scale: 0.94;
+    }
+
+    /* ---------- 2.9 Ícone do vídeo: além do crossfade, um giro curto ---------- */
+    .js .video-toggle[aria-pressed="false"] .video-toggle__icone--tocar,
+    .js .video-toggle[aria-pressed="true"] .video-toggle__icone--pausar {
+        transform: scale(0.5) rotate(-90deg);
+    }
+
+    /* ---------- 2.10 Menu do celular ---------- */
+    @media (max-width: 768px) {
+        /* O painel desce 8px enquanto aparece; ao fechar, sobe mais rápido. */
+        .js .nav__lista {
+            transform: translateY(-8px);
+            transition:
+                opacity var(--dur-rapida) var(--ease-entrada),
+                transform var(--dur-rapida) var(--ease-entrada),
+                visibility 0s linear var(--dur-rapida);
+        }
+
+        .js #menu-principal.is-open {
+            transform: none;
+            transition:
+                opacity var(--dur-media) var(--ease-saida),
+                transform var(--dur-media) var(--ease-saida),
+                visibility 0s;
+        }
+
+        /* Os links entram em sequência (--i vem do motion.js); passo curto de 40ms. */
+        .js #menu-principal > li {
+            opacity: 0;
+            transform: translateY(-6px);
+            transition:
+                opacity var(--dur-rapida) var(--ease-entrada),
+                transform var(--dur-rapida) var(--ease-entrada);
+        }
+
+        .js #menu-principal.is-open > li {
+            opacity: 1;
+            transform: none;
+            transition:
+                opacity var(--dur-media) var(--ease-saida),
+                transform var(--dur-media) var(--ease-saida);
+            transition-delay: calc(50ms + var(--i, 0) * 40ms);
+        }
+
+        /* Ícone ☰ → ✕ feito com 3 tracinhos:
+             tracinho de cima  = ::before do botão
+             tracinho do meio  = o próprio <i> (escondemos o desenho do Font Awesome)
+             tracinho de baixo = ::after do botão
+           Ao abrir (aria-expanded="true"), o do meio some e os outros dois giram e se cruzam. */
+        .js .site-header .menu-toggle {
+            position: relative;
+        }
+
+        .js .menu-toggle > i,
+        .js .menu-toggle::before,
+        .js .menu-toggle::after {
+            width: 1.25rem;
+            height: 2px;
+            border-radius: var(--raio-pilula);
+            background-color: currentColor;
+            transition:
+                transform var(--dur-media) var(--ease-saida),
+                opacity var(--dur-rapida) var(--ease-saida);
+        }
+
+        .js .menu-toggle > i {
+            display: block;
+        }
+
+        .js .menu-toggle > i::before {
+            content: none;   /* esconde o ícone de "barras" (ou "X") do Font Awesome */
+        }
+
+        .js .menu-toggle::before,
+        .js .menu-toggle::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -1px 0 0 -0.625rem;   /* metade da altura e da largura: centraliza */
+        }
+
+        .js .menu-toggle::before {
+            transform: translateY(-6px);
+        }
+
+        .js .menu-toggle::after {
+            transform: translateY(6px);
+        }
+
+        .js .menu-toggle[aria-expanded="true"] > i {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .js .menu-toggle[aria-expanded="true"]::before {
+            transform: rotate(45deg);
+        }
+
+        .js .menu-toggle[aria-expanded="true"]::after {
+            transform: rotate(-45deg);
+        }
+    }
+
+    /* ---------- 2.11 Purpurina de meia-noite no hero ----------
+       O motion.js cria até 12 <span class="brilho"> dentro de .brilhos (no hero).
+       Cada um tem posição, tamanho, duração e atraso próprios (variáveis --x, --y...).
+       Ciclo LENTO (5 a 9 s): acende, sobe um pouquinho e apaga. Só opacity + transform. */
+    .brilhos {
+        position: absolute;
+        inset: 0;
+        z-index: -1;            /* acima do vídeo e do degradê, abaixo do texto */
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .brilho {
+        position: absolute;
+        top: var(--y);
+        left: var(--x);
+        width: var(--tam);
+        height: var(--tam);
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 18%, rgba(255, 140, 198, 0.65) 40%, rgba(255, 105, 180, 0) 70%);
+        opacity: 0;
+        animation: motion-purpurina var(--dur) ease-in-out var(--atraso) infinite;
+    }
+
+    /* As "pontas" da estrelinha: um traço deitado (::before) e um em pé (::after). */
+    .brilho::before,
+    .brilho::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -60%;
+        width: 220%;
+        height: 1px;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+    }
+
+    .brilho::after {
+        transform: rotate(90deg);
+    }
+
+    /* Pausado quando o hero sai da tela ou a aba fica escondida (o motion.js coloca o atributo). */
+    .brilhos[data-pausado] .brilho {
+        animation-play-state: paused;
+    }
+}
+
+
+/* =====================================================================
+   3. KEYFRAMES (as "receitas" das animações usadas acima)
+   Quando falta o "to", o navegador termina no valor normal do elemento.
+   ===================================================================== */
+
+/* Spinner do botão carregando: uma volta completa. */
+@keyframes motion-girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Sobe 16px e aparece. */
+@keyframes motion-subir {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+}
+
+/* O brilho do título acende forte e assenta no brilho normal do style.css. */
+@keyframes motion-acender {
+    from {
+        text-shadow: 0 0 0 rgba(255, 105, 180, 0), var(--sombra-1);
+    }
+    55% {
+        text-shadow: 0 0 42px rgba(255, 105, 180, 0.8), var(--sombra-1);
+    }
+}
+
+/* Anel de foco que "encosta". */
+@keyframes motion-anel {
+    from {
+        outline-offset: 8px;
+        outline-color: transparent;
+    }
+}
+
+/* Mensagem nova: desce um pouco e abre. */
+@keyframes motion-mensagem {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.97);
+    }
+}
+
+/* Purpurina: apagada → acesa (sobe um pouco) → apagada. */
+@keyframes motion-purpurina {
+    0%,
+    100% {
+        opacity: 0;
+        transform: translateY(0) scale(0.4);
+    }
+    50% {
+        opacity: 0.9;
+        transform: translateY(-14px) scale(1);
+    }
+}
+
+
+/* =====================================================================
+   4. "REDUZIR MOVIMENTO" — ajustes finais
+   Tudo que se mexe de lugar já está dentro de "no-preference" (seção 2), então aqui
+   sobra pouco: o conteúdo fica sempre visível, e as trocas de cor/opacidade ficam
+   com no máximo 150ms. O spinner continua (ele INFORMA algo), só que mais devagar.
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .btn,
+    .btn > *,
+    .nav__link,
+    .social__link,
+    .social__link i,
+    .card,
+    .card::after,
+    .campo__input,
+    .campo__rotulo,
+    .campo__ajuda,
+    .campo__contador,
+    .campo__contagem,
+    .site-header::before,
+    .site-header::after,
+    /* mesmo seletor (mesma "força") da regra normal lá em cima; um seletor mais fraco perderia a disputa */
+    .js .video-toggle[aria-pressed] .video-toggle__icone {
+        transition-duration: var(--dur-rapida);
+    }
+
+    .toast,
+    .toast.is-shown,
+    .topo,
+    .topo.is-visible,
+    .js .nav__lista,
+    .js #menu-principal.is-open {
+        transition-duration: var(--dur-rapida), 0s;
+    }
+
+    .nav__link::after {
+        transition: none;   /* o sublinhado aparece direto, sem "crescer" */
+    }
+
+    .btn.is-loading::after {
+        animation-duration: 1.6s;
+    }
+
+    /* Sem partículas: se elas existirem por algum motivo, ficam escondidas. */
+    .brilhos {
+        display: none;
+    }
+}

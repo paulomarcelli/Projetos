@@ -831,6 +831,9 @@ class Fase {
             // Só os ativos
             if (this.obstaculos[i].ativo) this.obstaculos[i].atualizar(dt, agora);
         }
+        // Quem controla o cubo é decidido de novo a cada quadro: player.atualizar (corrida) liga emCorrida;
+        // se a fase assumir (voo, balanço) ou a fase acabou, fica desligado e o aperto não vira pulo de corrida
+        this.player.emCorrida = false;
         // Movimento do jogador: a fase pode assumir (voo, balanço); senão, corrida padrão
         if (this.player.vivo && !this.concluida && !this.atualizarMovimento(agora, dtReal)) {
             // Corrida + pulo padrão

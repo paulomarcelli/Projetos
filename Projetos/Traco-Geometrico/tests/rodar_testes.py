@@ -147,7 +147,8 @@ for (const o of f.obstaculos) {
   const fr = o.forma, esq = fr.x - fr.width/2, dx = esq - (p.x + 20);
   const baixo = (o instanceof Indestrutivel && fr.y > 500 && fr.height < 150) || (o instanceof Espinho && (fr.y > 380) === !p.invertido) || o instanceof PocaToxica || (o.saltar && !(o instanceof BlocoQueda))
     || (o instanceof BlocoQueda && o.estado === 'no chão' && !f.emFuria());
-  if (baixo && dx > 30 && dx < 95) f.aoPressionar('teclado');
+  // (87 = 95 − 1 quadro de corrida: o pulo agora sai no mesmo quadro do aperto, sem o quadro de atraso antigo)
+  if (baixo && dx > 30 && dx < 87) f.aoPressionar('teclado');
   // ponte que desmorona: sobe na primeira e pula assim que pisa em cada uma
   if (o instanceof PlataformaFragil && p.isOnGround()) {
     if (p.y > 600 && dx > 10 && dx < 70) f.aoPressionar('teclado');
@@ -251,7 +252,8 @@ if (p.modo === 'ufo') {
 const o = f.proximoAlvo();
 if (o && o.forma.x - p.x < 850 && f.habilidade.pronta(agora)) f.aoAcao();
 // pula espinhos (no UFO não: lá o pulinho é só pra seguir o vão dos pilares)
-if (p.modo !== 'ufo') for (const e of f.obstaculos) if (e.ativo && (e instanceof Espinho || e.saltar)) { const dx = e.forma.x - (e.saltar ? e.forma.width / 2 : 20) - (p.x + 20); if (dx > 20 && dx < 80) f.aoPressionar('teclado'); }
+if (p.modo !== 'ufo') for (const e of f.obstaculos) if (e.ativo && (e instanceof Espinho || e.saltar)) { const dx = e.forma.x - (e.saltar ? e.forma.width / 2 : 20) - (p.x + 20); if (dx > 20 && dx < 73) f.aoPressionar('teclado'); }
+// (73 = 80 − 1 quadro de corrida: o pulo agora sai no mesmo quadro do aperto, sem o quadro de atraso antigo)
 """
 
 @teste('Gaviao')

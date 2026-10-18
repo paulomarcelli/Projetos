@@ -885,3 +885,179 @@ kbd {
 .card-modo { font-weight: 900; font-size: .85em; letter-spacing: .08em; text-transform: uppercase; margin-bottom: -.3cqw; }
 .card-barra.pratica i { background: linear-gradient(#7dfcff, #1fa6d6); } /* Prática em ciano */
 .seta { border-radius: 22%; box-shadow: inset 0 0 0 .35cqw var(--ciano), 0 .45cqw 0 var(--contorno); }
+
+/* ================================================================
+   RODADA 8 — TELA INICIAL "GEOMETRY HEROES"
+   Título em duas cores, elenco dos heróis em volta (imagens em assets/herois),
+   cartões da seleção com o retrato do herói. Fundo sem grade (desenhado no cenas.js).
+   ================================================================ */
+:root {
+    --amarelo: #ffd400;                          /* Amarelo de destaque (HEROES, estrelas) */
+    --laranja: #ff8a00;                          /* Degrau do amarelo */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);  /* Curva de entrada forte (UI) */
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* Curva para movimento contínuo na tela */
+    --chao: 8.2%;                                /* Altura do chão desenhado no Phaser (59 de 720 px) */
+}
+
+#menu { background: none; padding: 2.4% 3%; }  /* O brilho agora vem do fundo do Phaser */
+
+/* Cabeçalho e rodapé: textos pequenos, mas com contraste AA sobre o azul */
+.menu-header, .menu-footer { position: relative; z-index: 2; color: #d4e0ff; }
+.selo {
+    display: inline-flex; align-items: center; gap: .7em;
+    padding: .45em .9em; border-radius: 999px;
+    background: #061026b3; border: 2px solid #ffffff2e;
+    font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .12em;
+}
+.brand-mark { width: .9em; aspect-ratio: 1; background: var(--verde-claro); border: 2px solid var(--contorno); transform: rotate(45deg); }
+.menu-footer { justify-content: center; font-size: clamp(9px, .85cqw, 12px); }
+.menu-footer span { padding: .3em .8em; border-radius: 999px; background: #061026b3; }
+
+/* Conteúdo central acima do elenco */
+.menu-content { position: relative; z-index: 2; gap: 0; }
+
+/* TÍTULO: "GEOMETRY" branco por cima, "HEROES" amarelo e maior embaixo, ambos com contorno e degraus 3D */
+#game-title {
+    display: flex; flex-direction: column; align-items: center;
+    font-size: clamp(26px, 5.4cqw, 86px); line-height: .92;
+    letter-spacing: .02em;
+}
+#game-title .t1 {
+    display: block; font-size: .78em; color: #ffffff;
+    text-shadow: 0 .06em 0 #5b8cff, 0 .12em 0 var(--contorno), 0 .2em .16em #00000066;
+}
+#game-title .t2 {
+    display: block; font-size: 1.12em; color: var(--amarelo);
+    text-shadow: 0 .05em 0 var(--laranja), 0 .1em 0 var(--contorno), 0 .18em .14em #00000080;
+}
+.tagline {
+    margin: 1.4cqw 0 2cqw; padding: .35em 1.1em;
+    font-size: clamp(11px, 1.35cqw, 19px); color: #ffffff;
+    background: #061026b3; border-radius: 999px;   /* Faixa escura: contraste garantido sobre qualquer cor do fundo */
+    text-shadow: none;
+}
+.play-label { margin: 1.2cqw 0 .4cqw; color: #ffffff; text-shadow: 0 2px 0 var(--contorno); }
+.keyboard-hint { color: #d4e0ff; }
+.keyboard-hint kbd { border-color: #d4e0ff88; background: #06102680; }
+
+/* Botões: hover só com mouse; aperto vale em toque também */
+.botao-redondo:hover { transform: none; }
+@media (hover: hover) and (pointer: fine) {
+    .botao-redondo:hover { transform: translateY(-.25cqw) scale(1.05); }
+}
+.botao-redondo { transition: transform 160ms var(--ease-out); }
+.botao-redondo:active { transform: translateY(.3cqw) scale(.97); }
+/* Foco por teclado: anel amarelo bem visível (antes só crescia) */
+.botao-redondo:focus-visible, .botao-canto:focus-visible, .seta:focus-visible {
+    outline: .3cqw solid var(--amarelo); outline-offset: .35cqw;
+}
+#play-button:focus-visible { outline: .3cqw solid var(--amarelo); outline-offset: .5cqw; }
+/* Ícones dos botões laterais em amarelo (casam com "HEROES") */
+.icone-cubo { background: var(--amarelo); box-shadow: inset 0 0 0 4px var(--laranja); }
+
+/* Botão de som: canto inferior direito, acima do chão */
+.botao-canto { z-index: 3; bottom: calc(var(--chao) + 2.4%); right: 2.4%; min-height: 32px; letter-spacing: .04em; }
+.botao-canto.mudo { background: #c5cbd8; }      /* Cinza claro: texto escuro continua legível */
+
+/* ELENCO: retratos posicionados em % da área do jogo (acompanham o tamanho do jogo) */
+.elenco { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.heroi-arte {
+    position: absolute; display: block; height: auto;
+    filter: drop-shadow(0 .5cqw 0 #06102699) drop-shadow(0 0 1.2cqw #00000055);
+}
+/* Entrada (só quando a cena do menu começa: abrir o jogo ou voltar de uma fase — não ao fechar painéis) */
+#menu.entrada .heroi-arte { animation: heroi-entra 420ms var(--ease-out) both; }
+/* Voando / pendurados (parte de cima) */
+.h-estranho { left: .5%; top: 9%; width: 23%; }
+.h-aranha   { right: 2%; top: 0; height: 47%; width: auto; }
+/* Em pé no chão (parte de baixo) */
+.h-ferro    { left: 3%; bottom: var(--chao); height: 52%; width: auto; z-index: 1; }
+.h-gaviao   { left: 13.5%; bottom: var(--chao); height: 47%; width: auto; }
+.h-hulk     { right: 1.5%; bottom: var(--chao); height: 46%; width: auto; z-index: 1; }
+/* Wanda: ilustração com fundo próprio → medalhão redondo com aro vermelho (a aura dela) */
+.h-wanda {
+    right: 13%; top: 14%; width: 16.5%; aspect-ratio: 1;
+    border-radius: 50%; overflow: hidden;
+    border: .45cqw solid var(--contorno);
+    box-shadow: 0 0 0 .35cqw #ff2a4d, 0 0 2.4cqw #ff2a4d99, 0 .6cqw 0 .35cqw var(--contorno);
+    filter: none;
+}
+.h-wanda img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; transform: scale(1.12); transform-origin: 50% 30%; }
+
+/* Atraso de cada herói na entrada (um depois do outro, 30–150 ms) */
+#menu.entrada .h-ferro { animation-delay: 0ms; }
+#menu.entrada .h-hulk { animation-delay: 30ms; }
+#menu.entrada .h-estranho { animation-delay: 60ms; }
+#menu.entrada .h-gaviao { animation-delay: 90ms; }
+#menu.entrada .h-aranha { animation-delay: 120ms; }
+#menu.entrada .h-wanda { animation-delay: 150ms; }
+/* Heróis que voam flutuam de leve depois da entrada (movimento contínuo e lento) */
+.h-estranho, .h-wanda { animation: flutua 4.8s var(--ease-in-out) infinite alternate; }
+
+@keyframes heroi-entra { from { opacity: 0; transform: translateY(1.2cqw); } }
+@keyframes flutua { to { transform: translateY(-.8cqw); } }
+/* Título e botões entram juntos, um pouco depois do fundo */
+#menu.entrada .menu-content > * { animation: conteudo-entra 320ms var(--ease-out) both; }
+#menu.entrada .menu-content > .tagline { }
+#menu.entrada .menu-content > .menu-botoes { }
+#menu.entrada .menu-content > .play-label, #menu.entrada .menu-content > .keyboard-hint { }
+@keyframes conteudo-entra { from { opacity: 0; transform: translateY(.6cqw); } }
+
+/* Jogo baixinho (celular deitado): título e botões um pouco menores pra caber entre os heróis */
+@media (max-height: 420px) and (orientation: landscape) {
+    #game-title { font-size: 5cqw; }
+    .tagline { margin: 1cqw 0 1.4cqw; }
+}
+/* Celular em pé: o jogo fica 3:4 e o chão do Phaser não bate; mostra só dois heróis embaixo */
+@media (max-width: 600px) and (orientation: portrait) {
+    #game-title { font-size: 11cqw; }
+    .h-estranho, .h-aranha, .h-wanda, .h-gaviao { display: none; }
+    .h-ferro { height: 30%; bottom: 0; left: 2%; }
+    .h-hulk { height: 26%; bottom: 0; right: 2%; }
+}
+
+/* SELEÇÃO DE FASES: retrato do herói no lado direito do cartão (saindo um pouco por cima) */
+#level-select .level-btn { padding-right: 30%; overflow: visible; }
+#level-select .level-btn::before {
+    content: ''; position: absolute; right: 2%; bottom: 0; width: 27%; height: 118%;
+    background: var(--retrato) no-repeat 50% 100% / contain;
+    filter: drop-shadow(0 .4cqw 0 #06102699);
+    pointer-events: none;
+}
+.level-btn[data-level="Homem-Aranha"]   { --retrato: url("assets/herois/homem-aranha.webp"); }
+.level-btn[data-level="Homem de Ferro"] { --retrato: url("assets/herois/homem-de-ferro.webp"); }
+.level-btn[data-level="Hulk"]           { --retrato: url("assets/herois/hulk.webp"); }
+.level-btn[data-level="Gaviao"]         { --retrato: url("assets/herois/gaviao-arqueiro.webp"); }
+.level-btn[data-level="DrEstranho"]     { --retrato: url("assets/herois/doutor-estranho.webp"); }
+/* Wanda: medalhão redondo (a imagem tem fundo próprio) */
+#level-select .level-btn[data-level="Wanda"]::before {
+    --retrato: url("assets/herois/wanda.webp");
+    top: 50%; bottom: auto; height: auto; width: 24%; aspect-ratio: 1; right: 3%;
+    transform: translateY(-50%);
+    background-size: cover; background-position: 50% 15%;
+    border-radius: 50%; border: .35cqw solid var(--contorno);
+    box-shadow: 0 0 0 .3cqw #ff2a4d, 0 0 2cqw #ff2a4d88;
+    filter: none;
+}
+/* A seleção também usa o novo título em amarelo */
+.level-heading { color: var(--amarelo); text-shadow: 0 .06em 0 var(--laranja), 0 .12em 0 var(--contorno); }
+.sel-dica { color: #d4e0ff; }
+
+/* PAINEL "HERÓIS": retrato pequeno no lugar do cubo (a imagem vem do CSS: --retrato do herói) */
+.heroi-foto {
+    grid-row: span 2; width: 3.4em; aspect-ratio: 1;
+    border-radius: .6em; border: 3px solid var(--contorno);
+    background: var(--retrato) no-repeat 50% 0 / 100% auto, radial-gradient(circle at 50% 30%, #ffffff40, transparent 70%), var(--cor);
+}
+.heroi-foto[data-heroi="Homem-Aranha"]   { --retrato: url("assets/herois/homem-aranha.webp"); background-size: 190% auto; background-position: 60% 28%; }
+.heroi-foto[data-heroi="Homem de Ferro"] { --retrato: url("assets/herois/homem-de-ferro.webp"); background-size: 140% auto; background-position: 50% 0; }
+.heroi-foto[data-heroi="Hulk"]           { --retrato: url("assets/herois/hulk.webp"); background-size: 150% auto; background-position: 55% 0; }
+.heroi-foto[data-heroi="Gaviao"]         { --retrato: url("assets/herois/gaviao-arqueiro.webp"); background-size: 190% auto; background-position: 45% 0; }
+.heroi-foto[data-heroi="DrEstranho"]     { --retrato: url("assets/herois/doutor-estranho.webp"); background-size: 300% auto; background-position: 35% 2%; }
+.heroi-foto[data-heroi="Wanda"]          { --retrato: url("assets/herois/wanda.webp"); background-size: 140% auto; background-position: 50% 12%; }
+.painel h2 { font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .06em; } /* Mesma fonte do título */
+/* Doutor Estranho (imagem larga): retrato um pouco maior no cartão */
+#level-select .level-btn[data-level="DrEstranho"]::before { width: 33%; right: 0; }
+/* Contraste: rótulos brancos dos botões verdes ganham contorno escuro (como as letras do título) */
+.botao-redondo b { -webkit-text-stroke: .22em var(--contorno); paint-order: stroke fill; }
+.painel-fechar { background: #2a7a10; }         /* Verde mais escuro: texto branco com contraste AA */

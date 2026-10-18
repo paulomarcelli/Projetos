@@ -3,7 +3,9 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Traço Geométrico</title>
+        <title>Geometry Heroes</title>
+        <meta name="description" content="Geometry Heroes: jogo de plataforma musical com seis heróis. Pule no ritmo, desvie dos obstáculos e use o poder de cada herói. Projeto escolar de POO.">
+        <meta name="application-name" content="Geometry Heroes">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#101a46">
         <!-- Fonte de letras grossas do título e dos botões (com fonte reserva se não carregar) -->
@@ -16,31 +18,41 @@
     </head>
 
     <body>
-        <main id="game-shell" aria-label="Traço Geométrico">
+        <main id="game-shell" aria-label="Geometry Heroes">
             <div id="game-canvas"></div>
 
             <!-- Menu Principal -->
             <section id="menu" aria-labelledby="game-title">
-                <header class="menu-header"><span class="brand-mark"></span><span>UM SALTO DE CADA VEZ.</span></header>
+                <!-- Elenco dos heróis em volta do título (decorativo: os nomes estão no painel "Heróis").
+                     Imagens fornecidas pela equipe — veja assets/herois/CREDITOS.md -->
+                <div class="elenco" aria-hidden="true">
+                    <img class="heroi-arte h-estranho" src="assets/herois/doutor-estranho.webp" alt="" width="560" height="437" decoding="async">
+                    <img class="heroi-arte h-ferro"    src="assets/herois/homem-de-ferro.webp"  alt="" width="232" height="560" decoding="async">
+                    <img class="heroi-arte h-gaviao"   src="assets/herois/gaviao-arqueiro.webp" alt="" width="355" height="560" decoding="async">
+                    <span class="heroi-arte h-wanda"><img src="assets/herois/wanda.webp" alt="" width="560" height="560" decoding="async"></span>
+                    <img class="heroi-arte h-aranha"   src="assets/herois/homem-aranha.webp"    alt="" width="281" height="560" decoding="async">
+                    <img class="heroi-arte h-hulk"     src="assets/herois/hulk.webp"            alt="" width="486" height="517" decoding="async">
+                </div>
+                <header class="menu-header"><span class="selo"><i class="brand-mark" aria-hidden="true"></i>6 HERÓIS · 6 FASES</span></header>
                 <div class="menu-content">
-                    <h1 id="game-title">TRAÇO<span>GEOMÉTRICO</span></h1>
-                    <p class="tagline">O próximo salto é seu.</p>
+                    <h1 id="game-title"><span class="t1">GEOMETRY</span> <span class="t2">HEROES</span></h1>
+                    <p class="tagline">Pule no ritmo. Salve o dia.</p>
                     <!-- Linha de botões grandes (como nos jogos de ritmo): Heróis · JOGAR · Como jogar -->
                     <div class="menu-botoes">
                         <!-- Painel com os heróis e as habilidades -->
                         <button id="herois-button" class="botao-redondo" type="button"><span class="icone-cubo" aria-hidden="true"></span><b>HERÓIS</b></button>
                         <!-- Botão principal (abre a seleção de fases) -->
-                        <div class="play-orbit"><button id="play-button" type="button" aria-label="Jogar" disabled><span
+                        <div class="play-orbit"><button id="play-button" type="button" aria-label="Jogar" aria-describedby="menu-status" disabled><span
                                     class="play-icon" aria-hidden="true"></span></button></div>
                         <!-- Painel "como jogar" (elementos clássicos e controles) -->
                         <button id="ajuda-button" class="botao-redondo" type="button"><span class="icone-ajuda" aria-hidden="true">?</span><b>COMO JOGAR</b></button>
                     </div>
-                    <p class="play-label">JOGAR</p>
+                    <p class="play-label" aria-hidden="true">JOGAR</p>
                     <p class="keyboard-hint" id="menu-status" role="status">Carregando o jogo…</p>
                 </div>
-                <!-- Botão de som no canto (liga/desliga a música e os efeitos) -->
-                <button id="som-button" class="botao-canto" type="button" aria-label="Ligar ou desligar o som">SOM</button>
-                <footer class="menu-footer"><span>PROJETO POO · FEITO EM EQUIPE</span><span>01 / INÍCIO</span></footer>
+                <!-- Botão de som no canto (liga/desliga a música e os efeitos); o texto diz o estado -->
+                <button id="som-button" class="botao-canto" type="button">SOM</button>
+                <footer class="menu-footer"><span>PROJETO ESCOLAR DE POO · FEITO EM EQUIPE</span></footer>
             </section>
 
             <!-- Painel: heróis e habilidades (preenchido pelo cenas.js a partir do config.js) -->

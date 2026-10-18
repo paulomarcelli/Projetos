@@ -363,21 +363,10 @@ class FaseHulk extends Fase {
     }
 
     // Cubo verde com borda clara
-    coresCubo() { return [0x58b83a, 0xc6ffb0]; }
+    coresCubo() { return VISUAIS_HEROIS['Hulk'].cores; }
 
-    // Skin abstrata: 3 rachaduras geométricas saindo de um canto
-    desenharSkin(g) {
-        // Linha verde escura
-        g.lineStyle(2, 0x1d4214, 1);
-        // Rachadura 1
-        g.lineBetween(-20, -20, -10, -12); g.lineBetween(-10, -12, -12, -2); g.lineBetween(-12, -2, -2, 4);
-        // Rachadura 2
-        g.lineBetween(-20, -20, -6, -18); g.lineBetween(-6, -18, 2, -10);
-        // Rachadura 3
-        g.lineBetween(-20, -20, -16, -6);
-        // Faixa grossa embaixo (dá peso ao cubo)
-        g.fillStyle(0x1d4214, 0.5); g.fillRect(-20, 12, 40, 8);
-    }
+    // Skin do Hulk: cabelo, testa franzida, punhos e calção (desenho em efeitosPoderes.js)
+    desenharSkin(g) { VISUAIS_HEROIS['Hulk'].desenhar(g); }
 
     // Pulso: quadrado que cresce em volta do cubo a cada golpe que acerta
     pulsoSkin() {
@@ -385,6 +374,8 @@ class FaseHulk extends Fase {
         const q = this.cena.add.rectangle(this.player.x, this.player.y, 40, 40).setStrokeStyle(3, 0x6fdc4a).setDepth(12);
         // Cresce e some
         this.cena.tweens.add({ targets: q, scale: 1.6, alpha: 0, duration: this.efeitos.dur(200), onComplete: () => q.destroy() });
+        // Soco: faíscas verdes na frente
+        fxFaiscas(this, this.player.x + 24, this.player.y, [0x9dff5a, 0xffffff], 8, 260, 300);
     }
 
     // Habilidade da fase
@@ -418,6 +409,14 @@ class FaseHulk extends Fase {
         this.efeitos.anel(p.x, p.y, 0x6fdc4a, 24, 16, 420);
         // Segunda onda, mais clara
         this.cena.time.delayedCall(90, () => this.efeitos.anel(p.x, p.y, 0xc6ffb0, 20, 10, 360));
+        // Onda de choque correndo pelo chão + pedaços de concreto + clarão verde + "eco" do corpo crescendo
+        const yPe = p.y + (p.invertido ? -20 : 20);
+        fxOndaChao(this, p.x, yPe, 0x9dff5a, 320, 420);
+        fxRachaduras(this, p.x, yPe, 0x9dff5a, 6, 80);
+        fxFaiscas(this, p.x, yPe - 6, [0x8a8f86, 0x6fdc4a, 0xc6ffb0], 18, 320, 520, { gravityY: 900, blendMode: 'NORMAL' });
+        if (!reducedMotion.matches) this.efeitos.flash(60, 200, 40, 160);
+        fxResidual(this, 0x6fdc4a, 0.5, 320, 1.3); this.cena.time.delayedCall(80, () => fxResidual(this, 0xc6ffb0, 0.4, 320, 1.6));
+        fxCenario(this, 'furia');
         // Tremor curto
         this.efeitos.tremor(180, 0.008);
         // Rugido: grave rasgado + ruído
@@ -432,8 +431,10 @@ class FaseHulk extends Fase {
     desligarFuria() {
         // Jogador
         const p = this.player;
-        // Fumacinha verde-acinzentada
+        // Fumacinha verde-acinzentada e a energia se desfazendo
         this.efeitos.poeira(p.x, p.y, 0x7fa874, 6);
+        fxFaiscas(this, p.x, p.y, [0x6fdc4a, 0x7fa874], 10, 90, 600, { gravityY: -120 });
+        fxOnda(this, p.x, p.y, 0x6fdc4a, 40, 12, 300, 3, 0.6);
         // Som de "esvaziar"
         som.tom('sine', 300, 140, 200, 0.05);
         // Para as partículas
@@ -689,7 +690,7 @@ class FaseHulk extends Fase {
     }
 
     // Pouso pesado: a tela treme de leve
-    aoPousar() { this.efeitos.tremor(60, 0.003); som.ruido(60, 0.06, 500); }
+    aoPousar() { super.aoPousar(); this.efeitos.tremor(this.emFuria() ? 110 : 60, this.emFuria() ? 0.006 : 0.003); som.ruido(60, 0.06, 500); }
 
     // Entrada com "baque"
     aoCriar() { this.efeitos.tremor(150, 0.006); }

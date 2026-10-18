@@ -258,10 +258,10 @@ class FaseWanda extends Fase {
     }
 
     // Cubo carmim
-    coresCubo() { return [0xc2183c, 0xff8fa3]; }
+    coresCubo() { return VISUAIS_HEROIS['Wanda'].cores; }
 
-    // Skin: losango interno claro (o hexágono girando é desenhado à parte)
-    desenharSkin(g) { g.fillStyle(0xff8fa3, 0.6); g.fillPoints([{ x: 0, y: -8 }, { x: 8, y: 0 }, { x: 0, y: 8 }, { x: -8, y: 0 }], true); }
+    // Skin da Wanda: tiara, olhos brilhando e espiral do caos (efeitosPoderes.js); o hexágono gira à parte
+    desenharSkin(g) { VISUAIS_HEROIS['Wanda'].desenhar(g); }
 
     // Pulo mais alto
     criarJogador() { super.criarJogador(); this.player.forcaPulo = WANDA.forcaPulo; }
@@ -305,8 +305,12 @@ class FaseWanda extends Fase {
         const c = REALIDADES[this.realidade];
         // Aplica nos elementos
         this.aplicarRealidade(true);
-        // Onda de magia saindo do cubo
+        // Onda de magia saindo do cubo + espiral do caos + faíscas escarlates + ecos do corpo
         this.efeitos.anel(this.player.x, this.player.y, c.borda, 30, 14, 420);
+        fxEspiral(this, this.player.x, this.player.y, this.realidade === 'A' ? 0xff1f4b : c.borda, 90, 560);
+        fxFaiscas(this, this.player.x, this.player.y, [0xff1f4b, 0xff8fa3, c.borda], 18, 300, 480);
+        fxResidual(this, 0xff1f4b, 0.5, 280, 1.2); this.cena.time.delayedCall(70, () => fxResidual(this, c.borda, 0.4, 280, 1.5));
+        fxCenario(this, 'realidade', { realidade: this.realidade });
         // Fumaça vermelha nos elementos que mudaram e estão na tela
         this.elementos.forEach((el) => { if (el.ativo && Math.abs(el.forma.x - this.player.x) < 1000) this.efeitos.fumacaVermelha(el.forma.x, el.forma.y, 6); });
         // Hexágono da skin pisca na cor nova

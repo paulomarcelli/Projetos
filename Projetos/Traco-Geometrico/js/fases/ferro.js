@@ -13,7 +13,7 @@ const FERRO = {
     vyDescendo: 520,      // velocidade máxima descendo
     alcanceTiro: 900,     // alcance do repulsor (px)
     faixaTiro: 14,        // meia altura da faixa de acerto do repulsor
-    recargaTiro: 400,     // ms entre disparos
+    recargaTiro: 150,     // ms entre disparos (era 400: agora dá pra atirar em sequência; segurar E repete nessa cadência)
     avisoMissil: 900,     // ms de aviso antes do míssil entrar na tela
     velMissil: 320        // velocidade do míssil (pra esquerda, no mundo)
 };
@@ -301,13 +301,22 @@ class Repulsor extends Habilidade {
             // Guarda o mais perto
             if (b.left < xFim) { xFim = Math.max(x0, b.left); atingido = o; }
         });
-        // Desenha o feixe (brilho largo + linha clara)
-        const brilho = fase.cena.add.rectangle((x0 + xFim) / 2, p.y, xFim - x0, 14, 0xffd166, 0.3).setDepth(12);
-        const linha = fase.cena.add.rectangle((x0 + xFim) / 2, p.y, xFim - x0, 5, 0xfff3c4).setDepth(13);
-        // Feixe some em 90 ms
-        fase.cena.tweens.add({ targets: [brilho, linha], alpha: 0, duration: fase.efeitos.dur(120), onComplete: () => { brilho.destroy(); linha.destroy(); } });
-        // Flash no ponto de impacto
+        // Feixe do repulsor, criado NO MESMO instante do disparo: halo largo, faixa dourada e núcleo branco
+        const meio = (x0 + xFim) / 2, larg = Math.max(2, xFim - x0);
+        const halo = fase.cena.add.rectangle(meio, p.y, larg, 22, 0xffb347, 0.22).setDepth(12).setBlendMode(Phaser.BlendModes.ADD);
+        const brilho = fase.cena.add.rectangle(meio, p.y, larg, 10, 0xffd166, 0.75).setDepth(12).setBlendMode(Phaser.BlendModes.ADD);
+        const linha = fase.cena.add.rectangle(meio, p.y, larg, 3, 0xffffff).setDepth(13);
+        // O feixe afina e some (rápido, combina com a cadência curta)
+        fase.cena.tweens.add({ targets: [halo, brilho, linha], scaleY: 0.2, alpha: 0, duration: fase.efeitos.dur(110), onComplete: () => { halo.destroy(); brilho.destroy(); linha.destroy(); } });
+        // Clarão na mão (boca do disparo) e recuo do corpo
+        const clarao = fase.cena.add.circle(x0, p.y, 9, 0xfff3c4, 0.95).setDepth(13).setBlendMode(Phaser.BlendModes.ADD);
+        fase.cena.tweens.add({ targets: clarao, scale: 2.2, alpha: 0, duration: fase.efeitos.dur(120), onComplete: () => clarao.destroy() });
+        p.avanco = -4;
+        // Impacto: anel + faíscas (explosão maior se acertou algo que quebra)
         fase.efeitos.anel(xFim, p.y, 0xfff3c4, 10, 2.5, 180);
+        fxFaiscas(fase, xFim, p.y, [0xffd166, 0xff9f1c, 0xffffff], atingido ? 10 : 5, 260, 300);
+        if (atingido && atingido.alvoTiro) { fxOnda(fase, xFim, p.y, 0xff9f1c, 12, 60, 280, 3); }
+        fxCenario(fase, 'repulsor', { x: xFim, y: p.y });
         // Som do repulsor
         som.tom('square', 1600, 400, 120, 0.08);
         // Se acertou um alvo, aplica
@@ -345,17 +354,10 @@ class FaseFerro extends Fase {
     }
 
     // Cubo grafite metálico
-    coresCubo() { return [0x8fa3b8, 0xe8f4ff]; }
+    coresCubo() { return VISUAIS_HEROIS['Homem de Ferro'].cores; }
 
-    // Skin abstrata: faixa diagonal ciano + bocal na traseira
-    desenharSkin(g) {
-        // Faixa diagonal fina
-        g.lineStyle(3, 0x29e3ff, 1); g.lineBetween(-16, 14, 14, -16);
-        // Placas (linhas finas) dando aspecto metálico
-        g.lineStyle(1, 0x4a5a6c, 1); g.strokeRect(-12, -12, 24, 24);
-        // Bocal (trapézio) na traseira
-        g.fillStyle(0x4a5a6c, 1); g.fillPoints([{ x: -20, y: -8 }, { x: -28, y: -12 }, { x: -28, y: 12 }, { x: -20, y: 8 }], true);
-    }
+    // Skin do Homem de Ferro: armadura vermelha e dourada com núcleo no peito (efeitosPoderes.js)
+    desenharSkin(g) { VISUAIS_HEROIS['Homem de Ferro'].desenhar(g); }
 
     // Habilidade da fase
     criarHabilidade() { return new Repulsor(this); }
@@ -423,6 +425,10 @@ class FaseFerro extends Fase {
     atualizarMovimento(agora, dt) {
         // Jogador e corpo
         const p = this.player, b = p.body;
+        // Segurar E = disparo contínuo na mesma cadência da recarga (relógio da cena: não depende do FPS).
+        // O aperto em si já dispara pelo evento da tecla; aqui só repete enquanto segura (sem tiro duplo).
+        if (!this.teclaTiro) this.teclaTiro = this.cena.input.keyboard.addKey('E', false);
+        if (this.teclaTiro.isDown && this.habilidade.pronta(agora)) this.habilidade.ativar(agora);
         // Anda pra direita
         b.setVelocityX(p.velocidadeX);
         // Segurando = empuxo

@@ -543,52 +543,11 @@ class FaseFerro extends Fase {
     }
 
     // Cenário: cidade futurista (torres, vias suspensas, painéis holográficos)
-    criarParalaxe() {
-        // Semente fixa
-        const rnd = new Phaser.Math.RandomDataGenerator(['ferro']);
-        // Camada 1: torres finas com antenas e janelas em linhas
-        this.camadaParalaxe(0.08, -90, (g, L) => {
-            // Passa pela largura
-            for (let x = 0; x < L - 80; x += rnd.between(60, 120)) {
-                // Tamanho da torre
-                const h = rnd.between(220, 520), w = rnd.between(30, 60);
-                // Corpo
-                g.fillStyle(0x0b2a3d, 1); g.fillRect(x, 660 - h, w, h);
-                // Antena
-                g.lineStyle(2, 0x29e3ff, 0.3); g.lineBetween(x + w / 2, 660 - h, x + w / 2, 660 - h - 30);
-                // Janelas em linhas horizontais ciano
-                g.lineStyle(1, 0x29e3ff, 0.2);
-                for (let y = 660 - h + 10; y < 650; y += 14) g.lineBetween(x + 4, y, x + w - 4, y);
-            }
-        });
-        // Camada 2: vias suspensas (faixas horizontais com luzes)
-        this.camadaParalaxe(0.25, -80, (g, L) => {
-            // Três vias em alturas diferentes
-            [260, 420, 560].forEach((y, i) => {
-                // Faixa da via
-                g.fillStyle(0x0f3b52, 0.8); g.fillRect(0, y, L, 10);
-                // Luzes ao longo da via
-                g.fillStyle(i % 2 ? 0xffb23d : 0x29e3ff, 0.6);
-                for (let x = 10; x < L; x += 64) g.fillRect(x, y + 3, 10, 4);
-                // Pilares
-                g.fillStyle(0x0b2a3d, 0.9);
-                for (let x = 100; x < L; x += 400) g.fillRect(x, y + 10, 14, 660 - y);
-            });
-        });
-        // Camada 3: painéis holográficos (contornos ciano transparentes)
-        this.camadaParalaxe(0.5, -70, (g, L) => {
-            // Passa pela largura
-            for (let x = 60; x < L - 140; x += rnd.between(280, 520)) {
-                // Tamanho e altura do painel
-                const w = rnd.between(80, 140), h = rnd.between(50, 90), y = rnd.between(150, 400);
-                // Contorno
-                g.lineStyle(2, 0x29e3ff, 0.25); g.strokeRect(x, y, w, h);
-                // Linhas de "texto" dentro
-                g.lineStyle(2, 0x29e3ff, 0.15);
-                for (let yy = y + 12; yy < y + h - 6; yy += 12) g.lineBetween(x + 8, yy, x + 8 + rnd.between(20, w - 16), yy);
-            }
-        });
-    }
+    // Cenário temático (metrópole futurista ao entardecer, torres com anéis, pontes aéreas, hologramas e trilhas de luz) — desenhado em cenarios.js
+    criarParalaxe() { Cenarios.ferro(this); }
+
+    // O cenário reage aos poderes e momentos da fase (cenarios.js)
+    cenarioReagir(evento, dados) { Cenarios.reagir(this, evento, dados); }
 
     // Roteiro desenhado à mão
     // Checkpoints (3: fase mais longa, 21800 px). No chão (seguro sem segurar), longe das entradas de túnel

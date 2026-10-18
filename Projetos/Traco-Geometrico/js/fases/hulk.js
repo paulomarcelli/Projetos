@@ -617,41 +617,11 @@ class FaseHulk extends Fase {
     }
 
     // Cenário: cidade em ruínas com 3 camadas de paralaxe
-    criarParalaxe() {
-        // Gerador aleatório com semente fixa (cenário igual em toda tentativa)
-        const rnd = new Phaser.Math.RandomDataGenerator(['hulk']);
-        // Camada 1 (bem longe): silhuetas de prédios quebrados
-        this.camadaParalaxe(0.1, -90, (c1, L) => {
-            // Cor da silhueta
-            c1.fillStyle(0x262b26, 1);
-            // Prédios lado a lado
-            for (let x = 0; x < L - 120; x += rnd.between(70, 140)) {
-                // Altura e largura aleatórias
-                const h = rnd.between(160, 380), w = rnd.between(60, 120);
-                // Corpo do prédio
-                c1.fillRect(x, 660 - h, w, h);
-                // Topo quebrado em degraus (sem triângulos: no jogo, triângulo é sempre perigo)
-                c1.fillRect(x + w * 0.15, 660 - h - rnd.between(10, 40), w * 0.35, 40);
-            }
-        });
-        // Camada 2: prédios médios com janelas apagadas
-        this.camadaParalaxe(0.3, -80, (c2, L) => {
-            // Passa pela largura
-            for (let x = 0; x < L - 150; x += rnd.between(160, 260)) {
-                // Tamanho do prédio
-                const h = rnd.between(140, 260), w = rnd.between(90, 150);
-                // Corpo
-                c2.fillStyle(0x3a403a, 1); c2.fillRect(x, 660 - h, w, h);
-                // Janelas escuras (algumas faltando = destruição)
-                c2.fillStyle(0x1a1d1a, 1);
-                for (let jy = 660 - h + 16; jy < 640; jy += 30) for (let jx = x + 10; jx < x + w - 16; jx += 24) if (rnd.frac() > 0.25) c2.fillRect(jx, jy, 12, 16);
-            }
-        });
-        // Camada 3 (perto): carros amassados e postes tortos no chão
-        this.camadaParalaxe(0.6, -70, (c3, L) => this.desenharEntulho(c3, L, rnd));
-        // Poeira na frente (criada abaixo)
-        this.criarPoeiraAmbiente();
-    }
+    // Cenário temático (cidade em ruínas com névoa gama, vigas expostas, fumaça, entulho e raios verdes) — desenhado em cenarios.js
+    criarParalaxe() { Cenarios.hulk(this); }
+
+    // O cenário reage aos poderes e momentos da fase (cenarios.js)
+    cenarioReagir(evento, dados) { Cenarios.reagir(this, evento, dados); }
 
     // Desenha carros amassados e postes tortos (camada mais perto)
     desenharEntulho(c3, L, rnd) {

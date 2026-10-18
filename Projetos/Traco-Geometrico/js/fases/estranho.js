@@ -588,6 +588,9 @@ class FaseEstranho extends Fase {
         (this.camadas || []).forEach((c) => { if (c.dimensao) c.setVisible(c.dimensao === this.dim); });
         // Mandala troca de cor
         this.mandalaCor = t.linha; this.desenharMandala();
+        // Cenário da dimensão ativa + luz mudando (não pisca no reaparecimento do checkpoint)
+        Cenarios.mostrarDimensao(this, this.dim);
+        if (this.estadoCenario && this.cena.time.now - (this.estadoCenario.criadoEm || 0) > 300) this.cenarioReagir('dimensao', { dim: this.dim });
     }
 
     // Liga a Joia do Tempo
@@ -678,61 +681,27 @@ class FaseEstranho extends Fase {
     desenharMandala() {
         // Limpa
         this.mandala.clear();
-        // Cor
-        this.mandala.lineStyle(2, this.mandalaCor || 0xffa53d, 0.18);
-        // 3 polígonos (6, 8 e 12 lados)
-        [[6, 260], [8, 200], [12, 140]].forEach(([n, r]) => {
-            // Pontos do polígono
-            const pts = [];
-            for (let i = 0; i < n; i++) pts.push({ x: Math.cos(i / n * Math.PI * 2) * r, y: Math.sin(i / n * Math.PI * 2) * r });
-            // Desenha
-            this.mandala.strokePoints(pts, true);
-        });
-        // Círculo externo
-        this.mandala.strokeCircle(0, 0, 300);
+        // Miolo do círculo mágico: dodecágono e círculos finos na cor da dimensão
+        const cor = this.mandalaCor || 0xffa53d;
+        this.mandala.lineStyle(2, cor, 0.16);
+        this.mandala.strokePoints(Cenarios.poligono(12, 120), true);
+        this.mandala.strokeCircle(0, 0, 60).strokeCircle(0, 0, 270);
+        for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; this.mandala.fillStyle(cor, 0.22).fillCircle(Math.cos(a) * 270, Math.sin(a) * 270, 4); }
     }
 
+
     // Cenário: mandala girando + escadas impossíveis + fragmentos (versões Normal e Espelho)
+    // Cenário especial: santuário místico entre dimensões (cenarios.js) + mandala da fase no centro
     criarParalaxe() {
-        // Mandala grande fixa na tela, atrás de tudo
-        this.mandala = this.cena.add.graphics().setScrollFactor(0).setDepth(-95).setPosition(820, 380);
-        // Desenha
+        // Mandala fixa na tela, atrás de tudo (gira com o relógio da fase)
+        this.mandala = this.cena.add.graphics().setScrollFactor(0).setDepth(-94.6).setPosition(820, 380);
         this.desenharMandala();
-        // Duas versões de cada camada: Normal e Espelho (espelho = de cabeça pra baixo)
-        ['N', 'E'].forEach((dim) => {
-            // Semente fixa
-            const rnd = new Phaser.Math.RandomDataGenerator(['estranho']);
-            // Espelha Y no espelho
-            const Y = (y) => (dim === 'E' ? espelharY(y) : y);
-            // Cores por dimensão
-            const cor = dim === 'E' ? 0x4b1d6b : 0x2a2060, borda = dim === 'E' ? 0xff7ad9 : 0xffa53d;
-            // Camada 1: escadas e plataformas flutuantes em ângulos impossíveis
-            const c1 = this.camadaParalaxe(0.2, dim === 'E' ? -84 : -85, (g, L) => {
-                for (let x = 40; x < L - 200; x += rnd.between(220, 380)) {
-                    // Escada em diagonal (degraus)
-                    g.fillStyle(cor, 0.8);
-                    for (let d = 0; d < 6; d++) g.fillRect(x + d * 22, Y(560 - d * 30) - (dim === 'E' ? 12 : 0), 24, 12);
-                    // Plataforma inclinada
-                    g.lineStyle(3, borda, 0.25); g.lineBetween(x + 150, Y(300), x + 230, Y(250));
-                }
-            });
-            // Marca a dimensão da camada
-            c1.dimensao = dim;
-            // Camada 2: fragmentos (triângulos) à deriva
-            const c2 = this.camadaParalaxe(0.5, dim === 'E' ? -74 : -75, (g, L) => {
-                for (let i = 0; i < 40; i++) {
-                    // Posição e tamanho
-                    const x = rnd.between(0, L - 40), y = Y(rnd.between(160, 600)), s = rnd.between(8, 22);
-                    // Fragmento quadrado (cenário sem triângulos)
-                    g.fillStyle(borda, 0.15); g.fillRect(x, y, s, s * 0.7);
-                }
-            });
-            // Marca a dimensão da camada
-            c2.dimensao = dim;
-        });
-        // Começa mostrando só a Normal
-        (this.camadas || []).forEach((c) => c.setVisible(c.dimensao === 'N'));
+        // Céu, arquitetura flutuante, estantes, portais ao fundo, selos e faíscas (versões Normal e Espelho)
+        Cenarios.estranho(this);
     }
+
+    // O cenário reage aos poderes e momentos da fase (cenarios.js)
+    cenarioReagir(evento, dados) { Cenarios.reagir(this, evento, dados); }
 
     // Roteiro desenhado à mão (dim:'E' = elemento da dimensão espelhada, escrito como se fosse no chão)
     // Checkpoints (3: fase longa, 20600 px, com duas dimensões). Dimensão declarada = a do trecho

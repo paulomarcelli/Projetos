@@ -813,44 +813,11 @@ class FaseGaviao extends Fase {
     }
 
     // Cenário: base de segurança (painéis, tubulações, grades)
-    criarParalaxe() {
-        // Semente fixa
-        const rnd = new Phaser.Math.RandomDataGenerator(['gaviao']);
-        // Camada 1: parede interna com painéis
-        this.camadaParalaxe(0.1, -90, (g, L) => {
-            // Painéis retangulares
-            for (let x = 0; x < L; x += 160) {
-                // Painel
-                g.fillStyle(0x1f1a33, 1); g.fillRect(x + 6, 130, 148, 500);
-                // Friso
-                g.lineStyle(2, 0x3b2f63, 1); g.strokeRect(x + 16, 150, 128, 200); g.strokeRect(x + 16, 380, 128, 220);
-            }
-        });
-        // Camada 2: tubulações horizontais
-        this.camadaParalaxe(0.3, -80, (g, L) => {
-            // Três tubos
-            [190, 240, 560].forEach((y, i) => {
-                // Tubo
-                g.fillStyle(i === 1 ? 0x2a2148 : 0x352a5c, 1); g.fillRect(0, y, L, 14);
-                // Juntas
-                g.fillStyle(0x4a3d7a, 1);
-                for (let x = 40; x < L; x += 180) g.fillRect(x, y - 3, 10, 20);
-            });
-            // Luzes de alarme (vermelhas, apagadas)
-            g.fillStyle(0xff2e63, 0.25);
-            for (let x = 120; x < L; x += 512) g.fillCircle(x, 150, 10);
-        });
-        // Camada 3: grades de ventilação perto do chão
-        this.camadaParalaxe(0.6, -70, (g, L) => {
-            // Grades
-            for (let x = 80; x < L - 120; x += rnd.between(260, 420)) {
-                // Moldura
-                g.lineStyle(2, 0x4a3d7a, 0.8); g.strokeRect(x, 590, 100, 50);
-                // Barras
-                for (let xx = x + 10; xx < x + 100; xx += 12) g.lineBetween(xx, 592, xx, 638);
-            }
-        });
-    }
+    // Cenário temático (base tática à noite: hangares, torre, contêineres, radares, holofotes e luzes de pista) — desenhado em cenarios.js
+    criarParalaxe() { Cenarios.gaviao(this); }
+
+    // O cenário reage aos poderes e momentos da fase (cenarios.js)
+    cenarioReagir(evento, dados) { Cenarios.reagir(this, evento, dados); }
 
     // Roteiro desenhado à mão
     // Checkpoints (3: fase longa, 17600 px, com muitos alvos). Fora de pares alvo→porta ainda fechados

@@ -581,7 +581,8 @@ class FaseEstranho extends Fase {
         // Linha do teto
         this.linhaTeto.setFillStyle(t.linha, 0.8);
         // Camadas: as de índice par são da Normal, ímpar do Espelho
-        (this.camadas || []).forEach((c) => { if (c.dimensao) c.setVisible(c.dimensao === this.dim); });
+        // (com arte de fundo, as camadas procedurais de estrutura ficam escondidas nas duas dimensões)
+        (this.camadas || []).forEach((c) => { if (c.dimensao) c.setVisible(c.dimensao === this.dim && !(this.fundoArte && c.estrutural)); });
         // Mandala troca de cor
         this.mandalaCor = t.linha; this.desenharMandala();
         // Cenário da dimensão ativa + luz mudando (não pisca no reaparecimento do checkpoint)

@@ -196,18 +196,21 @@ class Fase {
         this.corTingimento = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) ? this.clarear(CORES_SECOES[this.heroi][0], 0.4) : null;
         // Cor de fundo da câmera
         this.cena.cameras.main.setBackgroundColor(this.tema.fundo);
-        // Grade fixa na tela (não anda com a câmera)
-        const grade = this.cena.add.graphics().setScrollFactor(0).setDepth(-100);
-        // Linhas finas e transparentes
-        grade.lineStyle(1, this.tema.grade, 0.07);
-        // Linhas verticais
-        for (let x = 0; x <= 1280; x += 80) grade.lineBetween(x, 0, x, 720);
-        // Linhas horizontais
-        for (let y = 0; y <= 720; y += 80) grade.lineBetween(0, y, 1280, y);
-        // Guarda a grade (a Wanda faz ela tremer)
-        this.grade = grade;
-        // Camadas de paralaxe (gancho da subclasse)
+        // Rodada 8: sem grade de marcação no fundo (parecia editor de fases). Fica só uma vinheta suave
+        // que escurece as bordas da tela e dá profundidade ao cenário. (A Wanda faz essa camada tremer.)
+        // (degradê radial liso num canvas: sem faixas nem linhas)
+        if (!this.cena.textures.exists('vinheta')) {
+            const tx = this.cena.textures.createCanvas('vinheta', 640, 280), ctx = tx.getContext();
+            const rg = ctx.createRadialGradient(320, 150, 60, 320, 150, 380);
+            rg.addColorStop(0, 'rgba(0,0,0,0)'); rg.addColorStop(0.55, 'rgba(0,0,0,0.08)'); rg.addColorStop(1, 'rgba(0,0,0,0.55)');
+            ctx.fillStyle = rg; ctx.fillRect(0, 0, 640, 280); tx.refresh();
+        }
+        // (num container em x=0, pra quem faz "this.grade" tremer com x:4 continuar funcionando)
+        const img = this.cena.add.image(640, 380, 'vinheta').setDisplaySize(1280, 560).setAlpha(0.8);
+        this.grade = this.cena.add.container(0, 0, [img]).setScrollFactor(0).setDepth(-60);
+        // Camadas de paralaxe (gancho da subclasse) e, se carregou, a arte de fundo da fase por baixo
         this.criarParalaxe();
+        if (typeof Cenarios !== 'undefined' && Cenarios.fundoImagem) Cenarios.fundoImagem(this);
         // Faixa do teto (fixa na tela, também é o fundo do HUD)
         this.faixaTeto = this.cena.add.rectangle(640, 50, 1280, 100, this.tema.faixa).setScrollFactor(0).setDepth(50);
         // Linha brilhante do teto
@@ -282,34 +285,11 @@ class Fase {
 
     // Fundo de quadrados grandes (desenho nosso, inspirado nos fundos geométricos dos jogos de ritmo)
     criarFundoGeometrico() {
-        // Textura gerada uma vez (256×256): 4 quadrados grandes com borda e um quadrado menor dentro
-        if (!this.cena.textures.exists('fundoGeo')) {
-            const g = this.cena.make.graphics({ add: false });
-            // Cada quadrado de 128 px
-            for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
-                const x = i * 128, y = j * 128;
-                // Preenchimento leve (alternado, tipo tabuleiro)
-                g.fillStyle(0xffffff, (i + j) % 2 ? 0.10 : 0.04); g.fillRect(x + 4, y + 4, 120, 120);
-                // Borda clara
-                g.lineStyle(3, 0xffffff, 0.35); g.strokeRect(x + 4, y + 4, 120, 120);
-                // Quadrado interno
-                g.lineStyle(2, 0xffffff, 0.18); g.strokeRect(x + 34, y + 34, 60, 60);
-            }
-            // Gera a textura e descarta o desenho
-            g.generateTexture('fundoGeo', 256, 256); g.destroy();
-        }
-        // TileSprite fixo na tela; a textura rola devagar com a câmera (paralaxe)
-        // (com cenário detalhado os quadrados ficam bem discretos, só como textura)
-        this.fundoGeo = this.cena.add.tileSprite(640, 400, 1280, 560, 'fundoGeo').setScrollFactor(0).setDepth(-88).setAlpha(this.cenarioDetalhado ? 0.08 : 0.3);
+        // Rodada 8: o tile de quadrados grandes ("fundo geométrico") foi removido de todas as fases —
+        // parecia marcação de editor. O cenário temático de cada fase (cenarios.js) faz esse papel.
+        this.fundoGeo = null;
         // Feixes de luz subindo do chão (pulsam na batida)
         this.criarFeixes();
-        // Cor da seção atual (muda junto com o véu)
-        const cor = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) ? CORES_SECOES[this.heroi][0] : this.tema.linha;
-        this.fundoGeo.setTint(cor);
-        // Rola junto (gancho no moverParalaxe da base: usamos o evento de pós-atualização da cena)
-        const rolar = () => { if (this.fundoGeo && this.fundoGeo.active) this.fundoGeo.tilePositionX = this.cena.cameras.main.scrollX * 0.12; };
-        this.cena.events.on('postupdate', rolar);
-        this.cena.events.once('shutdown', () => this.cena.events.off('postupdate', rolar));
     }
 
     // Feixes de luz verticais subindo do chão (camada fixa na tela, tingida pela cor da seção)
@@ -323,7 +303,8 @@ class Fase {
             }
             g.generateTexture('feixes', 1024, 560); g.destroy();
         }
-        this.feixes = this.cena.add.tileSprite(640, 380, 1280, 560, 'feixes').setScrollFactor(0).setDepth(-86).setAlpha(0.8);
+        // (com cenário detalhado os feixes ficam mais discretos, pra não parecerem colunas/grade)
+        this.feixes = this.cena.add.tileSprite(640, 380, 1280, 560, 'feixes').setScrollFactor(0).setDepth(-86).setAlpha(this.cenarioDetalhado ? 0.35 : 0.8);
         const cor = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) ? CORES_SECOES[this.heroi][0] : this.tema.linha;
         this.feixes.setTint(cor);
         const rolar = () => { if (this.feixes && this.feixes.active) this.feixes.tilePositionX = this.cena.cameras.main.scrollX * 0.25; };
@@ -418,10 +399,8 @@ class Fase {
         const g = this.cena.add.graphics().setDepth(1);
         // Degradê: faixas cada vez mais escuras
         for (let k = 0; k < 6; k++) { g.fillStyle(0x000000, 0.06 * k); g.fillRect(a, y + 10 + k * 18, bx - a, 18); }
-        // Ladrilhos quadrados (linhas finas)
-        g.lineStyle(1, 0xffffff, 0.06);
-        for (let xx = a - (a % 60); xx < bx; xx += 60) g.lineBetween(xx, y + 4, xx, 720);
-        g.lineBetween(a, y + 60, bx, y + 60);
+        // Brilho difuso logo abaixo da linha de topo (luz batendo no piso), sem ladrilhos de grade
+        for (let k = 0; k < 5; k++) { g.fillStyle(this.tema.linha, 0.05 - k * 0.009); g.fillRect(a, y + 3 + k * 5, bx - a, 5); }
         // Linha de topo brilhante (guardada pra pulsar)
         const linha = this.cena.add.rectangle((a + bx) / 2, y + 1, bx - a, 4, this.tema.linha).setDepth(2);
         // Guarda

@@ -66,7 +66,7 @@ const TEMAS = {
     },
     // Wanda: breu avermelhado com contorno vermelho (neon no escuro)
     wanda: {
-        fundo: '#22040a', grade: 0x8a1a2a, forma: 0x3a0812, bordaForma: 0xff2a3d,
+        fundo: '#0e0107', grade: 0x8a1a2a, forma: 0x3a0812, bordaForma: 0xff2a3d,
         faixa: 0x100104, linha: 0xff2a3d, texto: '#ffdde2', fade: [34, 4, 10], objeto: 0x0a0103, neon: 0xff4d5e
     }
 };
@@ -111,7 +111,24 @@ const CORES_SECOES = {
     'Hulk':           [0x4cff2a, 0x9dff00, 0xa02aff, 0x2affb0, 0xc22aff],
     'Gaviao':         [0x8a3cff, 0xb8ff2a, 0xff3cd2, 0x3cd2ff, 0x6a2aff],
     'DrEstranho':     [0x2a6aff, 0xff8a00, 0x00e0a0, 0xd02aff],
-    'Wanda':          [0xff1a3a, 0xff004c, 0x9a00ff, 0xff3a00]
+    'Wanda':          [0x9a0a2a, 0x7a0848, 0x4a0a7a, 0xb0101e]   // vinho, vinho-roxo, roxo e escarlate escuro (véu sombrio)
+};
+
+// CENÁRIOS EM IMAGEM (rodada 8): arte de fundo de cada fase, recortada das prévias do Gemini
+// (assets/backgrounds/<pasta>/<pasta>_cena.webp, 720 px de altura, opaca). Carregada no preload da GameScene
+// (só a do herói da fase). Fica num tileSprite fixo na tela que repete na horizontal com cópia espelhada
+// alternada ([imagem | imagem espelhada], textura montada uma vez), atrás das partículas/névoa/reações.
+// Se o arquivo falhar (ou a página estiver em file://, onde o WebGL não aceita a imagem), a fase usa
+// o cenário procedural de cenarios.js, sem erro no console.
+//   fator: paralaxe (0.12–0.18) · y/alto: faixa da tela ocupada (entre o HUD em 100 e o chão em 660)
+//   tom: tint multiplicado (baixa o contraste pra os obstáculos neon continuarem na frente)
+const CENARIOS_IMAGEM = {
+    'Hulk':           { arquivo: 'assets/backgrounds/hulk/hulk_cena.webp',                     fator: 0.15, y: 100, alto: 580, tom: 0xa8b0a8 },
+    'Homem de Ferro': { arquivo: 'assets/backgrounds/homem-de-ferro/homem-de-ferro_cena.webp', fator: 0.18, y: 100, alto: 580, tom: 0x9a9aa6 },
+    'Gaviao':         { arquivo: 'assets/backgrounds/gaviao/gaviao_cena.webp',                 fator: 0.14, y: 100, alto: 580, tom: 0xb0aab8 },
+    'Homem-Aranha':   { arquivo: 'assets/backgrounds/homem-aranha/homem-aranha_cena.webp',     fator: 0.14, y: 100, alto: 580, tom: 0x8c8ca4 },
+    'DrEstranho':     { arquivo: 'assets/backgrounds/dr-estranho/dr-estranho_cena.webp',       fator: 0.12, y: 100, alto: 580, tom: 0x9890a8 },
+    'Wanda':          { arquivo: 'assets/backgrounds/wanda/wanda_cena.webp',                   fator: 0.12, y: 100, alto: 580, tom: 0x9c8a92 }
 };
 
 // ABERTURA NO RITMO de cada fase (um símbolo por batida; legenda em criarAbertura no fase.js)

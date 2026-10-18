@@ -342,35 +342,68 @@ const VISUAIS_HEROIS = {
         }
     },
 
-    // WANDA: escarlate, tiara pontuda e energia do caos girando em volta
+    // WANDA: Feiticeira Escarlate — o cubo É a máscara: tiara com dois chifres curvos saindo das quinas
+    // de cima, ponta em V descendo na testa e moldura pelas laterais do rosto (desenho próprio, sem copiar arte)
     'Wanda': {
-        cores: [0xb3122e, 0xff8fa3],
+        cores: [0x7a0c22, 0xff4d6d],
+        // O corpo (skin) gira como todo cubo; o rosto com a tiara fica numa camada própria que sempre
+        // "veste" a face de cima (gira só o resto até a quina mais próxima) — assim a tiara nunca fica de lado.
         desenhar(g) {
-            // Tiara (faixa com três pontas, desenhada em quadrados girados)
-            g.fillStyle(0x5a0614, 1).fillRect(-16, -14, 32, 4);
-            g.fillStyle(0xff4d6d, 1);
-            [[-9, -14], [0, -16], [9, -14]].forEach(([x, y]) => g.fillPoints([{ x, y: y - 5 }, { x: x + 3, y }, { x, y: y + 3 }, { x: x - 3, y }], true));
-            // Olhos brilhando (vermelho claro)
-            g.fillStyle(0xffc2cd, 1).fillRect(-10, -5, 6, 3).fillRect(4, -5, 6, 3);
-            // Espiral do caos no centro
-            g.lineStyle(2, 0xff8fa3, 0.95); g.beginPath();
-            for (let t = 0; t <= 1.001; t += 0.06) { const a = t * Math.PI * 3.2, r = 1 + t * 9; const x = Math.cos(a) * r, y = 7 + Math.sin(a) * r * 0.75; if (t === 0) g.moveTo(x, y); else g.lineTo(x, y); }
+            // Corpo: leve brilho escarlate de baixo pra cima (profundidade) — o rosto vem em desenharRosto
+            g.fillStyle(0xff2447, 0.18).fillRect(-17, 6, 34, 11);
+            g.fillStyle(0x1a0006, 0.25).fillRect(-17, -17, 34, 8);
+        },
+        desenharRosto(g) {
+            // Rosto: sombra escura no miolo (contraste pros olhos e pra tiara)
+            g.fillStyle(0x2a030c, 0.55).fillRect(-14, -8, 28, 22);
+            // Tiara: silhueta única (chifres curvos + faixa + V na testa + laterais descendo)
+            const tiara = [
+                { x: -20, y: 2 }, { x: -20, y: -14 }, { x: -21.5, y: -20 }, { x: -21, y: -25 }, { x: -18.5, y: -30 },   // chifre esquerdo (curva pra fora e pra cima)
+                { x: -16, y: -25 }, { x: -13, y: -21 }, { x: -7, y: -19.5 }, { x: 0, y: -17 },                         // faixa de cima até o centro
+                { x: 7, y: -19.5 }, { x: 13, y: -21 }, { x: 16, y: -25 }, { x: 18.5, y: -30 },
+                { x: 21, y: -25 }, { x: 21.5, y: -20 }, { x: 20, y: -14 }, { x: 20, y: 2 },                            // chifre direito
+                { x: 15, y: 2 }, { x: 15, y: -9 }, { x: 9, y: -11 }, { x: 0, y: -4 },                                   // borda interna: V descendo na testa
+                { x: -9, y: -11 }, { x: -15, y: -9 }, { x: -15, y: 2 }
+            ];
+            // Contorno escuro (separa a tiara do fundo vermelho em qualquer rotação) e corpo escarlate
+            g.lineStyle(3, 0x1a0006, 1).strokePoints(tiara, true);
+            g.fillStyle(0xff2447, 1).fillPoints(tiara, true);
+            // Brilho metálico: filete claro acompanhando a borda de cima e o V
+            g.lineStyle(1.5, 0xffb3c0, 0.9);
+            g.strokePoints([{ x: -18.5, y: -27.5 }, { x: -15, y: -22.5 }, { x: -7, y: -18 }, { x: 0, y: -15.5 }, { x: 7, y: -18 }, { x: 15, y: -22.5 }, { x: 18.5, y: -27.5 }]);
+            g.strokePoints([{ x: -8, y: -9.5 }, { x: 0, y: -2.5 }, { x: 8, y: -9.5 }]);
+            // Joia no centro da testa (losango pequeno — personagem, não espinho)
+            g.fillStyle(0xffe0e6, 1).fillPoints([{ x: 0, y: -14 }, { x: 2.5, y: -11 }, { x: 0, y: -8 }, { x: -2.5, y: -11 }], true);
+            // Olhos brilhando com magia (rosado claro + halo)
+            g.fillStyle(0xff4d6d, 0.35).fillRect(-11, 1, 9, 6).fillRect(2, 1, 9, 6);
+            g.fillStyle(0xffd6de, 1).fillRect(-10, 2.5, 7, 3).fillRect(3, 2.5, 7, 3);
+            // Energia do caos na boca/queixo: espiral pequena
+            g.lineStyle(1.5, 0xff8fa3, 0.9); g.beginPath();
+            for (let t = 0; t <= 1.001; t += 0.07) { const a = t * Math.PI * 3, r = 0.8 + t * 5; const x = Math.cos(a) * r, y = 12.5 + Math.sin(a) * r * 0.6; if (t === 0) g.moveTo(x, y); else g.lineTo(x, y); }
             g.strokePath();
         },
         rastro: { tint: [0xff1f4b, 0xff8fa3, 0x8a0f2a], frequency: 24, blendMode: 'ADD' },
-        // Partículas do caos orbitando o cubo
+        // Rosto com tiara (sempre) + partículas do caos orbitando o cubo (sem movimento reduzido)
         criarExtras(fase) {
-            if (reducedMotion.matches) return {};
+            const rosto = fase.cena.add.graphics().setDepth(11.5);
+            this.desenharRosto(rosto);
+            if (reducedMotion.matches) return { rosto };
             const caos = fase.cena.add.particles(0, 0, 'faisca', {
                 emitZone: { type: 'edge', source: new Phaser.Geom.Circle(0, 0, 30), quantity: 24 },
                 speed: { min: 5, max: 25 }, lifespan: 500, scale: { start: 0.7, end: 0 }, alpha: { start: 0.9, end: 0 },
                 tint: [0xff1f4b, 0xff8fa3], blendMode: 'ADD', frequency: 70
             }).setDepth(9);
-            return { caos };
+            return { rosto, caos };
         },
         atualizar(fase, ex) {
-            if (!ex.caos) return;
             const s = fase.player.skin;
+            if (ex.rosto && ex.rosto.active) {
+                // Mesma posição/escala/alpha do corpo; rotação = resto até o múltiplo de 90° mais próximo
+                const q = Math.PI / 2, r = s.rotation;
+                ex.rosto.setPosition(s.x, s.y).setScale(s.scaleX, s.scaleY).setAlpha(s.alpha).setVisible(s.visible);
+                ex.rosto.rotation = r - Math.round(r / q) * q;
+            }
+            if (!ex.caos) return;
             ex.caos.setPosition(s.x, s.y);
             if (!fase.player.vivo || fase.concluida) ex.caos.stop();
         }

@@ -39,7 +39,7 @@ export function App() {
       <ConnectionBanner />
       {content}
       <Toasts />
-      {preview ? <PreviewBadge /> : null}
+      {import.meta.env.DEV && preview ? <PreviewBadge /> : null}
     </>
   );
 }

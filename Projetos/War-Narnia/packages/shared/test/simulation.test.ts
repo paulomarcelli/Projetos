@@ -18,51 +18,9 @@ import {
 import { NARNIA_MAP, neighbors } from '../src/map';
 import { RuleError, type GameAction, type GameState } from '../src/types';
 import { makePlayers } from './helpers';
+import { botAction, pick } from './bots';
 
 const TOTAL_CARDS = NARNIA_MAP.territories.length + RULES.jokers;
-
-function pick<T>(rng: Rng, items: T[]): T {
-  return items[rng.int(0, items.length - 1)]!;
-}
-
-/** Bot simples e aleatório (apenas ações legais). */
-function botAction(s: GameState, rng: Rng): GameAction {
-  const legal = legalActions(s);
-  if (legal.length === 0) throw new Error('sem ações legais fora do fim de jogo');
-  const me = currentPlayer(s);
-  const of = <K extends GameAction['type']>(t: K) => legal.filter((a): a is Extract<GameAction, { type: K }> => a.type === t);
-  switch (s.phase) {
-    case 'reinforce': {
-      const trades = of('trade-cards');
-      if (trades.length && (trades.length === legal.length || rng.int(0, 1) === 0)) return pick(rng, trades);
-      const end = of('end-reinforce');
-      if (end.length) return end[0]!;
-      const places = of('place');
-      const border = places.filter((a) => neighbors(a.territory).some((n) => s.territories[n]!.owner !== me));
-      const pool = border.length ? border : places;
-      const big = pool.filter((a) => a.count > 1);
-      return rng.int(0, 3) === 0 || !big.length ? pick(rng, pool) : pick(rng, big);
-    }
-    case 'attack': {
-      const attacks = of('attack');
-      const good = attacks.filter(
-        (a) => s.territories[a.from]!.armies > s.territories[a.to]!.armies && a.dice === Math.min(3, s.territories[a.from]!.armies - 1),
-      );
-      if (good.length && rng.int(0, 9) < 9) return pick(rng, good);
-      if (attacks.length && rng.int(0, 19) === 0) return pick(rng, attacks);
-      return rng.int(0, 1) === 0 ? { type: 'end-attack' } : { type: 'end-turn' };
-    }
-    case 'occupy':
-      return rng.int(0, 3) === 0 ? pick(rng, legal) : legal[legal.length - 1]!;
-    case 'fortify': {
-      const moves = of('fortify');
-      if (moves.length && rng.int(0, 2) === 0) return pick(rng, moves);
-      return { type: 'end-turn' };
-    }
-    default:
-      throw new Error(`fase inesperada ${s.phase}`);
-  }
-}
 
 function checkInvariants(s: GameState, prevVersion: number): void {
   const ids = new Set(s.players.map((p) => p.id));
@@ -121,7 +79,7 @@ function simulate(seed: number, nPlayers: number, opts: { disruptions: boolean; 
   let s = createGame(makePlayers(nPlayers), rng, 0).state;
   let actions = 0;
   let turns = 0;
-  const MAX_ACTIONS = 200_000;
+  const MAX_ACTIONS = 50_000;
   while (s.phase !== 'game-over') {
     if (actions++ > MAX_ACTIONS) throw new Error(`partida ${seed} travou (rodada ${s.round})`);
     const prev = s.version;

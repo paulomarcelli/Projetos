@@ -167,16 +167,20 @@ function Game({ view }: { view: PlayerView }) {
           </span>
         </div>
         <div className="topbar__turn" aria-live="polite" aria-atomic="true">
-          {current ? <PlayerSeal color={current.color} size={phone ? 20 : 24} /> : null}
+          {(gameOver ? playerById(view.players, view.winner) : current) ? (
+            <PlayerSeal color={(gameOver ? playerById(view.players, view.winner) : current)!.color} size={phone ? 20 : 24} />
+          ) : null}
           <span className="topbar__turn-text">
-            <span className="topbar__turn-who">{myTurn ? 'Sua vez' : `Vez de ${current?.name ?? '—'}`}</span>
+            <span className="topbar__turn-who">
+              {gameOver ? `Fim de jogo · ${playerById(view.players, view.winner)?.name ?? ''} venceu` : myTurn ? 'Sua vez' : `Vez de ${current?.name ?? '—'}`}
+            </span>
             <span className="topbar__turn-phase">
               Rodada {view.round} · {PHASE_LABEL[view.phase]}
               {view.phase === 'reinforce' ? ` · ${armies(totalReinforcements(view))}` : ''}
             </span>
           </span>
         </div>
-        {!phone ? <PhaseStepper view={view} /> : null}
+        {!phone && !gameOver ? <PhaseStepper view={view} /> : null}
         <div className="topbar__end">
           {roomCode ? (
             <span className="topbar__room" title="Código da sala">

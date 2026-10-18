@@ -17,11 +17,15 @@ export interface TerritoryMarkerProps {
   ownerColor: PlayerColor | null;
   armies: number;
   state: MarkerState;
+  /** Alvo/destino já escolhido para a ação. */
+  chosen?: boolean;
   /** Esmaecido quando há uma seleção e ele não é relevante. */
   dimmed?: boolean;
   /** Território do jogador que está vendo. */
   mine?: boolean;
   radius?: number;
+  /** Ponta do alfinete abaixo do disco (px de tela), apontando para o rótulo da arte. */
+  stem?: number;
   onActivate?: (id: TerritoryId) => void;
   onFocusMarker?: (id: TerritoryId) => void;
 }
@@ -50,7 +54,7 @@ function fontSizeFor(armies: number): number {
  * escuro por dentro) garantem contraste ≥ 3:1 sobre qualquer parte da arte.
  */
 export const TerritoryMarker = memo(function TerritoryMarker(props: TerritoryMarkerProps) {
-  const { id, x, y, ownerColor, armies, state, dimmed = false, mine = false, radius = 17, onActivate, onFocusMarker } = props;
+  const { id, x, y, ownerColor, armies, state, chosen = false, dimmed = false, mine = false, radius = 17, stem = 0, onActivate, onFocusMarker } = props;
   const R = radius;
   const meta = ownerColor ? PLAYER_META[ownerColor] : null;
   const fill = meta ? meta.cssVar : 'var(--color-surface-sunken)';
@@ -66,7 +70,7 @@ export const TerritoryMarker = memo(function TerritoryMarker(props: TerritoryMar
 
   return (
     <g
-      className={`marker marker--${state}${dimmed ? ' is-dimmed' : ''}${mine ? ' is-mine' : ''}`}
+      className={`marker marker--${state}${chosen ? ' is-chosen' : ''}${dimmed ? ' is-dimmed' : ''}${mine ? ' is-mine' : ''}`}
       transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}
       role="button"
       tabIndex={0}
@@ -86,6 +90,13 @@ export const TerritoryMarker = memo(function TerritoryMarker(props: TerritoryMar
           <circle r={R + 6} className="marker__ring-halo" />
           <circle r={R + 6} className={`marker__ring-line marker__ring-line--${state}`} />
         </g>
+      ) : null}
+      {stem > 0 ? (
+        <path
+          className="marker__stem"
+          d={`M${-R * 0.42} ${R * 0.8} L0 ${R + stem + 2} L${R * 0.42} ${R * 0.8} Z`}
+          aria-hidden="true"
+        />
       ) : null}
       <circle className={`marker__outer${mine ? ' marker__outer--mine' : ''}`} r={R + 2} />
       <circle className="marker__disc" r={R} fill={fill} />

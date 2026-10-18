@@ -1,12 +1,17 @@
 import { useCallback, useMemo, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import type { PlayerView, TerritoryId } from '@war/shared';
 import { MAP, NEIGHBORS, REGION_BY_ID } from '../../game/map';
+import { RegionLegend } from './RegionLegend';
 import { playerById } from '../../game/players';
 import { Icon } from '../ui/Icon';
 import { TerritoryMarker, type MarkerState } from './TerritoryMarker';
 import { useZoomPan } from './useZoomPan';
 
 const ART_URL = '/assets/mapa-narnia.webp';
+/** Meia altura do rótulo impresso na arte (px da arte). O alfinete aponta para o topo do rótulo. */
+const LABEL_HALF = 22;
+/** Comprimento da ponta do alfinete (px de tela). */
+const PIN_STEM = 7;
 
 export interface GameMapProps {
   view: PlayerView | null;
@@ -32,6 +37,18 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
   const toScreen = useCallback((p: { x: number; y: number }) => ({ x: p.x * vb.s + vb.tx, y: p.y * vb.s + vb.ty }), [vb]);
 
   const anchors = useMemo(() => new Map(MAP.territories.map((t) => [t.id, t.anchor])), []);
+  const markerRadius = size.w < 520 ? 16 : 17;
+  /**
+   * Posição do marcador na tela: alfinete sobre o ponto `anchor` (centro do rótulo
+   * da arte). A cabeça fica acima do rótulo para não escondê-lo; a ponta toca o topo dele.
+   */
+  const pinHead = useCallback(
+    (p: { x: number; y: number }) => {
+      const s = toScreen(p);
+      return { x: s.x, y: s.y - LABEL_HALF * vb.s - PIN_STEM - markerRadius };
+    },
+    [toScreen, vb.s, markerRadius],
+  );
 
   const hasFocusSet = selected !== null && (targets.size > 0 || destinations.size > 0);
 
@@ -61,7 +78,7 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
   const handleFocus = useCallback(
     (id: TerritoryId) => {
       const a = anchors.get(id);
-      if (a) zp.ensureVisible(a.x, a.y);
+      if (a) zp.ensureVisible(a.x, a.y - LABEL_HALF);
     },
     [anchors, zp],
   );
@@ -96,8 +113,6 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
     }
   };
 
-  const markerRadius = size.w < 520 ? 16 : 17;
-
   return (
     <div className="map" data-testid="game-map">
       <div
@@ -122,8 +137,8 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
                 const pa = anchors.get(l.a);
                 const pb = anchors.get(l.b);
                 if (!pa || !pb) return null;
-                const a = toScreen(pa);
-                const b = toScreen(pb);
+                const a = pinHead(pa);
+                const b = pinHead(pb);
                 return (
                   <g key={l.key} className={`route route--${l.tone}${l.sea ? ' route--sea' : ''}${l.strong ? ' route--strong' : ''}`}>
                     <line className="route__halo" x1={a.x} y1={a.y} x2={b.x} y2={b.y} />
@@ -136,7 +151,7 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
               {MAP.territories.map((t) => {
                 const ts = view?.territories[t.id];
                 const owner = view ? playerById(view.players, ts?.owner) : undefined;
-                const p = toScreen(t.anchor);
+                const p = pinHead(t.anchor);
                 let state: MarkerState = 'none';
                 if (t.id === selected) state = 'selected';
                 else if (targets.has(t.id)) state = 'target';
@@ -155,9 +170,11 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
                     ownerColor={owner?.color ?? null}
                     armies={ts?.armies ?? 0}
                     state={state}
+                    chosen={t.id === chosen}
                     dimmed={dimmed}
                     mine={mine}
                     radius={markerRadius}
+                    stem={PIN_STEM}
                     onActivate={handleActivate}
                     onFocusMarker={handleFocus}
                   />
@@ -167,6 +184,8 @@ export function GameMap({ view, selected, targets = EMPTY, destinations = EMPTY,
           </svg>
         ) : null}
       </div>
+
+      <RegionLegend view={view} />
 
       <div className="map__controls" role="toolbar" aria-label="Controles do mapa">
         <button type="button" className="map-ctl" onClick={zp.zoomIn} disabled={!zp.canZoomIn} aria-label="Aproximar" title="Aproximar (+)">

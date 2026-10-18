@@ -1071,3 +1071,91 @@
 .score tr.is-winner {
   background: var(--color-warning-bg);
 }
+
+.marker__stem {
+  fill: var(--map-halo-dark);
+  stroke: var(--map-halo-light);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.phase-panel__footer--stack {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+/* Celular: o título da ação já aparece na alça da folha */
+.game--phone .panel-pad > .panel__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .topbar__room {
+    display: none;
+  }
+  .map__controls {
+    top: var(--space-xs);
+    right: var(--space-xs);
+    gap: 2px;
+    padding: 2px;
+  }
+  .map-ctl {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.marker.is-chosen .marker__ring-line {
+  stroke-width: 5;
+  stroke-dasharray: none;
+}
+
+.marker.is-dimmed {
+  opacity: 0.62;
+}
+
+/* Legenda de regiões sobre o mar (espaço livre abaixo da arte) */
+.region-legend {
+  position: absolute;
+  left: var(--space-sm);
+  bottom: var(--space-sm);
+  z-index: var(--z-map-controls);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: calc(100% - 2 * var(--space-sm));
+  pointer-events: none;
+}
+
+.region-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 4px;
+  border-radius: var(--radius-sm);
+  background: rgb(21 26 35 / 0.88);
+  border: 1px solid var(--color-chrome-border);
+  color: var(--color-on-chrome);
+  font-size: var(--text-caption);
+  white-space: nowrap;
+}
+
+.region-legend__band {
+  width: 6px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.region-legend__bonus {
+  font-weight: var(--weight-bold);
+  color: var(--prim-gold-300);
+}
+
+.game--compact .region-legend {
+  display: none;
+}

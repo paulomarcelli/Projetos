@@ -300,12 +300,12 @@ export function AttackPanel({
       ) : null}
 
       {myTurn && inPhase ? (
-        <div className="phase-panel__footer btn-row btn-row--split">
-          <Button onClick={actions.endAttack} disabled={busy} icon="arrow-right">
-            Ir para remanejamento
+        <div className="phase-panel__footer phase-panel__footer--stack">
+          <Button onClick={actions.endAttack} disabled={busy} icon="arrow-right" block>
+            Parar ataques e remanejar
           </Button>
-          <Button variant="ghost" onClick={() => setConfirmEnd(true)} disabled={busy}>
-            Encerrar turno
+          <Button variant="ghost" onClick={() => setConfirmEnd(true)} disabled={busy} block>
+            Encerrar turno sem remanejar
           </Button>
         </div>
       ) : null}

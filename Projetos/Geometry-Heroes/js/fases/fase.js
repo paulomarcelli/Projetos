@@ -253,6 +253,7 @@ class Fase {
         const sx = this.cena.cameras.main.scrollX;
         // Cada camada anda uma fração do movimento da câmera
         (this.camadas || []).forEach((t) => { t.tilePositionX = sx * t.fatorParalaxe; });
+        if (this.fundoSeq) Cenarios.moverSequencia(this);
     }
 
     // Vídeo de fundo (se houver): toca numa velocidade que faz o vídeo inteiro durar o tempo da fase e

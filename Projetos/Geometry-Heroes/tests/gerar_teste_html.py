@@ -10,7 +10,7 @@ html = re.sub(r'src="(js/[^"]+|main\.js|assets/[^"]+)"', r'src="../\1"', html)
 # onde o WebGL recusa imagens de arquivo local — por isso as cenas vão embutidas como data: URI
 import base64
 dados = {}
-for arq in sorted((raiz / 'assets' / 'backgrounds').glob('*/*_cena.webp')):
+for arq in sorted((raiz / 'assets' / 'backgrounds').glob('*/*.webp')):
     rel = arq.relative_to(raiz).as_posix()
     dados[rel] = 'data:image/webp;base64,' + base64.b64encode(arq.read_bytes()).decode()
 inj = "<script>window.BASE_ASSETS='../'; window.DADOS_ASSETS=" + json.dumps(dados) + ";</script>\n        "

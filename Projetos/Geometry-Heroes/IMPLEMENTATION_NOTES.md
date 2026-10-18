@@ -105,5 +105,12 @@
 - A música é sintetizada e simples; os obstáculos não foram reposicionados batida a batida.
 - Os testes usam um piloto automático; a sensação de dificuldade para pessoas não foi medida.
 
+## Rodada 9 — Sequência de cenários (Aranha, Hulk, Gavião)
+- 17 imagens enviadas viraram `stage-NN.webp` 1280×720 (1,37 MB no total); as antigas `_cena.webp` desses 3 heróis saíram.
+- Fundo em sequência com fusão nas emendas e percurso amarrado ao progresso da fase (ver DOCUMENTACAO.md §5).
+- Suporte a vídeo de fundo (`VIDEOS_FUNDO`), ainda sem vídeos.
+- Testes: rodar_testes.py 48/48; capturas em 2%, 50% e 98% das 3 fases sem erro de console. Outras suítes não rodadas.
+- Pendente: stage-06 do Gavião; sequências do Ferro, Estranho e Wanda.
+
 ## Retomada
 Esquema visual: `REA_ESQUEMA.md`. Testes: `python3 tests/rodar_testes.py`, `teste_rodada5.py`, `teste_checkpoints.py`, `teste_dificuldade.py`, `teste_classicos.py`, `testes_extras.py`, `testes_finais.py`, `teste_barra.py`.

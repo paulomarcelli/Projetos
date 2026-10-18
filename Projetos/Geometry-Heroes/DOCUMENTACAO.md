@@ -103,9 +103,9 @@ Comum a todas: WebP opaca (sem canal alfa), 720 px de altura; desenhada como `ti
 
 | Herói | Conceito | Arquivo | Recorte da prévia (px) | Arquivo usado (px) | Textura no jogo (px) | Parallax | Tratamento |
 |---|---|---|---|---|---|---|---|
-| Homem-Aranha | Nova York à noite, telhados | `homem-aranha/homem-aranha_cena.webp` (141 KB) | 2752×1197 | 1655×720 | 3310×720 | 0,14 | Textos apagados; faixa preta do céu repintada; 3 aros neon apagados (pareciam portais); chão e espinhos cortados |
-| Hulk | Cidade em ruínas sob céu verde | `hulk/hulk_cena.webp` (111 KB) | 1761×793 | 1599×720 | 3198×720 | 0,15 | Painel lateral e espinhos verdes do chão cortados |
-| Gavião Arqueiro | Telhados táticos em roxo | `gaviao/gaviao_cena.webp` (95 KB) | 1761×903 | 1404×720 | 2808×720 | 0,14 | Painel lateral e chão neon cortados |
+| Homem-Aranha | Nova York à noite, telhados (rodada 9: sequência) | `homem-aranha/stage-01..06.webp` (450 KB no total) | 6 × 2560×1440 | 6 × 1280×720 | — | percurso da fase | Sem edição; ordem do envio. A stage-06 tem painéis com formas triangulares (revisar: triângulo = perigo) |
+| Hulk | Cidade em ruínas sob céu verde (rodada 9: sequência) | `hulk/stage-01..06.webp` (600 KB no total) | 6 × 2560×1440 | 6 × 1280×720 | — | percurso da fase | Sem edição; ordem do envio |
+| Gavião Arqueiro | Telhados de Nova York à noite (rodada 9: sequência) | `gaviao/stage-01..05.webp` (315 KB no total) | 5 × 2560×1440 | 5 × 1280×720 | — | percurso da fase | Sem edição; ordem do envio. **Falta a stage-06** (vieram 5 imagens) |
 | Homem de Ferro | Metrópole futurista (diurna, como na prévia) | `homem-de-ferro/homem-de-ferro_cena.webp` (161 KB) | 2752×982 | 2018×720 | 4036×720 | 0,18 | Logo dos Vingadores apagado; miniaturas cortadas |
 | Doutor Estranho | Dimensão mística, arquitetura impossível | `dr-estranho/dr-estranho_cena.webp` (114 KB) | 1921×675 | 2049×720 | 4096×719 (reduzida) | 0,12 | Faixa de céu separada e plataformas flutuantes cortadas; na dimensão espelho a mesma arte vira de cabeça para baixo e ganha tom magenta |
 | Wanda | Floresta amaldiçoada pela magia do caos | `wanda/wanda_cena.webp` (144 KB) | 2752×686 | 2888×720 | 4096×510 (reduzida) | 0,12 | Banner superior da prévia, sem alterações; na realidade azul a arte é tingida de azul |
@@ -119,6 +119,14 @@ Comum a todas: WebP opaca (sem canal alfa), 720 px de altura; desenhada como `ti
 - A pasta `assets` soma cerca de 4,9 MB por causa das prévias JPG guardadas como fonte.
 
 ---
+
+### Sequência de cenários (rodada 9: Homem-Aranha, Hulk e Gavião)
+- `CENARIOS_IMAGEM[heroi].sequencia` (config.js) lista `stage-01..NN.webp`; `GameScene.preload()` carrega só as do herói da fase.
+- `Cenarios.fundoSequencia()` põe as imagens lado a lado (cada uma cobre a tela 1280×720). Da 2ª em diante, a borda esquerda (240 px) é esmaecida numa textura montada uma vez e entra por cima da anterior: a emenda vira uma fusão, sem corte nem espaço vazio.
+- `Cenarios.moverSequencia()` (a cada quadro, via `moverParalaxe`) desloca a fila na proporção do progresso do jogador: largada = começo da 1ª imagem, chegada = última imagem inteira. Só ficam visíveis as imagens que estão na tela.
+- O deslocamento equivale a um parallax de ~0,2 a 0,35 da câmera (depende do comprimento da fase). As imagens são achatadas, então não foram recortadas em camadas (recorte automático deixaria buracos e bordas falsas); a profundidade extra vem das partículas, da névoa e das luzes procedurais por cima, que continuam ativas.
+- Os fundos são só visuais: nenhuma colisão foi criada a partir deles.
+- Ordem de prioridade do fundo: vídeo (`VIDEOS_FUNDO`) → sequência → imagem única → cenário procedural.
 
 ## 6. Decisões e resultados (rodada 8)
 

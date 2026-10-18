@@ -178,9 +178,56 @@ const Cenarios = {
         return v;
     },
 
+    // SEQUÊNCIA DE CENÁRIOS: as imagens ficam lado a lado (cada uma cobre a tela 1280x720) e a fila inteira
+    // é percorrida entre o começo e o fim da câmera. Cada imagem, menos a primeira, tem a borda esquerda
+    // esmaecida (textura montada uma vez) e entra por cima da anterior: a emenda vira uma fusão suave.
+    fundoSequencia(fase, def) {
+        const cena = fase.cena, base = this.chaveFundo(fase.heroi), SOBRE = 240;
+        const chaves = def.sequencia.map((_, i) => base + '-' + i).filter((k) => cena.textures.exists(k));
+        if (!chaves.length) return null;
+        const imgs = chaves.map((k, i) => {
+            let chave = k;
+            if (i > 0) {
+                chave = k + '-fusao';
+                if (!cena.textures.exists(chave)) {
+                    const src = cena.textures.get(k).getSourceImage();
+                    const tx = cena.textures.createCanvas(chave, 1280, 720), ctx = tx.getContext();
+                    ctx.drawImage(src, 0, 0, 1280, 720);
+                    const g = ctx.createLinearGradient(0, 0, SOBRE, 0);
+                    g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = g; ctx.fillRect(0, 0, SOBRE, 720);
+                    tx.refresh();
+                }
+            }
+            return cena.add.image(0, 0, chave).setOrigin(0, 0).setDisplaySize(1280, 720).setScrollFactor(0)
+                .setDepth(-98.6 + i * 0.001).setTint(def.tom || 0xffffff);
+        });
+        const largura = imgs.length * 1280 - (imgs.length - 1) * SOBRE;
+        // Percurso: do jogador na largada (x = 0) até a chegada; antes (abertura) fica a 1ª imagem e na
+        // chegada aparece a última inteira. Usa o x do jogador (não o scrollX) porque cada fase enquadra a câmera
+        // de um jeito (o Aranha, por exemplo, afasta o zoom); a câmera segue o jogador sem atraso, então dá igual.
+        fase.fundoSeq = { imgs, passo: 1280 - SOBRE, max: largura - 1280 };
+        const est = fase.estadoCenario || {};
+        (fase.camadas || []).forEach((c) => { if (c.estrutural) c.setVisible(false); });
+        (est.estruturais || []).forEach((o) => o.setVisible(false));
+        (est.ceus || []).forEach((o) => o.setVisible(false));
+        if (fase.mandala) fase.mandala.setVisible(false);
+        est.fundo = imgs[0]; fase.fundoArte = imgs[0];
+        this.moverSequencia(fase);
+        return imgs[0];
+    },
+
+    // Chamado a cada quadro (moverParalaxe): posiciona as imagens e só deixa visíveis as que estão na tela
+    moverSequencia(fase) {
+        const s = fase.fundoSeq; if (!s) return;
+        const desl = Math.max(0, Math.min(1, fase.player ? fase.player.x / fase.cfg.comprimento : 0)) * s.max;
+        s.imgs.forEach((img, i) => { const x = i * s.passo - desl; img.x = x; img.setVisible(x < 1280 && x > -1280); });
+    },
+
     fundoImagem(fase) {
         if (this.fundoVideo(fase)) return fase.fundoVideo;
         const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi];
+        if (def && def.sequencia) return this.fundoSequencia(fase, def);
         const cena = fase.cena, chave = this.chaveFundo(fase.heroi);
         if (!def || !cena.textures.exists(chave)) return null;   // sem imagem: fica o procedural
         // Textura dupla [imagem | imagem espelhada], montada UMA vez: repete sem emenda visível

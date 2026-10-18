@@ -118,18 +118,23 @@ const CORES_SECOES = {
 // (assets/backgrounds/<pasta>/<pasta>_cena.webp, 720 px de altura, opaca). Carregada no preload da GameScene
 // (só a do herói da fase). Fica num tileSprite fixo na tela que repete na horizontal com cópia espelhada
 // alternada ([imagem | imagem espelhada], textura montada uma vez), atrás das partículas/névoa/reações.
-// Se o arquivo falhar (ou a página estiver em file://, onde o WebGL não aceita a imagem), a fase usa
+// Fases com `sequencia`: cada imagem (1280x720) ocupa a tela inteira e a fila toda é percorrida do começo
+// ao fim da fase (parallax calculado pelo comprimento). Se o arquivo falhar (ou a página estiver em file://, onde o WebGL não aceita a imagem), a fase usa
 // o cenário procedural de cenarios.js, sem erro no console.
 //   fator: paralaxe (0.12–0.18) · y/alto: faixa da tela ocupada (entre o HUD em 100 e o chão em 660)
 //   tom: tint multiplicado (baixa o contraste pra os obstáculos neon continuarem na frente)
 const CENARIOS_IMAGEM = {
-    'Hulk':           { arquivo: 'assets/backgrounds/hulk/hulk_cena.webp',                     fator: 0.15, y: 100, alto: 580, tom: 0xa8b0a8 },
+    // Sequência de cenários (stage-01..N): as imagens aparecem em ordem ao longo da fase, com fusão nas emendas
+    'Hulk':           { sequencia: seq('hulk', 6),          tom: 0xb4bcb4 },
+    'Gaviao':         { sequencia: seq('gaviao', 5),        tom: 0xb8b8c4 },
+    'Homem-Aranha':   { sequencia: seq('homem-aranha', 6),  tom: 0xa8a8bc },
+    // Imagem única espelhada em loop (a sequência destes heróis vem depois)
     'Homem de Ferro': { arquivo: 'assets/backgrounds/homem-de-ferro/homem-de-ferro_cena.webp', fator: 0.18, y: 100, alto: 580, tom: 0x9a9aa6 },
-    'Gaviao':         { arquivo: 'assets/backgrounds/gaviao/gaviao_cena.webp',                 fator: 0.14, y: 100, alto: 580, tom: 0xb0aab8 },
-    'Homem-Aranha':   { arquivo: 'assets/backgrounds/homem-aranha/homem-aranha_cena.webp',     fator: 0.14, y: 100, alto: 580, tom: 0x8c8ca4 },
     'DrEstranho':     { arquivo: 'assets/backgrounds/dr-estranho/dr-estranho_cena.webp',       fator: 0.12, y: 100, alto: 580, tom: 0x9890a8 },
     'Wanda':          { arquivo: 'assets/backgrounds/wanda/wanda_cena.webp',                   fator: 0.12, y: 100, alto: 580, tom: 0x9c8a92 }
 };
+// Caminhos assets/backgrounds/<pasta>/stage-01.webp ... stage-NN.webp
+function seq(pasta, n) { return Array.from({ length: n }, (_, i) => `assets/backgrounds/${pasta}/stage-${String(i + 1).padStart(2, '0')}.webp`); }
 
 // VÍDEO DE FUNDO (opcional): se a fase tiver entrada aqui, o vídeo vira o fundo no lugar da imagem.
 // Ele é sincronizado com o progresso da fase (começo do vídeo = largada, fim = chegada), então é

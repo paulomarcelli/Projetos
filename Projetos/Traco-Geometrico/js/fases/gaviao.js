@@ -381,15 +381,10 @@ class FaseGaviao extends Fase {
     }
 
     // Cubo violeta
-    coresCubo() { return [0x8c5cff, 0xe2d6ff]; }
+    coresCubo() { return VISUAIS_HEROIS['Gaviao'].cores; }
 
-    // Skin: retícula branca no centro (gira a cada disparo)
-    desenharSkin(g) {
-        // Círculo da retícula
-        g.lineStyle(2, 0xffffff, 1); g.strokeCircle(0, 0, 9);
-        // 4 tracinhos
-        g.lineBetween(0, -15, 0, -6); g.lineBetween(0, 6, 0, 15); g.lineBetween(-15, 0, -6, 0); g.lineBetween(6, 0, 15, 0);
-    }
+    // Skin do Gavião: máscara lilás, arco e flecha (efeitosPoderes.js)
+    desenharSkin(g) { VISUAIS_HEROIS['Gaviao'].desenhar(g); }
 
     // Chão com vãos
     segmentosChao() {
@@ -497,14 +492,23 @@ class FaseGaviao extends Fase {
         if (tipo !== 'normal') this.tipoEscolhido = 'normal';
         // Cor por tipo
         const cor = { normal: 0xffffff, explosiva: 0xff9f1c, eletrica: 0x5ce1ff }[tipo];
-        // Desenho da flecha (retângulo fino girado)
-        const g = this.cena.add.rectangle(x0, y0, 30, 3, cor).setRotation(ang).setDepth(12);
-        // Ponta
-        const ponta = this.cena.add.triangle(x0, y0, 0, -5, 0, 5, 9, 0, cor).setRotation(ang).setDepth(12);
+        // Desenho da flecha (haste, ponta em losango, penas) girado na direção do tiro
+        const g = this.cena.add.graphics({ x: x0, y: y0 }).setRotation(ang).setDepth(12);
+        g.lineStyle(6, cor, 0.25).lineBetween(-18, 0, 12, 0);
+        g.lineStyle(2.5, cor, 1).lineBetween(-18, 0, 12, 0);
+        g.fillStyle(cor, 1).fillPoints([{ x: 8, y: 0 }, { x: 12, y: -4 }, { x: 19, y: 0 }, { x: 12, y: 4 }], true);
+        g.lineStyle(2, tipo === 'normal' ? 0x8c5cff : 0xffffff, 1).lineBetween(-18, 0, -23, -5).lineBetween(-18, 0, -23, 5).lineBetween(-14, 0, -19, -5).lineBetween(-14, 0, -19, 5);
+        // Rastro de energia (cor do tipo de flecha)
+        const rastro = reducedMotion.matches ? null : this.cena.add.particles(x0, y0, 'faisca', {
+            speed: { min: 5, max: 30 }, lifespan: tipo === 'normal' ? 180 : 300, scale: { start: tipo === 'normal' ? 0.6 : 1, end: 0 }, alpha: { start: 0.8, end: 0 },
+            tint: { normal: [0xe2d6ff, 0x8c5cff], explosiva: [0xffd166, 0xff9f1c, 0xff4d00], eletrica: [0x5ce1ff, 0xffffff] }[tipo], blendMode: 'ADD', frequency: 12
+        }).setDepth(11);
         // Guarda a flecha
-        this.flechas.push({ x: x0, y: y0, vx: Math.cos(ang) * GAVIAO.velFlecha, vy: Math.sin(ang) * GAVIAO.velFlecha, vida: GAVIAO.vidaFlecha, tipo, g, ponta, ang });
-        // Gira a retícula da skin
-        this.cena.tweens.add({ targets: this.player.skin, angle: '+=90', duration: this.efeitos.dur(120) });
+        this.flechas.push({ x: x0, y: y0, vx: Math.cos(ang) * GAVIAO.velFlecha, vy: Math.sin(ang) * GAVIAO.velFlecha, vida: GAVIAO.vidaFlecha, tipo, g, rastro, ang });
+        // Estalo da corda: anel lilás na saída e recuo do corpo
+        fxOnda(this, x0, y0, cor === 0xffffff ? 0xe2d6ff : cor, 6, 26, 180, 2);
+        this.player.avanco = -5;
+        fxCenario(this, 'flecha', { tipo });
         // Som do disparo
         som.tom('triangle', 900, 1400, 60, 0.07); som.ruido(40, 0.05, 6000);
     }
@@ -526,13 +530,16 @@ class FaseGaviao extends Fase {
             // Testa o que foi atingido primeiro (o mais perto do começo do segmento)
             const atingido = this.primeiroNoCaminho(seg);
             // Atualiza o desenho
-            f.g.setPosition(f.x, f.y); f.ponta.setPosition(f.x + Math.cos(f.ang) * 15, f.y + Math.sin(f.ang) * 15);
+            f.g.setPosition(f.x, f.y); if (f.rastro) f.rastro.setPosition(f.x - Math.cos(f.ang) * 16, f.y - Math.sin(f.ang) * 16);
+            // Elétrica: faísca saltando da flecha de vez em quando
+            if (f.tipo === 'eletrica' && Math.random() < 0.25) fxRaio(this, f.x, f.y, f.x - Math.cos(f.ang) * 24 + Phaser.Math.Between(-10, 10), f.y + Phaser.Math.Between(-14, 14), 0x5ce1ff, 90, 3, 5);
             // Bateu em algo ou acabou a vida: resolve e remove
             if (atingido || f.vida <= 0 || f.y < MOVIMENTO.tetoY || f.y > MOVIMENTO.chaoY) {
                 // Resolve o impacto
                 if (atingido) this.impacto(f, atingido);
                 // Apaga o desenho
-                f.g.destroy(); f.ponta.destroy();
+                f.g.destroy();
+                if (f.rastro) { const r = f.rastro; r.stop(); this.cena.time.delayedCall(320, () => r.destroy()); }
                 // Remove da lista
                 this.flechas.splice(i, 1);
             }
@@ -598,6 +605,11 @@ class FaseGaviao extends Fase {
             this.efeitos.anel(ex, ey, 0xff9f1c, 20, GAVIAO.raioExplosao / 20, 320);
             // Partículas
             this.efeitos.estilhacos(ex, ey, [0xff9f1c, 0xffd166], 16, 300);
+            // Bola de fogo: clarão, segunda onda, brasas caindo e fumaça
+            fxOnda(this, ex, ey, 0xffd166, 14, GAVIAO.raioExplosao * 1.3, 420, 5);
+            fxFaiscas(this, ex, ey, [0xffffff, 0xffd166, 0xff6a00], 22, 380, 560, { gravityY: 600 });
+            this.efeitos.poeira(ex, ey, 0x5a4a3a, 8);
+            if (!reducedMotion.matches) this.efeitos.flash(255, 150, 40, 120);
             // Som
             som.ruido(300, 0.18, 800);
             // Tremor
@@ -616,6 +628,9 @@ class FaseGaviao extends Fase {
         if (f.tipo === 'eletrica') {
             // Acerta o primeiro
             obs.aoAcertar(1, 'eletrica');
+            // Descarga: raios curtos em volta do alvo e faíscas ciano
+            for (let k = 0; k < 3; k++) { const a = Math.random() * Math.PI * 2; fxRaio(this, obs.forma.x, obs.forma.y, obs.forma.x + Math.cos(a) * 46, obs.forma.y + Math.sin(a) * 46, 0x5ce1ff, 200, 4, 8); }
+            fxFaiscas(this, obs.forma.x, obs.forma.y, [0x5ce1ff, 0xffffff], 12, 240, 360);
             // Lista de já atingidos
             const feitos = [obs];
             // Até 2 saltos
@@ -638,7 +653,9 @@ class FaseGaviao extends Fase {
             // Pronto
             return;
         }
-        // Normal: só acerta
+        // Normal: acerta com lascas e um anel curto no ponto do impacto
+        fxFaiscas(this, f.x, f.y, [0xffffff, 0xe2d6ff, 0x8c5cff], 8, 220, 300);
+        fxOnda(this, f.x, f.y, 0xe2d6ff, 6, 30, 200, 2);
         obs.aoAcertar(1, 'normal');
     }
 

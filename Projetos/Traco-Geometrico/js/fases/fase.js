@@ -456,11 +456,16 @@ class Fase {
         this.desenharSkin(this.player.skin);
         // Esconde o retângulo da física (continua colidindo normalmente)
         this.player.setVisible(false);
-        // Rastro atrás do personagem (partículas na cor do cubo), desligado com movimento reduzido
+        // Visual próprio do herói (efeitosPoderes.js): extras animados (núcleo, chamas, caos...)
+        const visual = (typeof instalarVisualHeroi === 'function') ? instalarVisualHeroi(this) : null;
+        this.visualHeroi = visual;
+        // Rastro atrás do personagem (cores do herói), desligado com movimento reduzido
         if (!reducedMotion.matches) {
+            const r = (visual && visual.v.rastro) || {};
             this.rastro = this.cena.add.particles(0, 0, 'faisca', {
                 follow: this.player, speedX: { min: -80, max: -30 }, speedY: { min: -15, max: 15 },
-                lifespan: 320, scale: { start: 0.9, end: 0 }, alpha: { start: 0.7, end: 0 }, frequency: 28, tint: [cor, borda]
+                lifespan: 320, scale: { start: 0.9, end: 0 }, alpha: { start: 0.7, end: 0 }, frequency: r.frequency || 28,
+                tint: r.tint || [cor, borda], blendMode: r.blendMode || 'NORMAL'
             }).setDepth(9);
         }
     }
@@ -863,8 +868,9 @@ class Fase {
     // Gancho: retorna true se a fase cuidou do movimento do jogador neste frame
     atualizarMovimento(agora, dt) { return false; }
 
-    // Gancho: chamado quando o personagem pousa (cada fase pode dar seu "peso")
-    aoPousar() {}
+    // Gancho: chamado quando o personagem pousa (cada fase pode dar seu "peso").
+    // Padrão: efeito de pouso do herói (rachaduras do Hulk, teia do Aranha, selo do Estranho...)
+    aoPousar() { if (typeof pousoHeroi === 'function') pousoHeroi(this); }
 
     // Gancho: mecânica própria por frame
     atualizarMecanica(agora, dtReal, dt) {}

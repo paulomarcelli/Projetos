@@ -222,15 +222,10 @@ class FaseAranha extends Fase {
     }
 
     // Cubo coral
-    coresCubo() { return [0xff5a6e, 0xffe3e7]; }
+    coresCubo() { return VISUAIS_HEROIS['Homem-Aranha'].cores; }
 
-    // Skin: losango interno escuro + dois cortes brancos nos cantos de trás (sensação de velocidade)
-    desenharSkin(g) {
-        // Losango interno (quadrado girado 45°)
-        g.fillStyle(0xb8283c, 1); g.fillPoints([{ x: 0, y: -11 }, { x: 11, y: 0 }, { x: 0, y: 11 }, { x: -11, y: 0 }], true);
-        // Cortes brancos nos cantos de trás
-        g.fillStyle(0xffffff, 0.9); g.fillTriangle(-20, -20, -12, -20, -20, -12); g.fillTriangle(-20, 20, -12, 20, -20, 12);
-    }
+    // Skin do Homem-Aranha: máscara com teia e olhos grandes (efeitosPoderes.js)
+    desenharSkin(g) { VISUAIS_HEROIS['Homem-Aranha'].desenhar(g); }
 
     // Habilidade
 
@@ -300,8 +295,9 @@ class FaseAranha extends Fase {
         b.moves = false;
         // Sem gravidade enquanto balança (o pêndulo calcula tudo)
         b.setAllowGravity(false);
-        // Efeito: anel na âncora
-        this.efeitos.anel(a.forma.x, a.forma.y, 0xffffff, 8, 2, 200);
+        // Efeito "thwip": o fio sai do pulso até a âncora e respinga teia lá
+        fxTeiaLancada(this, p.x, p.y, a.forma.x, a.forma.y);
+        fxCenario(this, 'teia', { x: a.forma.x, y: a.forma.y });
         // Som da teia prendendo
         som.tom('triangle', 1200, 600, 80, 0.07); som.ruido(60, 0.05, 5000);
     }
@@ -442,9 +438,7 @@ class FaseAranha extends Fase {
             // Corda levemente curva (fica mais orgânica) + "asterisco" de teia na âncora
             const mx = (p.x + a.forma.x) / 2, my = (p.y + a.forma.y) / 2 + Math.min(18, Math.abs(vt) / 60);
             const curva = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(p.x, p.y), new Phaser.Math.Vector2(mx, my), new Phaser.Math.Vector2(a.forma.x, a.forma.y));
-            this.fio.lineStyle(2, 0xffffff, 0.95); curva.draw(this.fio, 12);
-            this.fio.lineStyle(2, 0xffffff, 0.8);
-            for (let k = 0; k < 6; k++) { const ang = k * Math.PI / 3; this.fio.lineBetween(a.forma.x, a.forma.y, a.forma.x + Math.cos(ang) * 10, a.forma.y + Math.sin(ang) * 10); }
+            desenharTeiaFio(this.fio, curva, a.forma.x, a.forma.y);
             // Rastro de velocidade quando está rápido
             if (Math.abs(vt) > 600 && Math.random() < 0.5) this.efeitos.poeira(p.x - 12, p.y, 0xff5a6e, 1);
             // Solta sozinho só se passar de ~75° (evita dar a volta completa)

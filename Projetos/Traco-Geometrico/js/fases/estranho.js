@@ -33,22 +33,17 @@ class PortalDimensao extends Obstaculo {
         const y = tipo === 'pad' ? (e ? MOVIMENTO.tetoY + 9 : MOVIMENTO.chaoY - 9) : (e ? MOVIMENTO.tetoY + 120 : MOVIMENTO.chaoY - 120);
         // Tamanho
         const w = tipo === 'pad' ? 100 : 60, h = tipo === 'pad' ? 18 : 100;
-        // Elipse com miolo escuro e borda laranja
-        const forma = fase.cena.add.ellipse(x, y, w, h, 0x1a0800, 0.6).setStrokeStyle(4, 0xffa53d);
+        // Área do gatilho (mesma elipse de antes; o desenho místico fica por cima)
+        const forma = fase.cena.add.ellipse(x, y, w, h, 0x1a0800, 0.25);
         // Gatilho
         super(fase, forma, 'gatilho');
         // Tipo e dimensão
         this.tipo = tipo; this.dim = dim;
-        // Faíscas girando na borda (efeito de portal)
-        this.faiscas = fase.cena.add.particles(x, y, 'faisca', {
-            emitZone: { type: 'edge', source: new Phaser.Geom.Ellipse(0, 0, w, h), quantity: 32 },  // Borda da elipse, em sequência (parece girar)
-            speed: { min: 10, max: 60 },                 // Soltam devagar
-            lifespan: { min: 150, max: 350 },            // Vida curta
-            scale: { start: 0.7, end: 0 },               // Encolhem
-            tint: [0xffe08a, 0xffa53d, 0xff7b00],        // Laranja/dourado
-            blendMode: 'ADD',                            // Brilho
-            frequency: reducedMotion.matches ? 120 : 30  // Menos partículas com movimento reduzido
-        }).setDepth(4);
+        // Portal místico (anéis dourados girando, glifos, faíscas pela borda) — só visual
+        this.visual = criarPortalMistico(fase, x, y, w, h, { abrir: false, profundidade: 4, coluna: tipo === 'pad' ? (e ? 1 : -1) : 0 });
+        // A fase controla a transparência (fantasma) pelos "extras" e pelas faíscas
+        this.faiscas = this.visual.faiscas;
+        this.extras = this.visual.partes.filter((o) => o !== this.faiscas);
     }
 
     // Encostou: troca de dimensão (o pad só funciona correndo por cima, não pulando)
@@ -59,8 +54,8 @@ class PortalDimensao extends Obstaculo {
         this.fase.trocarDimensao(this);
     }
 
-    // Some com as faíscas junto
-    destruir() { this.faiscas.destroy(); super.destruir(); }
+    // Some com o desenho místico junto
+    destruir() { this.visual.destruir(); super.destruir(); }
 }
 
 // SELO: parede do teto ao chão com runas; só existe na dimensão dela
@@ -203,6 +198,7 @@ class RunaPortal extends Obstaculo {
         // Portais visuais (o de entrada e o de saída)
         this.portalEntrada = this.fase.portalVisual(this.forma.x, this.y);
         this.portalSaida = this.fase.portalVisual(this.destino, this.y);
+        fxCenario(this.fase, 'portalAbre', { x: this.forma.x, y: this.y, saida: this.destino });
         // Som de portal abrindo
         som.tom('sine', 300, 900, 250, 0.07); som.tom('triangle', 600, 1800, 250, 0.03);
     }
@@ -302,10 +298,10 @@ class FaseEstranho extends Fase {
     }
 
     // Cubo índigo com borda laranja
-    coresCubo() { return [0x2e3a8c, 0xffa53d]; }
+    coresCubo() { return VISUAIS_HEROIS['DrEstranho'].cores; }
 
-    // Skin: um losango interno (o anel de runas é desenhado à parte e gira)
-    desenharSkin(g) { g.lineStyle(2, 0xffa53d, 1); g.strokePoints([{ x: 0, y: -10 }, { x: 10, y: 0 }, { x: 0, y: 10 }, { x: -10, y: 0 }], true); }
+    // Skin do Doutor Estranho: manto e selo dourado (efeitosPoderes.js); o anel de runas gira à parte
+    desenharSkin(g) { VISUAIS_HEROIS['DrEstranho'].desenhar(g); }
 
     // Habilidade
     criarHabilidade() { return new JoiaDoTempo(this); }
@@ -368,6 +364,7 @@ class FaseEstranho extends Fase {
         if (!this.portalLivreValido(pt)) { this.efeitos.textoFlutuante(this.player.x, this.player.y - 50, 'SAÍDA BLOQUEADA', '#ff4d6d'); som.tocar('erro'); return false; }
         // Guarda o portal e cria os visuais
         this.portalLivre = { ...pt, vEntrada: this.portalVisual(pt.entrada, pt.y), vSaida: this.portalVisual(pt.saida, pt.y) };
+        fxCenario(this, 'portalAbre', { x: pt.entrada, y: pt.y, saida: pt.saida });
         // Som de portal abrindo
         som.tom('sine', 300, 900, 250, 0.07); som.tom('triangle', 600, 1800, 250, 0.03);
         return true;
@@ -386,7 +383,9 @@ class FaseEstranho extends Fase {
         // Efeitos
         this.efeitos.anel(pl.saida, pl.y, 0xffa53d, 30, 3, 300); som.tom('sine', 900, 300, 250, 0.07);
         // Fecha os dois portais logo depois
-        this.cena.time.delayedCall(300, () => { pl.vEntrada.fechar(); pl.vSaida.fechar(); });
+        this.cena.time.delayedCall(300, () => { pl.vEntrada.fechar(); pl.vSaida.fechar(); fxCenario(this, 'portalFecha'); });
+        // Saída do portal: faíscas douradas e eco do corpo
+        fxFaiscas(this, pl.saida, pl.y, [0xfff2b0, 0xffc94a, 0xff7b00], 14, 260, 400);
         // Libera pra abrir outro
         this.portalLivre = null;
     }
@@ -416,23 +415,13 @@ class FaseEstranho extends Fase {
         this.efeitos.anel(r.destino, r.y, 0xffa53d, 30, 3, 300);
         som.tom('sine', 900, 300, 250, 0.07);
         // Fecha os portais depois de um instante
-        this.cena.time.delayedCall(350, () => { [r.portalEntrada, r.portalSaida].forEach((pt) => pt && pt.fechar()); });
+        this.cena.time.delayedCall(350, () => { [r.portalEntrada, r.portalSaida].forEach((pt) => pt && pt.fechar()); fxCenario(this, 'portalFecha'); });
+        fxFaiscas(this, r.destino, r.y, [0xfff2b0, 0xffc94a, 0xff7b00], 14, 260, 400);
     }
 
-    // Portal visual (elipse com faíscas laranja) — devolve um objeto com fechar()
-    portalVisual(x, y) {
-        // Elipse com borda laranja e miolo escuro
-        const el = this.cena.add.ellipse(x, y, 56, 110, 0x1a0800, 0.6).setStrokeStyle(4, 0xffa53d).setDepth(5);
-        // Faíscas girando na borda
-        const fx = this.cena.add.particles(x, y, 'faisca', {
-            emitZone: { type: 'edge', source: new Phaser.Geom.Ellipse(0, 0, 56, 110), quantity: 36 }, speed: { min: 10, max: 70 },
-            lifespan: { min: 150, max: 350 }, scale: { start: 0.8, end: 0 }, tint: [0xffe08a, 0xffa53d, 0xff7b00], blendMode: 'ADD', frequency: 25
-        }).setDepth(5);
-        // Abre "rasgando"
-        el.scaleX = 0.05; this.cena.tweens.add({ targets: el, scaleX: 1, duration: this.efeitos.dur(140) });
-        // Fechar: some e apaga
-        return { fechar: () => { fx.stop(); this.cena.tweens.add({ targets: el, scaleX: 0, duration: this.efeitos.dur(160), onComplete: () => el.destroy() }); this.cena.time.delayedCall(400, () => fx.destroy()); } };
-    }
+    // Portal aberto pelo jogador (runa ou portal livre): portal místico que abre com expansão de energia,
+    // fica girando estabilizado e contrai ao fechar — devolve um objeto com fechar()
+    portalVisual(x, y) { return criarPortalMistico(this, x, y, 56, 110, { profundidade: 5 }); }
 
     // Valor da barra: durante a Joia mostra a duração restante
     progressoHabilidade(agora) { return this.joiaAtiva ? this.joiaRestante / ESTRANHO.duracaoJoia : this.habilidade.progresso(agora); }
@@ -559,6 +548,8 @@ class FaseEstranho extends Fase {
         this.dim = this.dim === 'N' ? 'E' : 'N';
         // Gravidade invertida no espelho
         this.player.inverterGravidade(this.dim === 'E');
+        // Eco do corpo no lugar de onde saiu
+        fxResidual(this, this.dim === 'E' ? 0xffc94a : 0xff7ad9, 0.5, 320);
         // Leva o cubo pro piso da outra dimensão
         this.player.body.reset(this.player.x, this.dim === 'E' ? MOVIMENTO.tetoY + 20 : MOVIMENTO.chaoY - 20);
         // Invencível por 300 ms
@@ -572,8 +563,11 @@ class FaseEstranho extends Fase {
         // Onda varrendo a tela
         const onda = this.cena.add.rectangle(0, 380, 160, 560, this.dim === 'E' ? 0xff7ad9 : 0xffa53d, 0.25).setScrollFactor(0).setDepth(46);
         this.cena.tweens.add({ targets: onda, x: 1400, duration: this.efeitos.dur(250), onComplete: () => onda.destroy() });
-        // Anel no portal
+        // Anel no portal + selo místico onde o cubo chega + faíscas
         this.efeitos.anel(portal.forma.x, portal.forma.y, 0xffa53d, 30, 2.5, 300);
+        fxSelo(this, this.player.x, this.player.y, 46, this.dim === 'E' ? 0xff7ad9 : 0xffc94a, 620, 90);
+        fxFaiscas(this, this.player.x, this.player.y, [0xfff2b0, 0xffc94a, this.dim === 'E' ? 0xff7ad9 : 0xff7b00], 16, 280, 420);
+        fxCenario(this, 'dimensao', { dim: this.dim });
         // Som do portal
         som.tom('sine', 300, 900, 250, 0.07); som.tom('triangle', 600, 1800, 250, 0.03);
     }
@@ -606,8 +600,18 @@ class FaseEstranho extends Fase {
         this.fatorTempo = ESTRANHO.fatorJoia;
         // Visual verde
         this.overlayJoia.setVisible(true); this.aneisJoia.setVisible(true); this.desenharRunas(0x3dff8a);
-        // Anel verde crescendo
-        this.efeitos.anel(this.player.x, this.player.y, 0x3dff8a, 30, 4, 500);
+        // Ativação: energia esmeralda se concentra no personagem, pulsa e explode numa onda verde
+        const p = this.player;
+        fxConvergir(this, p.x, p.y, 0x3dff8a, 14, 140, 300);
+        fxSelo(this, p.x, p.y, 64, 0x3dff8a, 900, -140);
+        this.cena.time.delayedCall(120, () => {
+            fxOnda(this, p.x, p.y, 0x3dff8a, 30, 700, 900, 6, 0.8);
+            fxOnda(this, p.x, p.y, 0xb8ffd6, 20, 420, 700, 3, 0.7);
+            fxFaiscas(this, p.x, p.y, [0x3dff8a, 0xb8ffd6, 0xffffff], 20, 260, 700);
+        });
+        if (!reducedMotion.matches) this.efeitos.flash(60, 255, 140, 180);
+        this.fxJoia = { residual: 0, reverso: 0 };
+        fxCenario(this, 'joiaInicio');
         // Fantasmas mais visíveis
         this.aplicarCamadas();
         // Som: tom caindo (tempo desacelerando)
@@ -622,6 +626,10 @@ class FaseEstranho extends Fase {
         this.fatorTempo = this.revertendo ? -ESTRANHO.fatorJoia : ESTRANHO.fatorJoia;
         // Texto e som
         this.efeitos.textoFlutuante(this.player.x, this.player.y - 50, this.revertendo ? 'REVERTER' : 'DESACELERAR', '#3dff8a');
+        // Revertendo: energia volta pro personagem (anéis contraindo); desacelerando: pulso pra fora
+        if (this.revertendo) { fxConvergir(this, this.player.x, this.player.y, 0xb8ffd6, 16, 160, 380); fxOnda(this, this.player.x, this.player.y, 0x3dff8a, 160, 24, 380, 4, 0.8); }
+        else fxOnda(this, this.player.x, this.player.y, 0x3dff8a, 24, 200, 420, 4, 0.8);
+        fxCenario(this, 'joiaReverso', { revertendo: this.revertendo });
         som.tom('sine', this.revertendo ? 600 : 300, this.revertendo ? 300 : 600, 200, 0.06);
     }
 
@@ -633,6 +641,12 @@ class FaseEstranho extends Fase {
         this.restaurarTempo();
         // Visual normal
         this.overlayJoia.setVisible(false); this.aneisJoia.setVisible(false); this.desenharRunas(0xffa53d);
+        // Dissipação: o selo verde se abre e some, partículas sobem devagar e se apagam
+        const p = this.player;
+        fxSelo(this, p.x, p.y, 56, 0x3dff8a, 700, 60);
+        fxFaiscas(this, p.x, p.y, [0x3dff8a, 0xb8ffd6], 18, 90, 900, { gravityY: -60 });
+        fxOnda(this, p.x, p.y, 0xb8ffd6, 46, 90, 500, 2, 0.6);
+        fxCenario(this, 'joiaFim');
         // Fantasmas voltam ao normal
         this.aplicarCamadas();
         // Recarga conta a partir de agora
@@ -651,16 +665,18 @@ class FaseEstranho extends Fase {
             this.joiaRestante -= dtReal;
             // Aviso 600 ms antes do fim (pisca + dois tiques)
             if (this.joiaRestante < 600 && !this.avisouFim) { this.avisouFim = true; som.tom('square', 1500, 1500, 30, 0.05); som.tom('square', 1500, 1500, 30, 0.05, 120); }
-            // Anéis verdes girando em sentidos opostos com "ponteiros"
+            // Relógio místico esmeralda em volta do personagem (marcas, glifos e ponteiros; andam pra trás ao reverter)
             this.aneisJoia.clear().setPosition(this.player.x, this.player.y);
             // Pisca nos últimos 600 ms
             const alpha = this.joiaRestante < 600 ? (Math.floor(agora / 100) % 2 ? 0.3 : 1) : 1;
-            // Anel interno e externo
-            this.aneisJoia.lineStyle(2, 0x3dff8a, alpha).strokeCircle(0, 0, 34).strokeCircle(0, 0, 46);
-            // Ponteiros girando
-            const a1 = agora / 300, a2 = -agora / 500;
-            this.aneisJoia.lineBetween(0, 0, Math.cos(a1) * 46, Math.sin(a1) * 46);
-            this.aneisJoia.lineBetween(0, 0, Math.cos(a2) * 34, Math.sin(a2) * 34);
+            desenharRelogioJoia(this.aneisJoia, agora, alpha, this.revertendo);
+            // Tela verde pulsando de leve
+            this.overlayJoia.setAlpha(0.75 + Math.sin(agora / 180) * 0.25);
+            // Rastros temporais: ecos do personagem a cada 90 ms (tempo real); ao reverter, anéis que se fecham
+            const fj = this.fxJoia || (this.fxJoia = { residual: 0, reverso: 0 });
+            fj.residual += dtReal; fj.reverso += dtReal;
+            if (fj.residual >= 90) { fj.residual = 0; fxResidual(this, 0x3dff8a, 0.35, 360); }
+            if (this.revertendo && fj.reverso >= 260) { fj.reverso = 0; fxOnda(this, this.player.x, this.player.y, 0xb8ffd6, 90, 18, 300, 2, 0.6); fxConvergir(this, this.player.x, this.player.y, 0x3dff8a, 5, 90, 260); }
             // Acabou: desliga
             if (this.joiaRestante <= 0) this.desligarJoia();
         }

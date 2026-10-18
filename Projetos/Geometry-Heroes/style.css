@@ -135,7 +135,7 @@ h1 {
 h1 span {
     display: block;                              /* "GEOMÉTRICO" vai pra linha de baixo */
     color: #b7f65b;                              /* Verde */
-    font-size: .87em;                            /* Um pouco menor que "TRAÇO" */
+    font-size: .87em;                            /* Um pouco menor que a primeira linha do título */
     text-shadow: 0 .055em 0 #55883b, 0 .11em 0 #060e2b; /* Sombra 3D verde */
 }
 

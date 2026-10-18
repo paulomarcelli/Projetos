@@ -1,4 +1,4 @@
-# Notas de implementação — fusão com o design de jogos de ritmo (estilo Geometry Dash)
+# Notas de implementação (Geometry Heroes, antes chamado Traço Geométrico) — fusão com o design de jogos de ritmo (estilo Geometry Dash)
 
 ## Como a referência foi estudada
 - A skill de engenharia reversa (REA) serve para binários/pacotes distribuídos. Não havia binário do jogo de referência no projeto e não extraímos nada dele.
@@ -84,6 +84,13 @@
 - **Obstáculos** (`js/obstaculosTematicos.js`): espinho que brota, laser de piso no ritmo, bloco que desliza até o lugar, torreta, minas flutuantes, carro arremessado e holofote-alvo, espalhados por fase e nas aberturas (símbolos `e` e `l`). Tudo determinístico e com aviso antes.
 - **Heróis e poderes** (`js/efeitosPoderes.js`): cubos próprios dos 6 heróis (mesma hitbox), rastros e pousos, efeitos novos de fúria, repulsor, flechas, teia, troca de realidade; portais místicos redesenhados (só visual) e Joia do Tempo esmeralda sincronizada com início, reverso e fim. Repulsor do Homem de Ferro: recarga de 400 ms para 150 ms, com disparo contínuo segurando E (`tests/teste_cadencia_ferro.py`).
 - Integração: os três trabalhos entraram sem conflito; a suíte completa passou na versão junta.
+
+## Rodada 8: Geometry Heroes (3 agentes em paralelo)
+- Nome do jogo: **Geometry Heroes** (pasta `Projetos/Geometry-Heroes`); chaves do localStorage mantidas como `tracoGeometrico.*`.
+- Fundos: arte recortada das 6 prévias do Gemini (`assets/backgrounds/`, `CENARIOS_IMAGEM`), grade e quadrados removidos de todas as fases, Wanda em floresta amaldiçoada, cubo da Wanda com tiara.
+- Pulo: decidido já no evento de entrada e por passo de física (de 2 para 1 quadro de atraso a 60 fps; tempo de ar igual em 30/60/144 fps). `tests/teste_pulo.py`.
+- Tela inicial nova com os 6 retratos (`assets/herois/`, ver `CREDITOS.md`).
+- Detalhes, inventário dos cenários, Skills e agentes: `DOCUMENTACAO.md`.
 
 ## Decisões
 - As habilidades dos heróis continuam sendo o centro de cada fase. Os elementos clássicos entram como preparação e ritmo entre os desafios da habilidade, nunca no lugar dela.

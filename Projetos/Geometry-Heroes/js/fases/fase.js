@@ -126,7 +126,7 @@ class Fase {
         this.pulsoFundo = this.cena.add.rectangle(640, 360, 1280, 720, this.tema.linha, 0).setScrollFactor(0).setDepth(-90);
         // Cor da seção: véu colorido entre o cenário e os obstáculos, que muda a cada checkpoint
         this.coresSecoes = (typeof CORES_SECOES !== 'undefined' && CORES_SECOES[this.heroi]) || null;
-        this.veuSecao = this.cena.add.rectangle(640, 380, 1280, 560, this.coresSecoes ? this.coresSecoes[this.cpAtivados] || this.coresSecoes[0] : 0, this.coresSecoes ? 0.16 : 0).setScrollFactor(0).setDepth(-50);
+        this.veuSecao = this.cena.add.rectangle(640, 380, 1280, 560, this.coresSecoes ? this.coresSecoes[this.cpAtivados] || this.coresSecoes[0] : 0, this.coresSecoes ? this.alphaVeuSecao() : 0).setScrollFactor(0).setDepth(-50);
         this.corSecaoAtual = this.coresSecoes ? (this.coresSecoes[this.cpAtivados] || this.coresSecoes[0]) : 0;
         // Fade de entrada na cor da fase
         this.cena.cameras.main.fadeIn(reducedMotion.matches ? 0 : 380, ...this.tema.fade);
@@ -860,6 +860,9 @@ class Fase {
     // Gancho: chamado no fim do criar()
     aoCriar() {}
 
+    // Força do véu colorido da seção: fraco quando a fase tem arte de fundo (não "suja" as cores da imagem)
+    alphaVeuSecao() { return this.fundoArte ? 0.05 : 0.16; }
+
     // Gancho: o CENÁRIO reage a um poder ou momento da fase (ex.: 'joiaInicio', 'joiaFim', 'portalAbre',
     // 'portalFecha', 'dimensao', 'furia', 'repulsor'...). Padrão: nada. Os cenários (cenarios.js) sobrescrevem.
     cenarioReagir(evento, dados) {}
@@ -1208,7 +1211,7 @@ class Fase {
                 const m = Phaser.Display.Color.Interpolate.ColorWithColor(c0, c1, 100, 8);
                 const nova = Phaser.Display.Color.GetColor(m.r, m.g, m.b);
                 this.corSecaoAtual = (nova === this.corSecaoAtual) ? alvo : nova;
-                this.veuSecao.setFillStyle(this.corSecaoAtual, 0.16);
+                this.veuSecao.setFillStyle(this.corSecaoAtual, this.alphaVeuSecao());
                 // Fundo geométrico, feixes e cenário de trás acompanham a cor
                 if (this.fundoGeo) this.fundoGeo.setTint(this.corSecaoAtual);
                 if (this.feixes) this.feixes.setTint(this.corSecaoAtual);

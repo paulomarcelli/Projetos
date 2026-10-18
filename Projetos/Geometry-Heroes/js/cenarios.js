@@ -459,11 +459,12 @@ const Cenarios = {
         fase.estadoCenario.proximoRaio = cena.time.now + 2500;
         fase.estadoCenario.disparaRaio = (forte) => {
             raio.clear();
-            let x = Phaser.Math.Between(150, 1130), y = 110;
-            raio.lineStyle(forte ? 5 : 3, 0xb8ff7a, 0.9);
+            // Raio fino, curto e nas laterais do céu (longe do centro, onde ficam o título e os obstáculos)
+            let x = Phaser.Math.Between(0, 1) ? Phaser.Math.Between(120, 360) : Phaser.Math.Between(920, 1160), y = 105;
+            raio.lineStyle(forte ? 3 : 2, 0xb8ff7a, 0.75);
             raio.beginPath(); raio.moveTo(x, y);
-            while (y < 420) { x += Phaser.Math.Between(-40, 40); y += Phaser.Math.Between(30, 60); raio.lineTo(x, y); }
-            raio.strokePath(); raio.setAlpha(1);
+            while (y < 250) { x += Phaser.Math.Between(-18, 18); y += Phaser.Math.Between(22, 36); raio.lineTo(x, y); }
+            raio.strokePath(); raio.setAlpha(forte ? 0.9 : 0.6);
             cena.tweens.add({ targets: raio, alpha: 0, duration: 380 });
             this.clarao(fase, 0x9dff5a, forte ? 0.14 : 0.07, 300);
         };

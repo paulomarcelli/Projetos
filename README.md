@@ -34,7 +34,7 @@ Projetos/
 │   ├── index.html
 │   ├── style.css
 │   └── script.js
-└── Traco-Geometrico/
+└── Geometry-Heroes/
     ├── index.html
     ├── style.css
     ├── main.js
@@ -52,7 +52,7 @@ Projetos/
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
 | [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | Publicado |
 | [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | Publicado |
-| [Traço Geométrico](Projetos/Traco-Geometrico) | JavaScript · Phaser 3 · POO | Em desenvolvimento |
+| [Geometry Heroes](Projetos/Geometry-Heroes) | JavaScript · Phaser 3 · POO | Em desenvolvimento |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 

@@ -1,5 +1,5 @@
 # ================================================================
-# rodar_testes.py — testes automáticos do Traço Geométrico (Playwright + Chromium headless)
+# rodar_testes.py — testes automáticos do Geometry Heroes (Playwright + Chromium headless)
 # Uso: python3 tests/rodar_testes.py [Hulk Gaviao ...]
 # ================================================================
 import sys, json, time, pathlib, subprocess

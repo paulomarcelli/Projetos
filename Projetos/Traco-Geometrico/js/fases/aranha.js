@@ -491,48 +491,11 @@ class FaseAranha extends Fase {
     }
 
     // Cenário: cidade à noite (lua e estrelas, prédios com janelas, caixas d'água)
-    criarParalaxe() {
-        // Semente fixa
-        const rnd = new Phaser.Math.RandomDataGenerator(['aranha']);
-        // Camada 0: céu em faixas, lua e estrelas
-        this.camadaParalaxe(0.05, -95, (g, L) => {
-            // Faixas do céu (mais claro embaixo)
-            for (let i = 0; i < 6; i++) { g.fillStyle(Phaser.Display.Color.GetColor(11 + i * 3, 16 + i * 4, 38 + i * 7), 1); g.fillRect(0, 100 + i * 100, L, 100); }
-            // Estrelas
-            g.fillStyle(0xffffff, 0.7);
-            for (let i = 0; i < 120; i++) g.fillRect(rnd.between(0, L), rnd.between(110, 420), 2, 2);
-            // Lua
-            g.fillStyle(0xf4f1de, 1); g.fillCircle(900, 200, 50);
-            // Sombra da lua (fase crescente)
-            g.fillStyle(0x0e1430, 1); g.fillCircle(925, 190, 46);
-        });
-        // Camada 1: prédios altos com janelas acesas
-        this.camadaParalaxe(0.15, -90, (g, L) => {
-            // Prédios
-            for (let x = 0; x < L - 100; x += rnd.between(70, 130)) {
-                // Tamanho
-                const h = rnd.between(260, 520), w = rnd.between(60, 110);
-                // Corpo
-                g.fillStyle(0x141a3a, 1); g.fillRect(x, 720 - h, w, h);
-                // Janelas
-                for (let y = 720 - h + 14; y < 700; y += 22) for (let xx = x + 8; xx < x + w - 10; xx += 16) if (rnd.frac() < 0.3) { g.fillStyle(0xffd27a, 0.45); g.fillRect(xx, y, 8, 10); }
-            }
-        });
-        // Camada 2: caixas d'água e letreiros
-        this.camadaParalaxe(0.4, -80, (g, L) => {
-            // Objetos de telhado
-            for (let x = 80; x < L - 120; x += rnd.between(220, 420)) {
-                // Prédio médio
-                const topo = rnd.between(440, 540);
-                g.fillStyle(0x182046, 1); g.fillRect(x - 40, topo, 160, 720 - topo);
-                // Caixa d'água (tanque + pernas)
-                g.fillStyle(0x2a3366, 1); g.fillRect(x, topo - 50, 40, 34);
-                g.lineStyle(3, 0x2a3366, 1); g.lineBetween(x + 6, topo - 16, x + 4, topo); g.lineBetween(x + 34, topo - 16, x + 36, topo);
-                // Letreiro apagado
-                if (rnd.frac() < 0.5) { g.lineStyle(2, 0xff5a6e, 0.35); g.strokeRect(x + 60, topo - 40, 50, 22); }
-            }
-        });
-    }
+    // Cenário temático (cidade à noite com lua, skyline em camadas, caixas d'água, antenas, holofotes e janelas acendendo) — desenhado em cenarios.js
+    criarParalaxe() { Cenarios.aranha(this); }
+
+    // O cenário reage aos poderes e momentos da fase (cenarios.js)
+    cenarioReagir(evento, dados) { Cenarios.reagir(this, evento, dados); }
 
     // Roteiro desenhado à mão (os telhados estão em segmentosChao)
     // Checkpoints (2: fase curta, 15000 px). Sempre em cima de um telhado, longe da borda

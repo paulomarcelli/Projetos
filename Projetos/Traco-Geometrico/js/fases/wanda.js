@@ -384,29 +384,11 @@ class FaseWanda extends Fase {
     }
 
     // Cenário sombrio: céu quase preto com brilho vermelho no horizonte, casas tortas, névoa
-    criarParalaxe() {
-        // Semente
-        const rnd = new Phaser.Math.RandomDataGenerator(['wanda']);
-        // Camada 0: céu escuro com brilho carmesim no horizonte
-        this.camadaParalaxe(0.04, -95, (g, L) => {
-            for (let i = 0; i < 8; i++) { g.fillStyle(Phaser.Display.Color.GetColor(10 + i * 6, 2 + i, 6 + i * 2), 1); g.fillRect(0, 100 + i * 70, L, 70); }
-            // Lua vermelha apagada
-            g.fillStyle(0x5c0f22, 0.6); g.fillCircle(1100, 220, 60); g.fillStyle(0x0d0205, 1); g.fillCircle(1118, 210, 56);
-        });
-        // Camada 1: casas tortas quase pretas, com janelas vermelhas fracas
-        this.camadaParalaxe(0.2, -85, (g, L) => {
-            for (let x = 0; x < L - 160; x += rnd.between(150, 230)) {
-                const w = rnd.between(90, 130), h = rnd.between(90, 160), t = rnd.between(-14, 14);
-                g.fillStyle(0x1a0309, 1); g.fillPoints([{ x, y: 660 }, { x: x + w, y: 660 }, { x: x + w + t, y: 660 - h }, { x: x + t, y: 660 - h }], true);
-                g.fillRect(x + t - 10, 660 - h - 14, w + 20, 14); g.fillRect(x + w / 2 + t - 12, 660 - h - 40, 24, 26);
-                g.fillStyle(0xff2a4d, 0.18); g.fillRect(x + 16, 660 - h + 24, 16, 20); g.fillRect(x + w - 32, 660 - h + 24, 16, 20);
-            }
-        });
-        // Camada 2: fitas de energia carmesim
-        this.camadaParalaxe(0.5, -75, (g, L) => {
-            for (let i = 0; i < 10; i++) { g.fillStyle(0xff2a4d, 0.05); g.fillEllipse(rnd.between(0, L), rnd.between(200, 600), rnd.between(300, 600), 30); }
-        });
-    }
+    // Cenário temático (realidade do caos: redemoinho hex, subúrbio distorcido, névoa escarlate e fragmentos) — desenhado em cenarios.js
+    criarParalaxe() { Cenarios.wanda(this); }
+
+    // O cenário reage aos poderes e momentos da fase (cenarios.js)
+    cenarioReagir(evento, dados) { Cenarios.reagir(this, evento, dados); }
 
     // Roteiro desenhado à mão (real: 'A' = só existe na VERMELHA; 'B' = só na AZUL)
     // Checkpoints (3: fase longa e cheia de troca de realidade). Realidade declarada = a que deixa o próximo trecho seguro

@@ -216,7 +216,8 @@ class Fase {
 
     // Cria uma camada de paralaxe que se repete (desenhada UMA vez numa textura, rápida de mostrar).
     // fator = quanto ela anda com a câmera (0 = parada, 1 = junto); desenhar(g, largura) desenha o pedaço
-    camadaParalaxe(fator, profundidade, desenhar, largura = 2048) {
+    // opcoes.tingir = false deixa a camada com as cores próprias (cenários detalhados da rodada 7)
+    camadaParalaxe(fator, profundidade, desenhar, largura = 2048, opcoes = {}) {
         // Nome único da textura (fase + número da camada)
         const chave = `paralaxe-${this.heroi}-${profundidade}`;
         // Só desenha a textura uma vez (nas próximas tentativas reaproveita)
@@ -235,7 +236,8 @@ class Fase {
         // Guarda o fator de velocidade
         tile.fatorParalaxe = fator;
         // Cenário monocromático: tingido com a cor da seção (clareada), como os fundos dos jogos de ritmo
-        if (this.corTingimento) tile.setTint(this.corTingimento);
+        tile.tingir = opcoes.tingir !== false;
+        if (this.corTingimento && tile.tingir) tile.setTint(this.corTingimento);
         // Guarda na lista (o atualizar move todas)
         (this.camadas = this.camadas || []).push(tile);
         // Devolve (algumas fases mexem na camada)
@@ -297,7 +299,8 @@ class Fase {
             g.generateTexture('fundoGeo', 256, 256); g.destroy();
         }
         // TileSprite fixo na tela; a textura rola devagar com a câmera (paralaxe)
-        this.fundoGeo = this.cena.add.tileSprite(640, 400, 1280, 560, 'fundoGeo').setScrollFactor(0).setDepth(-88).setAlpha(0.3);
+        // (com cenário detalhado os quadrados ficam bem discretos, só como textura)
+        this.fundoGeo = this.cena.add.tileSprite(640, 400, 1280, 560, 'fundoGeo').setScrollFactor(0).setDepth(-88).setAlpha(this.cenarioDetalhado ? 0.08 : 0.3);
         // Feixes de luz subindo do chão (pulsam na batida)
         this.criarFeixes();
         // Cor da seção atual (muda junto com o véu)
@@ -1198,7 +1201,7 @@ class Fase {
             // Brilho alvo desta batida (decai)
             this.brilhoChao = Math.max(0.55, (this.brilhoChao || 0.55) - dtReal / 350);
             this.linhasChao.forEach((l) => l.setAlpha(this.brilhoChao));
-            if (this.feixes) this.feixes.setAlpha(0.45 + 0.55 * this.brilhoChao);
+            if (this.feixes) this.feixes.setAlpha((0.45 + 0.55 * this.brilhoChao) * (this.cenarioDetalhado ? 0.5 : 1));
         }
         // Cor da seção: vai suavemente até a cor do trecho atual
         if (this.coresSecoes) {
@@ -1215,7 +1218,7 @@ class Fase {
                 if (this.fundoGeo) this.fundoGeo.setTint(this.corSecaoAtual);
                 if (this.feixes) this.feixes.setTint(this.corSecaoAtual);
                 const tinta = this.clarear(this.corSecaoAtual, 0.4);
-                (this.camadas || []).forEach((t) => t.setTint(tinta));
+                (this.camadas || []).forEach((t) => { if (t.tingir) t.setTint(tinta); });
             }
         }
     }

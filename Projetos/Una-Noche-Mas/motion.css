@@ -1,0 +1,639 @@
+/* =====================================================================
+   UNA NOCHE MÁS · motion.css
+   ---------------------------------------------------------------------
+   Todas as animações do site. Carrega por último, depois de style.css
+   e components.css. Dono: Agente 3. Contrato: docs/DESIGN_SYSTEM.md §5.
+
+   Como cada animação foi decidida (nesta ordem):
+     1. Deve animar? (quantas vezes a pessoa vê isso?)
+     2. Para quê? (resposta ao toque, continuidade, estado, evitar salto,
+        ou deleite, este só no que é raro, como a abertura)
+     3. Ferramenta mais barata (CSS > Web Animations API > JS por quadro)
+     4. Só propriedades baratas: transform / translate / rotate / scale,
+        opacity e clip-path. Nunca width, height, top, left.
+     5. Curva: entrar/sair = --ease-out · mover na tela = --ease-in-out ·
+        hover/cor = ease · movimento constante = linear. Nunca ease-in.
+     6. Duração: toque 100–160 ms, interface até 300 ms, revelação ~700 ms.
+     7. Coisa acionada várias vezes = transition (pode ser interrompida
+        no meio); keyframes só para o que roda uma vez.
+     8. Saída sempre mais rápida que a entrada.
+   Os tokens (--ease-*, --dur-*) vêm de style.css: não criamos outros.
+
+   Índice
+     1. Abertura do hero (coreografia, uma vez)
+     2. Indicador de rolagem ("pinga")
+     3. Revelar ao rolar ([data-reveal], imagem, escalonado)
+     4. Microinterações (botões, polaroid, ingresso, players, vídeo, fotos)
+     5. Header, menu do celular, toast e botão topo
+     6. Grão de filme (decisão: fica parado)
+     7. Menos movimento (prefers-reduced-motion: reduce)
+   ===================================================================== */
+
+
+/* =====================================================================
+   1. ABERTURA DO HERO
+   ---------------------------------------------------------------------
+   Vista uma vez por visita → aqui cabe deleite. As peças "assentam"
+   como papel sendo colado na mesa: chegam um pouco levantadas (scale
+   maior), tortas e deslocadas, e param na posição final. A lua com fita
+   chega por último. O título entra "em registro": o azul começa longe
+   e encosta no rosa, como uma impressão sendo acertada.
+
+   Truques importantes:
+   - Só o "from" é escrito: o "to" é o estado normal do elemento, então
+     a animação termina exatamente onde o style.css manda.
+   - Usamos "transform" nas animações. A rotação base das peças está na
+     propriedade "rotate" e o parallax usa "translate": as três se somam
+     sem uma apagar a outra.
+   - fill-mode "backwards": antes de começar, a peça fica no "from"
+     (invisível); depois de acabar, a animação se solta e o hover dos
+     botões volta a funcionar.
+   - Nada bloqueia o clique: opacity 0 ainda recebe toque.
+   - motion.js segura tudo por até 700 ms se a fonte ainda não chegou,
+     para o título não trocar de fonte no meio da entrada.
+   Linha do tempo (total ≈ 1,2 s):
+     0 ms glifos ★∞ · 100 ms artistas · 160 ms título (registro até
+     ~1,1 s) · 360 ms data · 440/500 ms botões · 600 ms controles ·
+     560 ms lua (termina em ~1,2 s)
+   ===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+
+    /* Papel sendo colado: levantado, torto e um pouco fora do lugar */
+    @keyframes unm-hero-colar {
+        from {
+            opacity: 0;
+            transform: translate(var(--colar-x, 0), var(--colar-y, 12px))
+                       rotate(var(--colar-rot, -3deg))
+                       scale(1.06);
+        }
+    }
+
+    /* Texto subindo pouco (rótulos, título, botões) */
+    @keyframes unm-hero-surgir {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+    }
+
+    /* Só aparecer (controles pequenos: não precisam de "voo") */
+    @keyframes unm-hero-fade {
+        from { opacity: 0; }
+    }
+
+    /* Título entrando em registro: as 3 sombras do .titulo-cromatico,
+       na mesma ordem, começando deslocadas/apagadas. O "to" é o valor
+       normal do style.css. text-shadow repinta o texto a cada quadro,
+       mas roda UMA vez em ~1 s, então o custo é aceitável. */
+    @keyframes unm-hero-registro {
+        from {
+            text-shadow:
+                -0.05em 0 0 rgba(143, 179, 207, 0),
+                0.11em 0.055em 0 rgba(44, 74, 94, 0.95),
+                0 0 0.5em rgba(255, 105, 180, 0);
+        }
+    }
+
+    .hero__glifos {
+        --colar-rot: -8deg;
+        --colar-y: 8px;
+        animation: unm-hero-colar 600ms var(--ease-out) 0ms backwards;
+    }
+
+    .hero__artistas {
+        animation: unm-hero-surgir 500ms var(--ease-out) 100ms backwards;
+    }
+
+    /* Dois "canais" no título: o corpo sobe com ease-out; o registro de
+       cor se move na tela, por isso usa ease-in-out. */
+    .hero__titulo {
+        animation:
+            unm-hero-surgir 650ms var(--ease-out) 160ms backwards,
+            unm-hero-registro 950ms var(--ease-in-out) 160ms backwards;
+    }
+
+    .hero__linha {
+        animation: unm-hero-surgir 500ms var(--ease-out) 360ms backwards;
+    }
+
+    /* Os botões entram um depois do outro (escalonamento de 60 ms).
+       A animação fica nos filhos, não no [data-hero] do contêiner. */
+    .hero__acoes > * {
+        animation: unm-hero-surgir 500ms var(--ease-out) 440ms backwards;
+    }
+    .hero__acoes > :nth-child(2) { animation-delay: 500ms; }
+
+    .video-toggle,
+    .hero__rolar {
+        animation: unm-hero-fade 400ms var(--ease-out) 600ms backwards;
+    }
+
+    /* A lua chega por último, de cima e da direita, girando para a
+       rotação final (5deg no style.css) */
+    .hero__lua {
+        --colar-x: 10px;
+        --colar-y: -14px;
+        --colar-rot: 7deg;
+        animation: unm-hero-colar 650ms var(--ease-out) 560ms backwards;
+    }
+
+    /* O eco datilografado (só em telas largas) aparece junto da data */
+    .hero__eco {
+        animation: unm-hero-fade 600ms var(--ease-out) 380ms backwards;
+    }
+}
+
+
+/* =====================================================================
+   2. INDICADOR DE ROLAGEM: a linha "pinga"
+   ---------------------------------------------------------------------
+   Movimento constante → linear. Lento (2,6 s) para não chamar mais
+   atenção que o título. clip-path desenha a linha de cima para baixo
+   e depois a "escorre" para fora. Começa só depois da abertura e
+   motion.js pausa quando o hero sai da tela (.is-fora-da-tela).
+   ===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes unm-pingar {
+        0%   { clip-path: inset(0 0 100% 0); }   /* vazia */
+        45%  { clip-path: inset(0 0 0 0); }      /* desenhou até o fim */
+        60%  { clip-path: inset(0 0 0 0); }      /* respira */
+        100% { clip-path: inset(100% 0 0 0); }   /* escorre por baixo */
+    }
+
+    .hero__rolar-linha {
+        animation: unm-pingar 2.6s linear 1.4s infinite backwards;
+    }
+
+    .hero.is-fora-da-tela .hero__rolar-linha {
+        animation-play-state: paused;
+    }
+}
+
+
+/* =====================================================================
+   3. REVELAR AO ROLAR
+   ---------------------------------------------------------------------
+   script.js põe .is-visible UMA vez quando o bloco entra na tela.
+   Aqui só escondemos o estado inicial, e só se:
+     - html.js existe (sem JS ninguém revelaria → nada fica escondido);
+     - a pessoa não pediu menos movimento.
+   Usamos a propriedade "translate" (e não transform) para não brigar
+   com hovers ou com o parallax de outras peças.
+   ===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+
+    /* 3.1 Blocos: sobem 20 px e aparecem (marketing: 700 ms é ok) */
+    html.js [data-reveal] {
+        transition:
+            opacity var(--dur-revelar) var(--ease-out),
+            translate var(--dur-revelar) var(--ease-out);
+    }
+
+    html.js [data-reveal]:not(.is-visible) {
+        opacity: 0;
+        translate: 0 20px;
+    }
+
+    /* 3.2 Imagens: a foto "abre" de cima para baixo por clip-path
+       (receita do Emil), como uma foto revelando dentro da moldura.
+       [data-reveal="imagem"] fica no miolo (contrato), e o corte é feito
+       na <img> de dentro: assim a moldura, a fita e o fundo escuro do
+       miolo ficam visíveis o tempo todo (sem "papel em branco").
+       A borda da foto desce pela tela → ease-in-out. A foto também
+       "assenta" de leve (scale 1.06 → 1, ease-out). */
+    html.js [data-reveal="imagem"]:not(.is-visible) {
+        opacity: 1;
+        translate: none;
+    }
+
+    html.js .polaroid__imagem[data-reveal="imagem"] {
+        background: var(--noite-2);   /* o "buraco" escuro antes da foto */
+    }
+
+    html.js [data-reveal="imagem"] > img {
+        /* estado final explícito: "none" não se interpola com inset(),
+           a transição pularia direto para o fim */
+        clip-path: inset(0 0 0 0);
+        transition:
+            clip-path var(--dur-revelar) var(--ease-in-out),
+            scale 900ms var(--ease-out);
+    }
+
+    html.js [data-reveal="imagem"]:not(.is-visible) > img {
+        clip-path: inset(0 0 100% 0);
+        scale: 1.06;
+    }
+
+    /* 3.3 Grupos escalonados ([data-reveal-stagger]): script.js põe
+       .is-visible no próprio grupo. Cada filho tem --i (no HTML ou posto
+       por motion.js) e espera 60 ms a mais que o anterior. Limite de 8
+       para a fila nunca ficar lenta; começa 120 ms depois para "seguir"
+       o bloco de texto. Se o grupo também tiver [data-reveal], ele mesmo
+       fica parado: só os filhos entram. */
+    html.js [data-reveal-stagger] > * {
+        transition:
+            opacity 500ms var(--ease-out),
+            translate 500ms var(--ease-out);
+        transition-delay: calc(min(var(--i, 0), 8) * 60ms + 120ms);
+    }
+
+    html.js [data-reveal][data-reveal-stagger]:not(.is-visible) {
+        opacity: 1;
+        translate: none;
+    }
+
+    html.js [data-reveal-stagger]:not(.is-visible) > * {
+        opacity: 0;
+        translate: 0 14px;
+    }
+}
+
+
+/* =====================================================================
+   4. MICROINTERAÇÕES
+   ---------------------------------------------------------------------
+   Coisas tocadas muitas vezes: curtas, por transition (interrompíveis),
+   e hover só com mouse de verdade: (hover: hover) and (pointer: fine).
+   ===================================================================== */
+
+/* ---------- 4.1 Botão .btn ----------
+   O hover (sobe 2 px e a sombra sólida azul/rosa "sai de registro" de
+   4 para 6 px) e o afundar no clique já estão em style.css. Aqui
+   somamos o "scale .97" do clique: o botão parece ouvir o dedo.
+   Usamos a propriedade "scale" para somar ao transform do style.css. */
+@media (prefers-reduced-motion: no-preference) {
+    .btn {
+        transition:
+            transform var(--dur-press) var(--ease-out),
+            scale var(--dur-press) var(--ease-out),
+            box-shadow var(--dur-press) var(--ease-out),
+            background-color var(--dur-curta) var(--ease-out),
+            color var(--dur-curta) var(--ease-out),
+            border-color var(--dur-curta) var(--ease-out);
+    }
+
+    .btn:active:not(:disabled):not([aria-disabled="true"]) {
+        scale: 0.97;
+    }
+
+    /* Anel de carregamento mais rápido: carregar "parece" mais curto */
+    .btn.is-loading::after,
+    .player.is-loading .player__icone::after {
+        animation-duration: 600ms;
+    }
+}
+
+/* ---------- 4.2 Polaroid ----------
+   Com o mouse em cima, a foto "desgruda" da mesa: endireita cerca de 1°,
+   sobe 4 px e a sombra fica mais longa. Hover = curva "ease".
+   rotate (inclinação) + transform (subida) + translate (parallax) são
+   propriedades separadas, então nada se anula. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .polaroid {
+        transition:
+            rotate var(--dur-media) ease,
+            transform var(--dur-media) ease,
+            box-shadow var(--dur-media) ease;
+    }
+
+    .polaroid:hover {
+        rotate: calc(var(--rot, 0deg) * 0.6);
+        transform: translateY(-4px);
+        box-shadow: var(--sombra-papel-alta);
+    }
+}
+
+/* ---------- 4.3 Ingresso .rede ----------
+   O cartão sobe e a seta avança (style.css). Aqui o canhoto azul
+   desliza 2 px para a esquerda, como se fosse destacado no picote. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .rede__canhoto {
+        transition: transform var(--dur-media) var(--ease-out);
+    }
+
+    .rede:hover .rede__canhoto {
+        transform: translateX(-2px);
+    }
+}
+
+/* ---------- 4.4 Players com fachada ----------
+   Hover: um anel rosa sai do ícone uma única vez (convida a clicar sem
+   ficar piscando). Carregado: a fachada e a iframe trocam com um
+   crossfade com 2 px de desfoque, o que esconde o "pulo" entre a
+   miniatura e o player real. */
+.player__icone {
+    position: relative;   /* referência do anel e do giro */
+}
+
+.player__icone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--rosa);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    @keyframes unm-pulso {
+        from { opacity: 0.8; transform: scale(1); }
+        to   { opacity: 0;   transform: scale(1.5); }
+    }
+
+    .player:not(.is-loading) .player__carregar:hover .player__icone::before {
+        animation: unm-pulso 700ms var(--ease-out) 1;
+    }
+}
+
+/* A fachada não some com display:none (isso cortaria a troca):
+   ela desbota, desfoca e fica "hidden" só no fim. */
+.player__fachada {
+    transition:
+        opacity var(--dur-media) var(--ease-out),
+        filter var(--dur-media) var(--ease-out),
+        visibility 0s linear 0s;
+}
+
+.player.is-loaded .player__fachada {
+    display: block;
+    opacity: 0;
+    filter: blur(2px);
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity var(--dur-media) var(--ease-out),
+        filter var(--dur-media) var(--ease-out),
+        visibility 0s linear var(--dur-media);
+}
+
+/* A iframe espera invisível até .is-loaded e então entra. */
+.player iframe {
+    opacity: 0;
+    filter: blur(2px);
+    transition:
+        opacity var(--dur-media) var(--ease-out),
+        filter var(--dur-media) var(--ease-out);
+}
+
+.player.is-loaded iframe {
+    opacity: 1;
+    filter: none;
+}
+
+/* Se a iframe for inserida já com .is-loaded no player, o
+   @starting-style garante que ela ainda entre com o crossfade. */
+@starting-style {
+    .player.is-loaded iframe {
+        opacity: 0;
+        filter: blur(2px);
+    }
+}
+
+/* ---------- 4.5 Pausar/tocar o vídeo ----------
+   Os dois ícones ficam empilhados na mesma célula e trocam com
+   crossfade + leve scale (0.6 → 1), em vez de piscar com display. */
+.video-toggle__icone {
+    grid-area: 1 / 1;
+    transition:
+        opacity var(--dur-curta) ease,
+        scale var(--dur-curta) var(--ease-out);
+}
+
+.video-toggle .video-toggle__icone--tocar,
+.video-toggle[aria-pressed="true"] .video-toggle__icone--pausar {
+    display: block;
+    opacity: 0;
+    scale: 0.6;
+}
+
+.video-toggle[aria-pressed="true"] .video-toggle__icone--tocar {
+    opacity: 1;
+    scale: 1;
+}
+
+/* ---------- 4.6 Foto que falhou ----------
+   As iniciais (KS/AN) aparecem com fade em vez de "estalar". Acontece no
+   máximo uma vez por foto, então keyframes servem. Só opacity. */
+@keyframes unm-aparecer {
+    from { opacity: 0; }
+}
+
+.foto--falhou::after {
+    animation: unm-aparecer var(--dur-media) var(--ease-out);
+}
+
+
+/* =====================================================================
+   5. HEADER, MENU DO CELULAR, TOAST E BOTÃO TOPO
+   ===================================================================== */
+
+/* ---------- 5.1 Header .is-scrolled ----------
+   Problema: o estado transparente é um degradê (background-image) e o
+   sólido é uma cor. Degradê não "transiciona" para cor: ele some de uma
+   vez. Solução: o degradê fica sempre, e uma camada sólida (::before)
+   aparece por opacity em --dur-media. Sem blur de fundo de propósito:
+   a direção pede "nada de glassmorphism" e backdrop-filter custa caro
+   em cada quadro de rolagem. */
+html.js .site-header.is-scrolled {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+}
+
+html.js .site-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(11, 13, 18, 0.94);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-media) ease;
+}
+
+html.js .site-header.is-scrolled::before,
+html.js body.menu-aberto .site-header::before {
+    opacity: 1;
+}
+
+/* ---------- 5.2 Botão do menu: as linhas viram X ----------
+   style.css anima "top" e "width" (propriedades de layout). Aqui a
+   mesma forma é feita só com translate/scale + o rotate do style.css:
+   as linhas ficam nos lugares originais e só se movem por transform. */
+.menu-toggle__linha {
+    transition:
+        translate var(--dur-media) var(--ease-out),
+        scale var(--dur-media) var(--ease-out),
+        transform var(--dur-media) var(--ease-out),
+        background-color var(--dur-curta) ease;
+}
+
+/* Linha curta = linha inteira (22 px) encolhida para ~14 px e puxada
+   4 px para a esquerda, para continuar alinhada à esquerda. */
+.menu-toggle__linha:nth-of-type(3) {
+    width: 22px;
+    scale: 0.64 1;
+    translate: -4px 0;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__linha:nth-of-type(2) {
+    top: 19px;
+    translate: 0 4px;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__linha:nth-of-type(3) {
+    top: 27px;
+    scale: 1 1;
+    translate: 0 -4px;
+}
+
+/* ---------- 5.3 Painel do menu (celular, < 900 px) ----------
+   Abre como uma cortina que desce do header (clip-path) com a curva de
+   gaveta, e os links entram em fila curta (40 ms). Fecha mais rápido
+   (180 ms), sem fila. display:none → block é animado com
+   @starting-style + transition-behavior: allow-discrete. */
+@media (max-width: 899px) and (prefers-reduced-motion: no-preference) {
+    html.js .nav {
+        clip-path: inset(0 0 100% 0);
+        transition:
+            clip-path 180ms var(--ease-out),
+            display 180ms allow-discrete;
+    }
+
+    html.js .nav.is-open {
+        clip-path: inset(0 0 0 0);
+        transition:
+            clip-path var(--dur-media) var(--ease-drawer),
+            display var(--dur-media) allow-discrete;
+    }
+
+    @starting-style {
+        html.js .nav.is-open {
+            clip-path: inset(0 0 100% 0);
+        }
+    }
+
+    html.js .nav.is-open .nav__lista > li {
+        transition:
+            opacity 240ms var(--ease-out),
+            translate 240ms var(--ease-out);
+        transition-delay: 60ms;
+    }
+
+    html.js .nav.is-open .nav__lista > li:nth-child(2) { transition-delay: 100ms; }
+    html.js .nav.is-open .nav__lista > li:nth-child(3) { transition-delay: 140ms; }
+
+    @starting-style {
+        html.js .nav.is-open .nav__lista > li {
+            opacity: 0;
+            translate: 0 12px;
+        }
+    }
+}
+
+/* ---------- 5.4 Toast ----------
+   Entra de baixo (280 ms) e sai por baixo, mais rápido (180 ms).
+   transition (e não keyframes): se outro aviso chegar no meio, ele
+   retoma de onde está. "visibility" só vira hidden no fim da saída. */
+.toast {
+    transition:
+        translate 180ms var(--ease-out),
+        opacity 180ms var(--ease-out),
+        visibility 0s linear 180ms;
+}
+
+.toast.is-shown {
+    transition:
+        translate var(--dur-media) var(--ease-out),
+        opacity var(--dur-media) var(--ease-out),
+        visibility 0s linear 0s;
+}
+
+/* ---------- 5.5 Botão topo ----------
+   Aparece com fade + scale .9 → 1 (240 ms) e some mais rápido (160 ms).
+   A entrada usa "scale"; o clique usa "transform" (scale .94), assim os
+   dois não disputam a mesma propriedade. */
+html.js .topo {
+    transform: none;
+    scale: 0.9;
+    transition:
+        border-color var(--dur-curta) ease,
+        color var(--dur-curta) ease,
+        opacity 160ms var(--ease-out),
+        scale 160ms var(--ease-out),
+        visibility 0s linear 160ms,
+        transform var(--dur-press) var(--ease-out);
+}
+
+html.js .topo.is-visible {
+    scale: 1;
+    transition:
+        border-color var(--dur-curta) ease,
+        color var(--dur-curta) ease,
+        opacity 240ms var(--ease-out),
+        scale 240ms var(--ease-out),
+        visibility 0s linear 0s,
+        transform var(--dur-press) var(--ease-out);
+}
+
+html.js .topo.is-visible:active {
+    transform: scale(0.94);
+}
+
+
+/* =====================================================================
+   6. GRÃO DE FILME: decisão = NÃO animar
+   ---------------------------------------------------------------------
+   O grão (body::before, style.css) cobre a tela inteira. Animá-lo com
+   background-position repintaria a tela toda a cada passo; com transform
+   numa camada maior seria barato, mas o efeito "chiado de TV" distrai a
+   leitura e a capa é papel impresso, não película rodando. Grão parado
+   = papel. Fica estático, sem custo nenhum.
+   ===================================================================== */
+
+
+/* =====================================================================
+   7. MENOS MOVIMENTO (prefers-reduced-motion: reduce)
+   ---------------------------------------------------------------------
+   Tudo o que move (translate, scale, rotate, clip-path, parallax) foi
+   escrito dentro de "no-preference", então aqui simplesmente não existe.
+   Este bloco garante o resto para o site inteiro:
+     - transições só de cor/opacidade, no máximo 120 ms, sem atraso;
+     - posições finais de imediato (toast, topo).
+   As animações de carregamento (anéis) continuam, devagar (style.css).
+   O parallax é desligado em motion.js, inclusive se a preferência mudar
+   com a página aberta.
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-property: opacity, color, background-color, border-color,
+            box-shadow, visibility, filter, outline-color, text-decoration-color !important;
+        transition-duration: 120ms !important;
+        transition-delay: 0s !important;
+        transition-timing-function: ease !important;
+    }
+
+    .toast { translate: -50% 0; }
+    html.js .topo { scale: 1; }
+}
+
+
+/* Impressão / PDF: tudo no estado final, sem animação (script.js já
+   revela tudo no "beforeprint"; aqui garantimos o resto). */
+@media print {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    [data-reveal],
+    [data-reveal] > img,
+    [data-reveal-stagger] > *,
+    [data-parallax] {
+        opacity: 1 !important;
+        translate: none !important;
+        clip-path: none !important;
+    }
+}

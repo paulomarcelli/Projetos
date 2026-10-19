@@ -1,0 +1,198 @@
+/* ===== VARIÁVEIS DE COR ===== */
+:root {
+    --preto: #000000;      /* preto puro, cor de fundo do site */
+    --branco: #ffffff;     /* branco, usado nos textos */
+    --rosa: #ff69b4;       /* rosa, cor de destaque/hover */
+    --cinza: #1a1a1a;      /* cinza escuro, fundo dos cards */
+    --azul: #2c4a5e;       /* azul jeans, cor de destaque principal */
+}
+
+/* ===== ESTILO GERAL DO SITE ===== */
+body {
+    background-color: var(--preto); /* fundo preto em todo o site */
+    margin: 0; /* remove a margem padrão do navegador */
+}
+
+/* ===== VÍDEO DE FUNDO ===== */
+#video-background {
+    width: 100%; /* ocupa toda a largura da tela */
+    height: 500px; /* altura fixa do retângulo do topo */
+    overflow: hidden; /* esconde qualquer parte do vídeo que ultrapassar */
+    position: relative; /* cria um limite para o overlay se posicionar dentro */
+}
+
+video {
+    width: 100%; /* vídeo ocupa toda a largura da div */
+    height: 100%; /* vídeo ocupa toda a altura da div */
+    object-fit: cover; /* preenche o espaço sem distorcer, cortando o excesso */
+}
+
+/* ===== TÍTULO E MENU SOBREPOSTOS AO VÍDEO ===== */
+#overlay {
+    position: absolute; /* tira do fluxo normal, flutua sobre o vídeo */
+    top: 50%; /* posiciona o topo no meio da tela */
+    left: 50%; /* posiciona a esquerda no meio da tela */
+    transform: translate(-50%, -50%); /* ajusta para centralizar de verdade */
+    text-align: center; /* centraliza o texto dentro do overlay */
+    z-index: 10; /* garante que fique na frente do vídeo */
+}
+
+#overlay h1 {
+    color: var(--branco); /* título em branco, legível sobre o vídeo */
+    font-size: 48px; /* título grande, chamativo */
+}
+
+#overlay nav a {
+    color: var(--branco); /* links do menu em branco */
+    text-decoration: none; /* remove o sublinhado padrão do link */
+    margin: 0 15px; /* espaço entre cada link do menu */
+    font-size: 18px; /* tamanho do texto do menu */
+}
+
+/* ===== SEÇÃO "SOBRE A MÚSICA" ===== */
+#sobre-musica {
+    padding: 60px 40px; /* espaço interno em cima/baixo e nas laterais */
+    text-align: center; /* centraliza o conteúdo da seção */
+}
+
+#sobre-musica h2 {
+    font-size: 28px; /* tamanho do título da seção */
+}
+
+#sobre-musica p {
+    font-size: 18px; /* tamanho do texto do parágrafo */
+    line-height: 1.6; /* espaçamento entre linhas, melhora a leitura */
+    max-width: 700px; /* limita a largura do texto, não estica demais */
+    margin: 0 auto; /* centraliza o bloco de texto na página */
+}
+
+/* ===== CAPA DA MÚSICA + BOTÕES DE STREAMING ===== */
+#ouvir-musica {
+    display: flex; /* coloca a capa e os botões lado a lado */
+    align-items: center; /* alinha os dois verticalmente ao centro */
+    justify-content: center; /* centraliza o bloco todo na tela */
+    gap: 30px; /* espaço entre a capa e os botões */
+    margin-top: 30px; /* espaço acima desse bloco */
+}
+
+#ouvir-musica img {
+    width: 200px; /* tamanho da capa do single */
+    border-radius: 10px; /* cantos arredondados na capa */
+}
+
+#botoes-streaming {
+    display: flex; /* organiza os botões em fileira/coluna */
+    flex-direction: column; /* empilha os botões, um em cima do outro */
+    gap: 15px; /* espaço entre os dois botões */
+}
+
+.botao-streaming {
+    background-color: var(--azul); /* fundo azul do botão */
+    color: var(--branco); /* texto branco dentro do botão */
+    text-decoration: none; /* remove sublinhado de link */
+    padding: 12px 24px; /* espaço interno do botão, dá o "corpo" dele */
+    border-radius: 8px; /* cantos arredondados no botão */
+    font-size: 16px; /* tamanho do texto do botão */
+    text-align: center; /* centraliza o texto dentro do botão */
+}
+
+.botao-streaming:hover {
+    background-color: var(--rosa); /* muda de cor quando passa o mouse */
+}
+
+/* ===== SEÇÃO "COMPOSITORES" ===== */
+#compositores {
+    padding: 60px 40px; /* espaço interno da seção */
+    text-align: center; /* centraliza o conteúdo */
+}
+
+#card-compositores {
+    display: flex; /* coloca os dois cards lado a lado */
+    justify-content: center; /* centraliza os cards na tela */
+    gap: 60px; /* espaço entre os dois cards */
+    flex-wrap: wrap; /* permite quebrar linha se não couber lado a lado */
+}
+
+.card {
+    background-color: var(--cinza); /* fundo cinza escuro do card */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* borda branca bem transparente */
+    border-radius: 10px; /* cantos arredondados do card */
+    padding: 20px; /* espaço interno do card */
+    width: 280px; /* largura fixa, deixa o card discreto */
+    text-align: left; /* texto alinhado à esquerda dentro do card */
+    opacity: 0; /* começa invisível (para o efeito de fade-in) */
+    transform: translateY(30px); /* começa 30px mais baixo (para o fade-in) */
+    transition: opacity 1s ease-out, transform 1s ease-out; /* anima a transição suave */
+}
+
+.card.visible {
+    opacity: 1; /* fica totalmente visível quando o JS adiciona essa classe */
+    transform: translateY(0); /* volta para a posição original */
+}
+
+.card img {
+    width: 100%; /* imagem ocupa toda a largura do card */
+    border-radius: 8px; /* cantos arredondados na foto */
+}
+
+.card h3 {
+    margin-top: 15px; /* espaço entre a foto e o nome */
+}
+
+.card p {
+    margin-top: 10px; /* espaço entre o nome e o texto */
+    line-height: 1.5; /* espaçamento entre linhas do texto */
+}
+
+/* ===== TÍTULOS GERAIS (h2 e h3) ===== */
+h2, h3 {
+    color: var(--azul); /* todos os títulos ficam na cor azul */
+}
+
+/* ===== PARÁGRAFOS GERAIS ===== */
+p {
+    color: var(--branco); /* todo texto de parágrafo em branco */
+}
+
+/* ===== LINKS GERAIS ===== */
+a {
+    color: var(--branco); /* cor padrão dos links */
+}
+
+/* ===== SEÇÃO "REDES SOCIAIS" ===== */
+#redes-sociais {
+    padding: 60px 40px; /* espaço interno da seção */
+    text-align: center; /* centraliza o conteúdo */
+}
+
+#redes-sociais h3 {
+    margin-bottom: 20px; /* espaço abaixo do título */
+}
+
+#redes-sociais a {
+    color: var(--branco); /* ícones em branco */
+    font-size: 18px; /* tamanho dos ícones */
+    margin: 0 15px; /* espaço entre os ícones */
+    text-decoration: none; /* remove sublinhado */
+}
+
+#redes-sociais a:hover {
+    color: var(--azul); /* ícone muda de cor ao passar o mouse */
+}
+
+/* ===== RESPONSIVIDADE PARA TELAS PEQUENAS ===== */
+@media (max-width: 768px) {
+    #card-compositores {
+        flex-direction: column; /* empilha os cards verticalmente */
+    }
+
+    #overlay h1 {
+        font-size: 32px; /* reduz o título em telas menores */
+    }
+
+    #video-background {
+        height: 350px; /* reduz a altura do vídeo em telas menores */
+    }
+}
+
+

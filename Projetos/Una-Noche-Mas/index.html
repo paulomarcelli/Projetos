@@ -1,120 +1,455 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Una Noche Más - Karol Sevilla</title>
-    <link rel="stylesheet" href="style.css"> <!-- Linkar o CSS -->
-    <script src="script.js" defer></script> <!-- Linkar o JS -->
-    <link rel="icon" type="image/png" href="nochemas.png"> <!-- Favicon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Antes de qualquer CSS: marca o <html> com a classe "js".
+         Assim o CSS sabe que o JavaScript está ligado e pode, por exemplo,
+         esconder o menu do celular atrás do botão. Sem JS, tudo fica visível. -->
+    <script>document.documentElement.classList.add('js')</script>
+
+    <!-- ===== SEO e compartilhamento ===== -->
+    <title>Una Noche Más · Alan Navarro e Karol Sevilla | Site de fã</title>
+    <meta name="description" content="Site de fã de “Una Noche Más”, single de Alan Navarro e Karol Sevilla lançado em 5 de dezembro de 2024: a parceria, os compositores, o clipe e as redes sociais.">
+    <link rel="canonical" href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/">
+    <meta name="theme-color" content="#0b0d12"> <!-- cor da barra do navegador no celular -->
+
+    <!-- Open Graph: o "cartão" que aparece quando o link é compartilhado -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Una Noche Más · Alan Navarro e Karol Sevilla">
+    <meta property="og:description" content="Site de fã do single “Una Noche Más” (5 de dezembro de 2024).">
+    <meta property="og:url" content="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/">
+    <meta property="og:image" content="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/assets/img/og-una-noche-mas.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Capa do single Una Noche Más: fotos de Alan Navarro e Karol Sevilla coladas sobre papel escuro.">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" type="image/png" href="nochemas.png"> <!-- Favicon: a capa original -->
+
+    <!-- Dados estruturados (JSON-LD): explicam ao Google, em linguagem de máquina,
+         que esta página fala de uma gravação musical. Só fatos que já estão no texto. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MusicRecording",
+        "name": "Una Noche Más",
+        "byArtist": [
+            { "@type": "Person", "name": "Karol Sevilla" },
+            { "@type": "Person", "name": "Alan Navarro" }
+        ],
+        "datePublished": "2024-12-05",
+        "image": "https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/assets/img/og-una-noche-mas.jpg",
+        "url": "https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/",
+        "sameAs": [
+            "https://open.spotify.com/intl-es/track/7nxvsuEtsUoFWx5H9jaF8A",
+            "https://www.youtube.com/watch?v=pCgq0ZMoUg4"
+        ]
+    }
+    </script>
+
+    <!-- ===== Fontes (Google Fonts) =====
+         preconnect = abre a conexão com o servidor das fontes mais cedo.
+         Pedimos só os pesos usados: Playfair (títulos), Inter (texto), Space Mono (rótulos).
+         display=swap = mostra o texto na hora com uma fonte reserva e troca quando a fonte chega. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,600;1,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Ícones (Font Awesome). "integrity" garante que o arquivo não foi alterado no caminho. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- ===== Nossos estilos, nesta ordem =====
+         1) style.css      = design system (cores, tipos, espaçamentos) + layout + componentes base
+         2) components.css = estados dos componentes interativos
+         3) motion.css     = animações -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="components.css">
+    <link rel="stylesheet" href="motion.css">
+
+    <!-- Scripts com "defer": baixam em paralelo e só rodam quando o HTML terminou de carregar -->
+    <script src="script.js" defer></script>
+    <script src="motion.js" defer></script>
 </head>
 <body>
 
- <div id="video-background"> <!-- Seção do vídeo de fundo com título e menu sobrepostos -->
-    <video src="unanochemas.mp4" autoplay muted loop playsinline></video> <!-- Vídeo de fundo em loop, mudo e sem controles -->
+    <!-- Link "pular para o conteúdo": invisível até receber foco pelo teclado (Tab) -->
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-    <div id="overlay"> <!-- Camada que flutua por cima do vídeo -->
+    <!-- ================= CABEÇALHO FIXO ================= -->
+    <header class="site-header">
+        <div class="site-header__inner container">
 
-       <h1>Una Noche Más</h1> <!-- Título principal do site -->
-
-       <nav> <!-- Menu de navegação interna -->
-
-        <a href="#sobre-musica">Sobre a Música</a>
-        <a href="#compositores">Compositores</a>
-        <a href="#redes-sociais">Redes Sociais</a>
-
-       </nav>
-
-    </div>
-
- </div>
-
-
- <div id="sobre-musica">
-    <h2>Sobre a Música</h2>
-
-    <p>"Una Noche Más" é uma parceria entre Karol Sevilla e o cantor mexicano Alan Navarro,
-    lançada como single em 5 de dezembro de 2024. Na época do lançamento, a música fazia
-    parte do próximo projeto musical de Alan Navarro, sendo o segundo single divulgado
-    dele. O videoclipe oficial, com pouco menos de 3 minutos de duração, foi produzido
-    pela Universal Music Group México.</p>
-
-    <div id="ouvir-musica">   <!-- container flex: capa de um lado, botões do outro -->
-
-        <img src="https://i.scdn.co/image/ab67616d0000b273ebf2fb016fea94ae8ecb252a" alt="Capa do single Una Noche Más">
-
-        <div id="botoes-streaming">
-            <a href="https://open.spotify.com/intl-es/track/7nxvsuEtsUoFWx5H9jaF8A" target="_blank" rel="noopener noreferrer" class="botao-streaming">
-                Ouvir no Spotify
+            <!-- Logotipo em texto: leva de volta ao topo -->
+            <a class="logo" href="#inicio">
+                <span class="logo__estrela" aria-hidden="true">★</span>
+                <span class="logo__texto">Una Noche Más</span>
             </a>
-            <a href="https://www.youtube.com/watch?v=pCgq0ZMoUg4" target="_blank" rel="noopener noreferrer" class="botao-streaming">
-                Assistir no YouTube
-            </a>
+
+            <!-- Botão do menu no celular (o comportamento é feito no script.js) -->
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal">
+                <span class="sr-only menu-toggle__rotulo">Abrir menu</span>
+                <span class="menu-toggle__linha" aria-hidden="true"></span>
+                <span class="menu-toggle__linha" aria-hidden="true"></span>
+            </button>
+
+            <!-- Menu: as mesmas 3 âncoras da versão clássica -->
+            <nav id="menu-principal" class="nav" aria-label="Seções do site">
+                <ul class="nav__lista" role="list">
+                    <li><a class="nav__link" href="#sobre-musica"><span class="nav__num" aria-hidden="true">01</span> Sobre a Música</a></li>
+                    <li><a class="nav__link" href="#compositores"><span class="nav__num" aria-hidden="true">02</span> Compositores</a></li>
+                    <li><a class="nav__link" href="#redes-sociais"><span class="nav__num" aria-hidden="true">03</span> Redes Sociais</a></li>
+                </ul>
+            </nav>
         </div>
+    </header>
 
-    </div>
+    <!-- tabindex="-1": o <main> pode receber o foco do "Pular para o conteúdo"
+         (sem isso, o próximo Tab voltaria para o começo da página) -->
+    <main id="conteudo" tabindex="-1">
 
-</div>
+        <!-- ================= HERO (abertura com o clipe) ================= -->
+        <section id="inicio" class="hero" aria-labelledby="titulo-principal">
 
- <div id="compositores"> <!-- Seção com os dois compositores da música -->
-    <h2>Compositores</h2>
+            <!-- Vídeo de fundo: mudo, em loop, SEM autoplay no HTML.
+                 Quem dá o "play" é o JavaScript, e só se a pessoa não pediu menos movimento.
+                 aria-hidden: é decoração, leitores de tela pulam. -->
+            <video class="hero__video" muted loop playsinline preload="metadata"
+                   poster="assets/img/una-noche-mas-poster.webp" aria-hidden="true">
+                <source src="assets/una-noche-mas-hero.webm" type="video/webm"> <!-- mais leve, o navegador tenta primeiro -->
+                <source src="assets/una-noche-mas-hero.mp4" type="video/mp4">   <!-- reserva para quem não lê WebM -->
+            </video>
+            <div class="hero__vinheta" aria-hidden="true"></div> <!-- escurece as bordas, como foto antiga + grão -->
 
-    <div id="card-compositores"> <!-- Container flex, só os cards ficam lado a lado -->
+            <!-- Lua crescente (desenhada só com CSS), igual ao recorte colado na capa -->
+            <div class="hero__lua" aria-hidden="true" data-parallax="0.12" data-hero>
+                <span class="lua"></span>
+            </div>
 
-        <div class="card"> <!-- Card da Karol -->
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpIH5CMAzpJi-lhV2rc4Xa_ip4B8lD4VNcYM6btTSjojb56z0QAcyStR7V&s=10" alt="Foto de Karol Sevilla">
-            <h3>Karol Sevilla</h3>
-            <p>
-                Karol Sevilla é uma atriz e cantora mexicana, nascida em 9 de novembro de 1999,
-                na Cidade do México. Ficou mundialmente conhecida ao interpretar Luna Valente
-                na série da Disney Channel "Soy Luna", papel que a transformou em um ídolo pop
-                para milhões de fãs na América Latina e no mundo. Além da atuação, construiu
-                uma carreira musical sólida com singles próprios e parcerias, como "Una Noche Más".
+            <!-- Glifos do canto superior esquerdo, copiando a capa -->
+            <p class="hero__glifos" aria-hidden="true" data-hero>
+                <span class="estrela">★</span><span class="infinito">∞</span>
             </p>
 
-            
-        </div>
+            <div class="hero__conteudo container">
+                <p class="rotulo hero__artistas" data-hero>Alan Navarro / Karol Sevilla</p>
 
-        <div class="card"> <!-- Card do Alan -->
-            <img src="https://static.wikia.nocookie.net/wikipop/images/0/09/AlanNavarro.jpg/revision/latest?cb=20210521204152&path-prefix=es" alt="Foto de Alan Navarro">
-            <h3>Alan Navarro</h3>
-            <p>
-                <p>
-    Alan Navarro é um cantor mexicano que iniciou sua carreira aos 17 anos como
-    integrante do grupo pop juvenil CD9, um dos maiores fenômenos latino-americanos
-    da última década, com mais de 400 shows em 7 anos. Atualmente segue como
-    carreira solo, escrevendo suas próprias músicas com influências como Depeche
-    Mode, Queen e Bruno Mars.
-</p>
+                <h1 id="titulo-principal" class="hero__titulo titulo-cromatico" tabindex="-1" data-hero>Una Noche Más</h1>
+
+                <p class="rotulo hero__linha" data-hero>
+                    <span class="estrela" aria-hidden="true">★</span>
+                    Single · <time datetime="2024-12-05">05.12.2024</time>
+                    <span class="infinito" aria-hidden="true">∞</span>
+                </p>
+
+                <div class="hero__acoes" data-hero>
+                    <a class="btn btn--rosa" href="https://open.spotify.com/intl-es/track/7nxvsuEtsUoFWx5H9jaF8A" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-brands fa-spotify" aria-hidden="true"></i>
+                        Ouvir no Spotify
+                        <span class="sr-only">(abre em nova aba)</span>
+                    </a>
+                    <a class="btn btn--fantasma" href="#player-youtube">
+                        <i class="fa-solid fa-play" aria-hidden="true"></i>
+                        Assistir ao clipe
+                    </a>
+                </div>
+            </div>
+
+            <!-- Eco do nome dos artistas, repetido e apagado como na capa (só decoração) -->
+            <div class="hero__eco" aria-hidden="true" data-parallax="0.06">
+                <span>Alan Navarro / Karol Sevilla</span>
+                <span>Alan Navarro / Karol Sevilla</span>
+                <span>Alan Navarro / Karol Sevilla</span>
+                <span>Alan Navarro / Karol Sevilla</span>
+            </div>
+
+            <!-- Pausar/tocar o vídeo (regra de acessibilidade WCAG 2.2.2).
+                 aria-pressed="true" quer dizer "pausado". -->
+            <button class="video-toggle" type="button" aria-pressed="false" data-hero>
+                <span class="sr-only">Pausar vídeo de fundo</span>
+                <i class="fa-solid fa-pause video-toggle__icone video-toggle__icone--pausar" aria-hidden="true"></i>
+                <i class="fa-solid fa-play video-toggle__icone video-toggle__icone--tocar" aria-hidden="true"></i>
+            </button>
+
+            <!-- Indicador de rolagem -->
+            <a class="hero__rolar" href="#sobre-musica" data-hero>
+                <span class="rotulo" aria-hidden="true">Role</span>
+                <span class="hero__rolar-linha" aria-hidden="true"></span>
+                <span class="sr-only">Ir para Sobre a Música</span>
+            </a>
+        </section>
+
+
+        <!-- ================= 01 · SOBRE A MÚSICA ================= -->
+        <section id="sobre-musica" class="secao secao--musica" aria-labelledby="titulo-musica">
+            <div class="container">
+
+                <div class="secao__cabeca" data-reveal>
+                    <span class="secao__numero" aria-hidden="true">01</span>
+                    <span class="rotulo secao__rotulo" aria-hidden="true">A parceria</span>
+                </div>
+
+                <div class="musica">
+                    <div class="musica__texto" data-reveal>
+                        <h2 id="titulo-musica" class="secao__titulo">Sobre a Música</h2>
+
+                        <p class="musica__lide">"Una Noche Más" é uma parceria entre Karol Sevilla e o cantor mexicano Alan Navarro,
+                        lançada como single em 5 de dezembro de 2024. Na época do lançamento, a música fazia
+                        parte do próximo projeto musical de Alan Navarro, sendo o segundo single divulgado
+                        dele. O videoclipe oficial, com pouco menos de 3 minutos de duração, foi produzido
+                        pela Universal Music Group México.</p>
+
+                        <!-- "Ficha técnica" no estilo das legendas datilografadas da capa.
+                             Só repete fatos que já estão no parágrafo acima. -->
+                        <dl class="ficha" data-reveal-stagger>
+                            <div class="ficha__item" style="--i:0">
+                                <dt>Lançamento</dt>
+                                <dd><time datetime="2024-12-05">05.12.2024</time></dd>
+                            </div>
+                            <div class="ficha__item" style="--i:1">
+                                <dt>No projeto do Alan</dt>
+                                <dd>2º single</dd>
+                            </div>
+                            <div class="ficha__item" style="--i:2">
+                                <dt>Clipe</dt>
+                                <dd>pouco menos de 3 min</dd>
+                            </div>
+                            <div class="ficha__item" style="--i:3">
+                                <dt>Produção do clipe</dt>
+                                <dd>Universal Music Group México</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <!-- A capa vira um objeto: polaroid com fita, levemente torta -->
+                    <figure class="musica__capa">
+                        <div class="polaroid polaroid--capa" style="--rot: 2.5deg">
+                            <!-- data-reveal="imagem" fica no miolo (não na moldura) para a revelação não cortar a fita -->
+                            <div class="polaroid__imagem" data-reveal="imagem">
+                                <img src="assets/img/capa-una-noche-mas.webp" width="800" height="800"
+                                     alt="Capa do single Una Noche Más: fotos de Alan Navarro e Karol Sevilla coladas com fita sobre papel escuro, com uma lua crescente."
+                                     loading="lazy" decoding="async">
+                            </div>
+                        </div>
+                        <figcaption class="rotulo musica__legenda">
+                            <span class="estrela" aria-hidden="true">★</span> Capa do single
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <!-- ===== Bloco "Ouvir": links originais + players dentro da página ===== -->
+                <section class="ouvir" aria-labelledby="titulo-ouvir">
+                    <div class="ouvir__cabeca" data-reveal>
+                        <h3 id="titulo-ouvir" class="ouvir__titulo">Ouvir <span class="infinito" aria-hidden="true">∞</span> assistir</h3>
+                        <p class="rotulo ouvir__nota">Os players só carregam quando você clicar</p>
+                    </div>
+
+                    <div class="ouvir__players">
+                        <!-- Player do YouTube com "fachada": só a miniatura até a pessoa clicar.
+                             O script.js troca a fachada pela iframe (privacidade + página mais leve). -->
+                        <div id="player-youtube" class="player player--video" data-reveal>
+                            <div class="player__fachada">
+                                <img class="player__thumb" src="https://i.ytimg.com/vi/pCgq0ZMoUg4/hqdefault.jpg"
+                                     width="480" height="360" alt="" loading="lazy" decoding="async">
+                                <button class="player__carregar" type="button" data-player="youtube">
+                                    <span class="player__icone" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+                                    <span class="player__texto">Ver o clipe aqui</span>
+                                    <span class="rotulo player__nota">YouTube · clipe oficial</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Coluna da direita: prévia do Spotify + os links originais -->
+                        <div class="ouvir__lado">
+                            <!-- Player do Spotify, mesma ideia -->
+                            <div class="player player--audio" data-reveal>
+                                <div class="player__fachada">
+                                    <img class="player__capinha" src="assets/img/capa-una-noche-mas.webp" width="800" height="800" alt="" loading="lazy" decoding="async">
+                                    <button class="player__carregar" type="button" data-player="spotify">
+                                        <span class="player__icone" aria-hidden="true"><i class="fa-brands fa-spotify"></i></span>
+                                        <span class="player__texto">Tocar prévia aqui</span>
+                                        <span class="rotulo player__nota">Spotify · prévia</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Os dois botões da versão clássica (abrem o app/site em nova aba) -->
+                            <div class="ouvir__botoes">
+                                <a href="https://open.spotify.com/intl-es/track/7nxvsuEtsUoFWx5H9jaF8A" target="_blank" rel="noopener noreferrer" class="btn btn--rosa">
+                                    <i class="fa-brands fa-spotify" aria-hidden="true"></i>
+                                    Ouvir no Spotify
+                                    <span class="sr-only">(abre em nova aba)</span>
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=pCgq0ZMoUg4" target="_blank" rel="noopener noreferrer" class="btn btn--azul">
+                                    <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                                    Assistir no YouTube
+                                    <span class="sr-only">(abre em nova aba)</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+
+        <!-- ================= 02 · COMPOSITORES ================= -->
+        <section id="compositores" class="secao secao--dueto" aria-labelledby="titulo-compositores">
+            <div class="container">
+
+                <div class="secao__cabeca" data-reveal>
+                    <span class="secao__numero" aria-hidden="true">02</span>
+                    <span class="rotulo secao__rotulo" aria-hidden="true">Karol <span class="infinito">∞</span> Alan</span>
+                </div>
+
+                <h2 id="titulo-compositores" class="secao__titulo dueto__titulo" data-reveal>Compositores</h2>
+
+                <div class="dueto">
+                    <!-- Card da Karol -->
+                    <article class="artista artista--karol" aria-labelledby="nome-karol">
+                        <figure class="artista__figura">
+                            <div class="polaroid" style="--rot: -3deg" data-parallax="0.06">
+                                <!-- .foto guarda as iniciais: se a imagem falhar, o JS põe .foto--falhou e as iniciais aparecem -->
+                                <div class="foto" data-iniciais="KS" data-reveal="imagem">
+                                    <!-- Mesma foto da versão original do site (miniatura hospedada pelo Google).
+                                         Tamanho real 399×501. referrerpolicy="no-referrer" e loading="eager" pelo
+                                         mesmo motivo da foto do Alan (servidor externo; ver comentário lá embaixo). -->
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpIH5CMAzpJi-lhV2rc4Xa_ip4B8lD4VNcYM6btTSjojb56z0QAcyStR7V&amp;s=10"
+                                         width="399" height="501"
+                                         alt="Foto de Karol Sevilla" data-iniciais="KS" referrerpolicy="no-referrer"
+                                         loading="eager" fetchpriority="low" decoding="async">
+                                </div>
+                                <span class="polaroid__nota" aria-hidden="true">Karol ★</span>
+                            </div>
+                            <figcaption class="credito">Foto: Google Imagens (a mesma da versão original)</figcaption>
+                        </figure>
+                        <div class="artista__texto" data-reveal>
+                            <h3 id="nome-karol" class="artista__nome">Karol Sevilla</h3>
+                            <p>
+                                Karol Sevilla é uma atriz e cantora mexicana, nascida em 9 de novembro de 1999,
+                                na Cidade do México. Ficou mundialmente conhecida ao interpretar Luna Valente
+                                na série da Disney Channel "Soy Luna", papel que a transformou em um ídolo pop
+                                para milhões de fãs na América Latina e no mundo. Além da atuação, construiu
+                                uma carreira musical sólida com singles próprios e parcerias, como "Una Noche Más".
+                            </p>
+                        </div>
+                    </article>
+
+                    <!-- O infinito como "ponte" entre os dois (só aparece grande no desktop) -->
+                    <div class="dueto__ponte" aria-hidden="true">
+                        <span class="infinito">∞</span>
+                    </div>
+
+                    <!-- Card do Alan (o <p> dentro de <p> da versão antiga foi corrigido) -->
+                    <article class="artista artista--alan" aria-labelledby="nome-alan">
+                        <figure class="artista__figura">
+                            <div class="polaroid" style="--rot: 2.5deg" data-parallax="0.1">
+                                <div class="foto" data-iniciais="AN" data-reveal="imagem">
+                                    <!-- Foto de outro site (Fandom). Detalhes importantes:
+                                         - referrerpolicy="no-referrer": o Fandom recusa (erro 404) pedidos que contam
+                                           de qual site vieram; sem "referrer", a foto chega normalmente.
+                                         - loading="eager" + fetchpriority="low": baixa logo depois do essencial, sem
+                                           esperar a pessoa rolar até aqui (com "lazy", o pedido ao servidor externo só
+                                           começava perto da tela e o quadro podia aparecer vazio, inclusive em capturas).
+                                         - width/height: tamanho real (1080×1350) para o navegador reservar o espaço. -->
+                                    <img src="https://static.wikia.nocookie.net/wikipop/images/0/09/AlanNavarro.jpg/revision/latest?cb=20210521204152&amp;path-prefix=es"
+                                         width="1080" height="1350"
+                                         alt="Foto de Alan Navarro" data-iniciais="AN" referrerpolicy="no-referrer"
+                                         loading="eager" fetchpriority="low" decoding="async">
+                                </div>
+                                <span class="polaroid__nota" aria-hidden="true">Alan ★</span>
+                            </div>
+                            <figcaption class="credito">Foto: Wikipop (Fandom)</figcaption>
+                        </figure>
+                        <div class="artista__texto" data-reveal>
+                            <h3 id="nome-alan" class="artista__nome">Alan Navarro</h3>
+                            <p>
+                                Alan Navarro é um cantor mexicano que iniciou sua carreira aos 17 anos como
+                                integrante do grupo pop juvenil CD9, um dos maiores fenômenos latino-americanos
+                                da última década, com mais de 400 shows em 7 anos. Atualmente segue como
+                                carreira solo, escrevendo suas próprias músicas com influências como Depeche
+                                Mode, Queen e Bruno Mars.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= 03 · REDES SOCIAIS ================= -->
+        <section id="redes-sociais" class="secao secao--redes" aria-labelledby="titulo-redes">
+            <div class="container">
+
+                <div class="secao__cabeca" data-reveal>
+                    <span class="secao__numero" aria-hidden="true">03</span>
+                    <span class="rotulo secao__rotulo" aria-hidden="true">Siga os dois</span>
+                </div>
+
+                <h2 id="titulo-redes" class="secao__titulo" data-reveal>Redes Sociais</h2>
+
+                <!-- Cartões em forma de ingresso (com canhoto picotado) -->
+                <ul class="redes" role="list" data-reveal-stagger>
+                    <li style="--i:0">
+                        <a class="rede" href="https://www.instagram.com/karolsevillaofc/?hl=pt" target="_blank" rel="noopener noreferrer">
+                            <span class="rede__canhoto" aria-hidden="true">
+                                <i class="fa-brands fa-instagram"></i>
+                            </span>
+                            <span class="rede__corpo">
+                                <span class="rotulo rede__tipo">Instagram</span>
+                                <span class="rede__nome">Karol Sevilla</span>
+                                <span class="rede__arroba">@karolsevillaofc</span>
+                            </span>
+                            <span class="rede__seta" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="sr-only">(abre em nova aba)</span>
+                        </a>
+                    </li>
+                    <li style="--i:1">
+                        <a class="rede" href="https://www.instagram.com/alannavarro/" target="_blank" rel="noopener noreferrer">
+                            <span class="rede__canhoto" aria-hidden="true">
+                                <i class="fa-brands fa-instagram"></i>
+                            </span>
+                            <span class="rede__corpo">
+                                <span class="rotulo rede__tipo">Instagram</span>
+                                <span class="rede__nome">Alan Navarro</span>
+                                <span class="rede__arroba">@alannavarro</span>
+                            </span>
+                            <span class="rede__seta" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="sr-only">(abre em nova aba)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- ================= RODAPÉ ================= -->
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <p class="site-footer__glifos" aria-hidden="true">
+                <span class="estrela">★</span><span class="infinito">∞</span>
             </p>
+            <div class="site-footer__textos">
+                <p class="site-footer__aviso">Site de fã, sem vínculo oficial com os artistas.</p>
+                <p class="credito">Fotos dos artistas: mesmas fontes da versão original do site.</p>
+            </div>
+            <div class="site-footer__links">
+                <a class="link-classico" href="classic/">Ver a versão clássica</a>
+                <!-- Sem JS: é um link comum para o título do topo (funciona sozinho).
+                     Com JS: vira botão flutuante (.topo.is-visible), rola até o topo e foca o <h1>. -->
+                <a class="topo" href="#titulo-principal">
+                    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+                    <span class="topo__texto">Voltar ao topo</span>
+                </a>
+            </div>
         </div>
+    </footer>
 
-    </div> <!-- Fecha card-compositores -->
-
- </div> <!-- Fecha compositores -->
-
-
- <div id="redes-sociais">  <!-- Abre redes sociais -->
-    <h3>Redes Sociais</h3> <!--Subtitulo-->
-    <a href="https://www.instagram.com/karolsevillaofc/?hl=pt" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-instagram"></i><!--Icone Instagram-->
-        <span>
-            Karol Sevilla
-            </span>
-    </a>
-
-    <a href="https://www.instagram.com/alannavarro/" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-instagram"></i><!--Icone Instagram-->
-        <span>
-            Alan Navarro
-            </span>
-    </a>
-
-</div> <!-- Fecha redes sociais -->
-
+    <!-- Aviso rápido ("toast"). role="status" faz o leitor de tela anunciar o texto quando ele muda. -->
+    <div class="toast" role="status" aria-live="polite"></div>
 
 </body>
 </html>

@@ -1,0 +1,117 @@
+/* =====================================================================
+   UNA NOCHE MÁS · components.css
+   ---------------------------------------------------------------------
+   Estados e detalhes dos componentes INTERATIVOS (menu, players, fotos
+   com reserva, toast, botão topo...). A aparência base de cada um já
+   está em style.css; aqui entram só os ajustes de comportamento.
+   Dono na Fase B: Agente 2. Contrato de classes: docs/DESIGN_SYSTEM.md
+   ===================================================================== */
+
+/* ---------- Foco de "chegada" (main e h1) ----------
+   O <main> (alvo do "Pular para o conteúdo") e o <h1> (alvo do "voltar ao
+   topo") recebem foco só para o leitor de tela e o Tab recomeçarem dali.
+   Eles não são botões, então um contorno em volta da página inteira só
+   confundiria. O <h1> mantém o contorno quando o foco veio do teclado. */
+main[tabindex="-1"]:focus { outline: none; }
+.hero__titulo:focus:not(:focus-visible) { outline: none; }
+
+
+/* ---------- Botão do vídeo ----------
+   style.css dá display:grid ao .video-toggle, e isso "vence" o atributo
+   hidden do navegador. Quando o vídeo falha, o JS põe hidden e aqui
+   garantimos que o botão some de verdade. */
+.video-toggle[hidden] { display: none; }
+
+
+/* ---------- Players com fachada ----------
+   A <iframe> é criada por cima da fachada. Enquanto não carrega, ela fica
+   invisível (o anel de "carregando" da fachada continua à vista) e não
+   recebe cliques. Quando o JS põe .is-loaded, ela aparece. */
+.player:not(.is-loaded) iframe {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* aria-disabled (usado no lugar de disabled para não perder o foco) */
+.player__carregar[aria-disabled="true"] { cursor: progress; }
+
+
+/* ---------- Voltar ao topo ----------
+   Agora é um <a> (funciona sem JS). Tira o sublinhado e a cor de link. */
+.topo {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* ---------- Toast (aviso) ----------
+   O JS coloca dentro: .toast__texto (com um link, às vezes) + botão ×. */
+.toast {
+    /* Com left:50%, a caixa "acha" que só tem meia tela de largura e quebra
+       o texto em colunas estreitas. max-content + o max-width do style.css
+       fazem o aviso usar a largura que precisa, até o limite. */
+    width: max-content;
+    display: flex;
+    align-items: center;
+    gap: var(--esp-3);
+    padding-right: var(--esp-1); /* o × já tem a própria área de toque */
+}
+
+/* style.css deixa o toast "intocável" (pointer-events:none) quando escondido.
+   Visível, ele precisa aceitar mouse: × , link e pausa ao passar o mouse. */
+.toast.is-shown { pointer-events: auto; }
+
+.toast__texto { flex: 1; }
+
+.toast__texto a {
+    color: var(--noite);
+    font-weight: 700;
+    text-underline-offset: 3px;
+    /* área de toque maior sem mudar a linha do texto */
+    display: inline-block;
+    padding-block: var(--esp-2);
+}
+
+.toast__fechar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--raio-s);
+    color: var(--noite);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/* O contorno rosa padrão some no papel claro: aqui ele fica escuro */
+.toast :focus-visible { outline-color: var(--noite); outline-offset: 0; }
+
+@media (hover: hover) and (pointer: fine) {
+    .toast__fechar:hover { background: rgba(11, 13, 18, 0.08); }
+}
+
+/* Aviso de erro: uma faixa rosa na borda esquerda */
+.toast[data-tipo="erro"] { border-left: 6px solid var(--rosa); }
+
+/* No celular, o toast sobe um pouco para não cobrir o botão "voltar ao topo" */
+@media (max-width: 599px) {
+    .toast { bottom: calc(var(--esp-5) + 48px + var(--esp-3)); }
+}
+
+/* ---------- Com o menu do celular aberto ----------
+   O painel do menu usa z-index 59/60 (style.css), mas o botão "topo" (70) e o
+   toast (80) ficam ACIMA dele e apareceriam por cima do painel. Em vez de
+   mexer nos z-index do design system, escondemos os dois enquanto o menu
+   está aberto. O script.js também pausa o tempo do toast nesse intervalo,
+   então o aviso reaparece quando o menu fecha. */
+/* (seletor longo de propósito: precisa vencer "html.js .topo.is-visible") */
+html.js body.menu-aberto .topo.is-visible,
+body.menu-aberto .toast.is-shown {
+    visibility: hidden;
+    pointer-events: none;
+}

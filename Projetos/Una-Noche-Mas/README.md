@@ -7,7 +7,7 @@
 </div>
 
 <p align="center">
-  <b>Um novo projeto criado para continuar evoluindo no desenvolvimento web.</b>
+  <b>Site de fã do single “Una Noche Más”, de Alan Navarro e Karol Sevilla, reformulado como uma colagem noturna inspirada na capa.</b>
 </p>
 
 ---
@@ -26,13 +26,34 @@ Este projeto faz parte da minha evolução como estudante de desenvolvimento web
 | CSS3 | Estilos, layout e aparência visual |
 | JavaScript | Interações e comportamento da página |
 
+## ✨ Versão nova (redesign)
+
+A identidade vem da capa do single: fotos coladas com fita, lua, ★ e ∞, textos de máquina de escrever e o título rosa com deslocamento azul.
+
+- Hero com o vídeo do clipe (versão leve de 2,7 MB, já começa no trecho certo), botão de pausar e entrada animada.
+- "Sobre a Música" com ficha técnica e players do Spotify e do YouTube que só carregam quando você clica.
+- "Compositores" como dueto (Karol ∞ Alan), com as fotos da versão original e iniciais caso alguma não carregue.
+- "Redes Sociais" em cartões de ingresso, menu fixo e menu de tela cheia no celular.
+- Acessível por teclado, com contraste AA, e respeita "reduzir movimento".
+
+## 🕰️ Versão clássica
+
+A versão antiga continua funcionando em [`classic/`](https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/classic/), igual à original (só os caminhos do vídeo e do ícone apontam para a pasta de cima, e há um botão para a versão nova).
+
 ## 📁 Arquivos
 
 ```text
 Una-Noche-Mas/
-├── index.html
-├── style.css
-├── script.js
+├── index.html            → versão nova
+├── style.css             → design system e layout
+├── components.css        → menu, players, toast, fotos
+├── motion.css / motion.js → animações
+├── script.js             → funcionalidades
+├── assets/               → vídeo leve, poster, capa e imagem de compartilhamento
+├── docs/                 → DIRECAO.md (auditoria e direção) e DESIGN_SYSTEM.md
+├── classic/              → versão antiga preservada
+├── unanochemas.mp4       → vídeo original (usado pela versão clássica)
+├── nochemas.png          → capa original (favicon)
 └── README.md
 ```
 

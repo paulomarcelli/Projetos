@@ -132,7 +132,13 @@ const CENARIOS_IMAGEM = {
         { arquivo: 'assets/backgrounds/hulk/hulk-c4-perto.webp',  fator: 0.14 },
         { arquivo: 'assets/backgrounds/hulk/hulk-c5-poeira.webp', fator: 0.18, deriva: 10, respira: true }
     ] },
-    'Gaviao':         { sequencia: seq('gaviao', 5),        tom: 0xb8b8c4 },
+    'Gaviao':         { camadas: [
+        { arquivo: 'assets/backgrounds/gaviao/gaviao-c1-ceu.webp',   fator: 0.01 },
+        { arquivo: 'assets/backgrounds/gaviao/gaviao-c2-longe.webp', fator: 0.03 },
+        { arquivo: 'assets/backgrounds/gaviao/gaviao-c3-meio.webp',  fator: 0.07 },
+        { arquivo: 'assets/backgrounds/gaviao/gaviao-c4-perto.webp', fator: 0.14 },
+        { arquivo: 'assets/backgrounds/gaviao/gaviao-c5-luzes.webp', fator: 0.18, deriva: 8, respira: true }
+    ] },
     'Homem-Aranha':   { camadas: [
         { arquivo: 'assets/backgrounds/homem-aranha/aranha-c1-ceu.webp',       fator: 0.01 },
         { arquivo: 'assets/backgrounds/homem-aranha/aranha-c2-skyline.webp',   fator: 0.03 },

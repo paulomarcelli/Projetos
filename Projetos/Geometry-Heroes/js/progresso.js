@@ -78,8 +78,9 @@ const Progresso = {
             // Conteúdo: dificuldade, barra e recordes
             extra.innerHTML =
                 `<span class="card-dif" style="--dif:${dif.cor}"><i class="dif-icone"></i>${cfg.dificuldade.toUpperCase()} <em>${'★'.repeat(dif.estrelas)}</em></span>` +
-                `<span class="card-modo">Normal</span><span class="card-barra"><i style="width:${pct}%"></i><em>${pct}%</em></span>` +
-                `<span class="card-modo">Prática</span><span class="card-barra pratica"><i style="width:${info.melhorPctPratica || 0}%"></i><em>${info.melhorPctPratica || 0}%</em></span>` +
+                // Progresso: rótulo e porcentagem na mesma linha (fora da barra, sempre legíveis); barra embaixo
+                `<span class="card-progresso"><span class="card-modo">Progresso</span><b class="card-pct">${pct}%</b>` +
+                `<span class="card-barra"><i style="width:${pct}%"></i></span></span>` +
                 `<span class="card-stats">${info.concluida ? `Melhor tempo ${this.formatar(info.melhorTempo)} · ${info.menosTentativas} tentativa(s)` : 'Ainda não concluída'}</span>`;
         });
     },

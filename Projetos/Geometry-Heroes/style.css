@@ -1030,7 +1030,7 @@ kbd {
 .level-btn[data-level="Gaviao"]         { --retrato: url("assets/herois/gaviao-arqueiro.webp"); }
 .level-btn[data-level="DrEstranho"]     { --retrato: url("assets/herois/doutor-estranho.webp"); }
 /* Wanda: medalhão redondo (a imagem tem fundo próprio) */
-#level-select .level-btn[data-level="Wanda"]::before {
+#level-select .level-btn[data-level="Wanda"]::before {   /* (antigo medalhão; anulado pelo estilo HQ no fim do arquivo) */
     --retrato: url("assets/herois/wanda.webp");
     top: 50%; bottom: auto; height: auto; width: 24%; aspect-ratio: 1; right: 3%;
     transform: translateY(-50%);
@@ -1061,3 +1061,128 @@ kbd {
 /* Contraste: rótulos brancos dos botões verdes ganham contorno escuro (como as letras do título) */
 .botao-redondo b { -webkit-text-stroke: .22em var(--contorno); paint-order: stroke fill; }
 .painel-fechar { background: #2a7a10; }         /* Verde mais escuro: texto branco com contraste AA */
+
+/* =====================================================================
+   ESTILO HQ (tela inicial e seleção de fases) — painéis de quadrinhos,
+   título vermelho e branco, retícula de pontos e contornos pretos grossos
+   ===================================================================== */
+:root {
+    --hq-vermelho: #e3161f; --hq-vermelho-esc: #9c0b12; --hq-tinta: #0a0a12;
+    --hq-papel: #fff6e0; --hq-fundo: #111a3a; --hq-amarelo: #ffd400;
+}
+
+/* Fundo: azul-noite de HQ com retícula de pontos e raios de ação vermelhos */
+#menu, #level-select {
+    background:
+        radial-gradient(circle at 50% 42%, #e3161f33 0, transparent 46%),
+        radial-gradient(#ffffff14 1.1px, transparent 1.3px) 0 0 / 1.1cqw 1.1cqw,
+        repeating-conic-gradient(from 0deg at 50% 42%, #e3161f14 0deg 6deg, transparent 6deg 18deg),
+        linear-gradient(160deg, #1a2452 0%, var(--hq-fundo) 55%, #070b1e 100%);
+}
+
+/* Página de HQ: 3 painéis de cada lado, inclinados, com sarjeta branca e contorno preto */
+.elenco { display: none; }
+.hq-pagina { position: absolute; inset: 0; pointer-events: none; }
+.hq-col { position: absolute; top: 3%; bottom: 3%; width: 24%; display: grid; grid-template-rows: 1.15fr 1fr 1.15fr; gap: 1.2cqw; }
+.hq-esq { left: 1.6%; } .hq-dir { right: 1.6%; }
+.hq-painel {
+    margin: 0; position: relative; overflow: hidden; background: var(--hq-tinta);
+    border: .45cqw solid var(--hq-tinta); outline: .35cqw solid var(--hq-papel);
+    box-shadow: .7cqw .7cqw 0 var(--hq-tinta);
+    animation: hq-entra 520ms var(--ease-out) both;
+}
+.hq-esq .hq-painel { transform: rotate(-2deg); } .hq-dir .hq-painel { transform: rotate(2deg); }
+.hq-esq .hq-painel:nth-child(2) { transform: rotate(1.5deg) translateX(6%); }
+.hq-dir .hq-painel:nth-child(2) { transform: rotate(-1.5deg) translateX(-6%); }
+.hq-painel img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.p-aranha img { object-position: 50% 22%; } .p-gaviao img { object-position: 45% 20%; }
+.p-ferro img { object-position: 50% 18%; } .p-hulk img { object-position: 50% 12%; }
+.p-estranho img { object-position: 50% 20%; } .p-wanda img { object-position: 50% 10%; }
+.hq-painel:nth-child(1) { animation-delay: 60ms; } .hq-painel:nth-child(2) { animation-delay: 140ms; } .hq-painel:nth-child(3) { animation-delay: 220ms; }
+@keyframes hq-entra { from { opacity: 0; translate: 0 6%; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .hq-painel { animation: none; } }
+
+/* Título: GEOMETRY branco num letreiro vermelho inclinado; HEROES branco com contorno preto e sombra vermelha */
+#game-title { display: flex; flex-direction: column; align-items: center; gap: .4cqw; line-height: .95; }
+#game-title .t1 {
+    display: inline-block; padding: .25em .7em .2em; color: #fff; font-size: .62em;
+    background: var(--hq-vermelho); border: .35cqw solid var(--hq-tinta);
+    transform: skewX(-10deg) rotate(-2deg); box-shadow: .5cqw .5cqw 0 var(--hq-tinta);
+    text-shadow: none; -webkit-text-stroke: 0; letter-spacing: .08em;
+}
+#game-title .t2 {
+    color: #fff; font-size: 1.12em; letter-spacing: .02em;
+    -webkit-text-stroke: .18cqw var(--hq-tinta);
+    text-shadow: .045em .045em 0 var(--hq-vermelho), .09em .09em 0 var(--hq-tinta);
+    transform: rotate(-2deg);
+}
+.tagline {
+    display: inline-block; background: var(--hq-amarelo); color: var(--hq-tinta);
+    border: .25cqw solid var(--hq-tinta); padding: .35em .9em; transform: rotate(-1deg);
+    box-shadow: .35cqw .35cqw 0 var(--hq-tinta); text-shadow: none; font-weight: 900;
+}
+
+/* Botões no estilo HQ: cor chapada, contorno preto e sombra deslocada; afunda ao apertar */
+.botao-redondo, #play-button, .botao-canto, #level-select .seta, .menu-voltar {
+    border: .35cqw solid var(--hq-tinta) !important; box-shadow: .45cqw .45cqw 0 var(--hq-tinta) !important;
+    transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+.botao-redondo { background: #fff !important; color: var(--hq-tinta) !important; }
+.botao-redondo b { color: var(--hq-tinta); text-shadow: none; -webkit-text-stroke: 0; }
+#play-button { background: radial-gradient(circle at 40% 35%, #ff5a4a, var(--hq-vermelho) 60%, var(--hq-vermelho-esc)) !important; }
+.botao-redondo:active, #play-button:active, .botao-canto:active, #level-select .seta:active {
+    transform: translate(.3cqw, .3cqw) scale(.98); box-shadow: .15cqw .15cqw 0 var(--hq-tinta) !important;
+}
+@media (hover: hover) and (pointer: fine) {
+    .botao-redondo:hover, #level-select .seta:hover { transform: translate(-.15cqw, -.15cqw); box-shadow: .6cqw .6cqw 0 var(--hq-tinta) !important; }
+}
+.play-label { color: #fff; text-shadow: .12em .12em 0 var(--hq-vermelho), .2em .2em 0 var(--hq-tinta); }
+.menu-header .selo, .menu-footer span { background: var(--hq-tinta); color: #fff; border: .2cqw solid #fff; }
+
+/* SELEÇÃO: cada cartão é um painel de HQ nas cores do herói, com a arte nova à direita */
+.level-heading { color: #fff !important; -webkit-text-stroke: .15cqw var(--hq-tinta); text-shadow: .08em .08em 0 var(--hq-vermelho), .14em .14em 0 var(--hq-tinta) !important; }
+#level-select .level-btn {
+    border: .5cqw solid var(--hq-tinta) !important; outline: .4cqw solid var(--hq-papel); border-radius: .6cqw !important;
+    box-shadow: 1cqw 1cqw 0 var(--hq-tinta) !important;
+    background:
+        radial-gradient(#ffffff22 1.2px, transparent 1.4px) 0 0 / .9cqw .9cqw,
+        linear-gradient(115deg, var(--c1) 0 58%, var(--c2) 58% 100%) !important;
+    padding-right: 36% !important; overflow: hidden !important;
+}
+#level-select .level-btn::before {
+    content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 36%; height: auto; left: auto;
+    background: var(--retrato-hq) no-repeat var(--foco, 50% 18%) / cover !important;
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+    border: none !important; border-radius: 0 !important; box-shadow: none !important; transform: none !important; filter: none !important;
+}
+#level-select .level-btn::after {   /* faixa preta na diagonal (sarjeta entre o texto e a arte) */
+    content: ''; position: absolute; top: 0; bottom: 0; right: 36%; width: .9cqw; background: var(--hq-tinta);
+    transform: skewX(-8deg); transform-origin: bottom; pointer-events: none;
+}
+#level-select .level-btn small {   /* caixa de narração amarela */
+    display: inline-block; background: var(--hq-amarelo); color: var(--hq-tinta); border: .2cqw solid var(--hq-tinta);
+    padding: .3em .6em; margin: .4em 0 .6em; text-shadow: none; font-weight: 700;
+}
+.level-btn[data-level="Homem-Aranha"]   { --retrato-hq: url("assets/herois/hq/homem-aranha.webp");    --foco: 50% 20%; }
+.level-btn[data-level="Hulk"]           { --retrato-hq: url("assets/herois/hq/hulk.webp");            --foco: 50% 12%; }
+.level-btn[data-level="Gaviao"]         { --retrato-hq: url("assets/herois/hq/gaviao-arqueiro.webp"); --foco: 50% 18%; }
+.level-btn[data-level="Homem de Ferro"] { --retrato-hq: url("assets/herois/hq/homem-de-ferro.webp");  --foco: 50% 15%; }
+.level-btn[data-level="DrEstranho"]     { --retrato-hq: url("assets/herois/hq/doutor-estranho.webp"); --foco: 50% 22%; }
+.level-btn[data-level="Wanda"]          { --retrato-hq: url("assets/herois/hq/wanda.webp");           --foco: 50% 10%; }
+.level-btn.concluida::after { content: none; }
+
+/* Progresso: rótulo à esquerda e % à direita na mesma linha, barra embaixo (nada sobre a barra) */
+.card-progresso { display: grid; grid-template-columns: 1fr auto; align-items: end; row-gap: .3em; }
+.card-progresso .card-modo { margin: 0; color: #fff; }
+.card-pct { font-style: normal; font-weight: 900; color: #fff; font-size: 1.05em; text-shadow: .08em .08em 0 var(--hq-tinta); }
+.card-progresso .card-barra { grid-column: 1 / -1; height: .9em; border: .18cqw solid var(--hq-tinta); background: #ffffff33; }
+.card-barra em { display: none; }
+
+/* Telas estreitas (celular em pé): só os painéis do meio de cada lado, menores */
+@media (max-aspect-ratio: 1/1) {
+    .hq-col { width: 30%; grid-template-rows: 1fr; top: auto; height: 34%; bottom: 2%; }
+    .hq-painel:not(:nth-child(2)) { display: none; }
+}
+#level-select .level-btn[data-level="Wanda"]::before { top: 0; bottom: 0; width: 36%; height: auto; aspect-ratio: auto; right: 0; }
+#level-select .seta { background: var(--hq-vermelho) !important; color: #fff !important; }
+.menu-voltar { background: #fff !important; color: var(--hq-tinta) !important; }

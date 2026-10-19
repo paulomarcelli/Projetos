@@ -464,6 +464,36 @@ class Fase {
         this.desenharSkin(this.player.skin);
         // Esconde o retângulo da física (continua colidindo normalmente)
         this.player.setVisible(false);
+        // Skin acompanha o corpo DEPOIS do passo da física (evento 'postupdate', o mesmo momento em que a
+        // câmera lê a posição). Antes era copiada no update da fase, um quadro atrasada em relação à câmera;
+        // como o tempo de cada quadro varia (telas de 90/120 Hz), o atraso variava e o cubo tremia na tela.
+        // Registrado antes dos extras do herói (tiara, chamas...), que copiam a skin.
+        // SUAVIZAÇÃO (interpolação): a física anda em passos fixos de 1/60 s; numa tela de 90/120 Hz há quadros
+        // com 0 ou 2 passos e o mundo andava aos trancos (0, 7, 0, 8 px). O desenho e a câmera usam a posição
+        // ENTRE os dois últimos passos, na proporção do tempo que sobrou — a física (pulo, colisões) não muda.
+        const mundo = this.cena.physics.world, it = { x0: null, y0: null, x1: null, y1: null };
+        const aoPasso = () => {
+            const b = this.player && this.player.body; if (!b) return;
+            const cx = b.position.x + b.halfWidth, cy = b.position.y + b.halfHeight;
+            if (it.x1 === null) { it.x0 = cx; it.y0 = cy; } else { it.x0 = it.x1; it.y0 = it.y1; }
+            it.x1 = cx; it.y1 = cy;
+        };
+        mundo.on('worldstep', aoPasso);
+        this.cena.events.once('shutdown', () => mundo.off('worldstep', aoPasso));
+        this.foco = { x: this.player.x, y: this.player.y };   // alvo da câmera (posição suavizada)
+        const sincronizar = () => {
+            const p = this.player; if (!p || !p.skin || !p.skin.active) return;
+            // Teleporte fora do passo (checkpoint, portal, reset) ou ainda sem dois passos: usa a posição real
+            if (it.x1 === null || Math.abs(p.x - it.x1) > 1 || Math.abs(p.y - it.y1) > 1 || Math.abs(it.x1 - it.x0) > 120 || Math.abs(it.y1 - it.y0) > 120) {
+                it.x0 = it.x1 = p.x; it.y0 = it.y1 = p.y;
+            }
+            const a = Phaser.Math.Clamp(mundo._elapsed / (mundo._frameTimeMS || 16.667), 0, 1);
+            p.visX = it.x0 + (it.x1 - it.x0) * a; p.visY = it.y0 + (it.y1 - it.y0) * a;
+            this.foco.x = p.visX; this.foco.y = p.visY;
+            p.sincronizarSkin(Math.min(50, this.cena.game.loop.delta || 16));
+        };
+        this.cena.events.on('postupdate', sincronizar);
+        this.cena.events.once('shutdown', () => this.cena.events.off('postupdate', sincronizar));
         // Visual próprio do herói (efeitosPoderes.js): extras animados (núcleo, chamas, caos...)
         const visual = (typeof instalarVisualHeroi === 'function') ? instalarVisualHeroi(this) : null;
         this.visualHeroi = visual;
@@ -472,7 +502,7 @@ class Fase {
             const r = (visual && visual.v.rastro) || {};
             this.rastro = this.cena.add.particles(0, 0, 'faisca', {
                 // Rastro curto e nítido (estilo dos jogos de ritmo): faíscas pequenas, ~0,2 s, sem virar borrão
-                follow: this.player, followOffset: { x: -14, y: 0 }, speedX: { min: -40, max: -10 }, speedY: { min: -8, max: 8 },
+                follow: this.foco, followOffset: { x: -14, y: 0 }, speedX: { min: -40, max: -10 }, speedY: { min: -8, max: 8 },
                 lifespan: 200, scale: { start: 0.6, end: 0 }, alpha: { start: 0.6, end: 0 }, frequency: (r.frequency || 28) + 8,
                 tint: r.tint || [cor, borda], blendMode: r.blendMode || 'NORMAL'
             }).setDepth(9);
@@ -490,7 +520,7 @@ class Fase {
         // Limites do mundo
         this.cena.cameras.main.setBounds(Math.min(0, this.xMin() + 400), 0, this.cfg.comprimento + 1600 - Math.min(0, this.xMin() + 400), 720);
         // Segue o jogador (lerp X = 1, Y = 0), deslocado pra ele ficar à esquerda
-        this.cena.cameras.main.startFollow(this.player, true, 1, 0, -(640 - MOVIMENTO.telaX), 0);
+        this.cena.cameras.main.startFollow(this.foco || this.player, true, 1, 0, -(640 - MOVIMENTO.telaX), 0);
     }
 
     // ---------------------------------------------------------------
@@ -850,8 +880,7 @@ class Fase {
         }
         // Pisca enquanto invencível
         this.player.alpha = (agora < this.player.invencivelAte && this.player.vivo) ? (Math.floor(agora / 80) % 2 ? 0.45 : 1) : (this.player.vivo ? 1 : this.player.alpha);
-        // Skin acompanha o cubo (com a animação de corrida/pulo/pouso)
-        this.player.sincronizarSkin(dtReal);
+        // (a skin acompanha o cubo no 'postupdate', depois da física — ver criarJogador)
         // Acabou de pousar: poeira nos pés + gancho da fase (o Hulk faz tremer)
         if (this.player.acabouDePousar) { this.player.acabouDePousar = false; this.efeitos.poeiraPouso(this.player.x, this.player.y + (this.player.invertido ? -20 : 20), this.tema.bordaForma, this.player.invertido ? -1 : 1); this.aoPousar(); }
         // Fundo em camadas acompanha a câmera

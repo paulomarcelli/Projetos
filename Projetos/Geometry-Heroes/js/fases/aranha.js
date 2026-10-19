@@ -379,7 +379,7 @@ class FaseAranha extends Fase {
         // Configuração padrão
         super.configurarCamera();
         // Segue com suavidade no eixo X
-        this.cena.cameras.main.startFollow(this.player, true, 0.15, 0, -(640 - MOVIMENTO.telaX), 0);
+        this.cena.cameras.main.startFollow(this.foco || this.player, true, 0.15, 0, -(640 - MOVIMENTO.telaX), 0);
     }
 
     // Movimento próprio (corrida com velocidade variável + pêndulo)

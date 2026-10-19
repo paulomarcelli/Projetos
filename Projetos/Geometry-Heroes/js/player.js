@@ -275,7 +275,9 @@ class Player extends Phaser.GameObjects.Rectangle {
         // Avanço visual (soco do Hulk, recuo do arco...): some sozinho
         this.avanco = (this.avanco || 0) * Math.pow(0.82, dt / 16);
         // Mesma posição do corpo (+ ajustes da animação)
-        this.skin.setPosition(this.x + this.avanco, this.y + base + dy * (this.invertido ? -1 : 1));
+        // (visX/visY = posição suavizada entre os dois últimos passos da física; ver Fase.criarJogador)
+        const vx = this.visX !== undefined ? this.visX : this.x, vy = this.visY !== undefined ? this.visY : this.y;
+        this.skin.setPosition(vx + this.avanco, vy + base + dy * (this.invertido ? -1 : 1));
         // Mesma rotação do corpo
         this.skin.rotation = this.rotation;
         // Mesma transparência (pisca junto na invencibilidade)
@@ -284,7 +286,7 @@ class Player extends Phaser.GameObjects.Rectangle {
         this.skin.setScale(this.scaleX * sx * ex, this.scaleY * sy * ex);
         // Adorno do modo (anel da bola / disco do UFO) acompanha o corpo
         if (this.adorno) {
-            this.adorno.setPosition(this.x + this.avanco, this.y);
+            this.adorno.setPosition(vx + this.avanco, vy);
             this.adorno.rotation = this.rotation;
             this.adorno.alpha = this.alpha;
             // No UFO de cabeça pra baixo o disco fica do outro lado

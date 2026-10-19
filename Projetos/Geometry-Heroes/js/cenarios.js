@@ -144,6 +144,13 @@ const Cenarios = {
     },
 
     // Prepara a fase pro cenário detalhado (quadrados e feixes mais discretos por cima do cenário)
+    // A fase tem sequência de imagens carregada? Então o cenário procedural (camadas em paralaxe, antenas,
+    // luzes, partículas) não é criado: por cima da arte ele parecia flutuar e andar em outra velocidade.
+    temSequencia(fase) {
+        const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi];
+        return !!(def && def.sequencia && fase.cena.textures.exists(this.chaveFundo(fase.heroi) + '-0'));
+    },
+
     preparar(fase) {
         fase.cenarioDetalhado = true;
         fase.estadoCenario = { criadoEm: fase.cena.time.now };
@@ -182,7 +189,7 @@ const Cenarios = {
     // é percorrida entre o começo e o fim da câmera. Cada imagem, menos a primeira, tem a borda esquerda
     // esmaecida (textura montada uma vez) e entra por cima da anterior: a emenda vira uma fusão suave.
     fundoSequencia(fase, def) {
-        const cena = fase.cena, base = this.chaveFundo(fase.heroi), SOBRE = 240;
+        const cena = fase.cena, base = this.chaveFundo(fase.heroi), SOBRE = 400;   // largura da fusão entre imagens
         const chaves = def.sequencia.map((_, i) => base + '-' + i).filter((k) => cena.textures.exists(k));
         if (!chaves.length) return null;
         const imgs = chaves.map((k, i) => {
@@ -265,6 +272,7 @@ const Cenarios = {
     // ---------------------------------------------------------------
     aranha(fase) {
         this.preparar(fase);
+        if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena;
         // Céu noturno: azul profundo → horizonte com brilho da cidade
         this.ceu(fase, 'cen-aranha-ceu', [0x040822, 0x0b1d5c, 0x2b3f9e], (g, w, h) => {
@@ -372,6 +380,7 @@ const Cenarios = {
         // Sem lasers nem faixas que pareçam obstáculo, sem logos. Bem diferente da cidade do Aranha (prédios
         // de tijolo e janelas) e do porto do Gavião.
         this.preparar(fase);
+        if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena, est = fase.estadoCenario;
         this.ceu(fase, 'cen-ferro-ceu2', [0x020409, 0x0a1428, 0x2a1c26], (g, w, h) => {
             this.estrelas(g, w, h, 'ferro-estrelas', 40, 0xcfe0ff, 0.35);
@@ -465,6 +474,7 @@ const Cenarios = {
     // ---------------------------------------------------------------
     hulk(fase) {
         this.preparar(fase);
+        if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena;
         this.ceu(fase, 'cen-hulk-ceu', [0x050d06, 0x163a12, 0x4f8a24], (g, w, h) => {
             // Névoa gama (manchas verdes) e nuvens de fumaça escura
@@ -554,6 +564,7 @@ const Cenarios = {
     // ---------------------------------------------------------------
     gaviao(fase) {
         this.preparar(fase);
+        if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena;
         this.ceu(fase, 'cen-gaviao-ceu', [0x07021a, 0x23094d, 0x5a2a9a], (g, w, h) => {
             this.estrelas(g, w, h, 'gaviao-estrelas', 90, 0xe6d8ff, 0.5);
@@ -635,6 +646,7 @@ const Cenarios = {
     // ---------------------------------------------------------------
     estranho(fase) {
         this.preparar(fase);
+        if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena, est = fase.estadoCenario;
         est.porDim = { N: [], E: [] };
         const paletas = {
@@ -797,6 +809,12 @@ const Cenarios = {
     // Mostra só o cenário da dimensão ativa (chamado pela troca de paleta da fase)
     mostrarDimensao(fase, dim) {
         const est = fase.estadoCenario;
+        // Sequência: no Espelho as imagens viram de cabeça para baixo e ganham tom magenta
+        if (fase.fundoSeq) {
+            const tom = (CENARIOS_IMAGEM[fase.heroi] || {}).tom || 0xffffff;
+            fase.fundoSeq.imgs.forEach((img) => img.setFlipY(dim === 'E').setTint(dim === 'E' ? 0xe08ad0 : tom));
+            return;
+        }
         if (!est || !est.porDim) return;
         // Com arte de fundo, a estrutura procedural fica escondida; a própria arte vira de cabeça pra baixo
         // e ganha a paleta magenta no Espelho (mesma conta do espelharY: y → 760 - y)
@@ -852,6 +870,7 @@ const Cenarios = {
 
     wanda(fase) {
         this.preparar(fase);
+        if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena, est = fase.estadoCenario;
         // Céu: breu no topo, roxo-vinho no meio e brasa carmesim no horizonte; lua pálida encoberta por nuvens
         this.ceu(fase, 'cen-wanda-ceu4', [0x020003, 0x0f0214, 0x3e0616], (g, w, h) => {

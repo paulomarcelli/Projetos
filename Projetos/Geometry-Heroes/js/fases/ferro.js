@@ -334,9 +334,9 @@ class FaseFerro extends Fase {
         // Controles no HUD
         this.textoControles = 'Segure Espaço/clique: subir  ·  ↓/S: mergulhar  ·  E ou botão direito: repulsor';
         // Objetivo
-        this.objetivo = 'Voe pela cidade do futuro. Chão e teto não machucam.';
+        this.objetivo = 'Voe por Nova York. Chão e teto não machucam.';
         // Frases do encerramento (texto grande e subtítulo da tela final)
-        this.fraseCurta = 'MISSÃO CUMPRIDA'; this.fraseFinal = 'a cidade do futuro está livre.';
+        this.fraseCurta = 'MISSÃO CUMPRIDA'; this.fraseFinal = 'Nova York está livre.';
         // Drones derrubados (HUD)
         this.abatidos = 0;
     }

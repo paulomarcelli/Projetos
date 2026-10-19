@@ -128,9 +128,9 @@ const CENARIOS_IMAGEM = {
     'Hulk':           { sequencia: seq('hulk', 6),          tom: 0xb4bcb4 },
     'Gaviao':         { sequencia: seq('gaviao', 5),        tom: 0xb8b8c4 },
     'Homem-Aranha':   { sequencia: seq('homem-aranha', 6),  tom: 0xa8a8bc },
-    // Imagem única espelhada em loop (a sequência destes heróis vem depois)
-    'Homem de Ferro': { arquivo: 'assets/backgrounds/homem-de-ferro/homem-de-ferro_cena.webp', fator: 0.18, y: 100, alto: 580, tom: 0x9a9aa6 },
-    'DrEstranho':     { arquivo: 'assets/backgrounds/dr-estranho/dr-estranho_cena.webp',       fator: 0.12, y: 100, alto: 580, tom: 0x9890a8 },
+    'Homem de Ferro': { sequencia: seq('homem-de-ferro', 6), tom: 0xb0b0bc },
+    'DrEstranho':     { sequencia: seq('dr-estranho', 6),    tom: 0xa8a4bc },
+    // Imagem única espelhada em loop (a sequência da Wanda vem depois)
     'Wanda':          { arquivo: 'assets/backgrounds/wanda/wanda_cena.webp',                   fator: 0.12, y: 100, alto: 580, tom: 0x9c8a92 }
 };
 // Caminhos assets/backgrounds/<pasta>/stage-01.webp ... stage-NN.webp

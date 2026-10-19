@@ -256,7 +256,7 @@ const Cenarios = {
             if (!cena.textures.exists(k)) return;
             const dupla = this.texturaEspelhada(cena, k), h = cena.textures.get(dupla).getSourceImage().height, esc = 720 / h;
             const t = cena.add.tileSprite(0, 0, 1280, 720, dupla).setOrigin(0, 0).setScrollFactor(0)
-                .setDepth(-98.9 + i * 0.05).setTileScale(esc, esc);
+                .setDepth(-98.9 + i * 0.05).setTileScale(esc, esc).setTint(def.tom || 0xffffff);
             t.fatorParalaxe = c.fator / esc * reduz; t.tingir = false; t.estrutural = false; t.fundoImagem = true;
             (fase.camadas = fase.camadas || []).push(t); tiles.push(t);
         });
@@ -265,7 +265,8 @@ const Cenarios = {
         (fase.camadas || []).forEach((c) => { if (c.estrutural) c.setVisible(false); });
         (est.estruturais || []).forEach((o) => o.setVisible(false));
         (est.ceus || []).forEach((o) => o.setVisible(false));
-        est.fundo = tiles[0]; fase.fundoArte = tiles[0];
+        est.fundo = tiles[0]; fase.fundoArte = tiles[0]; fase.fundoCamadas = tiles;
+        if (fase.mandala) fase.mandala.setVisible(false);
         fase.moverParalaxe();
         return tiles[0];
     },
@@ -852,6 +853,11 @@ const Cenarios = {
     mostrarDimensao(fase, dim) {
         const est = fase.estadoCenario;
         // Sequência: no Espelho as imagens viram de cabeça para baixo e ganham tom magenta
+        // Camadas: no Espelho tudo vira de cabeça para baixo e ganha tom magenta
+        if (fase.fundoCamadas) {
+            fase.fundoCamadas.forEach((t) => t.setFlipY(dim === 'E').setTint(dim === 'E' ? 0xe08ad0 : ((CENARIOS_IMAGEM[fase.heroi] || {}).tom || 0xffffff)));
+            return;
+        }
         if (fase.fundoSeq) {
             const tom = (CENARIOS_IMAGEM[fase.heroi] || {}).tom || 0xffffff;
             fase.fundoSeq.imgs.forEach((img) => img.setFlipY(dim === 'E').setTint(dim === 'E' ? 0xe08ad0 : tom));

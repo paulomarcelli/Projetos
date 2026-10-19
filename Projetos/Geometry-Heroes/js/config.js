@@ -136,7 +136,13 @@ const CENARIOS_IMAGEM = {
         { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c4-perto.webp',   fator: 0.14 },
         { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c5-energia.webp', fator: 0.18 }
     ] },
-    'DrEstranho':     { sequencia: seq('dr-estranho', 6),    tom: 0xa8a4bc },
+    'DrEstranho':     { camadas: [
+        { arquivo: 'assets/backgrounds/dr-estranho/estranho-c1-ceu.webp',    fator: 0.01 },
+        { arquivo: 'assets/backgrounds/dr-estranho/estranho-c2-longe.webp',  fator: 0.03 },
+        { arquivo: 'assets/backgrounds/dr-estranho/estranho-c3-meio.webp',   fator: 0.07 },
+        { arquivo: 'assets/backgrounds/dr-estranho/estranho-c4-perto.webp',  fator: 0.14 },
+        { arquivo: 'assets/backgrounds/dr-estranho/estranho-c5-arcano.webp', fator: 0.18 }
+    ], tom: 0xa8a4bc },
     // Imagem única espelhada em loop (a sequência da Wanda vem depois)
     'Wanda':          { arquivo: 'assets/backgrounds/wanda/wanda_cena.webp',                   fator: 0.12, y: 100, alto: 580, tom: 0x9c8a92 }
 };

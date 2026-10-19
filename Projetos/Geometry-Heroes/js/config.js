@@ -74,7 +74,7 @@ const TEMAS = {
 // CONFIGURAÇÃO DE CADA FASE (velocidade de corrida, comprimento até a chegada, tema)
 const CONFIG_FASES = {
     'Hulk':           { nome: 'HULK',            tema: 'hulk',     velocidade: 450, comprimento: 21100, bpm: 128, raiz: 55,  dificuldade: 'Normal' },
-    'Homem de Ferro': { nome: 'HOMEM DE FERRO',  tema: 'ferro',    velocidade: 540, comprimento: 21800, bpm: 140, raiz: 73.4, dificuldade: 'Difícil' },
+    'Homem de Ferro': { nome: 'HOMEM DE FERRO',  tema: 'ferro',    velocidade: 540, comprimento: 21800, bpm: 140, raiz: 73.4, dificuldade: 'Insano' },   // túnel: encostar mata
     'Gaviao':         { nome: 'GAVIÃO ARQUEIRO', tema: 'gaviao',   velocidade: 400, comprimento: 21000, bpm: 120, raiz: 61.7, dificuldade: 'Normal' },
     'Homem-Aranha':   { nome: 'HOMEM-ARANHA',    tema: 'aranha',   velocidade: 420, comprimento: 15000, bpm: 132, raiz: 65.4, dificuldade: 'Fácil' },
     'DrEstranho':     { nome: 'DOUTOR ESTRANHO', tema: 'estranho', velocidade: 470, comprimento: 20600, bpm: 124, raiz: 58.3, dificuldade: 'Difícil' },

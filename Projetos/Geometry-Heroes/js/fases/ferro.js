@@ -18,20 +18,17 @@ const FERRO = {
     velMissil: 320        // velocidade do míssil (pra esquerda, no mundo)
 };
 
-// PAREDE TECNOLÓGICA (do chão até "topo", ou do teto até "base"); bloqueia o tiro.
-// É SÓLIDA, como os blocos no modo nave dos jogos de ritmo: raspar por cima ou por baixo é seguro
-// (o piso e o teto dos túneis são feitos destas paredes); só bater de FRENTE mata (regra aoBaterSolido).
-// Antes era 'mortal' e encostar no piso de um túnel matava — parecia que o chão matava durante o voo.
+// PAREDE TECNOLÓGICA: bloco que mata (do chão até "topo", ou do teto até "base"); bloqueia o tiro.
+// Encostar mata em qualquer lado — inclusive no piso e no teto dos túneis: a fase é de VOAR, não de
+// deslizar (por isso o Homem de Ferro é nível Insano). O chão e o teto da tela, esses sim, não machucam.
 class ParedeTech extends Obstaculo {
-    constructor(fase, x, yTopo, largura, altura, fatia = false) {
+    constructor(fase, x, yTopo, largura, altura) {
         // Retângulo azul-escuro com borda neon
         const forma = fase.cena.add.rectangle(x + largura / 2, yTopo + altura / 2, largura, altura, 0x123047).setStrokeStyle(2, 0x29e3ff);
-        // Sólido: dá pra deslizar por cima/por baixo; a frente mata
-        super(fase, forma, 'solido');
+        // Mortal (encostar mata)
+        super(fase, forma, 'mortal');
         // Bloqueia o tiro do repulsor
         this.bloqueiaTiro = true;
-        // Fatia de túnel (40 px): os degraus pequenos entre fatias vizinhas não matam (ver Ferro.podeColidir)
-        this.fatia = fatia;
     }
 }
 
@@ -506,9 +503,9 @@ class FaseFerro extends Fase {
             // Topo do vão e base do vão
             const topo = c - ev.vao / 2, base = c + ev.vao / 2;
             // Parede de cima (do teto até o topo do vão)
-            new ParedeTech(this, x, MOVIMENTO.tetoY, 40, topo - MOVIMENTO.tetoY, true);
+            new ParedeTech(this, x, MOVIMENTO.tetoY, 40, topo - MOVIMENTO.tetoY);
             // Parede de baixo (da base do vão até o chão)
-            new ParedeTech(this, x, base, 40, MOVIMENTO.chaoY - base, true);
+            new ParedeTech(this, x, base, 40, MOVIMENTO.chaoY - base);
         }
         // Listras neon decorativas nas bordas do vão
         const g = this.cena.add.graphics().setDepth(2);
@@ -538,22 +535,6 @@ class FaseFerro extends Fase {
         }
         // Fora: usa a ponta mais perto
         return x < pts[0][0] ? pts[0][1] : pts[pts.length - 1][1];
-    }
-
-    // Antes da colisão com um sólido: nas fatias do túnel, o vão sobe/desce em degraus de até ~11 px
-    // por fatia. Raspando no piso (ou no teto) do túnel, o degrau seguinte encostaria "de frente" e
-    // mataria. Degrau pequeno (até 16 px) = rampa: sobe o cubo pro topo da fatia (ou desce pro fundo
-    // da fatia do teto) ANTES da separação, sem travar o x. Degrau grande (entrada do túnel) continua
-    // sendo frente de parede e mata.
-    podeColidir(obs) {
-        if (obs && obs.fatia && this.player.vivo) {
-            const b = this.player.body, o = obs.forma.body, degrau = 16;
-            // Piso do túnel: o topo da fatia está só um pouco acima do pé do cubo
-            if (o.top < b.bottom && o.top >= b.bottom - degrau) { b.y = o.top - b.height; if (b.velocity.y > 0) b.velocity.y = 0; }
-            // Teto do túnel: o fundo da fatia está só um pouco abaixo da cabeça do cubo
-            else if (o.bottom > b.top && o.bottom <= b.top + degrau) { b.y = o.bottom; if (b.velocity.y < 0) b.velocity.y = 0; }
-        }
-        return true;
     }
 
     // Conta drones abatidos (chamado quando um drone é destruído pelo tiro)

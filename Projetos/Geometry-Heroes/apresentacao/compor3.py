@@ -22,7 +22,7 @@ C.SKILLS = [
 ]
 C.CASOS = [
     ('Renascer colado no perigo', '0,3 s → ≥ 0,8 s', 'checkpoints recuados, câmera alinhada e 0,5 s de respiro; teste com 3 mortes seguidas'),
-    ('Homem de Ferro morria no piso do túnel', 'causa real', 'as paredes eram "mortais": viraram sólidas e só a frente mata'),
+    ('Cubo tremendo em telas de 120 Hz', '8 px → 0,3 px', 'desenho e câmera interpolados entre passos fixos da física'),
     ('Toque perdido no celular', '1 → 3 dedos', 'multitoque ligado; foco preso em botão não bloqueia mais o pulo'),
 ]
 
@@ -52,6 +52,10 @@ def cena_jogo(t, D):
     texto_alfa(im, (112, 1010), rot, fonte('semi', 26), BRANCO, 'la', 1.0, sombra=False)
     return vinheta(im, 0.4)
 C.cena_jogo = cena_jogo
+
+# Ordem da seleção (por dificuldade): o Homem de Ferro agora é Insano e vem depois do Doutor Estranho
+_ordem = ['Homem-Aranha', 'Hulk', 'Gaviao', 'DrEstranho', 'Homem de Ferro', 'Wanda']
+C.HEROIS[:] = sorted(C.HEROIS, key=lambda h: _ordem.index(h['id']))
 
 # Linha do tempo curta: ~83 s
 V2.LINHA = [('abertura', 5.5), ('jogo', 9.5)] + [(f'heroi{i}', 5.5) for i in range(6)] + \

@@ -1,0 +1,28 @@
+# Captura quadros REAIS do jogo (piloto automático dos testes, velocidade normal, 30 fps de vídeo)
+import sys, json, pathlib
+sys.path.insert(0, 'tests'); sys.argv = [sys.argv[0]] + sys.argv[1:]
+import rodar_testes as rt
+from playwright.sync_api import sync_playwright
+heroi, saida = sys.argv[1], pathlib.Path(sys.argv[2])
+segs = [(None, 7.0), (1, 6.0)]   # (checkpoint de onde começa ou None = largada, duração)
+with sync_playwright() as p:
+    b = p.chromium.launch(args=["--use-gl=swiftshader","--enable-unsafe-swiftshader"])
+    pg, erros = rt.nova_pagina(b)
+    for k, (frac, dur) in enumerate(segs):
+        pg.evaluate("MODO_TESTE.invencivel = true; MODO_TESTE.semAbertura = true")
+        cp = 'null' if frac is None else '{indice: %d, tempo: 20000}' % frac
+        pg.evaluate(f"window.jogo.scene.getScene('Menu').scene.start('Game', {{hero: {json.dumps(heroi)}, tentativa: 2, checkpoint: {cp}}})")
+        for _ in range(60):
+            rt.avancar(pg, 50)
+            if pg.evaluate("!!(window.jogo.scene.isActive('Game') && window.jogo.scene.getScene('Game').fase && window.jogo.scene.getScene('Game').fase.player)"): break
+        if heroi in rt.BOTS: rt.instalar_bot(pg, rt.BOTS[heroi])
+        rt.avancar(pg, 1200 if frac is None else 600)   # sai do ponto de partida
+        pasta = saida / f"{heroi.replace(' ', '_')}_{k}"; pasta.mkdir(parents=True, exist_ok=True)
+        for i in range(int(dur * 30)):
+            rt.avancar(pg, 1000/30, 1000/60)
+            rt.renderizar(pg)
+            pg.screenshot(path=str(pasta / f"{i:04d}.jpg"), type='jpeg', quality=92)
+        print(heroi, k, 'x final', rt.F(pg, "Math.round(p.x)"), 'tentativa', rt.F(pg, "f.tentativa"), flush=True)
+        rt.remover_bot(pg)
+        pg.evaluate("window.jogo.scene.getScene('Game').scene.start('Menu')"); rt.avancar(pg, 300)
+    print('erros', erros[:3]); b.close()

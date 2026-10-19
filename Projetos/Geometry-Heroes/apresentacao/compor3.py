@@ -26,7 +26,7 @@ C.CASOS = [
     ('Toque perdido no celular', '1 → 3 dedos', 'multitoque ligado; foco preso em botão não bloqueia mais o pulo'),
 ]
 
-# Cena "o jogo em ação" com a gravação nova do menu (menu de 4 a 9 s; seleção a partir de 10,4 s)
+# Cena "o jogo em ação" com a gravação nova do menu (menu de 1 a 13 s; seleção a partir de 13,3 s)
 def cena_jogo(t, D):
     im, d = tela_base(t)
     a, dsl = entra(t, 0.1, 0.5, 30)
@@ -36,7 +36,7 @@ def cena_jogo(t, D):
     corte = D * 0.6
     if t < corte:
         z = 1.0 + 0.05 * eio(faixa(t, 0, corte))
-        tm = 4.5 + t if t < 3.6 else 10.6 + (t - 3.6) * 1.6
+        tm = 4.5 + t if t < 3.6 else 13.4 + (t - 3.6) * 1.6
         C.colar_zoom(im, C.menu_quadro(tm), caixa, z, (0.5, 0.5), raio=26, borda=((255, 201, 74), 3))
         rot = 'Menu no estilo HQ com o elenco' if t < 3.6 else 'Seleção de fases (cards padronizados)'
     else:

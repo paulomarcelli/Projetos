@@ -127,7 +127,13 @@ const CENARIOS_IMAGEM = {
     // Sequência de cenários (stage-01..N): as imagens aparecem em ordem ao longo da fase, com fusão nas emendas
     'Hulk':           { sequencia: seq('hulk', 6),          tom: 0xb4bcb4 },
     'Gaviao':         { sequencia: seq('gaviao', 5),        tom: 0xb8b8c4 },
-    'Homem-Aranha':   { sequencia: seq('homem-aranha', 6),  tom: 0xa8a8bc },
+    'Homem-Aranha':   { camadas: [
+        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c1-ceu.webp',       fator: 0.01 },
+        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c2-skyline.webp',   fator: 0.03 },
+        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c3-meio.webp',      fator: 0.07 },
+        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c4-perto.webp',     fator: 0.14 },
+        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c5-atmosfera.webp', fator: 0.18 }
+    ] },
     // Camadas em parallax (do fundo para a frente), cada uma em loop espelhado; fator = quanto anda com a câmera
     'Homem de Ferro': { camadas: [
         { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c1-ceu.webp',     fator: 0.01 },

@@ -211,6 +211,8 @@ class Fase {
         // Camadas de paralaxe (gancho da subclasse) e, se carregou, a arte de fundo da fase por baixo
         this.criarParalaxe();
         if (typeof Cenarios !== 'undefined' && Cenarios.fundoImagem) Cenarios.fundoImagem(this);
+        // Partículas ambientes temáticas (como as brasas da Feiticeira), atrás dos obstáculos
+        if (typeof Cenarios !== 'undefined' && Cenarios.ambiente) Cenarios.ambiente(this);
         // Faixa do teto (fixa na tela, também é o fundo do HUD)
         this.faixaTeto = this.cena.add.rectangle(640, 50, 1280, 100, this.tema.faixa).setScrollFactor(0).setDepth(50);
         // Linha brilhante do teto
@@ -469,8 +471,9 @@ class Fase {
         if (!reducedMotion.matches) {
             const r = (visual && visual.v.rastro) || {};
             this.rastro = this.cena.add.particles(0, 0, 'faisca', {
-                follow: this.player, speedX: { min: -80, max: -30 }, speedY: { min: -15, max: 15 },
-                lifespan: 320, scale: { start: 0.9, end: 0 }, alpha: { start: 0.7, end: 0 }, frequency: r.frequency || 28,
+                // Rastro curto e nítido (estilo dos jogos de ritmo): faíscas pequenas, ~0,2 s, sem virar borrão
+                follow: this.player, followOffset: { x: -14, y: 0 }, speedX: { min: -40, max: -10 }, speedY: { min: -8, max: 8 },
+                lifespan: 200, scale: { start: 0.6, end: 0 }, alpha: { start: 0.6, end: 0 }, frequency: (r.frequency || 28) + 8,
                 tint: r.tint || [cor, borda], blendMode: r.blendMode || 'NORMAL'
             }).setDepth(9);
         }
@@ -850,7 +853,7 @@ class Fase {
         // Skin acompanha o cubo (com a animação de corrida/pulo/pouso)
         this.player.sincronizarSkin(dtReal);
         // Acabou de pousar: poeira nos pés + gancho da fase (o Hulk faz tremer)
-        if (this.player.acabouDePousar) { this.player.acabouDePousar = false; this.efeitos.poeira(this.player.x, this.player.y + (this.player.invertido ? -20 : 20), this.tema.bordaForma, 4); this.aoPousar(); }
+        if (this.player.acabouDePousar) { this.player.acabouDePousar = false; this.efeitos.poeiraPouso(this.player.x, this.player.y + (this.player.invertido ? -20 : 20), this.tema.bordaForma, this.player.invertido ? -1 : 1); this.aoPousar(); }
         // Fundo em camadas acompanha a câmera
         this.moverParalaxe();
         this.sincronizarVideo();

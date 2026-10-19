@@ -69,6 +69,18 @@ class Efeitos {
         this.cena.time.delayedCall(1000, () => emissor.destroy());
     }
 
+    // Poeira do POUSO: curta e nítida (feedback do toque no chão, ~0,25 s). A poeira antiga crescia 3x
+    // e durava até 0,9 s; com o cubo correndo, deixava manchas borradas atrás dele.
+    poeiraPouso(x, y, cor = 0x9a9f96, dir = 1) {
+        const emissor = this.cena.add.particles(x, y, 'faisca', {
+            speedX: { min: -70, max: 70 }, speedY: { min: -40 * dir, max: -10 * dir },
+            lifespan: { min: 160, max: 260 }, scale: { start: 0.7, end: 0.2 }, alpha: { start: 0.55, end: 0 },
+            tint: cor, emitting: false
+        }).setDepth(19);
+        emissor.explode(Math.max(2, Math.round(5 * this.fator)));
+        this.cena.time.delayedCall(320, () => emissor.destroy());
+    }
+
     // Anel que cresce e some (onda de choque / acerto)
     anel(x, y, cor, raio = 26, escalaFinal = 2.4, ms = 320) {
         // Círculo vazado

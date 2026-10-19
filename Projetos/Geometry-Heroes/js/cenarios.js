@@ -159,6 +159,42 @@ const Cenarios = {
     },
 
     // ---------------------------------------------------------------
+    // PARTÍCULAS AMBIENTES por herói (mesma receita das brasas/motas da Feiticeira): duas camadas
+    // pequenas, presas à tela e atrás dos obstáculos — uma "principal" do tema e uma de motas lentas.
+    // Derivam um pouco para a esquerda (o mundo passando). Desligadas com "reduzir movimento".
+    // ---------------------------------------------------------------
+    AMBIENTES: {
+        'Homem-Aranha': [   // luzes da cidade subindo (vermelho/azul) + poeira de luz branca
+            { tint: [0xff3b55, 0x5a8aff, 0xffffff], blendMode: 'ADD', frequency: 170, lifespan: 4200, scale: { start: 0.35, end: 0 }, alpha: { start: 0.55, end: 0 }, speedY: { min: -26, max: -8 }, speedX: { min: -24, max: -6 } },
+            { tint: [0xcfe0ff], blendMode: 'ADD', frequency: 420, lifespan: 6500, scale: { start: 0.2, end: 0.45 }, alpha: { start: 0, end: 0.3, ease: 'Sine.InOut' }, speedY: { min: -6, max: 4 }, speedX: { min: -14, max: -4 } }
+        ],
+        'Hulk': [           // brasas de radiação gama subindo + poeira cinza carregada pelo vento
+            { tint: [0x6fdc4a, 0xb8ff7a, 0x2aff6a], blendMode: 'ADD', frequency: 120, lifespan: 3800, scale: { start: 0.45, end: 0 }, alpha: { start: 0.7, end: 0 }, speedY: { min: -40, max: -12 }, speedX: { min: -20, max: 6 } },
+            { tint: [0x8a9188, 0x5c625a], frequency: 260, lifespan: 6000, scale: { start: 0.6, end: 1.1 }, alpha: { start: 0, end: 0.22, ease: 'Sine.InOut' }, speedY: { min: -4, max: 6 }, speedX: { min: -40, max: -16 } }
+        ],
+        'Gaviao': [         // faíscas roxas e verde-limão (mira/tática) + motas lilás lentas
+            { tint: [0xb8ff5a, 0x8c5cff, 0xe2d6ff], blendMode: 'ADD', frequency: 190, lifespan: 4200, scale: { start: 0.35, end: 0 }, alpha: { start: 0.6, end: 0 }, speedY: { min: -22, max: -6 }, speedX: { min: -30, max: -10 } },
+            { tint: [0xcbb8ff], blendMode: 'ADD', frequency: 420, lifespan: 6500, scale: { start: 0.2, end: 0.5 }, alpha: { start: 0, end: 0.28, ease: 'Sine.InOut' }, speedY: { min: -5, max: 5 }, speedX: { min: -16, max: -4 } }
+        ],
+        'Homem de Ferro': [ // faíscas douradas do repulsor + partículas de dados ciano subindo
+            { tint: [0xffc23d, 0xff7b00, 0xffe8a8], blendMode: 'ADD', frequency: 170, lifespan: 3200, scale: { start: 0.4, end: 0 }, alpha: { start: 0.65, end: 0 }, speedY: { min: -30, max: -10 }, speedX: { min: -26, max: -6 } },
+            { tint: [0x5ce1ff, 0x2ad0ff], blendMode: 'ADD', frequency: 300, lifespan: 5200, scale: { start: 0.25, end: 0.1 }, alpha: { start: 0, end: 0.4, ease: 'Sine.InOut' }, speedY: { min: -18, max: -6 }, speedX: { min: -10, max: 0 } }
+        ],
+        'DrEstranho': [     // faíscas douradas dos feitiços subindo + motas lilases (energia mística)
+            { tint: [0xffa53d, 0xffd166, 0xfff2b0], blendMode: 'ADD', frequency: 130, lifespan: 4000, scale: { start: 0.4, end: 0 }, alpha: { start: 0.7, end: 0 }, speedY: { min: -32, max: -10 }, speedX: { min: -18, max: 8 } },
+            { tint: [0xb08cff, 0xe2d6ff], blendMode: 'ADD', frequency: 360, lifespan: 6500, scale: { start: 0.25, end: 0.6 }, alpha: { start: 0, end: 0.35, ease: 'Sine.InOut' }, speedY: { min: -8, max: 4 }, speedX: { min: -12, max: 4 } }
+        ]
+        // Feiticeira Escarlate: brasas e motas próprias em wanda() (a referência deste estilo)
+    },
+
+    ambiente(fase) {
+        const lista = this.AMBIENTES[fase.heroi];
+        if (!lista || reducedMotion.matches) return;
+        const est = fase.estadoCenario || (fase.estadoCenario = {});
+        est.ambiente = lista.map((cfg, i) => this.particulas(fase, cfg, i === 0 ? -89 : -91));
+    },
+
+    // ---------------------------------------------------------------
     // CHÃO: um MATERIAL por herói, todos na mesma linguagem (textura + borda de cima + linha neon do
     // tema onde se pisa). A textura é gerada uma vez (256×140) e repetida alinhada ao mundo.
     // ---------------------------------------------------------------

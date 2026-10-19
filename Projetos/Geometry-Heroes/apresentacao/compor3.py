@@ -66,44 +66,52 @@ C.colar_zoom = _colar
 # Cena das técnicas sem o zoom de leitura (ele cortava a gameplay ao lado do texto)
 V2.cena_tecnicas_zoom = lambda t, D: C.cena_tecnicas(t, D)
 
-# Clipes por herói: "_0" (largada) e, quando existir, "_1" (depois do 1º checkpoint). Sem o "_1",
-# a cena inteira usa o "_0"; clipe mais curto que a cena é esticado (câmera lenta leve).
-CENA_HEROI = 6.0
+# Takes por herói: "_0" (largada) e, quando existir, "_1" (depois do 1º checkpoint).
+# Todos tocam em VELOCIDADE REAL (nada de esticar: repetir quadros fazia a gameplay engasgar).
+# Por isso a cena de cada herói dura o que o take dele permite. Os takes mostram o PODER em ação
+# (capturados com PRE: teia, fúria, flechas, Joia do Tempo/portal, repulsor, troca de realidade).
 _clipe_orig = C.clipe
 def _quadros(nome):
     if nome not in C.CLIPES: C.CLIPES[nome] = C.quadros_clipe(nome)
     return C.CLIPES[nome]
-_FORCAR = [None]   # '_0' ou '_1': força qual trecho a cena do herói usa (para a fusão entre eles)
+def dur_heroi(h):
+    # dois takes: 6 s; um take: o que ele cobre em velocidade real (começa em 0,3 s; folga de 0,1 s)
+    if _quadros(h['pasta'] + '_1'): return 6.0
+    return round(max(3.0, min(6.0, len(_quadros(h['pasta'] + '_0')) / 30 - 0.4)), 2)
+_CENA = [None]     # duração da cena do herói sendo desenhada (None fora dela)
+_FORCAR = [None]   # '_0' ou '_1': força qual take a cena usa (para a fusão entre eles)
 def _clipe(nome, t, vel=1.0):
-    if _FORCAR[0] and nome[-2:] in ('_0', '_1') and nome[-2:] != _FORCAR[0]:
-        t = t + CENA_HEROI / 2 if _FORCAR[0] == '_0' else max(0.3, t - CENA_HEROI / 2)
+    D = _CENA[0]
+    if D and _FORCAR[0] and nome[-2:] in ('_0', '_1') and nome[-2:] != _FORCAR[0]:
+        t = t + D / 2 if _FORCAR[0] == '_0' else max(0.3, t - D / 2)
         nome = nome[:-2] + _FORCAR[0]
-    base = nome[:-2]
-    tem1 = bool(_quadros(base + '_1'))
-    if nome.endswith('_1') and not tem1: nome, t = base + '_0', t + CENA_HEROI / 2
-    fs = _quadros(nome); dur = len(fs) / 30
-    alvo = 0.3 + (CENA_HEROI / 2 if tem1 else CENA_HEROI)
-    if fs and dur < alvo: t = 0.3 + (t - 0.3) * (dur - 0.35) / (alvo - 0.3)
+    if nome.endswith('_1') and not _quadros(nome):
+        # herói com um take só: na cena dele o "_1" é a continuação do "_0"; fora dela, o mesmo instante
+        nome, t = nome[:-2] + '_0', (t + D / 2 if D else t)
     return _clipe_orig(nome, t)
 C.clipe = _clipe
 
-# Troca do 1º para o 2º trecho no meio da cena do herói: fusão de 0,6 s em vez de corte seco
+# Troca do 1º para o 2º take no meio da cena do herói: fusão de 0,6 s em vez de corte seco
 from PIL import Image as _Im
 _heroi_orig = V2.cena_heroi_sem_fx
 def _heroi_suave(t, D, h, idx):
-    meio, m = D / 2, 0.3
-    if not _quadros(h['pasta'] + '_1') or abs(t - meio) >= m: return _heroi_orig(t, D, h, idx)
+    _CENA[0] = D
     try:
+        meio, m = D / 2, 0.3
+        if not _quadros(h['pasta'] + '_1') or abs(t - meio) >= m: return _heroi_orig(t, D, h, idx)
         _FORCAR[0] = '_0'; A = _heroi_orig(t, D, h, idx)
         _FORCAR[0] = '_1'; B = _heroi_orig(t, D, h, idx)
-    finally: _FORCAR[0] = None
-    k = (t - (meio - m)) / (2 * m); k = k * k * (3 - 2 * k)
-    return _Im.blend(A, B, k)
+        k = (t - (meio - m)) / (2 * m); k = k * k * (3 - 2 * k)
+        return _Im.blend(A, B, k)
+    finally: _FORCAR[0] = None; _CENA[0] = None
 V2.cena_heroi_sem_fx = _heroi_suave
 
-# Duração = a música inteira (tema dos Vingadores, ~123,6 s), como nas versões anteriores
-V2.LINHA = [('abertura', 8.0), ('jogo', 14.0)] + [(f'heroi{i}', CENA_HEROI) for i in range(6)] + \
-           [('tecnicas', 16.0), ('tech', 15.0), ('skills', 13.0), ('engenharia', 11.0)]
+# Duração = a música inteira (tema dos Vingadores, ~123,6 s), como nas versões anteriores.
+# O tempo que sobra das cenas curtas vai para as cenas de explicação (mais tempo de leitura).
+_herois = [(f'heroi{i}', dur_heroi(h)) for i, h in enumerate(C.HEROIS)]
+_sobra = sum(6.0 - d for _, d in _herois)
+V2.LINHA = [('abertura', 8.0), ('jogo', 14.0)] + _herois + \
+           [('tecnicas', 16.0 + _sobra * 0.4), ('tech', 15.0 + _sobra * 0.3), ('skills', 13.0), ('engenharia', 11.0 + _sobra * 0.3)]
 V2.LINHA.append(('final', max(7.0, C.DUR_MUSICA - sum(d for _, d in V2.LINHA))))
 V2.EMENDAS = ['portal', 'teia', 'forca', 'flecha', 'hud', 'portal', 'realidade', 'teia', 'hud', 'portal', 'flecha', 'forca']
 TOTAL = sum(d for _, d in V2.LINHA)

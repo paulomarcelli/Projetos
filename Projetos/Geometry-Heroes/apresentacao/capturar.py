@@ -22,6 +22,8 @@ with sync_playwright() as p:
             if pg.evaluate("!!(window.jogo.scene.isActive('Game') && window.jogo.scene.getScene('Game').fase && window.jogo.scene.getScene('Game').fase.player)"): break
         if heroi in rt.BOTS: rt.instalar_bot(pg, rt.BOTS[heroi])
         rt.avancar(pg, 1200 if frac is None else 600)   # sai do ponto de partida
+        # PRE (ms): avança sem gravar até o momento escolhido (ex.: o herói usando o poder)
+        if k == 0 and os.environ.get('PRE'): rt.avancar(pg, float(os.environ['PRE']))
         pasta = saida / f"{heroi.replace(' ', '_')}_{k}"; pasta.mkdir(parents=True, exist_ok=True)
         for i in range(int(dur * 30)):
             rt.avancar(pg, 1000/30, 1000/60)

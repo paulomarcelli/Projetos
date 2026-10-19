@@ -327,7 +327,7 @@ def cena_tecnicas(t, D):
                 dd.rectangle((x0 + 4, caixa[3] - 120, x0 + w6 - 4, caixa[3] - 70), fill=h['cor'])
                 dd.rectangle((x0 + 4, caixa[3] - 64, x0 + w6 - 4, caixa[3] - 30), fill=h['cor2'])
     else:
-        colar_zoom(im, clipe(exemplo, 1.5 + tl * 0.6), caixa, 1.02 + 0.05 * eio(tl / dur), (0.4, 0.6), raio=22, borda=(cor, 3))
+        colar_zoom(im, clipe(exemplo, 0.3 + tl), caixa, 1.02 + 0.05 * eio(tl / dur), (0.4, 0.6), raio=22, borda=(cor, 3))
         dd = ImageDraw.Draw(im, 'RGBA'); x0, y0, x1, y1 = caixa; sx, sy = (x1 - x0) / 1280, (y1 - y0) / 720
         A = int(255 * k)
         if tipo == 'hierarquia':     # destaca o cubo (frente) e a faixa do cenário (atrás)

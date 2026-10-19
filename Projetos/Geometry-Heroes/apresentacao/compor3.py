@@ -57,8 +57,19 @@ C.cena_jogo = cena_jogo
 _ordem = ['Homem-Aranha', 'Hulk', 'Gaviao', 'DrEstranho', 'Homem de Ferro', 'Wanda']
 C.HEROIS[:] = sorted(C.HEROIS, key=lambda h: _ordem.index(h['id']))
 
-# Linha do tempo curta: ~83 s
-V2.LINHA = [('abertura', 5.5), ('jogo', 9.5)] + [(f'heroi{i}', 5.5) for i in range(6)] + \
+# Linha do tempo curta: ~77 s
+# Um trecho capturado por herói (o 2º trecho ficou de fora: a captura quadro a quadro é lenta).
+# Pedidos ao trecho "_1" usam o "_0" na continuação; o clipe é esticado pra cobrir a cena inteira.
+CENA_HEROI = 4.5
+_clipe_orig = C.clipe
+def _clipe(nome, t, vel=1.0):
+    if nome.endswith('_1'): nome, t = nome[:-2] + '_0', t + CENA_HEROI / 2
+    if nome not in C.CLIPES: C.CLIPES[nome] = C.quadros_clipe(nome)
+    fs = C.CLIPES[nome]
+    if fs and len(fs) / 30 < 0.3 + CENA_HEROI: vel = (len(fs) / 30 - 0.35) / CENA_HEROI   # câmera lenta leve
+    return _clipe_orig(nome, t, vel) if vel == 1.0 else _clipe_orig(nome, 0.3 + (t - 0.3) * vel)
+C.clipe = _clipe
+V2.LINHA = [('abertura', 5.5), ('jogo', 9.5)] + [(f'heroi{i}', CENA_HEROI) for i in range(6)] + \
            [('tech', 10.0), ('skills', 10.0), ('engenharia', 9.0), ('final', 6.0)]
 V2.EMENDAS = ['portal', 'teia', 'forca', 'flecha', 'hud', 'portal', 'realidade', 'teia', 'hud', 'flecha', 'forca']
 TOTAL = sum(d for _, d in V2.LINHA)

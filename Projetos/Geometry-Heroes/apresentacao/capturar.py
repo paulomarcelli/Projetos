@@ -7,6 +7,7 @@ heroi, saida = sys.argv[1], pathlib.Path(sys.argv[2])
 # (checkpoint de onde começa ou None = largada, duração); DUR0/DUR1 encurtam; SEGS=1 grava só o 2º trecho
 segs = [(None, float(os.environ.get('DUR0', 7.0))), (1, float(os.environ.get('DUR1', 6.0)))]
 if os.environ.get('SEGS') == '1': segs = [None, segs[1]]
+if os.environ.get('SEGS') == '0': segs = [segs[0], None]   # só a largada (mais rápido)
 with sync_playwright() as p:
     b = p.chromium.launch(args=["--use-gl=swiftshader","--enable-unsafe-swiftshader"])
     pg, erros = rt.nova_pagina(b)

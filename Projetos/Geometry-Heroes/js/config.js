@@ -128,8 +128,14 @@ const CENARIOS_IMAGEM = {
     'Hulk':           { sequencia: seq('hulk', 6),          tom: 0xb4bcb4 },
     'Gaviao':         { sequencia: seq('gaviao', 5),        tom: 0xb8b8c4 },
     'Homem-Aranha':   { sequencia: seq('homem-aranha', 6),  tom: 0xa8a8bc },
-    // Panorama em loop (rola devagar, linear, junto com a câmera); soArte = sem cenário procedural por cima
-    'Homem de Ferro': { arquivo: 'assets/backgrounds/homem-de-ferro/homem-de-ferro_panorama.webp', fator: 0.1, y: 100, alto: 580, tom: 0xb4b6c4, espelhar: false, soArte: true },
+    // Camadas em parallax (do fundo para a frente), cada uma em loop espelhado; fator = quanto anda com a câmera
+    'Homem de Ferro': { camadas: [
+        { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c1-ceu.webp',     fator: 0.01 },
+        { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c2-skyline.webp', fator: 0.03 },
+        { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c3-meio.webp',    fator: 0.07 },
+        { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c4-perto.webp',   fator: 0.14 },
+        { arquivo: 'assets/backgrounds/homem-de-ferro/ferro-c5-energia.webp', fator: 0.18 }
+    ] },
     'DrEstranho':     { sequencia: seq('dr-estranho', 6),    tom: 0xa8a4bc },
     // Imagem única espelhada em loop (a sequência da Wanda vem depois)
     'Wanda':          { arquivo: 'assets/backgrounds/wanda/wanda_cena.webp',                   fator: 0.12, y: 100, alto: 580, tom: 0x9c8a92 }

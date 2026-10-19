@@ -148,7 +148,7 @@ const Cenarios = {
     // luzes, partículas) não é criado: por cima da arte ele parecia flutuar e andar em outra velocidade.
     temSequencia(fase) {
         const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi], k = this.chaveFundo(fase.heroi);
-        const sem = !!(def && ((def.sequencia && fase.cena.textures.exists(k + '-0')) || (def.soArte && fase.cena.textures.exists(k))));
+        const sem = !!(def && ((def.sequencia && fase.cena.textures.exists(k + '-0')) || (def.camadas && fase.cena.textures.exists(k + '-c0')) || (def.soArte && fase.cena.textures.exists(k))));
         if (sem) fase.semProcedural = true;
         return sem;
     },
@@ -233,9 +233,47 @@ const Cenarios = {
         s.imgs.forEach((img, i) => { const x = i * s.passo - desl; img.x = x; img.setVisible(x < 1280 && x > -1280); });
     },
 
+    // Textura [imagem | imagem espelhada], montada uma vez: repete sem emenda em qualquer imagem
+    texturaEspelhada(cena, chave) {
+        const dupla = chave + '-dupla';
+        if (!cena.textures.exists(dupla)) {
+            const src = cena.textures.get(chave).getSourceImage(), w = src.width, h = src.height;
+            const tx = cena.textures.createCanvas(dupla, w * 2, h), ctx = tx.getContext();
+            ctx.drawImage(src, 0, 0);
+            ctx.save(); ctx.translate(w * 2, 0); ctx.scale(-1, 1); ctx.drawImage(src, 0, 0); ctx.restore();
+            tx.refresh();
+        }
+        return dupla;
+    },
+
+    // CAMADAS EM PARALLAX (arte já separada em planos): cada uma cobre a tela e anda numa fração da câmera
+    // (rolagem linear, presa ao movimento do herói); as do fundo quase param, as da frente andam um pouco mais
+    fundoCamadas(fase, def) {
+        const cena = fase.cena, base = this.chaveFundo(fase.heroi), reduz = reducedMotion.matches ? 0.35 : 1;
+        const tiles = [];
+        def.camadas.forEach((c, i) => {
+            const k = base + '-c' + i;
+            if (!cena.textures.exists(k)) return;
+            const dupla = this.texturaEspelhada(cena, k), h = cena.textures.get(dupla).getSourceImage().height, esc = 720 / h;
+            const t = cena.add.tileSprite(0, 0, 1280, 720, dupla).setOrigin(0, 0).setScrollFactor(0)
+                .setDepth(-98.9 + i * 0.05).setTileScale(esc, esc);
+            t.fatorParalaxe = c.fator / esc * reduz; t.tingir = false; t.estrutural = false; t.fundoImagem = true;
+            (fase.camadas = fase.camadas || []).push(t); tiles.push(t);
+        });
+        if (!tiles.length) return null;
+        const est = fase.estadoCenario || {};
+        (fase.camadas || []).forEach((c) => { if (c.estrutural) c.setVisible(false); });
+        (est.estruturais || []).forEach((o) => o.setVisible(false));
+        (est.ceus || []).forEach((o) => o.setVisible(false));
+        est.fundo = tiles[0]; fase.fundoArte = tiles[0];
+        fase.moverParalaxe();
+        return tiles[0];
+    },
+
     fundoImagem(fase) {
         if (this.fundoVideo(fase)) return fase.fundoVideo;
         const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi];
+        if (def && def.camadas) return this.fundoCamadas(fase, def);
         if (def && def.sequencia) return this.fundoSequencia(fase, def);
         const cena = fase.cena, chave = this.chaveFundo(fase.heroi);
         if (!def || !cena.textures.exists(chave)) return null;   // sem imagem: fica o procedural

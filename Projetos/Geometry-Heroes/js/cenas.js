@@ -315,6 +315,10 @@ class GameScene extends Phaser.Scene {
         const chave = 'cena-' + this.heroi;
         if (!def || this.textures.exists(chave)) return;
         const url = (arq) => (window.DADOS_ASSETS && window.DADOS_ASSETS[arq]) || (location.protocol === 'file:' ? null : (window.BASE_ASSETS || '') + arq);
+        if (def.camadas) {
+            def.camadas.forEach((c, i) => { const u = url(c.arquivo), k = chave + '-c' + i; if (u && !this.textures.exists(k)) this.load.image(k, u); });
+            return;
+        }
         if (def.sequencia) {
             def.sequencia.forEach((arq, i) => { const u = url(arq), k = chave + '-' + i; if (u && !this.textures.exists(k)) this.load.image(k, u); });
             return;

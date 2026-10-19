@@ -58,6 +58,15 @@ _ordem = ['Homem-Aranha', 'Hulk', 'Gaviao', 'DrEstranho', 'Homem de Ferro', 'Wan
 C.HEROIS[:] = sorted(C.HEROIS, key=lambda h: _ordem.index(h['id']))
 
 # (a duração da linha do tempo segue a música; ver abaixo)
+# Gameplay inteira na tela: a captura (1280×720) entra sem zoom, para não cortar HUD, chão e bordas
+_colar_orig = C.colar_zoom
+def _colar(base, im, caixa, zoom=1.0, foco=(0.5, 0.5), **k):
+    if im.size == (1280, 720): zoom = 1.0
+    return _colar_orig(base, im, caixa, zoom, foco, **k)
+C.colar_zoom = _colar
+# Cena das técnicas sem o zoom de leitura (ele cortava a gameplay ao lado do texto)
+V2.cena_tecnicas_zoom = lambda t, D: C.cena_tecnicas(t, D)
+
 # Clipes por herói: "_0" (largada) e, quando existir, "_1" (depois do 1º checkpoint). Sem o "_1",
 # a cena inteira usa o "_0"; clipe mais curto que a cena é esticado (câmera lenta leve).
 CENA_HEROI = 6.0

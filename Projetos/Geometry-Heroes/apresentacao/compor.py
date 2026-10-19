@@ -281,7 +281,7 @@ def cena_heroi(t, D, h, idx):
         d.rounded_rectangle((110, yb2 + d3[1], 110 + 18, yb2 + 18 + d3[1]), radius=4, fill=cor + (int(255 * a3),))
     texto_alfa(im, (146, yb2 - 6), h['fato'], fonte('bold', 26), cor2, 'la', a3, d3, sombra=False)
     # legenda sob o clipe
-    texto_alfa(im, (720, 800), 'Captura real · velocidade normal', fonte('reg', 22), CINZA, 'la', 1.0, sombra=False)
+    texto_alfa(im, (720, 800), 'Captura real do jogo', fonte('reg', 22), CINZA, 'la', 1.0, sombra=False)
     # transição temática entrando (primeiros 0,9 s) e saindo (últimos 0,7 s)
     im = vinheta(im, 0.4)
     if t < 0.9: im = fx_transicao(im, h['fx'], 0.5 + 0.5 * (t / 0.9), cor, cor2)
@@ -299,12 +299,12 @@ def quebrar(s, f, larg):
 
 # Técnicas de design: cada uma com um exemplo REAL do jogo e anotação
 TECNICAS = [
-    ('COLOR THEORY', 'Uma paleta por herói: o jogador reconhece a fase pela cor', 'paleta'),
-    ('VISUAL HIERARCHY', 'Cubo e obstáculos na frente; cenário escurecido atrás', 'hierarquia'),
-    ('CONTRAST & READABILITY', 'Linha neon marca onde se pisa; triângulo = perigo', 'contraste'),
-    ('COMPOSITION', 'Centro limpo para jogar; detalhes nas bordas da tela', 'composicao'),
-    ('MOTION DESIGN', 'Parallax lento e transições curtas com ease-out', 'motion'),
-    ('LEVEL DESIGN', 'Obstáculos no ritmo da música, um desafio por vez', 'level'),
+    ('TEORIA DAS CORES', 'Uma paleta por herói: o jogador reconhece a fase pela cor', 'paleta'),
+    ('HIERARQUIA VISUAL', 'Cubo e obstáculos na frente; cenário escurecido atrás', 'hierarquia'),
+    ('CONTRASTE E LEITURA', 'Linha neon marca onde se pisa; triângulo = perigo', 'contraste'),
+    ('COMPOSIÇÃO', 'Centro limpo para jogar; detalhes nas bordas da tela', 'composicao'),
+    ('ANIMAÇÃO E MOVIMENTO', 'Parallax lento e transições curtas com ease-out', 'motion'),
+    ('DESIGN DAS FASES', 'Obstáculos no ritmo da música, um desafio por vez', 'level'),
 ]
 def cena_tecnicas(t, D):
     im, d = tela_base(t)

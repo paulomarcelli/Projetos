@@ -497,7 +497,7 @@ class FaseAranha extends Fase {
         return [
             { x: 4910 },    // Começo do telhado 4900–5600 (era 5000: o laser do piso em 5240 chegava em 0,3 s)
             { x: 9500 },    // Telhado alto 9400–9900: antes do vão grande com guindastes
-            { x: 11510 }    // Começo do telhado 11500–12000 (era 11600: a serra em 11850 chegava em 0,4 s)
+            { x: 11510 }    // Começo do telhado 11500–12000 (sem serra neste telhado: o caminho até o vão fica livre)
         ];
     }
 
@@ -527,7 +527,7 @@ class FaseAranha extends Fase {
             { x: 10100, tipo: 'ancora', y: 170 }, { x: 10450, tipo: 'guindaste', y: 200, amp: 100 }, { x: 10800, tipo: 'ancora', y: 160 },
             { x: 11150, tipo: 'guindaste', y: 200, amp: 80, periodo: 2200 }, { x: 11400, tipo: 'ancora', y: 180 },
             { x: 10300, tipo: 'drone', y0: 680, y1: 740, periodo: 2200 }, { x: 10950, tipo: 'drone', y0: 500, y1: 640, periodo: 2200 },
-            { x: 11850, tipo: 'serraDesce', yBase: 600 },
+            // (a serra que ficava em 11850, no mesmo telhado do último checkpoint, foi tirada: aparecia logo na frente do save)
             { x: 12150, tipo: 'ancora', y: 200 },
             { x: 12600, tipo: 'antena' },
             { x: 12980, tipo: 'ancora', y: 180 }, { x: 13350, tipo: 'guindaste', y: 170, amp: 90 }, { x: 13700, tipo: 'ancora', y: 200 },

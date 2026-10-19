@@ -14,7 +14,6 @@ TOTAL_TESTES = int(sys.argv[sys.argv.index('--testes') + 1]) if '--testes' in sy
 
 # Textos conferidos com o que de fato foi usado no projeto
 C.SKILLS = [
-    ('REA', 'Engenharia reversa por observação', 'Estudo das referências do gênero (layout, ritmo, cores). A skill de REA foi consultada; como não havia binário para analisar, a análise foi feita por observação (REA_ESQUEMA.md).', (255, 59, 85)),
     ('ANIMATE', 'Skill de animação', 'Decidir o que deve animar, curva ease-out e duração curta: portais, rastro, parallax do Homem de Ferro.', (255, 194, 61)),
     ('EMIL DESIGN ENG', 'Skill de engenharia de design', 'Revisão de UI e movimento: detalhes invisíveis, legibilidade e feedback.', (176, 140, 255)),
     ('AGENTES', '3 agentes em paralelo (rodadas 7 e 8)', 'Cenários, pulo e tela inicial divididos por arquivos; um agente principal integrou e testou.', (111, 220, 74)),

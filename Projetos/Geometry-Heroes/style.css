@@ -1194,3 +1194,17 @@ kbd {
 #level-select .level-btn > .card-titulo,
 #level-select .level-btn { line-height: 1.05; }
 #level-select .level-btn small { line-height: 1.25; }
+
+/* Botão de pausa durante a fase, no estilo HQ do menu: círculo vermelho com contorno preto grosso,
+   sombra deslocada e as duas barras de pausa desenhadas em CSS (antes o "❚❚" herdava a regra antiga
+   de #back-button span — pequeno, apagado e deslocado — e o botão parecia só uma bola verde). */
+#back-button.botao-pausa {
+    background: var(--hq-vermelho); border: .32cqw solid var(--hq-tinta);
+    box-shadow: .35cqw .35cqw 0 var(--hq-tinta), inset 0 .35cqw 0 #ffffff40;
+}
+#back-button.botao-pausa:hover { background: #ff2a33; transform: translateY(-1px); }
+#back-button.botao-pausa .pausa-icone {
+    margin: 0; width: 38%; height: 42%; font-size: 0; color: transparent; display: block;
+    background: linear-gradient(90deg, #fff 0 34%, transparent 34% 66%, #fff 66% 100%);
+    filter: drop-shadow(0 .15cqw 0 var(--hq-tinta));
+}

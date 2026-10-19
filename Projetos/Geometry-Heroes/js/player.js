@@ -187,9 +187,6 @@ class Player extends Phaser.GameObjects.Rectangle {
             this.pouso = 0;
             // Som do pulo
             som.tocar('pulo');
-            // Pixels 8-bit saindo do pé (ou da cabeça, com a gravidade invertida)
-            const ef = this.scene.fase && this.scene.fase.efeitos;
-            if (ef && ef.pixels) ef.pixels(this.x, this.y + 18 * dir, this.corBase, 4, 120, { cima: dir > 0, gravidade: 400 * dir });
         }
         return noChao;
     }

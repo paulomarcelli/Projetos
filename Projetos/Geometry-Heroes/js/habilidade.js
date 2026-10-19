@@ -46,9 +46,6 @@ class Habilidade {
         if (this.usar(agora, alvo) === false) return false;
         // Marca a hora do uso (começa a recarga)
         this.ultimoUso = agora;
-        // Toque 8-bit: anel de pixels na cor da habilidade em volta do cubo
-        const pl = this.fase.player;
-        if (this.fase.efeitos && this.fase.efeitos.anelPixels) this.fase.efeitos.anelPixels(pl.x, pl.y, [this.cor, 0xffffff], 40, 12, 240);
         // Avisa que usou
         return true;
     }

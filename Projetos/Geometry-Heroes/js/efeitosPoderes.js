@@ -202,8 +202,6 @@ function criarPortalMistico(fase, x, y, w, h, opcoes = {}) {
         [halo, miolo].forEach((o) => { const sx = o.scaleX; o.setScale(0.2); cena.tweens.add({ targets: o, scale: 1, duration: fase.efeitos.dur(240), ease: 'Cubic.Out' }); });
         caixa.setScale(0.2, 0.2 * achatar); cena.tweens.add({ targets: caixa, scaleX: 1, scaleY: achatar, duration: fase.efeitos.dur(240), ease: 'Cubic.Out' });
         fxFaiscas(fase, x, y, [0xfff2b0, COR_PODER.ouro, COR_PODER.brasa], 14, 220, 420);
-        // Toque 8-bit: anel de pixels dourados abrindo junto
-        if (fase.efeitos.anelPixels) fase.efeitos.anelPixels(x, y, [COR_PODER.ouro, 0xfff2b0], raio * 1.1, 14, 280);
     }
     let fechado = false;
     return {
@@ -215,8 +213,6 @@ function criarPortalMistico(fase, x, y, w, h, opcoes = {}) {
             if (fechado) return; fechado = true;
             faiscas.stop();
             fxFaiscas(fase, x, y, [COR_PODER.ouro, COR_PODER.brasa], 10, 140, 320);
-            // Fechando: os pixels "caem" pra dentro (8-bit)
-            if (fase.efeitos.pixels) fase.efeitos.pixels(x, y, [COR_PODER.ouro, COR_PODER.brasa], 6, 90, { gravidade: 0 });
             cena.tweens.add({ targets: [halo, miolo], scale: 0.1, alpha: 0, duration: fase.efeitos.dur(ms), ease: 'Cubic.In' });
             cena.tweens.add({ targets: caixa, scaleX: 0.1, scaleY: 0.1 * achatar, alpha: 0, duration: fase.efeitos.dur(ms), ease: 'Cubic.In', onComplete: () => this.destruir() });
         },

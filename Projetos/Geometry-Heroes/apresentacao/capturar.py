@@ -1,14 +1,18 @@
 # Captura quadros REAIS do jogo (piloto automático dos testes, velocidade normal, 30 fps de vídeo)
-import sys, json, pathlib
+import sys, os, json, pathlib
 sys.path.insert(0, 'tests'); sys.argv = [sys.argv[0]] + sys.argv[1:]
 import rodar_testes as rt
 from playwright.sync_api import sync_playwright
 heroi, saida = sys.argv[1], pathlib.Path(sys.argv[2])
-segs = [(None, 7.0), (1, 6.0)]   # (checkpoint de onde começa ou None = largada, duração)
+# (checkpoint de onde começa ou None = largada, duração); DUR0/DUR1 encurtam; SEGS=1 grava só o 2º trecho
+segs = [(None, float(os.environ.get('DUR0', 7.0))), (1, float(os.environ.get('DUR1', 6.0)))]
+if os.environ.get('SEGS') == '1': segs = [None, segs[1]]
 with sync_playwright() as p:
     b = p.chromium.launch(args=["--use-gl=swiftshader","--enable-unsafe-swiftshader"])
     pg, erros = rt.nova_pagina(b)
-    for k, (frac, dur) in enumerate(segs):
+    for k, seg in enumerate(segs):
+        if seg is None: continue
+        frac, dur = seg
         pg.evaluate("MODO_TESTE.invencivel = true; MODO_TESTE.semAbertura = true")
         cp = 'null' if frac is None else '{indice: %d, tempo: 20000}' % frac
         pg.evaluate(f"window.jogo.scene.getScene('Menu').scene.start('Game', {{hero: {json.dumps(heroi)}, tentativa: 2, checkpoint: {cp}}})")

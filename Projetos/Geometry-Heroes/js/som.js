@@ -178,25 +178,32 @@ class Som {
         return ctrl;
     }
 
-    // Trilha sintetizada, tocada uma batida por vez (a fase chama a cada batida, no ritmo do BPM dela)
-    // i = número da batida; raiz = nota base em Hz (cada herói tem a sua); intervalo = ms entre batidas
+    // Trilha das fases em 8 BITS (chiptune), tocada uma batida por vez no BPM da fase.
+    // Timbres dos consoles antigos: baixo em onda TRIANGULAR, arpejo e melodia em onda QUADRADA,
+    // bateria feita de RUÍDO curto. i = número da batida; raiz = nota base do herói (Hz);
+    // intervalo = ms entre batidas.
     batidaMusica(i, raiz, intervalo) {
         // Sem som: nada
         if (!this.ctx || this.mudo) return;
         // Posição dentro do compasso (4 batidas) e da frase (16 batidas)
         const b = i % 4, frase = Math.floor(i / 4) % 4;
-        // Bumbo em toda batida (grave caindo)
-        this.tom('sine', 140, 45, 140, 0.11);
-        // Chimbal no contratempo (meia batida depois)
-        this.ruido(40, 0.03, 7000, intervalo / 2);
-        // Caixa nas batidas 2 e 4
-        if (b === 1 || b === 3) this.ruido(110, 0.05, 1800);
-        // Baixo: raiz, raiz, quinta, oitava (muda de grau a cada compasso: I, I, VI, V)
+        // Grau do acorde em cada compasso da frase: I, I, VI, V (menor: raiz, raiz, 6ª abaixo, 5ª abaixo)
         const grau = [1, 1, 0.84, 0.75][frase];
-        const nota = raiz * grau * [1, 1, 1.5, 2][b];
-        this.tom('sawtooth', nota, nota, intervalo * 0.8, 0.035);
-        // Arpejo agudo nos dois últimos compassos da frase (colcheias)
-        if (frase >= 2) [1, 1.25, 1.5, 2].forEach((m, k) => { if (k < 2) this.tom('triangle', raiz * grau * 4 * m * (b % 2 ? 1.25 : 1), raiz * grau * 4 * m, intervalo * 0.4, 0.02, k * intervalo / 2); });
+        // Bumbo 8-bit: triangular com queda rápida de tom
+        this.tom('triangle', 180, 50, 90, 0.16);
+        // Chimbal de ruído agudo no contratempo
+        this.ruido(25, 0.025, 8000, intervalo / 2);
+        // Caixa de ruído nas batidas 2 e 4
+        if (b === 1 || b === 3) this.ruido(80, 0.06, 2500);
+        // Baixo triangular saltando oitava (raiz, oitava, quinta, oitava)
+        const baixo = raiz * grau * [1, 2, 1.5, 2][b];
+        this.tom('triangle', baixo, baixo, intervalo * 0.45, 0.07);
+        this.tom('triangle', baixo, baixo, intervalo * 0.4, 0.05, intervalo / 2);
+        // Arpejo em onda quadrada (semicolcheias: tônica, terça menor, quinta, oitava), o som clássico
+        // dos 8 bits — entra a partir do 2º compasso da frase pra a música "crescer"
+        if (frase >= 1) [1, 1.19, 1.5, 2].forEach((m, k) => this.tom('square', raiz * grau * 2 * m, raiz * grau * 2 * m, intervalo * 0.22, 0.018, k * intervalo / 4));
+        // Melodia curta em onda quadrada na 1ª batida dos compassos 3 e 4
+        if (frase >= 2 && b === 0) this.tom('square', raiz * grau * 4, raiz * grau * 4, intervalo * 0.9, 0.025);
     }
 
     // ---------------------------------------------------------------

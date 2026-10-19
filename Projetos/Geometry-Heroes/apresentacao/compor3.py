@@ -18,7 +18,7 @@ C.SKILLS = [
     ('ANIMATE', 'Skill de animação', 'Decidir o que deve animar, curva ease-out e duração curta: portais, rastro, parallax do Homem de Ferro.', (255, 194, 61)),
     ('EMIL DESIGN ENG', 'Skill de engenharia de design', 'Revisão de UI e movimento: detalhes invisíveis, legibilidade e feedback.', (176, 140, 255)),
     ('AGENTES', '3 agentes em paralelo (rodadas 7 e 8)', 'Cenários, pulo e tela inicial divididos por arquivos; um agente principal integrou e testou.', (111, 220, 74)),
-    ('TESTES', 'Testes de regressão automáticos', f'Cada mudança validada por 7 suítes ({TOTAL_TESTES} verificações) com piloto automático.', (92, 225, 255)),
+    ('MANUS · CHATGPT', 'Outras IAs usadas pelo grupo', 'ChatGPT para escrever os prompts enviados ao Claude; Manus para o design dos fundos, depois recortados em camadas.', (92, 225, 255)),
 ]
 C.CASOS = [
     ('Renascer colado no perigo', '0,3 s → ≥ 0,8 s', 'checkpoints recuados, câmera alinhada e 0,5 s de respiro; teste com 3 mortes seguidas'),

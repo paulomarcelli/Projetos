@@ -495,9 +495,9 @@ class FaseAranha extends Fase {
     // Checkpoints (2: fase curta, 15000 px). Sempre em cima de um telhado, longe da borda
     checkpoints() {
         return [
-            { x: 5000 },    // Telhado 4900–5600: antes do primeiro guindaste
+            { x: 4910 },    // Começo do telhado 4900–5600 (era 5000: o laser do piso em 5240 chegava em 0,3 s)
             { x: 9500 },    // Telhado alto 9400–9900: antes do vão grande com guindastes
-            { x: 11600 }    // Telhado 11500–12000 (logo depois do vão grande do final)
+            { x: 11510 }    // Começo do telhado 11500–12000 (era 11600: a serra em 11850 chegava em 0,4 s)
         ];
     }
 

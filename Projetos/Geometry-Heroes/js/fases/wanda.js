@@ -399,7 +399,8 @@ class FaseWanda extends Fase {
     checkpoints() {
         return [
             { x: 4600, realidade: 'B' },   // Depois das plataformas do meio; o portão ◆ em 5300 já está erguido
-            { x: 8480, realidade: 'A' },   // Depois do vão do orbe; a primeira plataforma ⌛ (8780) é ◆
+            { x: 7100, realidade: 'B' },   // Chão 7000–8050, antes do campo ◆ (inofensivo no ●) e do vão do orbe ●;
+                                           // era 8480: só 120 px de chão antes do vão grande (caía em 0,4 s)
             { x: 11950, realidade: 'B' }   // Antes do último vão com plataformas; a primeira (12480) é ●
         ];
     }

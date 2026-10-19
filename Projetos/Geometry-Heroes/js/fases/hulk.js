@@ -10,7 +10,7 @@
 // Constantes da fase (ajuste aqui o balanceamento)
 const HULK = {
     duracaoFuria: 3000,   // ms que a fúria dura
-    esperaFuria: 3000,    // ms de recarga depois que a fúria acaba
+    esperaFuria: 1500,    // ms de recarga depois que a fúria acaba (era 3000: ciclo total caiu de 6 s para 4,5 s)
     escalaFuria: 1.35,    // quanto o bloco cresce na fúria (só o desenho; a caixa de colisão não muda)
     avisoDistancia: 700   // px à frente em que os quebráveis mostram o aviso "FÚRIA"
 };
@@ -669,7 +669,7 @@ class FaseHulk extends Fase {
     checkpoints() {
         return [
             { x: 5700 },    // Fim do ato 1 (depois da viga no alto)
-            { x: 9350 },    // Depois da ponte que desmorona — próximo: espinho em 9600 e grupo em 10000
+            { x: 9120 },    // Logo depois da ponte que desmorona (era 9350: a serra em 9600 chegava em 0,3 s)
             { x: 11450 },   // Antes do portal de gravidade — começa o ato final
             { x: 16950 }    // Depois do último grupo — começa o trecho da bola
         ];

@@ -1,5 +1,10 @@
 // ================================================================
 // player.js — CLASSE Player: o cubo controlado pelo jogador
+// Física (Arcade do Phaser, passo fixo de 1/60 s): corre pra direita na velocidade da fase;
+// o pulo é uma velocidade vertical instantânea contra a gravidade (MOVIMENTO em config.js).
+// Pulo responsivo: o aperto pula NA HORA (no próprio evento da tecla/toque, sem esperar o quadro),
+// com "coyote time" (ainda pula logo depois de sair da borda) e "jump buffer" (aperto um pouco
+// antes de pousar vale no pouso). Cada pulo gasta o aperto: não há pulo duplo involuntário.
 // ================================================================
 
 // MODOS DE JOGO (como os portais de modo dos jogos de ritmo): o portal troca o jeito de se mover
@@ -182,6 +187,9 @@ class Player extends Phaser.GameObjects.Rectangle {
             this.pouso = 0;
             // Som do pulo
             som.tocar('pulo');
+            // Pixels 8-bit saindo do pé (ou da cabeça, com a gravidade invertida)
+            const ef = this.scene.fase && this.scene.fase.efeitos;
+            if (ef && ef.pixels) ef.pixels(this.x, this.y + 18 * dir, this.corBase, 4, 120, { cima: dir > 0, gravidade: 400 * dir });
         }
         return noChao;
     }

@@ -2,6 +2,16 @@
 // fase.js — CLASSE BASE Fase (sistema central de fases)
 // Cada herói tem uma subclasse (FaseHulk, FaseFerro...) que sobrescreve só os "ganchos".
 // POO: método template (criar/atualizar sempre na mesma ordem) + polimorfismo nos ganchos.
+//
+// Mapa das seções deste arquivo:
+//   · CRIAR (template)     criar(): cenário → chão → jogador → colisões → HUD → entrada → câmera → checkpoints
+//   · CENÁRIO / PARALLAX   criarCenario, moverParalaxe (camadas andam uma fração do scrollX da câmera)
+//   · JOGADOR + CÂMERA     criarJogador (skin interpolada entre passos da física), configurarCamera, alinharCamera
+//   · COLISÕES             criarColisoes: sólidos (pisar ok, bater de frente mata), mortais, gatilhos
+//   · ENTRADA              configurarEntrada: teclado, mouse/toque (multitoque), botões DOM → ganchos aoPressionar/aoSoltar
+//   · MORTE / CHECKPOINTS  morrer → reiniciar(cena) → voltarAoCheckpoint (posição, estado, câmera, respiro de 0,5 s)
+//   · PRÁTICA / PAUSA / CONCLUSÃO
+// A física do pulo (gravidade, força, coyote time e buffer) fica no Player (player.js).
 // ================================================================
 
 class Fase {
@@ -709,14 +719,16 @@ class Fase {
 
         // Tecla de pulo apertada
         const onPulo = (e) => {
-            // Ignora se o foco está num botão da página (Espaço apertaria o botão)
-            if (document.activeElement?.tagName === 'BUTTON') return;
+            // Pausado: o Espaço fica com os botões da tela de pausa
+            if (this.pausado) return;
+            // Foco esquecido num botão da página (ex.: depois de clicar ⏸ ou "Continuar"): antes o pulo
+            // era descartado aqui e parecia "travado". Agora tira o foco do botão (ele não é acionado)
+            // e devolve pro canvas — o pulo vale na hora.
+            if (document.activeElement?.tagName === 'BUTTON') { document.activeElement.blur(); this.cena.game.canvas.focus({ preventScroll: true }); }
             // Evita rolar a página
             e.preventDefault();
-            // Ignora repetição automática do teclado
+            // Ignora repetição automática do teclado (segurar já é tratado como pulo contínuo)
             if (e.repeat) return;
-            // Pausado: nada
-            if (this.pausado) return;
             // Marca como segurando
             this.segurandoTecla = true;
             // Gancho da fase
@@ -770,6 +782,8 @@ class Fase {
         const onSoltaPonteiro = () => {
             // Só conta se esse clique tinha virado pulo
             if (!this.ponteiroPulo) return;
+            // Com vários dedos na tela, só solta quando o último sair
+            if (this.ponteiroSegurado()) return;
             // Não está mais segurando
             this.ponteiroPulo = false;
             // Gancho da fase
@@ -836,7 +850,13 @@ class Fase {
     // Está segurando pulo (tecla ou ponteiro)?
     segurando() {
         // Tecla segurada ou ponteiro segurado
-        return this.segurandoTecla || (this.ponteiroPulo && this.cena.input.activePointer.isDown);
+        return this.segurandoTecla || (this.ponteiroPulo && this.ponteiroSegurado());
+    }
+
+    // Algum ponteiro (mouse ou qualquer um dos dedos) está apertado? (multitoque: activePointers = 3)
+    ponteiroSegurado() {
+        const ent = this.cena.input;
+        return ent.activePointer.isDown || (ent.manager.pointers || []).some((pt) => pt && pt.isDown);
     }
 
     // Ganchos de entrada (padrão = runner com pulo)
@@ -936,9 +956,9 @@ class Fase {
         // Invencível (teste automático ou depois de teleporte): ignora (menos queda no vão, que reposiciona no teste)
         if (MODO_TESTE.invencivel || this.cena.time.now < this.player.invencivelAte) {
             // No modo teste, se caiu, coloca de volta em cima
-            if (queda) { this.player.body.reset(this.player.x + 200, 300); }
-            // Não morre
-            return;
+            if (queda && MODO_TESTE.invencivel) { this.player.body.reset(this.player.x + 200, 300); return; }
+            // Respiro do reaparecimento não salva de cair no vão
+            if (!queda || MODO_TESTE.invencivel) return;
         }
         // Congela a física
         this.cena.physics.pause();
@@ -1019,8 +1039,26 @@ class Fase {
         this.tempo = this.checkpointSalvo.tempo || 0;
         // Estado próprio da fase (gancho)
         this.restaurarCheckpoint(cp);
+        // Câmera e cenário já no lugar certo (sem "viagem" da câmera desde o começo da fase)
+        this.alinharCamera();
+        // Respiro ao reaparecer: meio segundo piscando sem morrer (o perigo mais próximo fica a ≥1 s,
+        // ver checkpoints() de cada fase; isto só evita a morte instantânea se algo cruzar o ponto)
+        this.player.invencivelAte = this.cena.time.now + 500;
         // Brilho curto onde reaparece (sem texto: o checkpoint já tinha sido anunciado)
         this.efeitos.anel(this.player.x, this.player.y, this.tema.linha, 26, 2.2, 360);
+    }
+
+    // Põe a câmera (e o alvo suavizado que ela segue) direto no jogador. Sem isso, nas fases com
+    // câmera suave (Homem-Aranha, lerp 0,15) a câmera partia do x inicial e o cubo reaparecia fora da tela.
+    alinharCamera() {
+        const cam = this.cena.cameras.main, p = this.player;
+        // Alvo da câmera = posição atual do jogador (a interpolação visual recomeça daqui)
+        if (this.foco) { this.foco.x = p.x; this.foco.y = p.y; }
+        p.visX = p.x; p.visY = p.y;
+        // Mesma conta do "seguir" do Phaser, com lerp 1 só neste quadro (os limites do mundo são aplicados no preRender)
+        if (cam._follow) cam.scrollX = (cam._follow.x - cam.followOffset.x) - cam.width * cam.originX;
+        // O cenário em camadas lê o scrollX: atualiza já, sem esperar o próximo quadro
+        if (this.moverParalaxe) this.moverParalaxe(0);
     }
 
     // ---------------------------------------------------------------
@@ -1086,6 +1124,7 @@ class Fase {
         if (d.velX) p.velocidadeX = d.velX;
         p.body.setVelocityY(d.vy || 0);
         // Brilho verde
+        this.alinharCamera();
         this.efeitos.anel(p.x, p.y, 0x3dff8a, 26, 2.2, 360);
     }
 

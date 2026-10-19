@@ -20,6 +20,9 @@ const config = {
             debug: false
         }
     },
+    // Até 3 dedos ao mesmo tempo: um segundo toque (enquanto outro dedo ainda está na tela)
+    // também conta como pulo. Com o padrão (1 ponteiro de toque) esse toque era ignorado.
+    input: { activePointers: 3 },
     // Menu primeiro; a cena 'Game' recebe o herói e cria a fase dele
     scene: [MenuScene, GameScene]
 };

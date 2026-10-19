@@ -54,6 +54,8 @@ class Som {
         }
         // Se o navegador suspendeu o contexto, retoma
         if (this.ctx.state === 'suspended') this.ctx.resume();
+        // O menu pediu a trilha antes do primeiro clique (o navegador não deixa tocar antes): começa agora
+        if (this.querTrilha && !this.trilha) this.iniciarTrilhaMenu();
     }
 
     // Liga/desliga o som (tecla M) e salva a escolha
@@ -195,6 +197,90 @@ class Som {
         this.tom('sawtooth', nota, nota, intervalo * 0.8, 0.035);
         // Arpejo agudo nos dois últimos compassos da frase (colcheias)
         if (frase >= 2) [1, 1.25, 1.5, 2].forEach((m, k) => { if (k < 2) this.tom('triangle', raiz * grau * 4 * m * (b % 2 ? 1.25 : 1), raiz * grau * 4 * m, intervalo * 0.4, 0.02, k * intervalo / 2); });
+    }
+
+    // ---------------------------------------------------------------
+    // TRILHA DO MENU E DA SELEÇÃO: marcha heroica original em 8 bits (composição própria, sintetizada
+    // aqui mesmo — nada de arquivo de áudio). Ré menor, 132 BPM, 8 compassos em loop:
+    //   Dm · B♭ · C · Dm · Dm · B♭ · F · A  (o lá maior no fim "puxa" de volta pro começo)
+    // Agendamento com antecedência (lookahead) no relógio do Web Audio: não falha nem acelera
+    // com quedas de FPS, e um único loop por vez (chamar de novo não duplica nem reinicia).
+    // ---------------------------------------------------------------
+    iniciarTrilhaMenu() {
+        // Lembra que o menu quer música (se o áudio ainda não destravou, iniciar() chama de novo)
+        this.querTrilha = true;
+        // Sem contexto ainda, ou já tocando: nada (evita trilha duplicada ou recomeçando)
+        if (!this.ctx || this.trilha) return;
+        const ctx = this.ctx;
+        // Volume próprio da trilha (abaixo dos efeitos), entrando suave
+        const ganho = ctx.createGain(); ganho.gain.value = 0; ganho.connect(this.master);
+        ganho.gain.setTargetAtTime(0.75, ctx.currentTime, 0.5);
+        // Colcheia a 132 BPM
+        const colcheia = 60 / 132 / 2;
+        const t = { ganho, passo: 0, proximo: ctx.currentTime + 0.12, timer: null };
+        t.timer = setInterval(() => {
+            // Aba em segundo plano atrasou o timer: pula pro presente em vez de despejar notas acumuladas
+            if (t.proximo < ctx.currentTime) t.proximo = ctx.currentTime + 0.05;
+            // Agenda tudo que cai nos próximos 250 ms
+            while (t.proximo < ctx.currentTime + 0.25) { this.passoTrilha(t.passo, t.proximo, colcheia, ganho); t.passo++; t.proximo += colcheia; }
+        }, 60);
+        this.trilha = t;
+    }
+
+    // Para a trilha com fade curto (ao entrar numa fase)
+    pararTrilhaMenu() {
+        this.querTrilha = false;
+        const t = this.trilha; if (!t) return;
+        this.trilha = null;
+        clearInterval(t.timer);
+        t.ganho.gain.setTargetAtTime(0, this.ctx.currentTime, 0.12);
+        setTimeout(() => t.ganho.disconnect(), 900);
+    }
+
+    // Uma nota da trilha num instante exato (t0 em segundos do relógio do áudio), indo pro ganho da trilha
+    notaTrilha(onda, freq, t0, dur, vol, destino) {
+        const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+        osc.type = onda; osc.frequency.setValueAtTime(freq, t0);
+        g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + 0.006);
+        g.gain.setValueAtTime(vol * 0.8, t0 + dur * 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        osc.connect(g).connect(destino); osc.start(t0); osc.stop(t0 + dur + 0.02);
+    }
+
+    // Toca o passo (colcheia) número i da trilha: bateria, baixo em marcha, acorde de "metais" e melodia
+    passoTrilha(i, t0, colcheia, destino) {
+        const RE = 293.66, nota = (st) => RE * Math.pow(2, st / 12);
+        const passo = i % 8, compasso = Math.floor(i / 8) % 8;
+        // Acordes (semitons a partir do ré): Dm, B♭, C, Dm, Dm, B♭, F, A
+        const ACORDES = [[0, 3, 7], [-4, 0, 3], [-2, 2, 5], [0, 3, 7], [0, 3, 7], [-4, 0, 3], [3, 7, 10], [-5, -1, 2]];
+        // Melodia: [passo no compasso, semitom, duração em colcheias]
+        const MELODIA = [
+            [[0, 0, 3], [3, 7, 1], [4, 5, 2], [6, 3, 1], [7, 5, 1]],
+            [[0, 3, 4], [4, 2, 2], [6, 0, 2]],
+            [[0, -2, 2], [2, 2, 2], [4, 5, 3], [7, 7, 1]],
+            [[0, 12, 6], [6, 7, 2]],
+            [[0, 0, 2], [2, 0, 1], [3, 7, 1], [4, 12, 3], [7, 10, 1]],
+            [[0, 10, 3], [3, 7, 1], [4, 5, 2], [6, 3, 2]],
+            [[0, 3, 2], [2, 5, 2], [4, 7, 2], [6, 10, 2]],
+            [[0, 7, 3], [3, 11, 1], [4, 14, 4]]
+        ];
+        const acorde = ACORDES[compasso];
+        // Bateria: bumbo nos tempos 1 e 3, caixa no 2 e 4, rufo no fim do último compasso
+        if (passo === 0 || passo === 4) this.notaTrilha('sine', 120, t0, 0.14, 0.5, destino);
+        if (passo === 2 || passo === 6 || (compasso === 7 && passo >= 5)) this.ruidoTrilha(t0, 0.09, destino);
+        // Baixo em marcha (colcheias na fundamental, oitava abaixo)
+        this.notaTrilha('triangle', nota(acorde[0] - 12), t0, colcheia * 0.9, 0.32, destino);
+        // "Metais": acorde segurado no começo de cada compasso
+        if (passo === 0) acorde.forEach((st) => this.notaTrilha('sawtooth', nota(st), t0, colcheia * 7.5, 0.035, destino));
+        // Melodia (onda quadrada, o timbre clássico dos 8 bits)
+        MELODIA[compasso].forEach(([p, st, d]) => { if (p === passo) this.notaTrilha('square', nota(st + 12), t0, colcheia * d * 0.95, 0.06, destino); });
+    }
+
+    // Caixa da trilha: ruído curto filtrado
+    ruidoTrilha(t0, vol, destino) {
+        const fonte = this.ctx.createBufferSource(); fonte.buffer = this.bufferRuido;
+        const filtro = this.ctx.createBiquadFilter(); filtro.type = 'highpass'; filtro.frequency.value = 1500;
+        const g = this.ctx.createGain(); g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.11);
+        fonte.connect(filtro).connect(g).connect(destino); fonte.start(t0); fonte.stop(t0 + 0.13);
     }
 
     // Sons prontos usados em todas as fases (nome → receita)

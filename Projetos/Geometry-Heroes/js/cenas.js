@@ -82,6 +82,8 @@ class MenuScene extends GeometricScene {
         // Desenha o cenário de fundo estático/animado
         this.createBackdrop();
         this.starting = false;
+        // Trilha do menu (menu e seleção são a mesma cena: a música não reinicia ao trocar de tela)
+        som.iniciarTrilhaMenu();
         // Cor do fundo do menu muda devagar (azul → roxo → magenta → verde-azulado), como nos jogos de ritmo
         const cores = [0x2f5bd1, 0x7a2fd1, 0xd12f8a, 0x1fa58f];
         const veu = this.add.rectangle(640, 360, 1280, 720, cores[0], 0.22).setDepth(1);
@@ -258,6 +260,8 @@ class MenuScene extends GeometricScene {
 
         // Limpeza de listeners ao encerrar/mudar esta cena
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+            // Entrando numa fase: a trilha do menu para (a fase tem a batida dela)
+            som.pararTrilhaMenu();
             play.removeEventListener('click', OpenLevelSelect);
             backBtn.removeEventListener('click', CloseLevelSelect);
             this.input.keyboard.off('keydown-ENTER', onEnter);
@@ -330,6 +334,8 @@ class GameScene extends Phaser.Scene {
     create() {
         // Garante que a física volta a rodar (ela é pausada quando o jogador morre)
         this.physics.resume();
+        // Garantia: nenhuma trilha do menu tocando durante a partida
+        som.pararTrilhaMenu();
         // Garante que as telas do menu estão escondidas (não podem ficar por cima do jogo)
         document.getElementById('menu').hidden = true;
         document.getElementById('level-select').hidden = true;

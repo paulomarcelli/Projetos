@@ -40,6 +40,57 @@ class Efeitos {
         emissor.explode(Math.max(1, Math.round(n * this.fator)));
         // Apaga o emissor depois que as partículas somem
         this.cena.time.delayedCall(800, () => emissor.destroy());
+        // Impactos grandes (morte, bloco destruído, drone abatido) ganham também pixels 8-bit
+        if (n >= 8) this.pixels(x, y, cor, Math.round(n * 0.6), velocidade * 0.9);
+    }
+
+    // ---------------------------------------------------------------
+    // EFEITOS 8-BIT (pixel art): quadradinhos duros, sem brilho somado, que mudam de tamanho e de
+    // transparência em DEGRAUS (steps) — o "piscar" dos jogos antigos. Poucos pixels e vida curta,
+    // pra dar o toque retrô sem poluir a tela.
+    // ---------------------------------------------------------------
+
+    // Textura de um pixel "gordo" (6×6), gerada uma vez
+    texturaPixel() {
+        if (this.cena.textures.exists('pixel8')) return;
+        const g = this.cena.make.graphics({ add: false });
+        g.fillStyle(0xffffff, 1).fillRect(0, 0, 6, 6);
+        g.generateTexture('pixel8', 6, 6); g.destroy();
+    }
+
+    // Explosão de pixels (impacto, destruição, morte). opcoes: { cima: só pra cima (pulo), gravidade }
+    pixels(x, y, cor, n = 8, velocidade = 200, opcoes = {}) {
+        this.texturaPixel();
+        const emissor = this.cena.add.particles(x, y, 'pixel8', {
+            speed: { min: velocidade * 0.35, max: velocidade },
+            angle: opcoes.cima ? { min: 200, max: 340 } : { min: 0, max: 360 },
+            gravityY: opcoes.gravidade !== undefined ? opcoes.gravidade : 500,
+            lifespan: { min: 220, max: 420 },
+            // Tamanho e alpha em degraus (3 "quadros" de animação, como sprite 8-bit)
+            scale: { start: 1.2, end: 0.4, steps: 3 },
+            alpha: { start: 1, end: 0.2, steps: 3 },
+            tint: cor, emitting: false
+        }).setDepth(21);
+        emissor.explode(Math.max(1, Math.round(n * this.fator)));
+        this.cena.time.delayedCall(600, () => emissor.destroy());
+    }
+
+    // Anel de pixels que se abre em degraus (poder ativado, portal abrindo/fechando)
+    anelPixels(x, y, cor, raio = 34, n = 12, ms = 260) {
+        if (reducedMotion.matches) return;
+        this.texturaPixel();
+        const cores = Array.isArray(cor) ? cor : [cor];
+        const estado = { r: raio * 0.35 };
+        const px = [];
+        for (let i = 0; i < n; i++) px.push(this.cena.add.image(x, y, 'pixel8').setTint(cores[i % cores.length]).setDepth(21));
+        const posicionar = () => px.forEach((p, i) => {
+            const a = i / n * Math.PI * 2;
+            // Posição arredondada em múltiplos de 3 px: o anel "anda" na grade, como pixel art
+            p.setPosition(x + Math.round(Math.cos(a) * estado.r / 3) * 3, y + Math.round(Math.sin(a) * estado.r / 3) * 3);
+        });
+        posicionar();
+        this.cena.tweens.add({ targets: estado, r: raio, duration: this.dur(ms), ease: 'Stepped', easeParams: [4], onUpdate: posicionar });
+        this.cena.tweens.add({ targets: px, alpha: 0, duration: this.dur(ms), delay: this.dur(ms * 0.5), ease: 'Stepped', easeParams: [3], onComplete: () => px.forEach((p) => p.destroy()) });
     }
 
     // Poeira (partículas cinzas grandes que sobem devagar)

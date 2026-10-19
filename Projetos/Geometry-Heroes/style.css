@@ -1057,7 +1057,7 @@ kbd {
 .heroi-foto[data-heroi="Wanda"]          { --retrato: url("assets/herois/wanda.webp"); background-size: 140% auto; background-position: 50% 12%; }
 .painel h2 { font-family: var(--fonte-titulo); font-weight: 400; letter-spacing: .06em; } /* Mesma fonte do título */
 /* Doutor Estranho (imagem larga): retrato um pouco maior no cartão */
-#level-select .level-btn[data-level="DrEstranho"]::before { width: 33%; right: 0; }
+/* (Doutor Estranho usava 33%: agora todos os retratos têm 36%, ver estilo HQ) */
 /* Contraste: rótulos brancos dos botões verdes ganham contorno escuro (como as letras do título) */
 .botao-redondo b { -webkit-text-stroke: .22em var(--contorno); paint-order: stroke fill; }
 .painel-fechar { background: #2a7a10; }         /* Verde mais escuro: texto branco com contraste AA */
@@ -1186,3 +1186,11 @@ kbd {
 #level-select .level-btn[data-level="Wanda"]::before { top: 0; bottom: 0; width: 36%; height: auto; aspect-ratio: auto; right: 0; }
 #level-select .seta { background: var(--hq-vermelho) !important; color: #fff !important; }
 .menu-voltar { background: #fff !important; color: var(--hq-tinta) !important; }
+
+/* Cartões padronizados: todos com a MESMA altura (antes os nomes longos — Feiticeira Escarlate,
+   Doutor Estranho — quebravam em 2 linhas e o cartão crescia ~20%). Conteúdo centralizado na
+   vertical; nome com no máximo 2 linhas e entrelinha curta. */
+#level-select .level-btn { height: 28cqw; justify-content: center; box-sizing: border-box; }
+#level-select .level-btn > .card-titulo,
+#level-select .level-btn { line-height: 1.05; }
+#level-select .level-btn small { line-height: 1.25; }

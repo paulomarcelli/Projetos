@@ -728,8 +728,8 @@ class FaseEstranho extends Fase {
     checkpoints() {
         return [
             { x: 4400, dim: 'N' },               // Depois do 1º anel (volta à Normal); selo do Espelho em 4700 é fantasma
-            { x: 10350, dim: 'N' },              // Depois do 2º anel; faixa rápida começa em 10600
-            { x: 14600, dim: 'E', teto: true }   // Depois do anel 14400 (Espelho, no teto); espinho do teto só em 15100
+            { x: 10280, dim: 'N' },              // Depois do 2º anel e do selo; faixa rápida em 10600 (era 10350)
+            { x: 14490, dim: 'E', teto: true }   // Logo depois do anel 14400 (Espelho, no teto); era 14600 (mini-espinho em 15020 vinha em 0,7 s)
         ];
     }
 

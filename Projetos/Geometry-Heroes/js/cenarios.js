@@ -258,6 +258,9 @@ const Cenarios = {
             const t = cena.add.tileSprite(0, 0, 1280, 720, dupla).setOrigin(0, 0).setScrollFactor(0)
                 .setDepth(-98.9 + i * 0.05).setTileScale(esc, esc).setTint(def.tom || 0xffffff);
             t.fatorParalaxe = c.fator / esc * reduz; t.tingir = false; t.estrutural = false; t.fundoImagem = true;
+            if (c.deriva && !reducedMotion.matches) t.deriva = c.deriva / esc;
+            // respira: opacidade sobe e desce devagar (senoide de ~6 s), sem piscar
+            if (c.respira) this.animar(fase, (dt, agora) => t.setAlpha(0.7 + 0.3 * Math.sin(agora / 950 + i)));
             (fase.camadas = fase.camadas || []).push(t); tiles.push(t);
         });
         if (!tiles.length) return null;

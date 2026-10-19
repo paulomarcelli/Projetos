@@ -132,7 +132,7 @@ const CENARIOS_IMAGEM = {
         { arquivo: 'assets/backgrounds/homem-aranha/aranha-c2-skyline.webp',   fator: 0.03 },
         { arquivo: 'assets/backgrounds/homem-aranha/aranha-c3-meio.webp',      fator: 0.07 },
         { arquivo: 'assets/backgrounds/homem-aranha/aranha-c4-perto.webp',     fator: 0.14 },
-        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c5-atmosfera.webp', fator: 0.18 }
+        { arquivo: 'assets/backgrounds/homem-aranha/aranha-c5-atmosfera.webp', fator: 0.18, deriva: 8, respira: true }
     ] },
     // Camadas em parallax (do fundo para a frente), cada uma em loop espelhado; fator = quanto anda com a câmera
     'Homem de Ferro': { camadas: [

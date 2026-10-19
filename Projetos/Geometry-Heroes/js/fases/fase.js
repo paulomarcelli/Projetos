@@ -309,7 +309,7 @@ class Fase {
     // Feixes de luz verticais subindo do chão (camada fixa na tela, tingida pela cor da seção)
     criarFeixes() {
         // Com arte em sequência os feixes não entram (andariam por cima da imagem em outra velocidade)
-        if (this.fundoSeq) return;
+        if (this.fundoSeq || this.semProcedural) return;
         if (!this.cena.textures.exists('feixes')) {
             const g = this.cena.make.graphics({ add: false }), rnd = new Phaser.Math.RandomDataGenerator(['feixes']);
             // Cada feixe: várias faixas finas empilhadas, mais fortes embaixo (degradê)

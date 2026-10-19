@@ -147,8 +147,10 @@ const Cenarios = {
     // A fase tem sequência de imagens carregada? Então o cenário procedural (camadas em paralaxe, antenas,
     // luzes, partículas) não é criado: por cima da arte ele parecia flutuar e andar em outra velocidade.
     temSequencia(fase) {
-        const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi];
-        return !!(def && def.sequencia && fase.cena.textures.exists(this.chaveFundo(fase.heroi) + '-0'));
+        const def = (typeof CENARIOS_IMAGEM !== 'undefined') && CENARIOS_IMAGEM[fase.heroi], k = this.chaveFundo(fase.heroi);
+        const sem = !!(def && ((def.sequencia && fase.cena.textures.exists(k + '-0')) || (def.soArte && fase.cena.textures.exists(k))));
+        if (sem) fase.semProcedural = true;
+        return sem;
     },
 
     preparar(fase) {
@@ -238,7 +240,8 @@ const Cenarios = {
         const cena = fase.cena, chave = this.chaveFundo(fase.heroi);
         if (!def || !cena.textures.exists(chave)) return null;   // sem imagem: fica o procedural
         // Textura dupla [imagem | imagem espelhada], montada UMA vez: repete sem emenda visível
-        const dupla = chave + '-dupla';
+        // espelhar: false = a imagem já repete sem emenda (panorama preparado), usa direto
+        const dupla = def.espelhar === false ? chave : chave + '-dupla';
         if (!cena.textures.exists(dupla)) {
             const src = cena.textures.get(chave).getSourceImage();
             // Respeita o limite de textura da GPU (celulares costumam aceitar só 4096 px): reduz se precisar
@@ -252,7 +255,8 @@ const Cenarios = {
         const h = cena.textures.get(dupla).getSourceImage().height, escala = def.alto / h;
         const fundo = cena.add.tileSprite(0, def.y, 1280, def.alto, dupla).setOrigin(0, 0).setScrollFactor(0)
             .setDepth(-98.5).setTileScale(escala, escala).setTint(def.tom || 0xffffff);
-        fundo.fatorParalaxe = def.fator / escala;   // tilePosition é em pixels da textura
+        // tilePosition é em pixels da textura; com "reduzir movimento" o fundo anda bem menos
+        fundo.fatorParalaxe = def.fator / escala * (reducedMotion.matches ? 0.35 : 1);
         fundo.tingir = false; fundo.estrutural = false; fundo.fundoImagem = true;
         (fase.camadas = fase.camadas || []).push(fundo);
         // Esconde a estrutura procedural (marcada em ceu()/camada() ou pela fase em est.estruturais)

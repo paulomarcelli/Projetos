@@ -78,7 +78,7 @@ const CONFIG_FASES = {
     'Gaviao':         { nome: 'GAVIÃO ARQUEIRO', tema: 'gaviao',   velocidade: 400, comprimento: 21000, bpm: 120, raiz: 61.7, dificuldade: 'Normal' },
     'Homem-Aranha':   { nome: 'HOMEM-ARANHA',    tema: 'aranha',   velocidade: 420, comprimento: 15000, bpm: 132, raiz: 65.4, dificuldade: 'Fácil' },
     'DrEstranho':     { nome: 'DOUTOR ESTRANHO', tema: 'estranho', velocidade: 470, comprimento: 20600, bpm: 124, raiz: 58.3, dificuldade: 'Difícil' },
-    'Wanda':          { nome: 'WANDA MAXIMOFF',  tema: 'wanda',    velocidade: 470, comprimento: 16200, bpm: 136, raiz: 51.9, dificuldade: 'Insano' }
+    'Wanda':          { nome: 'FEITICEIRA ESCARLATE', tema: 'wanda',    velocidade: 470, comprimento: 16200, bpm: 136, raiz: 51.9, dificuldade: 'Insano' }
 };
 
 // MODO DE TESTE (usado só pelos testes automáticos: deixa o cubo invencível)

@@ -138,73 +138,85 @@ function fxCenario(fase, evento, dados) { if (typeof fase.cenarioReagir === 'fun
 // Só VISUAL: quem decide colisão/gatilho é o código do portal.
 // w × h = tamanho da elipse; opcoes.abrir = anima a abertura
 // ---------------------------------------------------------------
+// ANEL RÚNICO (base visual única de todos os portais do Doutor Estranho): aro fino + glifos
+// pequenos entre dois círculos. Usado no portal aberto, na runa "adormecida" e na marca de saída.
+function desenharAnelRunico(g, raio, cor, alpha = 1) {
+    g.lineStyle(1.5, cor, 0.7 * alpha).strokeCircle(0, 0, raio).strokeCircle(0, 0, raio - 9);
+    fxGlifos(g, raio - 4.5, 12, cor, 0.85 * alpha, Math.max(1.8, raio * 0.05));
+}
+
+// PORTAL MÍSTICO (padrão único, estilo dos portais de faíscas do Doutor Estranho nos filmes):
+// um anel de FAÍSCAS laranja-douradas girando rápido, faíscas soltando pela tangente e caindo,
+// anel rúnico discreto por dentro e miolo escuro e transparente (o "outro lado").
+// Sem roxo, sem espiral e sem neon: só fogo dourado. Formato: elipse w×h (pad deitado = achatado).
 function criarPortalMistico(fase, x, y, w, h, opcoes = {}) {
     const cena = fase.cena, raio = w / 2, achatar = h / w;
     const prof = opcoes.profundidade || 5;
-    const cor = opcoes.cor || COR_PODER.ouro;
-    // Brilho atrás (halo largo)
-    const halo = cena.add.ellipse(x, y, w * 1.5, h * 1.5, COR_PODER.brasa, 0.14).setDepth(prof - 1);
-    // Miolo escuro com "outro lado" (o espaço distorcido)
-    const miolo = cena.add.ellipse(x, y, w * 0.86, h * 0.86, 0x12051f, 0.72).setDepth(prof);
-    // Container achatado: tudo dentro é desenhado em círculo e vira elipse (a rotação parece 3D)
+    // Textura do aro de faíscas (gerada uma vez): ~70 riscos curtos tangentes em volta do círculo,
+    // com brilho variado — girando, parecem as faíscas correndo em círculo
+    const kAro = 'portal-aro-faiscas';
+    if (!cena.textures.exists(kAro)) {
+        const R = 64, g = cena.make.graphics({ add: false }), rnd = new Phaser.Math.RandomDataGenerator(['portal-aro']);
+        g.lineStyle(10, 0xff7b00, 0.16).strokeCircle(R + 12, R + 12, R);           // brilho largo
+        g.lineStyle(4, 0xffa53d, 0.55).strokeCircle(R + 12, R + 12, R);            // aro
+        for (let i = 0; i < 72; i++) {
+            const a = i / 72 * Math.PI * 2 + rnd.realInRange(-0.03, 0.03), rr = R + rnd.realInRange(-3, 3);
+            const L = rnd.realInRange(0.08, 0.22), cx = R + 12, cy = R + 12;
+            g.lineStyle(rnd.pick([1.5, 2, 2.5]), rnd.pick([0xfff2b0, 0xffd166, 0xffc94a, 0xffa53d]), rnd.realInRange(0.6, 1));
+            g.beginPath(); g.arc(cx, cy, rr, a, a + L); g.strokePath();
+        }
+        g.generateTexture(kAro, (R + 12) * 2, (R + 12) * 2); g.destroy();
+    }
+    const escAro = raio / 64;
+    // Miolo escuro e transparente (o outro lado, sem roxo) + brilho laranja suave atrás
+    const halo = cena.add.ellipse(x, y, w * 1.35, h * 1.35, COR_PODER.brasa, 0.10).setDepth(prof - 1).setBlendMode(Phaser.BlendModes.ADD);
+    const miolo = cena.add.ellipse(x, y, w * 0.94, h * 0.94, 0x120806, 0.42).setDepth(prof);
+    // Container achatado: tudo dentro é desenhado em círculo e vira elipse
     const caixa = cena.add.container(x, y).setDepth(prof + 1).setScale(1, achatar);
-    // Espiral sutil dentro (distorção do espaço)
-    const espiral = cena.add.graphics();
-    espiral.lineStyle(2, 0x9a6bff, 0.35);
-    for (let b = 0; b < 4; b++) { espiral.beginPath(); for (let t = 0; t <= 1.001; t += 0.08) { const a = b * Math.PI / 2 + t * 3.4, r = 4 + t * raio * 0.75; if (t === 0) espiral.moveTo(Math.cos(a) * r, Math.sin(a) * r); else espiral.lineTo(Math.cos(a) * r, Math.sin(a) * r); } espiral.strokePath(); }
-    // Anel externo: aro grosso dourado + marcas + quadradinhos
-    const anelA = cena.add.graphics();
-    anelA.lineStyle(5, cor, 1).strokeCircle(0, 0, raio);
-    anelA.lineStyle(2, COR_PODER.laranja, 0.9).strokeCircle(0, 0, raio - 7);
-    for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2, r1 = raio + 3, r2 = raio + (i % 3 === 0 ? 11 : 6); anelA.lineStyle(i % 3 === 0 ? 3 : 2, cor, 1).lineBetween(Math.cos(a) * r1, Math.sin(a) * r1, Math.cos(a) * r2, Math.sin(a) * r2); }
-    // Anel interno: arcos tracejados + glifos (gira ao contrário)
-    const anelB = cena.add.graphics();
-    for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; anelB.lineStyle(3, COR_PODER.laranja, 0.95); anelB.beginPath(); anelB.arc(0, 0, raio - 14, a, a + 0.5); anelB.strokePath(); }
-    fxGlifos(anelB, raio - 22, 10, COR_PODER.dourado, 0.95, Math.max(2.5, raio * 0.07));
-    caixa.add([espiral, anelB, anelA]);
-    // Faíscas incandescentes correndo pela borda (emissão em sequência = parece girar)
+    const aro = cena.add.image(0, 0, kAro).setScale(escAro).setBlendMode(Phaser.BlendModes.ADD);
+    const aro2 = cena.add.image(0, 0, kAro).setScale(escAro * 0.97).setAlpha(0.55).setBlendMode(Phaser.BlendModes.ADD).setAngle(37);
+    const runas = cena.add.graphics(); desenharAnelRunico(runas, raio * 0.78, COR_PODER.dourado, 0.6);
+    caixa.add([runas, aro2, aro]);
+    // Faíscas soltando da borda e caindo (gravidade), pequenas — não poluem a tela
     const faiscas = cena.add.particles(x, y, 'faisca', {
-        emitZone: { type: 'edge', source: new Phaser.Geom.Ellipse(0, 0, w, h), quantity: 40 },
-        speed: { min: 15, max: 70 }, lifespan: { min: 180, max: 420 }, scale: { start: 0.9, end: 0 },
-        tint: [0xfff2b0, COR_PODER.ouro, COR_PODER.brasa], blendMode: 'ADD', frequency: reducedMotion.matches ? 140 : 22
+        emitZone: { type: 'edge', source: new Phaser.Geom.Ellipse(0, 0, w, h), quantity: 48 },
+        speed: { min: 20, max: 60 }, gravityY: 260, lifespan: { min: 220, max: 460 }, scale: { start: 0.55, end: 0 },
+        tint: [0xfff2b0, COR_PODER.ouro, COR_PODER.brasa], blendMode: 'ADD', frequency: reducedMotion.matches ? 160 : 30
     }).setDepth(prof + 2);
-    // Giro contínuo (anéis em sentidos opostos; a espiral gira devagar)
-    const giros = [
-        cena.tweens.add({ targets: anelA, angle: 360, duration: 4200, repeat: -1 }),
-        cena.tweens.add({ targets: anelB, angle: -360, duration: 2600, repeat: -1 }),
-        cena.tweens.add({ targets: espiral, angle: 360, duration: 5200, repeat: -1 }),
-        // Estabilização: halo pulsando
-        cena.tweens.add({ targets: halo, alpha: 0.26, scale: 1.08, duration: 520, yoyo: true, repeat: -1 })
+    // Giro: aro de faíscas rápido, segundo aro no sentido contrário, runas bem devagar; halo "respira"
+    const giros = reducedMotion.matches ? [] : [
+        cena.tweens.add({ targets: aro, angle: 360, duration: 900, repeat: -1 }),
+        cena.tweens.add({ targets: aro2, angle: -323, duration: 1500, repeat: -1 }),
+        cena.tweens.add({ targets: runas, angle: 360, duration: 9000, repeat: -1 }),
+        cena.tweens.add({ targets: halo, alpha: 0.16, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' })
     ];
     const partes = [halo, miolo, caixa, faiscas];
     // Portal deitado (pad no piso/teto): coluna de luz dourada saindo dele (fica fácil de ver)
     if (opcoes.coluna) {
         const dir = opcoes.coluna, coluna = cena.add.graphics({ x, y }).setDepth(prof - 1).setBlendMode(Phaser.BlendModes.ADD);
-        for (let k = 0; k < 8; k++) { coluna.fillStyle(COR_PODER.ouro, 0.07 * (1 - k / 8)); coluna.fillRect(-w * 0.36, dir > 0 ? k * 12 : -(k + 1) * 12, w * 0.72, 12); }
-        giros.push(cena.tweens.add({ targets: coluna, scaleX: 0.8, duration: 700, yoyo: true, repeat: -1 }));
+        for (let k = 0; k < 8; k++) { coluna.fillStyle(COR_PODER.laranja, 0.06 * (1 - k / 8)); coluna.fillRect(-w * 0.36, dir > 0 ? k * 12 : -(k + 1) * 12, w * 0.72, 12); }
         partes.push(coluna);
     }
-    // Abertura: expande da linha central com um clarão
+    // Abertura: o anel "acende" crescendo a partir de um ponto de faísca (como nos filmes), ease-out
     if (opcoes.abrir !== false) {
-        [halo, miolo].forEach((o) => { o.scaleX = 0.05; cena.tweens.add({ targets: o, scaleX: 1, duration: fase.efeitos.dur(260), ease: 'Back.Out' }); });
-        caixa.scaleX = 0.05; cena.tweens.add({ targets: caixa, scaleX: 1, duration: fase.efeitos.dur(300), ease: 'Back.Out' });
-        fxOnda(fase, x, y, COR_PODER.ouro, Math.max(10, raio * 0.4), raio * 2.2, 380, 3);
-        fxFaiscas(fase, x, y, [0xfff2b0, COR_PODER.ouro, COR_PODER.brasa], 18, 260, 460);
+        [halo, miolo].forEach((o) => { const sx = o.scaleX; o.setScale(0.2); cena.tweens.add({ targets: o, scale: 1, duration: fase.efeitos.dur(240), ease: 'Cubic.Out' }); });
+        caixa.setScale(0.2, 0.2 * achatar); cena.tweens.add({ targets: caixa, scaleX: 1, scaleY: achatar, duration: fase.efeitos.dur(240), ease: 'Cubic.Out' });
+        fxFaiscas(fase, x, y, [0xfff2b0, COR_PODER.ouro, COR_PODER.brasa], 14, 220, 420);
     }
     let fechado = false;
     return {
         partes, faiscas,
         // Transparência (fantasma do Dr. Estranho)
         setAlpha(a) { partes.forEach((o) => o.setAlpha(o === halo ? a * 0.6 : a)); return this; },
-        // Fechar: contrai até a linha central, faíscas se recolhem e somem
-        fechar(ms = 260) {
+        // Fechar: o anel encolhe até sumir (rápido), soltando as últimas faíscas
+        fechar(ms = 200) {
             if (fechado) return; fechado = true;
             faiscas.stop();
-            fxFaiscas(fase, x, y, [COR_PODER.ouro, COR_PODER.brasa], 12, 140, 360);
-            fxOnda(fase, x, y, COR_PODER.laranja, raio, raio * 0.2, ms, 3, 0.7);
-            cena.tweens.add({ targets: [halo, miolo, caixa], scaleX: 0, alpha: 0, duration: fase.efeitos.dur(ms), ease: 'Back.In', onComplete: () => this.destruir() });
+            fxFaiscas(fase, x, y, [COR_PODER.ouro, COR_PODER.brasa], 10, 140, 320);
+            cena.tweens.add({ targets: [halo, miolo], scale: 0.1, alpha: 0, duration: fase.efeitos.dur(ms), ease: 'Cubic.In' });
+            cena.tweens.add({ targets: caixa, scaleX: 0.1, scaleY: 0.1 * achatar, alpha: 0, duration: fase.efeitos.dur(ms), ease: 'Cubic.In', onComplete: () => this.destruir() });
         },
-        destruir() { giros.forEach((t) => t.remove()); cena.tweens.killTweensOf(partes); partes.forEach((o) => o.destroy()); }
+        destruir() { giros.forEach((t) => t.remove()); cena.tweens.killTweensOf(partes); cena.tweens.killTweensOf([aro, aro2, runas]); partes.forEach((o) => o.destroy()); }
     };
 }
 
@@ -346,8 +358,8 @@ const VISUAIS_HEROIS = {
     // de cima, ponta em V descendo na testa e moldura pelas laterais do rosto (desenho próprio, sem copiar arte)
     'Wanda': {
         cores: [0x7a0c22, 0xff4d6d],
-        // O corpo (skin) gira como todo cubo; o rosto com a tiara fica numa camada própria que sempre
-        // "veste" a face de cima (gira só o resto até a quina mais próxima) — assim a tiara nunca fica de lado.
+        // O corpo (skin) gira como todo cubo; o rosto com a tiara fica numa camada própria (por cima do
+        // brilho) que acompanha exatamente a posição e a rotação do corpo.
         desenhar(g) {
             // Corpo: leve brilho escarlate de baixo pra cima (profundidade) — o rosto vem em desenharRosto
             g.fillStyle(0xff2447, 0.18).fillRect(-17, 6, 34, 11);
@@ -398,10 +410,11 @@ const VISUAIS_HEROIS = {
         atualizar(fase, ex) {
             const s = fase.player.skin;
             if (ex.rosto && ex.rosto.active) {
-                // Mesma posição/escala/alpha do corpo; rotação = resto até o múltiplo de 90° mais próximo
-                const q = Math.PI / 2, r = s.rotation;
+                // Mesma posição/escala/alpha/rotação do corpo: o rosto gira junto no pulo, como em todo cubo.
+                // (Antes girava só o resto até a quina mais próxima e "voltava" a cada 90°: como a tiara cobre
+                // quase o cubo inteiro, o cubo parecia parado no ar.)
                 ex.rosto.setPosition(s.x, s.y).setScale(s.scaleX, s.scaleY).setAlpha(s.alpha).setVisible(s.visible);
-                ex.rosto.rotation = r - Math.round(r / q) * q;
+                ex.rosto.rotation = s.rotation;
             }
             if (!ex.caos) return;
             ex.caos.setPosition(s.x, s.y);

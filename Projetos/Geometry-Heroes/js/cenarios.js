@@ -159,6 +159,77 @@ const Cenarios = {
     },
 
     // ---------------------------------------------------------------
+    // CHÃO: um MATERIAL por herói, todos na mesma linguagem (textura + borda de cima + linha neon do
+    // tema onde se pisa). A textura é gerada uma vez (256×140) e repetida alinhada ao mundo.
+    // ---------------------------------------------------------------
+    texturaChao(cena, heroi) {
+        const chave = 'chao-' + heroi;
+        if (cena.textures.exists(chave)) return chave;
+        const W = 256, H = 140, g = cena.make.graphics({ add: false }), rnd = new Phaser.Math.RandomDataGenerator(['chao-' + heroi]);
+        const base = (cor) => { g.fillStyle(cor, 1).fillRect(0, 0, W, H); };
+        switch (heroi) {
+            case 'Homem-Aranha': {   // fachada de tijolos escuros (as janelas da fase vão por cima)
+                base(0x1c2350);
+                for (let y = 0, l = 0; y < H; y += 10, l++) {
+                    g.fillStyle(0x141a3e, 1).fillRect(0, y, W, 1.5);
+                    for (let x = (l % 2) * 16; x < W; x += 32) g.fillRect(x, y, 1.5, 10);
+                }
+                break;
+            }
+            case 'Hulk': {           // lajes de concreto rachado, rachaduras com brilho gama
+                base(0x2c302b);
+                for (let i = 0; i < 260; i++) { g.fillStyle(rnd.pick([0x232722, 0x363b34, 0x1d201c]), 0.8).fillRect(rnd.between(0, W), rnd.between(0, H), rnd.between(2, 5), rnd.between(2, 4)); }
+                g.fillStyle(0x1a1d19, 1); for (let x = 0; x < W; x += 64) g.fillRect(x, 0, 2, H);
+                for (let k = 0; k < 4; k++) {
+                    let x = rnd.between(10, W - 10), y = 0; const pts = [{ x, y }];
+                    while (y < H) { x += rnd.between(-10, 10); y += rnd.between(10, 22); pts.push({ x, y }); }
+                    g.lineStyle(3, 0x6fdc4a, 0.16).strokePoints(pts); g.lineStyle(1.2, 0x9dff5a, 0.55).strokePoints(pts);
+                }
+                break;
+            }
+            case 'Gaviao': {         // chapas de aço do telhado tático, com rebites
+                base(0x1e1636);
+                g.fillStyle(0x140e26, 1);
+                for (let x = 0; x < W; x += 64) g.fillRect(x, 0, 2, H);
+                for (let y = 0; y < H; y += 35) g.fillRect(0, y, W, 2);
+                g.fillStyle(0x5a4a88, 0.9);
+                for (let x = 0; x < W; x += 64) for (let y = 0; y < H; y += 35) { g.fillCircle(x + 7, y + 7, 1.6); g.fillCircle(x + 57, y + 7, 1.6); }
+                break;
+            }
+            case 'Homem de Ferro': { // painéis tecnológicos com frisos ciano e detalhes dourados
+                base(0x0f1626);
+                g.fillStyle(0x0a0f1a, 1);
+                for (let x = 0; x < W; x += 64) g.fillRect(x, 0, 2, H);
+                for (let y = 0; y < H; y += 32) g.fillRect(0, y, W, 2);
+                g.fillStyle(0x2ad0ff, 0.35); for (let x = 0; x < W; x += 64) g.fillRect(x + 10, 14, 30, 1.5);
+                g.fillStyle(0xffc23d, 0.45); for (let x = 32; x < W; x += 128) g.fillRect(x, 48, 10, 3);
+                break;
+            }
+            case 'DrEstranho': {     // pedra escura do santuário com runas douradas incrustadas
+                base(0x1b1532);
+                g.fillStyle(0x120e24, 1);
+                for (let y = 0, l = 0; y < H; y += 40, l++) { g.fillRect(0, y, W, 2); for (let x = (l % 2) * 32; x < W; x += 64) g.fillRect(x, y, 2, 40); }
+                g.lineStyle(1.2, 0xffa53d, 0.32);
+                for (let x = 32; x < W; x += 128) { g.strokeCircle(x, 22, 7); g.lineBetween(x - 4, 22, x + 4, 22); }
+                break;
+            }
+            case 'Wanda': {          // terra escura com raízes e veios de magia escarlate
+                base(0x1a0509);
+                for (let k = 0; k < 7; k++) {
+                    const y0 = rnd.between(10, H - 10), pts = [];
+                    for (let x = -10; x <= W + 10; x += 16) pts.push({ x, y: y0 + Math.sin(x / 30 + k) * 6 + rnd.between(-2, 2) });
+                    g.lineStyle(rnd.between(3, 6), 0x0a0103, 1).strokePoints(pts);
+                    if (k % 2 === 0) g.lineStyle(1, 0xff2a3d, 0.35).strokePoints(pts.map((p) => ({ x: p.x, y: p.y - 2 })));
+                }
+                break;
+            }
+            default: base(0x101830);
+        }
+        g.generateTexture(chave, W, H); g.destroy();
+        return chave;
+    },
+
+    // ---------------------------------------------------------------
     // FUNDO EM IMAGEM (CENARIOS_IMAGEM em config.js; carregado no preload da GameScene)
     // ---------------------------------------------------------------
     // Chave da textura carregada e da textura dupla espelhada
@@ -923,6 +994,9 @@ const Cenarios = {
         this.preparar(fase);
         if (this.temSequencia(fase)) return;   // arte em sequência: sem cenário procedural por cima
         const cena = fase.cena, est = fase.estadoCenario;
+        // Com a arte de fundo carregada, por cima vai só atmosfera (névoa, luz, brasas): nada sólido solto
+        // andando em outra velocidade (lascas e filamentos pareciam flutuar sobre a imagem)
+        const comArte = cena.textures.exists(this.chaveFundo(fase.heroi));
         // Céu: breu no topo, roxo-vinho no meio e brasa carmesim no horizonte; lua pálida encoberta por nuvens
         this.ceu(fase, 'cen-wanda-ceu4', [0x020003, 0x0f0214, 0x3e0616], (g, w, h) => {
             const rnd = new Phaser.Math.RandomDataGenerator(['wanda-nebulosa']);
@@ -972,7 +1046,7 @@ const Cenarios = {
             }
         });
         // Névoa perto (vinho e roxa) correndo
-        const nevoa = this.camada(fase, 0.32, -86, (g, L) => {
+        const nevoa = this.camada(fase, comArte ? 0.14 : 0.32, -86, (g, L) => {
             const rnd = new Phaser.Math.RandomDataGenerator(['wanda-nevoa']);
             for (let i = 0; i < 14; i++) { g.fillStyle(rnd.pick([0xff2a4d, 0x9a1aff]), 0.045); g.fillEllipse(rnd.between(0, L), rnd.between(510, 655), rnd.between(320, 640), rnd.between(26, 60)); }
         });
@@ -998,7 +1072,8 @@ const Cenarios = {
         nevoa.estrutural = false; nevoaFundo.estrutural = false;   // névoa fica por cima da arte
         this.animar(fase, (dt) => { nevoa.tilePositionX += dt * 0.02; nevoaFundo.tilePositionX -= dt * 0.008; });
         // Filamentos orgânicos de energia escarlate (curvas desenhadas uma vez; só pulsam e flutuam)
-        const filamentos = [];
+        const filamentos = [], frags = [];
+        if (!comArte) {
         for (let i = 0; i < 6; i++) {
             const g = cena.add.graphics().setScrollFactor(0).setDepth(-89).setBlendMode('ADD');
             const rnd = new Phaser.Math.RandomDataGenerator(['filamento' + i]);
@@ -1012,12 +1087,12 @@ const Cenarios = {
         this.reciclar(fase, filamentos, 0.28, 1980, 120);
         filamentos.forEach((f) => { f.y = f.y0; });
         // Fragmentos flutuando (lascas de casca e pedra), escuros com aro escarlate
-        const frags = [];
         for (let i = 0; i < 8; i++) {
             const r = cena.add.rectangle(0, 0, 8 + (i % 3) * 6, 5 + (i % 2) * 5, 0x1e030c).setStrokeStyle(1, 0xff2a3d, 0.45).setScrollFactor(0).setDepth(-90);
             r.y0 = 160 + (i * 59) % 360; r.baseX = i * 225 + 40; r.fase0 = i * 0.9; frags.push(r);
         }
         this.reciclar(fase, frags, 0.25, 1800, 60);
+        }
         // Partículas mágicas: brasas escarlates subindo + motas roxas lentas (pequenas, atrás dos obstáculos)
         est.brasas = this.particulas(fase, { tint: [0xff1f4b, 0xff6a85, 0xff3a00], blendMode: 'ADD', frequency: 110, scale: { start: 0.4, end: 0 }, alpha: { start: 0.7, end: 0 }, speedY: { min: -40, max: -12 }, speedX: { min: -10, max: 10 } }, -89);
         est.motas = this.particulas(fase, { tint: [0xb03aff, 0xff4dd2], blendMode: 'ADD', frequency: 380, lifespan: 6000, scale: { start: 0.25, end: 0.6 }, alpha: { start: 0, end: 0.35, ease: 'Sine.InOut' }, speedY: { min: -8, max: 4 }, speedX: { min: -12, max: 12 } }, -91);

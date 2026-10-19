@@ -161,9 +161,9 @@ class RunaPortal extends Obstaculo {
         // Círculo de runas (decoração; a fase confere a distância)
         const forma = fase.cena.add.container(x, y);
         // Anel externo e interno + 6 traços (glifos)
+        // Runa "adormecida": o mesmo anel rúnico do portal aberto (padrão único), ainda sem faíscas
         const g = fase.cena.add.graphics();
-        g.lineStyle(2, 0xffa53d, 0.9).strokeCircle(0, 0, 34).strokeCircle(0, 0, 24);
-        for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; g.lineBetween(Math.cos(a) * 24, Math.sin(a) * 24, Math.cos(a) * 34, Math.sin(a) * 34); }
+        desenharAnelRunico(g, 34, 0xffa53d, 1);
         forma.add(g);
         // Texto de ajuda
         const dica = fase.cena.add.text(0, e ? 52 : -52, 'Q / CLIQUE: ABRIR PORTAL', { fontFamily: 'Arial', fontSize: '13px', fontStyle: 'bold', color: '#ffa53d', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setVisible(false);
@@ -173,7 +173,8 @@ class RunaPortal extends Obstaculo {
         // Dados
         this.destino = destino; this.dim = dim; this.y = y; this.dica = dica; this.aberto = false; this.usado = false;
         // Marca a saída no mundo (círculo fraco onde o portal vai te deixar)
-        this.marcaSaida = fase.cena.add.circle(destino, y, 30).setStrokeStyle(2, 0xffa53d, 0.35).setDepth(3);
+        this.marcaSaida = fase.cena.add.graphics({ x: destino, y }).setDepth(3).setAlpha(0.4);
+        desenharAnelRunico(this.marcaSaida, 30, 0xffa53d, 1);
         // Profundidade
         forma.setDepth(4);
     }

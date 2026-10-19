@@ -412,15 +412,24 @@ class Fase {
     // Decoração de um trecho de chão (só visual; a linha do topo pulsa na batida)
     decorarChao(x0, x1, y) {
         // Limita ao trecho visível da fase (o primeiro segmento começa antes do zero)
-        const a = Math.max(x0, this.xMin()), bx = Math.min(x1, this.cfg.comprimento + 1400);
-        // Graphics do chão (por cima do bloco, atrás do jogador)
+        const a = Math.max(x0, this.xMin()), bx = Math.min(x1, this.cfg.comprimento + 1400), larg = bx - a;
+        // Material do herói (cenarios.js), alinhado ao mundo: segmentos vizinhos continuam o mesmo desenho
+        if (typeof Cenarios !== 'undefined' && Cenarios.texturaChao) {
+            const t = this.cena.add.tileSprite(a, y, larg, 760 - y, Cenarios.texturaChao(this.cena, this.heroi)).setOrigin(0, 0).setDepth(0.9);
+            t.tilePositionX = a;
+        }
+        // Graphics do chão (por cima do material, atrás do jogador)
         const g = this.cena.add.graphics().setDepth(1);
-        // Degradê: faixas cada vez mais escuras
-        for (let k = 0; k < 6; k++) { g.fillStyle(0x000000, 0.06 * k); g.fillRect(a, y + 10 + k * 18, bx - a, 18); }
-        // Brilho difuso logo abaixo da linha de topo (luz batendo no piso), sem ladrilhos de grade
-        for (let k = 0; k < 5; k++) { g.fillStyle(this.tema.linha, 0.05 - k * 0.009); g.fillRect(a, y + 3 + k * 5, bx - a, 5); }
-        // Linha de topo brilhante (guardada pra pulsar)
-        const linha = this.cena.add.rectangle((a + bx) / 2, y + 1, bx - a, 4, this.tema.linha).setDepth(2);
+        // Profundidade: escurece para baixo (o olho lê a superfície em cima)
+        for (let k = 0; k < 6; k++) { g.fillStyle(0x000000, 0.07 * k); g.fillRect(a, y + 14 + k * 18, larg, 18); }
+        // Borda de cima (beiral/laje): faixa mais clara e sombra logo abaixo — separa "onde se pisa"
+        g.fillStyle(0xffffff, 0.10).fillRect(a, y, larg, 9);
+        g.fillStyle(0x000000, 0.35).fillRect(a, y + 9, larg, 3);
+        // Quinas nos vãos: fio do neon descendo um pouco e sombra na face lateral
+        if (x0 >= this.xMin()) { g.fillStyle(this.tema.linha, 0.7).fillRect(a, y, 2, 26); g.fillStyle(0x000000, 0.3).fillRect(a + 2, y + 12, 6, 760 - y); }
+        if (x1 <= this.cfg.comprimento + 1400) { g.fillStyle(this.tema.linha, 0.7).fillRect(bx - 2, y, 2, 26); g.fillStyle(0x000000, 0.3).fillRect(bx - 8, y + 12, 6, 760 - y); }
+        // Linha de topo brilhante (guardada pra pulsar) = a superfície jogável
+        const linha = this.cena.add.rectangle((a + bx) / 2, y + 1, larg, 4, this.tema.linha).setDepth(2);
         // Guarda
         (this.linhasChao = this.linhasChao || []).push(linha);
     }

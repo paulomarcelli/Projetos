@@ -190,7 +190,7 @@ class FaseAranha extends Fase {
         // Cada telhado
         this.chao.forEach((b, i) => {
             // Cor do prédio e borda de topo
-            b.forma.setFillStyle(0x1e2652).setStrokeStyle(3, 0x5b6bb5);
+            b.forma.setFillStyle(0x1e2652).setStrokeStyle(0);
             // Limites do prédio
             const x0 = b.forma.x - b.forma.width / 2, x1 = b.forma.x + b.forma.width / 2, topo = b.forma.y - b.forma.height / 2;
             // Janelas acesas aleatórias (amarelas) na fachada

@@ -74,7 +74,11 @@ _clipe_orig = C.clipe
 def _quadros(nome):
     if nome not in C.CLIPES: C.CLIPES[nome] = C.quadros_clipe(nome)
     return C.CLIPES[nome]
+_FORCAR = [None]   # '_0' ou '_1': força qual trecho a cena do herói usa (para a fusão entre eles)
 def _clipe(nome, t, vel=1.0):
+    if _FORCAR[0] and nome[-2:] in ('_0', '_1') and nome[-2:] != _FORCAR[0]:
+        t = t + CENA_HEROI / 2 if _FORCAR[0] == '_0' else max(0.3, t - CENA_HEROI / 2)
+        nome = nome[:-2] + _FORCAR[0]
     base = nome[:-2]
     tem1 = bool(_quadros(base + '_1'))
     if nome.endswith('_1') and not tem1: nome, t = base + '_0', t + CENA_HEROI / 2
@@ -83,6 +87,20 @@ def _clipe(nome, t, vel=1.0):
     if fs and dur < alvo: t = 0.3 + (t - 0.3) * (dur - 0.35) / (alvo - 0.3)
     return _clipe_orig(nome, t)
 C.clipe = _clipe
+
+# Troca do 1º para o 2º trecho no meio da cena do herói: fusão de 0,6 s em vez de corte seco
+from PIL import Image as _Im
+_heroi_orig = V2.cena_heroi_sem_fx
+def _heroi_suave(t, D, h, idx):
+    meio, m = D / 2, 0.3
+    if not _quadros(h['pasta'] + '_1') or abs(t - meio) >= m: return _heroi_orig(t, D, h, idx)
+    try:
+        _FORCAR[0] = '_0'; A = _heroi_orig(t, D, h, idx)
+        _FORCAR[0] = '_1'; B = _heroi_orig(t, D, h, idx)
+    finally: _FORCAR[0] = None
+    k = (t - (meio - m)) / (2 * m); k = k * k * (3 - 2 * k)
+    return _Im.blend(A, B, k)
+V2.cena_heroi_sem_fx = _heroi_suave
 
 # Duração = a música inteira (tema dos Vingadores, ~123,6 s), como nas versões anteriores
 V2.LINHA = [('abertura', 8.0), ('jogo', 14.0)] + [(f'heroi{i}', CENA_HEROI) for i in range(6)] + \

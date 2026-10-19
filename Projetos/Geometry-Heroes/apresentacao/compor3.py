@@ -1,6 +1,6 @@
 # ================================================================
-# compor3.py — versão 3 do vídeo (60–90 s): mesmas cenas e transições da v2 (compor2.py),
-# linha do tempo mais curta (~83 s), capturas novas (interface HQ, cards padronizados, efeitos 8-bit)
+# compor3.py — versão 3 do vídeo (duração da música, ~123,6 s): mesmas cenas e transições da v2 (compor2.py),
+# capturas novas (interface HQ, cards padronizados, efeitos 8-bit)
 # e textos atualizados com as correções desta rodada. Música: a mesma da v2, cortada com fade-out.
 # Uso: python3 apresentacao/compor3.py <pasta> <musica.mp3> <saida.mp4>   (rodar da raiz do jogo)
 # ================================================================
@@ -57,21 +57,29 @@ C.cena_jogo = cena_jogo
 _ordem = ['Homem-Aranha', 'Hulk', 'Gaviao', 'DrEstranho', 'Homem de Ferro', 'Wanda']
 C.HEROIS[:] = sorted(C.HEROIS, key=lambda h: _ordem.index(h['id']))
 
-# Linha do tempo curta: ~77 s
-# Um trecho capturado por herói (o 2º trecho ficou de fora: a captura quadro a quadro é lenta).
-# Pedidos ao trecho "_1" usam o "_0" na continuação; o clipe é esticado pra cobrir a cena inteira.
-CENA_HEROI = 4.5
+# (a duração da linha do tempo segue a música; ver abaixo)
+# Clipes por herói: "_0" (largada) e, quando existir, "_1" (depois do 1º checkpoint). Sem o "_1",
+# a cena inteira usa o "_0"; clipe mais curto que a cena é esticado (câmera lenta leve).
+CENA_HEROI = 6.0
 _clipe_orig = C.clipe
-def _clipe(nome, t, vel=1.0):
-    if nome.endswith('_1'): nome, t = nome[:-2] + '_0', t + CENA_HEROI / 2
+def _quadros(nome):
     if nome not in C.CLIPES: C.CLIPES[nome] = C.quadros_clipe(nome)
-    fs = C.CLIPES[nome]
-    if fs and len(fs) / 30 < 0.3 + CENA_HEROI: vel = (len(fs) / 30 - 0.35) / CENA_HEROI   # câmera lenta leve
-    return _clipe_orig(nome, t, vel) if vel == 1.0 else _clipe_orig(nome, 0.3 + (t - 0.3) * vel)
+    return C.CLIPES[nome]
+def _clipe(nome, t, vel=1.0):
+    base = nome[:-2]
+    tem1 = bool(_quadros(base + '_1'))
+    if nome.endswith('_1') and not tem1: nome, t = base + '_0', t + CENA_HEROI / 2
+    fs = _quadros(nome); dur = len(fs) / 30
+    alvo = 0.3 + (CENA_HEROI / 2 if tem1 else CENA_HEROI)
+    if fs and dur < alvo: t = 0.3 + (t - 0.3) * (dur - 0.35) / (alvo - 0.3)
+    return _clipe_orig(nome, t)
 C.clipe = _clipe
-V2.LINHA = [('abertura', 5.5), ('jogo', 9.5)] + [(f'heroi{i}', CENA_HEROI) for i in range(6)] + \
-           [('tech', 10.0), ('skills', 10.0), ('engenharia', 9.0), ('final', 6.0)]
-V2.EMENDAS = ['portal', 'teia', 'forca', 'flecha', 'hud', 'portal', 'realidade', 'teia', 'hud', 'flecha', 'forca']
+
+# Duração = a música inteira (tema dos Vingadores, ~123,6 s), como nas versões anteriores
+V2.LINHA = [('abertura', 8.0), ('jogo', 14.0)] + [(f'heroi{i}', CENA_HEROI) for i in range(6)] + \
+           [('tecnicas', 16.0), ('tech', 15.0), ('skills', 13.0), ('engenharia', 11.0)]
+V2.LINHA.append(('final', max(7.0, C.DUR_MUSICA - sum(d for _, d in V2.LINHA))))
+V2.EMENDAS = ['portal', 'teia', 'forca', 'flecha', 'hud', 'portal', 'realidade', 'teia', 'hud', 'portal', 'flecha', 'forca']
 TOTAL = sum(d for _, d in V2.LINHA)
 
 if __name__ == '__main__':

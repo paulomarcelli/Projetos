@@ -1,64 +1,60 @@
-# 🧩 Tarefa de POO em JavaScript
+# Geometry Heroes
 
-<div align="center">
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/Status-Em_Desenvolvimento-blue?style=for-the-badge" alt="Status: Em desenvolvimento" />
-</div>
+Jogo de **plataforma no ritmo da música** feito em JavaScript (POO) com Phaser 3. Cada fase é de um herói e cada herói tem uma habilidade diferente. Projeto da FECAP, curso de Análise e Desenvolvimento de Sistemas (ADS).
 
-<p align="center">
-  <b>Uma tarefa de Programação Orientada a Objetos desenvolvida em JavaScript.</b>
-</p>
+**Integrantes:** Paulo Marcelli, Pedro Henrique, Cauã Santos Nascimento e Leonardo Zachello.
 
----
+## As 6 fases
 
-## 📌 Sobre o projeto
+| Herói | Habilidade | Dificuldade |
+|---|---|---|
+| Homem-Aranha | Teia: segure no ar para balançar | Fácil |
+| Hulk | Fúria: cresce e atravessa o que quebra | Normal |
+| Gavião Arqueiro | Mira: acerta alvos e abre caminho | Normal |
+| Doutor Estranho | Portais, dimensão espelho e Joia do Tempo | Difícil |
+| Homem de Ferro | Voo: segure para subir; repulsor derruba drones (encostar no túnel mata) | Insano |
+| Feiticeira Escarlate | Troca de realidade: vermelha ◆ e azul ● | Insano |
 
-Este projeto reúne a minha tarefa de **Programação Orientada a Objetos (POO)** em JavaScript. A proposta é praticar os pilares da POO: classes, encapsulamento, herança e polimorfismo.
+## Como jogar
 
-O arquivo `src/main.js` traz um exemplo inicial com uma playlist de músicas e podcasts. Ele será adaptado ao enunciado da tarefa assim que eu definir o tema.
+- **Espaço, seta para cima ou clique/toque:** pular
+- **E, Shift ou botão na tela:** usar o poder do herói
+- **R:** reiniciar · **ESC:** pausa · **Z / X:** marcar/apagar ponto no modo prática
 
-## 🛠️ Tecnologias utilizadas
+## Como rodar
 
-| Tecnologia | Utilização |
+O jogo precisa ser aberto por um servidor local (abrir o `index.html` com duplo clique não carrega as imagens) e de internet, porque o Phaser é baixado de um CDN.
+
+- **VS Code:** instale a extensão *Live Server* e clique em *Open with Live Server* no `index.html`.
+- **Terminal:** na pasta do jogo, `python -m http.server 8000` e abra `http://localhost:8000`.
+
+## Programação Orientada a Objetos
+
+- **Classes e objetos:** 78 classes (fases, obstáculos, habilidades, jogador, efeitos, som).
+- **Herança:** `Fase` é a base de `FaseHulk`, `FaseAranha`, `FaseGaviao`, `FaseFerro`, `FaseEstranho` e `FaseWanda`; `Obstaculo` tem cadeias como `Espinho → Serra → SerraDescendo`.
+- **Polimorfismo:** a classe base chama ganchos (`checkpoints()`, `aoPressionar()`, `criarElemento()`) e cada fase responde do seu jeito (método template).
+- **Encapsulamento:** a recarga de `Habilidade` só muda por `pronta()` e `ativar()`.
+
+## Estrutura
+
+| Pasta/arquivo | Conteúdo |
 |---|---|
-| JavaScript (ES2022) | Classes, campos privados (`#`), getters e setters |
-| Node.js | Execução do código pelo terminal |
-| Git / GitHub | Versionamento e organização do projeto |
+| `index.html`, `style.css`, `main.js` | telas, estilo e inicialização do Phaser |
+| `js/` | classes do jogo (`js/fases/` tem uma por herói) |
+| `assets/` | cenários em camadas e retratos dos heróis |
+| `tests/` | testes automáticos em Python + Playwright |
+| `apresentacao/` | scripts do vídeo de apresentação |
+| `DOCUMENTACAO.md`, `IMPLEMENTATION_NOTES.md`, `REA_ESQUEMA.md`, `PROMPTS_MANUS.md` | documentação do projeto |
 
-## 🧠 Conceitos de POO
+## Testes
 
-| Conceito | Onde aparece no exemplo |
-|---|---|
-| Classe e objeto | `Midia`, `Musica`, `Podcast` e `Playlist` |
-| Encapsulamento | Campos privados `#titulo` e `#duracaoEmSegundos`, com getters e setter validado |
-| Herança | `Musica` e `Podcast` estendem `Midia` com `extends` e `super()` |
-| Polimorfismo | Cada classe sobrescreve `descricao()`, e a `Playlist` chama o método de cada item |
-| Classe abstrata | `Midia` não pode ser instanciada diretamente |
-| Composição | A `Playlist` guarda várias mídias |
+São 7 suítes com 280 verificações (jogo completo de cada fase com piloto automático, pulo, interface, checkpoints, dificuldade e renascimento). Precisam de Python, Playwright e do arquivo `phaser.local.min.js` (Phaser 3.90) na pasta do jogo:
 
-## 📁 Arquivos
-
-```text
-Tarefa-POO-JavaScript/
-├── src/
-│   └── main.js
-└── README.md
+```
+python tests/gerar_teste_html.py
+python tests/rodar_testes.py
 ```
 
-## 🚀 Como executar
+## Observação
 
-Com o **Node.js** instalado, entre na pasta do projeto e execute o arquivo principal:
-
-```bash
-cd Projetos/Tarefa-POO-JavaScript
-node src/main.js
-```
-
-## 👤 Autor
-
-Desenvolvido por **Paulo Marcelli** — Estudante de ADS na **FECAP**.
-
-## 📍 Localização
-
-Este projeto está organizado em `Projetos/Tarefa-POO-JavaScript` dentro do repositório principal `Projetos`.
+A pasta `src/` tem o exemplo inicial de POO (playlist) que existia antes do jogo e não faz parte dele.

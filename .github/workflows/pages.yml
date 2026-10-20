@@ -31,6 +31,9 @@ jobs:
           cp -a Projetos/Cenicienta/. _site/Projetos/Cenicienta/
           cp -a Projetos/Una-Noche-Mas/. _site/Projetos/Una-Noche-Mas/
           cp -a Projetos/Role-peoes/. _site/Projetos/Role-peoes/
+          mkdir -p _site/Projetos/Geometry-Heroes
+          # Geometry Heroes: só o que o jogo precisa para rodar (sem testes, vídeo e documentação)
+          cp -a Projetos/Tarefa-POO-JavaScript/index.html Projetos/Tarefa-POO-JavaScript/main.js Projetos/Tarefa-POO-JavaScript/style.css Projetos/Tarefa-POO-JavaScript/js Projetos/Tarefa-POO-JavaScript/assets _site/Projetos/Geometry-Heroes/
           touch _site/.nojekyll
       - name: Preparar arquivos dos sites
         uses: actions/upload-pages-artifact@v3

@@ -1,5 +1,7 @@
 # Geometry Heroes
 
+**[▶ Jogar online](https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/)**
+
 Jogo de **plataforma no ritmo da música** feito em JavaScript (POO) com Phaser 3. Cada fase é de um herói e cada herói tem uma habilidade diferente. Projeto da FECAP, curso de Análise e Desenvolvimento de Sistemas (ADS).
 
 **Integrantes:** Paulo Marcelli, Pedro Henrique, Cauã Santos Nascimento e Leonardo Zachello.

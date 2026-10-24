@@ -1,0 +1,1478 @@
+/* ===== VARIÁVEIS DE COR (tiradas da logo) ===== */
+:root {
+    --ceu-fundo: #0a1230;                    /* azul-noite mais escuro, base do céu */
+    --ceu-meio: #1a2757;                     /* azul mais claro, pro brilho no topo do céu */
+    --painel: #111b44;                       /* fundo sólido de janelas e gaveta */
+    --prata: #e3e9f5;                        /* texto principal, cor das linhas da logo */
+    --prata-suave: #a9b5d4;                  /* texto secundário, menos destaque */
+    --cristal: #b7c3f2;                      /* lilás-azulado do cristal da coroa, cor de destaque */
+    --vidro: rgba(227, 233, 245, 0.06);      /* fundo "de vidro" bem transparente */
+    --borda-vidro: rgba(227, 233, 245, 0.14);/* borda sutil dos elementos de vidro */
+    --rosado: #f2c9c9;                       /* texto de erro e de ações destrutivas */
+    --ambar: #f3d9a4;                        /* destaque quente do cartão de contatos de ajuda */
+    --fonte-base: 16px;                      /* tamanho do texto das mensagens (muda com "Texto maior") */
+    --suave: cubic-bezier(0.22, 0.8, 0.24, 1); /* curva de movimento: começa rápido e pousa devagar */
+    color-scheme: dark;                      /* listas, caixas de seleção e barras de rolagem no tema escuro */
+}
+
+html.texto-grande {
+    --fonte-base: 18.5px;                    /* opção de acessibilidade */
+}
+
+/* ===== RESET ===== */
+* {
+    margin: 0;                               /* zera margens padrão do navegador */
+    padding: 0;                              /* zera espaçamentos internos padrão */
+    box-sizing: border-box;                  /* padding e borda contam dentro da largura */
+}
+
+[hidden] {
+    display: none !important;                /* garante que "hidden" vença qualquer display do CSS */
+}
+
+/* ===== FUNDO: CÉU NOTURNO ===== */
+body {
+    height: 100vh;                           /* reserva para navegadores antigos */
+    height: 100dvh;                          /* altura real visível (desconta barras do celular) */
+    font-family: 'Nunito', 'Segoe UI', sans-serif; /* fonte arredondada; as outras são reserva */
+    color: var(--prata);                     /* cor padrão do texto */
+    background: radial-gradient(ellipse at 50% 0%, var(--ceu-meio) 0%, var(--ceu-fundo) 65%); /* céu mais claro no topo */
+    background-color: var(--ceu-fundo);      /* cor de segurança */
+    overflow: hidden;                        /* a página não rola; só a área de mensagens rola */
+}
+
+/* ===== ESTRELAS (duas camadas, piscando em ritmos diferentes) ===== */
+body::before,
+body::after {
+    content: "";                             /* obrigatório pro pseudo-elemento existir */
+    position: fixed;                         /* fica parado */
+    inset: 0;                                /* tela inteira */
+    pointer-events: none;                    /* deixa clicar "através" das estrelas */
+    z-index: 0;                              /* atrás do conteúdo */
+}
+
+body::before {
+    background-image:                        /* cada radial-gradient é uma estrela */
+        radial-gradient(1.5px 1.5px at 40px 60px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 190px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 220px 90px, #dfe6ff, transparent),
+        radial-gradient(1px 1px at 300px 260px, #fff, transparent),
+        radial-gradient(2px 2px at 360px 40px, #fff, transparent);
+    background-size: 400px 320px;            /* "azulejo" que se repete */
+    animation: cintilar 5s ease-in-out infinite; /* pisca devagar */
+}
+
+body::after {
+    background-image:                        /* segunda camada, outras posições */
+        radial-gradient(1px 1px at 80px 150px, #fff, transparent),
+        radial-gradient(2px 2px at 250px 200px, #cfd8ff, transparent),
+        radial-gradient(1px 1px at 170px 30px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 330px 140px, #fff, transparent);
+    background-size: 380px 280px;            /* tamanho diferente pra não alinhar com a outra camada */
+    animation: cintilar 7s ease-in-out infinite 2s; /* ritmo e atraso diferentes */
+}
+
+/* Céu em camadas desenhado por estrelas.js (canvas). Fica fixo, atrás de tudo.
+   Quando o script está ativo (html.ceu-ativo), as estrelas de CSS acima saem de cena
+   para não duplicar; sem JavaScript elas continuam como reserva. */
+#ceu {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+html.ceu-ativo body::before,
+html.ceu-ativo body::after {
+    display: none;
+}
+
+/* estrela cadente: passa de vez em quando, bem discreta */
+.estrela-cadente {
+    position: fixed;
+    top: 12%;
+    left: 70%;
+    width: 120px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(183, 195, 242, 0));
+    transform: rotate(-24deg);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    animation: cadente 19s ease-out infinite 6s;
+}
+
+@keyframes cadente {
+    0%, 94%, 100% { opacity: 0; transform: rotate(-24deg) translateX(0); }
+    95% { opacity: 1; }
+    99% { opacity: 0; transform: rotate(-24deg) translateX(-360px); }
+}
+
+@keyframes cintilar {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.9; }
+}
+
+/* ===== LAYOUT GERAL ===== */
+#app {
+    position: relative;                      /* necessário pro z-index funcionar */
+    z-index: 1;                              /* na frente das estrelas */
+    display: flex;                           /* sidebar e chat lado a lado */
+    height: 100vh;                           /* reserva */
+    height: var(--altura-visivel, 100dvh);   /* o script ajusta quando o teclado do celular abre */
+}
+
+/* ===== SIDEBAR ===== */
+#sidebar {
+    width: 280px;                            /* largura fixa */
+    flex-shrink: 0;                          /* não encolhe */
+    display: flex;                           /* Flexbox */
+    flex-direction: column;                  /* um embaixo do outro */
+    gap: 18px;                               /* espaço entre os blocos */
+    padding: 28px 20px;                      /* espaço interno */
+    background-color: rgba(10, 18, 48, 0.55);/* fundo escuro semi-transparente */
+    backdrop-filter: blur(10px);             /* efeito vidro */
+    border-right: 1px solid var(--borda-vidro); /* separa do chat */
+    overflow-y: auto;                        /* rola se o histórico ficar grande */
+}
+
+.marca {
+    display: flex;                           /* logo e nome lado a lado */
+    align-items: center;                     /* centro vertical */
+    gap: 12px;                               /* espaço entre logo e nome */
+}
+
+/* ===== MARCA: LOGO COM BRILHO + NOME ===== */
+.marca-nome {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.32em;                             /* espaço entre LUNA e MIND */
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    letter-spacing: 0.16em;                  /* caixa-alta espaçada, estilo logotipo */
+    text-transform: uppercase;
+}
+
+.marca-luna {
+    color: var(--prata);
+    text-shadow: 0 0 18px rgba(183, 195, 242, 0.45); /* mesmo brilho do símbolo */
+}
+
+.marca-mind {
+    color: var(--cristal);                   /* MIND no lilás-azulado do cristal da coroa */
+    font-weight: 500;
+    text-shadow: 0 0 14px rgba(183, 195, 242, 0.55);
+}
+
+.marca h1 {
+    font-size: 22px;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* Componente do logo animado (barra lateral, topo do celular e boas-vindas).
+   Camadas, de baixo para cima: aura que respira (::before) → desenho → varredura de luz → faíscas.
+   Só opacity e transform animam (rodam na placa de vídeo, sem pesar a página). */
+.logo-luna {
+    --w: 200px;                              /* largura; cada uso define a sua */
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: var(--w);
+    aspect-ratio: 960 / 758;                 /* proporção do arquivo; evita "pulo" no carregamento */
+}
+
+.logo-luna__img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 calc(var(--w) * 0.012) rgba(214, 224, 255, 0.45)); /* contorno de luz bem fino; o desenho já traz o próprio brilho neon */
+}
+
+/* aura: cópia desfocada do próprio desenho, atrás, que pulsa devagar */
+.logo-luna::before {
+    content: "";
+    position: absolute;
+    inset: -1%;                              /* quase colada ao desenho: realça as linhas, não cria névoa */
+    background: url("marca/luna-mind.png") center / 100% 100% no-repeat;
+    filter: blur(calc(var(--w) * 0.018)) brightness(1.3);
+    opacity: 0.12;
+    animation: aura 6s ease-in-out infinite;
+}
+
+@keyframes aura {
+    0%, 100% { opacity: 0.08; }
+    50% { opacity: 0.38; }
+}
+
+/* varredura: uma faixa de luz que atravessa só as LINHAS do desenho (máscara = o próprio PNG) */
+.logo-luna__varredura {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask: url("marca/luna-mind.png") center / 100% 100% no-repeat;
+    mask: url("marca/luna-mind.png") center / 100% 100% no-repeat;
+}
+
+.logo-luna__varredura::before {
+    content: "";
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: 0;
+    width: 38%;
+    background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.95) 50%, transparent 100%);
+    transform: translateX(-120%) skewX(-12deg);
+    animation: varrer 7.5s cubic-bezier(0.45, 0, 0.25, 1) infinite 1.2s; /* passa e descansa */
+}
+
+@keyframes varrer {
+    0% { transform: translateX(-120%) skewX(-12deg); }
+    22%, 100% { transform: translateX(300%) skewX(-12deg); }   /* atravessa em ~1,6 s; o resto é pausa */
+}
+
+/* faíscas: estrelas de 4 pontas que acendem nos cristais da coroa, uma de cada vez */
+.logo-luna__faisca {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: calc(var(--w) * 0.13);
+    height: calc(var(--w) * 0.13);
+    pointer-events: none;
+    background:
+        radial-gradient(circle, #fff 0 8%, rgba(255, 255, 255, 0) 38%),
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent) center / 100% 7% no-repeat,
+        linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.95), transparent) center / 7% 100% no-repeat;
+    filter: drop-shadow(0 0 3px var(--cristal));
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+    animation: faiscar 5.6s ease-in-out infinite var(--atraso, 0s);
+}
+
+.faisca-centro {
+    width: calc(var(--w) * 0.19);            /* a do coração do cristal é a maior */
+    height: calc(var(--w) * 0.19);
+}
+
+@keyframes faiscar {
+    0%, 36%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(0deg); }
+    46% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(45deg); }
+    58% { opacity: 0; transform: translate(-50%, -50%) scale(0.55) rotate(90deg); }
+}
+
+/* versão pequena (barra lateral e topo do celular): só aura + varredura, sem faíscas */
+.logo-luna--pequeno .logo-luna__img {
+    filter: drop-shadow(0 0 2px rgba(214, 224, 255, 0.4));
+}
+
+#nova-conversa,
+.botao-lateral {
+    font-family: inherit;                    /* botões não herdam a fonte sozinhos */
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--prata);
+    background: transparent;
+    border: 1px solid var(--borda-vidro);    /* só a borda sutil */
+    border-radius: 14px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.botao-lateral {
+    display: flex;                           /* ícone + texto */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-color: transparent;               /* mais discreto que "Nova conversa" */
+    color: var(--prata-suave);
+}
+
+#nova-conversa:hover,
+.botao-lateral:hover {
+    background-color: var(--vidro);          /* leve destaque */
+}
+
+/* ----- histórico de conversas ----- */
+.historico {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;                           /* deixa a lista encolher */
+}
+
+.rotulo-secao {
+    font-size: 12px;                         /* rótulo pequeno em caixa alta */
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--prata-suave);
+    padding: 0 4px;
+}
+
+#lista-conversas {
+    list-style: none;                        /* sem bolinhas */
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-conversa {
+    display: flex;                           /* botão de abrir + botão de apagar */
+    align-items: center;
+    border-radius: 12px;
+    transition: background-color 0.2s;
+    animation: surgir 0.4s ease-out;
+}
+
+.item-conversa:hover,
+.item-conversa:focus-within {
+    background-color: var(--vidro);
+}
+
+.abrir-conversa {
+    flex: 1;
+    min-width: 0;                            /* permite cortar títulos longos com "…" */
+    text-align: left;
+    font-family: inherit;
+    color: var(--prata);
+    background: none;
+    border: none;
+    padding: 9px 10px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+.abrir-conversa[aria-current="true"] {
+    background-color: rgba(183, 195, 242, 0.12); /* conversa aberta agora */
+}
+
+.abrir-conversa span {
+    display: block;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;                 /* "título muito lon…" */
+}
+
+.abrir-conversa small {
+    font-size: 12px;
+    color: var(--prata-suave);
+}
+
+.apagar-conversa {
+    flex-shrink: 0;
+    width: 36px;                             /* área de toque confortável */
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: var(--prata-suave);
+    background: none;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.apagar-conversa:hover,
+.apagar-conversa:focus-visible {
+    opacity: 1;
+    color: var(--rosado);
+}
+
+.dica {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--prata-suave);
+}
+
+.historico .dica {
+    padding: 0 4px;
+}
+
+.link {
+    font: inherit;                           /* parece texto */
+    color: var(--cristal);
+    background: none;
+    border: none;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    padding: 4px 2px;                        /* área de toque de pelo menos 24px */
+}
+
+/* ----- cartão fixo de ajuda ----- */
+.cartao-ajuda {
+    margin-top: auto;                        /* empurra pro fim da sidebar */
+    padding: 16px;
+    border-radius: 18px;
+    background-color: rgba(183, 195, 242, 0.08);
+    border: 1px solid rgba(183, 195, 242, 0.25);
+}
+
+.cartao-ajuda:focus {
+    outline: 2px solid var(--cristal);       /* destaca quando aberto pelo botão "Ajuda" do celular */
+    outline-offset: 3px;
+}
+
+.cartao-ajuda h2 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.cartao-ajuda p,
+.cartao-ajuda li {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--prata-suave);
+}
+
+.cartao-ajuda ul {
+    list-style: none;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cartao-ajuda strong,
+.cartao-ajuda a {
+    color: var(--cristal);
+}
+
+/* ===== ÁREA PRINCIPAL ===== */
+#chat-area {
+    flex: 1;                                 /* ocupa o espaço que sobrar */
+    min-width: 0;                            /* evita estourar a largura */
+    display: flex;
+    flex-direction: column;                  /* topo, conteúdo e caixa de texto empilhados */
+}
+
+.topo-mobile {
+    display: none;                           /* só aparece no celular */
+}
+
+/* ===== TELA DE BOAS-VINDAS ===== */
+.boas-vindas {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    min-height: 0;                           /* encolhe em vez de empurrar a caixa de texto */
+    overflow-y: auto;
+}
+
+.halo,
+.saudacao,
+.subtitulo,
+.sugestoes,
+.nota-privacidade {
+    animation: entrar 0.9s var(--suave) both; /* cada parte surge um pouco depois da anterior */
+}
+
+.saudacao { animation-delay: 0.12s; }
+.subtitulo { animation-delay: 0.22s; }
+.sugestoes { animation-delay: 0.34s; }
+.nota-privacidade { animation-delay: 0.46s; }
+
+@keyframes entrar {
+    from { opacity: 0; transform: translateY(14px); filter: blur(3px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+.halo {
+    position: relative;
+    width: clamp(210px, 38vh, 330px);        /* acompanha a altura da tela */
+    aspect-ratio: 960 / 758;                 /* mesma proporção da logo */
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+}
+
+.halo::before {
+    content: "";
+    position: absolute;
+    inset: -2% -4%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(183, 195, 242, 0.13) 0%, rgba(183, 195, 242, 0) 62%);
+    animation: respirar 8s ease-in-out infinite; /* ritmo de respiração calma */
+}
+
+#logo-luna {
+    --w: clamp(210px, 38vh, 330px);          /* mesma largura do .halo (as faíscas se medem por ela) */
+    width: 100%;
+}
+
+@keyframes respirar {
+    0%, 100% { transform: scale(0.96); opacity: 0.45; }
+    50% { transform: scale(1.04); opacity: 1; }
+}
+
+.saudacao {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5.5vh, 44px);
+    font-weight: 500;
+    line-height: 1.15;
+    margin-top: 8px;
+    text-shadow: 0 0 22px rgba(183, 195, 242, 0.3); /* leve luar no título */
+}
+
+.subtitulo {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--prata-suave);
+    max-width: 480px;
+    margin-top: 10px;
+}
+
+.sugestoes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 22px;
+    max-width: 560px;
+}
+
+.sugestao {
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--prata);
+    background-color: var(--vidro);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 999px;                    /* pílula */
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: border-color 0.25s, background-color 0.25s, transform 0.25s var(--suave), box-shadow 0.25s;
+}
+
+.sugestao:hover {
+    border-color: var(--cristal);
+    background-color: rgba(183, 195, 242, 0.12);
+    transform: translateY(-2px);             /* flutua um pouquinho */
+    box-shadow: 0 6px 18px rgba(183, 195, 242, 0.14);
+}
+
+.sugestao:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.nota-privacidade {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--prata-suave);
+}
+
+/* ===== MENSAGENS ===== */
+#mensagens {
+    position: relative;                      /* referência pra rolar até o início de respostas longas */
+    flex: 1;
+    overflow-y: auto;                        /* barra de rolagem só aqui */
+    overscroll-behavior: contain;            /* rolar a conversa não arrasta a página no celular */
+    display: none;                           /* escondido até a conversa começar */
+    flex-direction: column;
+    gap: 18px;
+    padding: 32px max(24px, calc((100% - 760px) / 2)); /* coluna de até 760px centralizada */
+}
+
+#chat-area.conversando #mensagens {
+    display: flex;
+    animation: surgir 0.45s ease-out;        /* troca suave da tela inicial pra conversa */
+}
+
+@keyframes surgir {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#chat-area.conversando .boas-vindas {
+    display: none;
+}
+
+.linha {
+    display: flex;
+    align-items: flex-end;                   /* avatar alinhado pela base */
+    gap: 10px;
+    animation: aparecer-luna 0.55s var(--suave) both;
+}
+
+.linha.usuario {
+    animation-name: aparecer-usuario;
+    animation-duration: 0.4s;
+}
+
+.linha.sem-animacao {
+    animation: none;                         /* conversas reabertas do histórico */
+}
+
+.linha.usuario {
+    justify-content: flex-end;               /* mensagens da pessoa à direita */
+}
+
+.linha.luna {
+    align-items: flex-start;                 /* avatar no topo quando há cartões embaixo do balão */
+}
+
+.coluna {
+    display: flex;                           /* balão + ações + cartões empilhados */
+    flex-direction: column;
+    gap: 8px;
+    max-width: 78%;
+    min-width: 0;
+}
+
+.linha.usuario .coluna {
+    align-items: flex-end;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;                     /* o arquivo já é um ícone arredondado em fundo noturno */
+    flex-shrink: 0;
+    margin-top: 4px;
+    box-shadow: 0 0 10px rgba(196, 207, 248, 0.25);
+}
+
+#digitando .avatar {
+    animation: brilhar-avatar 1.6s ease-in-out infinite; /* enquanto a Luna pensa, a logo pulsa */
+}
+
+@keyframes brilhar-avatar {
+    0%, 100% { box-shadow: 0 0 4px rgba(196, 207, 248, 0.3); }
+    50% { box-shadow: 0 0 14px rgba(214, 224, 255, 0.95); }
+}
+
+.balao {
+    padding: 14px 18px;
+    font-size: var(--fonte-base);
+    line-height: 1.6;
+    overflow-wrap: anywhere;                 /* quebra palavras muito longas */
+}
+
+.linha.usuario .balao {
+    background-color: rgba(183, 195, 242, 0.18);
+    border: 1px solid rgba(183, 195, 242, 0.3);
+    border-radius: 20px 20px 6px 20px;       /* canto "apontando" pra pessoa */
+    white-space: pre-wrap;                   /* respeita as quebras de linha digitadas */
+}
+
+.linha.luna .balao {
+    background-color: var(--vidro);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 6px 20px 20px 20px;       /* canto "apontando" pra LUNA (avatar no topo) */
+    backdrop-filter: blur(6px);
+}
+
+.balao p { margin-bottom: 0.7em; }
+.balao p:last-child { margin-bottom: 0; }
+.balao ul, .balao ol { padding-left: 1.3em; margin-bottom: 0.7em; }
+.balao strong { color: var(--cristal); }
+.balao a { color: var(--cristal); }
+
+.balao.erro {
+    border-color: rgba(242, 160, 160, 0.5);  /* borda avermelhada suave */
+    color: var(--rosado);
+}
+
+/* ----- ações embaixo das respostas ("Ouvir", "Tentar de novo") ----- */
+.acoes {
+    display: flex;
+    gap: 6px;
+}
+
+.acao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--prata-suave);
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 6px 12px;
+    min-height: 32px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.acao:hover,
+.acao[aria-pressed="true"] {
+    color: var(--prata);
+    border-color: var(--borda-vidro);
+}
+
+/* ----- cartão de contatos que aparece em situações de risco ----- */
+.cartao-contatos {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background-color: rgba(243, 217, 164, 0.08); /* âmbar bem suave: chama atenção sem assustar */
+    border: 1px solid rgba(243, 217, 164, 0.35);
+}
+
+.titulo-contatos {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ambar);
+    margin-bottom: 8px;
+}
+
+.cartao-contatos ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cartao-contatos li {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--prata-suave);
+}
+
+.cartao-contatos .numero {
+    flex-shrink: 0;
+    min-width: 3.2em;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ambar);
+    text-decoration: none;
+}
+
+.cartao-contatos .numero:hover {
+    text-decoration: underline;
+}
+
+.cartao-contatos strong {
+    color: var(--prata);
+}
+
+/* ----- sugestão de memória (a pessoa confirma antes de guardar) ----- */
+.sugestao-memoria {
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 1px dashed rgba(183, 195, 242, 0.4);
+    font-size: 14px;
+    color: var(--prata-suave);
+}
+
+.sugestao-memoria blockquote {
+    margin: 6px 0 10px;
+    color: var(--prata);
+    font-style: italic;
+}
+
+.sugestao-memoria .acoes .acao {
+    border-color: var(--borda-vidro);
+}
+
+/* indicador de "digitando" (três pontinhos) */
+.digitando {
+    display: flex;
+    gap: 6px;
+    padding: 18px;
+}
+
+.digitando span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--cristal);
+    box-shadow: 0 0 8px rgba(183, 195, 242, 0.6);
+    animation: pulinho 1.2s ease-in-out infinite;
+}
+
+.digitando span:nth-child(2) { animation-delay: 0.15s; }
+.digitando span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes pulinho {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+@keyframes aparecer-luna {
+    from { opacity: 0; transform: translate(-6px, 10px); filter: blur(2px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes aparecer-usuario {
+    from { opacity: 0; transform: translate(8px, 6px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ações, cartão de ajuda e sugestão de memória chegam logo depois do balão */
+.linha.luna .acoes,
+.cartao-contatos,
+.sugestao-memoria {
+    animation: entrar 0.6s var(--suave) both;
+}
+
+.linha.luna .acoes { animation-delay: 0.25s; }
+.cartao-contatos { animation: entrar 0.6s var(--suave) 0.3s both, acender 2.4s ease-in-out 0.9s 2; } /* acende 2 vezes e para */
+.sugestao-memoria { animation-delay: 0.4s; }
+
+@keyframes acender {
+    0%, 100% { box-shadow: 0 0 0 rgba(243, 217, 164, 0); }
+    50% { box-shadow: 0 0 22px rgba(243, 217, 164, 0.22); }
+}
+
+.linha.sem-animacao .acoes,
+.linha.sem-animacao .cartao-contatos {
+    animation: none;                         /* conversa reaberta: tudo já aparece pronto */
+}
+
+/* ===== PAINEL DA CONVERSA POR VOZ ===== */
+.painel-voz {
+    max-width: 760px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 20px;
+    background-color: rgba(18, 29, 70, 0.85);
+    border: 1px solid var(--borda-vidro);
+    backdrop-filter: blur(10px);
+    animation: entrar 0.45s var(--suave);
+}
+
+.indicador-voz {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(183, 195, 242, 0.25), rgba(183, 195, 242, 0) 70%);
+}
+
+.indicador-voz span {
+    transition: height 0.3s ease, opacity 0.3s ease; /* troca de estado sem pulo */
+    width: 3px;
+    height: 8px;
+    border-radius: 2px;
+    background-color: var(--cristal);
+    opacity: 0.5;
+}
+
+.indicador-voz[data-estado="ouvindo"] span {
+    animation: escutar 1.4s ease-in-out infinite; /* ondinha suave: está ouvindo */
+}
+
+.indicador-voz[data-estado="falando"] {
+    box-shadow: 0 0 18px rgba(183, 195, 242, 0.4); /* brilho enquanto ela fala */
+}
+
+.indicador-voz[data-estado="falando"] span {
+    animation: falar 0.9s ease-in-out infinite;   /* barras mais vivas: está falando */
+    opacity: 1;
+}
+
+.indicador-voz[data-estado="pensando"] span {
+    animation: pensar 1.2s ease-in-out infinite;  /* acende uma por vez: está pensando */
+}
+
+.indicador-voz span:nth-child(2) { animation-delay: 0.12s; }
+.indicador-voz span:nth-child(3) { animation-delay: 0.24s; }
+.indicador-voz span:nth-child(4) { animation-delay: 0.36s; }
+.indicador-voz span:nth-child(5) { animation-delay: 0.48s; }
+
+@keyframes escutar {
+    0%, 100% { height: 6px; opacity: 0.5; }
+    50% { height: 16px; opacity: 1; }
+}
+
+@keyframes falar {
+    0%, 100% { height: 8px; }
+    50% { height: 24px; }
+}
+
+@keyframes pensar {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+}
+
+.texto-voz {
+    flex: 1;
+    min-width: 0;
+}
+
+#status-voz {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.transcricao {
+    font-size: 14px;
+    color: var(--prata-suave);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;                 /* mostra o fim do que foi dito sem quebrar o layout */
+}
+
+.transcricao:empty {
+    display: none;
+}
+
+.controles-voz {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.botao-voz {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--prata);
+    background-color: var(--vidro);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 999px;
+    padding: 8px 14px;
+    min-height: 40px;                        /* área de toque */
+    cursor: pointer;
+}
+
+.botao-voz:hover {
+    border-color: var(--cristal);
+}
+
+.botao-voz:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* ===== CAIXA DE DIGITAR ===== */
+.area-digitar {
+    padding: 12px 24px 18px;
+    padding-bottom: max(18px, env(safe-area-inset-bottom)); /* respeita a barra do iPhone */
+}
+
+.caixa-digitar {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;                   /* botões ficam embaixo quando o texto cresce */
+    gap: 8px;
+    padding: 8px 8px 8px 20px;
+    background-color: rgba(18, 29, 70, 0.75);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 26px;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.caixa-digitar:focus-within {
+    border-color: var(--cristal);
+    box-shadow: 0 0 0 4px rgba(183, 195, 242, 0.12);
+}
+
+#campo-mensagem {
+    flex: 1;
+    font-family: inherit;
+    font-size: 16px;                         /* 16px evita zoom automático no celular */
+    line-height: 1.5;
+    color: var(--prata);
+    background: transparent;
+    border: none;
+    outline: none;                           /* a pílula já mostra o foco */
+    resize: none;
+    max-height: 160px;                       /* cresce até ~6 linhas, depois rola */
+    padding: 8px 0;
+}
+
+#campo-mensagem::placeholder {
+    color: var(--prata-suave);
+    opacity: 0.8;
+}
+
+#enviar-mensagem,
+#botao-microfone {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+}
+
+#enviar-mensagem {
+    background-color: var(--cristal);
+    color: var(--ceu-fundo);
+}
+
+#botao-microfone {
+    background-color: transparent;
+    color: var(--prata);
+    border: 1px solid var(--borda-vidro);
+}
+
+#botao-microfone[aria-pressed="true"] {
+    background-color: rgba(183, 195, 242, 0.22); /* modo voz ligado */
+    border-color: var(--cristal);
+    animation: onda-microfone 2s ease-out infinite; /* ondas suaves: "estou ligado" */
+}
+
+@keyframes onda-microfone {
+    0% { box-shadow: 0 0 0 0 rgba(183, 195, 242, 0.45); }
+    100% { box-shadow: 0 0 0 12px rgba(183, 195, 242, 0); }
+}
+
+#enviar-mensagem:active:not(:disabled) {
+    transform: scale(0.92);                  /* "afunda" ao tocar */
+}
+
+#botao-microfone[aria-disabled="true"] {
+    opacity: 0.45;                           /* indisponível neste navegador (clicar explica o motivo) */
+}
+
+#enviar-mensagem:hover,
+#botao-microfone:hover {
+    transform: scale(1.06);
+}
+
+#enviar-mensagem:hover:not(:disabled) {
+    box-shadow: 0 0 16px rgba(183, 195, 242, 0.55); /* botão "acende" */
+}
+
+#enviar-mensagem:disabled {
+    opacity: 0.45;
+    cursor: wait;
+    transform: none;
+}
+
+.aviso {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--prata-suave);
+    margin-top: 10px;
+}
+
+.aviso a {
+    color: var(--cristal);
+}
+
+/* ===== JANELA DE CONFIGURAÇÕES ===== */
+.dialogo {
+    width: min(560px, calc(100vw - 24px));
+    max-height: min(86dvh, 760px);
+    margin: auto;
+    padding: 0;
+    color: var(--prata);
+    background-color: var(--painel);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 22px;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.dialogo[open] {
+    display: flex;
+    animation: abrir-janela 0.35s var(--suave);
+}
+
+.dialogo::backdrop {
+    background-color: rgba(5, 9, 26, 0.7);
+    backdrop-filter: blur(3px);
+    animation: surgir 0.3s ease-out;
+}
+
+@keyframes abrir-janela {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+}
+
+.dialogo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 12px 24px;
+    border-bottom: 1px solid var(--borda-vidro);
+}
+
+.dialogo-topo h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.dialogo-corpo {
+    overflow-y: auto;
+    padding: 8px 24px 24px;
+}
+
+.dialogo section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--borda-vidro);
+}
+
+.dialogo section:last-child {
+    border-bottom: none;
+}
+
+.dialogo h3 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.dialogo h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.campo {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dialogo select,
+.dialogo input[type="text"],
+.form-memoria input,
+.lista-memoria input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--prata);
+    background-color: rgba(227, 233, 245, 0.06);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.dialogo select option {
+    background-color: var(--painel);         /* lista legível no Windows */
+}
+
+.dialogo input[type="range"] {
+    width: 100%;
+    accent-color: var(--cristal);
+}
+
+.opcao {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.45;
+    cursor: pointer;
+}
+
+.opcao input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--cristal);
+}
+
+.lista-memoria {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lista-memoria li,
+.form-memoria {
+    display: flex;
+    gap: 8px;
+}
+
+.botao-secundario,
+.botao-perigo,
+.botao-icone {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--prata);
+    background-color: var(--vidro);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-height: 40px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.botao-secundario:hover,
+.botao-icone:hover {
+    border-color: var(--cristal);
+}
+
+#testar-voz {
+    align-self: flex-start;
+}
+
+.botao-perigo {
+    align-self: flex-start;
+    color: var(--rosado);
+    border-color: rgba(242, 160, 160, 0.4);
+    margin-top: 8px;
+}
+
+.botao-icone {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    background: none;
+    border-color: transparent;
+}
+
+/* ===== AVISO RÁPIDO ===== */
+.aviso-rapido {
+    position: fixed;
+    left: 50%;
+    bottom: 120px;
+    transform: translate(-50%, 12px);
+    max-width: min(440px, calc(100vw - 32px));
+    padding: 12px 18px;
+    border-radius: 14px;
+    background-color: var(--painel);
+    border: 1px solid var(--borda-vidro);
+    font-size: 14px;
+    line-height: 1.45;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 30;
+}
+
+.aviso-rapido.visivel {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* ===== ACESSIBILIDADE ===== */
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--cristal);       /* contorno visível ao navegar pelo teclado (Tab) */
+    outline-offset: 3px;
+}
+
+.so-leitor {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);                     /* invisível, mas lido por leitores de tela */
+    white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {    /* se a pessoa pediu menos animação no sistema */
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+html.menos-animacao *,
+html.menos-animacao *::before,
+html.menos-animacao *::after {
+    animation: none !important;              /* mesma coisa, pela opção da Luna */
+    transition: none !important;
+}
+
+/* ===== FONTES DA BIBLIOTECA (RAG) =====
+   Bloco discreto sob a resposta: fechado por padrão, para a informação existir sem competir com a conversa. */
+.fontes {
+    max-width: 100%;
+    margin-top: 8px;
+    padding: 0 4px;
+    font-size: 13px;
+    color: var(--prata-suave);
+}
+
+.fontes summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--borda-vidro);
+    background-color: var(--vidro);
+    cursor: pointer;
+    list-style: none;                        /* tira a setinha padrão */
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.fontes summary::-webkit-details-marker { display: none; }
+
+.fontes summary::before {
+    content: "✦";                            /* estrela de 4 pontas: referência ao céu/ao cristal */
+    color: var(--cristal);
+    font-size: 11px;
+}
+
+.fontes summary:hover { color: var(--prata); border-color: var(--cristal); }
+
+.fontes[open] summary { color: var(--prata); border-color: var(--cristal); }
+
+.fontes ul {
+    list-style: none;
+    margin: 8px 0 4px;
+    display: grid;
+    gap: 6px;
+}
+
+.fontes li {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    border-left: 2px solid rgba(183, 195, 242, 0.35);
+}
+
+.fonte-doc { color: var(--prata); font-weight: 600; }
+.fonte-secao { color: var(--prata-suave); font-size: 12.5px; }
+
+.fontes-nota {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--prata-suave);
+    opacity: 0.85;
+}
+
+/* ===== CELULAR E TABLET EM PÉ ===== */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;                     /* vira gaveta por cima do chat */
+        inset: 0 auto 0 0;
+        z-index: 20;
+        width: min(86vw, 320px);
+        background-color: var(--painel);
+        transform: translateX(-100%);        /* escondida à esquerda */
+        visibility: hidden;                  /* fora da ordem do Tab enquanto fechada */
+        transition: transform 0.3s var(--suave), visibility 0s linear 0.3s; /* some só depois de deslizar */
+        padding-top: max(28px, env(safe-area-inset-top));
+    }
+
+    body.menu-aberto #sidebar {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.3s var(--suave), visibility 0s; /* visível na hora, pra receber o foco */
+    }
+
+    #fundo-menu {
+        position: fixed;
+        inset: 0;
+        z-index: 15;
+        background-color: rgba(5, 9, 26, 0.6);
+        animation: surgir 0.25s ease-out;
+    }
+
+    .topo-mobile {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        padding-top: max(10px, env(safe-area-inset-top));
+        border-bottom: 1px solid var(--borda-vidro);
+    }
+
+    .topo-nome {
+        flex: 1;
+        font-size: 20px;
+    }
+
+    .pilula-ajuda {
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ambar);
+        background-color: rgba(243, 217, 164, 0.08);
+        border: 1px solid rgba(243, 217, 164, 0.35);
+        border-radius: 999px;
+        padding: 8px 14px;
+        min-height: 36px;
+        cursor: pointer;
+    }
+
+    .halo {
+        width: 210px;
+    }
+
+    #logo-luna {
+        --w: 210px;                          /* igual ao .halo no celular */
+    }
+
+    .saudacao {
+        font-size: 34px;
+    }
+
+    .subtitulo {
+        font-size: 16px;
+    }
+
+    #mensagens {
+        padding: 20px 14px;
+    }
+
+    .coluna {
+        max-width: 88%;                      /* balões mais largos na tela estreita */
+    }
+
+    .area-digitar {
+        padding: 8px 10px 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .caixa-digitar {
+        padding-left: 16px;
+    }
+
+    .painel-voz {
+        flex-wrap: wrap;                     /* controles descem pra linha de baixo */
+    }
+
+    .controles-voz {
+        width: 100%;
+    }
+
+    .botao-voz {
+        flex: 1;
+    }
+
+    .aviso {
+        font-size: 12px;
+        margin-top: 8px;
+    }
+}
+
+@media (min-width: 769px) {
+    #fundo-menu {
+        display: none !important;            /* a gaveta só existe no celular */
+    }
+
+    .pilula-ajuda {
+        display: none;
+    }
+}

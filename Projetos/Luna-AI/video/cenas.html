@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Luna AI — vídeo de apresentação</title>
+<style>
+/* Identidade da Luna: céu noturno, prata e o lilás do cristal da coroa.
+   Fontes: as originais (Cormorant Garamond e Nunito) quando instaladas; senão, as alternativas locais. */
+:root {
+    --ceu-fundo: #0a1230;
+    --ceu-meio: #1a2757;
+    --painel: rgba(17, 27, 68, 0.78);
+    --prata: #e3e9f5;
+    --prata-suave: #a9b5d4;
+    --cristal: #b7c3f2;
+    --ambar: #f3d9a4;
+    --rosado: #f2c9c9;
+    --linha: rgba(183, 195, 242, 0.55);
+    --borda: rgba(227, 233, 245, 0.16);
+    --titulo: 'Cormorant Garamond', 'TeX Gyre Pagella', 'Palatino Linotype', serif;
+    --texto: 'Nunito', 'Poppins', 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'DejaVu Sans Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+#palco {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden;
+    font-family: var(--texto); color: var(--prata);
+    background: radial-gradient(ellipse at 50% 0%, var(--ceu-meio) 0%, var(--ceu-fundo) 62%);
+}
+#ceu { position: absolute; inset: 0; }
+.cena { position: absolute; inset: 0; opacity: 0; }
+.abs { position: absolute; }
+svg.camada-svg { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; }
+
+/* tipografia */
+.eyebrow { font-size: 20px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cristal); }
+.titulo { font-family: var(--titulo); font-weight: 500; font-size: 62px; line-height: 1.08; text-shadow: 0 0 28px rgba(183, 195, 242, 0.28); }
+.sub { font-size: 24px; color: var(--prata-suave); line-height: 1.45; }
+.mono { font-family: var(--mono); }
+
+/* blocos */
+.card {
+    background: var(--painel); border: 1px solid var(--borda); border-radius: 22px;
+    box-shadow: 0 18px 60px rgba(3, 6, 22, 0.45); backdrop-filter: blur(8px);
+}
+.chip {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px;
+    font-size: 19px; border: 1px solid rgba(183, 195, 242, 0.35); background: rgba(183, 195, 242, 0.08); color: var(--prata);
+}
+.chip.mono { font-size: 17px; }
+.tag { font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 11px; border-radius: 8px; }
+.tag.codigo { color: var(--cristal); border: 1px solid rgba(183, 195, 242, 0.5); }
+.tag.fora { color: var(--ambar); border: 1px solid rgba(243, 217, 164, 0.55); }
+.tag.futuro { color: var(--prata-suave); border: 1px dashed rgba(169, 181, 212, 0.6); }
+.tag.exemplo { color: var(--ambar); border: 1px solid rgba(243, 217, 164, 0.5); background: rgba(10, 18, 48, 0.85); }
+
+/* molduras das capturas reais */
+.notebook { border-radius: 18px; padding: 10px; background: linear-gradient(160deg, #2a376b, #121a42); border: 1px solid rgba(227, 233, 245, 0.22); box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55), 0 0 60px rgba(183, 195, 242, 0.12); }
+.notebook img, .celular img { display: block; width: 100%; border-radius: 10px; }
+.celular { border-radius: 46px; padding: 12px; background: linear-gradient(160deg, #2c396f, #10183d); border: 1px solid rgba(227, 233, 245, 0.25); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 50px rgba(183, 195, 242, 0.14); }
+.celular img { border-radius: 36px; }
+.empilhado { position: relative; }
+.empilhado img + img { position: absolute; left: 10px; top: 10px; width: calc(100% - 20px); }
+
+/* camadas da arquitetura */
+.banda { position: absolute; left: 420px; width: 1080px; height: 104px; display: flex; align-items: center; gap: 28px; padding: 0 30px; border-radius: 20px; }
+.banda .nome { font-family: var(--titulo); font-size: 36px; width: 300px; flex-shrink: 0; }
+.banda .desc { font-size: 21px; color: var(--prata-suave); flex: 1; line-height: 1.35; }
+.banda .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; max-width: 420px; }
+.rotulo-seta { position: absolute; width: 240px; font-size: 17px; line-height: 1.35; color: var(--prata-suave); }
+.rotulo-seta b { color: var(--cristal); font-weight: 600; }
+
+/* fluxo da mensagem */
+.no { position: absolute; width: 84px; height: 84px; margin-left: -42px; margin-top: -42px; border-radius: 50%; display: grid; place-items: center;
+      font-family: var(--titulo); font-size: 34px; border: 1.5px solid var(--linha); background: rgba(10, 18, 48, 0.9); }
+.no-rotulo { position: absolute; width: 230px; margin-left: -115px; text-align: center; }
+.no-rotulo strong { display: block; font-size: 22px; font-weight: 600; }
+.no-rotulo span { display: block; font-size: 17px; color: var(--prata-suave); margin-top: 4px; }
+.balao-usuario { padding: 22px 30px; border-radius: 26px 26px 8px 26px; font-size: 30px; background: rgba(183, 195, 242, 0.18); border: 1px solid rgba(183, 195, 242, 0.35); }
+.bloco-codigo { padding: 26px 34px; font-family: var(--mono); font-size: 21px; line-height: 1.6; white-space: pre; color: var(--prata); }
+.bloco-codigo .k { color: var(--cristal); }
+.bloco-codigo .s { color: var(--ambar); }
+.bloco-codigo .c { color: var(--prata-suave); }
+.ponto { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #fff;
+         box-shadow: 0 0 14px 6px rgba(183, 195, 242, 0.85), 0 0 40px 14px rgba(183, 195, 242, 0.35); }
+
+/* instruções e comparação */
+.item { display: flex; gap: 16px; align-items: center; font-size: 27px; padding: 14px 0; border-bottom: 1px solid rgba(227, 233, 245, 0.08); }
+.item:last-child { border-bottom: none; }
+.marca-item { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--cristal); display: grid; place-items: center; color: var(--cristal); font-size: 18px; flex-shrink: 0; }
+.citacao { font-family: var(--titulo); font-size: 40px; line-height: 1.25; }
+.realce { border-radius: 6px; padding: 0 4px; }
+
+/* hud */
+#hud-rotulo { position: absolute; left: 120px; top: 62px; display: flex; align-items: center; gap: 18px; }
+#hud-rotulo .traco { width: 54px; height: 1.5px; background: var(--cristal); }
+#hud-progresso { position: absolute; left: 120px; right: 120px; top: 34px; display: flex; gap: 8px; }
+#hud-progresso div { flex: 1; height: 3px; border-radius: 3px; background: rgba(183, 195, 242, 0.16); overflow: hidden; }
+#hud-progresso i { display: block; height: 100%; width: 0; background: var(--cristal); }
+#legenda { position: absolute; left: 50%; bottom: 52px; transform: translateX(-50%); max-width: 1380px; padding: 16px 34px; border-radius: 18px;
+           text-align: center; font-size: 34px; line-height: 1.38; color: #f2f5fc; background: rgba(5, 9, 28, 0.62); backdrop-filter: blur(6px); opacity: 0; }
+#preto { position: absolute; inset: 0; background: #000; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="palco">
+    <canvas id="ceu" width="1920" height="1080"></canvas>
+    <div id="cenas"></div>
+    <div id="hud-progresso"></div>
+    <div id="hud-rotulo"><span class="traco"></span><span class="eyebrow" id="hud-texto"></span></div>
+    <div id="legenda"></div>
+    <div id="preto"></div>
+</div>
+<script src="cenas.js"></script>
+</body>
+</html>

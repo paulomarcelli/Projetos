@@ -1,0 +1,200 @@
+<!DOCTYPE html> <!-- avisa o navegador que é HTML5 -->
+<html lang="pt-br"> <!-- idioma da página: português do Brasil -->
+<head> <!-- configurações que não aparecem na tela -->
+    <meta charset="UTF-8"> <!-- permite acentos e caracteres especiais -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"> <!-- adapta ao celular; o teclado virtual encolhe a página em vez de cobrir a caixa de texto -->
+    <meta name="theme-color" content="#0a1230"> <!-- cor da barra do navegador no celular -->
+    <title>LUNA MIND</title> <!-- nome que aparece na aba do navegador -->
+    <meta name="description" content="LUNA MIND: um espaço pessoal e acolhedor para conversar com uma inteligência artificial de apoio emocional.">
+    <link rel="icon" type="image/png" sizes="32x32" href="marca/favicon-32.png"> <!-- favicon: só a coroa de cristal (a figura inteira vira borrão em 16px) -->
+    <link rel="icon" type="image/png" sizes="192x192" href="marca/icone-192.png"> <!-- ícone grande (atalhos, Android) -->
+    <link rel="apple-touch-icon" href="marca/apple-touch-icon.png"> <!-- ícone ao salvar na tela inicial do celular -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- abre conexão antecipada com o Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- mesma coisa, pro servidor dos arquivos das fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"> <!-- Cormorant (títulos) e Nunito (texto) -->
+
+    <link rel="stylesheet" href="style.css"> <!-- conecta o CSS -->
+    <!-- bibliotecas com versão fixa + "integrity": se o arquivo da CDN for alterado, o navegador recusa -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@18.0.10/lib/marked.umd.js" integrity="sha384-JD1I1oSYdjlw8850MjNFhpmRtgBZ97SjJYg9IJUE1RxR3DgG8oo4R43qLGMkd99t" crossorigin="anonymous" defer></script> <!-- transforma o Markdown da IA em HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.14/dist/purify.min.js" integrity="sha384-46dPGH1XlTmj7bc50bqLjTdORXs/3EP2QpA/6EWbelYWOY9VGp+87RT61S3Mcslb" crossorigin="anonymous" defer></script> <!-- limpa o HTML antes de mostrar (bloqueia scripts maliciosos) -->
+    <script src="estrelas.js" defer></script> <!-- céu estrelado: camadas, profundidade e brilho -->
+    <script src="voz.js" defer></script> <!-- ouvir e falar -->
+    <script src="script.js" defer></script> <!-- conversa, histórico e configurações -->
+</head>
+<body> <!-- tudo que aparece na tela -->
+
+    <canvas id="ceu" aria-hidden="true"></canvas> <!-- céu estrelado em camadas (estrelas.js); sem JS ficam as estrelas do CSS -->
+    <div class="estrela-cadente" aria-hidden="true"></div> <!-- estrela cadente decorativa (só CSS) -->
+
+    <div id="app"> <!-- sidebar e chat lado a lado -->
+
+        <aside id="sidebar" aria-label="Menu"> <!-- barra lateral; no celular vira uma gaveta -->
+
+            <div class="marca"> <!-- símbolo + nome juntos (lockup da marca) -->
+                <span class="logo-luna logo-luna--pequeno" style="--w: 54px" aria-hidden="true"> <!-- logo com brilho animado; decorativa, o nome está escrito ao lado -->
+                    <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                    <i class="logo-luna__varredura"></i>
+                </span>
+                <h1 class="marca-nome" aria-label="LUNA MIND"><span class="marca-luna">LUNA</span><span class="marca-mind">MIND</span></h1> <!-- título principal -->
+            </div>
+
+            <button id="nova-conversa" type="button">+ Nova conversa</button> <!-- limpa a tela e volta pro começo -->
+
+            <nav class="historico" aria-labelledby="titulo-historico"> <!-- conversas guardadas neste aparelho -->
+                <h2 id="titulo-historico" class="rotulo-secao">Conversas</h2>
+                <ul id="lista-conversas"></ul> <!-- preenchida pelo script.js -->
+                <p id="historico-vazio" class="dica"></p> <!-- aviso quando não há conversas ou o histórico está desligado -->
+            </nav>
+
+            <button id="abrir-configuracoes" type="button" class="botao-lateral"> <!-- abre a janela de configurações -->
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Configurações
+            </button>
+
+            <section class="cartao-ajuda" id="cartao-ajuda" tabindex="-1" aria-labelledby="titulo-ajuda"> <!-- cartão fixo de ajuda; tabindex -1 deixa o atalho do celular focar nele -->
+                <h2 id="titulo-ajuda">Precisa de ajuda agora?</h2>
+                <p>Se você estiver em perigo ou pensando em se machucar, fale com alguém agora mesmo.</p>
+                <ul>
+                    <li><a href="tel:188"><strong>CVV: 188</strong></a>, apoio emocional, ligação gratuita, 24 horas</li> <!-- tel: liga direto no celular -->
+                    <li>Chat do CVV em <a href="https://cvv.org.br" target="_blank" rel="noopener noreferrer">cvv.org.br</a></li>
+                    <li><a href="tel:192"><strong>Emergência: 192</strong></a> (SAMU)</li>
+                </ul>
+            </section>
+
+        </aside>
+
+        <div id="fundo-menu" hidden></div> <!-- fundo escuro atrás da gaveta no celular; clicar fecha -->
+
+        <main id="chat-area"> <!-- área principal da conversa -->
+
+            <header class="topo-mobile"> <!-- cabeçalho que só aparece no celular -->
+                <button id="botao-menu" type="button" class="botao-icone" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <span class="logo-luna logo-luna--pequeno" style="--w: 46px" aria-hidden="true"> <!-- logo com brilho animado; decorativa, o nome está escrito ao lado -->
+                    <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                    <i class="logo-luna__varredura"></i>
+                </span>
+                <span class="topo-nome marca-nome" aria-label="LUNA MIND"><span class="marca-luna">LUNA</span><span class="marca-mind">MIND</span></span>
+                <button id="botao-ajuda-mobile" type="button" class="pilula-ajuda">Ajuda</button> <!-- abre a gaveta direto no cartão de ajuda -->
+            </header>
+
+            <section class="boas-vindas" id="boas-vindas"> <!-- tela inicial, some quando a conversa começa -->
+                <div class="halo"> <!-- círculo de luz que "respira" atrás da logo -->
+                    <span class="logo-luna" id="logo-luna" role="img" aria-label="Logo da LUNA MIND: uma mulher com uma coroa de cristal"> <!-- versão grande: varredura de luz + faíscas nos cristais -->
+                        <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                        <i class="logo-luna__varredura"></i>
+                        <i class="logo-luna__faisca" style="--x: 50.1%; --y: 5%; --atraso: 0s"></i> <!-- ponta do cristal central -->
+                        <i class="logo-luna__faisca" style="--x: 42.9%; --y: 11%; --atraso: 1.3s"></i> <!-- cristal esquerdo -->
+                        <i class="logo-luna__faisca" style="--x: 57.3%; --y: 11.5%; --atraso: 2.4s"></i> <!-- cristal direito -->
+                        <i class="logo-luna__faisca faisca-centro" style="--x: 50%; --y: 15.6%; --atraso: 3.5s"></i> <!-- coração do cristal -->
+                    </span>
+                </div>
+                <h2 class="saudacao">Oi. Que bom que você veio.</h2>
+                <p class="subtitulo">Aqui é um espaço seguro pra falar do que estiver pesando. Sem pressa e sem julgamento. Escreva ou toque no microfone pra conversar por voz.</p>
+
+                <div class="sugestoes"> <!-- atalhos pra quem não sabe por onde começar -->
+                    <button type="button" class="sugestao">Preciso desabafar</button>
+                    <button type="button" class="sugestao">Tive um dia difícil</button>
+                    <button type="button" class="sugestao">Estou me sentindo ansioso(a)</button>
+                    <button type="button" class="sugestao">Só quero conversar um pouco</button>
+                </div>
+
+                <p class="nota-privacidade"> <!-- consentimento claro antes de guardar qualquer coisa -->
+                    Para maiores de 18 anos. Nada fica guardado neste aparelho sem você permitir.
+                    <button type="button" id="ver-privacidade" class="link">Privacidade e memória</button>
+                </p>
+            </section>
+
+            <div id="mensagens" role="log" aria-live="polite" aria-label="Conversa"></div> <!-- role log: leitores de tela anunciam mensagens novas -->
+
+            <div class="area-digitar"> <!-- parte de baixo -->
+
+                <div id="painel-voz" class="painel-voz" hidden> <!-- aparece durante a conversa por voz -->
+                    <div class="indicador-voz" data-estado="inativo" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div> <!-- barrinhas animadas conforme o estado -->
+                    <div class="texto-voz">
+                        <p id="status-voz" aria-live="polite"></p> <!-- "Ouvindo…", "Pensando…", "Luna falando…" -->
+                        <p id="transcricao" class="transcricao"></p> <!-- o que o microfone entendeu -->
+                    </div>
+                    <div class="controles-voz">
+                        <button id="voz-pausar" type="button" class="botao-voz">Pausar</button>
+                        <button id="voz-interromper" type="button" class="botao-voz" hidden>Interromper</button>
+                        <button id="voz-encerrar" type="button" class="botao-voz">Encerrar</button>
+                    </div>
+                </div>
+
+                <div class="caixa-digitar"> <!-- a "pílula" que envolve o campo e os botões -->
+                    <label for="campo-mensagem" class="so-leitor">Sua mensagem</label>
+                    <textarea id="campo-mensagem" rows="1" maxlength="4000" placeholder="O que você está sentindo?"></textarea>
+                    <button id="botao-microfone" type="button" aria-label="Conversar por voz" aria-pressed="false"> <!-- liga e desliga a conversa por voz -->
+                        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm6-3a6 6 0 0 1-12 0m6 6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button id="enviar-mensagem" type="button" aria-label="Enviar mensagem">
+                        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+                <p class="aviso">A LUNA oferece apoio, mas não substitui um profissional de saúde mental. Em crise, ligue <a href="tel:188">188 (CVV)</a>.</p>
+            </div>
+
+        </main>
+
+    </div>
+
+    <dialog id="configuracoes" class="dialogo" aria-labelledby="titulo-config"> <!-- janela nativa: Esc fecha e o foco fica preso dentro -->
+        <div class="dialogo-topo">
+            <h2 id="titulo-config">Configurações</h2>
+            <button id="fechar-config" type="button" class="botao-icone" aria-label="Fechar configurações">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+
+        <div class="dialogo-corpo">
+            <section aria-labelledby="sec-voz">
+                <h3 id="sec-voz">Voz</h3>
+                <p id="voz-suporte" class="dica"></p> <!-- explica o que este navegador permite -->
+                <label class="campo" for="cfg-voz">Voz da Luna</label>
+                <select id="cfg-voz"></select>
+                <label class="campo" for="cfg-velocidade">Velocidade da fala: <output id="valor-velocidade" for="cfg-velocidade"></output></label>
+                <input type="range" id="cfg-velocidade" min="0.75" max="1.2" step="0.05">
+                <button id="testar-voz" type="button" class="botao-secundario">Testar voz</button>
+                <label class="opcao"><input type="checkbox" id="cfg-ler"> Ler as respostas em voz alta quando eu escrever</label>
+                <label class="opcao"><input type="checkbox" id="cfg-continua"> Na conversa por voz, voltar a ouvir depois que a Luna responder</label>
+            </section>
+
+            <section id="secao-privacidade" aria-labelledby="sec-privacidade">
+                <h3 id="sec-privacidade">Privacidade e memória</h3>
+                <p class="dica">Conversas e lembranças só ficam guardadas <strong>neste navegador</strong>, e só se você ativar. Para responder, a mensagem e o contexto da conversa são enviados ao servidor da Luna e ao Google Gemini; o servidor da Luna não guarda nada. Se o servidor usar o plano gratuito do Gemini, o Google pode usar e revisar as mensagens para melhorar os serviços dele.</p>
+                <label class="opcao"><input type="checkbox" id="cfg-historico"> Guardar minhas conversas neste aparelho</label>
+                <label class="campo" for="cfg-retencao">Apagar conversas guardadas depois de</label>
+                <select id="cfg-retencao">
+                    <option value="7">7 dias</option>
+                    <option value="30">30 dias</option>
+                    <option value="90">90 dias</option>
+                    <option value="0">Nunca apagar sozinho</option>
+                </select>
+                <label class="opcao"><input type="checkbox" id="cfg-memoria"> Usar memória: a Luna pode sugerir coisas para lembrar, e você confirma cada uma</label>
+
+                <h4>O que a Luna lembra</h4>
+                <ul id="lista-memoria" class="lista-memoria"></ul>
+                <p id="memoria-vazia" class="dica">Nada guardado.</p>
+                <form id="form-memoria" class="form-memoria"> <!-- adicionar uma lembrança à mão -->
+                    <label for="nova-memoria" class="so-leitor">Nova lembrança</label>
+                    <input id="nova-memoria" maxlength="200" placeholder="Ex.: Prefiro respostas curtas" autocomplete="off">
+                    <button type="submit" class="botao-secundario">Adicionar</button>
+                </form>
+                <button id="apagar-tudo" type="button" class="botao-perigo">Apagar todos os meus dados deste aparelho</button>
+            </section>
+
+            <section aria-labelledby="sec-acessibilidade">
+                <h3 id="sec-acessibilidade">Acessibilidade</h3>
+                <label class="opcao"><input type="checkbox" id="cfg-texto-grande"> Texto maior</label>
+                <label class="opcao"><input type="checkbox" id="cfg-menos-animacao"> Reduzir animações</label>
+            </section>
+        </div>
+    </dialog>
+
+    <div id="aviso-rapido" class="aviso-rapido" role="status" aria-live="polite"></div> <!-- mensagens curtas (ex.: "Guardado") -->
+
+</body>
+</html>

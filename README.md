@@ -48,9 +48,20 @@ Projetos/
 │   └── README.md
 ├── chatbot-AI/
 │   └── chat.py
-└── Tarefa-POO-JavaScript/
+└── Tarefa-POO-JavaScript/        (Geometry Heroes)
+    ├── index.html
+    ├── style.css
+    ├── main.js
+    ├── js/                       (classes do jogo; js/fases/ tem uma fase por herói)
+    ├── assets/                   (cenários em camadas e retratos dos heróis)
+    ├── tests/                    (testes automáticos em Python + Playwright)
+    ├── apresentacao/             (scripts do vídeo de apresentação)
     ├── src/
-    │   └── main.js
+    │   └── main.js               (exemplo inicial de POO, anterior ao jogo)
+    ├── DOCUMENTACAO.md
+    ├── IMPLEMENTATION_NOTES.md
+    ├── REA_ESQUEMA.md
+    ├── PROMPTS_MANUS.md
     └── README.md
 ```
 
@@ -66,13 +77,17 @@ Projetos/
 | [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | Publicado |
 | [Gemini Chatbot](Projetos/Gemini-Chatbot) | Python · Gemini API | Em desenvolvimento |
 | [Chatbot AI](Projetos/chatbot-AI) | Python · Gemini API (`google-genai`) | Em desenvolvimento |
-| [Tarefa de POO em JavaScript](Projetos/Tarefa-POO-JavaScript) | JavaScript · Node.js · Programação Orientada a Objetos | Em desenvolvimento |
+| [Geometry Heroes (Tarefa de POO)](Projetos/Tarefa-POO-JavaScript) | JavaScript · Phaser 3 · Programação Orientada a Objetos | Publicado |
 
 A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
 
 ### ✨ Destaque: Site Karol Sevilla
 
 O site da Karol Sevilla ganhou uma nova versão: uma experiência inspirada na navegação de apps de música, que conta a trajetória da artista em três capítulos, apresenta *Mariposas* e *Más linda* e termina com a seção "O que Karol tem a nos ensinar?". Todo o conteúdo tem fontes citadas. A primeira versão do site continua disponível em `Site-Karol-Sevilla/primeira-versao/`.
+
+### 🎮 Destaque: Geometry Heroes
+
+Jogo de plataforma no ritmo da música, feito em JavaScript com Phaser 3 para a tarefa de Programação Orientada a Objetos (FECAP, ADS). São 6 fases, uma por herói (Homem-Aranha, Hulk, Gavião Arqueiro, Doutor Estranho, Homem de Ferro e Feiticeira Escarlate), cada uma com uma habilidade diferente. O código tem 78 classes, com herança e polimorfismo, e 280 verificações automáticas passam nos testes. Jogue online pelo link na seção abaixo.
 
 ## 🌐 Site online
 
@@ -87,3 +102,5 @@ O GitHub Pages publica automaticamente o conteúdo do repositório a cada atuali
 [**Abrir Site Una Noche Más**](https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/)
 
 [**Abrir Rolê dos Peões**](https://paulomarcelli.github.io/Projetos/Projetos/Role-peoes/)
+
+[**Jogar Geometry Heroes**](https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/)

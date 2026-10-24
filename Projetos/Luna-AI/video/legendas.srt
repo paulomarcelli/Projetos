@@ -1,0 +1,123 @@
+1
+00:00:02,600 --> 00:00:07,570
+Esta é a Luna, um projeto pessoal de IA aplicada ao apoio emocional.
+
+2
+00:00:07,870 --> 00:00:11,600
+Vamos ver o que ela faz e como funciona por dentro.
+
+3
+00:00:12,600 --> 00:00:16,680
+A Luna é uma aplicação web de conversa, por texto ou por voz.
+
+4
+00:00:16,980 --> 00:00:22,390
+Ela ajuda a organizar pensamentos e a olhar situações difíceis de outros ângulos.
+
+5
+00:00:22,690 --> 00:00:27,500
+Ela não substitui psicólogos, diagnóstico nem atendimento de emergência.
+
+6
+00:00:28,600 --> 00:00:33,180
+A arquitetura tem cinco partes, cada uma com uma responsabilidade clara.
+
+7
+00:00:33,480 --> 00:00:37,870
+No navegador fica a interface: HTML, CSS e JavaScript, sem framework.
+
+8
+00:00:38,170 --> 00:00:43,520
+Um servidor em Python com Flask recebe e valida as mensagens, sem guardar conversas.
+
+9
+00:00:43,820 --> 00:00:48,910
+Uma camada de segurança, escrita em código, avalia o risco antes de chamar a IA.
+
+10
+00:00:49,210 --> 00:00:54,240
+O motor da Luna monta instruções e contexto e faz uma chamada ao Google Gemini.
+
+11
+00:00:54,540 --> 00:00:59,500
+Não há banco de dados: histórico e memória são opcionais e ficam no navegador.
+
+12
+00:01:00,600 --> 00:01:03,650
+Veja o caminho de uma mensagem pela aplicação.
+
+13
+00:01:03,950 --> 00:01:08,730
+A interface envia o texto junto com as últimas mensagens, como contexto.
+
+14
+00:01:09,030 --> 00:01:14,010
+O servidor valida o pedido, e a segurança classifica o risco. Aqui: nenhum.
+
+15
+00:01:14,310 --> 00:01:19,160
+O Gemini recebe instruções e contexto e devolve uma resposta estruturada.
+
+16
+00:01:19,460 --> 00:01:24,500
+Uma última verificação em código acontece antes de a resposta chegar à tela.
+
+17
+00:01:25,600 --> 00:01:29,650
+O comportamento da Luna nasce de instruções escritas com cuidado.
+
+18
+00:01:29,950 --> 00:01:34,440
+Acolher sem julgar, separar fatos de interpretações, reconhecer limites.
+
+19
+00:01:34,740 --> 00:01:39,420
+Diante de “ela não gosta mais de mim”, o objetivo não é negar o sentimento.
+
+20
+00:01:39,720 --> 00:01:44,340
+É separar o que se sabe do que se imagina: a demora é fato; o motivo, não.
+
+21
+00:01:44,640 --> 00:01:49,500
+Esse é o comportamento desejado. O modelo pode errar, por isso existem testes.
+
+22
+00:01:50,600 --> 00:01:56,270
+Na voz, o navegador transforma a fala em texto e lê a resposta em voz alta.
+
+23
+00:01:56,570 --> 00:02:02,550
+Dá para pausar, interromper ou encerrar. O microfone desliga enquanto ela fala.
+
+24
+00:02:02,850 --> 00:02:08,370
+A memória é opcional: a Luna sugere, e só guarda o que a pessoa confirma.
+
+25
+00:02:08,670 --> 00:02:14,500
+Não há agentes nem ferramentas. Conversa em tempo real é uma evolução futura.
+
+26
+00:02:15,600 --> 00:02:19,440
+No apoio emocional, a segurança não pode depender só do modelo.
+
+27
+00:02:19,740 --> 00:02:24,380
+Regras em código classificam o risco em quatro níveis, antes e depois da IA.
+
+28
+00:02:24,680 --> 00:02:29,680
+Em risco imediato, a primeira resposta é um texto revisado, que não depende da IA.
+
+29
+00:02:29,980 --> 00:02:34,500
+E os contatos de ajuda aparecem na tela: CVV 188 e SAMU 192, entre outros.
+
+30
+00:02:35,600 --> 00:02:41,090
+Interface, servidor, segurança, motor e modelo: cada parte faz pouco, e bem.
+
+31
+00:02:41,390 --> 00:02:46,600
+São 45 testes automáticos. Avaliar as respostas reais é o próximo passo.

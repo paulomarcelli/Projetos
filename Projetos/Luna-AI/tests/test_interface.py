@@ -13,6 +13,7 @@ Capturas de tela ficam em tests/saida/.
 """
 
 import json
+import re
 import os
 import socket
 import sys
@@ -59,6 +60,11 @@ def modelo_falso(instrucoes, conteudos):
     if "xss" in ultima:
         resposta = 'Oi <img src=x onerror="window.__xss=1"> [clique](javascript:window.__xss=2) **negrito**'
         return json.dumps({"necessidade": "acolhimento", "resposta": resposta, "lembrar": None})
+    if "mostre as fontes" in ultima:
+        # cita o primeiro trecho da biblioteca que o RAG enviou nas instruções (como o modelo real faria)
+        achado = re.search(r'<trecho id="([^"]+)"', instrucoes)
+        fontes = [achado.group(1), "99#1"] if achado else []   # "99#1" é inventado: o servidor deve descartar
+        return json.dumps({"necessidade": "reflexao", "resposta": "Isso parece um ciclo de ruminação.", "lembrar": None, "fontes": fontes})
     if "lembre" in ultima:
         return json.dumps({"necessidade": "acolhimento", "resposta": "Combinado, vou responder de forma curta.", "lembrar": "Prefere respostas curtas"})
     return json.dumps({"necessidade": "reflexao", "resposta": f"Entendo. **O que aconteceu** antes disso? (contexto: {len(conteudos)} mensagens)", "lembrar": None})
@@ -192,6 +198,42 @@ class TestInterface(unittest.TestCase):
                 self.assertTrue(crise.locator(".cartao-contatos").evaluate(  # o cartão ficou dentro da área visível
                     "el => { const r = el.getBoundingClientRect(), m = document.getElementById('mensagens').getBoundingClientRect(); return r.bottom <= m.bottom + 1; }"))
                 pagina.screenshot(path=SAIDA / f"{tela}-3-contatos-de-ajuda.png")
+
+    def test_marca_logo_animado_e_icones(self):
+        pagina = self.abrir("computador")
+        self.assertEqual(pagina.title(), "LUNA MIND")
+        self.assertEqual(pagina.locator(".marca h1").get_attribute("aria-label"), "LUNA MIND")
+        self.assertEqual(pagina.locator("#logo-luna .logo-luna__faisca").count(), 4)   # faíscas nos cristais
+        self.assertEqual(pagina.locator("#logo-luna").get_attribute("role"), "img")
+        self.assertTrue(pagina.evaluate("document.getElementById('logo-luna').getAnimations({subtree: true}).length >= 5"))
+        # a logo carregou de verdade (arquivo refinado) e os ícones existem
+        self.assertTrue(pagina.evaluate("document.querySelector('#logo-luna img').naturalWidth === 960"))
+        cliente = servidor.app.test_client()
+        for arquivo in ("marca/luna-mind.png", "marca/favicon-32.png", "marca/apple-touch-icon.png", "marca/icone-192.png"):
+            self.assertEqual(cliente.get("/" + arquivo).status_code, 200, arquivo)
+        pagina.screenshot(path=SAIDA / "marca-logo-animado.png")
+
+    def test_logo_parada_com_movimento_reduzido(self):
+        contexto = self.navegador.new_context(**TELAS["computador"], locale="pt-BR", reduced_motion="reduce")
+        pagina = self.abrir("computador", contexto=contexto)
+        pagina.wait_for_timeout(300)
+        self.assertEqual(pagina.evaluate("document.getElementById('logo-luna').getAnimations({subtree: true}).length"), 0)
+        self.assertEqual(pagina.evaluate("getComputedStyle(document.querySelector('.logo-luna__faisca')).opacity"), "0")
+
+    def test_fontes_da_biblioteca_aparecem_sob_a_resposta(self):
+        pagina = self.abrir("computador")
+        resposta = self.enviar(pagina, "Fico remoendo e não consigo parar de pensar, mostre as fontes")
+        self.assertEqual(resposta.locator("details.fontes").count(), 1)       # só a fonte real; a inventada foi descartada
+        self.assertEqual(resposta.locator("details.fontes li").count(), 1)
+        self.assertFalse(resposta.locator("details.fontes").evaluate("d => d.open"))   # fechado por padrão
+        resposta.locator("details.fontes summary").click()
+        self.assertTrue(resposta.locator(".fonte-doc").first.is_visible())
+        self.assertIn("Ansiedade", resposta.locator(".fonte-doc").first.inner_text())
+        pagina.wait_for_timeout(500)
+        pagina.screenshot(path=SAIDA / "fontes-da-biblioteca.png")
+        # mensagem sem tema da biblioteca: nenhum bloco de fontes
+        outra = self.enviar(pagina, "oi, tudo bem?")
+        self.assertEqual(outra.locator("details.fontes").count(), 0)
 
     def test_menu_e_ajuda_no_celular(self):
         pagina = self.abrir("celular")

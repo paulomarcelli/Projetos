@@ -4,8 +4,11 @@
     <meta charset="UTF-8"> <!-- permite acentos e caracteres especiais -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"> <!-- adapta ao celular; o teclado virtual encolhe a página em vez de cobrir a caixa de texto -->
     <meta name="theme-color" content="#0a1230"> <!-- cor da barra do navegador no celular -->
-    <title>LUNA AI</title> <!-- nome que aparece na aba do navegador -->
-    <link rel="icon" type="image/png" href="logo.png"> <!-- favicon: a logo na aba -->
+    <title>LUNA MIND</title> <!-- nome que aparece na aba do navegador -->
+    <meta name="description" content="LUNA MIND: um espaço pessoal e acolhedor para conversar com uma inteligência artificial de apoio emocional.">
+    <link rel="icon" type="image/png" sizes="32x32" href="marca/favicon-32.png"> <!-- favicon: só a coroa de cristal (a figura inteira vira borrão em 16px) -->
+    <link rel="icon" type="image/png" sizes="192x192" href="marca/icone-192.png"> <!-- ícone grande (atalhos, Android) -->
+    <link rel="apple-touch-icon" href="marca/apple-touch-icon.png"> <!-- ícone ao salvar na tela inicial do celular -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- abre conexão antecipada com o Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- mesma coisa, pro servidor dos arquivos das fontes -->
@@ -15,20 +18,25 @@
     <!-- bibliotecas com versão fixa + "integrity": se o arquivo da CDN for alterado, o navegador recusa -->
     <script src="https://cdn.jsdelivr.net/npm/marked@18.0.10/lib/marked.umd.js" integrity="sha384-JD1I1oSYdjlw8850MjNFhpmRtgBZ97SjJYg9IJUE1RxR3DgG8oo4R43qLGMkd99t" crossorigin="anonymous" defer></script> <!-- transforma o Markdown da IA em HTML -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.14/dist/purify.min.js" integrity="sha384-46dPGH1XlTmj7bc50bqLjTdORXs/3EP2QpA/6EWbelYWOY9VGp+87RT61S3Mcslb" crossorigin="anonymous" defer></script> <!-- limpa o HTML antes de mostrar (bloqueia scripts maliciosos) -->
+    <script src="estrelas.js" defer></script> <!-- céu estrelado: camadas, profundidade e brilho -->
     <script src="voz.js" defer></script> <!-- ouvir e falar -->
     <script src="script.js" defer></script> <!-- conversa, histórico e configurações -->
 </head>
 <body> <!-- tudo que aparece na tela -->
 
+    <canvas id="ceu" aria-hidden="true"></canvas> <!-- céu estrelado em camadas (estrelas.js); sem JS ficam as estrelas do CSS -->
     <div class="estrela-cadente" aria-hidden="true"></div> <!-- estrela cadente decorativa (só CSS) -->
 
     <div id="app"> <!-- sidebar e chat lado a lado -->
 
         <aside id="sidebar" aria-label="Menu"> <!-- barra lateral; no celular vira uma gaveta -->
 
-            <div class="marca"> <!-- logo + nome juntos -->
-                <img src="logo.png" alt="" class="marca-logo"> <!-- alt vazio: o nome já está escrito ao lado -->
-                <h1>LUNA AI</h1> <!-- título principal da página -->
+            <div class="marca"> <!-- símbolo + nome juntos (lockup da marca) -->
+                <span class="logo-luna logo-luna--pequeno" style="--w: 54px" aria-hidden="true"> <!-- logo com brilho animado; decorativa, o nome está escrito ao lado -->
+                    <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                    <i class="logo-luna__varredura"></i>
+                </span>
+                <h1 class="marca-nome" aria-label="LUNA MIND"><span class="marca-luna">LUNA</span><span class="marca-mind">MIND</span></h1> <!-- título principal -->
             </div>
 
             <button id="nova-conversa" type="button">+ Nova conversa</button> <!-- limpa a tela e volta pro começo -->
@@ -64,14 +72,24 @@
                 <button id="botao-menu" type="button" class="botao-icone" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
                     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </button>
-                <img src="logo.png" alt="" class="marca-logo">
-                <span class="topo-nome">LUNA AI</span>
+                <span class="logo-luna logo-luna--pequeno" style="--w: 46px" aria-hidden="true"> <!-- logo com brilho animado; decorativa, o nome está escrito ao lado -->
+                    <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                    <i class="logo-luna__varredura"></i>
+                </span>
+                <span class="topo-nome marca-nome" aria-label="LUNA MIND"><span class="marca-luna">LUNA</span><span class="marca-mind">MIND</span></span>
                 <button id="botao-ajuda-mobile" type="button" class="pilula-ajuda">Ajuda</button> <!-- abre a gaveta direto no cartão de ajuda -->
             </header>
 
             <section class="boas-vindas" id="boas-vindas"> <!-- tela inicial, some quando a conversa começa -->
                 <div class="halo"> <!-- círculo de luz que "respira" atrás da logo -->
-                    <img src="logo.png" alt="Logo da LUNA AI" id="logo-luna">
+                    <span class="logo-luna" id="logo-luna" role="img" aria-label="Logo da LUNA MIND: uma mulher com uma coroa de cristal"> <!-- versão grande: varredura de luz + faíscas nos cristais -->
+                        <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                        <i class="logo-luna__varredura"></i>
+                        <i class="logo-luna__faisca" style="--x: 50.1%; --y: 5%; --atraso: 0s"></i> <!-- ponta do cristal central -->
+                        <i class="logo-luna__faisca" style="--x: 42.9%; --y: 11%; --atraso: 1.3s"></i> <!-- cristal esquerdo -->
+                        <i class="logo-luna__faisca" style="--x: 57.3%; --y: 11.5%; --atraso: 2.4s"></i> <!-- cristal direito -->
+                        <i class="logo-luna__faisca faisca-centro" style="--x: 50%; --y: 15.6%; --atraso: 3.5s"></i> <!-- coração do cristal -->
+                    </span>
                 </div>
                 <h2 class="saudacao">Oi. Que bom que você veio.</h2>
                 <p class="subtitulo">Aqui é um espaço seguro pra falar do que estiver pesando. Sem pressa e sem julgamento. Escreva ou toque no microfone pra conversar por voz.</p>

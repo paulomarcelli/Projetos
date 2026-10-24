@@ -24,3 +24,16 @@ Arquivo curto para retomar o trabalho em outra sessão. Atualizado a cada etapa.
 - Pacote `rag/` (texto, consulta, ingestao, indice, recuperador, prompt, __init__) integrado em `luna.responder()`; rota `/status`.
 - Biblioteca: 13 capítulos, hashes conferem; 332 trechos, 250 usáveis na conversa (capítulos 02–11, sem seções editoriais).
 - Testes: 62 passando (30 unitários originais + 15 de interface + 17 do RAG).
+
+## Feito (etapa visual)
+- Logo: o usuário pediu para usar o logo ORIGINAL (mulher com coroa de cristal). Uma lua desenhada por mim foi descartada. `web/marca/luna-mind.png` = original refinado (recorte, 2x, nitidez, mais luz no cristal); `web/logo.png` original preservado.
+- Brilho animado (componente `.logo-luna` em `style.css`): varredura de luz nas linhas (máscara = PNG), 4 faíscas nos cristais, aura discreta. O usuário pediu cuidado com o brilho em volta: aura reduzida (opacidade 0.08–0.38, blur curto, quase colada ao desenho).
+- Ícones (favicon, apple-touch, 192, 512): só a coroa, fundo noturno arredondado. Avatar das respostas usa `icone-192.png`.
+- Céu: `web/estrelas.js` (canvas, 3 camadas, estrelas de cristal, parallax leve, respeita reduzir movimento).
+- Fontes do RAG sob a resposta (`<details class="fontes">`).
+- Testes: 65 passando (30 originais, 17 de RAG, 18 de interface, 3 deles novos).
+
+## Pendências reais
+- Sem GEMINI_API_KEY: não foi possível validar respostas reais do modelo nem embeddings reais (modo híbrido testado com embedder falso). Rodar `python tests/avaliar_respostas.py` com a chave.
+- `video/` ainda usa o nome/logo antigos (material de apresentação em vídeo, mantido como histórico).
+- Personalidade: nenhuma alteração; editar em `personalidade.py`.

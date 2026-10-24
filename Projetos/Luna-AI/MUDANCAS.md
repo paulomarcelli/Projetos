@@ -132,3 +132,29 @@ Comando: `python -m unittest discover tests` → **45 testes, todos passando** (
 3. Se a voz do navegador não agradar, trocar `falar()` por Google Cloud TTS (Chirp 3 HD tem 1 milhão de caracteres grátis por mês).
 4. Para publicar online: hospedagem com HTTPS, limite de requisições e uma revisão da camada de segurança por profissional de saúde mental.
 5. Evoluir para conversa em tempo real com a Gemini Live API.
+
+
+---
+
+# LUNA MIND (outubro de 2026): identidade, RAG e personalidade separada
+
+## O que mudou
+| Área | Mudança |
+|---|---|
+| Nome | LUNA AI → **LUNA MIND** (título, favicon, barra lateral, topo do celular, boas-vindas, textos de acessibilidade). |
+| Logo | Mantida a **logo original** (mulher com coroa de cristal). Refinada em `web/marca/luna-mind.png`: recorte do espaço vazio, ampliação 2x com nitidez, limpeza de ruído e mais luz nos cristais. O `logo.png` original foi preservado. |
+| Brilho animado | Componente `.logo-luna`: varredura de luz só nas linhas (máscara do próprio PNG), 4 faíscas nos cristais e aura discreta. Só `opacity` e `transform` animam. Desliga com "reduzir movimento" (sistema ou opção da Luna). |
+| Ícones | `favicon-32.png`, `apple-touch-icon.png`, `icone-192.png`, `icone-512.png`: só a coroa (a figura inteira vira borrão em 16 px). O avatar das respostas usa o ícone. |
+| Estrelas | `web/estrelas.js`: céu em canvas com 3 camadas (longe, meio, perto), estrelas de cristal de 4 pontas, parallax leve com o mouse, pausa em aba oculta. Sem JS, as estrelas de CSS continuam. |
+| RAG | Pacote `rag/` + `conhecimento/` integrados em `luna.responder()`; fontes mostradas sob a resposta; rota `/status`. |
+| Personalidade | Texto movido sem alteração para `personalidade.py`. |
+
+## Decisões importantes
+- O ZIP do RAG não tinha código: era a biblioteca e a especificação. Foi implementado o pipeline que ela descreve, com BM25 como baseline e híbrido opcional.
+- RAG desligado em risco alto/imediato (a camada de segurança em código conduz).
+- Citação verificada: o servidor descarta ids de fonte que não estavam entre os trechos enviados.
+- O RAG nunca derruba o chat: qualquer falha vira "seguir sem a biblioteca".
+
+## Limites
+- Sem `GEMINI_API_KEY` não foi possível validar respostas reais do modelo nem a busca híbrida com embeddings reais (testada com embeddings falsos).
+- A biblioteca é material de pesquisa e educativo, não clínico; a qualidade das respostas com os trechos deve ser avaliada com `tests/avaliar_respostas.py` quando houver chave.

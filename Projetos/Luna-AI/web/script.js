@@ -86,7 +86,7 @@ function htmlSeguro(markdown) {
 
 function criarAvatar() {
     const avatar = document.createElement("img");
-    avatar.src = "logo.png";
+    avatar.src = "marca/icone-192.png";                               // coroa de cristal da LUNA MIND em ícone (legível em 34 px)
     avatar.alt = "";                                                  // decorativa
     avatar.classList.add("avatar");
     return avatar;
@@ -133,12 +133,43 @@ function adicionarMensagem(quem, conteudo, extras = {}) {
     }
     if (extras.seguranca?.contatos?.length) coluna.appendChild(criarCartaoContatos(extras.seguranca.contatos));
     if (extras.sugestaoMemoria) coluna.appendChild(criarSugestaoMemoria(extras.sugestaoMemoria));
+    if (quem === "luna" && extras.fontes?.length) coluna.appendChild(criarFontes(extras.fontes));
 
     linha.appendChild(coluna);
     const estavaNoFim = pertoDoFim();                                 // medir ANTES de a mensagem nova aumentar a altura
     divMensagens.appendChild(linha);
     rolarAte(linha, quem === "usuario" || estavaNoFim);
     return linha;
+}
+
+// ===== FONTES DA BIBLIOTECA (RAG) =====
+// O servidor só devolve fontes que o modelo realmente usou E que estavam entre os
+// trechos recuperados (conferido em luna.py). Aqui mostramos apenas capítulo e seção,
+// num <details> fechado: a informação fica disponível sem competir com a resposta.
+function criarFontes(fontes) {
+    const caixa = document.createElement("details");
+    caixa.className = "fontes";
+    const resumo = document.createElement("summary");
+    resumo.textContent = fontes.length === 1 ? "Baseado em 1 trecho da biblioteca" : `Baseado em ${fontes.length} trechos da biblioteca`;
+    caixa.appendChild(resumo);
+    const lista = document.createElement("ul");
+    fontes.forEach((f) => {
+        const item = document.createElement("li");
+        const doc = document.createElement("span");
+        doc.className = "fonte-doc";
+        doc.textContent = f.documento;                                // textContent: nada vira HTML
+        const secao = document.createElement("span");
+        secao.className = "fonte-secao";
+        secao.textContent = f.secao;
+        item.append(doc, secao);
+        lista.appendChild(item);
+    });
+    caixa.appendChild(lista);
+    const nota = document.createElement("p");
+    nota.className = "fontes-nota";
+    nota.textContent = "Biblioteca de pesquisa da LUNA MIND. É material educativo e não substitui um profissional.";
+    caixa.appendChild(nota);
+    return caixa;
 }
 
 function criarCartaoContatos(contatos) { // aparece embaixo da resposta em situações de risco
@@ -295,13 +326,14 @@ async function enviarMensagem(textoOpcional, { porVoz = false } = {}) {
 
     try {
         const dados = await pedirResposta(pergunta, historico, porVoz);
-        conversa.mensagens.push({ papel: "luna", texto: dados.resposta, seguranca: dados.seguranca });
+        conversa.mensagens.push({ papel: "luna", texto: dados.resposta, seguranca: dados.seguranca, fontes: dados.fontes || [] });
         salvarConversa(conversa);
         if (conversa !== atual) return;                              // a pessoa abriu outra conversa enquanto esperava
         esconderDigitando();
         const linha = adicionarMensagem("luna", dados.resposta, {
             seguranca: dados.seguranca,
             sugestaoMemoria: config.memoriaAtiva ? dados.sugestao_memoria : null,
+            fontes: dados.fontes || [],
         });
         if (Voz.emConversa()) Voz.responder(dados.resposta);         // conversa por voz: ela fala e volta a ouvir
         else if (config.lerRespostas) {
@@ -406,7 +438,7 @@ function abrirConversa(id) {
     Voz.pararLeitura();
     atual = conversa;
     divMensagens.replaceChildren();
-    conversa.mensagens.forEach((m) => adicionarMensagem(m.papel, m.texto, { seguranca: m.seguranca, semAnimacao: true }));
+    conversa.mensagens.forEach((m) => adicionarMensagem(m.papel, m.texto, { seguranca: m.seguranca, fontes: m.fontes, semAnimacao: true }));
     chatArea.classList.add("conversando");
     renderizarConversas();
     fecharMenu();

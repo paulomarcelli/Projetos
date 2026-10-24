@@ -18,6 +18,7 @@ Configuração por variáveis de ambiente (ver .env.example):
     LUNA_RAG_MAX_CARACTERES    teto de caracteres somados (padrão 3600)
     LUNA_RAG_DENSO=1           liga a busca híbrida (precisa de GEMINI_API_KEY)
     LUNA_EMBEDDING_MODELO      modelo de embeddings (padrão gemini-embedding-001)
+    LUNA_RAG_SIM_ALTA/MEDIA    limiares de similaridade da busca híbrida (padrões 0.675 / 0.64)
 
 A biblioteca é carregada uma única vez, na primeira busca (carga preguiçosa),
 e reaproveitada por todas as requisições.
@@ -47,6 +48,14 @@ def ativo():
     return os.environ.get("LUNA_RAG", "1") != "0"
 
 
+def _decimal(nome):
+    """Lê um número decimal opcional do ambiente; valor ausente ou inválido vira None (usa o padrão)."""
+    try:
+        return float(os.environ[nome])
+    except (KeyError, ValueError):
+        return None
+
+
 def _carregar():
     """Cria o Recuperador uma vez (thread-safe). Falhas viram _erro_carga, nunca exceção."""
     global _recuperador, _erro_carga
@@ -70,9 +79,15 @@ def _carregar():
                 biblioteca,
                 top_k=int(os.environ.get("LUNA_RAG_TOP_K", 3)),
                 max_caracteres=int(os.environ.get("LUNA_RAG_MAX_CARACTERES", 3600)),
-                embedder=embedder,
-                cache_embeddings=cache,
+                sim_alta=_decimal("LUNA_RAG_SIM_ALTA"),
+                sim_media=_decimal("LUNA_RAG_SIM_MEDIA"),
             )
+            if embedder is not None:
+                # Os embeddings são montados em segundo plano: a primeira conversa não espera
+                # (limites da API podem levar alguns minutos) e já usa BM25 nesse meio-tempo.
+                _recuperador.estado_denso = "preparando"
+                threading.Thread(target=_recuperador.ativar_denso, args=(embedder, cache),
+                                 name="luna-rag-denso", daemon=True).start()
             r = biblioteca.relatorio
             log.info("RAG pronto: %d documentos, %d trechos (%d para conversa), modo %s",
                      r["documentos"], r["trechos"], r["conversa"], _recuperador.modo)
@@ -111,6 +126,7 @@ def status():
         "ativo": True,
         "pronto": True,
         "modo": recuperador.modo,
+        "busca_densa": recuperador.estado_denso,   # desligado | preparando | pronto | indisponivel
         "documentos": r["documentos"],
         "trechos": r["trechos"],
         "trechos_conversa": r["conversa"],

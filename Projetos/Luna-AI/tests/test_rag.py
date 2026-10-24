@@ -213,5 +213,125 @@ class TestHibrido(unittest.TestCase):
             self.assertEqual(chamadas, [])
 
 
+class TestSuficienciaHibrida(unittest.TestCase):
+    """Regra de decisão da busca híbrida, com um embedder falso de similaridades controladas.
+
+    Documentos do capítulo 07 (luto) ficam no eixo X; os demais, no eixo Z (cosseno 0 com a consulta).
+    A consulta fica sempre no plano X–Y, então o cosseno com o luto é exatamente `sim`."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bib = carregar_biblioteca(BIBLIOTECA)
+        cls.doc_por_texto = {t.texto: t.doc_id for t in cls.bib.trechos}
+
+    def recuperador(self, sim):
+        import math
+        doc_por_texto = self.doc_por_texto
+
+        def embedder(textos, tipo):
+            if tipo == "RETRIEVAL_QUERY":
+                return [[sim, math.sqrt(1 - sim * sim), 0.0] for _ in textos]
+            return [[1.0, 0.0, 0.0] if doc_por_texto[t] == "07" else [0.0, 0.0, 1.0] for t in textos]
+
+        return Recuperador(self.bib, embedder=embedder)
+
+    def test_similaridade_alta_basta_sem_palavra_em_comum(self):
+        res = self.recuperador(0.70).buscar("zzz qqq www")           # nenhuma palavra da biblioteca
+        self.assertEqual(res.status, "suficiente")
+        self.assertTrue(res.trechos and all(t.doc_id == "07" for t in res.trechos))
+
+    def test_faixa_de_borda_sem_palavra_em_comum_abstem(self):
+        res = self.recuperador(0.655).buscar("zzz qqq www")          # papo social: perto, mas sem nada concreto
+        self.assertEqual(res.status, "insuficiente")
+
+    def test_faixa_de_borda_com_uma_palavra_em_comum_passa(self):
+        res = self.recuperador(0.655).buscar("saudade")              # "saudade" expande para luto/perda
+        self.assertEqual(res.status, "suficiente")
+        # Trechos de outros capítulos podem entrar pela evidência lexical própria; o do luto, pelos embeddings.
+        self.assertIn("07", [t.doc_id for t in res.trechos])
+
+    def test_similaridade_baixa_exige_evidencia_lexical_forte(self):
+        rec = self.recuperador(0.50)
+        self.assertEqual(rec.buscar("zzz qqq www").status, "insuficiente")
+        self.assertEqual(rec.buscar("Fico remoendo e não consigo parar de pensar no que disse").status, "suficiente")
+
+    def test_falha_so_na_consulta_densa_mantem_o_bm25(self):
+        calls = {"n": 0}
+
+        def embedder(textos, tipo):
+            if tipo == "RETRIEVAL_QUERY":
+                raise RuntimeError("rede caiu")
+            return [[1.0, 0.0, 0.0] for _ in textos]
+
+        rec = Recuperador(self.bib, embedder=embedder)
+        self.assertEqual(rec.modo, "hibrido")
+        self.assertEqual(rec.buscar("Fico remoendo e não consigo parar de pensar no que disse").status, "suficiente")
+
+
+class TestIndiceDensoRobusto(unittest.TestCase):
+    """Limites de API não podem travar o chat nem perder o trabalho já feito."""
+
+    def test_retoma_do_cache_depois_de_uma_falha(self):
+        vocab = ["ansi", "rumin", "luto", "sono"]
+        chamadas = []
+
+        def embedder(textos, tipo):
+            chamadas.append(len(textos))
+            if len(chamadas) == 3:
+                raise RuntimeError("limite de cota")
+            return [[termos(t).count(v) + 0.01 for v in vocab] for t in textos]
+
+        bib = carregar_biblioteca(BIBLIOTECA)
+        with tempfile.TemporaryDirectory() as pasta:
+            cache = Path(pasta) / "emb.json"
+            rec = Recuperador(bib, embedder=embedder, cache_embeddings=cache)
+            # Falhou no 3º lote: busca densa indisponível, mas o chat segue com BM25.
+            self.assertEqual(rec.estado_denso, "indisponivel")
+            self.assertEqual(rec.modo, "lexical")
+            self.assertEqual(rec.buscar("fico remoendo e não consigo parar de pensar").status, "suficiente")
+            self.assertEqual(len(json.loads(cache.read_text())), 80)        # 2 lotes de 40 ficaram salvos
+            # Nova tentativa só calcula o que faltava.
+            chamadas.clear()
+            rec2 = Recuperador(bib, embedder=lambda t, tipo: (chamadas.append(len(t)), [[1.0, 0, 0, 0] for _ in t])[1],
+                               cache_embeddings=cache)
+            self.assertEqual(rec2.estado_denso, "pronto")
+            self.assertEqual(sum(chamadas), len(bib.trechos) - 80)
+
+    def test_embedder_gemini_espera_e_tenta_de_novo_em_429(self):
+        from unittest import mock
+
+        from rag.indice import embedder_gemini
+
+        class Erro429(Exception):
+            code = 429
+
+        class Embedding:
+            values = [0.1, 0.2]
+
+        tentativas = []
+
+        def embed_content(**kw):
+            tentativas.append(1)
+            if len(tentativas) < 3:
+                raise Erro429("RESOURCE_EXHAUSTED")
+            return type("R", (), {"embeddings": [Embedding(), Embedding()]})()
+
+        fake = mock.Mock()
+        fake.models.embed_content = embed_content
+        with mock.patch("google.genai.Client", return_value=fake), mock.patch("time.sleep") as dormir:
+            vetores = embedder_gemini("modelo", esperas=(1, 1, 1))(["a", "b"], "RETRIEVAL_DOCUMENT")
+        self.assertEqual(len(vetores), 2)
+        self.assertEqual(len(tentativas), 3)                  # falhou 2 vezes e passou na 3ª
+        self.assertEqual(dormir.call_count, 2)
+        # Erro que não é limite de cota sobe na hora, sem esperar.
+        def quebrado(**kw):
+            raise ValueError("chave inválida")
+        fake.models.embed_content = quebrado
+        with mock.patch("google.genai.Client", return_value=fake), mock.patch("time.sleep") as dormir:
+            with self.assertRaises(ValueError):
+                embedder_gemini("modelo")(["a"], "RETRIEVAL_QUERY")
+            dormir.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

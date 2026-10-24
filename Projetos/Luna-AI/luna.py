@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import re
+import time
 
 import personalidade
 import rag
@@ -27,6 +28,8 @@ log = logging.getLogger("luna")
 
 MODELO = os.environ.get("LUNA_MODELO", "gemini-3.6-flash")    # mesmo modelo do chatbot-AI
 PENSAMENTO = os.environ.get("LUNA_PENSAMENTO", "low")          # "low" responde mais rápido (importante na voz)
+ERROS_TEMPORARIOS = (500, 502, 503, 504)                      # falhas do lado do Google que valem repetir
+ESPERAS_TEMPORARIAS = (1.0, 3.0)                              # segundos de pausa antes de cada nova tentativa
 LIMITE_HISTORICO = 30                                          # últimas mensagens enviadas ao modelo
 
 # A personalidade fica em personalidade.py (editada manualmente pelo autor).
@@ -64,18 +67,27 @@ def chamar_modelo(instrucoes, conteudos):
     if _cliente is None:
         from google import genai                    # importado aqui pra o resto do app funcionar sem a biblioteca
         _cliente = genai.Client()                   # lê GEMINI_API_KEY do ambiente
-    resposta = _cliente.models.generate_content(
-        model=MODELO,
-        contents=conteudos,
-        config={
-            "system_instruction": instrucoes,
-            "temperature": 0.7,
-            "max_output_tokens": 4096,              # inclui os tokens de "pensamento" do modelo
-            "response_mime_type": "application/json",
-            "thinking_config": {"thinking_level": PENSAMENTO},
-        },
-    )
-    return resposta.text                             # None quando o Gemini bloqueia a resposta
+    # Erros temporários do servidor (500/502/503/504, ex.: "modelo com alta demanda") costumam
+    # passar em segundos: tenta mais duas vezes antes de mostrar o erro à pessoa. Limite de cota
+    # (429) e chave recusada (401/403) NÃO são repetidos aqui: esperar poucos segundos não resolve.
+    for tentativa in range(len(ESPERAS_TEMPORARIAS) + 1):
+        try:
+            resposta = _cliente.models.generate_content(
+                model=MODELO,
+                contents=conteudos,
+                config={
+                    "system_instruction": instrucoes,
+                    "temperature": 0.7,
+                    "max_output_tokens": 4096,      # inclui os tokens de "pensamento" do modelo
+                    "response_mime_type": "application/json",
+                    "thinking_config": {"thinking_level": PENSAMENTO},
+                },
+            )
+            return resposta.text                     # None quando o Gemini bloqueia a resposta
+        except Exception as erro:
+            if getattr(erro, "code", None) not in ERROS_TEMPORARIOS or tentativa == len(ESPERAS_TEMPORARIAS):
+                raise
+            time.sleep(ESPERAS_TEMPORARIAS[tentativa])
 
 
 def montar_instrucoes(av, memoria, memoria_ativa, modo_voz, conhecimento=""):
@@ -184,6 +196,10 @@ def responder(mensagem, historico=(), memoria=(), memoria_ativa=False, modo_voz=
         if av.no_minimo("alto"):
             return resultado(seguranca.resposta_padrao(av), necessidade="seguranca")
         codigo = getattr(erro, "code", None)
+        # Limite DIÁRIO do plano gratuito (ex.: 20 requisições por dia por modelo) é diferente do limite
+        # por minuto: esperar um minuto não resolve, e a mensagem para a pessoa precisa dizer isso.
+        if codigo == 429 and "per day" in str(erro).lower():
+            raise ErroModelo("limite_dia") from erro
         raise ErroModelo({429: "limite", 401: "chave", 403: "chave"}.get(codigo, "falha")) from erro
 
     if dados is None:  # resposta bloqueada ou vazia

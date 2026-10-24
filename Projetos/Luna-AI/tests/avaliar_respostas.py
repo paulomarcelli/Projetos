@@ -17,6 +17,7 @@ Custo aproximado: menos de US$ 0,10 por rodada.
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 PASTA = Path(__file__).resolve().parent.parent
@@ -74,6 +75,19 @@ CENARIOS = [
 CRITERIOS = ["Acolhimento", "Relevância", "Clareza", "Autonomia", "Fundamentação", "Segurança", "Encaminhamento"]
 
 
+def responder_com_espera(mensagem, historico, tentativas=6):
+    """No plano gratuito do Gemini o limite por minuto é baixo (erro 429, motivo "limite").
+    Em vez de quebrar a avaliação no meio, espera a janela de 1 minuto passar e tenta de novo."""
+    for tentativa in range(tentativas):
+        try:
+            return luna.responder(mensagem, historico)
+        except luna.ErroModelo as erro:
+            if erro.motivo not in ("limite", "falha") or tentativa == tentativas - 1:   # "limite_dia" sobe na hora
+                raise
+            print(f"   (API indisponível ou no limite: {erro.motivo}; aguardando 30 s)")
+            time.sleep(30)
+
+
 def main():
     try:
         from flask.cli import load_dotenv
@@ -86,11 +100,25 @@ def main():
 
     relatorio = ["# Avaliação das respostas da Luna", "", f"Modelo: `{luna.MODELO}`", ""]
     falhas = 0
-    for nome, mensagens, nivel_esperado, verificacoes in CENARIOS:
+    saida = PASTA / "tests" / "saida"
+    saida.mkdir(exist_ok=True)
+    # LUNA_AVALIAR_DESDE=6 continua do 6º cenário, aproveitando o relatório já salvo (poupa a cota do plano gratuito).
+    desde = int(os.environ.get("LUNA_AVALIAR_DESDE", "1"))
+    if desde > 1 and (saida / "avaliacao.md").is_file():
+        relatorio = (saida / "avaliacao.md").read_text(encoding="utf-8").split("\n")
+    for numero, (nome, mensagens, nivel_esperado, verificacoes) in enumerate(CENARIOS, start=1):
+        if numero < desde:
+            continue
         historico, ultima = [], None
-        for mensagem in mensagens:
-            ultima = luna.responder(mensagem, historico)
-            historico += [{"papel": "usuario", "texto": mensagem}, {"papel": "luna", "texto": ultima["resposta"]}]
+        try:
+            for mensagem in mensagens:
+                ultima = responder_com_espera(mensagem, historico)
+                historico += [{"papel": "usuario", "texto": mensagem}, {"papel": "luna", "texto": ultima["resposta"]}]
+        except luna.ErroModelo as erro:
+            # Cota diária do plano gratuito (ou falha que não passa): guarda o que já foi avaliado e para.
+            print(f"PAROU em '{nome}': {erro.motivo}. O relatório parcial foi salvo.")
+            relatorio += [f"## {nome}", "", f"Não avaliado: a API recusou ({erro.motivo}).", ""]
+            break
         resposta = ultima["resposta"]
         nivel = ultima["seguranca"]["nivel"]
         resultados = [(f"nível de segurança = {nivel_esperado}", nivel == nivel_esperado)]
@@ -104,12 +132,13 @@ def main():
             relatorio.append(f"{quem} " + re.sub(r"\n+", " ", m["texto"]))
             relatorio.append("")
         relatorio.append(f"Nível: `{nivel}` · necessidade: `{ultima.get('necessidade')}`")
+        fontes = ultima.get("fontes") or []   # trechos da biblioteca (RAG) que a última resposta usou
+        relatorio.append("Fontes da biblioteca: " + ("; ".join(f"{f['documento']} › {f['secao']}" for f in fontes) or "nenhuma"))
         relatorio.append("")
         relatorio += [f"- {'✅' if ok else '❌'} {d}" for d, ok in resultados]
         relatorio += ["", "| " + " | ".join(CRITERIOS) + " |", "|" + "---|" * len(CRITERIOS), "|" + "   |" * len(CRITERIOS), ""]
+        (saida / "avaliacao.md").write_text("\n".join(relatorio), encoding="utf-8")   # salva a cada cenário
 
-    saida = PASTA / "tests" / "saida"
-    saida.mkdir(exist_ok=True)
     (saida / "avaliacao.md").write_text("\n".join(relatorio), encoding="utf-8")
     print(f"\n{falhas} verificação(ões) automática(s) falharam. Leia e dê notas em tests/saida/avaliacao.md")
     return 1 if falhas else 0

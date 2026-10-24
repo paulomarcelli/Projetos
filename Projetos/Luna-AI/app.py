@@ -30,6 +30,7 @@ ERROS_MODELO = {
     "sem_chave": (503, "A chave da API do Gemini não está configurada no servidor. Veja o README para configurar GEMINI_API_KEY."),
     "chave": (503, "A chave da API do Gemini foi recusada. Confira se ela está correta."),
     "limite": (429, "Muitas mensagens em pouco tempo. Espere um minutinho e tente de novo."),
+    "limite_dia": (429, "O limite diário gratuito da chave do Gemini acabou. Tente de novo amanhã ou ative o faturamento no Google AI Studio para conversar sem esse limite."),
     "vazia": (502, "Não consegui formular uma resposta agora. Pode tentar de novo?"),
     "falha": (502, "Tive um problema para falar com a inteligência artificial. Tente de novo em alguns instantes."),
 }

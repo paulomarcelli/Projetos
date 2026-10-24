@@ -79,7 +79,8 @@ O RAG segue a especificação da própria biblioteca (`conhecimento/12_Especific
 
 1. **Ingestão** (`rag/ingestao.py`): lê os capítulos, confere o SHA-256 de cada um com o `manifesto_documentos.json` e quebra o texto por seção, guardando documento, versão, seção e posição. Capítulos técnicos (12, 14, 15) e seções editoriais (fichas de fontes, estatísticas, referências) não entram na conversa.
 2. **Consulta** (`rag/consulta.py`): a fala da pessoa é preservada; uma expansão pequena e revisável liga palavras do dia a dia ("remoendo", "namoro") a termos da biblioteca.
-3. **Busca** (`rag/recuperador.py`, `rag/indice.py`): BM25 sempre; busca híbrida com embeddings do Gemini se `LUNA_RAG_DENSO=1`. Há limite mínimo de evidência: sem evidência, **não traz nada** (abstenção).
+3. **Busca** (`rag/recuperador.py`, `rag/indice.py`): BM25 sempre. Com `LUNA_RAG_DENSO=1` entra também a busca por significado (embeddings do Gemini), que acha trechos mesmo quando a pessoa usa outras palavras ("fico revivendo a conversa na cabeça" → ruminação). A decisão de usar ou não a biblioteca combina os dois sinais: similaridade alta basta; na faixa de borda exige também uma palavra em comum; abaixo disso, só evidência forte de palavras. Sem evidência, **não traz nada** (abstenção). Os limiares foram calibrados com a biblioteca real (`python tests/calibrar_busca_densa.py`).
+   - A primeira vez monta o índice em **segundo plano** (332 trechos; no plano gratuito leva ~4 minutos por causa do limite de 100 textos/minuto) e guarda em `conhecimento/.cache/`. Enquanto isso o chat usa só BM25.
 4. **Prompt** (`rag/prompt.py`): os trechos vão como **dados não confiáveis**, nunca como instruções.
 5. **Resposta** (`luna.py`): o modelo informa quais trechos usou; o servidor só aceita ids que realmente foram enviados.
 6. **Segurança**: em risco alto ou imediato o RAG não é usado; quem conduz é a camada de `seguranca.py`.
@@ -90,6 +91,10 @@ Diagnóstico sem dados pessoais: `GET /status`. Variáveis em `.env.example`. Pa
 
 Tudo o que define **como a Luna fala e se comporta** está em um único arquivo: [`personalidade.py`](personalidade.py). O texto foi mantido exatamente como estava. O resto do sistema (RAG, segurança, interface) não escreve nem altera esse texto.
 
+## ⚠️ Limites da chave gratuita do Gemini
+
+O plano gratuito permite poucas requisições por dia por modelo (20/dia para o `gemini-3.6-flash` quando testado) e 100 textos de embeddings por minuto. Quando o limite diário acaba, a Luna avisa com uma mensagem própria. Para uso de verdade, ative o faturamento no Google AI Studio. O app repete automaticamente erros temporários do servidor do Google (503 "alta demanda").
+
 ## 🧪 Testes
 
 ```bash
@@ -99,7 +104,8 @@ python -m unittest discover -s tests -p "test_*.py"
 - `test_seguranca.py` e `test_app.py` verificam a segurança e o servidor. Não precisam de internet nem de chave.
 - `test_rag.py` testa a biblioteca real: ingestão e hashes, busca por tema, abstenção, trechos como dados não confiáveis, fontes conferidas, risco alto sem RAG e modo híbrido (com embeddings falsos).
 - `test_interface.py` abre a Luna num navegador automático em três tamanhos (celular, tablet e computador). Precisa de `pip install playwright` e `python -m playwright install chromium`.
-- `avaliar_respostas.py` conversa com o Gemini de verdade nos 12 cenários do projeto e gera um relatório para você dar notas. Precisa da chave.
+- `avaliar_respostas.py` conversa com o Gemini de verdade nos 12 cenários do projeto e gera um relatório para você dar notas (inclui as fontes da biblioteca usadas). Precisa da chave. Salva a cada cenário; se a cota acabar, continue depois com `LUNA_AVALIAR_DESDE=6`.
+- `calibrar_busca_densa.py` mede a separação entre frases relevantes e irrelevantes para os limiares da busca híbrida.
 
 ```bash
 python tests/avaliar_respostas.py

@@ -10,6 +10,7 @@ import json
 import logging
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -120,6 +121,15 @@ class TestRotas(Base):
         self.usar(saida="")
         self.assertEqual(self.enviar(mensagem="oi").status_code, 502)
 
+    def test_limite_diario_gratuito_tem_mensagem_propria(self):
+        class CotaDiaria(Exception):
+            code = 429
+
+        self.usar(erro=CotaDiaria("Generate content requests per day limit exceeded on Free Tier"))
+        r = self.enviar(mensagem="Tive um dia difícil no trabalho")
+        self.assertEqual(r.status_code, 429)
+        self.assertIn("diário", r.get_json()["erro"])          # não diz "espere um minutinho"
+
     def test_log_nao_registra_o_texto(self):
         self.usar(erro=RuntimeError("detalhe com quero contar um segredo"))
         fluxo = io.StringIO()
@@ -164,6 +174,50 @@ class TestMemoria(Base):
         self.usar(saida=json_ia("Você está em segurança? CVV 188.", lembrar="Pensa em morrer"))
         dados = self.enviar(mensagem="quero morrer", memoria_ativa=True).get_json()
         self.assertIsNone(dados["sugestao_memoria"])
+
+
+class TestRepeticaoDeErrosTemporarios(unittest.TestCase):
+    """O Gemini às vezes responde 503 ("alta demanda"); uma nova tentativa costuma resolver."""
+
+    class Erro(Exception):
+        def __init__(self, code):
+            super().__init__(f"erro {code}")
+            self.code = code
+
+    def rodar(self, erros):
+        chamadas = []
+
+        def gerar(**kw):
+            chamadas.append(1)
+            if len(chamadas) <= len(erros):
+                raise self.Erro(erros[len(chamadas) - 1])
+            return type("R", (), {"text": "ok"})()
+
+        cliente = type("C", (), {"models": type("M", (), {"generate_content": staticmethod(gerar)})()})()
+        antes = luna._cliente
+        luna._cliente = cliente
+        try:
+            with mock.patch.dict("os.environ", {"GEMINI_API_KEY": "teste"}), mock.patch("time.sleep") as dormir:
+                try:
+                    return luna.chamar_modelo("instrucoes", []), len(chamadas), dormir.call_count
+                except Exception as erro:
+                    return erro, len(chamadas), dormir.call_count
+        finally:
+            luna._cliente = antes
+
+    def test_503_passa_na_terceira_tentativa(self):
+        self.assertEqual(self.rodar([503, 503]), ("ok", 3, 2))
+
+    def test_503_persistente_sobe_o_erro_depois_de_tres_tentativas(self):
+        resultado, chamadas, _ = self.rodar([503, 503, 503])
+        self.assertIsInstance(resultado, self.Erro)
+        self.assertEqual(chamadas, 3)
+
+    def test_cota_e_chave_nao_sao_repetidas(self):
+        for codigo in (429, 401, 403):
+            resultado, chamadas, pausas = self.rodar([codigo])
+            self.assertIsInstance(resultado, self.Erro)
+            self.assertEqual((chamadas, pausas), (1, 0), codigo)
 
 
 class TestInterpretar(unittest.TestCase):

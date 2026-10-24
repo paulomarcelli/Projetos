@@ -1,0 +1,7 @@
+.env
+__pycache__/
+tests/saida/
+video/saida/
+video/audio/
+graphify-out/
+conhecimento/.cache/

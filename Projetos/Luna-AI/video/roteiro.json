@@ -1,0 +1,249 @@
+{
+ "_leia": "Configuração central do vídeo: tempos das cenas, legendas (= roteiro da narração) e textos na tela. Edite aqui e renderize de novo.",
+ "fps": 30,
+ "largura": 1920,
+ "altura": 1080,
+ "duracao": 175,
+ "titulo": "LUNA AI",
+ "subtitulo": "Uma experiência de inteligência artificial voltada ao apoio emocional.",
+ "frase_final": "IA, engenharia de software e apoio emocional em um único projeto.",
+ "credito": "Paulo Marcelli · Projeto pessoal · Trilha original gerada por código",
+ "cenas": [
+  {
+   "id": "abertura",
+   "rotulo": "Abertura",
+   "inicio": 0,
+   "fim": 12
+  },
+  {
+   "id": "proposito",
+   "rotulo": "Propósito",
+   "inicio": 12,
+   "fim": 28
+  },
+  {
+   "id": "arquitetura",
+   "rotulo": "Arquitetura",
+   "inicio": 28,
+   "fim": 60
+  },
+  {
+   "id": "mensagem",
+   "rotulo": "Uma mensagem",
+   "inicio": 60,
+   "fim": 85
+  },
+  {
+   "id": "instrucoes",
+   "rotulo": "Instruções",
+   "inicio": 85,
+   "fim": 110
+  },
+  {
+   "id": "voz",
+   "rotulo": "Voz e memória",
+   "inicio": 110,
+   "fim": 135
+  },
+  {
+   "id": "seguranca",
+   "rotulo": "Segurança",
+   "inicio": 135,
+   "fim": 155
+  },
+  {
+   "id": "encerramento",
+   "rotulo": "Encerramento",
+   "inicio": 155,
+   "fim": 175
+  }
+ ],
+ "legendas": [
+  {
+   "cena": "abertura",
+   "inicio": 2.6,
+   "fim": 7.57,
+   "texto": "Esta é a Luna, um projeto pessoal de IA aplicada ao apoio emocional."
+  },
+  {
+   "cena": "abertura",
+   "inicio": 7.87,
+   "fim": 11.6,
+   "texto": "Vamos ver o que ela faz e como funciona por dentro."
+  },
+  {
+   "cena": "proposito",
+   "inicio": 12.6,
+   "fim": 16.68,
+   "texto": "A Luna é uma aplicação web de conversa, por texto ou por voz."
+  },
+  {
+   "cena": "proposito",
+   "inicio": 16.98,
+   "fim": 22.39,
+   "texto": "Ela ajuda a organizar pensamentos e a olhar situações difíceis de outros ângulos."
+  },
+  {
+   "cena": "proposito",
+   "inicio": 22.69,
+   "fim": 27.5,
+   "texto": "Ela não substitui psicólogos, diagnóstico nem atendimento de emergência."
+  },
+  {
+   "cena": "arquitetura",
+   "inicio": 28.6,
+   "fim": 33.18,
+   "texto": "A arquitetura tem cinco partes, cada uma com uma responsabilidade clara."
+  },
+  {
+   "cena": "arquitetura",
+   "inicio": 33.48,
+   "fim": 37.87,
+   "texto": "No navegador fica a interface: HTML, CSS e JavaScript, sem framework."
+  },
+  {
+   "cena": "arquitetura",
+   "inicio": 38.17,
+   "fim": 43.52,
+   "texto": "Um servidor em Python com Flask recebe e valida as mensagens, sem guardar conversas."
+  },
+  {
+   "cena": "arquitetura",
+   "inicio": 43.82,
+   "fim": 48.91,
+   "texto": "Uma camada de segurança, escrita em código, avalia o risco antes de chamar a IA."
+  },
+  {
+   "cena": "arquitetura",
+   "inicio": 49.21,
+   "fim": 54.24,
+   "texto": "O motor da Luna monta instruções e contexto e faz uma chamada ao Google Gemini."
+  },
+  {
+   "cena": "arquitetura",
+   "inicio": 54.54,
+   "fim": 59.5,
+   "texto": "Não há banco de dados: histórico e memória são opcionais e ficam no navegador."
+  },
+  {
+   "cena": "mensagem",
+   "inicio": 60.6,
+   "fim": 63.65,
+   "texto": "Veja o caminho de uma mensagem pela aplicação."
+  },
+  {
+   "cena": "mensagem",
+   "inicio": 63.95,
+   "fim": 68.73,
+   "texto": "A interface envia o texto junto com as últimas mensagens, como contexto."
+  },
+  {
+   "cena": "mensagem",
+   "inicio": 69.03,
+   "fim": 74.01,
+   "texto": "O servidor valida o pedido, e a segurança classifica o risco. Aqui: nenhum."
+  },
+  {
+   "cena": "mensagem",
+   "inicio": 74.31,
+   "fim": 79.16,
+   "texto": "O Gemini recebe instruções e contexto e devolve uma resposta estruturada."
+  },
+  {
+   "cena": "mensagem",
+   "inicio": 79.46,
+   "fim": 84.5,
+   "texto": "Uma última verificação em código acontece antes de a resposta chegar à tela."
+  },
+  {
+   "cena": "instrucoes",
+   "inicio": 85.6,
+   "fim": 89.65,
+   "texto": "O comportamento da Luna nasce de instruções escritas com cuidado."
+  },
+  {
+   "cena": "instrucoes",
+   "inicio": 89.95,
+   "fim": 94.44,
+   "texto": "Acolher sem julgar, separar fatos de interpretações, reconhecer limites."
+  },
+  {
+   "cena": "instrucoes",
+   "inicio": 94.74,
+   "fim": 99.42,
+   "texto": "Diante de “ela não gosta mais de mim”, o objetivo não é negar o sentimento."
+  },
+  {
+   "cena": "instrucoes",
+   "inicio": 99.72,
+   "fim": 104.34,
+   "texto": "É separar o que se sabe do que se imagina: a demora é fato; o motivo, não."
+  },
+  {
+   "cena": "instrucoes",
+   "inicio": 104.64,
+   "fim": 109.5,
+   "texto": "Esse é o comportamento desejado. O modelo pode errar, por isso existem testes."
+  },
+  {
+   "cena": "voz",
+   "inicio": 110.6,
+   "fim": 116.27,
+   "texto": "Na voz, o navegador transforma a fala em texto e lê a resposta em voz alta."
+  },
+  {
+   "cena": "voz",
+   "inicio": 116.57,
+   "fim": 122.55,
+   "texto": "Dá para pausar, interromper ou encerrar. O microfone desliga enquanto ela fala."
+  },
+  {
+   "cena": "voz",
+   "inicio": 122.85,
+   "fim": 128.37,
+   "texto": "A memória é opcional: a Luna sugere, e só guarda o que a pessoa confirma."
+  },
+  {
+   "cena": "voz",
+   "inicio": 128.67,
+   "fim": 134.5,
+   "texto": "Não há agentes nem ferramentas. Conversa em tempo real é uma evolução futura."
+  },
+  {
+   "cena": "seguranca",
+   "inicio": 135.6,
+   "fim": 139.44,
+   "texto": "No apoio emocional, a segurança não pode depender só do modelo."
+  },
+  {
+   "cena": "seguranca",
+   "inicio": 139.74,
+   "fim": 144.38,
+   "texto": "Regras em código classificam o risco em quatro níveis, antes e depois da IA."
+  },
+  {
+   "cena": "seguranca",
+   "inicio": 144.68,
+   "fim": 149.68,
+   "texto": "Em risco imediato, a primeira resposta é um texto revisado, que não depende da IA."
+  },
+  {
+   "cena": "seguranca",
+   "inicio": 149.98,
+   "fim": 154.5,
+   "texto": "E os contatos de ajuda aparecem na tela: CVV 188 e SAMU 192, entre outros."
+  },
+  {
+   "cena": "encerramento",
+   "inicio": 155.6,
+   "fim": 161.09,
+   "texto": "Interface, servidor, segurança, motor e modelo: cada parte faz pouco, e bem."
+  },
+  {
+   "cena": "encerramento",
+   "inicio": 161.39,
+   "fim": 166.6,
+   "texto": "São 45 testes automáticos. Avaliar as respostas reais é o próximo passo."
+  }
+ ]
+}

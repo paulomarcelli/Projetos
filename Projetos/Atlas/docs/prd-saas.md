@@ -35,9 +35,11 @@
 | Termos e Privacidade (nova) | Termos de uso, política de privacidade (LGPD) | Obrigatório para SaaS |
 
 ## 4. Identidade visual
-- **Estilo:** profissional, denso em dados (dashboard), sóbrio — o atual. [a definir: manter ou renovar para a landing]
-- **Paleta atual:** fundo #0B1424, painel #111C30, borda grafite #2C3A52, texto #E8EEF7, acento azul-claro #6AB6FF; níveis baixo #5CC79E / moderado #ECB854 / alto #F47878.
-- **Fontes:** IBM Plex Sans / IBM Plex Mono.
+> Fonte de verdade: [`design-system/atlas/MASTER.md`](../design-system/atlas/MASTER.md) (decidido com as skills ui-ux-pro-max, ui-styling e animate).
+- **Tema:** claro por padrão (projetores de sala de aula), escuro pela preferência do sistema ou pelo seletor Sistema/Claro/Escuro.
+- **Paleta:** marinho (#13294B claro / #0B1424 escuro) como marca, grafite nas bordas, branco, azul de destaque (#1F6FD1 claro / #6AB6FF escuro); níveis baixo/moderado/alto sempre com rótulo. Todos os pares com contraste ≥ 4.5:1.
+- **Fontes:** IBM Plex Serif (títulos da landing), IBM Plex Sans (interface), IBM Plex Mono (dados).
+- **Movimento:** sutil; curvas e durações oficiais no MASTER.
 - **Tom de voz:** analítico, claro, sem sensacionalismo; sempre "condicional, não previsão".
 - **Nome / domínio:** [a definir — manter "ATLAS"? domínio?]
 

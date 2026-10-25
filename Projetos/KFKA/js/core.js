@@ -126,9 +126,38 @@ window.KFKA = window.KFKA || {};
   K.crumbs = (items) => `<nav class="breadcrumbs" aria-label="Você está em">${items.map((it, i) => (it.href ? `<a href="${it.href}">${K.esc(it.label)}</a>` : `<span aria-current="page">${K.esc(it.label)}</span>`) + (i < items.length - 1 ? '<span class="sep" aria-hidden="true">/</span>' : '')).join('')}</nav>`;
   K.pageHead = ({ crumbs, title, lead, actions = '' }) => `
     <header class="page-head">
-      <div class="stack-sm">${crumbs ? K.crumbs(crumbs) : ''}<h1 id="page-title" tabindex="-1">${title}</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</div>
+      <div class="stack-sm">${crumbs && crumbs.length > 1 ? K.crumbs(crumbs) : ''}<h1 id="page-title" tabindex="-1">${title}</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</div>
       ${actions ? `<div class="actions">${actions}</div>` : ''}
     </header>`;
+  /* Gráfico de linha para séries no tempo (média por bimestre).
+     A linha é SVG esticado (viewBox 0–100); pontos e textos são HTML posicionados em %,
+     assim não distorcem em nenhuma largura. Escala do eixo sempre rotulada. */
+  K.lineChart = ({ points, label, height = 180 }) => {
+    const vals = points.map((p) => p.value).filter((v) => v != null);
+    const min = vals.length ? Math.max(0, Math.min(6, Math.floor(Math.min(...vals)) - 1)) : 0;
+    const max = 10;
+    const n = points.length;
+    const x = (i) => ((i + 0.5) / n) * 100;
+    const y = (v) => 100 - ((v - min) / (max - min)) * 100;
+    // trechos contínuos (bimestre sem dado interrompe a linha)
+    const segs = []; let cur = [];
+    points.forEach((p, i) => { if (p.value == null) { if (cur.length) segs.push(cur); cur = []; } else cur.push([x(i), y(p.value)]); });
+    if (cur.length) segs.push(cur);
+    const line = segs.map((s) => 'M' + s.map(([a, b]) => `${a.toFixed(2)} ${b.toFixed(2)}`).join(' L')).join(' ');
+    const area = segs.filter((s) => s.length > 1).map((s) => `M${s[0][0].toFixed(2)} 100 L` + s.map(([a, b]) => `${a.toFixed(2)} ${b.toFixed(2)}`).join(' L') + ` L${s[s.length - 1][0].toFixed(2)} 100 Z`).join(' ');
+    const ticks = [max, (min + max) / 2, min];
+    return `<figure class="lchart" role="img" aria-label="${K.esc(label)}">
+      <div class="lchart-body">
+        <div class="lchart-y" aria-hidden="true">${ticks.map((t) => `<span>${K.fmtMedia(t)}</span>`).join('')}</div>
+        <div class="lchart-plot" style="height:${height}px" aria-hidden="true">
+          ${ticks.map((t) => `<i class="lchart-grid" style="top:${y(t)}%"></i>`).join('')}
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false"><path class="lchart-area" d="${area}"/><path class="lchart-line" d="${line}" vector-effect="non-scaling-stroke"/></svg>
+          ${points.map((p, i) => p.value == null ? '' : `<span class="lchart-pt${p.current ? ' is-current' : ''}" style="left:${x(i)}%;top:${y(p.value)}%"><b>${K.fmtMedia(p.value)}</b></span>`).join('')}
+        </div>
+        <div class="lchart-x" aria-hidden="true" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${points.map((p) => `<span class="${p.current ? 'is-current' : ''}${p.value == null ? ' is-empty' : ''}">${p.label}${p.value == null ? '<small>a publicar</small>' : ''}</span>`).join('')}</div>
+      </div>
+    </figure>`;
+  };
   K.empty = ({ icon = 'inbox', title, text, actions = '' }) => `
     <div class="empty"><div class="art">${K.icon(icon)}</div><h2>${title}</h2><p>${text}</p>${actions ? `<div class="row" style="justify-content:center">${actions}</div>` : ''}</div>`;
   K.pagination = (from, to, total) => `

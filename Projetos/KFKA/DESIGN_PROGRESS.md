@@ -31,6 +31,15 @@
 - [ ] Replicar as novidades no Figma (arquivo oficial da Entrega 2)
 - [ ] Publicar no GitHub/hosting (aguarda a equipe)
 
+## Revisão 1.2 — polimento de design
+- [x] Evolução da média (família) virou gráfico de linha (`KFKA.lineChart`): eixo rotulado, bimestre atual destacado e bimestre sem dados marcado como "a publicar"
+- [x] Botão de menu não aparece mais no desktop (conflito de cascata entre `layout.css` e `.icon-btn`)
+- [x] Trilha de navegação só aparece quando tem 2 níveis ou mais
+- [x] Formulário do professor no celular: a barra de ações deixa de ser fixa (ocupava quase meia tela) e mostra "Enviar" primeiro
+- [x] Aviso de novo relatório: ícone visível sobre o fundo verde e alinhado ao título no celular
+- [x] Relatórios gerenciais: espaçamento entre indicadores, gráficos e tabela
+- [x] Testes: crawl, flows, pior caso
+
 ## Testes (última execução)
 - `node tests/crawl.js`: 277 rotas visitadas por links, nenhuma 404 e nenhum erro de JS. O único erro de console é a fonte do Google, bloqueada pela rede do ambiente de teste.
 - `node tests/flows.js`: 36/36 PASS (inclui RF12, vínculo incompatível, nova área, datas, PDF, logout e um h1 por página de documentação). Cobre a visibilidade da família, ciência e observação, filtros, validações, o ciclo completo professor → revisão → devolução → ajuste → publicação, auditoria, bloqueio de edição, exportação e a gaveta no celular.

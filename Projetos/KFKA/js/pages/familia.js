@@ -67,7 +67,7 @@
           ${D.disciplinas.length > doBim.length ? `<p class="muted" style="font-size:13px">${I('info', 'icon-sm')} ${K.plural(D.disciplinas.length - doBim.length, 'disciplina')} ainda em preparação pela escola. Elas aparecem aqui assim que forem publicadas.</p>` : ''}
         </section>` : `<section class="card">${K.empty({ icon: 'book-open', title: `Nenhum relatório publicado no ${bim}º bimestre`, text: `Os professores de ${a.nome.trim().split(/\s+/)[0]} ainda estão finalizando os acompanhamentos. Você receberá um aviso assim que a coordenação publicar.`, actions: `<a class="btn btn-secondary" href="#/familia/historico?aluno=${a.id}">${I('clock')} Ver bimestres anteriores</a>` })}</section>`}
         <section class="card"><div class="card-head"><div><h2>Evolução da média geral</h2><p>Bimestres publicados em ${D.escola.ano}</p></div></div>
-          <div class="vbars" role="img" aria-label="Médias por bimestre">${D.bimestres.map((b) => { const x = rs.filter((r) => r.bim === b.n); const m = x.length ? x.reduce((s, r) => s + r.media, 0) / x.length : null; return `<div class="col"><span class="v">${m != null ? K.fmtMedia(m) : '—'}</span><span class="b ${b.n === bim ? '' : 'light'}" style="height:${m != null ? m * 10 : 4}%"></span><span class="l">${b.n}º BIM</span></div>`; }).join('')}</div>
+          ${(() => { const pts = D.bimestres.map((b) => { const x = rs.filter((r) => r.bim === b.n); return { label: b.n + 'º bimestre', value: x.length ? x.reduce((s, r) => s + r.media, 0) / x.length : null, current: b.n === bim }; }); return K.lineChart({ points: pts, label: 'Média geral por bimestre: ' + pts.map((p) => p.label + ' ' + (p.value == null ? 'a publicar' : K.fmtMedia(p.value))).join(', ') }); })()}
         </section>`);
     }
   };
@@ -138,7 +138,7 @@
           </div>
           <aside class="stack">
             <section class="card"><h2 style="font-size:18px">Evolução em ${A.disc(r.disc).nome}</h2>
-              <div class="vbars" style="height:160px" role="img" aria-label="Médias por bimestre">${D.bimestres.map((b) => { const x = hist.find((h) => h.bim === b.n); return `<div class="col"><span class="v">${x ? K.fmtMedia(x.media) : '—'}</span><span class="b ${b.n === r.bim ? '' : 'light'}" style="height:${x ? x.media * 10 : 4}%"></span><span class="l">${b.n}º</span></div>`; }).join('')}</div></section>
+              ${(() => { const pts = D.bimestres.map((b) => { const x = hist.find((h) => h.bim === b.n); return { label: b.n + 'º', value: x ? x.media : null, current: b.n === r.bim }; }); return K.lineChart({ points: pts, height: 140, label: 'Média por bimestre: ' + pts.map((p) => p.label + ' ' + (p.value == null ? 'a publicar' : K.fmtMedia(p.value))).join(', ') }); })()}</section>
             <section class="card tight stack-sm"><h2 style="font-size:16px">Outros relatórios do ${r.bim}º bimestre</h2>${A.relsDaFamilia(RID, a.id).filter((x) => x.bim === r.bim && x.id !== r.id).map((x) => `<a class="row list-link" href="#/familia/relatorios/${x.id}"><span class="grow"><b>${A.disc(x.disc).nome}</b></span><span class="mono">${K.fmtMedia(x.media)}</span>${I('chevron-right', 'icon-sm')}</a>`).join('') || '<p class="muted">Nenhum outro publicado.</p>'}</section>
           </aside>
         </div>`);

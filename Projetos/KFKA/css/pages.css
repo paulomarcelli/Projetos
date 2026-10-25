@@ -149,6 +149,13 @@ h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .action-bar { position: sticky; bottom: 0; z-index: 5; display: flex; gap: var(--s3); align-items: center; flex-wrap: wrap; padding: var(--s4); background: rgba(255,255,255,.94); backdrop-filter: blur(8px); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--sh-2); }
 @media (max-width: 760px) { .action-bar { bottom: 8px; } .action-bar .btn { flex: 1 1 auto; } .action-bar .grow { display: none; } }
 .has-tabbar .action-bar { bottom: 84px; }
+/* Celular: a barra fixa ocupava quase meia tela. Vira o fim do formulário,
+   com a ação principal primeiro e em largura total. */
+@media (max-width: 640px) {
+  .action-bar, .card .action-bar, .has-tabbar .action-bar { position: static; flex-direction: column; align-items: stretch; gap: var(--s2); margin: 0; padding: var(--s5) 0 0; background: none; backdrop-filter: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+  .action-bar > .btn-primary { order: -1; }
+  .action-bar > .btn-ghost { order: 9; }
+}
 .list-link { padding: 10px 8px; border-radius: 10px; text-decoration: none; color: inherit; gap: 10px; }
 .list-link:hover { background: var(--bg-page); }
 .publish-preview { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg-page); }
@@ -179,7 +186,13 @@ h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .pick-avatar { width: 112px; height: 112px; border-radius: 28px; display: grid; place-items: center; font-family: var(--font-display); font-size: 40px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
 
 .new-report { display: flex; flex-direction: row; align-items: center; gap: var(--s5); flex-wrap: wrap; background: var(--success-bg); border-color: #BFE0CE; }
-.new-report > .ico { width: 52px; height: 52px; border-radius: 16px; }
+.new-report > .ico { width: 52px; height: 52px; border-radius: 16px; background: var(--bg-card); }
+/* Celular: ícone ao lado do título (não sozinho numa linha) e botão em largura total */
+@media (max-width: 640px) {
+  .new-report { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s3) var(--s4); align-items: start; }
+  .new-report > .ico { width: 40px; height: 40px; border-radius: 12px; }
+  .new-report > .btn { grid-column: 1 / -1; }
+}
 .disc-grid { gap: var(--s4); }
 .disc-card { display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: inherit; }
 .disc-card b { font-size: 15px; color: var(--ink); }

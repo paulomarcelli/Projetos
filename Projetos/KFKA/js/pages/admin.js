@@ -424,7 +424,7 @@
         <fieldset style="border:0;padding:0;margin:0"><legend class="field-label">Tags (qualquer uma)</legend><div class="tag-picker" id="g-tags">${D.tags.map((t) => `<label class="tag-option"><input type="checkbox" value="${t.id}"><span>${t.nome}</span></label>`).join('')}</div></fieldset>
         <div class="row-between"><div class="active-filters" id="g-active" aria-live="polite"></div><button class="btn btn-ghost btn-sm" data-action="g-limpar">Limpar filtros</button></div>
       </section>
-      <div id="g-out"></div>`),
+      <div id="g-out" class="stack-lg"></div>`),
     mount: (root) => {
       const draw = () => {
         const f = { turma: K.qs('#g-t').value, disc: K.qs('#g-d').value, prof: K.qs('#g-p').value, bim: K.qs('#g-b').value, aluno: K.qs('#g-a').value, status: K.qs('#g-s').value };

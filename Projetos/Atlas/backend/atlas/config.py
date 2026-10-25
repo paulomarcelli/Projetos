@@ -61,6 +61,13 @@ class Config:
     # teto diário de simulações reais (0 = sem teto)
     max_simulacoes_dia: int = field(default_factory=lambda: _int("ATLAS_MAX_SIMULACOES_DIA", 40))
     cache_horas: int = field(default_factory=lambda: _int("ATLAS_CACHE_HORAS", 24))
+    # contas (SaaS acadêmico)
+    admin_emails: tuple[str, ...] = field(default_factory=lambda: tuple(e.strip().lower() for e in os.environ.get("ATLAS_ADMIN_EMAILS", "").split(",") if e.strip()))
+    sessao_dias: int = field(default_factory=lambda: _int("ATLAS_SESSAO_DIAS", 14))
+    # teto de simulações por usuário por dia (protege as cotas gratuitas de IA; admin não tem teto)
+    limite_usuario_dia: int = field(default_factory=lambda: _int("ATLAS_LIMITE_USUARIO_DIA", 10))
+    # true em produção (HTTPS): cookie de sessão só trafega criptografado
+    cookie_seguro: bool = field(default_factory=lambda: os.environ.get("ATLAS_COOKIE_SEGURO", "false").lower() in ("1", "true", "sim"))
     origens_cors: tuple[str, ...] = field(default_factory=lambda: tuple(o.strip() for o in os.environ.get("ATLAS_CORS", "http://localhost:5173,http://127.0.0.1:5173").split(",") if o.strip()))
 
     @property

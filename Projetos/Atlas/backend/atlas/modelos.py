@@ -72,6 +72,7 @@ class SimulacaoEntrada(Estrito):
     titulo_personalizado: str | None = Field(None, max_length=140)
     descricao_personalizada: str | None = Field(None, max_length=1500)
     base_id: str | None = Field(None, max_length=40, description="simulação anterior que esta revisa (para comparação)")
+    turma_id: str | None = Field(None, max_length=40, description="turma em que a simulação é feita (opcional)")
 
     @field_validator("premissas_extra")
     @classmethod
@@ -258,6 +259,8 @@ class Resultado(Estrito):
     uso: Uso = Field(default_factory=Uso)
     avisos: list[str] = Field(default_factory=list)
     erro: str | None = None
+    usuario_id: str | None = None
+    turma_id: str | None = None
 
 
 class ResumoSimulacao(Estrito):
@@ -270,6 +273,9 @@ class ResumoSimulacao(Estrito):
     modo: Modo
     confianca: Nivel | None = None
     base_id: str | None = None
+    usuario_id: str | None = None
+    turma_id: str | None = None
+    autor: str | None = None  # nome do aluno (visível para o professor da turma)
 
 
 # ---------------------------------------------------------------- comparação
@@ -301,3 +307,67 @@ class Comparacao(Estrito):
         "A comparação mostra como os resultados do modelo mudam sob premissas diferentes. "
         "Ela não demonstra que uma mudança de variável causaria esse efeito no mundo real."
     )
+
+
+# ---------------------------------------------------------------- contas e turmas (SaaS acadêmico)
+Papel = Literal["professor", "aluno", "admin"]
+
+
+class Usuario(Estrito):
+    id: str
+    nome: str
+    email: str
+    papel: Papel
+    criado_em: str
+
+
+class CadastroEntrada(Estrito):
+    nome: str = Field(min_length=2, max_length=120)
+    email: str = Field(min_length=5, max_length=200)
+    senha: str = Field(min_length=8, max_length=200)
+    papel: Literal["professor", "aluno"]
+    codigo_turma: str | None = Field(None, max_length=20)
+    aceite_termos: bool
+
+    @field_validator("email")
+    @classmethod
+    def _email(cls, v: str) -> str:
+        v = v.strip().lower()
+        if "@" not in v or v.startswith("@") or "." not in v.split("@")[-1] or " " in v:
+            raise ValueError("E-mail inválido.")
+        return v
+
+
+class LoginEntrada(Estrito):
+    email: str = Field(min_length=3, max_length=200)
+    senha: str = Field(min_length=1, max_length=200)
+
+
+class Turma(Estrito):
+    id: str
+    nome: str
+    codigo: str | None = None  # só o professor vê
+    professor_id: str
+    professor_nome: str
+    criada_em: str
+    membros: int = 0
+    cenario_caso_id: str | None = None
+    cenario_orientacao: str | None = None
+    sou_professor: bool = False
+
+
+class TurmaEntrada(Estrito):
+    nome: str = Field(min_length=2, max_length=120)
+
+
+class CenarioEntrada(Estrito):
+    caso_id: str | None = Field(None, max_length=60)
+    orientacao: str | None = Field(None, max_length=1500)
+
+
+class Membro(Estrito):
+    id: str
+    nome: str
+    email: str
+    entrou_em: str
+    simulacoes: int = 0

@@ -1,4 +1,4 @@
-"""Persistência em SQLite: simulações, eventos de execução, cache e uso diário."""
+"""Persistência em SQLite: simulações, eventos, cache, uso diário, contas, sessões e turmas."""
 from __future__ import annotations
 
 import hashlib
@@ -24,7 +24,26 @@ CREATE TABLE IF NOT EXISTS uso_diario (
     dia TEXT PRIMARY KEY, simulacoes INTEGER DEFAULT 0, chamadas_llm INTEGER DEFAULT 0,
     tokens INTEGER DEFAULT 0, buscas INTEGER DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS usuarios (
+    id TEXT PRIMARY KEY, nome TEXT NOT NULL, email TEXT NOT NULL UNIQUE, senha_hash TEXT NOT NULL,
+    papel TEXT NOT NULL, criado_em TEXT NOT NULL, aceite_termos_em TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sessoes (
+    token_hash TEXT PRIMARY KEY, usuario_id TEXT NOT NULL, expira REAL NOT NULL, criada_em REAL NOT NULL
+);
+CREATE TABLE IF NOT EXISTS turmas (
+    id TEXT PRIMARY KEY, nome TEXT NOT NULL, codigo TEXT NOT NULL UNIQUE, professor_id TEXT NOT NULL,
+    criada_em TEXT NOT NULL, cenario_caso_id TEXT, cenario_orientacao TEXT
+);
+CREATE TABLE IF NOT EXISTS membros (
+    turma_id TEXT NOT NULL, usuario_id TEXT NOT NULL, entrou_em TEXT NOT NULL, PRIMARY KEY (turma_id, usuario_id)
+);
+CREATE INDEX IF NOT EXISTS idx_sessoes_usuario ON sessoes(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_membros_usuario ON membros(usuario_id);
 """
+
+# colunas acrescentadas depois da v1 (migração automática de bancos antigos)
+_COLUNAS_NOVAS = {"simulacoes": [("usuario_id", "TEXT"), ("turma_id", "TEXT")]}
 
 
 class Banco:
@@ -37,15 +56,22 @@ class Banco:
         self._trava = threading.Lock()
         with self._trava:
             self._con.executescript(_ESQUEMA)
+            for tabela, colunas in _COLUNAS_NOVAS.items():
+                existentes = {l["name"] for l in self._con.execute(f"PRAGMA table_info({tabela})")}
+                for nome, tipo in colunas:
+                    if nome not in existentes:
+                        self._con.execute(f"ALTER TABLE {tabela} ADD COLUMN {nome} {tipo}")
+            self._con.execute("CREATE INDEX IF NOT EXISTS idx_sim_usuario ON simulacoes(usuario_id)")
+            self._con.execute("CREATE INDEX IF NOT EXISTS idx_sim_turma ON simulacoes(turma_id)")
             self._con.commit()
 
     # ---------------- simulações
     def salvar(self, r: Resultado) -> None:
         with self._trava:
             self._con.execute(
-                "INSERT INTO simulacoes (id, criada_em, status, caso_id, titulo, base_id, dados) VALUES (?,?,?,?,?,?,?) "
-                "ON CONFLICT(id) DO UPDATE SET status=excluded.status, dados=excluded.dados",
-                (r.id, r.criada_em, r.status, r.caso.id, r.caso.titulo, r.entrada.base_id, r.model_dump_json()),
+                "INSERT INTO simulacoes (id, criada_em, status, caso_id, titulo, base_id, dados, usuario_id, turma_id) VALUES (?,?,?,?,?,?,?,?,?) "
+                "ON CONFLICT(id) DO UPDATE SET status=excluded.status, dados=excluded.dados, usuario_id=excluded.usuario_id, turma_id=excluded.turma_id",
+                (r.id, r.criada_em, r.status, r.caso.id, r.caso.titulo, r.entrada.base_id, r.model_dump_json(), r.usuario_id, r.turma_id),
             )
             self._con.commit()
 
@@ -54,14 +80,40 @@ class Banco:
             linha = self._con.execute("SELECT dados FROM simulacoes WHERE id=?", (sim_id,)).fetchone()
         return Resultado.model_validate_json(linha["dados"]) if linha else None
 
-    def listar(self, limite: int = 50) -> list[ResumoSimulacao]:
+    def listar(self, limite: int = 50, usuario_id: str | None = None, turma_ids: list[str] | None = None, todos: bool = False) -> list[ResumoSimulacao]:
+        """Sem filtro só com todos=True (admin). Senão: as do usuário e/ou as das turmas indicadas."""
+        filtros, params = [], []
+        if not todos:
+            if usuario_id:
+                filtros.append("s.usuario_id = ?"); params.append(usuario_id)
+            if turma_ids:
+                filtros.append(f"s.turma_id IN ({','.join('?' * len(turma_ids))})"); params += turma_ids
+            if not filtros:
+                return []
+        onde = ("WHERE " + " OR ".join(filtros)) if filtros else ""
         with self._trava:
-            linhas = self._con.execute("SELECT dados FROM simulacoes ORDER BY criada_em DESC, rowid DESC LIMIT ?", (limite,)).fetchall()
+            linhas = self._con.execute(
+                f"SELECT s.dados, u.nome AS autor FROM simulacoes s LEFT JOIN usuarios u ON u.id = s.usuario_id {onde} "
+                "ORDER BY s.criada_em DESC, s.rowid DESC LIMIT ?", (*params, limite)).fetchall()
         saida = []
         for l in linhas:
             r = Resultado.model_validate_json(l["dados"])
-            saida.append(ResumoSimulacao(id=r.id, criada_em=r.criada_em, status=r.status, caso_id=r.caso.id, titulo=r.caso.titulo, horizonte_meses=r.entrada.horizonte_meses, modo=r.modo, confianca=r.analise.confianca if r.analise else None, base_id=r.entrada.base_id))
+            saida.append(ResumoSimulacao(id=r.id, criada_em=r.criada_em, status=r.status, caso_id=r.caso.id, titulo=r.caso.titulo, horizonte_meses=r.entrada.horizonte_meses, modo=r.modo, confianca=r.analise.confianca if r.analise else None, base_id=r.entrada.base_id, usuario_id=r.usuario_id, turma_id=r.turma_id, autor=l["autor"]))
         return saida
+
+    def simulacoes_hoje(self, usuario_id: str) -> int:
+        with self._trava:
+            l = self._con.execute("SELECT COUNT(*) AS n FROM simulacoes WHERE usuario_id=? AND substr(criada_em,1,10)=?", (usuario_id, date.today().isoformat())).fetchone()
+        return int(l["n"])
+
+    def apagar_do_usuario(self, usuario_id: str) -> int:
+        with self._trava:
+            ids = [l["id"] for l in self._con.execute("SELECT id FROM simulacoes WHERE usuario_id=?", (usuario_id,))]
+            for i in ids:
+                self._con.execute("DELETE FROM eventos WHERE sim_id=?", (i,))
+            self._con.execute("DELETE FROM simulacoes WHERE usuario_id=?", (usuario_id,))
+            self._con.commit()
+        return len(ids)
 
     def apagar(self, sim_id: str) -> bool:
         with self._trava:

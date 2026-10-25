@@ -22,8 +22,29 @@ def demo(cfg):
     return replace(cfg, gemini_api_key="", tavily_api_key="", modo="demo")
 
 
-async def cliente(app):
-    return httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://t")
+class _Cliente:
+    """Cliente HTTP com o cabeçalho de proteção e, por padrão, já com uma conta de aluno logada."""
+
+    def __init__(self, app, email="aluna@exemplo.edu", senha="senha-segura-1", papel="aluno", login="cadastro"):
+        self.c = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://t", headers={"X-ATLAS": "1"})
+        self.email, self.senha, self.papel, self.login = email, senha, papel, login
+
+    async def __aenter__(self):
+        await self.c.__aenter__()
+        if self.login == "cadastro":
+            r = await self.c.post("/api/auth/cadastro", json={"nome": "Ana", "email": self.email, "senha": self.senha, "papel": self.papel, "aceite_termos": True})
+            assert r.status_code == 201, r.text
+        elif self.login == "entrar":
+            r = await self.c.post("/api/auth/entrar", json={"email": self.email, "senha": self.senha})
+            assert r.status_code == 200, r.text
+        return self.c
+
+    async def __aexit__(self, *a):
+        await self.c.__aexit__(*a)
+
+
+async def cliente(app, **kw):
+    return _Cliente(app, **kw)
 
 
 async def esperar(c, sim_id, limite=100):
@@ -139,7 +160,7 @@ async def test_comparacao_e_apagar(demo, banco):
 async def test_historico_persiste_entre_reinicios(demo):
     async with await cliente(app_com(demo, Banco(demo.db_path), lambda c: (DemoLLM(), DemoBusca()))) as c:
         sim = await esperar(c, (await c.post("/api/simulacoes", json=CORPO)).json()["id"])
-    async with await cliente(app_com(demo, Banco(demo.db_path), lambda c: (DemoLLM(), DemoBusca()))) as c:
+    async with await cliente(app_com(demo, Banco(demo.db_path), lambda c: (DemoLLM(), DemoBusca())), login="entrar") as c:
         hist = (await c.get("/api/simulacoes")).json()
         assert [h["id"] for h in hist] == [sim["id"]]
         assert (await c.get(f"/api/simulacoes/{sim['id']}")).json()["status"] == "concluida"

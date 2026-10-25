@@ -48,7 +48,7 @@ export function rotuloDaFaixa(v: number, min: number, max: number, rotulos: stri
   return rotulos[i];
 }
 
-export const NOME_IA: Record<string, string> = { gemini: "Gemini", ollama: "Ollama (local)", openai: "API compatível com OpenAI", roteado: "Roteador de modelos", demo: "demonstrativa" };
+export const NOME_IA: Record<string, string> = { gemini: "Gemini", ollama: "Ollama (local)", openai: "API compatível com OpenAI", omniroute: "OmniRoute (gateway)", roteado: "Roteador de modelos", demo: "demonstrativa" };
 
 /** 'gemini:gemini-3.7-flash' → 'Gemini (gemini-3.7-flash)'; 'openai' → 'API compatível (ex.: Groq)'. */
 export function nomeProvedor(chave: string): string {

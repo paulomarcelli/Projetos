@@ -109,6 +109,29 @@ ATLAS_PROVEDOR_BUSCA=gdelt
 
 Serviços como o **OpenRouter**, que reúne centenas de modelos atrás de uma chave, também funcionam como provedor `openai` (`ATLAS_OPENAI_BASE_URL=https://openrouter.ai/api/v1`).
 
+### OmniRoute (gateway com 60+ provedores)
+
+O [OmniRoute](https://github.com/diegosouzapw/OmniRoute) (MIT) é um gateway local que expõe um único endereço no formato da OpenAI e roteia entre dezenas de provedores, com fallback e foco em modelos gratuitos. O ATLAS se conecta a ele sem código extra:
+
+```bash
+# 1. instale e rode o OmniRoute no seu computador (painel em http://localhost:20128)
+npm install -g omniroute
+omniroute
+# 2. no painel, conecte os provedores (Gemini, Groq…) e, em Settings, ative o modo
+#    STRICT_ZERO_COST (freeAccessPolicy = strict) para bloquear qualquer modelo pago
+# 3. em backend/.env
+ATLAS_PROVEDOR_IA=omniroute
+ATLAS_OMNIROUTE_MODEL=auto/best-free     # ou o nome exato de um combo criado no painel
+# ATLAS_OMNIROUTE_URL=http://localhost:20128/v1
+# ATLAS_OMNIROUTE_API_KEY=               # só se REQUIRE_API_KEY=true no OmniRoute
+```
+
+O OmniRoute também pode entrar no roteador do ATLAS como mais um provedor, por exemplo `ATLAS_ROTAS=analyst=gemini,omniroute;researcher=omniroute,gemini`.
+
+> Sobre o fork `ChrisCompton/omniroute`: ele é uma cópia sem alterações próprias da versão 3.6.1 (abril de 2026) do projeto oficial, que hoje está na 3.8.x. Prefira o pacote oficial `omniroute` do npm.
+>
+> A integração do ATLAS com o OmniRoute está testada com respostas HTTP simuladas. O OmniRoute em si **não foi executado** no ambiente de desenvolvimento, porque a instalação de software de terceiros exigia autorização.
+
 ### Gemini e Tavily
 
 - **Google Gemini** (REST `generateContent`, saída JSON). A chave vai no header `x-goog-api-key`, só no servidor.
@@ -155,7 +178,8 @@ Todas ficam em `backend/.env` (veja `backend/.env.example`). O frontend nunca re
 
 | Variável | Padrão | Uso |
 |---|---|---|
-| `ATLAS_PROVEDOR_IA` | `auto` | `auto` (Gemini se houver chave), `gemini`, `ollama`, `openai`, `roteado` ou `demo`. |
+| `ATLAS_PROVEDOR_IA` | `auto` | `auto` (Gemini se houver chave), `gemini`, `ollama`, `openai`, `omniroute`, `roteado` ou `demo`. |
+| `ATLAS_OMNIROUTE_URL` / `_MODEL` / `_API_KEY` | `localhost:20128/v1` / `auto/best-free` / — | Gateway OmniRoute (com `ATLAS_PROVEDOR_IA=omniroute`). |
 | `ATLAS_GEMINI_MODELOS` | — | Lista de modelos do Gemini para o roteador (cada um com cota própria). |
 | `ATLAS_ROTAS` | padrão | Ordem de provedores por agente, ex.: `analyst=gemini,openai;researcher=openai,gemini`. |
 | `ATLAS_GEMINI_THINKING` | — | `low`/`high`: nível de raciocínio do Gemini 3. |

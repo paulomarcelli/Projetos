@@ -33,13 +33,16 @@ def provedores(cfg: Config) -> tuple[ProvedorLLM, ProvedorBusca]:
             return GeminiLLM(cfg.gemini_api_key or "", modelo, cfg.timeout_s, tentativas, nivel_raciocinio=cfg.gemini_thinking)
         if nome == "ollama":
             return CompatLLM("ollama", cfg.ollama_url, cfg.ollama_model, None, cfg.ollama_timeout_s, tentativas)
+        if nome == "omniroute":
+            # o OmniRoute já faz fallback entre provedores; espera mais porque pode tentar vários
+            return CompatLLM("omniroute", cfg.omniroute_url, cfg.omniroute_model, cfg.omniroute_api_key, max(cfg.timeout_s, 120.0), tentativas)
         return CompatLLM("openai", cfg.openai_base_url or "", cfg.openai_model or "", cfg.openai_api_key, cfg.timeout_s, tentativas, esforco_raciocinio=cfg.openai_reasoning)
 
     llm: ProvedorLLM
     if cfg.ia == "roteado":
         # no roteamento, cada provedor tenta uma vez e o fallback assume: falhar rápido economiza cota
         llm = RoteadorLLM({p: construir(p, 1) for p in cfg.expandir(cfg.provedores_disponiveis())}, cfg.rotas_expandidas)
-    elif cfg.ia in ("gemini", "ollama", "openai"):
+    elif cfg.ia in ("gemini", "ollama", "openai", "omniroute"):
         llm = construir(cfg.ia, cfg.tentativas_api)
     else:
         llm = DemoLLM()

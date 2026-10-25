@@ -42,6 +42,10 @@ class Config:
     openai_api_key: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OPENAI_API_KEY") or None)
     # roteamento: "researcher=openai,gemini;analyst=gemini,openai;verifier=openai,gemini"
     rotas_txt: str = field(default_factory=lambda: os.environ.get("ATLAS_ROTAS", ""))
+    # OmniRoute (gateway local que roteia entre 60+ provedores): https://github.com/diegosouzapw/OmniRoute
+    omniroute_url: str = field(default_factory=lambda: os.environ.get("ATLAS_OMNIROUTE_URL", "http://localhost:20128/v1"))
+    omniroute_model: str = field(default_factory=lambda: os.environ.get("ATLAS_OMNIROUTE_MODEL", "auto/best-free"))
+    omniroute_api_key: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OMNIROUTE_API_KEY") or None)
     # opcional: low | medium | high (modelos de raciocínio como gpt-oss; reduz tokens gastos)
     openai_reasoning: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OPENAI_REASONING_EFFORT") or None)
     # "auto": usa provedores reais se houver chave; "demo": força o modo demonstrativo
@@ -67,6 +71,8 @@ class Config:
             return "demo"
         if p == "ollama":
             return "ollama"
+        if p == "omniroute":
+            return "omniroute"
         if p == "roteado":
             return "roteado" if self.provedores_disponiveis() else "demo"
         if p == "openai":
@@ -101,6 +107,8 @@ class Config:
             disp.append("openai")
         if "ollama" in self.rotas_txt:
             disp.append("ollama")
+        if "omniroute" in self.rotas_txt:
+            disp.append("omniroute")
         return disp
 
     @property
@@ -108,8 +116,8 @@ class Config:
         """Ordem de preferência por agente. Padrão: o modelo que melhor segue o formato analisa;
         o mais barato/rápido extrai e verifica; cada um é o fallback do outro."""
         disp = self.provedores_disponiveis()
-        padrao_analise = [p for p in ("gemini", "openai", "ollama") if p in disp]
-        padrao_apoio = [p for p in ("openai", "gemini", "ollama") if p in disp]
+        padrao_analise = [p for p in ("gemini", "openai", "omniroute", "ollama") if p in disp]
+        padrao_apoio = [p for p in ("openai", "gemini", "omniroute", "ollama") if p in disp]
         rotas = {"researcher": padrao_apoio, "analyst": padrao_analise, "verifier": padrao_apoio}
         for parte in self.rotas_txt.split(";"):
             if "=" in parte:
@@ -130,9 +138,9 @@ class Config:
     @property
     def modelo_ia(self) -> str | None:
         if self.ia == "roteado":
-            nomes = {"gemini": ", ".join(self.gemini_modelos), "openai": self.openai_model, "ollama": self.ollama_model}
+            nomes = {"gemini": ", ".join(self.gemini_modelos), "openai": self.openai_model, "ollama": self.ollama_model, "omniroute": f"OmniRoute {self.omniroute_model}"}
             return " + ".join(f"{nomes[p]}" for p in self.provedores_disponiveis())
-        return {"gemini": self.gemini_model, "ollama": self.ollama_model, "openai": self.openai_model}.get(self.ia)
+        return {"gemini": self.gemini_model, "ollama": self.ollama_model, "openai": self.openai_model, "omniroute": self.omniroute_model}.get(self.ia)
 
     @property
     def ia_real(self) -> bool:

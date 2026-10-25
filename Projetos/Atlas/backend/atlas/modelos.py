@@ -234,7 +234,7 @@ class RegistroPremissas(Estrito):
 
 
 class Modo(Estrito):
-    ia: Literal["gemini", "ollama", "openai", "roteado", "demo"]
+    ia: Literal["gemini", "ollama", "openai", "omniroute", "roteado", "demo"]
     busca: Literal["tavily", "gdelt", "demo"]
 
     @computed_field  # type: ignore[prop-decorator]

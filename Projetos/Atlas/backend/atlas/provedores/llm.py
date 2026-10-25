@@ -160,7 +160,7 @@ class CompatLLM:
         raise ErroProvedor("indisponivel", "Falha desconhecida")
 
     async def _chamar(self, corpo: dict) -> RespostaLLM:
-        rotulo = "Ollama" if self.nome == "ollama" else "provedor de IA"
+        rotulo = {"ollama": "Ollama", "omniroute": "OmniRoute"}.get(self.nome, "provedor de IA")
         cliente = self._cliente or httpx.AsyncClient(timeout=self.timeout_s)
         headers = {"Authorization": f"Bearer {self._chave}"} if self._chave else {}
         try:
@@ -168,7 +168,7 @@ class CompatLLM:
         except httpx.TimeoutException as e:
             raise ErroProvedor("timeout", f"O {rotulo} não respondeu a tempo.", temporario=True) from e
         except httpx.ConnectError as e:
-            dica = " Verifique se o Ollama está aberto (ollama serve)." if self.nome == "ollama" else ""
+            dica = {"ollama": " Verifique se o Ollama está aberto (ollama serve).", "omniroute": " Verifique se o OmniRoute está rodando (comando: omniroute)."}.get(self.nome, "")
             raise ErroProvedor("indisponivel", f"Não foi possível conectar ao {rotulo}.{dica}") from e
         except httpx.HTTPError as e:
             raise ErroProvedor("indisponivel", f"Falha de rede ao chamar o {rotulo} ({e.__class__.__name__}).", temporario=True) from e
@@ -202,7 +202,7 @@ class CompatLLM:
 
 # Tarefa → agente (o roteamento é definido por agente)
 TAREFA_AGENTE = {"extrair_evidencias": "researcher", "analisar": "analyst", "verificar": "verifier"}
-NOMES_PROVEDOR = {"gemini": "Gemini", "openai": "API compatível (ex.: Groq)", "ollama": "Ollama"}
+NOMES_PROVEDOR = {"gemini": "Gemini", "openai": "API compatível (ex.: Groq)", "ollama": "Ollama", "omniroute": "OmniRoute"}
 
 
 def nome_legivel(chave: str) -> str:

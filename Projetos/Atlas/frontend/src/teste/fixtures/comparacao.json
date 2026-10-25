@@ -1,0 +1,150 @@
+{
+ "a_id": "1d83ce1d388f",
+ "b_id": "b8f6e2e4a53d",
+ "mesmo_caso": true,
+ "variaveis": [
+  {
+   "id": "diplomacia",
+   "nome": "Engajamento diplomático",
+   "antes": 40.0,
+   "depois": 90.0
+  },
+  {
+   "id": "retaliacao",
+   "nome": "Grau de retaliação chinesa",
+   "antes": 80.0,
+   "depois": 10.0
+  },
+  {
+   "id": "tarifa",
+   "nome": "Tarifa adicional média",
+   "antes": 90.0,
+   "depois": 10.0
+  }
+ ],
+ "horizonte": [
+  18,
+  6
+ ],
+ "premissas_adicionadas": [],
+ "premissas_removidas": [
+  "Sem recessão global"
+ ],
+ "indices": {
+  "economico": [
+   60.7,
+   21.6
+  ],
+  "diplomatico": [
+   65.1,
+   15.3
+  ],
+  "estrategico": [
+   61.4,
+   20.1
+  ],
+  "propensao_escalada": [
+   61.2,
+   17.0
+  ]
+ },
+ "mudancas": [
+  {
+   "item": "Impacto “Pressão diplomática” (continuidade)",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Impacto “Pressão diplomática” (escalada)",
+   "antes": "alto",
+   "depois": "moderado"
+  },
+  {
+   "item": "Impacto “Pressão econômica” (continuidade)",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Impacto “Pressão econômica” (escalada)",
+   "antes": "alto",
+   "depois": "moderado"
+  },
+  {
+   "item": "Impacto “Pressão estratégica” (continuidade)",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Impacto “Pressão estratégica” (escalada)",
+   "antes": "alto",
+   "depois": "moderado"
+  },
+  {
+   "item": "Oportunidade “Janela de negociação e redução de custos”",
+   "antes": "probabilidade moderado, impacto moderado",
+   "depois": "probabilidade alto, impacto moderado"
+  },
+  {
+   "item": "Plausibilidade do cenário de continuidade",
+   "antes": "alto",
+   "depois": "moderado"
+  },
+  {
+   "item": "Plausibilidade do cenário de desescalada",
+   "antes": "moderado",
+   "depois": "alto"
+  },
+  {
+   "item": "Plausibilidade do cenário de escalada",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Propensão de escalada (modelo)",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Risco “Deterioração diplomática ligada a “Abrangência das restrições””",
+   "antes": "—",
+   "depois": "probabilidade baixo, impacto moderado"
+  },
+  {
+   "item": "Risco “Deterioração diplomática ligada a “Grau de retaliação chinesa””",
+   "antes": "probabilidade moderado, impacto moderado",
+   "depois": "—"
+  },
+  {
+   "item": "Risco “Efeitos de “Abrangência das restrições” sobre cadeias e preços”",
+   "antes": "—",
+   "depois": "probabilidade baixo, impacto moderado"
+  },
+  {
+   "item": "Risco “Efeitos de “Tarifa adicional média” sobre cadeias e preços”",
+   "antes": "probabilidade moderado, impacto alto",
+   "depois": "—"
+  },
+  {
+   "item": "Índice diplomatico",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Índice economico",
+   "antes": "moderado",
+   "depois": "baixo"
+  },
+  {
+   "item": "Índice estrategico",
+   "antes": "moderado",
+   "depois": "baixo"
+  }
+ ],
+ "inalteradas": [
+  "Confiança da análise",
+  "Impacto “Pressão diplomática” (desescalada)",
+  "Impacto “Pressão econômica” (desescalada)",
+  "Impacto “Pressão estratégica” (desescalada)"
+ ],
+ "aviso": "A comparação mostra como os resultados do modelo mudam sob premissas diferentes. Ela não demonstra que uma mudança de variável causaria esse efeito no mundo real."
+}

@@ -1,0 +1,792 @@
+[
+ {
+  "id": "eua-china-tarifas",
+  "titulo": "Escalada tarifária entre Estados Unidos e China",
+  "resumo": "Aumento de tarifas sobre importações e possíveis retaliações entre as duas maiores economias.",
+  "contexto": "Estados Unidos e China mantêm uma relação comercial interdependente, com cadeias de suprimento integradas em eletrônicos, máquinas e bens de consumo. Rodadas de tarifas e retaliações afetam preços, fluxos de comércio, investimento e o posicionamento de terceiros países que podem absorver comércio desviado.",
+  "atores": [
+   {
+    "id": "usa",
+    "nome": "Estados Unidos",
+    "iso3": "USA",
+    "papel": "impõe as tarifas"
+   },
+   {
+    "id": "chn",
+    "nome": "China",
+    "iso3": "CHN",
+    "papel": "alvo e possível retaliador"
+   },
+   {
+    "id": "ue",
+    "nome": "União Europeia",
+    "iso3": null,
+    "papel": "parceiro afetado por desvio de comércio"
+   },
+   {
+    "id": "vnm",
+    "nome": "Vietnã",
+    "iso3": "VNM",
+    "papel": "possível destino de realocação produtiva"
+   },
+   {
+    "id": "mex",
+    "nome": "México",
+    "iso3": "MEX",
+    "papel": "possível destino de realocação produtiva"
+   },
+   {
+    "id": "bra",
+    "nome": "Brasil",
+    "iso3": "BRA",
+    "papel": "exportador de commodities para ambos"
+   }
+  ],
+  "variaveis": [
+   {
+    "id": "tarifa",
+    "nome": "Tarifa adicional média",
+    "descricao": "Acréscimo tarifário médio sobre importações da China.",
+    "minimo": 0.0,
+    "maximo": 150.0,
+    "passo": 5.0,
+    "padrao": 30.0,
+    "unidade": "%",
+    "rotulos": [],
+    "pesos": {
+     "economico": 1.0,
+     "diplomatico": 0.5,
+     "estrategico": 0.3
+    },
+    "efeito_escalada": 0.6
+   },
+   {
+    "id": "abrangencia",
+    "nome": "Abrangência das restrições",
+    "descricao": "Parcela das importações cobertas pelas tarifas.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "% das importações",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.9,
+     "diplomatico": 0.3,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": 0.4
+   },
+   {
+    "id": "duracao",
+    "nome": "Duração estimada da medida",
+    "descricao": "Por quanto tempo as tarifas devem vigorar.",
+    "minimo": 1.0,
+    "maximo": 36.0,
+    "passo": 1.0,
+    "padrao": 12.0,
+    "unidade": "meses",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.4,
+     "estrategico": 0.5
+    },
+    "efeito_escalada": 0.3
+   },
+   {
+    "id": "retaliacao",
+    "nome": "Grau de retaliação chinesa",
+    "descricao": "Intensidade das contramedidas da China (tarifas, controles, listas de entidades).",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [
+     "nenhuma",
+     "simbólica",
+     "proporcional",
+     "ampliada",
+     "assimétrica"
+    ],
+    "pesos": {
+     "economico": 0.7,
+     "diplomatico": 0.8,
+     "estrategico": 0.6
+    },
+    "efeito_escalada": 0.8
+   },
+   {
+    "id": "diplomacia",
+    "nome": "Engajamento diplomático",
+    "descricao": "Intensidade das negociações e canais de diálogo abertos.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [
+     "congelado",
+     "protocolar",
+     "ativo",
+     "intenso",
+     "acordo em negociação"
+    ],
+    "pesos": {
+     "economico": 0.2,
+     "diplomatico": 0.9,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": -0.8
+   }
+  ],
+  "horizontes_meses": [
+   3,
+   6,
+   12,
+   24
+  ],
+  "hipoteses": [
+   "Tarifas mais altas reduzem o comércio bilateral direto e desviam parte dele para terceiros países.",
+   "Retaliação proporcional tende a manter a disputa em ciclos de escalada controlada.",
+   "Canais diplomáticos ativos reduzem a chance de medidas fora do campo tarifário."
+  ],
+  "consultas": [
+   "US China tariffs latest",
+   "China retaliation tariffs United States",
+   "US China trade talks"
+  ],
+  "premissas_padrao": [
+   "Não há conflito militar direto entre as partes no horizonte analisado.",
+   "As instituições multilaterais de comércio não resolvem a disputa no período."
+  ],
+  "personalizado": false
+ },
+ {
+  "id": "sancoes-russia",
+  "titulo": "Sanções econômicas contra a Rússia",
+  "resumo": "Ampliação ou flexibilização de sanções financeiras e energéticas e seus efeitos de contorno.",
+  "contexto": "Sanções financeiras e energéticas buscam reduzir receitas e acesso a tecnologia do país-alvo. A eficácia depende da adesão internacional, da capacidade de fiscalização e de rotas alternativas de comércio com países que não aderem às medidas.",
+  "atores": [
+   {
+    "id": "rus",
+    "nome": "Rússia",
+    "iso3": "RUS",
+    "papel": "país-alvo"
+   },
+   {
+    "id": "usa",
+    "nome": "Estados Unidos",
+    "iso3": "USA",
+    "papel": "impõe sanções"
+   },
+   {
+    "id": "ue",
+    "nome": "União Europeia",
+    "iso3": null,
+    "papel": "impõe sanções"
+   },
+   {
+    "id": "chn",
+    "nome": "China",
+    "iso3": "CHN",
+    "papel": "parceiro comercial não aderente"
+   },
+   {
+    "id": "ind",
+    "nome": "Índia",
+    "iso3": "IND",
+    "papel": "comprador de energia"
+   },
+   {
+    "id": "tur",
+    "nome": "Turquia",
+    "iso3": "TUR",
+    "papel": "intermediário comercial"
+   }
+  ],
+  "variaveis": [
+   {
+    "id": "financeiras",
+    "nome": "Abrangência das sanções financeiras",
+    "descricao": "Bancos e ativos atingidos, incluindo exclusão de sistemas de mensagens interbancárias.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 60.0,
+    "unidade": "%",
+    "rotulos": [],
+    "pesos": {
+     "economico": 1.0,
+     "diplomatico": 0.5,
+     "estrategico": 0.5
+    },
+    "efeito_escalada": 0.5
+   },
+   {
+    "id": "energia",
+    "nome": "Restrições à energia",
+    "descricao": "Rigidez de embargos e tetos de preço sobre petróleo e gás.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [
+     "nenhuma",
+     "parcial",
+     "teto de preço",
+     "embargo amplo",
+     "embargo + fiscalização marítima"
+    ],
+    "pesos": {
+     "economico": 0.9,
+     "diplomatico": 0.6,
+     "estrategico": 0.6
+    },
+    "efeito_escalada": 0.5
+   },
+   {
+    "id": "adesao",
+    "nome": "Adesão internacional",
+    "descricao": "Quantos países relevantes aplicam as medidas.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [
+     "isolada",
+     "G7",
+     "G7 ampliado",
+     "ampla",
+     "quase universal"
+    ],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.9,
+     "estrategico": 0.5
+    },
+    "efeito_escalada": 0.2
+   },
+   {
+    "id": "fiscalizacao",
+    "nome": "Fiscalização contra contorno",
+    "descricao": "Sanções secundárias e controle de intermediários.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.5,
+     "diplomatico": 0.8,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": 0.4
+   },
+   {
+    "id": "contramedidas",
+    "nome": "Contramedidas do país-alvo",
+    "descricao": "Restrições de exportação, nacionalização de ativos estrangeiros, cortes de fornecimento.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.7,
+     "diplomatico": 0.7,
+     "estrategico": 0.7
+    },
+    "efeito_escalada": 0.7
+   }
+  ],
+  "horizontes_meses": [
+   3,
+   6,
+   12,
+   24
+  ],
+  "hipoteses": [
+   "Sanções com baixa adesão internacional tendem a ser contornadas por terceiros países.",
+   "Restrições energéticas afetam preços globais e as receitas do país-alvo de forma desigual.",
+   "Fiscalização de intermediários aumenta tensões diplomáticas com países não aderentes."
+  ],
+  "consultas": [
+   "Russia sanctions latest",
+   "Russia oil price cap enforcement",
+   "secondary sanctions Russia intermediaries"
+  ],
+  "premissas_padrao": [
+   "O regime de sanções existente é o ponto de partida.",
+   "Não há acordo de paz abrangente que suspenda as sanções no horizonte."
+  ],
+  "personalizado": false
+ },
+ {
+  "id": "estreito-taiwan",
+  "titulo": "Crise diplomática no Estreito de Taiwan",
+  "resumo": "Aumento de tensões políticas e militares envolvendo China, Taiwan e parceiros regionais.",
+  "contexto": "O Estreito de Taiwan concentra rotas marítimas e a produção de semicondutores avançados. Exercícios militares, retórica oficial e medidas econômicas coercitivas alternam-se com mecanismos de comunicação que reduzem o risco de incidentes.",
+  "atores": [
+   {
+    "id": "chn",
+    "nome": "China",
+    "iso3": "CHN",
+    "papel": "reivindica soberania"
+   },
+   {
+    "id": "twn",
+    "nome": "Taiwan",
+    "iso3": "TWN",
+    "papel": "governo da ilha"
+   },
+   {
+    "id": "usa",
+    "nome": "Estados Unidos",
+    "iso3": "USA",
+    "papel": "parceiro de segurança"
+   },
+   {
+    "id": "jpn",
+    "nome": "Japão",
+    "iso3": "JPN",
+    "papel": "vizinho e aliado dos EUA"
+   },
+   {
+    "id": "phl",
+    "nome": "Filipinas",
+    "iso3": "PHL",
+    "papel": "vizinho e aliado dos EUA"
+   }
+  ],
+  "variaveis": [
+   {
+    "id": "exercicios",
+    "nome": "Intensidade de exercícios militares",
+    "descricao": "Frequência e escala de manobras perto da ilha.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [
+     "rotina",
+     "elevada",
+     "grande escala",
+     "bloqueio simulado",
+     "quarentena"
+    ],
+    "pesos": {
+     "economico": 0.4,
+     "diplomatico": 0.7,
+     "estrategico": 1.0
+    },
+    "efeito_escalada": 0.8
+   },
+   {
+    "id": "retorica",
+    "nome": "Retórica oficial",
+    "descricao": "Dureza das declarações de governo.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.2,
+     "diplomatico": 0.9,
+     "estrategico": 0.5
+    },
+    "efeito_escalada": 0.5
+   },
+   {
+    "id": "coercao",
+    "nome": "Medidas econômicas coercitivas",
+    "descricao": "Restrições a importações, turismo e insumos.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 30.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.9,
+     "diplomatico": 0.6,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": 0.5
+   },
+   {
+    "id": "terceiros",
+    "nome": "Envolvimento de terceiros",
+    "descricao": "Presença naval e declarações de aliados.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.3,
+     "diplomatico": 0.7,
+     "estrategico": 0.9
+    },
+    "efeito_escalada": 0.4
+   },
+   {
+    "id": "comunicacao",
+    "nome": "Canais de comunicação de crise",
+    "descricao": "Linhas diretas e diálogo militar ativos.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.2,
+     "diplomatico": 0.8,
+     "estrategico": 0.7
+    },
+    "efeito_escalada": -0.9
+   }
+  ],
+  "horizontes_meses": [
+   3,
+   6,
+   12,
+   24
+  ],
+  "hipoteses": [
+   "Canais de comunicação ativos reduzem a chance de incidentes não intencionais.",
+   "Medidas econômicas coercitivas afetam cadeias de semicondutores e comércio regional.",
+   "Maior presença de terceiros aumenta a dissuasão e também a percepção de ameaça."
+  ],
+  "consultas": [
+   "Taiwan Strait military drills",
+   "China Taiwan tensions latest",
+   "US China military communication channel"
+  ],
+  "premissas_padrao": [
+   "Não há declaração formal de independência nem invasão no horizonte analisado.",
+   "As rotas marítimas permanecem abertas ao comércio civil."
+  ],
+  "personalizado": false
+ },
+ {
+  "id": "chips-exportacao",
+  "titulo": "Restrições à exportação de semicondutores avançados",
+  "resumo": "Controles sobre chips e equipamentos de fabricação e respostas com minerais críticos.",
+  "contexto": "Controles de exportação sobre chips avançados e equipamentos de litografia buscam limitar capacidades tecnológicas e militares. A eficácia depende da adesão de países que dominam etapas da cadeia; o alvo pode responder com restrições a minerais críticos e investimento em autossuficiência.",
+  "atores": [
+   {
+    "id": "usa",
+    "nome": "Estados Unidos",
+    "iso3": "USA",
+    "papel": "impõe os controles"
+   },
+   {
+    "id": "chn",
+    "nome": "China",
+    "iso3": "CHN",
+    "papel": "alvo dos controles"
+   },
+   {
+    "id": "nld",
+    "nome": "Países Baixos",
+    "iso3": "NLD",
+    "papel": "fornecedor de equipamentos"
+   },
+   {
+    "id": "jpn",
+    "nome": "Japão",
+    "iso3": "JPN",
+    "papel": "fornecedor de equipamentos e materiais"
+   },
+   {
+    "id": "kor",
+    "nome": "Coreia do Sul",
+    "iso3": "KOR",
+    "papel": "fabricante de memórias"
+   },
+   {
+    "id": "twn",
+    "nome": "Taiwan",
+    "iso3": "TWN",
+    "papel": "fabricante de chips avançados"
+   }
+  ],
+  "variaveis": [
+   {
+    "id": "escopo",
+    "nome": "Escopo tecnológico dos controles",
+    "descricao": "Que gerações de chips e equipamentos são restritas.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 60.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.7,
+     "diplomatico": 0.5,
+     "estrategico": 1.0
+    },
+    "efeito_escalada": 0.5
+   },
+   {
+    "id": "aliados",
+    "nome": "Adesão dos aliados",
+    "descricao": "Alinhamento de fornecedores-chave aos controles.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 60.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.8,
+     "estrategico": 0.8
+    },
+    "efeito_escalada": 0.3
+   },
+   {
+    "id": "minerais",
+    "nome": "Retaliação com minerais críticos",
+    "descricao": "Restrições do alvo à exportação de insumos como gálio, germânio e terras raras.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.9,
+     "diplomatico": 0.6,
+     "estrategico": 0.7
+    },
+    "efeito_escalada": 0.7
+   },
+   {
+    "id": "autossuficiencia",
+    "nome": "Investimento em autossuficiência",
+    "descricao": "Esforço do alvo para substituir tecnologia importada.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 60.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.5,
+     "diplomatico": 0.2,
+     "estrategico": 0.8
+    },
+    "efeito_escalada": 0.1
+   },
+   {
+    "id": "licencas",
+    "nome": "Flexibilidade de licenças",
+    "descricao": "Concessão de exceções e licenças para exportadores.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.5,
+     "estrategico": 0.3
+    },
+    "efeito_escalada": -0.6
+   }
+  ],
+  "horizontes_meses": [
+   3,
+   6,
+   12,
+   24
+  ],
+  "hipoteses": [
+   "Controles sem adesão dos fornecedores de equipamentos têm efeito limitado.",
+   "Retaliação com minerais críticos eleva custos de toda a cadeia global.",
+   "Investimento em autossuficiência reduz a eficácia dos controles no longo prazo."
+  ],
+  "consultas": [
+   "semiconductor export controls China latest",
+   "China critical minerals export restrictions gallium germanium",
+   "Netherlands Japan chip equipment export controls"
+  ],
+  "premissas_padrao": [
+   "Os controles existentes são o ponto de partida.",
+   "Não há ruptura física da produção em Taiwan no horizonte."
+  ],
+  "personalizado": false
+ },
+ {
+  "id": "mercosul-ue",
+  "titulo": "Acordo comercial Mercosul–União Europeia",
+  "resumo": "Implementação, atraso ou bloqueio do acordo e seus efeitos para o Brasil e parceiros.",
+  "contexto": "O acordo entre Mercosul e União Europeia prevê redução de tarifas e regras sobre compras governamentais, serviços e sustentabilidade. A ratificação enfrenta resistências agrícolas e ambientais na Europa, enquanto o Mercosul busca diversificar mercados diante da forte relação comercial com a China.",
+  "atores": [
+   {
+    "id": "bra",
+    "nome": "Brasil",
+    "iso3": "BRA",
+    "papel": "maior economia do Mercosul"
+   },
+   {
+    "id": "arg",
+    "nome": "Argentina",
+    "iso3": "ARG",
+    "papel": "membro do Mercosul"
+   },
+   {
+    "id": "ue",
+    "nome": "União Europeia",
+    "iso3": null,
+    "papel": "contraparte do acordo"
+   },
+   {
+    "id": "fra",
+    "nome": "França",
+    "iso3": "FRA",
+    "papel": "principal resistência agrícola"
+   },
+   {
+    "id": "deu",
+    "nome": "Alemanha",
+    "iso3": "DEU",
+    "papel": "defensora do acordo"
+   },
+   {
+    "id": "chn",
+    "nome": "China",
+    "iso3": "CHN",
+    "papel": "principal parceiro comercial do Mercosul"
+   }
+  ],
+  "variaveis": [
+   {
+    "id": "reducao",
+    "nome": "Profundidade da redução tarifária",
+    "descricao": "Parcela das linhas tarifárias liberalizadas na implementação.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 60.0,
+    "unidade": "%",
+    "rotulos": [],
+    "pesos": {
+     "economico": 1.0,
+     "diplomatico": 0.5,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": -0.3
+   },
+   {
+    "id": "salvaguardas",
+    "nome": "Salvaguardas agrícolas e ambientais",
+    "descricao": "Rigidez das cláusulas de proteção e de cumprimento ambiental.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.7,
+     "estrategico": 0.3
+    },
+    "efeito_escalada": 0.2
+   },
+   {
+    "id": "resistencia",
+    "nome": "Resistência política europeia",
+    "descricao": "Força da oposição de governos e setores agrícolas.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [
+     "mínima",
+     "pontual",
+     "relevante",
+     "forte",
+     "bloqueadora"
+    ],
+    "pesos": {
+     "economico": 0.5,
+     "diplomatico": 0.9,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": 0.6
+   },
+   {
+    "id": "ritmo",
+    "nome": "Ritmo de implementação",
+    "descricao": "Velocidade de entrada em vigor das reduções.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.8,
+     "diplomatico": 0.4,
+     "estrategico": 0.3
+    },
+    "efeito_escalada": -0.3
+   },
+   {
+    "id": "china",
+    "nome": "Aproximação concorrente com a China",
+    "descricao": "Intensidade de acordos paralelos do Mercosul com a China.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.6,
+     "estrategico": 0.8
+    },
+    "efeito_escalada": 0.3
+   }
+  ],
+  "horizontes_meses": [
+   3,
+   6,
+   12,
+   24
+  ],
+  "hipoteses": [
+   "Salvaguardas mais rígidas facilitam a ratificação europeia, mas reduzem ganhos agrícolas do Mercosul.",
+   "Atrasos na implementação aumentam o incentivo do Mercosul a aprofundar laços com a China.",
+   "A resistência agrícola europeia é o principal ponto de veto do acordo."
+  ],
+  "consultas": [
+   "Mercosur EU trade agreement ratification",
+   "France opposition Mercosur deal farmers",
+   "acordo Mercosul União Europeia"
+  ],
+  "premissas_padrao": [
+   "O texto negociado do acordo é a base da análise.",
+   "Não há saída de membros do Mercosul no horizonte."
+  ],
+  "personalizado": false
+ }
+]

@@ -1,0 +1,652 @@
+{
+ "id": "1d83ce1d388f",
+ "criada_em": "2026-10-25T02:47:20+00:00",
+ "status": "concluida",
+ "entrada": {
+  "caso_id": "eua-china-tarifas",
+  "valores": {
+   "tarifa": 90.0,
+   "abrangencia": 50.0,
+   "duracao": 12.0,
+   "retaliacao": 80.0,
+   "diplomacia": 40.0
+  },
+  "horizonte_meses": 18,
+  "premissas_extra": [
+   "Sem recessão global"
+  ],
+  "titulo_personalizado": null,
+  "descricao_personalizada": null,
+  "base_id": null
+ },
+ "caso": {
+  "id": "eua-china-tarifas",
+  "titulo": "Escalada tarifária entre Estados Unidos e China",
+  "resumo": "Aumento de tarifas sobre importações e possíveis retaliações entre as duas maiores economias.",
+  "contexto": "Estados Unidos e China mantêm uma relação comercial interdependente, com cadeias de suprimento integradas em eletrônicos, máquinas e bens de consumo. Rodadas de tarifas e retaliações afetam preços, fluxos de comércio, investimento e o posicionamento de terceiros países que podem absorver comércio desviado.",
+  "atores": [
+   {
+    "id": "usa",
+    "nome": "Estados Unidos",
+    "iso3": "USA",
+    "papel": "impõe as tarifas"
+   },
+   {
+    "id": "chn",
+    "nome": "China",
+    "iso3": "CHN",
+    "papel": "alvo e possível retaliador"
+   },
+   {
+    "id": "ue",
+    "nome": "União Europeia",
+    "iso3": null,
+    "papel": "parceiro afetado por desvio de comércio"
+   },
+   {
+    "id": "vnm",
+    "nome": "Vietnã",
+    "iso3": "VNM",
+    "papel": "possível destino de realocação produtiva"
+   },
+   {
+    "id": "mex",
+    "nome": "México",
+    "iso3": "MEX",
+    "papel": "possível destino de realocação produtiva"
+   },
+   {
+    "id": "bra",
+    "nome": "Brasil",
+    "iso3": "BRA",
+    "papel": "exportador de commodities para ambos"
+   }
+  ],
+  "variaveis": [
+   {
+    "id": "tarifa",
+    "nome": "Tarifa adicional média",
+    "descricao": "Acréscimo tarifário médio sobre importações da China.",
+    "minimo": 0.0,
+    "maximo": 150.0,
+    "passo": 5.0,
+    "padrao": 30.0,
+    "unidade": "%",
+    "rotulos": [],
+    "pesos": {
+     "economico": 1.0,
+     "diplomatico": 0.5,
+     "estrategico": 0.3
+    },
+    "efeito_escalada": 0.6
+   },
+   {
+    "id": "abrangencia",
+    "nome": "Abrangência das restrições",
+    "descricao": "Parcela das importações cobertas pelas tarifas.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "% das importações",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.9,
+     "diplomatico": 0.3,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": 0.4
+   },
+   {
+    "id": "duracao",
+    "nome": "Duração estimada da medida",
+    "descricao": "Por quanto tempo as tarifas devem vigorar.",
+    "minimo": 1.0,
+    "maximo": 36.0,
+    "passo": 1.0,
+    "padrao": 12.0,
+    "unidade": "meses",
+    "rotulos": [],
+    "pesos": {
+     "economico": 0.6,
+     "diplomatico": 0.4,
+     "estrategico": 0.5
+    },
+    "efeito_escalada": 0.3
+   },
+   {
+    "id": "retaliacao",
+    "nome": "Grau de retaliação chinesa",
+    "descricao": "Intensidade das contramedidas da China (tarifas, controles, listas de entidades).",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 50.0,
+    "unidade": "",
+    "rotulos": [
+     "nenhuma",
+     "simbólica",
+     "proporcional",
+     "ampliada",
+     "assimétrica"
+    ],
+    "pesos": {
+     "economico": 0.7,
+     "diplomatico": 0.8,
+     "estrategico": 0.6
+    },
+    "efeito_escalada": 0.8
+   },
+   {
+    "id": "diplomacia",
+    "nome": "Engajamento diplomático",
+    "descricao": "Intensidade das negociações e canais de diálogo abertos.",
+    "minimo": 0.0,
+    "maximo": 100.0,
+    "passo": 1.0,
+    "padrao": 40.0,
+    "unidade": "",
+    "rotulos": [
+     "congelado",
+     "protocolar",
+     "ativo",
+     "intenso",
+     "acordo em negociação"
+    ],
+    "pesos": {
+     "economico": 0.2,
+     "diplomatico": 0.9,
+     "estrategico": 0.4
+    },
+    "efeito_escalada": -0.8
+   }
+  ],
+  "horizontes_meses": [
+   3,
+   6,
+   12,
+   24
+  ],
+  "hipoteses": [
+   "Tarifas mais altas reduzem o comércio bilateral direto e desviam parte dele para terceiros países.",
+   "Retaliação proporcional tende a manter a disputa em ciclos de escalada controlada.",
+   "Canais diplomáticos ativos reduzem a chance de medidas fora do campo tarifário."
+  ],
+  "consultas": [
+   "US China tariffs latest",
+   "China retaliation tariffs United States",
+   "US China trade talks"
+  ],
+  "premissas_padrao": [
+   "Não há conflito militar direto entre as partes no horizonte analisado.",
+   "As instituições multilaterais de comércio não resolvem a disputa no período."
+  ],
+  "personalizado": false
+ },
+ "registro": {
+  "premissas": [
+   "Não há conflito militar direto entre as partes no horizonte analisado.",
+   "As instituições multilaterais de comércio não resolvem a disputa no período.",
+   "Sem recessão global"
+  ],
+  "horizonte_meses": 18,
+  "condicoes_iniciais": [
+   "Tarifa adicional média: 90 %",
+   "Abrangência das restrições: 50 % das importações",
+   "Duração estimada da medida: 12 meses",
+   "Grau de retaliação chinesa: 80 (assimétrica)",
+   "Engajamento diplomático: 40 (ativo)"
+  ],
+  "limitacoes": [
+   "Os pesos das variáveis são escolhas de modelagem explícitas no catálogo de casos, não estimativas calibradas com dados históricos.",
+   "Os índices medem a pressão relativa dentro do modelo; não são probabilidades nem previsões.",
+   "Interações não lineares entre variáveis e choques externos não estão modelados.",
+   "Comparar índices só faz sentido entre simulações do mesmo caso.",
+   "Cenários são análises condicionais às premissas, não previsões."
+  ]
+ },
+ "motor": {
+  "valores_normalizados": {
+   "tarifa": 0.6,
+   "abrangencia": 0.5,
+   "duracao": 0.3143,
+   "retaliacao": 0.8,
+   "diplomacia": 0.4
+  },
+  "indices": {
+   "economico": {
+    "valor": 60.7,
+    "nivel": "moderado",
+    "contribuicoes": {
+     "tarifa": 18.97,
+     "abrangencia": 14.23,
+     "duracao": 5.96,
+     "retaliacao": 17.71,
+     "diplomacia": 3.79
+    }
+   },
+   "diplomatico": {
+    "valor": 65.1,
+    "nivel": "moderado",
+    "contribuicoes": {
+     "tarifa": 11.12,
+     "abrangencia": 5.56,
+     "duracao": 4.66,
+     "retaliacao": 23.72,
+     "diplomacia": 20.02
+    }
+   },
+   "estrategico": {
+    "valor": 61.4,
+    "nivel": "moderado",
+    "contribuicoes": {
+     "tarifa": 8.8,
+     "abrangencia": 9.77,
+     "duracao": 7.68,
+     "retaliacao": 23.45,
+     "diplomacia": 11.73
+    }
+   }
+  },
+  "propensao_escalada": {
+   "valor": 61.2,
+   "nivel": "moderado",
+   "contribuicoes": {
+    "tarifa": 12.41,
+    "abrangencia": 6.9,
+    "duracao": 3.25,
+    "retaliacao": 22.07,
+    "diplomacia": 16.55
+   }
+  },
+  "fator_horizonte": 1.075,
+  "formula": "n_i = (valor_i − mín_i) / (máx_i − mín_i). g_i = n_i se a variável empurra para escalada (efeito ≥ 0); g_i = 1 − n_i se ela contém a crise (efeito < 0). Índice da dimensão d = 100 · Σ(w_i,d · g_i) / Σ w_i,d · f_h, limitado a 100. Propensão de escalada = 100 · Σ(|e_i| · g_i) / Σ|e_i|. Fator de horizonte f_h = 0,85 + 0,30 · min(h, 24)/24 (efeitos se acumulam com o tempo). Faixas: < 34 baixo, < 67 moderado, ≥ 67 alto.",
+  "limitacoes": [
+   "Os pesos das variáveis são escolhas de modelagem explícitas no catálogo de casos, não estimativas calibradas com dados históricos.",
+   "Os índices medem a pressão relativa dentro do modelo; não são probabilidades nem previsões.",
+   "Interações não lineares entre variáveis e choques externos não estão modelados.",
+   "Comparar índices só faz sentido entre simulações do mesmo caso."
+  ]
+ },
+ "evidencias": {
+  "consultas": [
+   "US China tariffs latest",
+   "China retaliation tariffs United States",
+   "US China trade talks"
+  ],
+  "fontes": [],
+  "evidencias": [
+   {
+    "id": "E1",
+    "afirmacao": "[Demonstração] Hipótese a testar com pesquisa real: Tarifas mais altas reduzem o comércio bilateral direto e desviam parte dele para terceiros países.",
+    "fonte_ids": [],
+    "status": "incerto",
+    "relacao": "contexto",
+    "hipotese": "Tarifas mais altas reduzem o comércio bilateral direto e desviam parte dele para terceiros países."
+   },
+   {
+    "id": "E2",
+    "afirmacao": "[Demonstração] Hipótese a testar com pesquisa real: Retaliação proporcional tende a manter a disputa em ciclos de escalada controlada.",
+    "fonte_ids": [],
+    "status": "incerto",
+    "relacao": "contexto",
+    "hipotese": "Retaliação proporcional tende a manter a disputa em ciclos de escalada controlada."
+   },
+   {
+    "id": "E3",
+    "afirmacao": "[Demonstração] Hipótese a testar com pesquisa real: Canais diplomáticos ativos reduzem a chance de medidas fora do campo tarifário.",
+    "fonte_ids": [],
+    "status": "incerto",
+    "relacao": "contexto",
+    "hipotese": "Canais diplomáticos ativos reduzem a chance de medidas fora do campo tarifário."
+   }
+  ],
+  "lacunas": [
+   "Modo demonstrativo: nenhuma pesquisa real foi feita, portanto não há fontes atuais nem fatos verificados."
+  ],
+  "pesquisa_real": false,
+  "erro": null
+ },
+ "analise": {
+  "resumo_executivo": [
+   {
+    "texto": "Configuração simulada para 18 meses com propensão de escalada moderado no modelo (índice 61/100).",
+    "natureza": "premissa",
+    "evidencia_ids": []
+   },
+   {
+    "texto": "A pressão diplomática é a mais alta nesta configuração, puxada por Grau de retaliação chinesa, Engajamento diplomático.",
+    "natureza": "interpretacao",
+    "evidencia_ids": []
+   },
+   {
+    "texto": "O cenário de continuidade é o mais plausível sob estas premissas — análise condicional, não previsão.",
+    "natureza": "hipotese",
+    "evidencia_ids": []
+   },
+   {
+    "texto": "Modo demonstrativo: sem pesquisa real, nenhuma afirmação deste resultado é um fato verificado.",
+    "natureza": "premissa",
+    "evidencia_ids": []
+   }
+  ],
+  "atores": [
+   {
+    "ator_id": "usa",
+    "interesses": [
+     "Proteger sua posição como impõe as tarifas"
+    ],
+    "incentivos": [
+     "Reduzir custos domésticos da disputa"
+    ],
+    "capacidades": [
+     "A detalhar com pesquisa real"
+    ],
+    "restricoes": [
+     "A detalhar com pesquisa real"
+    ],
+    "postura": "neutra"
+   },
+   {
+    "ator_id": "chn",
+    "interesses": [
+     "Proteger sua posição como alvo e possível retaliador"
+    ],
+    "incentivos": [
+     "Reduzir custos domésticos da disputa"
+    ],
+    "capacidades": [
+     "A detalhar com pesquisa real"
+    ],
+    "restricoes": [
+     "A detalhar com pesquisa real"
+    ],
+    "postura": "neutra"
+   },
+   {
+    "ator_id": "ue",
+    "interesses": [
+     "Proteger sua posição como parceiro afetado por desvio de comércio"
+    ],
+    "incentivos": [
+     "Reduzir custos domésticos da disputa"
+    ],
+    "capacidades": [
+     "A detalhar com pesquisa real"
+    ],
+    "restricoes": [
+     "A detalhar com pesquisa real"
+    ],
+    "postura": "neutra"
+   },
+   {
+    "ator_id": "vnm",
+    "interesses": [
+     "Proteger sua posição como possível destino de realocação produtiva"
+    ],
+    "incentivos": [
+     "Reduzir custos domésticos da disputa"
+    ],
+    "capacidades": [
+     "A detalhar com pesquisa real"
+    ],
+    "restricoes": [
+     "A detalhar com pesquisa real"
+    ],
+    "postura": "neutra"
+   },
+   {
+    "ator_id": "mex",
+    "interesses": [
+     "Proteger sua posição como possível destino de realocação produtiva"
+    ],
+    "incentivos": [
+     "Reduzir custos domésticos da disputa"
+    ],
+    "capacidades": [
+     "A detalhar com pesquisa real"
+    ],
+    "restricoes": [
+     "A detalhar com pesquisa real"
+    ],
+    "postura": "neutra"
+   },
+   {
+    "ator_id": "bra",
+    "interesses": [
+     "Proteger sua posição como exportador de commodities para ambos"
+    ],
+    "incentivos": [
+     "Reduzir custos domésticos da disputa"
+    ],
+    "capacidades": [
+     "A detalhar com pesquisa real"
+    ],
+    "restricoes": [
+     "A detalhar com pesquisa real"
+    ],
+    "postura": "neutra"
+   }
+  ],
+  "cenarios": [
+   {
+    "tipo": "continuidade",
+    "titulo": "Tendências atuais se mantêm",
+    "narrativa": [
+     {
+      "texto": "A situação entre Estados Unidos e China se mantém ao longo de 18 meses.",
+      "natureza": "hipotese",
+      "evidencia_ids": []
+     },
+     {
+      "texto": "Variáveis mais influentes nesta configuração: Grau de retaliação chinesa, Engajamento diplomático.",
+      "natureza": "interpretacao",
+      "evidencia_ids": []
+     }
+    ],
+    "gatilhos": [
+     "Mudança em “Tarifa adicional média”",
+     "Mudança em “Abrangência das restrições”"
+    ],
+    "indicadores": [
+     "Declarações oficiais de Estados Unidos e China",
+     "Novas medidas anunciadas ou suspensas"
+    ],
+    "plausibilidade": "alto",
+    "justificativa": "Derivada da propensão de escalada moderado calculada pelo motor a partir das variáveis escolhidas."
+   },
+   {
+    "tipo": "escalada",
+    "titulo": "Escalada da disputa",
+    "narrativa": [
+     {
+      "texto": "A situação entre Estados Unidos e China se intensifica ao longo de 18 meses.",
+      "natureza": "hipotese",
+      "evidencia_ids": []
+     },
+     {
+      "texto": "Variáveis mais influentes nesta configuração: Grau de retaliação chinesa, Engajamento diplomático.",
+      "natureza": "interpretacao",
+      "evidencia_ids": []
+     }
+    ],
+    "gatilhos": [
+     "Mudança em “Tarifa adicional média”",
+     "Mudança em “Abrangência das restrições”"
+    ],
+    "indicadores": [
+     "Declarações oficiais de Estados Unidos e China",
+     "Novas medidas anunciadas ou suspensas"
+    ],
+    "plausibilidade": "moderado",
+    "justificativa": "Derivada da propensão de escalada moderado calculada pelo motor a partir das variáveis escolhidas."
+   },
+   {
+    "tipo": "desescalada",
+    "titulo": "Desescalada negociada",
+    "narrativa": [
+     {
+      "texto": "A situação entre Estados Unidos e China perde força ao longo de 18 meses.",
+      "natureza": "hipotese",
+      "evidencia_ids": []
+     },
+     {
+      "texto": "Variáveis mais influentes nesta configuração: Grau de retaliação chinesa, Engajamento diplomático.",
+      "natureza": "interpretacao",
+      "evidencia_ids": []
+     }
+    ],
+    "gatilhos": [
+     "Mudança em “Tarifa adicional média”",
+     "Mudança em “Abrangência das restrições”"
+    ],
+    "indicadores": [
+     "Declarações oficiais de Estados Unidos e China",
+     "Novas medidas anunciadas ou suspensas"
+    ],
+    "plausibilidade": "moderado",
+    "justificativa": "Derivada da propensão de escalada moderado calculada pelo motor a partir das variáveis escolhidas."
+   }
+  ],
+  "impactos": [
+   {
+    "dimensao": "economico",
+    "titulo": "Pressão econômica",
+    "mecanismo": "As variáveis Tarifa adicional média, Grau de retaliação chinesa elevam a pressão econômica no modelo; efeitos indiretos dependem da reação de terceiros.",
+    "por_cenario": {
+     "continuidade": "moderado",
+     "escalada": "alto",
+     "desescalada": "baixo"
+    },
+    "natureza": "interpretacao",
+    "evidencia_ids": []
+   },
+   {
+    "dimensao": "diplomatico",
+    "titulo": "Pressão diplomática",
+    "mecanismo": "As variáveis Grau de retaliação chinesa, Engajamento diplomático elevam a pressão diplomática no modelo; efeitos indiretos dependem da reação de terceiros.",
+    "por_cenario": {
+     "continuidade": "moderado",
+     "escalada": "alto",
+     "desescalada": "baixo"
+    },
+    "natureza": "interpretacao",
+    "evidencia_ids": []
+   },
+   {
+    "dimensao": "estrategico",
+    "titulo": "Pressão estratégica",
+    "mecanismo": "As variáveis Grau de retaliação chinesa, Engajamento diplomático elevam a pressão estratégica no modelo; efeitos indiretos dependem da reação de terceiros.",
+    "por_cenario": {
+     "continuidade": "moderado",
+     "escalada": "alto",
+     "desescalada": "baixo"
+    },
+    "natureza": "interpretacao",
+    "evidencia_ids": []
+   }
+  ],
+  "matriz": [
+   {
+    "tipo": "risco",
+    "titulo": "Efeitos de “Tarifa adicional média” sobre cadeias e preços",
+    "probabilidade": "moderado",
+    "impacto": "alto",
+    "justificativa": "Classificação qualitativa derivada do índice econômico do modelo.",
+    "cenarios": [
+     "continuidade",
+     "escalada"
+    ]
+   },
+   {
+    "tipo": "risco",
+    "titulo": "Deterioração diplomática ligada a “Grau de retaliação chinesa”",
+    "probabilidade": "moderado",
+    "impacto": "moderado",
+    "justificativa": "Classificação qualitativa derivada do índice diplomático do modelo.",
+    "cenarios": [
+     "escalada"
+    ]
+   },
+   {
+    "tipo": "oportunidade",
+    "titulo": "Janela de negociação e redução de custos",
+    "probabilidade": "moderado",
+    "impacto": "moderado",
+    "justificativa": "Plausibilidade do cenário de desescalada nesta configuração.",
+    "cenarios": [
+     "desescalada"
+    ]
+   }
+  ],
+  "relacoes": [
+   {
+    "origem": "usa",
+    "destino": "chn",
+    "tipo": "tensao",
+    "intensidade": "moderado",
+    "descricao": "Relação central do caso."
+   },
+   {
+    "origem": "usa",
+    "destino": "ue",
+    "tipo": "dependencia",
+    "intensidade": "moderado",
+    "descricao": "União Europeia: parceiro afetado por desvio de comércio."
+   },
+   {
+    "origem": "usa",
+    "destino": "vnm",
+    "tipo": "dependencia",
+    "intensidade": "moderado",
+    "descricao": "Vietnã: possível destino de realocação produtiva."
+   },
+   {
+    "origem": "usa",
+    "destino": "mex",
+    "tipo": "dependencia",
+    "intensidade": "moderado",
+    "descricao": "México: possível destino de realocação produtiva."
+   },
+   {
+    "origem": "usa",
+    "destino": "bra",
+    "tipo": "dependencia",
+    "intensidade": "moderado",
+    "descricao": "Brasil: exportador de commodities para ambos."
+   }
+  ],
+  "confianca": "baixo",
+  "justificativa_confianca": "Modo demonstrativo: sem pesquisa real nem análise por IA. O resultado ilustra o funcionamento do sistema.",
+  "incertezas": [
+   "Não há evidências atuais coletadas.",
+   "Pesos das variáveis são escolhas de modelagem, não calibrados."
+  ]
+ },
+ "verificacoes": [
+  {
+   "rodada": 1,
+   "aprovado": true,
+   "problemas": [],
+   "observacoes": [
+    "Modo demonstrativo: só as regras determinísticas foram aplicadas."
+   ]
+  }
+ ],
+ "modo": {
+  "ia": "demo",
+  "busca": "demo",
+  "demonstrativo": true
+ },
+ "uso": {
+  "chamadas_llm": 0,
+  "tokens_entrada": 0,
+  "tokens_saida": 0,
+  "buscas": 3,
+  "cache_hits": 0
+ },
+ "avisos": [
+  "MODO DEMONSTRATIVO: sem GEMINI_API_KEY e TAVILY_API_KEY. Resultados ilustram o funcionamento e não usam informações atuais."
+ ],
+ "erro": null
+}

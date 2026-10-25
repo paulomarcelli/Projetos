@@ -1,0 +1,156 @@
+[
+ {
+  "seq": 1,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "orquestrador",
+  "tipo": "inicio",
+  "mensagem": "Simulação iniciada: Escalada tarifária entre Estados Unidos e China (18 meses).",
+  "dados": {
+   "modo": {
+    "ia": "demo",
+    "busca": "demo",
+    "demonstrativo": true
+   }
+  }
+ },
+ {
+  "seq": 2,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "orquestrador",
+  "tipo": "progresso",
+  "mensagem": "Motor determinístico: propensão de escalada 61/100 (moderado).",
+  "dados": {
+   "indices": {
+    "economico": 60.7,
+    "diplomatico": 65.1,
+    "estrategico": 61.4
+   }
+  }
+ },
+ {
+  "seq": 3,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "researcher",
+  "tipo": "inicio",
+  "mensagem": "Pesquisando 3 consultas (demo).",
+  "dados": {
+   "consultas": [
+    "US China tariffs latest",
+    "China retaliation tariffs United States",
+    "US China trade talks"
+   ]
+  }
+ },
+ {
+  "seq": 4,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "researcher",
+  "tipo": "progresso",
+  "mensagem": "“US China tariffs latest”: 0 resultados, 0 fontes novas.",
+  "dados": {
+   "consulta": "US China tariffs latest",
+   "fontes": 0
+  }
+ },
+ {
+  "seq": 5,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "researcher",
+  "tipo": "progresso",
+  "mensagem": "“China retaliation tariffs United States”: 0 resultados, 0 fontes novas.",
+  "dados": {
+   "consulta": "China retaliation tariffs United States",
+   "fontes": 0
+  }
+ },
+ {
+  "seq": 6,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "researcher",
+  "tipo": "progresso",
+  "mensagem": "“US China trade talks”: 0 resultados, 0 fontes novas.",
+  "dados": {
+   "consulta": "US China trade talks",
+   "fontes": 0
+  }
+ },
+ {
+  "seq": 7,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "researcher",
+  "tipo": "resultado",
+  "mensagem": "0 fontes, 3 evidências, 1 lacunas.",
+  "dados": {
+   "fontes": 0,
+   "evidencias": 3
+  }
+ },
+ {
+  "seq": 8,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "analyst",
+  "tipo": "inicio",
+  "mensagem": "Construindo cenários (primeira versão).",
+  "dados": {
+   "problemas": 0
+  }
+ },
+ {
+  "seq": 9,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "analyst",
+  "tipo": "resultado",
+  "mensagem": "3 cenários, 3 impactos, 3 itens na matriz; confiança baixo.",
+  "dados": {
+   "confianca": "baixo"
+  }
+ },
+ {
+  "seq": 10,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "verifier",
+  "tipo": "inicio",
+  "mensagem": "Rodada 1: checando fontes, citações e coerência com as premissas.",
+  "dados": {
+   "rodada": 1
+  }
+ },
+ {
+  "seq": 11,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "verifier",
+  "tipo": "progresso",
+  "mensagem": "Regras determinísticas: 0 ponto(s).",
+  "dados": {
+   "regras": 0
+  }
+ },
+ {
+  "seq": 12,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "verifier",
+  "tipo": "resultado",
+  "mensagem": "Aprovado: 0 crítico(s), 0 alerta(s).",
+  "dados": {
+   "aprovado": true,
+   "criticos": 0
+  }
+ },
+ {
+  "seq": 13,
+  "ts": "2026-10-25T02:47:20+00:00",
+  "agente": "orquestrador",
+  "tipo": "fim",
+  "mensagem": "Simulação concluída.",
+  "dados": {
+   "status": "concluida",
+   "uso": {
+    "chamadas_llm": 0,
+    "tokens_entrada": 0,
+    "tokens_saida": 0,
+    "buscas": 3,
+    "cache_hits": 0
+   }
+  }
+ }
+]

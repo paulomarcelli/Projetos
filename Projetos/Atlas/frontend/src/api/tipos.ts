@@ -17,7 +17,7 @@ export interface Caso {
 }
 export interface SimulacaoEntrada {
   caso_id: string; valores: Record<string, number>; horizonte_meses: number; premissas_extra: string[];
-  titulo_personalizado?: string | null; descricao_personalizada?: string | null; base_id?: string | null;
+  titulo_personalizado?: string | null; descricao_personalizada?: string | null; base_id?: string | null; turma_id?: string | null;
 }
 export interface Fonte {
   id: string; titulo: string; url: string | null; publicador: string | null; data_publicacao: string | null;
@@ -46,9 +46,9 @@ export interface RegistroPremissas { premissas: string[]; horizonte_meses: numbe
 export interface Resultado {
   id: string; criada_em: string; status: Status; entrada: SimulacaoEntrada; caso: Caso; registro: RegistroPremissas | null;
   motor: SaidaMotor | null; evidencias: PacoteEvidencias | null; analise: SaidaAnalyst | null; verificacoes: RelatorioVerificacao[];
-  modo: Modo; uso: Uso; avisos: string[]; erro: string | null;
+  modo: Modo; uso: Uso; avisos: string[]; erro: string | null; usuario_id?: string | null; turma_id?: string | null;
 }
-export interface ResumoSimulacao { id: string; criada_em: string; status: Status; caso_id: string; titulo: string; horizonte_meses: number; modo: Modo; confianca: Nivel | null; base_id: string | null }
+export interface ResumoSimulacao { id: string; criada_em: string; status: Status; caso_id: string; titulo: string; horizonte_meses: number; modo: Modo; confianca: Nivel | null; base_id: string | null; usuario_id?: string | null; turma_id?: string | null; autor?: string | null }
 export interface Comparacao {
   a_id: string; b_id: string; mesmo_caso: boolean; variaveis: { id: string; nome: string; antes: number | null; depois: number | null }[];
   horizonte: [number, number]; premissas_adicionadas: string[]; premissas_removidas: string[]; indices: Record<string, [number, number]>;
@@ -60,3 +60,13 @@ export interface Saude {
   rotas?: Record<string, string[]> | null;
   limites: Record<string, number>; uso_hoje: Record<string, number>;
 }
+
+// ---------------------------------------------------------------- contas e turmas
+export type Papel = "professor" | "aluno" | "admin";
+export interface Perfil { id: string; nome: string; email: string; papel: Papel; criado_em: string; simulacoes_hoje: number; limite_dia: number | null }
+export interface Turma {
+  id: string; nome: string; codigo: string | null; professor_id: string; professor_nome: string; criada_em: string; membros: number;
+  cenario_caso_id: string | null; cenario_orientacao: string | null; sou_professor: boolean;
+}
+export interface Membro { id: string; nome: string; email: string; entrou_em: string; simulacoes: number }
+export interface CadastroEntrada { nome: string; email: string; senha: string; papel: "professor" | "aluno"; codigo_turma?: string | null; aceite_termos: boolean }

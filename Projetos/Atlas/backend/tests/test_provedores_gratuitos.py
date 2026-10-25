@@ -73,6 +73,9 @@ async def test_compat_com_chave_e_url_terminada_em_v1():
 @pytest.mark.parametrize("status,texto,motivo", [
     (429, "rate limit reached for requests per minute", "cota"),
     (429, "tokens per day limit", "cota_diaria"),
+    # mensagem real da Groq para limite POR MINUTO: contém "today", não pode virar cota diária
+    (429, "Rate limit reached on tokens per minute (TPM): Limit 8000. Please try again in 11s. Need more tokens? Upgrade to Dev Tier today", "cota"),
+    (429, "Rate limit reached on requests per day (RPD): Limit 1000", "cota_diaria"),
     (401, "invalid api key", "chave"),
     (404, "model not found", "resposta_invalida"),
     (500, "boom", "indisponivel"),
@@ -215,3 +218,42 @@ def test_descrever_nao_repete_texto():
 
     assert descrever(ErroProvedor("timeout", "")) == "O serviço externo não respondeu a tempo."
     assert descrever(ErroProvedor("chave", "Chave da Tavily recusada")).endswith("Chave da Tavily recusada.")
+
+
+async def test_ia_real_sem_busca_nao_inventa_evidencias(cfg, banco, entrada):
+    """Com IA real e sem busca, a IA nunca é chamada para produzir evidências."""
+    from atlas.provedores.busca import DemoBusca
+
+    from .conftest import FakeLLM
+
+    llm = FakeLLM(respostas={"evidencias_demo": {"evidencias": [{"afirmacao": "FATO INVENTADO", "fonte_ids": [], "status": "confirmado"}]}})
+    r = await Orquestrador(cfg, banco, llm, DemoBusca()).executar(preparar(entrada, cfg, banco, llm, DemoBusca()))
+    assert llm.contar("evidencias_demo") == 0 and llm.contar("extrair_evidencias") == 0
+    assert all(e.status == "incerto" and not e.fonte_ids for e in r.evidencias.evidencias)
+    assert not any("INVENTADO" in e.afirmacao for e in r.evidencias.evidencias)
+    assert r.modo.demonstrativo
+
+
+async def test_compat_respeita_retry_after(monkeypatch):
+    esperas = []
+
+    async def dormir(s):
+        esperas.append(s)
+
+    monkeypatch.setattr("atlas.provedores.llm.asyncio.sleep", dormir)
+    respostas = [httpx.Response(429, text="tokens per minute", headers={"retry-after": "7"}), httpx.Response(200, json=chat('{"ok": 1}'))]
+    llm = CompatLLM("openai", "https://x/v1", "m", tentativas=2, cliente=cliente(lambda req: respostas.pop(0)))
+    assert (await llm.gerar_json("t", "s", "u", {})).dados == {"ok": 1}
+    assert esperas == [7.0]
+
+
+async def test_compat_envia_esforco_de_raciocinio_so_quando_configurado():
+    corpos = []
+
+    def h(req):
+        corpos.append(json.loads(req.content))
+        return httpx.Response(200, json=chat("{}"))
+
+    await CompatLLM("openai", "https://x/v1", "m", tentativas=1, cliente=cliente(h), esforco_raciocinio="low").gerar_json("t", "s", "u", {})
+    await CompatLLM("ollama", "http://localhost:11434", "m", tentativas=1, cliente=cliente(h)).gerar_json("t", "s", "u", {})
+    assert corpos[0]["reasoning_effort"] == "low" and "reasoning_effort" not in corpos[1]

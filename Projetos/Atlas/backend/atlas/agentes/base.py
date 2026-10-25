@@ -52,5 +52,10 @@ class Contexto:
         return resp.dados
 
 
+    def esquecer(self, tarefa: str, sistema: str, usuario: str) -> None:
+        """Remove do cache uma resposta que se mostrou inválida, para não reaproveitá-la."""
+        self.banco.cache_apagar(self.banco.chave("llm", self.llm.nome, tarefa, sistema, usuario))
+
+
 def json_compacto(obj: Any) -> str:
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"), default=str)

@@ -33,7 +33,7 @@ def provedores(cfg: Config) -> tuple[ProvedorLLM, ProvedorBusca]:
     elif cfg.ia == "ollama":
         llm = CompatLLM("ollama", cfg.ollama_url, cfg.ollama_model, None, cfg.ollama_timeout_s, cfg.tentativas_api)
     elif cfg.ia == "openai":
-        llm = CompatLLM("openai", cfg.openai_base_url or "", cfg.openai_model or "", cfg.openai_api_key, cfg.timeout_s, cfg.tentativas_api)
+        llm = CompatLLM("openai", cfg.openai_base_url or "", cfg.openai_model or "", cfg.openai_api_key, cfg.timeout_s, cfg.tentativas_api, esforco_raciocinio=cfg.openai_reasoning)
     else:
         llm = DemoLLM()
     busca: ProvedorBusca
@@ -145,6 +145,14 @@ class Orquestrador:
                 await emitir("orquestrador", "progresso", f"Devolvendo {len(rel.problemas)} ponto(s) ao Analyst (revisão {rodada}/{self.cfg.max_revisoes}).", {"rodada": rodada})
                 r.analise = await self.analyst.executar(ctx, r.evidencias.model_dump(include={"fontes", "evidencias", "lacunas"}), rel.problemas)
                 self.banco.salvar(r)
+
+            # regra determinística: sem evidência com fonte, a confiança não passa de "baixo"
+            if r.analise and r.analise.confianca != "baixo" and not any(e.fonte_ids for e in r.evidencias.evidencias):
+                anterior = r.analise.confianca
+                r.analise.confianca = "baixo"
+                r.analise.justificativa_confianca = f"Rebaixada de “{anterior}” para “baixo” pelo ATLAS: não há evidências com fonte rastreável. Justificativa original do Analyst: {r.analise.justificativa_confianca}"
+                r.avisos.append(f"Confiança rebaixada de “{anterior}” para “baixo”: a análise não tem evidências com fonte.")
+                await emitir("orquestrador", "aviso", "Confiança rebaixada para “baixo”: nenhuma evidência com fonte.", {"anterior": anterior})
 
             ultima = r.verificacoes[-1] if r.verificacoes else None
             r.status = "concluida" if ultima and ultima.aprovado else "parcial"

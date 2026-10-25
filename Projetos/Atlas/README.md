@@ -66,6 +66,27 @@ ATLAS_PROVEDOR_BUSCA=gdelt
 
 Os provedores podem ser combinados (por exemplo, Ollama + Tavily, ou Gemini + GDELT). `ATLAS_PROVEDOR_IA=openai` aceita qualquer API no formato da OpenAI (Groq, OpenRouter, Mistral, LM Studio) via `ATLAS_OPENAI_BASE_URL`, `ATLAS_OPENAI_MODEL` e `ATLAS_OPENAI_API_KEY`. Os planos gratuitos desses serviços mudam com frequência; confira os termos antes de usar.
 
+### Groq (testado de verdade)
+
+A Groq tem plano gratuito e usa o formato da OpenAI. Configuração usada nos testes reais:
+
+```bash
+ATLAS_PROVEDOR_IA=openai
+ATLAS_OPENAI_BASE_URL=https://api.groq.com/openai/v1
+ATLAS_OPENAI_MODEL=openai/gpt-oss-120b
+ATLAS_OPENAI_API_KEY=gsk_...            # https://console.groq.com/keys
+ATLAS_OPENAI_REASONING_EFFORT=low       # economiza tokens do limite por minuto
+ATLAS_TENTATIVAS_API=3
+```
+
+No plano gratuito observado, o limite era de **8.000 tokens por minuto** e 1.000 requisições por dia para esse modelo. Uma simulação usa cerca de 7.500 tokens. O ATLAS respeita o `Retry-After` (espera até 65 s) quando o limite por minuto estoura, e distingue esse caso da cota diária.
+
+**Robustez com modelos menores** (todas as regras são determinísticas e testadas):
+- Se a análise vier incompleta, o Analyst pede **uma** correção, apontando os campos que faltaram. Respostas inválidas não ficam no cache.
+- Rótulos escritos de formas variadas ("Média", "moderate", "ALTA") são normalizados. Valores não reconhecidos continuam sendo recusados.
+- Sem evidência com fonte rastreável, a **confiança é rebaixada para "baixo"**, com aviso no resultado.
+- Com IA real e sem busca, a IA nunca é chamada para produzir "evidências": elas seriam inventadas.
+
 ### Gemini e Tavily
 
 - **Google Gemini** (REST `generateContent`, saída JSON). A chave vai no header `x-goog-api-key`, só no servidor.
@@ -116,7 +137,8 @@ Todas ficam em `backend/.env` (veja `backend/.env.example`). O frontend nunca re
 | `ATLAS_PROVEDOR_BUSCA` | `auto` | `auto` (Tavily se houver chave), `tavily`, `gdelt` ou `demo`. |
 | `ATLAS_OLLAMA_URL` / `ATLAS_OLLAMA_MODEL` | `localhost:11434` / `qwen2.5:7b` | Servidor e modelo do Ollama. |
 | `ATLAS_OLLAMA_TIMEOUT_S` | 300 | Modelos locais em CPU são lentos. |
-| `ATLAS_OPENAI_BASE_URL` / `_MODEL` / `_API_KEY` | — | API compatível com a OpenAI. |
+| `ATLAS_OPENAI_BASE_URL` / `_MODEL` / `_API_KEY` | — | API compatível com a OpenAI (ex.: Groq). |
+| `ATLAS_OPENAI_REASONING_EFFORT` | — | `low`/`medium`/`high` para modelos de raciocínio. |
 | `GEMINI_API_KEY` | — | Ativa o Gemini (com `ATLAS_PROVEDOR_IA=auto` ou `gemini`). |
 | `ATLAS_GEMINI_MODEL` | `gemini-3.6-flash` | Modelo do Gemini. Confira no Google AI Studio se ele está no plano gratuito do seu projeto. |
 | `TAVILY_API_KEY` | — | Ativa a pesquisa na web. |

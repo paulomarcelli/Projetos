@@ -4,8 +4,9 @@ from __future__ import annotations
 class ErroProvedor(Exception):
     """Falha de provedor externo. `motivo` é um código estável para a interface."""
 
-    def __init__(self, motivo: str, mensagem: str, temporario: bool = False):
+    def __init__(self, motivo: str, mensagem: str, temporario: bool = False, espera_s: float = 0.0):
         super().__init__(mensagem)
+        self.espera_s = espera_s  # tempo sugerido pelo provedor antes de tentar de novo (Retry-After)
         self.motivo = motivo  # cota | cota_diaria | chave | indisponivel | timeout | resposta_invalida | limite_local
         self.mensagem = mensagem
         self.temporario = temporario
@@ -20,6 +21,16 @@ MENSAGENS = {
     "resposta_invalida": "O modelo devolveu uma resposta fora do formato esperado.",
     "limite_local": "O limite de chamadas configurado para esta simulação foi atingido.",
 }
+
+
+import re as _re
+
+_DIARIO = _re.compile(r"per\s*day|perday|daily|\(tpd\)|\(rpd\)|tokens per day|requests per day", _re.I)
+
+
+def limite_diario(texto: str) -> bool:
+    """Distingue cota diária de limite por minuto. Não basta procurar "day": "today" também casa."""
+    return bool(_DIARIO.search(texto or ""))
 
 
 def descrever(e: ErroProvedor) -> str:

@@ -10,7 +10,7 @@ from typing import Any, Protocol
 
 import httpx
 
-from .erros import ErroProvedor
+from .erros import ErroProvedor, limite_diario
 
 
 @dataclass
@@ -85,7 +85,7 @@ class GeminiLLM:
             if self._cliente is None:
                 await cliente.aclose()
         if r.status_code == 429:
-            diaria = "per day" in r.text.lower() or "perday" in r.text.lower()
+            diaria = limite_diario(r.text)
             raise ErroProvedor("cota_diaria" if diaria else "cota", "Limite do Gemini atingido.", temporario=not diaria)
         if r.status_code in (401, 403):
             raise ErroProvedor("chave", "Chave do Gemini recusada.")
@@ -124,8 +124,9 @@ class CompatLLM:
     Com Ollama, tudo roda na própria máquina: sem chave, sem cota e sem enviar dados para fora.
     """
 
-    def __init__(self, nome: str, base_url: str, modelo: str, chave: str | None = None, timeout_s: float = 300.0, tentativas: int = 2, cliente: httpx.AsyncClient | None = None):
+    def __init__(self, nome: str, base_url: str, modelo: str, chave: str | None = None, timeout_s: float = 300.0, tentativas: int = 2, cliente: httpx.AsyncClient | None = None, esforco_raciocinio: str | None = None):
         self.nome = nome
+        self.esforco_raciocinio = esforco_raciocinio  # "low" economiza tokens em modelos de raciocínio (gpt-oss, qwen3)
         self.url = base_url.rstrip("/") + ("/chat/completions" if base_url.rstrip("/").endswith("/v1") else "/v1/chat/completions")
         self.modelo = modelo
         self._chave = chave
@@ -140,13 +141,16 @@ class CompatLLM:
             "response_format": {"type": "json_object"},
             "temperature": 0.3,
         }
+        if self.esforco_raciocinio:
+            corpo["reasoning_effort"] = self.esforco_raciocinio
         for tentativa in range(self.tentativas):
             try:
                 return await self._chamar(corpo)
             except ErroProvedor as e:
                 if not e.temporario or tentativa == self.tentativas - 1:
                     raise
-                await asyncio.sleep(2 * (tentativa + 1))
+                # respeita o Retry-After do provedor (limite por minuto), até 65 s
+                await asyncio.sleep(min(65.0, max(2.0 * (tentativa + 1), e.espera_s)))
         raise ErroProvedor("indisponivel", "Falha desconhecida")
 
     async def _chamar(self, corpo: dict) -> RespostaLLM:
@@ -166,8 +170,12 @@ class CompatLLM:
             if self._cliente is None:
                 await cliente.aclose()
         if r.status_code == 429:
-            diaria = "day" in r.text.lower() or "daily" in r.text.lower()
-            raise ErroProvedor("cota_diaria" if diaria else "cota", f"Limite do {rotulo} atingido.", temporario=not diaria)
+            diaria = limite_diario(r.text)
+            try:
+                espera = float(r.headers.get("retry-after", "0"))
+            except ValueError:
+                espera = 0.0
+            raise ErroProvedor("cota_diaria" if diaria else "cota", f"Limite do {rotulo} atingido.", temporario=not diaria, espera_s=espera)
         if r.status_code in (401, 403):
             raise ErroProvedor("chave", f"Chave do {rotulo} recusada.")
         if r.status_code == 404:

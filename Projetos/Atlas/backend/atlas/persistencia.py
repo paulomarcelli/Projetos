@@ -98,6 +98,11 @@ class Banco:
             self._con.execute("INSERT OR REPLACE INTO cache (chave, valor, criado) VALUES (?,?,?)", (chave, json.dumps(valor, ensure_ascii=False), time.time()))
             self._con.commit()
 
+    def cache_apagar(self, chave: str) -> None:
+        with self._trava:
+            self._con.execute("DELETE FROM cache WHERE chave=?", (chave,))
+            self._con.commit()
+
     # ---------------- uso diário (protege cotas gratuitas)
     def uso_hoje(self) -> dict:
         dia = date.today().isoformat()

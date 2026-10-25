@@ -97,3 +97,16 @@ async def test_erro_inesperado_nao_vaza_detalhes(cfg, banco, entrada):
     llm = FakeLLM(respostas={"analisar": RuntimeError("segredo interno")})
     r = await rodar(cfg, banco, entrada, llm, FakeBusca())
     assert r.status == "falhou" and "segredo" not in r.erro and "RuntimeError" in r.erro
+
+
+async def test_confianca_rebaixada_sem_evidencias_com_fonte(cfg, banco, entrada):
+    llm = FakeLLM(respostas={"analisar": analise_valida(None)})  # confiança "moderado", sem evidências
+    r = await rodar(cfg, banco, entrada, llm, FakeBusca(erro=ErroProvedor("indisponivel", "x")))
+    assert r.analise.confianca == "baixo"
+    assert "Rebaixada de “moderado”" in r.analise.justificativa_confianca
+    assert any("Confiança rebaixada" in a for a in r.avisos)
+
+
+async def test_confianca_mantida_com_evidencias(cfg, banco, entrada):
+    r = await rodar(cfg, banco, entrada, FakeLLM(), FakeBusca())
+    assert r.analise.confianca == "moderado"

@@ -70,7 +70,11 @@ class Researcher:
             pacote.lacunas.append("Nenhuma fonte foi encontrada para as consultas.")
 
         if not pacote.pesquisa_real:
-            dados = await ctx.chamar_llm(self.nome, "evidencias_demo", SISTEMA, "", {"caso": ctx.caso.model_dump()})
+            # Sem busca real, as "evidências" são só as hipóteses do caso marcadas como incertas.
+            # Nunca pedimos isso à IA: sem fontes, ela poderia inventar fatos.
+            from ..demo import evidencias_demo
+
+            dados = evidencias_demo({"caso": ctx.caso.model_dump()})
             pacote.evidencias, _ = self._validar(dados, {}, permitir_sem_fonte=True)
 
         await ctx.emitir(self.nome, "resultado", f"{len(pacote.fontes)} fontes, {len(pacote.evidencias)} evidências, {len(pacote.lacunas)} lacunas.", {"fontes": len(pacote.fontes), "evidencias": len(pacote.evidencias)})

@@ -36,6 +36,8 @@ class Config:
     openai_base_url: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OPENAI_BASE_URL") or None)
     openai_model: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OPENAI_MODEL") or None)
     openai_api_key: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OPENAI_API_KEY") or None)
+    # opcional: low | medium | high (modelos de raciocínio como gpt-oss; reduz tokens gastos)
+    openai_reasoning: str | None = field(default_factory=lambda: os.environ.get("ATLAS_OPENAI_REASONING_EFFORT") or None)
     # "auto": usa provedores reais se houver chave; "demo": força o modo demonstrativo
     modo: str = field(default_factory=lambda: os.environ.get("ATLAS_MODO", "auto").lower())
     db_path: Path = field(default_factory=lambda: Path(os.environ.get("ATLAS_DB", Path(__file__).resolve().parent.parent / "atlas.db")))

@@ -136,3 +136,62 @@ async def test_verifier_fato_com_alegacao_e_pesquisa_vazia(cfg, banco, caso, ent
     vazio = PacoteEvidencias(consultas=["q"], pesquisa_real=True)
     ps = regras(SaidaAnalyst.model_validate(analise_valida(None)), vazio, ctx)
     assert any(p.alvo == "researcher" and "Nenhuma fonte" in p.descricao for p in ps)
+
+
+async def test_analyst_pede_correcao_uma_vez(cfg, banco, caso, entrada):
+    incompleta = {k: v for k, v in analise_valida().items() if k not in ("matriz", "confianca")}
+    llm = FakeLLM(respostas={"analisar": [incompleta, analise_valida()]})
+    ctx, eventos = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
+    saida = await Analyst().executar(ctx, {"evidencias": []})
+    assert saida.confianca == "moderado" and llm.contar("analisar") == 2
+    segundo = [u for t, u in llm.chamadas if t == "analisar"][1]
+    assert "matriz: campo obrigatório ausente" in segundo and "confianca: campo obrigatório ausente" in segundo
+    assert any("Pedindo a versão completa" in m for _, _, m in eventos)
+
+
+async def test_analyst_desiste_apos_correcao_falhar(cfg, banco, caso, entrada):
+    llm = FakeLLM(respostas={"analisar": [{"resumo_executivo": []}]})
+    ctx, _ = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
+    with pytest.raises(ErroProvedor) as e:
+        await Analyst().executar(ctx, {"evidencias": []})
+    assert "mesmo após correção" in e.value.mensagem and llm.contar("analisar") == 2
+
+
+async def test_resposta_invalida_nao_fica_no_cache(cfg, banco, caso, entrada):
+    llm = FakeLLM(respostas={"analisar": [{"resumo_executivo": []}]})
+    ctx, _ = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
+    with pytest.raises(ErroProvedor):
+        await Analyst().executar(ctx, {"evidencias": []})
+    llm2 = FakeLLM()  # agora o modelo responde certo
+    ctx2, _ = contexto(cfg, banco, caso, entrada, llm2, FakeBusca())
+    saida = await Analyst().executar(ctx2, {"evidencias": []})
+    assert llm2.contar("analisar") == 1 and ctx2.uso.cache_hits == 0 and saida.confianca == "moderado"
+
+
+async def test_analyst_normaliza_rotulos_variados(cfg, banco, caso, entrada):
+    a = analise_valida()
+    a["confianca"] = "Média"
+    a["cenarios"][1]["plausibilidade"] = "ALTA"
+    a["cenarios"][0]["tipo"] = "Status quo"
+    a["resumo_executivo"][1]["natureza"] = "Interpretação"
+    a["impactos"][0]["dimensao"] = "Econômica"
+    a["impactos"][0]["por_cenario"] = {"continuity": "medium", "escalation": "high", "de-escalation": "low"}
+    a["matriz"][0]["probabilidade"] = "moderate"
+    a["atores"][0]["postura"] = "Confrontational"
+    a["relacoes"][0]["tipo"] = "Tensão"
+    llm = FakeLLM(respostas={"analisar": a})
+    ctx, _ = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
+    s = await Analyst().executar(ctx, {"evidencias": []})
+    assert llm.contar("analisar") == 1  # sem necessidade de pedir correção
+    assert s.confianca == "moderado" and s.cenarios[1].plausibilidade == "alto" and s.cenarios[0].tipo == "continuidade"
+    assert s.impactos[0].por_cenario == {"continuidade": "moderado", "escalada": "alto", "desescalada": "baixo"}
+    assert s.atores[0].postura == "confrontacional" and s.relacoes[0].tipo == "tensao"
+
+
+async def test_rotulo_desconhecido_continua_recusado(cfg, banco, caso, entrada):
+    a = analise_valida()
+    a["confianca"] = "talvez"
+    llm = FakeLLM(respostas={"analisar": [a]})
+    ctx, _ = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
+    with pytest.raises(ErroProvedor):
+        await Analyst().executar(ctx, {"evidencias": []})

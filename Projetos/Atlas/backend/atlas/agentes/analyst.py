@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pydantic import ValidationError
 
+from .. import normalizar
 from ..modelos import Problema, SaidaAnalyst
 from ..provedores.erros import ErroProvedor
 from ..seguranca import REGRA_DADOS, delimitar
@@ -49,8 +50,29 @@ class Analyst:
         contexto = {"caso": ctx.caso.model_dump(), "motor": ctx.motor.model_dump(), "evidencias": evidencias, "entrada": ctx.entrada.model_dump(), "problemas": [p.model_dump() for p in problemas or []]}
         dados = await ctx.chamar_llm(self.nome, "analisar", SISTEMA, usuario, contexto, usar_cache=not problemas)
         try:
-            saida = SaidaAnalyst.model_validate(dados)
+            saida = SaidaAnalyst.model_validate(normalizar.analise(dados))
         except ValidationError as e:
-            raise ErroProvedor("resposta_invalida", f"Saída do Analyst fora do contrato: {e.error_count()} erro(s).") from e
+            if ctx.llm.nome == "demo":
+                raise ErroProvedor("resposta_invalida", f"Saída do Analyst fora do contrato: {e.error_count()} erro(s).") from e
+            ctx.esquecer("analisar", SISTEMA, usuario)  # não reaproveitar resposta inválida
+            # uma única tentativa de correção, apontando exatamente o que faltou
+            erros = _resumo_erros(e)
+            await ctx.emitir(self.nome, "aviso", f"Resposta incompleta ({e.error_count()} problema(s) de formato). Pedindo a versão completa uma vez.", {"erros": erros})
+            reparo = usuario + "\n\nSua resposta anterior estava fora do formato. Problemas:\n" + "\n".join(f"- {x}" for x in erros) + "\nResponda novamente com o JSON COMPLETO, contendo TODAS as chaves pedidas."
+            dados = await ctx.chamar_llm(self.nome, "analisar", SISTEMA, reparo, contexto, usar_cache=False)
+            try:
+                saida = SaidaAnalyst.model_validate(normalizar.analise(dados))
+            except ValidationError as e2:
+                ctx.esquecer("analisar", SISTEMA, reparo)
+                raise ErroProvedor("resposta_invalida", f"Saída do Analyst fora do contrato mesmo após correção: {'; '.join(_resumo_erros(e2)[:5])}.") from e2
         await ctx.emitir(self.nome, "resultado", f"{len(saida.cenarios)} cenários, {len(saida.impactos)} impactos, {len(saida.matriz)} itens na matriz; confiança {saida.confianca}.", {"confianca": saida.confianca})
         return saida
+
+
+def _resumo_erros(e: ValidationError) -> list[str]:
+    """'matriz: campo obrigatório ausente' — legível para o modelo e para o usuário."""
+    saida = []
+    for err in e.errors()[:12]:
+        local = ".".join(str(x) for x in err["loc"])
+        saida.append(f"{local}: campo obrigatório ausente" if err["type"] == "missing" else f"{local}: {err['msg']}")
+    return saida

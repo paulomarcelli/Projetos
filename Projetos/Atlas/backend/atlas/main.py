@@ -65,8 +65,9 @@ def criar_app(cfg: Config | None = None, banco: Banco | None = None, fabrica_pro
         return {
             "versao": __version__,
             "modo": {"ia": llm.nome, "busca": busca.nome, "demonstrativo": llm.nome == "demo" or busca.nome == "demo"},
-            "modelo": cfg.gemini_model if llm.nome != "demo" else None,
-            "credenciais": {"gemini": bool(cfg.gemini_api_key), "tavily": bool(cfg.tavily_api_key)},
+            "modelo": cfg.modelo_ia if llm.nome != "demo" else None,
+            "credenciais": {"gemini": bool(cfg.gemini_api_key), "tavily": bool(cfg.tavily_api_key), "openai_compat": bool(cfg.openai_api_key)},
+            "provedores": {"ia": cfg.provedor_ia, "busca": cfg.provedor_busca},
             "limites": {"max_revisoes": cfg.max_revisoes, "max_chamadas_llm_por_simulacao": cfg.max_chamadas_llm, "max_buscas_por_simulacao": cfg.max_buscas, "max_simulacoes_dia": cfg.max_simulacoes_dia},
             "uso_hoje": uso,
         }
@@ -90,7 +91,8 @@ def criar_app(cfg: Config | None = None, banco: Banco | None = None, fabrica_pro
         if not limitador.permitir(ip):
             raise HTTPException(429, "Muitas simulações em pouco tempo. Aguarde um minuto.")
         llm, busca = fabrica(cfg)
-        if llm.nome != "demo" and cfg.max_simulacoes_dia and banco.uso_hoje()["simulacoes"] >= cfg.max_simulacoes_dia:
+        # o teto diário protege cotas remotas; o Ollama roda localmente e não tem cota
+        if llm.nome not in ("demo", "ollama") and cfg.max_simulacoes_dia and banco.uso_hoje()["simulacoes"] >= cfg.max_simulacoes_dia:
             raise HTTPException(429, f"Limite diário de {cfg.max_simulacoes_dia} simulações com IA atingido (protege a cota gratuita).")
         try:
             r = preparar(entrada, cfg, banco, llm, busca)

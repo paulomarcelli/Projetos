@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { api } from "../api/cliente";
 import type { Saude } from "../api/tipos";
+import { NOME_BUSCA, NOME_IA } from "../lib/rotulos";
 import { SeloDemo } from "./Selos";
 
 const ITENS = [
@@ -60,7 +61,7 @@ export function Layout() {
         </nav>
         <div className="mt-auto space-y-2 text-xs text-suave">
           {saude?.modo.demonstrativo && <SeloDemo />}
-          {saude && !saude.modo.demonstrativo && <p>IA: {saude.modelo} · Busca: Tavily</p>}
+          {saude && !saude.modo.demonstrativo && <p className="quebra">IA: {NOME_IA[saude.modo.ia]}{saude.modelo ? ` (${saude.modelo})` : ""} · Busca: {NOME_BUSCA[saude.modo.busca]}</p>}
           {!saude && <p className="text-alto">Servidor indisponível</p>}
           <p>Demonstração acadêmica — FECAP</p>
         </div>

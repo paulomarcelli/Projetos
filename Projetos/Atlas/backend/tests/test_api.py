@@ -41,7 +41,7 @@ CORPO = {"caso_id": "eua-china-tarifas", "valores": {"tarifa": 90, "retaliacao":
 async def test_saude_e_catalogo(demo, banco):
     async with await cliente(app_com(demo, banco, lambda c: (DemoLLM(), DemoBusca()))) as c:
         s = (await c.get("/api/saude")).json()
-        assert s["modo"]["demonstrativo"] and s["credenciais"] == {"gemini": False, "tavily": False}
+        assert s["modo"]["demonstrativo"] and not any(s["credenciais"].values())
         assert "x" not in str(s["credenciais"])  # nunca expõe chaves
         casos = (await c.get("/api/casos")).json()
         assert len(casos) >= 5 and all(len(k["variaveis"]) >= 4 for k in casos)

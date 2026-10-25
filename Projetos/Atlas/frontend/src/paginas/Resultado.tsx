@@ -8,7 +8,7 @@ import { IndicesMotor } from "../componentes/IndicesMotor";
 import { MapaAtores } from "../componentes/MapaAtores";
 import { MatrizRisco } from "../componentes/MatrizRisco";
 import { SeloDemo, SeloNivel, SeloStatus, TagNatureza } from "../componentes/Selos";
-import { CENARIO, DIMENSAO, dataHora } from "../lib/rotulos";
+import { CENARIO, DIMENSAO, NOME_BUSCA, NOME_IA, dataHora } from "../lib/rotulos";
 
 const ANCORAS = [
   ["resumo", "Resumo"], ["cenarios", "Cenários"], ["impactos", "Impactos"], ["atores", "Atores"], ["riscos", "Riscos"],
@@ -100,7 +100,7 @@ export function Resultado() {
           {a && <SeloNivel nivel={a.confianca} prefixo="Confiança" />}
         </div>
         <h1 className="text-2xl font-semibold quebra sm:text-3xl">{r.caso.titulo}</h1>
-        <p className="text-sm text-suave">{r.entrada.horizonte_meses} meses · criada em {dataHora(r.criada_em)} · IA: {r.modo.ia === "demo" ? "demonstrativa" : "Gemini"} · Busca: {r.modo.busca === "demo" ? "desativada" : "Tavily"}</p>
+        <p className="text-sm text-suave">{r.entrada.horizonte_meses} meses · criada em {dataHora(r.criada_em)} · IA: {NOME_IA[r.modo.ia] ?? r.modo.ia} · Busca: {NOME_BUSCA[r.modo.busca] ?? r.modo.busca}</p>
         <div className="flex flex-wrap gap-2">
           <Link to={`/nova?base=${r.id}`} className="botao-primario">Revisar premissas</Link>
           <Link to={`/comparar?b=${r.id}${r.entrada.base_id ? `&a=${r.entrada.base_id}` : ""}`} className="botao-secundario">Comparar</Link>

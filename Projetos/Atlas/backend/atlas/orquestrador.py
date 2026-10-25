@@ -19,16 +19,30 @@ from .agentes.verifier import Verifier
 from .config import Config
 from .modelos import Evento, Modo, NomeAgente, RegistroPremissas, Resultado, SimulacaoEntrada
 from .persistencia import Banco
-from .provedores.busca import DemoBusca, ProvedorBusca, TavilyBusca
-from .provedores.erros import MENSAGENS, ErroProvedor
-from .provedores.llm import DemoLLM, GeminiLLM, ProvedorLLM
+from .provedores.busca import DemoBusca, GdeltBusca, ProvedorBusca, TavilyBusca
+from .provedores.erros import ErroProvedor, descrever
+from .provedores.llm import CompatLLM, DemoLLM, GeminiLLM, ProvedorLLM
 
 log = logging.getLogger("atlas.orquestrador")
 
 
 def provedores(cfg: Config) -> tuple[ProvedorLLM, ProvedorBusca]:
-    llm: ProvedorLLM = GeminiLLM(cfg.gemini_api_key, cfg.gemini_model, cfg.timeout_s, cfg.tentativas_api) if cfg.ia_real else DemoLLM()  # type: ignore[arg-type]
-    busca: ProvedorBusca = TavilyBusca(cfg.tavily_api_key, cfg.timeout_s, cfg.tentativas_api) if cfg.busca_real else DemoBusca()  # type: ignore[arg-type]
+    llm: ProvedorLLM
+    if cfg.ia == "gemini":
+        llm = GeminiLLM(cfg.gemini_api_key or "", cfg.gemini_model, cfg.timeout_s, cfg.tentativas_api)
+    elif cfg.ia == "ollama":
+        llm = CompatLLM("ollama", cfg.ollama_url, cfg.ollama_model, None, cfg.ollama_timeout_s, cfg.tentativas_api)
+    elif cfg.ia == "openai":
+        llm = CompatLLM("openai", cfg.openai_base_url or "", cfg.openai_model or "", cfg.openai_api_key, cfg.timeout_s, cfg.tentativas_api)
+    else:
+        llm = DemoLLM()
+    busca: ProvedorBusca
+    if cfg.busca == "tavily":
+        busca = TavilyBusca(cfg.tavily_api_key or "", cfg.timeout_s, cfg.tentativas_api)
+    elif cfg.busca == "gdelt":
+        busca = GdeltBusca(cfg.timeout_s, cfg.tentativas_api)
+    else:
+        busca = DemoBusca()
     return llm, busca
 
 
@@ -57,8 +71,8 @@ def preparar(entrada: SimulacaoEntrada, cfg: Config, banco: Banco, llm: Provedor
     modo = Modo(ia=llm.nome, busca=busca.nome)  # type: ignore[arg-type]
     avisos = []
     if modo.demonstrativo:
-        faltando = [n for n, real in (("GEMINI_API_KEY", llm.nome != "demo"), ("TAVILY_API_KEY", busca.nome != "demo")) if not real]
-        avisos.append("MODO DEMONSTRATIVO: " + ("sem " + " e ".join(faltando) + ". " if faltando else "") + "Resultados ilustram o funcionamento e não usam informações atuais.")
+        faltando = [n for n, real in (("IA real", llm.nome != "demo"), ("pesquisa na web", busca.nome != "demo")) if not real]
+        avisos.append("MODO DEMONSTRATIVO: sem " + " e sem ".join(faltando) + " configurada(s). Resultados ilustram o funcionamento e não usam informações atuais.")
     r = Resultado(
         id=uuid.uuid4().hex[:12],
         status="pendente",
@@ -95,7 +109,7 @@ class Orquestrador:
         ctx = Contexto(cfg=self.cfg, banco=self.banco, llm=self.llm, busca=self.busca, caso=r.caso, entrada=r.entrada, motor=r.motor, condicoes=r.registro.condicoes_iniciais, emitir=emitir, uso=r.uso)
         r.status = "executando"
         self.banco.salvar(r)
-        if r.modo.ia != "demo":
+        if r.modo.ia not in ("demo", "ollama"):
             self.banco.somar_uso(simulacoes=1)
         await emitir("orquestrador", "inicio", f"Simulação iniciada: {r.caso.titulo} ({r.entrada.horizonte_meses} meses).", {"modo": r.modo.model_dump()})
         await emitir("orquestrador", "progresso", f"Motor determinístico: propensão de escalada {r.motor.propensao_escalada.valor:.0f}/100 ({r.motor.propensao_escalada.nivel}).", {"indices": {d: i.valor for d, i in r.motor.indices.items()}})
@@ -136,7 +150,7 @@ class Orquestrador:
             r.status = "concluida" if ultima and ultima.aprovado else "parcial"
             await emitir("orquestrador", "fim", "Simulação concluída." if r.status == "concluida" else "Simulação concluída com pendências apontadas pelo Verifier.", {"status": r.status, "uso": r.uso.model_dump()})
         except ErroProvedor as e:
-            msg = MENSAGENS.get(e.motivo, e.mensagem)
+            msg = descrever(e)
             r.erro = f"{etapa}: {msg}"
             r.status = "parcial" if r.analise else "falhou"
             r.avisos.append(f"Execução interrompida na etapa {etapa}: {msg} Os resultados obtidos até aqui foram preservados.")

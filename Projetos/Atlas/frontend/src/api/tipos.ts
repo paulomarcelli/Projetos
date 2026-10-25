@@ -41,7 +41,7 @@ export interface Problema { severidade: "critico" | "alerta"; alvo: "researcher"
 export interface RelatorioVerificacao { rodada: number; aprovado: boolean; problemas: Problema[]; observacoes: string[] }
 export interface Evento { seq: number; ts: string; agente: NomeAgente; tipo: "inicio" | "progresso" | "resultado" | "aviso" | "erro" | "fim"; mensagem: string; dados: Record<string, unknown> }
 export interface Uso { chamadas_llm: number; tokens_entrada: number; tokens_saida: number; buscas: number; cache_hits: number }
-export interface Modo { ia: "gemini" | "demo"; busca: "tavily" | "demo"; demonstrativo: boolean }
+export interface Modo { ia: "gemini" | "ollama" | "openai" | "demo"; busca: "tavily" | "gdelt" | "demo"; demonstrativo: boolean }
 export interface RegistroPremissas { premissas: string[]; horizonte_meses: number; condicoes_iniciais: string[]; limitacoes: string[] }
 export interface Resultado {
   id: string; criada_em: string; status: Status; entrada: SimulacaoEntrada; caso: Caso; registro: RegistroPremissas | null;
@@ -55,6 +55,7 @@ export interface Comparacao {
   mudancas: { item: string; antes: string; depois: string }[]; inalteradas: string[]; aviso: string;
 }
 export interface Saude {
-  versao: string; modo: Modo; modelo: string | null; credenciais: { gemini: boolean; tavily: boolean };
+  versao: string; modo: Modo; modelo: string | null; credenciais: { gemini: boolean; tavily: boolean; openai_compat?: boolean };
+  provedores?: { ia: string; busca: string };
   limites: Record<string, number>; uso_hoje: Record<string, number>;
 }

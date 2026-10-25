@@ -3,6 +3,7 @@ import { api } from "../api/cliente";
 import type { Saude } from "../api/tipos";
 import { CaixaErro, Carregando, Secao } from "../componentes/Estado";
 import { SeloDemo } from "../componentes/Selos";
+import { NOME_BUSCA, NOME_IA } from "../lib/rotulos";
 
 const NOMES_LIMITE: Record<string, string> = {
   max_revisoes: "Revisões do Verifier por simulação", max_chamadas_llm_por_simulacao: "Chamadas de IA por simulação",
@@ -28,10 +29,23 @@ export function Configuracoes() {
         <div className="cartao space-y-3 p-4 text-sm">
           <div className="flex flex-wrap items-center gap-2">{s.modo.demonstrativo ? <SeloDemo /> : <span className="rounded-full border border-baixo/50 px-2.5 py-0.5 text-xs font-semibold text-baixo">IA e busca reais</span>}<span className="text-suave">versão {s.versao}</span></div>
           <dl className="grid gap-2 sm:grid-cols-2">
-            <div className="rounded-lg border border-borda p-3"><dt className="text-xs text-suave">GEMINI_API_KEY</dt><dd className={s.credenciais.gemini ? "text-baixo" : "text-moderado"}>{s.credenciais.gemini ? "Configurada" : "Ausente — IA em modo demonstrativo"}</dd>{s.modelo && <dd className="font-mono text-xs text-suave">{s.modelo}</dd>}</div>
-            <div className="rounded-lg border border-borda p-3"><dt className="text-xs text-suave">TAVILY_API_KEY</dt><dd className={s.credenciais.tavily ? "text-baixo" : "text-moderado"}>{s.credenciais.tavily ? "Configurada" : "Ausente — sem pesquisa na web"}</dd></div>
+            <div className="rounded-lg border border-borda p-3">
+              <dt className="text-xs text-suave">IA (ATLAS_PROVEDOR_IA = {s.provedores?.ia ?? "auto"})</dt>
+              <dd className={s.modo.ia === "demo" ? "text-moderado" : "text-baixo"}>{s.modo.ia === "demo" ? "Modo demonstrativo" : NOME_IA[s.modo.ia]}</dd>
+              {s.modelo && <dd className="font-mono text-xs text-suave quebra">{s.modelo}</dd>}
+            </div>
+            <div className="rounded-lg border border-borda p-3">
+              <dt className="text-xs text-suave">Busca (ATLAS_PROVEDOR_BUSCA = {s.provedores?.busca ?? "auto"})</dt>
+              <dd className={s.modo.busca === "demo" ? "text-moderado" : "text-baixo"}>{s.modo.busca === "demo" ? "Sem pesquisa na web" : NOME_BUSCA[s.modo.busca]}</dd>
+            </div>
           </dl>
-          {s.modo.demonstrativo && <p className="text-suave">Para usar IA e busca reais, defina as variáveis no arquivo <code className="font-mono text-texto">backend/.env</code> (veja <code className="font-mono text-texto">.env.example</code>) e reinicie o servidor. O plano gratuito tem limites por minuto e por dia; o ATLAS não contrata planos pagos.</p>}
+          <p className="text-xs text-suave">Chaves configuradas: Gemini {s.credenciais.gemini ? "sim" : "não"} · Tavily {s.credenciais.tavily ? "sim" : "não"} · API compatível com OpenAI {s.credenciais.openai_compat ? "sim" : "não"}. O valor das chaves nunca sai do servidor.</p>
+          {s.modo.demonstrativo && (
+            <div className="space-y-2 rounded-lg border border-acento/30 bg-acento/5 p-3 text-suave">
+              <p><strong className="text-texto">Opção 100% gratuita, sem chaves:</strong> instale o <span className="text-texto">Ollama</span>, rode <code className="font-mono text-texto">ollama pull qwen2.5:7b</code> e, em <code className="font-mono text-texto">backend/.env</code>, defina <code className="font-mono text-texto">ATLAS_PROVEDOR_IA=ollama</code> e <code className="font-mono text-texto">ATLAS_PROVEDOR_BUSCA=gdelt</code>. Depois reinicie o servidor.</p>
+              <p>Também é possível usar Gemini e Tavily (planos gratuitos com limites) ou outra API compatível com a OpenAI. Veja <code className="font-mono text-texto">.env.example</code>. O ATLAS não contrata planos pagos.</p>
+            </div>
+          )}
         </div>
       </Secao>
 

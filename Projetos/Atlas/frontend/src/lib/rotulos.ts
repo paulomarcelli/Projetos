@@ -45,3 +45,6 @@ export function rotuloDaFaixa(v: number, min: number, max: number, rotulos: stri
   const i = Math.min(rotulos.length - 1, Math.floor(((v - min) / (max - min || 1)) * rotulos.length));
   return rotulos[i];
 }
+
+export const NOME_IA: Record<string, string> = { gemini: "Gemini", ollama: "Ollama (local)", openai: "API compatível com OpenAI", demo: "demonstrativa" };
+export const NOME_BUSCA: Record<string, string> = { tavily: "Tavily", gdelt: "GDELT", demo: "desativada" };

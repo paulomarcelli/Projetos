@@ -49,6 +49,25 @@ Os pesos estão explícitos em `atlas/casos.py`. São escolhas de modelagem, nã
 
 ## Integrações
 
+### Opção gratuita sem chaves: Ollama + GDELT
+
+| | Provedor | Custo | Observações |
+|---|---|---|---|
+| IA | **Ollama** (local) | grátis, sem cota | Roda o modelo no seu computador; nenhum dado sai da máquina. Modelos de 7–8B precisam de ~8 GB de RAM e são mais lentos em CPU (por isso o timeout de 300 s). Analisam pior que modelos grandes; o Verifier ajuda a barrar erros. |
+| Busca | **GDELT DOC 2.0** | grátis, sem chave | Notícias do mundo todo dos últimos 3 meses. Devolve só título, link, veículo, país e data, **sem o texto da matéria** — as evidências ficam mais fracas, e o ATLAS registra isso. Limite de 1 consulta a cada 5 s, respeitado automaticamente. |
+
+```bash
+# 1. instale o Ollama (https://ollama.com) e baixe um modelo
+ollama pull qwen2.5:7b
+# 2. em backend/.env
+ATLAS_PROVEDOR_IA=ollama
+ATLAS_PROVEDOR_BUSCA=gdelt
+```
+
+Os provedores podem ser combinados (por exemplo, Ollama + Tavily, ou Gemini + GDELT). `ATLAS_PROVEDOR_IA=openai` aceita qualquer API no formato da OpenAI (Groq, OpenRouter, Mistral, LM Studio) via `ATLAS_OPENAI_BASE_URL`, `ATLAS_OPENAI_MODEL` e `ATLAS_OPENAI_API_KEY`. Os planos gratuitos desses serviços mudam com frequência; confira os termos antes de usar.
+
+### Gemini e Tavily
+
 - **Google Gemini** (REST `generateContent`, saída JSON). A chave vai no header `x-goog-api-key`, só no servidor.
 - **Tavily** (`POST /search`), atrás da interface `ProvedorBusca`, o que permite trocar de provedor implementando `buscar()`.
 - **Cache** de buscas e de prompts idênticos (`ATLAS_CACHE_HORAS`).
@@ -93,7 +112,12 @@ Todas ficam em `backend/.env` (veja `backend/.env.example`). O frontend nunca re
 
 | Variável | Padrão | Uso |
 |---|---|---|
-| `GEMINI_API_KEY` | — | Ativa a IA real. Sem ela, a IA fica em modo demonstrativo. |
+| `ATLAS_PROVEDOR_IA` | `auto` | `auto` (Gemini se houver chave), `gemini`, `ollama`, `openai` ou `demo`. |
+| `ATLAS_PROVEDOR_BUSCA` | `auto` | `auto` (Tavily se houver chave), `tavily`, `gdelt` ou `demo`. |
+| `ATLAS_OLLAMA_URL` / `ATLAS_OLLAMA_MODEL` | `localhost:11434` / `qwen2.5:7b` | Servidor e modelo do Ollama. |
+| `ATLAS_OLLAMA_TIMEOUT_S` | 300 | Modelos locais em CPU são lentos. |
+| `ATLAS_OPENAI_BASE_URL` / `_MODEL` / `_API_KEY` | — | API compatível com a OpenAI. |
+| `GEMINI_API_KEY` | — | Ativa o Gemini (com `ATLAS_PROVEDOR_IA=auto` ou `gemini`). |
 | `ATLAS_GEMINI_MODEL` | `gemini-3.6-flash` | Modelo do Gemini. Confira no Google AI Studio se ele está no plano gratuito do seu projeto. |
 | `TAVILY_API_KEY` | — | Ativa a pesquisa na web. |
 | `ATLAS_MODO` | `auto` | `demo` força o modo demonstrativo. |
@@ -101,7 +125,7 @@ Todas ficam em `backend/.env` (veja `backend/.env.example`). O frontend nunca re
 | `ATLAS_MAX_REVISOES` | 2 | Ciclos Verifier → Analyst. |
 | `ATLAS_MAX_BUSCAS` / `ATLAS_RESULTADOS_POR_BUSCA` | 4 / 4 | Orçamento de pesquisa por simulação. |
 | `ATLAS_MAX_CHAMADAS_LLM` | 8 | Teto de chamadas de IA por simulação. |
-| `ATLAS_MAX_SIMULACOES_DIA` | 40 | Teto diário de simulações com IA. |
+| `ATLAS_MAX_SIMULACOES_DIA` | 40 | Teto diário de simulações com IA remota (o Ollama, local, não conta). |
 | `ATLAS_TIMEOUT_S` / `ATLAS_TENTATIVAS_API` | 45 / 2 | Timeout e retentativas. |
 | `ATLAS_CACHE_HORAS` | 24 | Validade do cache. |
 | `ATLAS_CORS` | localhost:5173 | Origens permitidas. |
@@ -122,6 +146,7 @@ O ATLAS não contrata planos pagos. No plano gratuito do Gemini, o Google pode u
 - O Verifier por IA pode deixar passar erros sutis; as regras determinísticas cobrem apenas padrões verificáveis.
 - O limitador de taxa fica em memória (um processo). Não há autenticação de usuários.
 - O caso personalizado usa variáveis genéricas e não tem atores no mapa.
+- Com GDELT, as evidências se baseiam apenas em títulos de notícias; com Ollama, a qualidade depende do modelo local escolhido.
 
 ## Melhorias futuras
 

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from ..modelos import Evidencia, Fonte, PacoteEvidencias, agora
-from ..provedores.erros import MENSAGENS, ErroProvedor
+from ..provedores.erros import ErroProvedor, descrever
 from ..seguranca import REGRA_DADOS, delimitar, limpar
 from .base import Contexto, json_compacto
 
@@ -32,8 +32,8 @@ class Researcher:
             try:
                 resultados = await self._buscar(ctx, consulta)
             except ErroProvedor as e:
-                falhas.append(f"{consulta}: {MENSAGENS.get(e.motivo, e.mensagem)}")
-                await ctx.emitir(self.nome, "aviso", f"Busca falhou para “{consulta}”: {MENSAGENS.get(e.motivo, e.mensagem)}", {"motivo": e.motivo})
+                falhas.append(f"{consulta}: {descrever(e)}")
+                await ctx.emitir(self.nome, "aviso", f"Busca falhou para “{consulta}”: {descrever(e)}", {"motivo": e.motivo})
                 if e.motivo in ("cota", "cota_diaria", "chave"):
                     break
                 continue

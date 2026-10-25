@@ -130,7 +130,13 @@ O OmniRoute também pode entrar no roteador do ATLAS como mais um provedor, por 
 
 > Sobre o fork `ChrisCompton/omniroute`: ele é uma cópia sem alterações próprias da versão 3.6.1 (abril de 2026) do projeto oficial, que hoje está na 3.8.x. Prefira o pacote oficial `omniroute` do npm.
 >
-> A integração do ATLAS com o OmniRoute está testada com respostas HTTP simuladas. O OmniRoute em si **não foi executado** no ambiente de desenvolvimento, porque a instalação de software de terceiros exigia autorização.
+**Testado de verdade (fork 3.6.1):** o OmniRoute rodou localmente com as chaves do Gemini e da Groq e um combo `atlas` (estratégia `priority`: `groq/openai/gpt-oss-120b` → `gemini/gemini-3.7-flash` → `gemini/gemini-3.6-flash`). Com `ATLAS_OMNIROUTE_MODEL=atlas`, uma simulação real foi concluída: a Groq respondeu a análise completa em 5,5 s, sem fallback. Observações do teste:
+
+- O combo é criado no painel (Combos) ou via `POST /api/combos`, com o login de administrador.
+- O catálogo `/v1/models` do OmniRoute é fixo e pode listar modelos que a sua conta não tem. Um modelo inexistente (HTTP 404) **pausa a conta inteira** do provedor por cerca de 2 minutos. Use só modelos confirmados na sua conta.
+- A contagem `prompt_tokens` que o OmniRoute devolve veio cerca de 2.000 tokens acima do real. O log dele mostra o valor correto (`[USAGE] … in=`). Por isso, a contagem de tokens do ATLAS fica inflada com o OmniRoute.
+- Sem `"stream": false` no pedido, o OmniRoute responde em streaming. O ATLAS já envia esse campo.
+- A versão 3.6.1 **não tem** o modo STRICT_ZERO_COST (só a partir da 3.8.50). Use apenas chaves de planos gratuitos sem cartão, ou atualize para a versão oficial.
 
 ### Gemini e Tavily
 

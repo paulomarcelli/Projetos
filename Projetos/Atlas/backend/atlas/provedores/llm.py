@@ -146,6 +146,7 @@ class CompatLLM:
             "messages": [{"role": "system", "content": sistema}, {"role": "user", "content": usuario}],
             "response_format": {"type": "json_object"},
             "temperature": 0.3,
+            "stream": False,  # gateways como o OmniRoute fazem streaming se o pedido não disser nada
         }
         if self.esforco_raciocinio:
             corpo["reasoning_effort"] = self.esforco_raciocinio

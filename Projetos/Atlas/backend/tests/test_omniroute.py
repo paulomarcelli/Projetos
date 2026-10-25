@@ -53,3 +53,15 @@ async def test_omniroute_desligado_explica_o_que_fazer():
     with pytest.raises(ErroProvedor) as e:
         await llm.gerar_json("t", "s", "u", {})
     assert "OmniRoute está rodando" in e.value.mensagem
+
+
+async def test_pedido_desliga_streaming_explicitamente():
+    corpos = []
+
+    def h(req):
+        corpos.append(json.loads(req.content))
+        return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
+
+    llm = CompatLLM("omniroute", "http://localhost:20128/v1", "atlas", tentativas=1, cliente=httpx.AsyncClient(transport=httpx.MockTransport(h)))
+    await llm.gerar_json("t", "s", "u", {})
+    assert corpos[0]["stream"] is False

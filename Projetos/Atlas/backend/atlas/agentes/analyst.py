@@ -74,5 +74,8 @@ def _resumo_erros(e: ValidationError) -> list[str]:
     saida = []
     for err in e.errors()[:12]:
         local = ".".join(str(x) for x in err["loc"])
-        saida.append(f"{local}: campo obrigatório ausente" if err["type"] == "missing" else f"{local}: {err['msg']}")
+        if err["type"] == "missing":
+            saida.append(f"{local}: campo obrigatório ausente")
+        else:
+            saida.append(f"{local}: {err['msg']} (recebido: {str(err.get('input'))[:40]!r})")
     return saida

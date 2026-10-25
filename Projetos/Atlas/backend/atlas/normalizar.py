@@ -18,6 +18,9 @@ NIVEL = {
     "baixo": "baixo", "baixa": "baixo", "low": "baixo",
     "moderado": "moderado", "moderada": "moderado", "medio": "moderado", "media": "moderado", "moderate": "moderado", "medium": "moderado",
     "alto": "alto", "alta": "alto", "high": "alto", "elevado": "alto", "elevada": "alto",
+    "muito baixo": "baixo", "muito baixa": "baixo", "very low": "baixo", "leve": "baixo", "fraco": "baixo", "fraca": "baixo", "minimo": "baixo", "minima": "baixo", "reduzido": "baixo", "reduzida": "baixo",
+    "intermediario": "moderado", "intermediaria": "moderado", "razoavel": "moderado",
+    "muito alto": "alto", "muito alta": "alto", "very high": "alto", "critico": "alto", "critica": "alto", "critical": "alto", "severo": "alto", "severa": "alto", "forte": "alto", "extremo": "alto", "extrema": "alto", "significativo": "alto", "significativa": "alto",
 }
 NATUREZA = {
     "fato": "fato", "fact": "fato", "fato verificado": "fato",
@@ -29,11 +32,34 @@ CENARIO = {"continuidade": "continuidade", "continuity": "continuidade", "status
 POSTURA = {"cooperativa": "cooperativa", "cooperativo": "cooperativa", "cooperative": "cooperativa", "neutra": "neutra", "neutro": "neutra", "neutral": "neutra", "confrontacional": "confrontacional", "confrontational": "confrontacional"}
 RELACAO = {"cooperacao": "cooperacao", "cooperation": "cooperacao", "tensao": "tensao", "tension": "tensao", "dependencia": "dependencia", "dependency": "dependencia", "neutra": "neutra", "neutral": "neutra"}
 DIMENSAO = {"economico": "economico", "economica": "economico", "economic": "economico", "diplomatico": "diplomatico", "diplomatica": "diplomatico", "diplomatic": "diplomatico", "estrategico": "estrategico", "estrategica": "estrategico", "strategic": "estrategico"}
-TIPO_MATRIZ = {"risco": "risco", "risk": "risco", "oportunidade": "oportunidade", "opportunity": "oportunidade"}
+TIPO_MATRIZ = {"risco": "risco", "risk": "risco", "ameaca": "risco", "threat": "risco", "riscos": "risco", "oportunidade": "oportunidade", "opportunity": "oportunidade", "oportunidades": "oportunidade"}
+
+
+def _nivel_numerico(valor: float) -> str | None:
+    """1–3 → baixo/moderado/alto; 0–1 e 0–100 usam as mesmas faixas do motor (34/67)."""
+    if isinstance(valor, bool):
+        return None
+    if float(valor).is_integer() and 1 <= valor <= 3:
+        return ("baixo", "moderado", "alto")[int(valor) - 1]
+    escala = valor * 100 if 0 <= valor <= 1 else valor
+    if not 0 <= escala <= 100:
+        return None
+    return "baixo" if escala < 34 else "moderado" if escala < 67 else "alto"
 
 
 def _m(tabela: dict[str, str], valor: Any) -> Any:
-    return tabela.get(_chave(valor), valor) if isinstance(valor, str) else valor
+    if isinstance(valor, str):
+        chave = _chave(valor)
+        if chave in tabela:
+            return tabela[chave]
+        # "Alto (impacto relevante)" ou "alto - pressão" → usa a primeira palavra/expressão reconhecida
+        for sep in ("(", " - ", ":", ",", "/"):
+            if sep in chave and chave.split(sep)[0].strip() in tabela:
+                return tabela[chave.split(sep)[0].strip()]
+        return valor
+    if tabela is NIVEL and isinstance(valor, (int, float)):
+        return _nivel_numerico(valor) or valor
+    return valor
 
 
 def _ajustar(obj: dict, campo: str, tabela: dict[str, str]) -> None:

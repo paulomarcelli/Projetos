@@ -223,6 +223,7 @@ class Uso(Estrito):
     tokens_saida: int = 0
     buscas: int = 0
     cache_hits: int = 0
+    por_provedor: dict[str, int] = Field(default_factory=dict, description="respostas de IA por provedor (roteamento)")
 
 
 class RegistroPremissas(Estrito):
@@ -233,7 +234,7 @@ class RegistroPremissas(Estrito):
 
 
 class Modo(Estrito):
-    ia: Literal["gemini", "ollama", "openai", "demo"]
+    ia: Literal["gemini", "ollama", "openai", "roteado", "demo"]
     busca: Literal["tavily", "gdelt", "demo"]
 
     @computed_field  # type: ignore[prop-decorator]

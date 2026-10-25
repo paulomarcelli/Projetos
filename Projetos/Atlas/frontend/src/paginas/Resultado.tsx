@@ -8,7 +8,7 @@ import { IndicesMotor } from "../componentes/IndicesMotor";
 import { MapaAtores } from "../componentes/MapaAtores";
 import { MatrizRisco } from "../componentes/MatrizRisco";
 import { SeloDemo, SeloNivel, SeloStatus, TagNatureza } from "../componentes/Selos";
-import { CENARIO, DIMENSAO, NOME_BUSCA, NOME_IA, dataHora } from "../lib/rotulos";
+import { CENARIO, DIMENSAO, NOME_BUSCA, NOME_IA, dataHora, nomeProvedor } from "../lib/rotulos";
 
 const ANCORAS = [
   ["resumo", "Resumo"], ["cenarios", "Cenários"], ["impactos", "Impactos"], ["atores", "Atores"], ["riscos", "Riscos"],
@@ -260,6 +260,9 @@ export function Resultado() {
         <Secao id="motor" titulo="Motor determinístico" subtitulo="Índices calculados em código a partir das variáveis — iguais para as mesmas entradas. São construções do modelo, não probabilidades.">
           <IndicesMotor motor={r.motor} caso={r.caso} />
           <p className="mt-3 text-xs text-suave">Uso: {r.uso.chamadas_llm} chamadas de IA · {r.uso.buscas} buscas · {r.uso.cache_hits} respostas de cache · {(r.uso.tokens_entrada + r.uso.tokens_saida).toLocaleString("pt-BR")} tokens</p>
+          {r.uso.por_provedor && Object.keys(r.uso.por_provedor).length > 0 && (
+            <p className="mt-1 text-xs text-suave quebra">Respostas por modelo: {Object.entries(r.uso.por_provedor).map(([k, v]) => `${nomeProvedor(k)}: ${v}`).join(" · ")}</p>
+          )}
         </Secao>
       )}
     </article>

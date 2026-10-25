@@ -138,3 +138,16 @@ async def test_tavily_timeout():
 
 async def test_demo_busca_nao_inventa_fontes():
     assert await DemoBusca().buscar("qualquer", 5) == []
+
+
+async def test_gemini_envia_nivel_de_raciocinio_so_se_configurado():
+    corpos = []
+
+    def h(req):
+        corpos.append(json.loads(req.content))
+        return httpx.Response(200, json=resposta_gemini("{}"))
+
+    await GeminiLLM("k", "m", tentativas=1, cliente=cliente(h), nivel_raciocinio="low").gerar_json("t", "s", "u", {})
+    await GeminiLLM("k", "m", tentativas=1, cliente=cliente(h)).gerar_json("t", "s", "u", {})
+    assert corpos[0]["generationConfig"]["thinkingConfig"] == {"thinkingLevel": "low"}
+    assert "thinkingConfig" not in corpos[1]["generationConfig"]

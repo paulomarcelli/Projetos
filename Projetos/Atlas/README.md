@@ -87,6 +87,28 @@ No plano gratuito observado, o limite era de **8.000 tokens por minuto** e 1.000
 - Sem evidência com fonte rastreável, a **confiança é rebaixada para "baixo"**, com aviso no resultado.
 - Com IA real e sem busca, a IA nunca é chamada para produzir "evidências": elas seriam inventadas.
 
+### Roteador de modelos (Gemini + Groq + Ollama)
+
+Com `ATLAS_PROVEDOR_IA=roteado`, o ATLAS combina os provedores configurados para economizar cota e não perder simulações:
+
+- **Cada agente tem uma ordem de preferência.** Por padrão, o Gemini, que segue melhor o formato JSON, faz a análise principal, e a API compatível (por exemplo, a Groq) extrai evidências e verifica. Cada um serve de reserva para o outro. A ordem é configurável em `ATLAS_ROTAS`.
+- **Fallback automático.** Se um provedor falhar por cota, sobrecarga (HTTP 503), tempo esgotado ou formato inválido, o próximo assume. Se todos falharem por motivo temporário, o roteador espera o tempo indicado (até 65 s) e tenta mais uma volta.
+- **Vários modelos do Gemini, cotas somadas.** No plano gratuito observado, a cota é de **20 requisições por dia por modelo**. Em `ATLAS_GEMINI_MODELOS=gemini-3.7-flash,gemini-3.8-flash,gemini-3.6-flash`, cada modelo entra como um provedor separado. Um modelo com a cota diária esgotada sai da rotação.
+- **Transparência.** Cada troca de provedor aparece na linha do tempo da execução, o resultado mostra quantas respostas vieram de cada modelo, e a tela de Configurações mostra as rotas.
+
+```bash
+ATLAS_PROVEDOR_IA=roteado
+GEMINI_API_KEY=...
+ATLAS_GEMINI_MODELOS=gemini-3.7-flash,gemini-3.8-flash,gemini-3.6-flash
+ATLAS_OPENAI_BASE_URL=https://api.groq.com/openai/v1
+ATLAS_OPENAI_MODEL=openai/gpt-oss-120b
+ATLAS_OPENAI_API_KEY=gsk_...
+ATLAS_OPENAI_REASONING_EFFORT=low
+ATLAS_PROVEDOR_BUSCA=gdelt
+```
+
+Serviços como o **OpenRouter**, que reúne centenas de modelos atrás de uma chave, também funcionam como provedor `openai` (`ATLAS_OPENAI_BASE_URL=https://openrouter.ai/api/v1`).
+
 ### Gemini e Tavily
 
 - **Google Gemini** (REST `generateContent`, saída JSON). A chave vai no header `x-goog-api-key`, só no servidor.
@@ -133,7 +155,10 @@ Todas ficam em `backend/.env` (veja `backend/.env.example`). O frontend nunca re
 
 | Variável | Padrão | Uso |
 |---|---|---|
-| `ATLAS_PROVEDOR_IA` | `auto` | `auto` (Gemini se houver chave), `gemini`, `ollama`, `openai` ou `demo`. |
+| `ATLAS_PROVEDOR_IA` | `auto` | `auto` (Gemini se houver chave), `gemini`, `ollama`, `openai`, `roteado` ou `demo`. |
+| `ATLAS_GEMINI_MODELOS` | — | Lista de modelos do Gemini para o roteador (cada um com cota própria). |
+| `ATLAS_ROTAS` | padrão | Ordem de provedores por agente, ex.: `analyst=gemini,openai;researcher=openai,gemini`. |
+| `ATLAS_GEMINI_THINKING` | — | `low`/`high`: nível de raciocínio do Gemini 3. |
 | `ATLAS_PROVEDOR_BUSCA` | `auto` | `auto` (Tavily se houver chave), `tavily`, `gdelt` ou `demo`. |
 | `ATLAS_OLLAMA_URL` / `ATLAS_OLLAMA_MODEL` | `localhost:11434` / `qwen2.5:7b` | Servidor e modelo do Ollama. |
 | `ATLAS_OLLAMA_TIMEOUT_S` | 300 | Modelos locais em CPU são lentos. |

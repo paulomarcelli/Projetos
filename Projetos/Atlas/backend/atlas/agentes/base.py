@@ -43,8 +43,12 @@ class Contexto:
             if self.uso.chamadas_llm >= self.cfg.max_chamadas_llm:
                 raise ErroProvedor("limite_local", f"Limite de {self.cfg.max_chamadas_llm} chamadas de IA por simulação atingido.")
         resp = await self.llm.gerar_json(tarefa, sistema, usuario, contexto)
+        for aviso in resp.avisos:
+            await self.emitir(agente, "aviso", aviso, {"tarefa": tarefa})
         if self.llm.nome != "demo":
-            self.uso.chamadas_llm += 1
+            self.uso.chamadas_llm += resp.chamadas
+            prov = resp.provedor or self.llm.nome
+            self.uso.por_provedor[prov] = self.uso.por_provedor.get(prov, 0) + 1
             self.uso.tokens_entrada += resp.tokens_entrada
             self.uso.tokens_saida += resp.tokens_saida
             self.banco.somar_uso(chamadas_llm=1, tokens=resp.tokens_entrada + resp.tokens_saida)

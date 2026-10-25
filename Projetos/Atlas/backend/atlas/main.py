@@ -68,6 +68,7 @@ def criar_app(cfg: Config | None = None, banco: Banco | None = None, fabrica_pro
             "modelo": cfg.modelo_ia if llm.nome != "demo" else None,
             "credenciais": {"gemini": bool(cfg.gemini_api_key), "tavily": bool(cfg.tavily_api_key), "openai_compat": bool(cfg.openai_api_key)},
             "provedores": {"ia": cfg.provedor_ia, "busca": cfg.provedor_busca},
+            "rotas": cfg.rotas_expandidas if cfg.ia == "roteado" else None,
             "limites": {"max_revisoes": cfg.max_revisoes, "max_chamadas_llm_por_simulacao": cfg.max_chamadas_llm, "max_buscas_por_simulacao": cfg.max_buscas, "max_simulacoes_dia": cfg.max_simulacoes_dia},
             "uso_hoje": uso,
         }

@@ -11,6 +11,8 @@ export const NATUREZA: Record<Natureza, { rotulo: string; dica: string }> = {
 };
 
 export const DIMENSAO: Record<Dimensao, string> = { economico: "Econômico", diplomatico: "Diplomático", estrategico: "Estratégico" };
+/** Para "Pressão …" (feminino). */
+export const PRESSAO: Record<Dimensao, string> = { economico: "Pressão econômica", diplomatico: "Pressão diplomática", estrategico: "Pressão estratégica" };
 
 export const CENARIO: Record<TipoCenario, { rotulo: string; descricao: string }> = {
   continuidade: { rotulo: "Continuidade", descricao: "Tendências atuais se mantêm" },
@@ -46,5 +48,12 @@ export function rotuloDaFaixa(v: number, min: number, max: number, rotulos: stri
   return rotulos[i];
 }
 
-export const NOME_IA: Record<string, string> = { gemini: "Gemini", ollama: "Ollama (local)", openai: "API compatível com OpenAI", demo: "demonstrativa" };
+export const NOME_IA: Record<string, string> = { gemini: "Gemini", ollama: "Ollama (local)", openai: "API compatível com OpenAI", roteado: "Roteador de modelos", demo: "demonstrativa" };
+
+/** 'gemini:gemini-3.7-flash' → 'Gemini (gemini-3.7-flash)'; 'openai' → 'API compatível (ex.: Groq)'. */
+export function nomeProvedor(chave: string): string {
+  const [familia, modelo] = chave.split(":");
+  const base = familia === "openai" ? "API compatível (ex.: Groq)" : NOME_IA[familia] ?? familia;
+  return modelo ? `${base} (${modelo})` : base;
+}
 export const NOME_BUSCA: Record<string, string> = { tavily: "Tavily", gdelt: "GDELT", demo: "desativada" };

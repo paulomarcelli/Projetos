@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Caso, IndiceDimensao, SaidaMotor } from "../api/tipos";
-import { DIMENSAO } from "../lib/rotulos";
+import { DIMENSAO, PRESSAO } from "../lib/rotulos";
 import { SeloNivel } from "./Selos";
 
 function Barra({ titulo, ind, nomes }: { titulo: string; ind: IndiceDimensao; nomes: Record<string, string> }) {
@@ -40,7 +40,7 @@ export function IndicesMotor({ motor, caso }: { motor: SaidaMotor; caso: Caso })
     <div className="space-y-3">
       <div className="grid gap-3 md:grid-cols-2">
         <Barra titulo="Propensão de escalada (modelo)" ind={motor.propensao_escalada} nomes={nomes} />
-        {(Object.keys(DIMENSAO) as (keyof typeof DIMENSAO)[]).map((d) => motor.indices[d] && <Barra key={d} titulo={`Pressão ${DIMENSAO[d].toLowerCase()}`} ind={motor.indices[d]} nomes={nomes} />)}
+        {(Object.keys(DIMENSAO) as (keyof typeof DIMENSAO)[]).map((d) => motor.indices[d] && <Barra key={d} titulo={PRESSAO[d]} ind={motor.indices[d]} nomes={nomes} />)}
       </div>
       <details className="rounded-lg border border-borda bg-fundo/40 p-3 text-sm">
         <summary className="cursor-pointer select-none font-medium">Como os índices são calculados</summary>

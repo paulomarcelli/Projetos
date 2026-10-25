@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 import httpx
@@ -18,6 +18,9 @@ class RespostaLLM:
     dados: dict[str, Any]
     tokens_entrada: int = 0
     tokens_saida: int = 0
+    provedor: str | None = None  # quem respondeu (útil no roteamento)
+    chamadas: int = 1  # requisições feitas, contando as que falharam antes do fallback
+    avisos: list[str] = field(default_factory=list)
 
 
 class ProvedorLLM(Protocol):
@@ -49,7 +52,8 @@ class GeminiLLM:
     nome = "gemini"
     URL = "https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent"
 
-    def __init__(self, chave: str, modelo: str, timeout_s: float = 45.0, tentativas: int = 2, cliente: httpx.AsyncClient | None = None):
+    def __init__(self, chave: str, modelo: str, timeout_s: float = 45.0, tentativas: int = 2, cliente: httpx.AsyncClient | None = None, nivel_raciocinio: str | None = None):
+        self.nivel_raciocinio = nivel_raciocinio
         self._chave = chave
         self.modelo = modelo
         self.timeout_s = timeout_s
@@ -62,6 +66,8 @@ class GeminiLLM:
             "contents": [{"role": "user", "parts": [{"text": usuario}]}],
             "generationConfig": {"responseMimeType": "application/json", "temperature": 0.3, "maxOutputTokens": 8192},
         }
+        if self.nivel_raciocinio:
+            corpo["generationConfig"]["thinkingConfig"] = {"thinkingLevel": self.nivel_raciocinio}
         ultimo: ErroProvedor | None = None
         for tentativa in range(self.tentativas):
             try:
@@ -86,7 +92,7 @@ class GeminiLLM:
                 await cliente.aclose()
         if r.status_code == 429:
             diaria = limite_diario(r.text)
-            raise ErroProvedor("cota_diaria" if diaria else "cota", "Limite do Gemini atingido.", temporario=not diaria)
+            raise ErroProvedor("cota_diaria" if diaria else "cota", f"{'Cota diária' if diaria else 'Limite por minuto'} do {self.modelo} atingido.", temporario=not diaria)
         if r.status_code in (401, 403):
             raise ErroProvedor("chave", "Chave do Gemini recusada.")
         if r.status_code >= 500:
@@ -191,3 +197,72 @@ class CompatLLM:
             raise ErroProvedor("resposta_invalida", f"Resposta do {rotulo} sem conteúdo.") from e
         uso = dados.get("usage") or {}
         return RespostaLLM(extrair_json(texto), int(uso.get("prompt_tokens", 0)), int(uso.get("completion_tokens", 0)))
+
+
+
+# Tarefa → agente (o roteamento é definido por agente)
+TAREFA_AGENTE = {"extrair_evidencias": "researcher", "analisar": "analyst", "verificar": "verifier"}
+NOMES_PROVEDOR = {"gemini": "Gemini", "openai": "API compatível (ex.: Groq)", "ollama": "Ollama"}
+
+
+def nome_legivel(chave: str) -> str:
+    """'gemini:gemini-3.7-flash' → 'Gemini (gemini-3.7-flash)'."""
+    familia, _, modelo = chave.partition(":")
+    base = NOMES_PROVEDOR.get(familia, familia)
+    return f"{base} ({modelo})" if modelo else base
+
+
+class RoteadorLLM:
+    """Reúne vários provedores: cada agente tem uma ordem de preferência e, se um provedor
+    falhar por cota, chave, rede ou formato, o próximo assume (fallback).
+
+    Distribui o consumo entre as cotas gratuitas e deixa o modelo mais forte para o Analyst.
+    """
+
+    nome = "roteado"
+    PASSA_ADIANTE = {"cota", "cota_diaria", "chave", "indisponivel", "timeout", "resposta_invalida"}
+
+    def __init__(self, provedores: dict[str, Any], rotas: dict[str, list[str]], rodadas: int = 2):
+        self.rodadas = max(1, rodadas)
+        if not provedores:
+            raise ValueError("Roteador sem provedores")
+        self.provedores = provedores
+        padrao = list(provedores)
+        self.rotas = {ag: [p for p in rotas.get(ag, padrao) if p in provedores] or padrao for ag in ("researcher", "analyst", "verifier")}
+        self.esgotados: set[str] = set()  # cota diária atingida: não tenta de novo nesta execução
+
+    def descrever(self) -> dict[str, list[str]]:
+        return dict(self.rotas)
+
+    async def gerar_json(self, tarefa: str, sistema: str, usuario: str, contexto: dict[str, Any]) -> RespostaLLM:
+        avisos: list[str] = []
+        chamadas = 0
+        ultimo: ErroProvedor | None = None
+        for rodada in range(self.rodadas):
+            ordem = [p for p in self.rotas.get(TAREFA_AGENTE.get(tarefa, "analyst"), list(self.provedores)) if p not in self.esgotados]
+            temporarios: list[ErroProvedor] = []
+            for nome in ordem:
+                chamadas += 1
+                try:
+                    r = await self.provedores[nome].gerar_json(tarefa, sistema, usuario, contexto)
+                except ErroProvedor as e:
+                    if e.motivo not in self.PASSA_ADIANTE:
+                        raise
+                    if e.motivo == "cota_diaria":
+                        self.esgotados.add(nome)
+                    if e.temporario:
+                        temporarios.append(e)
+                    ultimo = e
+                    avisos.append(f"{nome_legivel(nome)} falhou ({e.mensagem}); tentando o próximo provedor.")
+                    continue
+                r.provedor, r.chamadas, r.avisos = nome, chamadas, avisos
+                return r
+            # todos falharam: se alguma falha era temporária (sobrecarga, limite por minuto), espera e tenta mais uma volta
+            if not temporarios or rodada == self.rodadas - 1:
+                break
+            espera = min(65.0, max([5.0] + [e.espera_s for e in temporarios]))
+            avisos.append(f"Todos os provedores estão temporariamente ocupados; nova tentativa em {espera:.0f} s.")
+            await asyncio.sleep(espera)
+        if ultimo is None:
+            raise ErroProvedor("cota_diaria", "Todos os provedores de IA atingiram a cota diária.")
+        raise ErroProvedor(ultimo.motivo, f"Todos os provedores falharam. Último: {ultimo.mensagem}", temporario=ultimo.temporario)

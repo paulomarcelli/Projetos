@@ -3,7 +3,7 @@ import { api } from "../api/cliente";
 import type { Saude } from "../api/tipos";
 import { CaixaErro, Carregando, Secao } from "../componentes/Estado";
 import { SeloDemo } from "../componentes/Selos";
-import { NOME_BUSCA, NOME_IA } from "../lib/rotulos";
+import { NOME_BUSCA, NOME_IA, nomeProvedor } from "../lib/rotulos";
 
 const NOMES_LIMITE: Record<string, string> = {
   max_revisoes: "Revisões do Verifier por simulação", max_chamadas_llm_por_simulacao: "Chamadas de IA por simulação",
@@ -39,6 +39,16 @@ export function Configuracoes() {
               <dd className={s.modo.busca === "demo" ? "text-moderado" : "text-baixo"}>{s.modo.busca === "demo" ? "Sem pesquisa na web" : NOME_BUSCA[s.modo.busca]}</dd>
             </div>
           </dl>
+          {s.rotas && (
+            <div className="rounded-lg border border-borda p-3">
+              <p className="text-xs text-suave">Roteamento por agente (ordem de preferência; o próximo assume se um falhar)</p>
+              <dl className="mt-2 grid gap-1 text-xs sm:grid-cols-3">
+                {Object.entries(s.rotas).map(([agente, lista]) => (
+                  <div key={agente}><dt className="font-medium capitalize text-texto">{agente}</dt><dd className="text-suave quebra">{lista.map(nomeProvedor).join(" → ")}</dd></div>
+                ))}
+              </dl>
+            </div>
+          )}
           <p className="text-xs text-suave">Chaves configuradas: Gemini {s.credenciais.gemini ? "sim" : "não"} · Tavily {s.credenciais.tavily ? "sim" : "não"} · API compatível com OpenAI {s.credenciais.openai_compat ? "sim" : "não"}. O valor das chaves nunca sai do servidor.</p>
           {s.modo.demonstrativo && (
             <div className="space-y-2 rounded-lg border border-acento/30 bg-acento/5 p-3 text-suave">

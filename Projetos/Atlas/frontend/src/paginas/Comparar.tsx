@@ -3,9 +3,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api/cliente";
 import type { Comparacao, ResumoSimulacao } from "../api/tipos";
 import { CaixaErro, Carregando, Secao, Vazio } from "../componentes/Estado";
-import { DIMENSAO, dataHora } from "../lib/rotulos";
+import { PRESSAO, dataHora } from "../lib/rotulos";
 
-const NOME_INDICE: Record<string, string> = { ...Object.fromEntries(Object.entries(DIMENSAO).map(([k, v]) => [k, `Pressão ${v.toLowerCase()}`])), propensao_escalada: "Propensão de escalada" };
+const NOME_INDICE: Record<string, string> = { ...PRESSAO, propensao_escalada: "Propensão de escalada" };
 
 export function Comparar() {
   const [params, setParams] = useSearchParams();

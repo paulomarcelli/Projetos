@@ -21,19 +21,26 @@ from .modelos import Evento, Modo, NomeAgente, RegistroPremissas, Resultado, Sim
 from .persistencia import Banco
 from .provedores.busca import DemoBusca, GdeltBusca, ProvedorBusca, TavilyBusca
 from .provedores.erros import ErroProvedor, descrever
-from .provedores.llm import CompatLLM, DemoLLM, GeminiLLM, ProvedorLLM
+from .provedores.llm import CompatLLM, DemoLLM, GeminiLLM, ProvedorLLM, RoteadorLLM
 
 log = logging.getLogger("atlas.orquestrador")
 
 
 def provedores(cfg: Config) -> tuple[ProvedorLLM, ProvedorBusca]:
+    def construir(nome: str, tentativas: int) -> ProvedorLLM:
+        if nome.startswith("gemini"):
+            modelo = nome.split(":", 1)[1] if ":" in nome else cfg.gemini_model
+            return GeminiLLM(cfg.gemini_api_key or "", modelo, cfg.timeout_s, tentativas, nivel_raciocinio=cfg.gemini_thinking)
+        if nome == "ollama":
+            return CompatLLM("ollama", cfg.ollama_url, cfg.ollama_model, None, cfg.ollama_timeout_s, tentativas)
+        return CompatLLM("openai", cfg.openai_base_url or "", cfg.openai_model or "", cfg.openai_api_key, cfg.timeout_s, tentativas, esforco_raciocinio=cfg.openai_reasoning)
+
     llm: ProvedorLLM
-    if cfg.ia == "gemini":
-        llm = GeminiLLM(cfg.gemini_api_key or "", cfg.gemini_model, cfg.timeout_s, cfg.tentativas_api)
-    elif cfg.ia == "ollama":
-        llm = CompatLLM("ollama", cfg.ollama_url, cfg.ollama_model, None, cfg.ollama_timeout_s, cfg.tentativas_api)
-    elif cfg.ia == "openai":
-        llm = CompatLLM("openai", cfg.openai_base_url or "", cfg.openai_model or "", cfg.openai_api_key, cfg.timeout_s, cfg.tentativas_api, esforco_raciocinio=cfg.openai_reasoning)
+    if cfg.ia == "roteado":
+        # no roteamento, cada provedor tenta uma vez e o fallback assume: falhar rápido economiza cota
+        llm = RoteadorLLM({p: construir(p, 1) for p in cfg.expandir(cfg.provedores_disponiveis())}, cfg.rotas_expandidas)
+    elif cfg.ia in ("gemini", "ollama", "openai"):
+        llm = construir(cfg.ia, cfg.tentativas_api)
     else:
         llm = DemoLLM()
     busca: ProvedorBusca

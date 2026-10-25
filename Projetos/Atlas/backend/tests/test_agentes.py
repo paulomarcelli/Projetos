@@ -195,3 +195,29 @@ async def test_rotulo_desconhecido_continua_recusado(cfg, banco, caso, entrada):
     ctx, _ = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
     with pytest.raises(ErroProvedor):
         await Analyst().executar(ctx, {"evidencias": []})
+
+
+def test_normalizacao_ampliada():
+    from atlas import normalizar
+
+    d = analise_valida()
+    d["impactos"][0]["por_cenario"] = {"continuidade": 2, "escalada": 0.9, "desescalada": "Muito baixo"}
+    d["relacoes"][0]["intensidade"] = "Alto (disputa aberta)"
+    d["matriz"][0]["tipo"] = "Ameaça"
+    d["matriz"][0]["impacto"] = 80
+    d["confianca"] = True  # booleano não vira nível
+    n = normalizar.analise(d)
+    assert n["impactos"][0]["por_cenario"] == {"continuidade": "moderado", "escalada": "alto", "desescalada": "baixo"}
+    assert n["relacoes"][0]["intensidade"] == "alto" and n["matriz"][0]["tipo"] == "risco" and n["matriz"][0]["impacto"] == "alto"
+    assert n["confianca"] is True
+
+
+async def test_erro_de_formato_mostra_valor_recebido(cfg, banco, caso, entrada):
+    a = analise_valida()
+    a["confianca"] = "talvez"
+    llm = FakeLLM(respostas={"analisar": [a]})
+    ctx, _ = contexto(cfg, banco, caso, entrada, llm, FakeBusca())
+    with pytest.raises(ErroProvedor):
+        await Analyst().executar(ctx, {"evidencias": []})
+    segundo = [u for t, u in llm.chamadas if t == "analisar"][1]
+    assert "recebido: 'talvez'" in segundo

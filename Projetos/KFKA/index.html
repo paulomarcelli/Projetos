@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- KFKA — Protótipo navegável de interface (somente design, dados fictícios) -->
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>KFKA — Acompanhamento Escolar</title>
+  <meta name="description" content="Protótipo navegável do KFKA: acompanhamento escolar bimestral para coordenação, professores e famílias.">
+  <meta name="theme-color" content="#10252F">
+  <!-- Compartilhamento em redes (Open Graph) -->
+  <meta property="og:title" content="KFKA — Acompanhamento Escolar">
+  <meta property="og:description" content="Escola, professores e famílias acompanhando juntos o desenvolvimento bimestral dos alunos.">
+  <meta property="og:type" content="website">
+  <!-- Favicon: o símbolo da marca em SVG -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%231B3A4B'/%3E%3Cpath d='M13 9.5v21' stroke='%23fff' stroke-width='4.2' stroke-linecap='round'/%3E%3Cpath d='M17.5 20 27 11.5' stroke='%2374C0FC' stroke-width='4.2' stroke-linecap='round'/%3E%3Cpath d='M17.5 20 27 28.5' stroke='%235FD4A8' stroke-width='4.2' stroke-linecap='round'/%3E%3Ccircle cx='17.5' cy='20' r='3.3' fill='%23FFC94A'/%3E%3C/svg%3E">
+  <!-- Fontes: títulos, interface e números -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <!-- CSS na ordem: tokens → base → layout → componentes → páginas -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <!-- Toda a interface é renderizada aqui pelo roteador -->
+  <div id="app" aria-live="off"></div>
+  <noscript><p style="padding:24px">Ative o JavaScript para navegar pelo protótipo.</p></noscript>
+
+  <!-- JS na ordem: núcleo → dados → layout compartilhado → páginas -->
+  <script src="js/core.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/pages/publico.js"></script>
+  <script src="js/pages/admin.js"></script>
+  <script src="js/pages/professor.js"></script>
+  <script src="js/pages/familia.js"></script>
+  <script src="js/pages/docs.js"></script>
+  <script>KFKA.start();</script>
+</body>
+</html>

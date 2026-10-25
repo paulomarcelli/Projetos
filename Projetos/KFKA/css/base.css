@@ -1,0 +1,83 @@
+/* =========================================================
+   KFKA — Base: reset, tipografia, foco acessível, utilitários
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+/* Menos movimento = movimentos menores e mais suaves, não zero.
+   Mantemos as transições de opacidade/cor (ajudam a entender a mudança)
+   e zeramos deslocamentos, escalas e animações em loop. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  :root { --enter-y: 0px; --enter-scale: 1; --lift: 0px; --press-scale: 1; --motion: 0; }
+  .skeleton, .fc-1, .fc-2 { animation: none !important; }
+}
+/* Toque: remove o "flash" cinza do iOS/Android e o atraso de duplo toque */
+a, button, [role="button"], label, summary, input, select, textarea { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+/* Superfícies do navegador também levam a marca (seleção, cursor de texto, rolagem) */
+::selection { background: var(--teal-soft); color: var(--ink); }
+input, textarea { caret-color: var(--teal); }
+html { scrollbar-color: var(--line-strong) transparent; }
+/* Números alinhados em tabelas e indicadores (não "pulam" quando mudam) */
+.table, .kpi .val, .media-val, .stat, .vbars .v, .bar-row .v { font-variant-numeric: tabular-nums; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--teal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--ink); }
+h1, h2, h3, h4 { margin: 0; line-height: var(--lh-tight); color: var(--ink); }
+h1, h2 { font-family: var(--font-display); letter-spacing: -0.02em; font-weight: 700; }
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); font-weight: 700; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; }
+table { border-collapse: collapse; width: 100%; }
+
+/* Foco sempre visível para navegação por teclado */
+:focus { outline: none; }
+:focus-visible { box-shadow: var(--focus-ring); border-radius: var(--r-sm); }
+
+/* Link "pular para o conteúdo" */
+.skip-link {
+  position: absolute; left: var(--s4); top: -60px; z-index: 1000;
+  background: var(--ink); color: #fff; padding: var(--s3) var(--s4);
+  border-radius: var(--r-md); font-weight: 700; text-decoration: none;
+}
+.skip-link:focus { top: var(--s4); }
+
+/* Utilitários */
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-muted); }
+.text-2 { color: var(--text-2); }
+.eyebrow { font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); }
+.stack { display: flex; flex-direction: column; gap: var(--s4); }
+.stack-sm { display: flex; flex-direction: column; gap: var(--s2); }
+.stack-lg { display: flex; flex-direction: column; gap: var(--s6); }
+.row { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; }
+.grow { flex: 1 1 auto; min-width: 0; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s5); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s5); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s4); }
+.grid-main-side { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--s5); align-items: start; }
+/* Coluna lateral acompanha a rolagem de formulários longos (ajuda e histórico sempre à vista) */
+@media (min-width: 1181px) { .grid-main-side.sticky-side > :last-child { position: sticky; top: calc(var(--topbar-h) + var(--s4)); } }
+@media (max-width: 1180px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid-main-side { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+.hide-mobile { }
+@media (max-width: 720px) { .hide-mobile { display: none !important; } }
+.only-mobile { display: none !important; }
+@media (max-width: 720px) { .only-mobile { display: initial !important; } }
+.icon { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon-sm { width: 16px; height: 16px; }
+.icon-lg { width: 28px; height: 28px; }

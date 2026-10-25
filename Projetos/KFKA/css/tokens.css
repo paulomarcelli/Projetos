@@ -1,0 +1,108 @@
+/* =========================================================
+   KFKA — Tokens de design (cores, tipografia, espaço, raio, sombra)
+   Paleta herdada do design aprovado no Figma (azul-tinta + teal + céu).
+   Ajustes de contraste: textos "muted" e de status foram escurecidos
+   para atingir WCAG AA (≥ 4,5:1) sobre fundo branco/suave.
+   ========================================================= */
+:root {
+  /* ---- Marca ---- */
+  --ink: #1B3A4B;          /* primária institucional: sidebar, títulos */
+  --ink-deep: #10252F;     /* fundos escuros profundos */
+  --teal: #0B7285;         /* secundária: marca, links, destaques */
+  --teal-soft: #DDF3F6;    /* fundo de destaque suave */
+  --sky: #74C0FC;          /* acento claro (ilustrações, indicadores) */
+  --sky-soft: #E7F5FF;
+  --blue: #2A5CFF;         /* ação primária (botões) — 4,9:1 com branco */
+  --blue-hover: #1E48D9;
+  --blue-soft: #E8EEFF;
+  --sun: #FFC94A;          /* acento quente (avisos amigáveis, ilustração) */
+  --mint: #5FD4A8;         /* acento positivo */
+  --pink: #E0186F;         /* acento pontual (uso raro) */
+
+  /* ---- Superfícies ---- */
+  --bg-page: #F3F9FA;
+  --bg-paper: #E3FAFC;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F6FAFB;
+  --line: #D9E8EC;
+  --line-strong: #B5CDD4;
+
+  /* ---- Texto ---- */
+  --text: #0B2E3C;         /* 13,9:1 */
+  --text-2: #4E6B77;       /* 5,6:1 */
+  --text-muted: #56707B;   /* 4,9:1 sobre o fundo da página — AA para texto pequeno */
+  --text-inverse: #FFFFFF;
+
+  /* ---- Semânticas ---- */
+  --success: #26593F;  --success-bg: #E3F1EA;
+  --warning: #8A5A12;  --warning-bg: #FBF0DC;
+  --danger:  #9A3B26;  --danger-bg:  #F8E4DE;
+  --info:    #1E48D9;  --info-bg:    #E8EEFF;
+
+  /* ---- Status do fluxo editorial (texto escuro + fundo claro + ícone) ---- */
+  --st-rascunho: #4F5B65;  --st-rascunho-bg: #EEF1F3;
+  --st-enviado: #0A5F6F;   --st-enviado-bg: #DDF3F6;
+  --st-revisao: #8A5A12;   --st-revisao-bg: #FBF0DC;
+  --st-publicado: #26593F; --st-publicado-bg: #E3F1EA;
+  --st-devolvido: #9A3B26; --st-devolvido-bg: #F8E4DE;
+  --st-cancelado: #3F4A52; --st-cancelado-bg: #E2E6E9;
+
+  /* ---- Estados de interação ---- */
+  --focus-ring: 0 0 0 3px #FFFFFF, 0 0 0 5px var(--blue);
+  --hover-tint: rgba(11, 114, 133, 0.06);
+  --selected-tint: var(--blue-soft);
+  --disabled-opacity: 0.45;
+
+  /* ---- Tipografia ---- */
+  --font-display: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --fs-display: clamp(2.25rem, 4.2vw, 3.5rem); /* 36–56px */
+  --fs-h1: clamp(1.75rem, 2.6vw, 2.125rem);    /* 28–34px */
+  --fs-h2: 1.375rem;   /* 22px */
+  --fs-h3: 1.125rem;   /* 18px */
+  --fs-body: 0.9375rem;/* 15px */
+  --fs-sm: 0.8125rem;  /* 13px */
+  --fs-xs: 0.75rem;    /* 12px — rótulos em caixa alta */
+  --lh-tight: 1.15;
+  --lh-body: 1.55;
+
+  /* ---- Espaço (escala de 4px) ---- */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px;
+  --s6: 24px; --s8: 32px; --s10: 40px; --s12: 48px; --s16: 64px;
+
+  /* ---- Raio ---- */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
+
+  /* ---- Elevação ---- */
+  /* Sombras neutras e sempre com deslocamento (luz vindo de cima), nunca halo colorido */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, .05), 0 4px 12px rgba(0, 0, 0, .04);
+  --sh-2: 0 12px 32px -6px rgba(0, 0, 0, .14);
+  --sh-3: 0 24px 64px -8px rgba(0, 0, 0, .30);
+  /* Motivo da marca: os três caminhos do símbolo K (céu = professor, menta = família,
+     sol = publicação). Usado nas áreas escuras no lugar de brilhos/gradientes genéricos. */
+  --brand-arcs: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' fill='none' stroke-linecap='round'%3E%3Cpath d='M250 300 470 104' stroke='%2374C0FC' stroke-width='56'/%3E%3Cpath d='M250 300 470 496' stroke='%235FD4A8' stroke-width='56'/%3E%3Ccircle cx='250' cy='300' r='46' fill='%23FFC94A' stroke='none'/%3E%3C/svg%3E");
+
+  /* ---- Movimento (skill emil-design-eng / animate) ----
+     Curvas fortes: as nativas do CSS são fracas demais.
+     ease-in nunca é usado em UI (atrasa o momento que o usuário observa). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);      /* entradas, saídas e feedback */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);  /* algo que se move na tela */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);   /* gaveta lateral (estilo iOS) */
+  --dur-press: 160ms;   /* clique em botão */
+  --dur-fast: 200ms;    /* menus, popovers, tooltips */
+  --dur-modal: 250ms;   /* modal e fundo escurecido */
+  --dur-exit: 150ms;    /* saída é sempre mais rápida que a entrada */
+  /* Distâncias de entrada: zeradas quando o usuário pede menos movimento */
+  --enter-y: 12px;      /* deslocamento vertical de modal/toast */
+  --enter-scale: .96;   /* nada surge de scale(0) */
+  --lift: -2px;         /* elevação de cartões no hover */
+  --press-scale: .97;   /* "afundar" ao pressionar */
+  --motion: 1;          /* multiplicador de deslocamentos grandes (folha do celular) */
+
+  /* ---- Layout ---- */
+  --sidebar-w: 264px;
+  --topbar-h: 72px;
+  --content-max: 1240px;
+  --tap: 44px; /* área mínima de toque */
+}

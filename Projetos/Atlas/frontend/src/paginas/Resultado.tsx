@@ -138,7 +138,7 @@ export function Resultado() {
               ))}
             </div>
             {cenario && (
-              <div key={cenario.tipo} role="tabpanel" className="cartao grid animate-entrar gap-5 p-4 sm:p-5 lg:grid-cols-[1.4fr_1fr]">
+              <div key={cenario.tipo} role="tabpanel" className="cartao grid gap-5 p-4 sm:p-5 lg:grid-cols-[1.4fr_1fr]">
                 <div className="min-w-0 space-y-3">
                   <h3 className="text-base font-semibold quebra">{cenario.titulo}</h3>
                   <ListaAfirmacoes itens={cenario.narrativa} evid={evid} />

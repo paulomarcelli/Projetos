@@ -24,7 +24,7 @@ export function MatrizRisco({ itens }: { itens: ItemMatriz[] }) {
               return (
                 <div key={im} role="cell" aria-label={`Probabilidade ${p}, impacto ${im}: ${aqui.length} itens`} className={`flex flex-wrap content-start gap-1 rounded-md border border-borda p-1.5 ${tom(p, im)}`}>
                   {aqui.map((x) => (
-                    <span key={x.n} title={x.titulo} className={`grid h-7 min-w-7 place-items-center rounded-full px-1.5 font-mono text-xs font-medium ${x.tipo === "risco" ? "bg-alto/90 text-fundo" : "bg-baixo/90 text-fundo"}`}>
+                    <span key={x.n} title={x.titulo} className={`grid h-7 min-w-7 place-items-center rounded-full px-1.5 font-mono text-xs font-medium ${x.tipo === "risco" ? "bg-alto text-sobreAcento" : "bg-baixo text-sobreAcento"}`}>
                       {x.tipo === "risco" ? "R" : "O"}{x.n}
                     </span>
                   ))}

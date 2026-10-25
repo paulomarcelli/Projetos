@@ -87,8 +87,8 @@ export function Comparar() {
                       <p className="text-sm font-medium">{NOME_INDICE[k] ?? k}</p>
                       <p className="mt-1 font-mono text-lg">{x.toFixed(1)} → {y.toFixed(1)} <span className={`text-sm ${d > 0 ? "text-alto" : d < 0 ? "text-baixo" : "text-suave"}`}>({d > 0 ? "+" : ""}{d.toFixed(1)})</span></p>
                       <div className="mt-2 space-y-1" aria-hidden>
-                        <div className="h-1.5 rounded-full bg-painel2"><div className="h-full rounded-full bg-suave/70" style={{ width: `${x}%` }} /></div>
-                        <div className="h-1.5 rounded-full bg-painel2"><div className="h-full rounded-full bg-acento transition-[width] duration-700" style={{ width: `${y}%` }} /></div>
+                        <div className="h-1.5 rounded-full bg-painel2"><div className="h-full origin-left rounded-full bg-suave/70" style={{ transform: `scaleX(${x / 100})` }} /></div>
+                        <div className="h-1.5 rounded-full bg-painel2"><div className="barra-indice h-full origin-left rounded-full bg-acento transition-transform duration-[250ms] ease-out" style={{ transform: `scaleX(${y / 100})` }} /></div>
                       </div>
                     </li>
                   );

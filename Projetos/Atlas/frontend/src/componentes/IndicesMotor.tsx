@@ -17,7 +17,7 @@ function Barra({ titulo, ind, nomes }: { titulo: string; ind: IndiceDimensao; no
       </div>
       <div className="relative mt-2 h-2 overflow-hidden rounded-full bg-painel2" aria-hidden>
         {[34, 67].map((x) => <span key={x} className="absolute inset-y-0 w-px bg-borda" style={{ left: `${x}%` }} />)}
-        <div className="h-full rounded-full bg-acento transition-[width] duration-700 ease-out" style={{ width: `${ind.valor}%` }} />
+        <div className="barra-indice h-full origin-left rounded-full bg-acento transition-transform duration-[250ms] ease-out" style={{ transform: `scaleX(${ind.valor / 100})` }} />
       </div>
       <button type="button" onClick={() => setAberto(!aberto)} aria-expanded={aberto} className="mt-2 min-h-[32px] text-xs text-acento hover:underline">
         {aberto ? "Ocultar contribuições" : "Ver contribuições por variável"}

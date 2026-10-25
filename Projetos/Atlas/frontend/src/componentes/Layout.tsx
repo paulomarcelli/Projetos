@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { api } from "../api/cliente";
 import type { Saude } from "../api/tipos";
 import { NOME_BUSCA, NOME_IA } from "../lib/rotulos";
+import { useTema, type Tema } from "../lib/tema";
 import { SeloDemo } from "./Selos";
 
 const ITENS = [
@@ -38,6 +39,28 @@ export function Marca() {
   );
 }
 
+const OPCOES_TEMA: { valor: Tema; rotulo: string; icone: string }[] = [
+  { valor: "sistema", rotulo: "Sistema", icone: "M4 5h16v11H4zM8 20h8M12 16v4" },
+  { valor: "claro", rotulo: "Claro", icone: "M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" },
+  { valor: "escuro", rotulo: "Escuro", icone: "M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" },
+];
+
+export function SeletorTema({ compacto }: { compacto?: boolean }) {
+  const [tema, setTema] = useTema();
+  return (
+    <div role="radiogroup" aria-label="Tema" className={`${compacto ? "inline-flex" : "grid w-full grid-cols-3"} rounded-lg border border-borda bg-painel p-0.5`}>
+      {OPCOES_TEMA.map((o) => (
+        <button key={o.valor} type="button" role="radio" aria-checked={tema === o.valor} title={o.rotulo} onClick={() => setTema(o.valor)}
+          className={`inline-flex min-h-[36px] min-w-[36px] items-center justify-center gap-1 rounded-md px-1.5 text-xs transition-colors duration-150 ${tema === o.valor ? "bg-painel2 text-texto" : "text-suave hover:text-texto"}`}>
+          <Icone d={o.icone} />
+          {!compacto && <span>{o.rotulo}</span>}
+          {compacto && <span className="sr-only">{o.rotulo}</span>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function Layout() {
   const [saude, setSaude] = useState<Saude | null>(null);
   const local = useLocation();
@@ -49,7 +72,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[248px_1fr]">
-      <a href="#conteudo" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-acento focus:px-3 focus:py-2 focus:text-fundo">Pular para o conteúdo</a>
+      <a href="#conteudo" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-acento focus:px-3 focus:py-2 focus:text-sobreAcento">Pular para o conteúdo</a>
       <aside className="sticky top-0 hidden h-screen flex-col gap-6 border-r border-borda bg-painel/60 px-4 py-6 lg:flex">
         <Marca />
         <nav aria-label="Principal" className="flex flex-col gap-1">
@@ -59,7 +82,8 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto space-y-2 text-xs text-suave">
+        <div className="mt-auto space-y-3 text-xs text-suave">
+          <SeletorTema />
           {saude?.modo.demonstrativo && <SeloDemo />}
           {saude && !saude.modo.demonstrativo && <p className="quebra">IA: {NOME_IA[saude.modo.ia]}{saude.modelo ? ` (${saude.modelo})` : ""} · Busca: {NOME_BUSCA[saude.modo.busca]}</p>}
           {!saude && <p className="text-alto">Servidor indisponível</p>}
@@ -69,7 +93,10 @@ export function Layout() {
 
       <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-borda bg-fundo/90 px-4 py-3 backdrop-blur lg:hidden">
         <Marca />
-        {saude?.modo.demonstrativo && <SeloDemo compacto />}
+        <div className="flex items-center gap-2">
+          {saude?.modo.demonstrativo && <SeloDemo compacto />}
+          <SeletorTema compacto />
+        </div>
       </header>
 
       <main id="conteudo" className="min-w-0 px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12 lg:pt-8">

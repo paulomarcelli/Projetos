@@ -3,10 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0B1424" />
+    <meta name="theme-color" content="#F6F8FB" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B1424" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="ATLAS — motor de simulação geopolítica condicional (demonstração acadêmica FECAP)." />
     <link rel="icon" href="/atlas.svg" type="image/svg+xml" />
     <title>ATLAS — Geopolitical Simulation Engine</title>
+    <script>
+      // aplica o tema salvo antes da primeira pintura (evita piscar)
+      try { var t = localStorage.getItem("atlas-tema"); if (t === "claro" || t === "escuro") document.documentElement.setAttribute("data-theme", t === "escuro" ? "dark" : "light"); } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

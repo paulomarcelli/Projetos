@@ -3,24 +3,46 @@
 @import "@fontsource/ibm-plex-sans/600.css";
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-serif/500.css";
+@import "@fontsource/ibm-plex-serif/600.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Marinho profundo + grafite + branco + azul-claro. Contraste do texto ≥ 4.5:1 sobre --painel. */
+/* Tokens do design-system/atlas/MASTER.md. Claro por padrão (projetores de sala de aula);
+   escuro pela preferência do sistema ou pelo alternador (data-theme). Contrastes verificados ≥ 4.5:1. */
 :root {
-  --fundo: 11 20 36;      /* #0B1424 */
-  --painel: 17 28 48;     /* #111C30 */
-  --painel-2: 24 38 62;   /* #18263E */
-  --borda: 44 58 82;      /* grafite azulado #2C3A52 */
-  --texto: 232 238 247;   /* #E8EEF7 */
-  --suave: 160 175 199;   /* #A0AFC7 */
-  --acento: 106 182 255;  /* #6AB6FF */
-  --acento-forte: 47 140 240;
-  --baixo: 92 199 158;
-  --moderado: 236 184 84;
-  --alto: 244 120 120;
+  --fundo: 246 248 251;   /* #F6F8FB */
+  --painel: 255 255 255;  /* #FFFFFF */
+  --painel-2: 238 242 248;/* #EEF2F8 */
+  --borda: 213 221 232;   /* #D5DDE8 */
+  --texto: 15 27 45;      /* #0F1B2D */
+  --suave: 74 90 114;     /* #4A5A72 */
+  --marca: 19 41 75;      /* #13294B */
+  --acento: 31 111 209;   /* #1F6FD1 */
+  --acento-hover: 23 92 176;
+  --sobre-acento: 255 255 255;
+  --baixo: 19 134 95;     /* #13865F */
+  --moderado: 164 106 0;  /* #A46A00 */
+  --alto: 194 59 59;      /* #C23B3B */
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --fundo: 11 20 36; --painel: 17 28 48; --painel-2: 24 38 62; --borda: 44 58 82;
+  --texto: 232 238 247; --suave: 160 175 199; --marca: 11 20 36;
+  --acento: 106 182 255; --acento-hover: 140 198 255; --sobre-acento: 11 20 36;
+  --baixo: 92 199 158; --moderado: 236 184 84; --alto: 244 120 120;
   color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: 11 20 36; --painel: 17 28 48; --painel-2: 24 38 62; --borda: 44 58 82;
+    --texto: 232 238 247; --suave: 160 175 199; --marca: 11 20 36;
+    --acento: 106 182 255; --acento-hover: 140 198 255; --sobre-acento: 11 20 36;
+    --baixo: 92 199 158; --moderado: 236 184 84; --alto: 244 120 120;
+    color-scheme: dark;
+  }
 }
 
 @layer base {
@@ -34,8 +56,13 @@
 @layer components {
   .cartao { @apply rounded-xl border border-borda bg-painel; }
   .rotulo { @apply text-2xs font-medium uppercase tracking-[0.08em] text-suave; }
-  .botao { @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50; }
-  .botao-primario { @apply botao bg-acento text-fundo hover:bg-[#8cc6ff]; }
+  /* toque: scale(.97) em 160ms (feedback); cores em 150ms ease. Sem "transition: all". */
+  .botao {
+    @apply inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50;
+    transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .botao:active:not(:disabled) { transform: scale(0.97); }
+  .botao-primario { @apply botao bg-acento text-sobreAcento hover:bg-acentoHover; }
   .botao-secundario { @apply botao border border-borda bg-painel2 text-texto hover:border-acento/60; }
   .botao-fantasma { @apply botao text-suave hover:text-texto; }
   .campo { @apply w-full min-h-[44px] rounded-lg border border-borda bg-fundo px-3 text-sm text-texto placeholder:text-suave/70 focus:border-acento focus:outline-none; }
@@ -44,6 +71,12 @@
 
 input[type="range"] { accent-color: rgb(var(--acento)); height: 28px; }
 
+/* Movimento reduzido: menos e mais gentil, não zero. Mantém fades curtos (ajudam a perceber a mudança);
+   remove deslocamentos, escalas e pulsos contínuos. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+  .animate-entrar { animation-name: aparecer; animation-duration: 160ms; }
+  .animate-pulso { animation: none; }
+  .botao:active:not(:disabled) { transform: none; }
+  .barra-indice { transition: none; }
+  html { scroll-behavior: auto; }
 }

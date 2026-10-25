@@ -75,7 +75,7 @@ export function Historico() {
                   <SeloStatus status={h.status} />
                   {confirmando === h.id ? (
                     <span className="flex items-center gap-1">
-                      <button type="button" className="botao min-h-[36px] bg-alto/90 px-3 text-xs text-fundo" onClick={() => apagar(h.id)}>Confirmar exclusão</button>
+                      <button type="button" className="botao min-h-[36px] bg-alto px-3 text-xs text-sobreAcento" onClick={() => apagar(h.id)}>Confirmar exclusão</button>
                       <button type="button" className="botao-fantasma min-h-[36px] px-2 text-xs" onClick={() => setConfirmando(null)}>Cancelar</button>
                     </span>
                   ) : (

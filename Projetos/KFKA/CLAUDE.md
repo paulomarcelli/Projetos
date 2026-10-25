@@ -27,6 +27,7 @@ docs/, agents/        → PRD, auditoria, pesquisa, revisores de SEO e seguranç
 ## Convenções
 - Textos em pt-BR, tom acolhedor. Médias com vírgula (`KFKA.fmtMedia`).
 - Cores sempre por token (`var(--teal)`), nunca hex solto em componente novo.
+- Modo escuro: só os tokens mudam (`tokens.css`). Fundo escuro da marca = `--chrome`; item selecionado = `--strong`; superfície = `--bg-card` (nunca `#fff`); texto sobre céu/sol/menta = `--on-pastel`; fundo com texto branco = `--success-solid`/`--danger-solid`. `--ink` é só cor de título.
 - Todo texto vindo do usuário passa por `KFKA.esc()` antes de ir para `innerHTML`.
 - Toda ação mostra `KFKA.toast` com o selo de simulação local.
 - Status sempre com texto + ícone + cor (`KFKA.status`).

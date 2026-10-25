@@ -13,7 +13,7 @@
   const head = (active) => `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="public-header"><a class="logo" href="#/">${K.mark()}<span class="word">KFKA</span></a>
       <nav class="row docs-nav" aria-label="Documentação">${[['design', '#/design', 'Design System'], ['marca', '#/marca', 'Marca'], ['mapa', '#/mapa', 'Mapa de navegação'], ['doc', '#/documentacao', 'Pesquisa e requisitos']].map(([k, h, l]) => `<a href="${h}" ${active === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
-      <a class="btn btn-primary btn-sm" href="#/entrar" style="margin-left:auto">Abrir protótipo</a></header>`;
+      <span class="grow"></span>${K.temaToggle()}<a class="btn btn-primary btn-sm" href="#/entrar">Abrir protótipo</a></header>`;
   const sec = (id, title, lead, body) => `<section class="docs-sec" id="${id}" aria-labelledby="${id}-t"><div class="section-head"><h2 id="${id}-t">${title}</h2>${lead ? `<p class="text-2">${lead}</p>` : ''}</div>${body}</section>`;
   const toc = (base, items) => `<nav class="row toc" aria-label="Nesta página">${items.map(([a, l]) => `<a class="filter-chip" href="${base}" data-action="scroll-to" data-target="${a}">${l}</a>`).join('')}</nav>`;
   // Amostra de cor com papel e justificativa
@@ -168,7 +168,7 @@
       ${sec('uso', '5. Versões e regras de uso', '', `
         <div class="grid-4 brand-versions">
           <div class="card bv">${K.mark(64)}<small>Principal</small></div>
-          <div class="card bv" style="background:var(--ink)">${K.mark(64, 'rgba(255,255,255,.1)')}<small style="color:#fff">Sobre fundo escuro</small></div>
+          <div class="card bv" style="background:var(--chrome)">${K.mark(64, 'rgba(255,255,255,.1)')}<small style="color:#fff">Sobre fundo escuro</small></div>
           <div class="card bv">${markMono('#1B3A4B', '#E3FAFC')}<small>Monocromática</small></div>
           <div class="card bv" style="background:var(--blue)">${markMono('#fff', 'transparent')}<small style="color:#fff">Negativa</small></div>
         </div>

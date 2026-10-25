@@ -48,10 +48,26 @@
   --st-cancelado: #3F4A52; --st-cancelado-bg: #E2E6E9;
 
   /* ---- Estados de interação ---- */
-  --focus-ring: 0 0 0 3px #FFFFFF, 0 0 0 5px var(--blue);
+  --focus-ring: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--blue);
   --hover-tint: rgba(11, 114, 133, 0.06);
   --selected-tint: var(--blue-soft);
   --disabled-opacity: 0.45;
+
+  /* ---- Papéis de cor (separam "texto escuro" de "fundo escuro" para o modo escuro) ----
+     --ink continua sendo a cor dos títulos; estes tokens cobrem os outros usos. */
+  --chrome: #1B3A4B;        /* fundo da barra lateral, cartões escuros, toast */
+  --chrome-deep: #10252F;   /* rodapé, faixa de aviso, arte do login */
+  --strong: #1B3A4B;        /* item selecionado (segmentado, filtro, bimestre, página) */
+  --on-pastel: #0B2E3C;     /* texto sobre céu/sol/menta, que não mudam de tom */
+  --success-solid: #26593F; --success-solid-hover: #1D4631;
+  --danger-solid: #9A3B26;
+  --success-line: #BFE0CE;  --success-tint: #F7FCF9;
+  --danger-bg-hover: #F2D0C6; --danger-field: #FFF9F7;
+  --info-text: #16307F;     --warning-text: #6E470D;
+  --sun-bg: #FFF3D1;
+  --topbar-bg: rgba(243, 249, 250, .9);
+  --glass: rgba(255, 255, 255, .94);
+  --scrim: rgba(6, 25, 35, .55);
 
   /* ---- Tipografia ---- */
   --font-display: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
@@ -105,4 +121,76 @@
   --topbar-h: 72px;
   --content-max: 1240px;
   --tap: 44px; /* área mínima de toque */
+}
+
+/* =========================================================
+   Modo escuro: segue o sistema (padrão) ou a escolha da pessoa
+   (data-theme no <html>). Só os tokens mudam; os componentes não.
+   Contraste conferido: todos os pares de texto ≥ 4,5:1.
+   ========================================================= */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --teal: #5CCADB; --teal-soft: #113A44; --sky-soft: #10324A;
+    --blue-soft: #18275A;
+    --bg-page: #0C181D; --bg-paper: #0F2128; --bg-card: #13252C; --bg-subtle: #182D35;
+    --line: #23404A; --line-strong: #36575F;
+    --text: #E4EEF1; --text-2: #AFC4CA; --text-muted: #93ACB4;
+    --ink: #EEF6F8; --ink-deep: #08131A;
+    --success: #7DDBAA; --success-bg: #13352A;
+    --warning: #F2C066; --warning-bg: #3A2C12;
+    --danger: #FF9C85;  --danger-bg: #3D1E18;
+    --info: #8EA9FF;    --info-bg: #18275A;
+    --st-rascunho: #B4C0C8;  --st-rascunho-bg: #26333A;
+    --st-enviado: #6FD0E0;   --st-enviado-bg: #103A44;
+    --st-revisao: #F2C066;   --st-revisao-bg: #3A2C12;
+    --st-publicado: #7DDBAA; --st-publicado-bg: #13352A;
+    --st-devolvido: #FF9C85; --st-devolvido-bg: #3D1E18;
+    --st-cancelado: #C3CDD3; --st-cancelado-bg: #2A3338;
+    --hover-tint: rgba(92, 202, 219, .07);
+    --chrome: #0F2128; --chrome-deep: #08131A; --strong: #1F6E80;
+    --success-solid: #2A7350; --success-solid-hover: #2F8059; --danger-solid: #B1442D;
+    --success-line: #1F4D3A; --success-tint: #10261F;
+    --danger-bg-hover: #4A251D; --danger-field: #2A1814;
+    --info-text: #A8BDFF; --warning-text: #F2C066;
+    --sun-bg: #3A2F12;
+    --topbar-bg: rgba(12, 24, 29, .88);
+    --glass: rgba(19, 37, 44, .94);
+    --scrim: rgba(0, 0, 0, .6);
+    --sh-1: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .2);
+    --sh-2: 0 12px 32px -6px rgba(0, 0, 0, .5);
+    --sh-3: 0 24px 64px -8px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+    --teal: #5CCADB; --teal-soft: #113A44; --sky-soft: #10324A;
+    --blue-soft: #18275A;
+    --bg-page: #0C181D; --bg-paper: #0F2128; --bg-card: #13252C; --bg-subtle: #182D35;
+    --line: #23404A; --line-strong: #36575F;
+    --text: #E4EEF1; --text-2: #AFC4CA; --text-muted: #93ACB4;
+    --ink: #EEF6F8; --ink-deep: #08131A;
+    --success: #7DDBAA; --success-bg: #13352A;
+    --warning: #F2C066; --warning-bg: #3A2C12;
+    --danger: #FF9C85;  --danger-bg: #3D1E18;
+    --info: #8EA9FF;    --info-bg: #18275A;
+    --st-rascunho: #B4C0C8;  --st-rascunho-bg: #26333A;
+    --st-enviado: #6FD0E0;   --st-enviado-bg: #103A44;
+    --st-revisao: #F2C066;   --st-revisao-bg: #3A2C12;
+    --st-publicado: #7DDBAA; --st-publicado-bg: #13352A;
+    --st-devolvido: #FF9C85; --st-devolvido-bg: #3D1E18;
+    --st-cancelado: #C3CDD3; --st-cancelado-bg: #2A3338;
+    --hover-tint: rgba(92, 202, 219, .07);
+    --chrome: #0F2128; --chrome-deep: #08131A; --strong: #1F6E80;
+    --success-solid: #2A7350; --success-solid-hover: #2F8059; --danger-solid: #B1442D;
+    --success-line: #1F4D3A; --success-tint: #10261F;
+    --danger-bg-hover: #4A251D; --danger-field: #2A1814;
+    --info-text: #A8BDFF; --warning-text: #F2C066;
+    --sun-bg: #3A2F12;
+    --topbar-bg: rgba(12, 24, 29, .88);
+    --glass: rgba(19, 37, 44, .94);
+    --scrim: rgba(0, 0, 0, .6);
+    --sh-1: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .2);
+    --sh-2: 0 12px 32px -6px rgba(0, 0, 0, .5);
+    --sh-3: 0 24px 64px -8px rgba(0, 0, 0, .7);
+    color-scheme: dark;
 }

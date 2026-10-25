@@ -26,7 +26,7 @@
       <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <header class="public-header">${logo(true)}
         <nav aria-label="Seções da página"><a href="#/" data-action="scroll-to" data-target="como-funciona">Como funciona</a><a href="#/" data-action="scroll-to" data-target="perfis">Perfis</a><a href="#/" data-action="scroll-to" data-target="seguranca">Segurança</a></nav>
-        <a class="btn btn-light" href="#/entrar">${I('user')} Entrar</a>
+        ${K.temaToggle()}<a class="btn btn-light" href="#/entrar">${I('user')} Entrar</a>
       </header>
       <main id="conteudo">
         <section class="hero">
@@ -89,7 +89,7 @@
   K.views.entrar = {
     title: 'Entrar',
     render: () => `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}
-      <main class="auth-form" id="conteudo"><div class="stack-lg">
+      <main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">
         <div class="stack-sm"><span class="only-mobile">${logo(false)}</span><h1 id="page-title" tabindex="-1">Como você acessa o KFKA?</h1><p class="text-2">Escolha seu perfil para continuar. Se você tiver mais de um perfil, pode trocar depois de entrar.</p></div>
         <div class="stack-sm">${Object.entries(ROLES).map(([k, [ic, c, t, s]]) => `<a class="role-option" href="#/entrar/${k}"><span class="role-ico sm" style="background:${c}">${I(ic)}</span><span class="grow"><b>${t}</b><small>${s}</small></span>${I('chevron-right')}</a>`).join('')}</div>
         <p class="muted" style="font-size:13px">Primeiro acesso? A escola envia o convite para o e-mail cadastrado. <a href="#/">Voltar ao início</a></p>
@@ -100,7 +100,7 @@
     render: (p, q) => {
       const r = ROLES[p.perfil] || ROLES.responsavel;
       return `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}
-      <main class="auth-form" id="conteudo"><div class="stack-lg">
+      <main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">
         <a href="#/entrar" class="row" style="font-weight:700;text-decoration:none;gap:6px">${I('chevron-left', 'icon-sm')} Trocar perfil</a>
         <div class="stack-sm"><span class="role-pill-light"><span class="role-ico xs" style="background:${r[1]}">${I(r[0], 'icon-sm')}</span>${r[2].replace('Sou ', '').replace(/^./, (c) => c.toUpperCase())}</span><h1 id="page-title" tabindex="-1">Bem-vindo de volta</h1><p class="text-2">Entre com o e-mail cadastrado pela escola.</p></div>
         <div class="alert danger" id="login-alert" role="alert" hidden>${I('alert')}<div><b>E-mail ou senha incorretos</b>Restam 2 tentativas antes do bloqueio temporário de 15 minutos. (simulação)</div></div>
@@ -135,7 +135,7 @@
       const body = step === 1 ? `<form class="stack" id="rec-form" novalidate>${K.field({ id: 'remail', label: 'E-mail cadastrado', type: 'email', required: true, icon: 'mail', placeholder: 'nome@email.com' })}<button class="btn btn-primary btn-lg btn-block" type="submit">${I('send')} Enviar link de redefinição</button></form>`
         : step === 2 ? `<div class="alert success">${I('check')}<div><b>Link enviado (simulação)</b>Se o e-mail estiver cadastrado, você receberá um link válido por 30 minutos. Confira também a caixa de spam.</div></div><a class="btn btn-secondary btn-lg btn-block" href="#/recuperar-senha?passo=3">Já recebi — criar nova senha</a><button class="link-btn" data-action="noop" type="button">Reenviar em 00:45</button>`
           : `<form class="stack" id="nova-form" novalidate>${K.field({ id: 'nsenha', label: 'Nova senha', type: 'password', required: true, icon: 'lock', attrs: 'data-minlen="8"', hint: 'Mínimo de 8 caracteres, com número e símbolo.' })}<div class="strength" aria-hidden="true"><span></span><span></span><span></span><span></span></div>${K.field({ id: 'csenha', label: 'Confirmar nova senha', type: 'password', required: true, icon: 'lock' })}<button class="btn btn-primary btn-lg btn-block" type="submit">${I('check')} Salvar e entrar</button></form>`;
-      return `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}<main class="auth-form" id="conteudo"><div class="stack-lg">
+      return `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}<main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">
         <a href="#/entrar" class="row" style="font-weight:700;text-decoration:none;gap:6px">${I('chevron-left', 'icon-sm')} Voltar ao login</a>
         <div class="stepper">${st(1, 'E-mail')}<span class="step-line"></span>${st(2, 'Verificação')}<span class="step-line"></span>${st(3, 'Nova senha')}</div>
         <div class="stack-sm"><h1 id="page-title" tabindex="-1">${step === 1 ? 'Esqueceu a senha?' : step === 2 ? 'Verifique seu e-mail' : 'Crie uma nova senha'}</h1><p class="text-2">${step === 1 ? 'Informe o e-mail cadastrado. Enviaremos um link seguro.' : step === 2 ? 'Enviamos as instruções para o e-mail informado.' : 'Use uma senha que você não utilize em outros serviços.'}</p></div>
@@ -158,7 +158,7 @@
   };
 
   /* ---------- Privacidade (resumo LGPD) e 404 ---------- */
-  K.views.privacidade = { title: 'Privacidade', render: () => `<header class="public-header">${logo(true)}<a class="btn btn-light" href="#/entrar" style="margin-left:auto">Entrar</a></header><main id="conteudo" class="section"><div class="card stack" style="max-width:760px;margin:0 auto"><h1 id="page-title" tabindex="-1">Privacidade e proteção de dados</h1><p class="text-2">Resumo demonstrativo. O KFKA coleta apenas dados necessários ao acompanhamento escolar, restringe o acesso por perfil e registra consentimento do responsável. A família visualiza somente relatórios publicados dos alunos vinculados à sua conta. Toda alteração administrativa fica registrada com usuário, data/hora, estado anterior e posterior.</p><a class="btn btn-secondary" href="#/">${I('chevron-left', 'icon-sm')} Voltar</a></div></main>${footer()}` };
+  K.views.privacidade = { title: 'Privacidade', render: () => `<header class="public-header">${logo(true)}<span class="grow"></span>${K.temaToggle()}<a class="btn btn-light" href="#/entrar">Entrar</a></header><main id="conteudo" class="section"><div class="card stack" style="max-width:760px;margin:0 auto"><h1 id="page-title" tabindex="-1">Privacidade e proteção de dados</h1><p class="text-2">Resumo demonstrativo. O KFKA coleta apenas dados necessários ao acompanhamento escolar, restringe o acesso por perfil e registra consentimento do responsável. A família visualiza somente relatórios publicados dos alunos vinculados à sua conta. Toda alteração administrativa fica registrada com usuário, data/hora, estado anterior e posterior.</p><a class="btn btn-secondary" href="#/">${I('chevron-left', 'icon-sm')} Voltar</a></div></main>${footer()}` };
   K.views.notFound = {
     title: 'Página não encontrada',
     render: () => `<main id="conteudo" class="section" style="min-height:80vh;display:grid;place-items:center">${K.empty({ icon: 'search', title: '<span id="page-title" tabindex="-1">Não encontramos esta página</span>', text: 'O link pode estar desatualizado ou o relatório foi movido. Use os atalhos abaixo para voltar.', actions: `<a class="btn btn-secondary" href="javascript:history.back()">${I('chevron-left', 'icon-sm')} Voltar</a><a class="btn btn-primary" href="#/">${I('home', 'icon-sm')} Página inicial</a>` })}</main>`
@@ -172,7 +172,7 @@
   // Sessão expirada (RNF segurança: sessões com expiração)
   K.views.sessao = {
     title: 'Sessão expirada',
-    render: () => `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}<main class="auth-form" id="conteudo"><div class="stack-lg">
+    render: () => `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}<main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">
       <span class="ico ico-warn" style="width:64px;height:64px;border-radius:18px">${I('clock', 'icon-lg')}</span>
       <div class="stack-sm"><h1 id="page-title" tabindex="-1">Sua sessão expirou</h1><p class="text-2">Por segurança, encerramos o acesso após 30 minutos sem atividade. Nada do que estava salvo foi perdido.</p></div>
       <a class="btn btn-primary btn-lg btn-block" href="#/entrar">Entrar novamente ${I('chevron-right')}</a>

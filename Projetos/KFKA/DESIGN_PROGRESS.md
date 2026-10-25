@@ -40,6 +40,14 @@
 - [x] Relatórios gerenciais: espaçamento entre indicadores, gráficos e tabela
 - [x] Testes: crawl, flows, pior caso
 
+## Revisão 1.3 — modo escuro
+- [x] Paleta escura em `css/tokens.css`, com contraste AA conferido (texto ≥ 4,5:1)
+- [x] Segue o sistema por padrão; seletor Sistema / Claro / Escuro no menu da conta e no perfil da família; botão sol/lua nas páginas públicas, no login e na documentação
+- [x] Novos tokens de papel: `--chrome`/`--chrome-deep` (fundos escuros da marca), `--strong` (item selecionado), `--on-pastel` (texto sobre céu/sol/menta), `--*-solid` (botões com texto branco)
+- [x] Folha de impressão A4 continua clara (é "papel")
+- [x] A escolha vale para a sessão (em memória, como o tamanho do texto); nada é salvo no navegador nesta fase
+- [x] Testes: 5 novos em `flows.js` (41 no total), crawl e pior caso
+
 ## Testes (última execução)
 - `node tests/crawl.js`: 277 rotas visitadas por links, nenhuma 404 e nenhum erro de JS. O único erro de console é a fonte do Google, bloqueada pela rede do ambiente de teste.
 - `node tests/flows.js`: 36/36 PASS (inclui RF12, vínculo incompatível, nova área, datas, PDF, logout e um h1 por página de documentação). Cobre a visibilidade da família, ciência e observação, filtros, validações, o ciclo completo professor → revisão → devolução → ajuste → publicação, auditoria, bloqueio de edição, exportação e a gaveta no celular.

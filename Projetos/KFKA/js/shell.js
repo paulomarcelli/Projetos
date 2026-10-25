@@ -5,7 +5,7 @@
 (function (K) {
   'use strict';
   const I = K.icon;
-  K.state = { alunoSel: 'a1' }; // aluno selecionado pela família (estado local)
+  K.state = Object.assign(K.state || {}, { alunoSel: 'a1' }); // aluno selecionado pela família (estado local)
 
   const MENUS = {
     admin: [
@@ -80,6 +80,7 @@
               <div style="padding:8px 12px 10px"><b>${u.nome}</b><div class="muted" style="font-size:12px">${u.sub}</div></div><hr>
               <a href="${BASE[role]}perfil" role="menuitem">${I('settings')} Meu perfil e preferências</a>
               <a href="#/entrar" role="menuitem">${I('swap')} Trocar de perfil</a><hr>
+              <div class="menu-tema"><span id="tema-menu-l">Tema</span>${K.temaControl('tema-menu')}</div><hr>
               <a href="#/entrar" role="menuitem" class="danger" data-action="sair">${I('logout')} Sair</a><a href="#/sessao-expirada" role="menuitem">${I('clock')} Ver tela de sessão expirada</a>
             </div>
           </div>

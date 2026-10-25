@@ -48,7 +48,7 @@ table { border-collapse: collapse; width: 100%; }
 /* Link "pular para o conteúdo" */
 .skip-link {
   position: absolute; left: var(--s4); top: -60px; z-index: 1000;
-  background: var(--ink); color: #fff; padding: var(--s3) var(--s4);
+  background: var(--chrome); color: #fff; padding: var(--s3) var(--s4);
   border-radius: var(--r-md); font-weight: 700; text-decoration: none;
 }
 .skip-link:focus { top: var(--s4); }

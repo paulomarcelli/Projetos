@@ -34,7 +34,7 @@
         </section>
         <section class="card card-dark period-banner" aria-label="Período atual">
           <span class="ico" style="background:rgba(255,255,255,.1);width:52px;height:52px;border-radius:14px;display:grid;place-items:center;color:var(--sky)">${I('calendar')}</span>
-          <div class="grow"><div class="row"><h2 style="font-size:20px">3º bimestre · digitação aberta</h2><span class="tag" style="background:var(--mint);color:var(--ink)">ABERTO</span></div><p style="color:rgba(255,255,255,.75);font-size:14px">De 01/08 às 08:00 até 30/09 às 23:59 · restam 2 dias</p></div>
+          <div class="grow"><div class="row"><h2 style="font-size:20px">3º bimestre · digitação aberta</h2><span class="tag" style="background:var(--mint);color:var(--on-pastel)">ABERTO</span></div><p style="color:rgba(255,255,255,.75);font-size:14px">De 01/08 às 08:00 até 30/09 às 23:59 · restam 2 dias</p></div>
           <div style="min-width:220px" class="stack-sm"><small style="color:rgba(255,255,255,.75);font-weight:700">70% do período</small><div class="progress on-dark"><span style="width:70%"></span></div></div>
           <a class="btn btn-light" href="#/admin/periodos">${I('calendar')} Configurar períodos</a>
         </section>

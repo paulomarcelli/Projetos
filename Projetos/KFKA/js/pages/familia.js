@@ -196,6 +196,7 @@
           <h2 style="font-size:16px">Alunos vinculados</h2>${resp().alunos.map((id) => { const a = A.aluno(id); return `<div class="row">${K.avatar(a.nome, a.cor, 'sm')}<span><b>${a.nome}</b> <small class="muted">· ${A.turma(a.turma).nome}</small></span></div>`; }).join('')}
           <small class="muted">${I('lock', 'icon-sm')} Vínculos são definidos pela secretaria da escola.</small></section>
         <section class="card stack"><h2 style="font-size:16px">Leitura</h2>
+          <div class="field"><span class="field-label" id="tema-perfil-l">Tema</span>${K.temaControl('tema-perfil')}<span class="hint">"Sistema" acompanha o modo claro ou escuro do seu celular ou computador.</span></div>
           <div class="field"><span class="field-label" id="fs-l">Tamanho do texto</span><div class="segmented" role="group" aria-labelledby="fs-l">${[['1', 'Padrão'], ['1.12', 'Maior'], ['1.25', 'Grande']].map(([v, l]) => `<button type="button" data-fs="${v}" aria-pressed="${(K.state.zoom || '1') === v}">${l}</button>`).join('')}</div></div>
           <h2 style="font-size:16px">Avisos</h2>${[['Novo relatório publicado', true], ['Resposta da escola à minha observação', true], ['Resumo mensal por e-mail', false]].map(([l, on]) => `<label class="switch"><input type="checkbox" ${on ? 'checked' : ''}><span class="track"></span>${l}</label>`).join('')}
           <a class="btn btn-ghost" href="#/privacidade">${I('shield')} Privacidade e LGPD</a></section>

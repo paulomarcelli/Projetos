@@ -66,7 +66,10 @@ window.KFKA = window.KFKA || {};
     ban: '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
     inbox: '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
     palette: '<circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a6 6 0 0 0 6-6c0-4.9-4.5-8.6-10-8.6z"/>',
-    map: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><path d="M8 2v16M16 6v16"/>'
+    map: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><path d="M8 2v16M16 6v16"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>',
+    moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+    monitor: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'
   };
   K.icon = (name, cls = '') => `<svg class="icon ${cls}" aria-hidden="true" focusable="false"><use href="#i-${name}"></use></svg>`;
   K.ICON_NAMES = Object.keys(ICONS); // usado na página de iconografia
@@ -297,6 +300,25 @@ window.KFKA = window.KFKA || {};
   K.views = {};
 
   /* ---------------- Ações delegadas ---------------- */
+  /* ---------------- Tema (claro / escuro) ----------------
+     Padrão: segue o sistema. A escolha vale para a sessão (em memória, como o tamanho
+     do texto): nesta fase o protótipo não guarda nada no navegador. */
+  K.state = K.state || {};
+  K.TEMAS = [['sistema', 'Sistema', 'monitor'], ['claro', 'Claro', 'sun'], ['escuro', 'Escuro', 'moon']];
+  K.temaAtual = () => K.state.tema || 'sistema';
+  K.escuroAtivo = () => K.temaAtual() === 'escuro' || (K.temaAtual() === 'sistema' && matchMedia('(prefers-color-scheme: dark)').matches);
+  K.setTema = (t) => {
+    K.state.tema = t;
+    const root = document.documentElement;
+    if (t === 'sistema') delete root.dataset.theme; else root.dataset.theme = t === 'escuro' ? 'dark' : 'light';
+    K.qsa('[data-tema]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === t)));
+    K.qsa('[data-action="tema-alternar"]').forEach((b) => { b.innerHTML = K.icon(K.escuroAtivo() ? 'sun' : 'moon'); b.setAttribute('aria-label', K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'); });
+  };
+  // Seletor de 3 opções (menu da conta e página de perfil)
+  K.temaControl = (id = 'tema') => `<div class="segmented tema-seg" role="group" aria-labelledby="${id}-l">${K.TEMAS.map(([v, l, ic]) => `<button type="button" data-action="tema" data-tema="${v}" aria-pressed="${K.temaAtual() === v}">${K.icon(ic, 'icon-sm')}${l}</button>`).join('')}</div>`;
+  // Botão único para as páginas públicas: alterna entre claro e escuro
+  K.temaToggle = () => `<button type="button" class="icon-btn tema-toggle" data-action="tema-alternar" aria-label="${K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'}">${K.icon(K.escuroAtivo() ? 'sun' : 'moon')}</button>`;
+
   K.actions = {
     noop: () => K.toast('Interação demonstrativa', 'Este controle é ilustrativo neste protótipo.', 'info'),
     'close-modal': () => K.closeModal(),
@@ -309,6 +331,8 @@ window.KFKA = window.KFKA || {};
       dd.classList.toggle('open', open);
       el.setAttribute('aria-expanded', String(open));
     },
+    tema: (el) => { K.setTema(el.dataset.tema); K.toast(`Tema: ${K.TEMAS.find((t) => t[0] === el.dataset.tema)[1].toLowerCase()}`, el.dataset.tema === 'sistema' ? 'Acompanha o modo claro ou escuro do seu aparelho.' : 'Vale até você fechar ou recarregar a página.', 'info'); },
+    'tema-alternar': () => K.setTema(K.escuroAtivo() ? 'claro' : 'escuro'),
     print: () => { window.print(); K.toast('Impressão', 'Se a janela não abrir (visualização incorporada), abra o index.html direto no navegador.', 'info', false); }
   };
   document.addEventListener('click', (e) => {

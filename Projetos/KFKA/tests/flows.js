@@ -59,6 +59,14 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process
   // RF01: sair e sessão expirada
   await go('/admin/painel'); await p.click('.user-card [data-action="sair"]'); await p.waitForTimeout(80); ok(p.url().endsWith('#/entrar') && /Você saiu/.test(await txt()), 'logout');
   await go('/sessao-expirada'); ok(/Sua sessão expirou/.test(await txt()), 'sessão expirada');
+  // Modo escuro: menu da conta, persistência entre telas (na sessão) e botão das páginas públicas
+  await go('/admin/painel'); await p.click('.topbar .dropdown:last-child [data-action="toggle-dropdown"]'); await p.click('.menu [data-tema="escuro"]');
+  const tema = () => p.evaluate(() => ({ t: document.documentElement.dataset.theme || 'sistema', bg: getComputedStyle(document.body).backgroundColor }));
+  let tm = await tema(); ok(tm.t === 'dark' && tm.bg === 'rgb(12, 24, 29)', 'tema escuro pelo menu da conta');
+  await go('/familia/perfil'); tm = await tema(); ok(tm.t === 'dark' && (await p.getAttribute('.content [data-tema="escuro"]', 'aria-pressed')) === 'true', 'tema mantido ao trocar de tela');
+  await p.click('.content [data-tema="sistema"]'); tm = await tema(); ok(tm.t === 'sistema', 'voltar a seguir o sistema');
+  await go('/'); await p.click('.public-header .tema-toggle'); tm = await tema(); ok(tm.t === 'dark', 'botão de tema na página pública');
+  await p.click('.public-header .tema-toggle'); tm = await tema(); ok(tm.t === 'light', 'botão de tema volta ao claro');
   // Documentação de design
   for (const r of ['/design', '/marca', '/mapa', '/documentacao']) { await go(r); ok((await p.$$('h1')).length === 1, 'um h1 em ' + r); }
   ok(errs.length === 0, 'sem erros JS ' + errs.join(' | '));

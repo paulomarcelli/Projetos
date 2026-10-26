@@ -1485,3 +1485,190 @@ html.menos-animacao *::after {
         display: none;
     }
 }
+
+/* ===== ABERTURA DE BOAS-VINDAS =====
+   Só aparece com JavaScript (html.intro-ativa). O céu estrelado de verdade fica visível
+   por trás; a interface entra suavemente quando a abertura termina.
+   Animações só com opacity/transform e curva "ease-out" forte. */
+.intro { display: none; }
+
+html.intro-ativa .intro {
+    --sair: cubic-bezier(0.22, 1, 0.36, 1);
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    cursor: pointer;
+    background: radial-gradient(ellipse at 50% 42%, rgba(28, 42, 92, 0.35), rgba(10, 18, 48, 0.55) 70%);
+    transition: opacity 0.7s var(--sair), transform 0.7s var(--sair);
+}
+
+html.intro-ativa #app {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.7s var(--sair, ease-out) 0.1s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+html.intro-saindo #app { opacity: 1; transform: none; }
+
+.intro--saindo { opacity: 0; transform: scale(1.04); pointer-events: none; }
+
+.intro__conteudo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+}
+
+/* luz que nasce atrás da logo */
+.intro__halo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(420px, 90vw);
+    aspect-ratio: 1;
+    margin-left: calc(min(420px, 90vw) / -2);
+    margin-top: -80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(183, 195, 242, 0.32), rgba(183, 195, 242, 0.08) 45%, transparent 70%);
+    opacity: 0;
+    transform: scale(0.6);
+    animation: intro-halo 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards, intro-respirar 4s ease-in-out 1.9s infinite;
+    pointer-events: none;
+}
+
+.intro__logo {
+    opacity: 0;
+    transform: translateY(18px) scale(0.92);
+    animation: intro-subir 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+
+/* faísca de 4 pontas na ponta do cristal central da coroa */
+.intro__faisca {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 26%;
+    aspect-ratio: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle, #fff 0 7%, rgba(255, 255, 255, 0) 36%),
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent) center / 100% 6% no-repeat,
+        linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.95), transparent) center / 6% 100% no-repeat;
+    filter: drop-shadow(0 0 4px var(--cristal));
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) rotate(0deg);
+    animation: intro-faisca 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.1s forwards;
+}
+
+.intro__titulo {
+    display: flex;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(30px, 7vw, 46px);
+    letter-spacing: 0.28em;
+    margin: 10px 0 0 0.28em;                 /* compensa o espaçamento da última letra */
+    color: var(--prata);
+    text-shadow: 0 0 18px rgba(183, 195, 242, 0.45);
+}
+
+.intro__titulo span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: intro-letra 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(1.15s + var(--i) * 70ms);
+}
+
+.intro__titulo span:nth-child(n + 6) { color: var(--cristal); }   /* "MIND" no tom do cristal, como no topo */
+.intro__espaco { width: 0.35em; }
+
+.intro__linha {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cristal), transparent);
+    opacity: 0;
+    transform: scaleX(0);
+    animation: intro-linha 1s cubic-bezier(0.22, 1, 0.36, 1) 1.9s forwards;
+}
+
+.intro__frase {
+    max-width: 30ch;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--prata-suave);
+    opacity: 0;
+    transform: translateY(8px);
+    animation: intro-letra 1s cubic-bezier(0.22, 1, 0.36, 1) 2.2s forwards;
+}
+
+/* estrelas de 4 pontas que se acendem ao redor */
+.intro__constelacao { position: absolute; inset: 0; pointer-events: none; }
+
+.intro__constelacao i {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: calc(22px * var(--s));
+    aspect-ratio: 1;
+    background:
+        radial-gradient(circle, #fff 0 8%, rgba(255, 255, 255, 0) 40%),
+        linear-gradient(90deg, transparent, rgba(223, 230, 255, 0.9), transparent) center / 100% 7% no-repeat,
+        linear-gradient(0deg, transparent, rgba(223, 230, 255, 0.9), transparent) center / 7% 100% no-repeat;
+    filter: drop-shadow(0 0 3px var(--cristal));
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+    animation: intro-estrela 1.2s cubic-bezier(0.22, 1, 0.36, 1) var(--t) forwards,
+               intro-cintilar 2.6s ease-in-out calc(var(--t) + 1.2s) infinite;
+}
+
+.intro__pular {
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--prata-suave);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--borda-vidro);
+    border-radius: 999px;
+    padding: 9px 18px;
+    cursor: pointer;
+    opacity: 0;
+    animation: intro-letra 0.6s ease-out 0.6s forwards;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.intro__pular:hover, .intro__pular:focus-visible { color: var(--prata); border-color: var(--cristal); }
+
+@keyframes intro-subir { to { opacity: 1; transform: none; } }
+@keyframes intro-letra { to { opacity: 1; transform: none; } }
+@keyframes intro-halo { to { opacity: 1; transform: scale(1); } }
+@keyframes intro-respirar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes intro-linha { to { opacity: 1; transform: scaleX(1); } }
+@keyframes intro-estrela { to { opacity: 0.9; transform: translate(-50%, -50%) scale(1); } }
+@keyframes intro-cintilar { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.4; } }
+@keyframes intro-faisca {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(0deg); }
+    45% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(45deg); }
+    100% { opacity: 0.85; transform: translate(-50%, -50%) scale(0.75) rotate(90deg); }
+}
+
+/* "reduzir movimento": tudo aparece com um fade simples, sem deslocar nem girar */
+@media (prefers-reduced-motion: reduce) {
+    html.intro-ativa .intro *,
+    html.intro-ativa #app {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        transform: none !important;
+    }
+    html.intro-ativa .intro { transition: opacity 0.25s linear; }
+    .intro--saindo { transform: none; }
+}

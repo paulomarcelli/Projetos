@@ -889,6 +889,16 @@ html.ceu-ativo body::after {
     animation: pensar 1.2s ease-in-out infinite;  /* acende uma por vez: está pensando */
 }
 
+.indicador-voz[data-estado="conectando"] span {
+    animation: pensar 1.2s ease-in-out infinite;  /* conectando: mesmo ritmo calmo de "pensando" */
+    opacity: 0.35;
+}
+
+.indicador-voz[data-estado="erro"] span {
+    background-color: var(--ambar, #f3d9a4);      /* erro: barras paradas em âmbar, sem alarme */
+    opacity: 0.8;
+}
+
 .indicador-voz span:nth-child(2) { animation-delay: 0.12s; }
 .indicador-voz span:nth-child(3) { animation-delay: 0.24s; }
 .indicador-voz span:nth-child(4) { animation-delay: 0.36s; }

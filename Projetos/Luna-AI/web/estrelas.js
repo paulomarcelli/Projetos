@@ -60,7 +60,10 @@
                     cor: CORES[aleatorio() < 0.06 ? 3 : Math.floor(aleatorio() * 3)],
                     fase: aleatorio() * Math.PI * 2,
                     velocidade: entre(camada.velocidade),
-                    cristal: nivel === 2 && aleatorio() < 0.4,          // forma de 4 pontas
+                    // Todas as estrelas próximas (as que têm halo) usam a forma de 4 pontas da marca.
+                    // Antes só 40% usavam; as outras apareciam como bolinhas brilhantes.
+                    // O sorteio continua sendo consumido para não mudar a posição das outras estrelas.
+                    cristal: nivel === 2 && (aleatorio(), true),
                 });
             }
         });

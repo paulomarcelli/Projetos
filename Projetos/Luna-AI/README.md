@@ -141,7 +141,7 @@ Luna-AI/
 ├── requirements.txt   → bibliotecas necessárias
 ├── .env.example       → modelo do arquivo da chave
 ├── MUDANCAS.md        → relatório técnico do que foi feito
-├── LUNA.py            → primeira versão, de terminal (mantida como histórico)
+├── historico/luna_terminal_v1.py → primeira versão, de terminal (só histórico; ficava como LUNA.py, mas o nome colidia com luna.py no Windows)
 └── README.md
 ```
 

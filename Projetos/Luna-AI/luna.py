@@ -28,8 +28,9 @@ log = logging.getLogger("luna")
 
 MODELO = os.environ.get("LUNA_MODELO", "gemini-3.6-flash")    # mesmo modelo do chatbot-AI
 PENSAMENTO = os.environ.get("LUNA_PENSAMENTO", "low")          # "low" responde mais rápido (importante na voz)
-OPENAI_MODELO = os.environ.get("LUNA_OPENAI_MODELO", "gpt-4o-mini")
-OPENAI_URL = os.environ.get("LUNA_OPENAI_URL", "https://api.openai.com/v1/chat/completions")
+# Lidos na hora da chamada (e não aqui no topo): o app.py carrega o .env depois de importar este módulo.
+OPENAI_MODELO_PADRAO = "gpt-4o-mini"
+OPENAI_URL_PADRAO = "https://api.openai.com/v1/chat/completions"
 ERROS_TEMPORARIOS = (500, 502, 503, 504)                      # falhas do lado do Google que valem repetir
 ESPERAS_TEMPORARIAS = (1.0, 3.0)                              # segundos de pausa antes de cada nova tentativa
 LIMITE_HISTORICO = 30                                          # últimas mensagens enviadas ao modelo
@@ -109,10 +110,10 @@ def _chamar_openai(instrucoes, conteudos):
     ]
     try:
         r = httpx.post(
-            OPENAI_URL,
+            os.environ.get("LUNA_OPENAI_URL") or OPENAI_URL_PADRAO,
             headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
             json={
-                "model": OPENAI_MODELO,
+                "model": os.environ.get("LUNA_OPENAI_MODELO") or OPENAI_MODELO_PADRAO,
                 "messages": mensagens,
                 "temperature": 0.7,
                 "max_completion_tokens": 2048,

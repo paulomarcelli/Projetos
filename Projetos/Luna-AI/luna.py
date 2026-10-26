@@ -28,6 +28,8 @@ log = logging.getLogger("luna")
 
 MODELO = os.environ.get("LUNA_MODELO", "gemini-3.6-flash")    # mesmo modelo do chatbot-AI
 PENSAMENTO = os.environ.get("LUNA_PENSAMENTO", "low")          # "low" responde mais rápido (importante na voz)
+OPENAI_MODELO = os.environ.get("LUNA_OPENAI_MODELO", "gpt-4o-mini")
+OPENAI_URL = os.environ.get("LUNA_OPENAI_URL", "https://api.openai.com/v1/chat/completions")
 ERROS_TEMPORARIOS = (500, 502, 503, 504)                      # falhas do lado do Google que valem repetir
 ESPERAS_TEMPORARIAS = (1.0, 3.0)                              # segundos de pausa antes de cada nova tentativa
 LIMITE_HISTORICO = 30                                          # últimas mensagens enviadas ao modelo
@@ -59,8 +61,8 @@ class ErroModelo(Exception):
 _cliente = None
 
 
-def chamar_modelo(instrucoes, conteudos):
-    """Única função que fala com o Gemini. Os testes trocam ela por uma versão falsa."""
+def _chamar_gemini(instrucoes, conteudos):
+    """Fala com o Gemini (provedor padrão e reserva)."""
     global _cliente
     if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
         raise ErroModelo("sem_chave")
@@ -88,6 +90,61 @@ def chamar_modelo(instrucoes, conteudos):
             if getattr(erro, "code", None) not in ERROS_TEMPORARIOS or tentativa == len(ESPERAS_TEMPORARIAS):
                 raise
             time.sleep(ESPERAS_TEMPORARIAS[tentativa])
+
+
+class ErroOpenAI(Exception):
+    """Resposta de erro da OpenAI. `code` é o status HTTP, como nos erros do Gemini."""
+
+    def __init__(self, code):
+        super().__init__(f"OpenAI respondeu {code}")
+        self.code = code
+
+
+def _chamar_openai(instrucoes, conteudos):
+    """Fala com a OpenAI (Chat Completions) usando httpx, que já vem com o google-genai."""
+    import httpx
+    mensagens = [{"role": "system", "content": instrucoes}] + [
+        {"role": "assistant" if c["role"] == "model" else "user", "content": c["parts"][0]["text"]}
+        for c in conteudos
+    ]
+    try:
+        r = httpx.post(
+            OPENAI_URL,
+            headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
+            json={
+                "model": OPENAI_MODELO,
+                "messages": mensagens,
+                "temperature": 0.7,
+                "max_completion_tokens": 2048,
+                "response_format": {"type": "json_object"},
+            },
+            timeout=60,
+        )
+    except httpx.HTTPError as erro:   # rede fora do ar, tempo esgotado...
+        raise ErroOpenAI(0) from erro
+    if r.status_code != 200:
+        raise ErroOpenAI(r.status_code)
+    try:
+        return r.json()["choices"][0]["message"]["content"]
+    except (KeyError, IndexError, ValueError) as erro:
+        raise ErroOpenAI(502) from erro
+
+
+def chamar_modelo(instrucoes, conteudos):
+    """Única função que fala com a IA. Os testes trocam ela por uma versão falsa.
+
+    Com OPENAI_API_KEY definida (e LUNA_PROVEDOR diferente de "gemini"), a OpenAI responde primeiro.
+    Se ela falhar (chave recusada, limite, instabilidade) e houver chave do Gemini, o Gemini assume,
+    para a conversa não parar. Sem chave da OpenAI, tudo funciona como antes, só com o Gemini."""
+    tem_gemini = bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
+    if os.environ.get("OPENAI_API_KEY") and os.environ.get("LUNA_PROVEDOR", "openai") != "gemini":
+        try:
+            return _chamar_openai(instrucoes, conteudos)
+        except ErroOpenAI as erro:
+            log.warning("OpenAI falhou (%s); %s", erro.code, "usando o Gemini" if tem_gemini else "sem reserva")
+            if not tem_gemini:
+                raise
+    return _chamar_gemini(instrucoes, conteudos)
 
 
 def montar_instrucoes(av, memoria, memoria_ativa, modo_voz, conhecimento=""):

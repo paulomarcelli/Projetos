@@ -274,30 +274,47 @@ function rolarAte(linha, rolar) {
 
 
 // ===== ENVIA A MENSAGEM PRO SERVIDOR =====
+// Servidor hospedado no plano gratuito "dorme" quando ninguém usa e leva ~30-50 s para acordar; nesse
+// intervalo o navegador vê uma falha de rede. Em vez de desistir, tentamos de novo algumas vezes.
+const SERVIDOR_REMOTO = API_BASE !== "" && !/^https?:\/\/(127\.0\.0\.1|localhost)/.test(API_BASE);
+const ESPERAS_ACORDAR_MS = [5000, 8000, 10000, 12000, 15000];
+
 async function pedirResposta(mensagem, historico, porVoz) {
-    const controle = new AbortController();
-    const relogio = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS);
+    const corpo = JSON.stringify({
+        mensagem,
+        historico,                                                  // contexto: a Luna lembra do que foi dito
+        memoria: config.memoriaAtiva ? memoria : [],                // memória só vai se estiver ligada
+        memoria_ativa: config.memoriaAtiva,
+        modo_voz: porVoz,                                           // na voz, respostas mais curtas e sem Markdown
+    });
+    const inicio = Date.now();
     let resposta;
-    try {
-        resposta = await fetch(URL_SERVIDOR, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                mensagem,
-                historico,                                              // contexto: a Luna lembra do que foi dito
-                memoria: config.memoriaAtiva ? memoria : [],            // memória só vai se estiver ligada
-                memoria_ativa: config.memoriaAtiva,
-                modo_voz: porVoz,                                       // na voz, respostas mais curtas e sem Markdown
-            }),
-            signal: controle.signal,
-        });
-    } catch (erro) {
-        throw new Error(erro.name === "AbortError"
-            ? "A resposta demorou demais. Tente de novo em alguns instantes."
-            : `Não consegui me conectar com o servidor (${new URL(URL_SERVIDOR, location.href).host}). Se a página ficou aberta por muito tempo, recarregue com Ctrl+Shift+R e tente de novo.`);
-    } finally {
-        clearTimeout(relogio);
+    for (let tentativa = 0; ; tentativa++) {
+        const controle = new AbortController();
+        const relogio = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS);
+        try {
+            resposta = await fetch(URL_SERVIDOR, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: corpo,
+                signal: controle.signal,
+            });
+            break;
+        } catch (erro) {
+            const abortou = erro.name === "AbortError";
+            if (!abortou && SERVIDOR_REMOTO && tentativa < ESPERAS_ACORDAR_MS.length) {
+                mostrarAviso("Acordando a Luna… na primeira mensagem isso pode levar até um minuto.");
+                await new Promise((fim) => setTimeout(fim, ESPERAS_ACORDAR_MS[tentativa]));
+                continue;
+            }
+            throw new Error(abortou
+                ? "A resposta demorou demais. Tente de novo em alguns instantes."
+                : `Não consegui me conectar com o servidor (${new URL(URL_SERVIDOR, location.href).host}). Se a página ficou aberta por muito tempo, recarregue com Ctrl+Shift+R e tente de novo.`);
+        } finally {
+            clearTimeout(relogio);
+        }
     }
+    avisoRapido.classList.remove("visivel");                        // some o "Acordando a Luna…"
     const dados = await resposta.json().catch(() => ({}));
     if (!resposta.ok || typeof dados.resposta !== "string") {
         throw new Error(dados.erro || `O servidor respondeu com erro ${resposta.status}. Tente de novo em alguns instantes.`);

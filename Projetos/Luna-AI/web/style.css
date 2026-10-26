@@ -629,11 +629,17 @@ html.ceu-ativo body::after {
 }
 
 .avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;                     /* o arquivo já é um ícone arredondado em fundo noturno */
+    width: 44px;
+    height: 44px;
+    padding: 4px 2px 2px;                    /* a figura inteira cabe no círculo, com respiro */
+    box-sizing: border-box;
+    object-fit: contain;                     /* mantém a proporção do desenho (960 × 758) */
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 35%, #1c2a5c, #0b1230 75%); /* céu noturno da marca */
+    border: 1px solid rgba(196, 207, 248, 0.35); /* contorno fino de cristal */
+    filter: brightness(1.35) drop-shadow(0 0 1.5px rgba(214, 224, 255, 0.6)); /* traço neon legível em tamanho pequeno */
     flex-shrink: 0;
-    margin-top: 4px;
+    margin-top: 2px;
     box-shadow: 0 0 10px rgba(196, 207, 248, 0.25);
 }
 

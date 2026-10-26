@@ -88,7 +88,7 @@ function htmlSeguro(markdown) {
 
 function criarAvatar() {
     const avatar = document.createElement("img");
-    avatar.src = "marca/icone-192.png";                               // coroa de cristal da LUNA MIND em ícone (legível em 34 px)
+    avatar.src = "marca/luna-mind.png";                               // figura completa da LUNA MIND (a mesma do topo), não só a coroa
     avatar.alt = "";                                                  // decorativa
     avatar.classList.add("avatar");
     return avatar;

@@ -8,6 +8,7 @@ do Gemini é avaliada em avaliar_respostas.py (precisa de chave).
 import io
 import json
 import logging
+import os
 import sys
 import unittest
 from unittest import mock
@@ -238,3 +239,59 @@ class TestInterpretar(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestProvedores(unittest.TestCase):
+    """OpenAI primeiro, Gemini de reserva (sem chamar a rede de verdade)."""
+
+    def setUp(self):
+        self.env = dict(os.environ)
+        self.g, self.o = luna._chamar_gemini, luna._chamar_openai
+        os.environ["GEMINI_API_KEY"] = "g"
+        os.environ["OPENAI_API_KEY"] = "o"
+        os.environ.pop("LUNA_PROVEDOR", None)
+
+    def tearDown(self):
+        luna._chamar_gemini, luna._chamar_openai = self.g, self.o
+        os.environ.clear(); os.environ.update(self.env)
+
+    def test_openai_responde_primeiro(self):
+        luna._chamar_openai = lambda i, c: "openai"
+        luna._chamar_gemini = lambda i, c: "gemini"
+        self.assertEqual(luna.chamar_modelo("i", []), "openai")
+
+    def test_chave_recusada_cai_no_gemini(self):
+        def recusa(i, c): raise luna.ErroOpenAI(401)
+        luna._chamar_openai = recusa
+        luna._chamar_gemini = lambda i, c: "gemini"
+        self.assertEqual(luna.chamar_modelo("i", []), "gemini")
+
+    def test_sem_reserva_o_erro_sobe_com_codigo(self):
+        def recusa(i, c): raise luna.ErroOpenAI(401)
+        luna._chamar_openai = recusa
+        os.environ.pop("GEMINI_API_KEY")
+        with self.assertRaises(luna.ErroOpenAI) as ctx:
+            luna.chamar_modelo("i", [])
+        self.assertEqual(ctx.exception.code, 401)
+
+    def test_provedor_gemini_ignora_a_openai(self):
+        os.environ["LUNA_PROVEDOR"] = "gemini"
+        luna._chamar_openai = lambda i, c: "openai"
+        luna._chamar_gemini = lambda i, c: "gemini"
+        self.assertEqual(luna.chamar_modelo("i", []), "gemini")
+
+    def test_conversao_do_historico_para_openai(self):
+        enviado = {}
+        class R:
+            status_code = 200
+            def json(self): return {"choices": [{"message": {"content": "{}"}}]}
+        import httpx
+        original = httpx.post
+        httpx.post = lambda url, **kw: enviado.update(kw) or R()
+        luna._chamar_openai = self.o
+        try:
+            luna._chamar_openai("regras", [{"role": "user", "parts": [{"text": "oi"}]}, {"role": "model", "parts": [{"text": "olá"}]}])
+        finally:
+            httpx.post = original
+        papeis = [m["role"] for m in enviado["json"]["messages"]]
+        self.assertEqual(papeis, ["system", "user", "assistant"])

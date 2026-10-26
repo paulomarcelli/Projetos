@@ -294,7 +294,7 @@ async function pedirResposta(mensagem, historico, porVoz) {
     } catch (erro) {
         throw new Error(erro.name === "AbortError"
             ? "A resposta demorou demais. Tente de novo em alguns instantes."
-            : "Não consegui me conectar com o servidor. Confira se ele está ligado e tente de novo em alguns instantes.");
+            : `Não consegui me conectar com o servidor (${new URL(URL_SERVIDOR, location.href).host}). Se a página ficou aberta por muito tempo, recarregue com Ctrl+Shift+R e tente de novo.`);
     } finally {
         clearTimeout(relogio);
     }

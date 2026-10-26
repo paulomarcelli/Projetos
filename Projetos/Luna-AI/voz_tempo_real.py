@@ -27,6 +27,7 @@ import threading
 import time
 
 import luna
+import personalidade
 import seguranca
 
 BASE_URL = "https://api.openai.com/v1"
@@ -37,13 +38,7 @@ VALIDADE_S = 120                 # a chave efêmera só precisa durar até a con
 LIMITE_POR_HORA = 20             # sessões por endereço IP: protege a cota de quem hospeda
 _SAL = secrets.token_hex(16)     # identificador de segurança sem guardar o IP real
 
-INSTRUCOES_TEMPO_REAL = (
-    "CONVERSA POR VOZ EM TEMPO REAL (esta regra vale acima do FORMATO DA SAÍDA): você está falando "
-    "com a pessoa em áudio, ao vivo. Não use JSON, chaves, campos nem rótulos: diga apenas o que iria "
-    "em \"resposta\". Fale em português do Brasil, com calma, frases curtas e naturais, no máximo 4 "
-    "frases por vez, e deixe espaço para a pessoa falar. Se ela te interromper, pare e escute. "
-    "Mensagens de sistema que chegarem durante a conversa trazem orientações de segurança: siga-as."
-)
+INSTRUCOES_TEMPO_REAL = personalidade.VOZ_TEMPO_REAL   # definida junto com a personalidade
 
 
 class ErroVoz(Exception):

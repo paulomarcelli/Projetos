@@ -1,0 +1,30 @@
+# Render Blueprint: hospeda o servidor da LUNA MIND (Projetos/Luna-AI).
+# No Render: New → Blueprint → escolha este repositório. Ele pede as chaves (sync: false)
+# na hora de criar; elas ficam guardadas no Render, nunca no código.
+services:
+  - type: web
+    name: luna-mind
+    runtime: python
+    plan: free
+    rootDir: Projetos/Luna-AI
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /status
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: LUNA_PROXY
+        value: "1"
+      - key: LUNA_ORIGENS_PERMITIDAS
+        value: https://paulomarcelli.github.io
+      - key: LUNA_LIMITE_CHAT_HORA
+        value: "60"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LUNA_OPENAI_URL
+        sync: false
+      - key: LUNA_OPENAI_MODELO
+        sync: false

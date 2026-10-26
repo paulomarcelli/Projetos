@@ -52,22 +52,15 @@ body::after {
 }
 
 body::before {
-    background-image:                        /* cada radial-gradient é uma estrela */
-        radial-gradient(1.5px 1.5px at 40px 60px, #fff, transparent),
-        radial-gradient(1px 1px at 130px 190px, #fff, transparent),
-        radial-gradient(1.5px 1.5px at 220px 90px, #dfe6ff, transparent),
-        radial-gradient(1px 1px at 300px 260px, #fff, transparent),
-        radial-gradient(2px 2px at 360px 40px, #fff, transparent);
+    /* estrelas de 4 pontas (mesma forma do céu em canvas), nas mesmas posições de antes */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='320'%3E%3Cpath fill='%23fff' d='M40 57.3L40.42 60L40 62.7L39.58 60ZM37.84 60L40 59.58L42.16 60L40 60.42Z'/%3E%3Cpath fill='%23fff' d='M130 188.2L130.28 190L130 191.8L129.72 190ZM128.56 190L130 189.72L131.44 190L130 190.28Z'/%3E%3Cpath fill='%23dfe6ff' d='M220 87.3L220.42 90L220 92.7L219.58 90ZM217.84 90L220 89.58L222.16 90L220 90.42Z'/%3E%3Cpath fill='%23fff' d='M300 258.2L300.28 260L300 261.8L299.72 260ZM298.56 260L300 259.72L301.44 260L300 260.28Z'/%3E%3Cpath fill='%23fff' d='M360 36.4L360.56 40L360 43.6L359.44 40ZM357.12 40L360 39.44L362.88 40L360 40.56Z'/%3E%3C/svg%3E");
     background-size: 400px 320px;            /* "azulejo" que se repete */
     animation: cintilar 5s ease-in-out infinite; /* pisca devagar */
 }
 
 body::after {
-    background-image:                        /* segunda camada, outras posições */
-        radial-gradient(1px 1px at 80px 150px, #fff, transparent),
-        radial-gradient(2px 2px at 250px 200px, #cfd8ff, transparent),
-        radial-gradient(1px 1px at 170px 30px, #fff, transparent),
-        radial-gradient(1.5px 1.5px at 330px 140px, #fff, transparent);
+    /* segunda camada, outras posições */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='280'%3E%3Cpath fill='%23fff' d='M80 148.2L80.28 150L80 151.8L79.72 150ZM78.56 150L80 149.72L81.44 150L80 150.28Z'/%3E%3Cpath fill='%23cfd8ff' d='M250 196.4L250.56 200L250 203.6L249.44 200ZM247.12 200L250 199.44L252.88 200L250 200.56Z'/%3E%3Cpath fill='%23fff' d='M170 28.2L170.28 30L170 31.8L169.72 30ZM168.56 30L170 29.72L171.44 30L170 30.28Z'/%3E%3Cpath fill='%23fff' d='M330 137.3L330.42 140L330 142.7L329.58 140ZM327.84 140L330 139.58L332.16 140L330 140.42Z'/%3E%3C/svg%3E");
     background-size: 380px 280px;            /* tamanho diferente pra não alinhar com a outra camada */
     animation: cintilar 7s ease-in-out infinite 2s; /* ritmo e atraso diferentes */
 }

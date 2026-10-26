@@ -10,6 +10,8 @@ apenas a rota e o código de status, nunca o texto das mensagens.
 import logging
 import os
 import re
+import threading
+import time
 
 from flask import Flask, jsonify, request
 
@@ -19,6 +21,28 @@ import voz_tempo_real
 
 app = Flask(__name__, static_folder="web", static_url_path="")
 app.config["MAX_CONTENT_LENGTH"] = 512 * 1024            # corta requisições gigantes antes de ler
+
+# Hospedado atrás de um proxy (ex.: Render): usa o IP real de quem acessa, vindo do X-Forwarded-For.
+# Só liga com LUNA_PROXY=1; sem proxy, aceitar esse cabeçalho deixaria qualquer um forjar o IP.
+if os.environ.get("LUNA_PROXY") == "1":
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+
+# Limite de mensagens por IP: com a Luna pública, protege os créditos das chaves de quem hospeda.
+LIMITE_CHAT_HORA = int(os.environ.get("LUNA_LIMITE_CHAT_HORA", "60"))
+_pedidos_chat = {}
+_trava_chat = threading.Lock()
+
+
+def dentro_do_limite_chat(ip):
+    agora = time.time()
+    with _trava_chat:
+        recentes = [t for t in _pedidos_chat.get(ip, []) if agora - t < 3600]
+        permitido = len(recentes) < LIMITE_CHAT_HORA
+        if permitido:
+            recentes.append(agora)
+        _pedidos_chat[ip] = recentes
+        return permitido
 log = logging.getLogger("luna")
 
 LIMITE_MENSAGEM = 4000
@@ -117,6 +141,8 @@ def chat():
     pedido, erro = validar(request.get_json(silent=True))
     if erro:
         return jsonify(erro=erro), 400
+    if not dentro_do_limite_chat(request.remote_addr or ""):
+        return jsonify(erro="Muitas mensagens em pouco tempo. Faça uma pausa e tente de novo daqui a pouco."), 429
     try:
         return jsonify(luna.responder(**pedido))
     except luna.ErroModelo as falha:

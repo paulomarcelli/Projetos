@@ -151,7 +151,7 @@ html.ceu-ativo body::after {
 
 .marca-luna {
     color: var(--prata);
-    text-shadow: 0 0 18px rgba(183, 195, 242, 0.45); /* mesmo brilho do símbolo */
+    text-shadow: 0 0 10px rgba(183, 195, 242, 0.25); /* mesmo brilho do símbolo */
 }
 
 .marca-mind {
@@ -1501,7 +1501,7 @@ html.intro-ativa .intro {
     place-items: center;
     padding: 24px;
     cursor: pointer;
-    background: radial-gradient(ellipse at 50% 42%, rgba(28, 42, 92, 0.35), rgba(10, 18, 48, 0.55) 70%);
+    background: rgba(8, 14, 40, 0.45);      /* escurece o céu por igual: sem centro claro (evita névoa leitosa) */
     transition: opacity 0.7s var(--sair), transform 0.7s var(--sair);
 }
 
@@ -1529,12 +1529,12 @@ html.intro-saindo #app { opacity: 1; transform: none; }
     position: absolute;
     top: 0;
     left: 50%;
-    width: min(420px, 90vw);
+    width: min(340px, 80vw);
     aspect-ratio: 1;
-    margin-left: calc(min(420px, 90vw) / -2);
-    margin-top: -80px;
+    margin-left: calc(min(340px, 80vw) / -2);
+    margin-top: -60px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(183, 195, 242, 0.32), rgba(183, 195, 242, 0.08) 45%, transparent 70%);
+    background: radial-gradient(circle, rgba(110, 132, 220, 0.15), rgba(110, 132, 220, 0.07) 30%, rgba(110, 132, 220, 0.025) 50%, rgba(110, 132, 220, 0.008) 62%, transparent 72%); /* luz azul contida, que some aos poucos (sem borda nem névoa branca) */
     opacity: 0;
     transform: scale(0.6);
     animation: intro-halo 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards, intro-respirar 4s ease-in-out 1.9s infinite;

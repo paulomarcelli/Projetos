@@ -2,8 +2,9 @@
 // Desenha o fundo em um <canvas> com três camadas de profundidade:
 //   longe  → muitas estrelas minúsculas e apagadas, cintilam devagar;
 //   meio   → menos estrelas, um pouco maiores;
-//   perto  → poucas estrelas com brilho suave; algumas são "estrelas de cristal"
-//            de 4 pontas, a mesma forma da estrela do símbolo da marca.
+//   perto  → poucas estrelas com brilho suave (halo).
+// Todas as estrelas, de todas as camadas, têm 4 pontas: a mesma forma da estrela
+// do símbolo da marca. Nenhuma é desenhada como círculo.
 //
 // Decisões:
 // - Puramente decorativo (aria-hidden no HTML) e atrás de todo o conteúdo.
@@ -34,9 +35,9 @@
     // Cores tiradas da paleta: prata, cristal (lilás-azulado) e um âmbar raro (estrelas mais quentes).
     const CORES = ["255,255,255", "223,230,255", "200,211,250", "243,227,195"];
     const CAMADAS = [
-        { nome: "longe", densidade: 9000, raio: [0.35, 0.85], alfa: [0.25, 0.6], parallax: 2, velocidade: [0.25, 0.7] },
-        { nome: "meio", densidade: 32000, raio: [0.8, 1.35], alfa: [0.45, 0.8], parallax: 5, velocidade: [0.35, 0.9] },
-        { nome: "perto", densidade: 160000, raio: [1.3, 2.0], alfa: [0.7, 1.0], parallax: 10, velocidade: [0.2, 0.5] },
+        { nome: "longe", densidade: 9000, raio: [0.35, 0.85], alfa: [0.25, 0.6], parallax: 2, velocidade: [0.25, 0.7], ponta: 1.0 },
+        { nome: "meio", densidade: 32000, raio: [0.8, 1.35], alfa: [0.45, 0.8], parallax: 5, velocidade: [0.35, 0.9], ponta: 0.85 },
+        { nome: "perto", densidade: 160000, raio: [1.3, 2.0], alfa: [0.7, 1.0], parallax: 10, velocidade: [0.2, 0.5], ponta: 0.6 },
     ];
 
     let estrelas = [], largura = 0, altura = 0, dpr = 1;
@@ -60,11 +61,10 @@
                     cor: CORES[aleatorio() < 0.06 ? 3 : Math.floor(aleatorio() * 3)],
                     fase: aleatorio() * Math.PI * 2,
                     velocidade: entre(camada.velocidade),
-                    // Todas as estrelas próximas (as que têm halo) usam a forma de 4 pontas da marca.
-                    // Antes só 40% usavam; as outras apareciam como bolinhas brilhantes.
-                    // O sorteio continua sendo consumido para não mudar a posição das outras estrelas.
-                    cristal: nivel === 2 && (aleatorio(), true),
                 });
+                // Sorteio que antes escolhia a forma das estrelas próximas: continua sendo
+                // consumido para o céu (posições e cores) ficar exatamente o mesmo.
+                if (nivel === 2) aleatorio();
             }
         });
     }
@@ -110,12 +110,8 @@
                 halo.addColorStop(1, `rgba(${e.cor},0)`);
                 ctx.fillStyle = halo;
                 ctx.fillRect(x - e.raio * 6, y - e.raio * 6, e.raio * 12, e.raio * 12);
-                if (e.cristal) { desenharCristal(x, y, e.raio * 0.6, e.cor, brilho); continue; }
             }
-            ctx.fillStyle = `rgba(${e.cor},${brilho})`;
-            ctx.beginPath();
-            ctx.arc(x, y, e.raio, 0, Math.PI * 2);
-            ctx.fill();
+            desenharCristal(x, y, e.raio * camada.ponta, e.cor, brilho);
         }
     }
 

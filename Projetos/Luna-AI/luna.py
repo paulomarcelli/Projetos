@@ -35,7 +35,7 @@ ERROS_TEMPORARIOS = (500, 502, 503, 504)                      # falhas do lado d
 ESPERAS_TEMPORARIAS = (1.0, 3.0)                              # segundos de pausa antes de cada nova tentativa
 LIMITE_HISTORICO = 30                                          # últimas mensagens enviadas ao modelo
 
-# A personalidade fica em personalidade.py (editada manualmente pelo autor).
+# A personalidade fica em personalidade.py (ponto único para texto, voz e voz ao vivo).
 # O nome INSTRUCOES continua disponível aqui para quem já importava luna.INSTRUCOES.
 INSTRUCOES = personalidade.INSTRUCOES
 
@@ -164,7 +164,7 @@ def montar_instrucoes(av, memoria, memoria_ativa, modo_voz, conhecimento=""):
     else:
         partes.append("MEMÓRIA DESATIVADA: use sempre \"lembrar\": null.")
     if modo_voz:
-        partes.append("MODO VOZ: a resposta será falada em voz alta. Não use markdown, listas nem emojis; use frases curtas e naturais, no máximo 4 frases.")
+        partes.append(personalidade.VOZ)
     if conhecimento:
         partes.append(conhecimento)
     if av.nivel in ORIENTACOES_RISCO:

@@ -41,7 +41,8 @@ jobs:
           printf 'window.LUNA_CONFIG = { apiBase: %s };\n' "$(jq -Rn --arg u "$LUNA_API_URL" '$u')" > _site/Projetos/Luna/config.js
           touch _site/.nojekyll
         env:
-          LUNA_API_URL: ${{ vars.LUNA_API_URL }}
+          # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.
+          LUNA_API_URL: ${{ vars.LUNA_API_URL || 'https://luna-mind.onrender.com' }}
       - name: Preparar arquivos dos sites
         uses: actions/upload-pages-artifact@v3
         with:

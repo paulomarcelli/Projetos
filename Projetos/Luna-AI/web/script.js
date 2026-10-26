@@ -34,7 +34,9 @@ const novaMemoria = document.getElementById("nova-memoria");
 const vozSuporte = document.getElementById("voz-suporte");
 
 // servido pelo Flask (porta 5000) usa o caminho relativo; aberto pelo Live Server usa o endereço completo
-const URL_SERVIDOR = location.port === "5000" ? "/chat" : "http://127.0.0.1:5000/chat";
+// Servidor da Luna: config.js (GitHub Pages) > mesma origem (python app.py) > servidor local de testes
+const API_BASE = (window.LUNA_CONFIG?.apiBase || (location.port === "5000" ? "" : "http://127.0.0.1:5000")).replace(/\/+$/, "");
+const URL_SERVIDOR = API_BASE + "/chat";
 const LIMITE_CONTEXTO = 30;                                          // quantas mensagens anteriores vão como contexto
 const TEMPO_LIMITE_MS = 45000;                                       // desiste de esperar depois de 45 segundos
 
@@ -311,6 +313,13 @@ async function enviarMensagem(textoOpcional, { porVoz = false } = {}) {
         return;
     }
 
+    if (VozTempoReal.ativa()) {                                      // conversa por voz ao vivo: o texto entra na mesma sessão
+        registrarFala("usuario", pergunta);
+        if (textoOpcional === undefined) { campoMensagem.value = ""; ajustarAltura(); }
+        VozTempoReal.enviarTexto(pergunta);
+        return;
+    }
+
     ocupado = true;
     atualizarBotoes();
     Voz.pararLeitura();
@@ -352,6 +361,15 @@ async function enviarMensagem(textoOpcional, { porVoz = false } = {}) {
         atualizarBotoes();
         if (!Voz.emConversa() && textoOpcional === undefined) campoMensagem.focus();
     }
+}
+
+// Falas da conversa por voz ao vivo entram no chat e no histórico, como mensagens normais.
+function registrarFala(papel, texto, seguranca) {
+    const conversa = atual;
+    conversa.mensagens.push(papel === "luna" ? { papel, texto, seguranca, fontes: [] } : { papel, texto });
+    salvarConversa(conversa);
+    chatArea.classList.add("conversando");
+    adicionarMensagem(papel, texto, papel === "luna" ? { seguranca, fontes: [] } : {});
 }
 
 function atualizarBotoes() {
@@ -434,6 +452,7 @@ function renderizarConversas() {
 function abrirConversa(id) {
     const conversa = conversas.find((c) => c.id === id);
     if (!conversa || ocupado) return;
+    VozTempoReal.encerrar();
     Voz.encerrar();
     Voz.pararLeitura();
     atual = conversa;
@@ -457,6 +476,7 @@ function apagarConversa(id) {
 
 // ===== NOVA CONVERSA =====
 function novaConversa() {
+    VozTempoReal.encerrar();
     Voz.encerrar();
     Voz.pararLeitura();
     atual = criarConversa();
@@ -684,7 +704,43 @@ if (!Voz.podeOuvir) { // indisponível: o botão continua visível e explica o m
     botaoMicrofone.setAttribute("aria-label", "Conversa por voz indisponível neste navegador");
 }
 
-botaoMicrofone.addEventListener("click", () => (Voz.emConversa() ? Voz.encerrar() : Voz.iniciarConversa()));
+VozTempoReal.configurar({
+    apiBase: API_BASE,
+    obterMemoria: () => ({ memoria: config.memoriaAtiva ? memoria : [], memoria_ativa: Boolean(config.memoriaAtiva) }),
+    historico: () => atual.mensagens.map(({ papel, texto }) => ({ papel, texto })),
+    aoFalaPessoa: (texto) => registrarFala("usuario", texto),
+    aoFalaLuna: (texto, seguranca) => registrarFala("luna", texto, seguranca),
+    aoMudarEstado: (estado) => {
+        const ativa = estado !== "inativo";
+        botaoMicrofone.setAttribute("aria-pressed", String(ativa));
+        botaoMicrofone.setAttribute("aria-label", ativa ? "Encerrar conversa por voz" : "Conversar por voz");
+    },
+});
+
+// Com a voz em tempo real configurada no servidor, o microfone abre a conversa simultânea;
+// sem ela (ou sem servidor), continua a voz do navegador.
+botaoMicrofone.addEventListener("click", () => {
+    if (VozTempoReal.ativa()) VozTempoReal.encerrar();
+    else if (Voz.emConversa()) Voz.encerrar();
+    else if (VozTempoReal.disponivel()) { Voz.pararLeitura(); VozTempoReal.iniciar(); }
+    else Voz.iniciarConversa();
+});
+
+async function verificarServidor() {
+    try {
+        const resposta = await fetch(API_BASE + "/status", { signal: AbortSignal.timeout?.(6000) });
+        const estado = await resposta.json();
+        VozTempoReal.definirDisponivel(estado.voz_tempo_real);
+        if (VozTempoReal.disponivel()) {
+            botaoMicrofone.removeAttribute("aria-disabled");
+            botaoMicrofone.setAttribute("aria-label", "Conversar por voz");
+        }
+    } catch {
+        // Página publicada sem servidor configurado: avisa logo, em vez de falhar na primeira mensagem.
+        if (window.LUNA_CONFIG?.apiBase || location.hostname.endsWith("github.io"))
+            mostrarAviso("O servidor da Luna está fora do ar ou não foi configurado. As respostas ficam indisponíveis por enquanto.");
+    }
+}
 
 
 // ===== EVENTOS (o que acontece em cada ação) =====
@@ -708,6 +764,7 @@ botaoNovaConversa.addEventListener("click", novaConversa);
 document.addEventListener("keydown", (evento) => {
     if (evento.key !== "Escape" || dialogoConfig.open) return;      // a janela de configurações trata o próprio Esc
     if (document.body.classList.contains("menu-aberto")) fecharMenu();
+    else if (VozTempoReal.ativa() && VozTempoReal.falando()) VozTempoReal.interromper(); // Esc corta a fala ao vivo
     else if (Voz.emConversa() && Voz.estado() === "falando") Voz.interromper(); // Esc corta a fala
     else if (Voz.falando()) Voz.pararLeitura();
 });
@@ -719,3 +776,4 @@ aplicarAparencia();
 renderizarConversas();
 renderizarMemoria();
 ajustarAlturaVisivel();
+verificarServidor();

@@ -34,7 +34,14 @@ jobs:
           mkdir -p _site/Projetos/Geometry-Heroes
           # Geometry Heroes: só o que o jogo precisa para rodar (sem testes, vídeo e documentação)
           cp -a Projetos/Tarefa-POO-JavaScript/index.html Projetos/Tarefa-POO-JavaScript/main.js Projetos/Tarefa-POO-JavaScript/style.css Projetos/Tarefa-POO-JavaScript/js Projetos/Tarefa-POO-JavaScript/assets _site/Projetos/Geometry-Heroes/
+          # LUNA MIND: só o frontend (web/). O servidor (Flask) não roda no Pages; o endereço dele vem da
+          # variável LUNA_API_URL do repositório. Sem ela, a página avisa que as respostas estão indisponíveis.
+          mkdir -p _site/Projetos/Luna
+          cp -a Projetos/Luna-AI/web/. _site/Projetos/Luna/
+          printf 'window.LUNA_CONFIG = { apiBase: %s };\n' "$(jq -Rn --arg u "$LUNA_API_URL" '$u')" > _site/Projetos/Luna/config.js
           touch _site/.nojekyll
+        env:
+          LUNA_API_URL: ${{ vars.LUNA_API_URL }}
       - name: Preparar arquivos dos sites
         uses: actions/upload-pages-artifact@v3
         with:

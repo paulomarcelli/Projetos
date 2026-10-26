@@ -58,6 +58,19 @@ python app.py
 
 Para desligar, volte ao terminal e aperte `Ctrl + C`.
 
+## 🎙️ Voz em tempo real (opcional)
+
+Com `OPENAI_REALTIME_API_KEY` no `.env` (chave oficial da OpenAI), o microfone abre uma conversa simultânea: a Luna ouve e responde falando, e você pode interrompê-la só começando a falar. A chave secreta fica no servidor; o navegador recebe só uma chave temporária (expira em 2 minutos) para abrir a conexão. Cada fala passa pela mesma camada de segurança do chat. Sem essa chave, o microfone usa a voz do navegador, como antes.
+
+## 🌐 GitHub Pages
+
+O workflow `.github/workflows/pages.yml` publica a pasta `web/` em `https://paulomarcelli.github.io/Projetos/Projetos/Luna/` a cada push na `main`. O GitHub Pages só hospeda arquivos estáticos: o servidor Python (`app.py`) precisa rodar em outro lugar (Render, Railway, Fly.io…). Depois de hospedá-lo:
+
+1. No servidor, defina as chaves e `LUNA_ORIGENS_PERMITIDAS=https://paulomarcelli.github.io`.
+2. No GitHub, em **Settings → Secrets and variables → Actions → Variables**, crie `LUNA_API_URL` com o endereço do servidor (ex.: `https://luna.onrender.com`) e rode o workflow de novo.
+
+Sem servidor configurado, a página abre normalmente e avisa que as respostas estão indisponíveis.
+
 ## 🎙️ Conversa por voz
 
 1. Toque no botão do **microfone** e permita o acesso quando o navegador pedir.

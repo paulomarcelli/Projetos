@@ -15,6 +15,7 @@ from flask import Flask, jsonify, request
 
 import luna
 import rag
+import voz_tempo_real
 
 app = Flask(__name__, static_folder="web", static_url_path="")
 app.config["MAX_CONTENT_LENGTH"] = 512 * 1024            # corta requisições gigantes antes de ler
@@ -37,18 +38,25 @@ ERROS_MODELO = {
 
 # Páginas abertas pelo Live Server (ex.: porta 5500) também podem chamar a API.
 ORIGEM_LOCAL = re.compile(r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$")
+# Frontend publicado em outro endereço (ex.: GitHub Pages): só as origens listadas, exatas.
+# Ex.: LUNA_ORIGENS_PERMITIDAS=https://paulomarcelli.github.io
+ORIGENS_PERMITIDAS = {o.strip().rstrip("/") for o in os.environ.get("LUNA_ORIGENS_PERMITIDAS", "").split(",") if o.strip()}
+
+
+def origem_permitida(origem):
+    return bool(ORIGEM_LOCAL.match(origem)) or origem in ORIGENS_PERMITIDAS
 
 
 @app.after_request
 def cabecalhos(resposta):
     origem = request.headers.get("Origin", "")
-    if ORIGEM_LOCAL.match(origem):
+    if origem_permitida(origem):
         resposta.headers["Access-Control-Allow-Origin"] = origem
         resposta.headers["Access-Control-Allow-Headers"] = "Content-Type"
         resposta.headers["Vary"] = "Origin"
     resposta.headers["X-Content-Type-Options"] = "nosniff"
     resposta.headers["Referrer-Policy"] = "no-referrer"
-    if request.path == "/chat":
+    if request.path == "/chat" or request.path.startswith("/voz/"):
         resposta.headers["Cache-Control"] = "no-store"     # respostas emocionais não ficam em cache
     return resposta
 
@@ -99,6 +107,7 @@ def estado():
     """
     return jsonify(
         modelo_configurado=bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")),
+        voz_tempo_real=voz_tempo_real.disponivel(),
         rag=rag.status(),
     )
 
@@ -114,6 +123,37 @@ def chat():
         status, texto = ERROS_MODELO.get(falha.motivo, ERROS_MODELO["falha"])
         log.warning("Falha ao gerar resposta: %s", falha.motivo)   # só o motivo, nunca o texto da pessoa
         return jsonify(erro=texto), status
+
+
+@app.post("/voz/sessao")
+def voz_sessao():
+    """Cria uma sessão de voz em tempo real. Devolve uma chave EFÊMERA, nunca a chave secreta."""
+    dados = request.get_json(silent=True) or {}
+    memoria = dados.get("memoria", [])
+    if (not isinstance(memoria, list) or len(memoria) > LIMITE_ITENS_MEMORIA
+            or not all(isinstance(m, str) and len(m) <= LIMITE_TEXTO_MEMORIA for m in memoria)):
+        return jsonify(erro="Memória inválida."), 400
+    try:
+        sessao = voz_tempo_real.criar_sessao(
+            [m.strip() for m in memoria if m.strip()], dados.get("memoria_ativa") is True, request.remote_addr or "")
+    except voz_tempo_real.ErroVoz as falha:
+        log.warning("Voz em tempo real indisponível (%s)", falha.status)
+        return jsonify(erro=str(falha)), falha.status
+    return jsonify(sessao)
+
+
+@app.post("/voz/avaliar")
+def voz_avaliar():
+    """Segurança em código para a fala transcrita (o texto não vai para o log)."""
+    dados = request.get_json(silent=True) or {}
+    texto = dados.get("texto")
+    anteriores = dados.get("anteriores", [])
+    if not isinstance(texto, str) or not texto.strip() or len(texto) > LIMITE_MENSAGEM:
+        return jsonify(erro="Texto inválido."), 400
+    if (not isinstance(anteriores, list) or len(anteriores) > LIMITE_ITENS_HISTORICO
+            or not all(isinstance(a, str) and len(a) <= LIMITE_TEXTO_HISTORICO for a in anteriores)):
+        return jsonify(erro="Histórico inválido."), 400
+    return jsonify(voz_tempo_real.avaliar(texto.strip(), anteriores))
 
 
 if __name__ == "__main__":

@@ -19,15 +19,43 @@
     <script src="https://cdn.jsdelivr.net/npm/marked@18.0.10/lib/marked.umd.js" integrity="sha384-JD1I1oSYdjlw8850MjNFhpmRtgBZ97SjJYg9IJUE1RxR3DgG8oo4R43qLGMkd99t" crossorigin="anonymous" defer></script> <!-- transforma o Markdown da IA em HTML -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.14/dist/purify.min.js" integrity="sha384-46dPGH1XlTmj7bc50bqLjTdORXs/3EP2QpA/6EWbelYWOY9VGp+87RT61S3Mcslb" crossorigin="anonymous" defer></script> <!-- limpa o HTML antes de mostrar (bloqueia scripts maliciosos) -->
     <script src="estrelas.js" defer></script> <!-- céu estrelado: camadas, profundidade e brilho -->
+    <script> /* abertura: decide antes da primeira pintura (sem JS, a Luna abre direto) */
+        try { if (!sessionStorage.getItem("luna.intro")) document.documentElement.classList.add("intro-ativa"); } catch (e) {}
+    </script>
     <script src="config.js"></script> <!-- endereço do servidor da Luna (gerado no GitHub Pages) -->
     <script src="voz.js" defer></script> <!-- ouvir e falar (voz do navegador) -->
     <script src="voz-tempo-real.js" defer></script> <!-- conversa simultânea por voz (OpenAI Realtime) -->
-    <script src="script.js" defer></script> <!-- conversa, histórico e configurações -->
+    <script src="script.js" defer></script>
+    <script src="intro.js" defer></script> <!-- abertura animada de boas-vindas --> <!-- conversa, histórico e configurações -->
 </head>
 <body> <!-- tudo que aparece na tela -->
 
     <canvas id="ceu" aria-hidden="true"></canvas> <!-- céu estrelado em camadas (estrelas.js); sem JS ficam as estrelas do CSS -->
     <div class="estrela-cadente" aria-hidden="true"></div> <!-- estrela cadente decorativa (só CSS) -->
+
+    <!-- ABERTURA DE BOAS-VINDAS: aparece uma vez por sessão; toque, Esc ou "Pular" encerram -->
+    <div id="intro" class="intro" role="dialog" aria-modal="true" aria-label="Boas-vindas da LUNA MIND">
+        <div class="intro__constelacao" aria-hidden="true">
+            <i style="--x: 22%; --y: 26%; --t: 1.6s; --s: 1.1"></i>
+            <i style="--x: 78%; --y: 22%; --t: 1.9s; --s: 0.8"></i>
+            <i style="--x: 14%; --y: 64%; --t: 2.3s; --s: 0.7"></i>
+            <i style="--x: 86%; --y: 60%; --t: 2.0s; --s: 1"></i>
+            <i style="--x: 30%; --y: 84%; --t: 2.6s; --s: 0.6"></i>
+            <i style="--x: 70%; --y: 82%; --t: 2.8s; --s: 0.75"></i>
+        </div>
+        <div class="intro__conteudo">
+            <div class="intro__halo" aria-hidden="true"></div>
+            <span class="logo-luna intro__logo" style="--w: min(300px, 58vw)" aria-hidden="true">
+                <img src="marca/luna-mind.png" alt="" class="logo-luna__img" width="960" height="758">
+                <i class="logo-luna__varredura"></i>
+                <i class="intro__faisca" style="--x: 50.1%; --y: 5%"></i>
+            </span>
+            <h1 class="intro__titulo" aria-label="LUNA MIND"><span style="--i:0">L</span><span style="--i:1">U</span><span style="--i:2">N</span><span style="--i:3">A</span><span class="intro__espaco" style="--i:4"> </span><span style="--i:5">M</span><span style="--i:6">I</span><span style="--i:7">N</span><span style="--i:8">D</span></h1>
+            <span class="intro__linha" aria-hidden="true"></span>
+            <p class="intro__frase">Um lugar calmo pra respirar e conversar, no seu tempo.</p>
+        </div>
+        <button type="button" class="intro__pular">Pular</button>
+    </div>
 
     <div id="app"> <!-- sidebar e chat lado a lado -->
 

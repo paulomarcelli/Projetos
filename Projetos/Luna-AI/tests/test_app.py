@@ -287,11 +287,15 @@ class TestProvedores(unittest.TestCase):
             def json(self): return {"choices": [{"message": {"content": "{}"}}]}
         import httpx
         original = httpx.post
-        httpx.post = lambda url, **kw: enviado.update(kw) or R()
+        httpx.post = lambda url, **kw: enviado.update(kw, url=url) or R()
+        os.environ["LUNA_OPENAI_URL"] = "https://exemplo.test/v1/chat/completions"
+        os.environ["LUNA_OPENAI_MODELO"] = "modelo-x"
         luna._chamar_openai = self.o
         try:
             luna._chamar_openai("regras", [{"role": "user", "parts": [{"text": "oi"}]}, {"role": "model", "parts": [{"text": "olá"}]}])
         finally:
             httpx.post = original
+        self.assertEqual(enviado["json"]["model"], "modelo-x")
+        self.assertEqual(enviado["url"], "https://exemplo.test/v1/chat/completions")
         papeis = [m["role"] for m in enviado["json"]["messages"]]
         self.assertEqual(papeis, ["system", "user", "assistant"])

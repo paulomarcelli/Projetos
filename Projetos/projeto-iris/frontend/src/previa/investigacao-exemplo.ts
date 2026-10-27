@@ -797,6 +797,8 @@ export const INVESTIGACAO_EXEMPLO: ResultadoDeInvestigacao = {
       id: "A",
       arquetipo: "Continuidade",
       nome: "Pragmatismo alinhado",
+      ideia: "Aproximação comercial com os EUA sem romper com a China; o conflito com o STF é contido.",
+      impacto: "Tarifas americanas caem, o comércio com a China se mantém e o acordo com a UE pode avançar.",
       sintese:
         "O Brasil se aproxima dos EUA por acordos comerciais e de inteligência, sem romper com a China. O conflito com o STF é contido. Muda o tom; as linhas gerais do comércio exterior continuam.",
       posicao: { "i-alinhamento": 0, "i-stf": 0 },
@@ -840,6 +842,8 @@ export const INVESTIGACAO_EXEMPLO: ResultadoDeInvestigacao = {
       id: "B",
       arquetipo: "Transformação",
       nome: "Alinhamento hemisférico",
+      ideia: "Adesão plena à agenda de segurança dos EUA, com restrições a investimentos chineses.",
+      impacto: "Ganha um aliado de segurança e perde margem comercial com a China e com a UE.",
       sintese:
         "O Brasil adere plenamente à agenda de segurança dos EUA e restringe investimentos chineses. Ganha um aliado forte e perde margem comercial: a inserção internacional muda de direção.",
       posicao: { "i-alinhamento": 1, "i-stf": 0 },
@@ -884,6 +888,8 @@ export const INVESTIGACAO_EXEMPLO: ResultadoDeInvestigacao = {
       id: "C",
       arquetipo: "Ruptura",
       nome: "Crise institucional",
+      ideia: "O perdão ao ex-presidente abre um confronto com o STF que domina o mandato.",
+      impacto: "Política externa reativa e perda de influência regional e multilateral.",
       sintese:
         "O perdão ao ex-presidente abre um confronto entre Executivo e STF que domina o mandato. A política externa fica reativa e o país perde capacidade de influência.",
       posicao: { "i-alinhamento": null, "i-stf": 1 },
@@ -942,8 +948,6 @@ export const INVESTIGACAO_EXEMPLO: ResultadoDeInvestigacao = {
     { id: "t-acordo-ue", data: "1º maio 2026", ano: 2026, categoria: "observado", texto: "Acordo Mercosul–UE entra em vigor provisório; o TJUE ainda analisa.", atores: ["mercosul", "ue", "franca"], relacoes: ["r-mercosul-ue"], evidencias: ["e-mercosul-ue"] },
     { id: "t-encontro", data: "26 maio 2026", ano: 2026, categoria: "observado", texto: "Flávio se reúne com Trump e pede a classificação de PCC e CV como terroristas.", atores: ["eua", "faccoes"], relacoes: ["r-eua-faccoes"], evidencias: ["e-encontro"] },
     { id: "t-sobretaxa", data: "22 jul. 2026", ano: 2026, categoria: "observado", texto: "Sobretaxa de 25%; dias depois, mais 12,5% (até 37,5%).", atores: ["eua", "brasil"], relacoes: ["r-br-eua"], evidencias: ["e-tarifas-2026"] },
-    { id: "t-alavanca", data: "2025–2026", ano: 2026, categoria: "inferido", texto: "Tarifas passaram a ligar o comércio à política interna brasileira.", atores: ["eua", "brasil"], relacoes: ["r-br-eua", "r-eua-stf"], evidencias: ["e-tarifas-2025", "e-tarifas-2026"] },
-    { id: "t-china-custo", data: "2025–2026", ano: 2026, categoria: "inferido", texto: "O peso da China no comércio torna caro qualquer atrito com Pequim.", atores: ["china", "agro"], relacoes: ["r-br-china", "r-agro-china"], evidencias: ["e-china"] },
     { id: "t-1turno", data: "4 out. 2026", ano: 2026, categoria: "observado", texto: "1º turno: Flávio 47,03%, Lula 45,16%.", atores: ["brasil"], evidencias: ["e-virada"] },
     { id: "t-2turno", data: "25 out. 2026", ano: 2026, categoria: "observado", texto: "2º turno: Lula reeleito com 51,79%.", atores: ["brasil"], evidencias: ["e-resultado"] },
     { id: "t-divergencia", data: "25 out. 2026", ano: 2026, categoria: "condicional", texto: "Ponto de divergência: esta investigação supõe a vitória de Flávio.", condicao: "Premissa contrafactual: não aconteceu.", atores: ["brasil"], inflexao: true },

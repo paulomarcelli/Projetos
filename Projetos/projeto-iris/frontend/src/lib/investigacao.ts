@@ -141,6 +141,10 @@ export interface Cenario {
   id: CenarioId;
   arquetipo: "Continuidade" | "Transformação" | "Ruptura";
   nome: string;
+  /** Ideia central em uma frase (cartão do cenário). */
+  ideia: string;
+  /** Impacto principal em uma frase (cartão do cenário). */
+  impacto: string;
   sintese: string;
   /** Polo de cada incerteza crítica (0 ou 1); `null` = indiferente neste cenário. */
   posicao: Record<string, 0 | 1 | null>;

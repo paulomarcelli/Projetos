@@ -385,7 +385,16 @@ p {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
+/* Sentido de uma relação (influência, dependência): pulsos que andam da origem ao destino. */
+.fluxo-direcao {
+  animation: fluxo-direcao 1.6s linear infinite;
+}
+@keyframes fluxo-direcao {
+  from { stroke-dashoffset: 16; }
+  to { stroke-dashoffset: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
+  .fluxo-direcao { animation: none; opacity: 0; }
   .pulso-crise { animation: none; opacity: 1; }
   .barra-progresso { animation: none; transform: none; }
 }

@@ -1,10 +1,9 @@
-import { Maximize2, Minus, Pause, Play, Plus, SlidersHorizontal } from "lucide-react";
+import { Maximize2, Minus, Pause, Play, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent as PE } from "react";
 import { RELACOES, type TipoRelacao } from "../Diagramas";
-import { EPISTEMICO } from "../Epistemico";
 import type { Ator, GrupoRegional, Tema, TipoAtor, Vista } from "../../lib/investigacao";
 import { documentada, relacaoNaVista, ROTULO_MUDANCA, statusDaRelacao, useResultado } from "./contexto";
-import { Letra, Rotulo } from "./pecas";
+import { Letra } from "./pecas";
 
 export const NOME_TIPO_ATOR: Record<TipoAtor, string> = {
   estado: "País",
@@ -30,7 +29,7 @@ export const NOME_TEMA: Record<Tema, string> = {
 const ESTILO = new Map(RELACOES.map((x) => [x.tipo, x]));
 const QUADRO = { w: 1000, h: 620 };
 /** No celular o quadro gira: o eixo Washington ↔ Pequim fica na vertical. */
-const QUADRO_RETRATO = { w: 620, h: 1000 };
+const QUADRO_RETRATO = { w: 620, h: 1090 };
 const VISTAS: Vista[] = ["presente", "A", "B", "C"];
 /** Cada bloco tem um contorno próprio, para que regiões sobrepostas continuem legíveis. */
 const TRACO_BLOCO: Record<string, string> = { "b-escudo": "", "b-mercosul": "6 4", "b-brics": "2 4" };
@@ -105,17 +104,17 @@ function MarcaBase({ base, x, y, s, opacidade }: { base: Base; x: number; y: num
 // ------------------------------------------------------------------ mapa
 
 export function MapaDeAtores() {
-  const { r, ix, vista, setVista, selecao, selecionar } = useResultado();
+  const { r, ix, vista, selecao, selecionar } = useResultado();
   const caixa = useRef<HTMLDivElement>(null);
   const svg = useRef<SVGSVGElement>(null);
   const [retrato, setRetrato] = useState(false);
   const [largura, setLargura] = useState(900);
   const base = retrato ? QUADRO_RETRATO : QUADRO;
   const [vb, setVb] = useState({ x: 0, y: 0, w: base.w, h: base.h });
-  const [filtrosAbertos, setFiltrosAbertos] = useState(false);
-  const [f, setF] = useState<{ tiposRel: Set<TipoRelacao>; temas: Set<Tema>; bases: Set<Base> }>({ tiposRel: new Set(), temas: new Set(), bases: new Set() });
+  /** Categorias ocultas pela legenda (que também é o filtro). */
+  const [ocultas, setOcultas] = useState<Set<TipoRelacao>>(new Set());
   const [sobre, setSobre] = useState<string | null>(null);
-  const [tocando, setTocando] = useState(false);
+  const [dica, setDica] = useState<{ x: number; y: number; titulo: string; texto: string } | null>(null);
 
   useEffect(() => {
     const el = caixa.current;
@@ -131,12 +130,6 @@ export function MapaDeAtores() {
   }, []);
   useEffect(() => setVb({ x: 0, y: 0, w: base.w, h: base.h }), [base.w, base.h]);
 
-  // Percorrer os cenários: Hoje → A → B → C, uma vista a cada 3,2 s.
-  useEffect(() => {
-    if (!tocando) return;
-    const t = window.setInterval(() => setVista(VISTAS[(VISTAS.indexOf(vista) + 1) % VISTAS.length]), 3200);
-    return () => window.clearInterval(t);
-  }, [tocando, vista, setVista]);
 
   const k = largura / vb.w;
   const s = 1 / k; // unidades do quadro por pixel de tela
@@ -159,11 +152,7 @@ export function MapaDeAtores() {
     [r.relacoes, ehPais, blocoPorAtor],
   );
 
-  const passaFiltro = useCallback(
-    (tipo: TipoRelacao, tema: Tema, b: Base) =>
-      (f.tiposRel.size === 0 || f.tiposRel.has(tipo)) && (f.temas.size === 0 || f.temas.has(tema)) && (f.bases.size === 0 || f.bases.has(b)),
-    [f],
-  );
+  const passaFiltro = useCallback((tipo: TipoRelacao) => !ocultas.has(tipo), [ocultas]);
 
   // ---------------------------------------------------------------- alvo da transição
   const alvo = useMemo(() => {
@@ -174,8 +163,7 @@ export function MapaDeAtores() {
     }
     for (const rel of desenhaveis) {
       const nv = relacaoNaVista(rel, vista);
-      const b = baseDe(statusDaRelacao(rel, vista));
-      const visivel = nv.visivel && passaFiltro(nv.tipo, rel.tema, b);
+      const visivel = nv.visivel && passaFiltro(nv.tipo);
       for (const t of RELACOES) a[`e|${rel.id}|${t.tipo}`] = visivel && nv.tipo === t.tipo ? 1 : 0;
       const m = nv.estado?.mudanca;
       a[`e|${rel.id}|w`] = m === "reforcada" ? 1.7 : m === "enfraquecida" ? 0.55 : 1;
@@ -190,7 +178,7 @@ export function MapaDeAtores() {
   }, [paises, desenhaveis, r.blocos, vista, passaFiltro]);
   const v = useTransicao(alvo);
 
-  const posDe = (id: string) => (retrato ? { x: v[`n|${id}|y`], y: v[`n|${id}|x`] } : { x: v[`n|${id}|x`], y: v[`n|${id}|y`] });
+  const posDe = (id: string) => (retrato ? { x: v[`n|${id}|y`], y: v[`n|${id}|x`] + 90 } : { x: v[`n|${id}|x`], y: v[`n|${id}|y`] });
 
   // Formas dos blocos a partir das posições animadas; um membro que entra ou sai desliza a partir do centro.
   const formas = r.blocos.map((bl) => {
@@ -310,7 +298,6 @@ export function MapaDeAtores() {
   }, [limitar]);
   const clique = (fn: () => void) => () => {
     if (arrasto.current.moveu > 6) return;
-    setTocando(false);
     fn();
   };
   const teclado = (fn: () => void) => (e: KeyboardEvent) => {
@@ -338,30 +325,34 @@ export function MapaDeAtores() {
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [r.blocos, vista]);
-  const nFiltros = f.tiposRel.size + f.temas.size + f.bases.size;
-  const alternar = <T,>(chave: keyof typeof f, valor: T) =>
-    setF((atual) => {
-      const n = new Set(atual[chave] as Set<T>);
-      if (n.has(valor)) n.delete(valor);
-      else n.add(valor);
-      return { ...atual, [chave]: n };
-    });
 
   const cenarioAtual = vista === "presente" ? null : r.cenarios.find((c) => c.id === vista)!;
-  const brasil = ix.atores.get("brasil");
+
+  // Dica: posição na tela a partir do ponto no quadro.
+  const mostrarDica = (pt: { x: number; y: number }, titulo: string, texto: string) => {
+    const sv = svg.current;
+    const cx = caixa.current;
+    if (!sv || !cx) return;
+    const rs = sv.getBoundingClientRect();
+    const rc = cx.getBoundingClientRect();
+    setDica({ x: rs.left - rc.left + ((pt.x - vb.x) / vb.w) * rs.width, y: rs.top - rc.top + ((pt.y - vb.y) / vb.h) * rs.height, titulo, texto });
+  };
+
+  // Legenda = filtro: só as categorias presentes nesta vista.
+  const presentes = RELACOES.filter((e) => desenhaveis.some((rel) => { const nv = relacaoNaVista(rel, vista); return nv.visivel && nv.tipo === e.tipo; }));
+  const bases = new Set(desenhaveis.filter((rel) => relacaoNaVista(rel, vista).visivel).map((rel) => baseDe(statusDaRelacao(rel, vista))));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <div ref={caixa} id="mapa-atores" className="relative scroll-mt-20 overflow-hidden rounded-painel border border-linha mapa-fundo">
-        {/* barra sobre o mapa */}
         <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-2.5 sm:p-3">
-          <div className="pointer-events-auto">
-            <p className="text-micro text-texto-3">{vista === "presente" ? "Sistema observado em 2026" : `Cenário ${vista} · ${cenarioAtual!.arquetipo}`}</p>
+          <div>
+            <p className="text-micro text-texto-3">{vista === "presente" ? "Observado em 2026" : `Cenário ${vista} · ${cenarioAtual!.arquetipo}`}</p>
             <p key={vista} className="aparecer font-editorial text-corpo text-texto sm:text-leitura">
               {vista === "presente" ? "Hoje" : cenarioAtual!.nome}
             </p>
           </div>
-          <div className="pointer-events-auto flex items-center gap-1 rounded-padrao border border-linha bg-abismo/80 p-0.5 backdrop-blur-sm" role="group" aria-label="Zoom do mapa">
+          <div className="pointer-events-auto flex items-center rounded-padrao border border-linha bg-abismo/85 p-0.5 backdrop-blur-sm" role="group" aria-label="Zoom do mapa">
             <button type="button" className="botao botao-fantasma botao-pequeno size-10 p-0" aria-label="Aproximar" onClick={() => zoom(0.75)}>
               <Plus size={16} aria-hidden="true" />
             </button>
@@ -378,9 +369,9 @@ export function MapaDeAtores() {
           ref={svg}
           viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
           className="mx-auto block h-auto cursor-grab select-none active:cursor-grabbing"
-          style={{ aspectRatio: `${base.w} / ${base.h}`, width: `min(100%, calc(${retrato ? 78 : 68}dvh * ${base.w} / ${base.h}))`, touchAction: "pan-y" }}
+          style={{ aspectRatio: `${base.w} / ${base.h}`, width: `min(100%, calc(${retrato ? 74 : 64}dvh * ${base.w} / ${base.h}))`, touchAction: "pan-y" }}
           role="group"
-          aria-label={`Mapa de relações entre países, ${vista === "presente" ? "situação observada em 2026" : `cenário ${vista}`}. Use Tab para percorrer países e conexões.`}
+          aria-label={`Mapa de relações entre países, ${vista === "presente" ? "situação observada em 2026" : `cenário ${vista}`}. Use Tab para percorrer países e conexões; Enter abre os detalhes.`}
           onPointerDown={aoBaixar}
           onPointerMove={aoMover}
           onPointerUp={aoSoltar}
@@ -392,11 +383,11 @@ export function MapaDeAtores() {
           {/* eixo de alinhamento: horizontal no desktop, vertical no celular */}
           {retrato ? (
             <g aria-hidden="true" style={{ font: `500 ${10.5 * s}px var(--font-interface)`, letterSpacing: "0.06em" }} fill="var(--color-texto-3)">
-              <line x1={20} y1={50} x2={20} y2={base.h - 50} stroke="var(--color-linha-forte)" strokeDasharray="2 6" vectorEffect="non-scaling-stroke" />
+              <line x1={20} y1={140} x2={20} y2={base.h - 50} stroke="var(--color-linha-forte)" strokeDasharray="2 6" vectorEffect="non-scaling-stroke" />
               {(
                 [
-                  [70, "start", "ÓRBITA DE WASHINGTON →"],
-                  [base.h / 2, "middle", "AUTONOMIA"],
+                  [160, "start", "ÓRBITA DE WASHINGTON →"],
+                  [(base.h + 90) / 2, "middle", "AUTONOMIA"],
                   [base.h - 70, "end", "← ÓRBITA DE PEQUIM"],
                 ] as const
               ).map(([y, ancora, t]) => (
@@ -514,9 +505,16 @@ export function MapaDeAtores() {
                 opacity={(apagada ? 0.12 : 1) * v[`e|${rel.id}|o`]}
                 onClick={clique(acao)}
                 onKeyDown={teclado(acao)}
-                onPointerEnter={() => setSobre(null)}
+                onPointerEnter={() => {
+                  setSobre(null);
+                  mostrarDica(meio, `${nome(rel.de)} → ${nome(rel.para)} · ${ESTILO.get(nv.tipo)?.rotulo.split(" / ")[0]}`, nv.texto);
+                }}
+                onPointerLeave={() => setDica(null)}
+                onFocus={() => mostrarDica(meio, `${nome(rel.de)} → ${nome(rel.para)} · ${ESTILO.get(nv.tipo)?.rotulo.split(" / ")[0]}`, nv.texto)}
+                onBlur={() => setDica(null)}
               >
                 <path className="foco opacity-0" d={d} fill="none" stroke="var(--color-ciano)" strokeOpacity={0.45} strokeWidth={9} vectorEffect="non-scaling-stroke" />
+                {selecionada && <path d={d} fill="none" stroke="var(--color-ciano)" strokeOpacity={0.28} strokeWidth={10} strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
                 {RELACOES.map((e) => {
                   const p = v[`e|${rel.id}|${e.tipo}`] ?? 0;
                   if (p < 0.01) return null;
@@ -532,11 +530,17 @@ export function MapaDeAtores() {
                         vectorEffect="non-scaling-stroke"
                       />
                       {e.seta && <path d={seta} fill="none" stroke={e.cor} strokeWidth={1.6} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />}
+                      {/* Direção: pulsos que andam da origem ao destino, só em relações com sentido definido. */}
+                      {e.seta && p > 0.6 && (
+                        <path d={d} fill="none" stroke="var(--color-texto)" strokeOpacity={0.7} strokeWidth={2.2} strokeDasharray="2 14" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="fluxo-direcao" />
+                      )}
                     </g>
                   );
                 })}
                 <path d={d} fill="none" stroke="transparent" strokeWidth={20} vectorEffect="non-scaling-stroke" pointerEvents="stroke" />
-                <MarcaBase base={baseDe(statusDaRelacao(rel, vista))} x={meio.x} y={meio.y} s={s} opacidade={presenca} />
+                {baseDe(statusDaRelacao(rel, vista)) !== "documentada" && (
+                  <MarcaBase base={baseDe(statusDaRelacao(rel, vista))} x={meio.x} y={meio.y} s={s} opacidade={presenca} />
+                )}
               </g>
             );
           })}
@@ -562,8 +566,16 @@ export function MapaDeAtores() {
                 opacity={apagado ? 0.3 : 1}
                 onClick={clique(acao)}
                 onKeyDown={teclado(acao)}
-                onPointerEnter={() => setSobre(pa.id)}
-                onPointerLeave={() => setSobre(null)}
+                onPointerEnter={() => {
+                  setSobre(pa.id);
+                  mostrarDica(p, pa.nome, pa.implicacoes && vista !== "presente" ? pa.implicacoes[vista] : pa.papel);
+                }}
+                onPointerLeave={() => {
+                  setSobre(null);
+                  setDica(null);
+                }}
+                onFocus={() => mostrarDica(p, pa.nome, pa.implicacoes && vista !== "presente" ? pa.implicacoes[vista] : pa.papel)}
+                onBlur={() => setDica(null)}
               >
                 <circle cx={p.x} cy={p.y} r={30 * s} fill="transparent" />
                 <circle className="foco opacity-0" cx={p.x} cy={p.y} r={raio + 7 * s} fill="none" stroke="var(--color-ciano)" strokeWidth={2} vectorEffect="non-scaling-stroke" />
@@ -613,206 +625,173 @@ export function MapaDeAtores() {
             );
           })}
         </svg>
-      </div>
 
-      {/* faixa de cenários: a mesma estrutura, quatro estados */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-micro text-texto-3">Troque a vista e acompanhe o sistema mudar · arraste para mover, Ctrl + rolar para ampliar</p>
-          <button type="button" className="ficha min-h-9" aria-pressed={tocando} onClick={() => setTocando((x) => !x)}>
-            {tocando ? <Pause size={13} aria-hidden="true" /> : <Play size={13} aria-hidden="true" />}
-            {tocando ? "Pausar" : "Percorrer cenários"}
-          </button>
-        </div>
-        <ol role="group" aria-label="Vista do mapa" className="m-0 grid list-none grid-cols-2 gap-2 p-0 md:grid-cols-4">
-          {VISTAS.map((vv) => {
-            const c = vv === "presente" ? null : r.cenarios.find((x) => x.id === vv)!;
-            const ativo = vista === vv;
+        {/* dica contextual (passar o cursor ou focar com o teclado) */}
+        {dica && (
+          <div
+            role="tooltip"
+            className={`pointer-events-none absolute z-20 w-max max-w-[16rem] -translate-x-1/2 rounded-padrao ${dica.y < 110 ? "translate-y-6" : "-translate-y-[calc(100%+14px)]"} border border-linha-forte bg-abismo/95 px-2.5 py-1.5 shadow-lg backdrop-blur-sm`}
+            style={{ left: Math.min(Math.max(dica.x, 130), (caixa.current?.clientWidth ?? 400) - 130), top: dica.y }}
+          >
+            <p className="text-legenda font-medium text-texto">{dica.titulo}</p>
+            <p className="text-micro text-texto-2">{dica.texto}</p>
+          </div>
+        )}
+
+        {/* legenda compacta e persistente; cada item liga ou desliga a categoria */}
+        <div className="relative z-10 flex flex-wrap items-center gap-1.5 border-t border-linha bg-abismo/60 px-2.5 py-2 backdrop-blur-sm">
+          <span className="sr-only">Legenda e filtro de relações:</span>
+          {presentes.map((e) => {
+            const ativa = !ocultas.has(e.tipo);
             return (
-              <li key={vv} className="min-w-0">
-                <button
-                  type="button"
-                  aria-pressed={ativo}
-                  onClick={() => {
-                    setTocando(false);
-                    setVista(vv);
-                  }}
-                  className={`relative flex h-full w-full flex-col gap-1 overflow-hidden rounded-padrao border p-3 text-left transition-colors duration-200 ${
-                    ativo ? (c ? "border-ambar/55 bg-ambar-suave" : "border-ciano/50 bg-ciano-suave") : "border-linha hover:border-linha-forte"
-                  }`}
-                >
-                  <span className="flex items-center gap-2 text-micro text-texto-3">
-                    {c ? <Letra id={c.id} ativa={ativo} /> : <span aria-hidden="true" className="inline-grid size-6 place-items-center rounded-fino border border-linha-forte text-texto-2">●</span>}
-                    {c ? c.arquetipo : "Observado"}
-                  </span>
-                  <span className="font-editorial text-corpo text-texto">{c ? c.nome : "Hoje (2026)"}</span>
-                  <span className="line-clamp-2 text-micro text-texto-2">{c ? c.sintese.split(". ")[0] + "." : "Governo Lula, tarifas americanas e comércio recorde com a China."}</span>
-                  {ativo && tocando && <span aria-hidden="true" key={`${vv}-barra`} className="barra-progresso absolute inset-x-0 bottom-0 h-0.5 bg-current text-ambar" />}
-                </button>
-              </li>
+              <button
+                key={e.tipo}
+                type="button"
+                aria-pressed={ativa}
+                title={`${e.rotulo}: ${e.descricao}. Clique para ${ativa ? "ocultar" : "mostrar"}.`}
+                onClick={() =>
+                  setOcultas((o) => {
+                    const n = new Set(o);
+                    if (n.has(e.tipo)) n.delete(e.tipo);
+                    else n.add(e.tipo);
+                    return n;
+                  })
+                }
+                className={`inline-flex min-h-8 items-center gap-1.5 rounded-full border px-2.5 text-micro transition-[opacity,border-color] duration-150 ${
+                  ativa ? "border-linha-forte text-texto" : "border-linha text-texto-3 line-through opacity-60"
+                }`}
+              >
+                <svg width="22" height="8" aria-hidden="true">
+                  <line x1="1" y1="4" x2={e.seta ? 16 : 21} y2="4" stroke={e.cor} strokeWidth={e.espessura} strokeDasharray={e.traco || undefined} strokeLinecap="round" />
+                  {e.seta && <path d="M15 1 20 4 15 7" fill="none" stroke={e.cor} strokeWidth="1.5" />}
+                </svg>
+                {e.rotulo.split(" / ")[0]}
+              </button>
             );
           })}
-        </ol>
+          {(["inferida", "condicional"] as const)
+            .filter((b) => bases.has(b))
+            .map((b) => (
+              <span key={b} className="inline-flex min-h-8 items-center gap-1.5 px-1.5 text-micro text-texto-2" title={b === "inferida" ? "Interpretação do analista, sem fonte direta" : "Só vale dentro do cenário"}>
+                <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true">
+                  <MarcaBase base={b} x={8} y={8} s={1.3} opacidade={1} />
+                </svg>
+                {b === "inferida" ? "inferida" : "hipótese do cenário"}
+              </span>
+            ))}
+          <details className="ml-auto text-micro text-texto-3">
+            <summary className="flex min-h-8 cursor-pointer items-center px-1.5 hover:text-texto-2">Como ler</summary>
+            <div className="absolute inset-x-2 bottom-full mb-2 flex max-w-md flex-col gap-1.5 rounded-padrao border border-linha-forte bg-abismo p-3 text-legenda text-texto-2 shadow-lg sm:left-auto">
+              <p>Só países no mapa; regiões sombreadas são blocos. Linhas sem marca são documentadas; ◌ indica inferência do analista e ◇, hipótese do cenário.</p>
+              <p>A posição indica para que lado o país se alinha, e a espessura, se a relação se reforça ou se enfraquece. Nada disso é medida numérica.</p>
+              <p>Pulsos em movimento mostram o sentido de relações de influência e dependência.</p>
+            </div>
+          </details>
+        </div>
       </div>
 
-      {/* o que muda */}
-      {vista !== "presente" && (
-        <div key={vista} className="aparecer">
-          <Rotulo>O que muda no cenário {vista} em relação a hoje</Rotulo>
-          <ul className="m-0 grid list-none gap-1.5 p-0 sm:grid-cols-2">
-            {mudancasDeBloco.map((t) => (
-              <li key={t} className="flex items-start gap-2 rounded-padrao border border-linha p-2.5 text-legenda text-texto">
-                <span className="mt-0.5 shrink-0 rounded-full border border-ambar/40 px-1.5 text-micro text-ambar">Bloco</span>
-                {t}
-              </li>
-            ))}
-            {mudancas.map((l) => (
-              <li key={l.rel.id}>
-                <button
-                  type="button"
-                  onClick={() => selecionar({ tipo: "relacao", id: l.rel.id })}
-                  className="flex w-full min-w-0 items-start gap-2 rounded-padrao border border-linha p-2.5 text-left text-legenda transition-colors hover:border-linha-forte"
-                >
-                  <span className="mt-0.5 shrink-0 rounded-full border border-ambar/40 px-1.5 text-micro text-ambar">{l.estado ? ROTULO_MUDANCA[l.estado.mudanca] : ""}</span>
-                  <span className="min-w-0">
-                    <span className="text-texto">
-                      {nome(l.rel.de)} → {nome(l.rel.para)}
-                    </span>
-                    <span className="block text-texto-2">{l.texto}</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="flex flex-wrap items-center gap-2">
-        <button type="button" className="ficha min-h-9" aria-expanded={filtrosAbertos} aria-controls="filtros-mapa" onClick={() => setFiltrosAbertos((x) => !x)}>
-          <SlidersHorizontal size={14} aria-hidden="true" />
-          Filtros{nFiltros > 0 && <span className="numeros font-dados text-ciano-texto"> · {nFiltros}</span>}
-        </button>
-        {brasil && (
-          <button type="button" className="ficha min-h-9" onClick={() => selecionar({ tipo: "ator", id: "brasil" })}>
-            Dinâmica interna do Brasil
-          </button>
-        )}
-      </div>
-      {filtrosAbertos && (
-        <div id="filtros-mapa" className="grid gap-4 rounded-padrao border border-linha bg-grafite/60 p-4 sm:grid-cols-2 lg:grid-cols-4">
-          <GrupoFiltro titulo="Categoria de relação" opcoes={RELACOES.map((x) => [x.tipo, x.rotulo.split(" / ")[0]] as [TipoRelacao, string])} ativos={f.tiposRel} aoAlternar={(x) => alternar("tiposRel", x)} />
-          <GrupoFiltro titulo="Tema" opcoes={Object.entries(NOME_TEMA) as [Tema, string][]} ativos={f.temas} aoAlternar={(x) => alternar("temas", x)} />
-          <GrupoFiltro
-            titulo="Base da relação"
-            opcoes={[
-              ["documentada", "Documentada"],
-              ["inferida", "Inferida"],
-              ["condicional", "Condicional ao cenário"],
-            ]}
-            ativos={f.bases}
-            aoAlternar={(x) => alternar("bases", x as Base)}
-          />
-          <div className="flex items-end">
-            <button type="button" className="botao botao-fantasma botao-pequeno" disabled={nFiltros === 0} onClick={() => setF({ tiposRel: new Set(), temas: new Set(), bases: new Set() })}>
-              Limpar filtros
-            </button>
-          </div>
-        </div>
-      )}
-
-      <Legenda />
-
-      <details className="rounded-padrao border border-linha">
-        <summary className="flex min-h-11 cursor-pointer items-center px-3 text-legenda text-texto-2 hover:text-texto">Lista de relações, alternativa em texto ao mapa</summary>
-        <ul className="m-0 flex list-none flex-col divide-y divide-linha border-t border-linha p-0">
-          {desenhaveis
-            .map((rel) => relacaoNaVista(rel, vista))
-            .filter((x) => x.visivel)
-            .map((l) => (
-              <li key={l.rel.id}>
-                <button type="button" onClick={() => selecionar({ tipo: "relacao", id: l.rel.id })} className="flex w-full flex-wrap items-baseline gap-x-2 px-3 py-2.5 text-left text-legenda hover:bg-grafite">
-                  <span className="text-texto">
-                    {nome(l.rel.de)} → {nome(l.rel.para)}: {ESTILO.get(l.tipo)?.rotulo}
-                  </span>
-                  <span className="text-texto-3">· {EPISTEMICO[statusDaRelacao(l.rel, vista)].rotulo}</span>
-                  <span className="w-full text-texto-2">{l.texto}</span>
-                </button>
-              </li>
-            ))}
-          {r.blocos.map((bl) => (
-            <li key={bl.id} className="px-3 py-2.5 text-legenda">
-              <span className="text-texto">{bl.nome}:</span> <span className="text-texto-2">{bl.membros[vista].map(nome).join(", ")}</span>
-            </li>
-          ))}
-        </ul>
-      </details>
+      <MudancasNoCenario mudancas={mudancas} mudancasDeBloco={mudancasDeBloco} nome={nome} />
     </div>
   );
 }
 
-function GrupoFiltro<T extends string>({ titulo, opcoes, ativos, aoAlternar }: { titulo: string; opcoes: [T, string][]; ativos: Set<T>; aoAlternar: (v: T) => void }) {
+function MudancasNoCenario({
+  mudancas,
+  mudancasDeBloco,
+  nome,
+}: {
+  mudancas: ReturnType<typeof relacaoNaVista>[];
+  mudancasDeBloco: string[];
+  nome: (id: string) => string;
+}) {
+  const { vista, selecionar, r } = useResultado();
+  const visiveis = r.relacoes.map((rel) => relacaoNaVista(rel, vista)).filter((x) => x.visivel);
+  const n = mudancas.length + mudancasDeBloco.length;
   return (
-    <fieldset className="m-0 min-w-0 border-0 p-0">
-      <legend className="mb-2 text-micro text-texto-3">{titulo}</legend>
-      <div className="flex flex-wrap gap-1.5">
-        {opcoes.map(([valor, n]) => (
-          <button key={valor} type="button" className="ficha min-h-8 text-micro" aria-pressed={ativos.has(valor)} onClick={() => aoAlternar(valor)}>
-            {n}
-          </button>
+    <details className="group rounded-padrao border border-linha">
+      <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3 px-3 text-legenda text-texto-2 hover:text-texto">
+        <span>
+          {vista === "presente" ? (
+            <>Relações observadas em 2026 ({visiveis.length})</>
+          ) : (
+            <>
+              <span className="numeros font-dados text-ambar">{n}</span> mudanças em relação a hoje
+            </>
+          )}
+        </span>
+        <span className="text-micro text-texto-3 group-open:hidden">ver lista</span>
+      </summary>
+      <ul className="m-0 flex list-none flex-col divide-y divide-linha border-t border-linha p-0">
+        {mudancasDeBloco.map((t) => (
+          <li key={t} className="flex items-baseline gap-2 px-3 py-2 text-legenda text-texto">
+            <span className="shrink-0 text-micro text-ambar">Bloco</span>
+            {t}
+          </li>
         ))}
-      </div>
-    </fieldset>
+        {(vista === "presente" ? visiveis : mudancas).map((l) => (
+          <li key={l.rel.id}>
+            <button type="button" onClick={() => selecionar({ tipo: "relacao", id: l.rel.id })} className="flex w-full items-baseline gap-2 px-3 py-2 text-left text-legenda hover:bg-grafite">
+              {vista !== "presente" && l.estado && <span className="shrink-0 text-micro text-ambar">{ROTULO_MUDANCA[l.estado.mudanca]}</span>}
+              <span className="min-w-0">
+                <span className="text-texto">
+                  {nome(l.rel.de)} → {nome(l.rel.para)}
+                </span>
+                <span className="text-texto-2"> · {l.texto}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
-function Legenda() {
+/** Faixa de vistas: Hoje → A → B → C, com a opção de percorrer automaticamente. */
+export function FaixaDeCenarios({ vertical = false }: { vertical?: boolean }) {
+  const { r, vista, setVista } = useResultado();
+  const [tocando, setTocando] = useState(false);
+  useEffect(() => {
+    if (!tocando) return;
+    const t = window.setInterval(() => setVista(VISTAS[(VISTAS.indexOf(vista) + 1) % VISTAS.length]), 3200);
+    return () => window.clearInterval(t);
+  }, [tocando, vista, setVista]);
   return (
-    <details className="rounded-padrao border border-linha">
-      <summary className="flex min-h-11 cursor-pointer items-center px-3 text-legenda text-texto-2 hover:text-texto">Como ler o mapa</summary>
-      <div className="grid gap-6 border-t border-linha p-4 md:grid-cols-3">
-        <div>
-          <Rotulo>Relações</Rotulo>
-          <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            {RELACOES.map((x) => (
-              <li key={x.tipo} className="flex items-center gap-3 text-legenda text-texto-2">
-                <svg width="44" height="10" aria-hidden="true">
-                  <line x1="2" y1="5" x2={x.seta ? 36 : 42} y2="5" stroke={x.cor} strokeWidth={x.espessura} strokeDasharray={x.traco || undefined} strokeLinecap="round" />
-                  {x.seta && <path d="M35 1.5 41 5 35 8.5" fill="none" stroke={x.cor} strokeWidth="1.6" />}
-                </svg>
-                <span>
-                  <span className="text-texto">{x.rotulo}</span> · {x.descricao}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <Rotulo>Base de cada conexão</Rotulo>
-          <ul className="m-0 flex list-none flex-col gap-2 p-0 text-legenda text-texto-2">
-            {(
-              [
-                ["documentada", "Documentada: fato ou evidência com fonte"],
-                ["inferida", "Inferida: interpretação do analista"],
-                ["condicional", "Condicional: só vale dentro de um cenário"],
-              ] as [Base, string][]
-            ).map(([b, t]) => (
-              <li key={b} className="flex items-center gap-3">
-                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-                  <MarcaBase base={b} x={8} y={8} s={1.2} opacidade={1} />
-                </svg>
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex flex-col gap-2 text-legenda text-texto-2">
-          <Rotulo>Posição, espessura e regiões</Rotulo>
-          <p>Só países aparecem no mapa. Instituições e grupos internos estão no painel de cada país.</p>
-          <p>As regiões sombreadas são blocos (Mercosul, Escudo das Américas, BRICS) e mudam de forma quando um país entra ou sai.</p>
-          <p>A posição horizontal é esquemática: indica para que lado o país se alinha em cada vista. Não é uma medida.</p>
-          <p>Linhas mais grossas ou mais finas indicam relações reforçadas ou enfraquecidas no cenário, uma leitura qualitativa, sem índice numérico.</p>
-        </div>
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <p className="rotulo">Vista do sistema</p>
+        <button type="button" className="ficha min-h-9" aria-pressed={tocando} onClick={() => setTocando((x) => !x)}>
+          {tocando ? <Pause size={13} aria-hidden="true" /> : <Play size={13} aria-hidden="true" />}
+          {tocando ? "Pausar" : "Percorrer"}
+        </button>
       </div>
-    </details>
+      <ol role="group" aria-label="Vista do mapa" className={`m-0 grid list-none gap-1.5 p-0 ${vertical ? "grid-cols-2 xl:grid-cols-1" : "grid-cols-2 md:grid-cols-4"}`}>
+        {VISTAS.map((vv) => {
+          const c = vv === "presente" ? null : r.cenarios.find((x) => x.id === vv)!;
+          const ativo = vista === vv;
+          return (
+            <li key={vv} className="min-w-0">
+              <button
+                type="button"
+                aria-pressed={ativo}
+                onClick={() => {
+                  setTocando(false);
+                  setVista(vv);
+                }}
+                className={`relative flex h-full w-full items-center gap-2.5 overflow-hidden rounded-padrao border px-2.5 py-2 text-left transition-colors duration-150 ${
+                  ativo ? (c ? "border-ambar/55 bg-ambar-suave" : "border-ciano/50 bg-ciano-suave") : "border-linha hover:border-linha-forte"
+                }`}
+              >
+                {c ? <Letra id={c.id} ativa={ativo} /> : <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-fino border border-linha-forte text-[0.5rem] text-texto-2">●</span>}
+                <span className="min-w-0">
+                  <span className="block text-micro text-texto-3">{c ? c.arquetipo : "Observado"}</span>
+                  <span className="block truncate text-legenda text-texto">{c ? c.nome : "Hoje (2026)"}</span>
+                </span>
+                {ativo && tocando && <span aria-hidden="true" key={`${vv}-barra`} className="barra-progresso absolute inset-x-0 bottom-0 h-0.5 bg-ambar" />}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }

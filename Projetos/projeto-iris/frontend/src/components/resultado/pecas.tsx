@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Epistemico } from "../Epistemico";
-import type { Afirmacao, CategoriaTempo, CenarioId, Vista } from "../../lib/investigacao";
+import type { Afirmacao, CategoriaTempo, CenarioId } from "../../lib/investigacao";
 import { documentada, useResultado } from "./contexto";
 
 /**
@@ -66,26 +66,6 @@ export function Letra({ id, ativa = false, tamanho = "normal" }: { id: CenarioId
     >
       {id}
     </span>
-  );
-}
-
-/** Troca a vista do sistema: o presente observado ou um dos cenários. Vale para todas as abas. */
-export function SeletorDeVista({ comPresente = true, rotulo = "Vista" }: { comPresente?: boolean; rotulo?: string }) {
-  const { r, vista, setVista } = useResultado();
-  const opcoes: { v: Vista; nome: string; titulo: string }[] = [
-    ...(comPresente ? [{ v: "presente" as Vista, nome: "Presente", titulo: "Sistema observado em 2026" }] : []),
-    ...r.cenarios.map((c) => ({ v: c.id as Vista, nome: c.id, titulo: `Cenário ${c.id}: ${c.nome} (${c.arquetipo})` })),
-  ];
-  return (
-    <div role="group" aria-label={rotulo} className="flex flex-wrap items-center gap-1.5">
-      <span className="text-micro text-texto-3">{rotulo}</span>
-      {opcoes.map((o) => (
-        <button key={o.v} type="button" className="ficha min-h-9" aria-pressed={vista === o.v} onClick={() => setVista(o.v)} title={o.titulo}>
-          {o.v === "presente" ? o.nome : <span className="font-dados">{o.nome}</span>}
-          {o.v !== "presente" && <span className="sr-only">: {o.titulo}</span>}
-        </button>
-      ))}
-    </div>
   );
 }
 

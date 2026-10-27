@@ -4,6 +4,7 @@ import { RELACOES } from "../Diagramas";
 import { Epistemico } from "../Epistemico";
 import type { CenarioId, Fonte, Vista } from "../../lib/investigacao";
 import { relacaoNaVista, ROTULO_MUDANCA, statusDaRelacao, useResultado, type Selecao } from "./contexto";
+import { PainelMetodo } from "./Analise";
 import { NOME_GRUPO, NOME_TEMA, NOME_TIPO_ATOR } from "./MapaDeAtores";
 import { CATEGORIA, ChipAtor, Citacoes, GlifoTempo, Letra, LinhaAfirmacao } from "./pecas";
 
@@ -366,6 +367,7 @@ const TITULO: Record<NonNullable<Selecao>["tipo"], string> = {
   relacao: "Conexão",
   evento: "Linha do tempo",
   evidencia: "Rastreabilidade",
+  metodo: "Como esta análise foi feita",
 };
 
 /**
@@ -446,6 +448,7 @@ export function PainelContextual() {
           {selecao.tipo === "relacao" && <PainelRelacao id={selecao.id} />}
           {selecao.tipo === "evento" && <PainelEvento id={selecao.id} />}
           {selecao.tipo === "evidencia" && <PainelEvidencia id={selecao.id} />}
+          {selecao.tipo === "metodo" && <PainelMetodo />}
         </div>
       )}
     </aside>

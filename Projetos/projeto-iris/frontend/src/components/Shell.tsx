@@ -1,13 +1,10 @@
 import {
   Compass,
-  GitBranch,
   Library,
   Menu,
-  Radar,
   ScanSearch,
   Settings,
   Star,
-  Waypoints,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -26,25 +23,16 @@ interface Item {
 }
 
 /**
- * A navegação segue a estrutura intelectual do produto: do presente (o que se sabe e
- * como os atores se relacionam) para os futuros (cenários e os sinais que os anunciam), apoiada
- * no acervo.
+ * Navegação enxuta, organizada pelas tarefas de quem pesquisa: investigar um tema e consultar
+ * fontes. Mapa, cenários, linha do tempo e sinais ficam dentro de cada investigação.
  */
 const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
-  { titulo: null, itens: [{ para: ROTAS.inicio, rotulo: "Início", icone: Compass }] },
   {
-    titulo: "Presente",
+    titulo: null,
     itens: [
+      { para: ROTAS.inicio, rotulo: "Início", icone: Compass },
       { para: ROTAS.investigacoes, rotulo: "Investigações", icone: ScanSearch },
       { para: ROTAS.base, rotulo: "Base científica", icone: Library },
-      { para: ROTAS.mapas, rotulo: "Mapas e relações", icone: Waypoints },
-    ],
-  },
-  {
-    titulo: "Futuros",
-    itens: [
-      { para: ROTAS.cenarios, rotulo: "Cenários prospectivos", icone: GitBranch },
-      { para: ROTAS.sinais, rotulo: "Sinais antecipatórios", icone: Radar },
     ],
   },
   {

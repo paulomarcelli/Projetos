@@ -1,26 +1,23 @@
-import { ArrowLeft, ScanSearch } from "lucide-react";
+import { ArrowLeft, BookOpen, ScanSearch } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Link, useParams } from "react-router";
 import { Epistemico } from "../components/Epistemico";
 import { EstadoVazio, LinhasEsqueleto } from "../components/Estados";
-import { FatoresDeMudanca, FLUXO, MetodoERevisao } from "../components/resultado/Analise";
 import { AreaDeCenarios } from "../components/resultado/Cenarios";
 import { type Aba, ProvedorDoResultado, useResultado } from "../components/resultado/contexto";
 import { AreaDeEvidencias } from "../components/resultado/Evidencias";
 import { LinhaDoTempo } from "../components/resultado/LinhaDoTempo";
-import { MapaDeAtores } from "../components/resultado/MapaDeAtores";
+import { FaixaDeCenarios, MapaDeAtores } from "../components/resultado/MapaDeAtores";
 import { PainelContextual } from "../components/resultado/PainelContextual";
-import { Citacoes, SeletorDeVista } from "../components/resultado/pecas";
+import { Citacoes } from "../components/resultado/pecas";
 import type { ResultadoDeInvestigacao } from "../lib/investigacao";
 import { ROTAS } from "../lib/rotas";
 
 const ABAS: { id: Aba; nome: string }[] = [
-  { id: "sistema", nome: "Sistema" },
-  { id: "fatores", nome: "Fatores de mudança" },
+  { id: "visao", nome: "Visão geral" },
   { id: "cenarios", nome: "Cenários" },
   { id: "tempo", nome: "Linha do tempo" },
-  { id: "evidencias", nome: "Evidências" },
-  { id: "metodo", nome: "Método e revisão" },
+  { id: "fontes", nome: "Fontes" },
 ];
 
 function dataLegivel(d: string) {
@@ -30,7 +27,7 @@ function dataLegivel(d: string) {
 }
 
 function BarraDeAbas() {
-  const { aba, irPara, selecao } = useResultado();
+  const { aba, irPara } = useResultado();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const teclado = (e: KeyboardEvent, i: number) => {
     const n = ABAS.length;
@@ -41,42 +38,68 @@ function BarraDeAbas() {
     refs.current[alvo]?.focus();
   };
   return (
-    <div className={`z-20 -mx-1 flex flex-col gap-3 border-y border-linha bg-abismo/95 px-1 py-2 backdrop-blur-md lg:sticky lg:top-[var(--altura-topo,61px)] ${selecao ? "" : "xl:flex-row xl:items-center xl:justify-between"}`}>
-      <div className="relative -mx-1 overflow-x-auto px-1">
-        <div role="tablist" aria-label="Áreas da investigação" className="flex w-max gap-0.5">
-          {ABAS.map((a, i) => (
-            <button
-              key={a.id}
-              ref={(el) => {
-                refs.current[i] = el;
-              }}
-              type="button"
-              role="tab"
-              id={`aba-${a.id}`}
-              aria-selected={aba === a.id}
-              aria-controls="painel-aba"
-              tabIndex={aba === a.id ? 0 : -1}
-              onClick={() => irPara(a.id)}
-              onKeyDown={(e) => teclado(e, i)}
-              className={`flex min-h-10 items-center gap-1.5 rounded-padrao px-3 text-legenda whitespace-nowrap transition-colors ${
-                aba === a.id ? "bg-grafite-alto text-texto" : "text-texto-2 hover:bg-grafite hover:text-texto"
-              }`}
-            >
-              <span className="numeros font-dados text-micro text-texto-3">{i + 1}</span>
-              {a.nome}
-            </button>
-          ))}
+    <div className="z-20 -mx-1 overflow-x-auto border-b border-linha bg-abismo/95 px-1 backdrop-blur-md lg:sticky lg:top-[var(--altura-topo,61px)]">
+      <div role="tablist" aria-label="Áreas da investigação" className="flex w-max gap-1">
+        {ABAS.map((a, i) => (
+          <button
+            key={a.id}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            type="button"
+            role="tab"
+            id={`aba-${a.id}`}
+            aria-selected={aba === a.id}
+            aria-controls="painel-aba"
+            tabIndex={aba === a.id ? 0 : -1}
+            onClick={() => irPara(a.id)}
+            onKeyDown={(e) => teclado(e, i)}
+            className={`relative flex min-h-11 items-center px-3 text-corpo whitespace-nowrap transition-colors duration-150 after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:transition-colors after:duration-150 ${
+              aba === a.id ? "text-texto after:bg-ciano" : "text-texto-2 after:bg-transparent hover:text-texto"
+            }`}
+          >
+            {a.nome}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function VisaoGeral() {
+  const { r, irPara } = useResultado();
+  const principal = r.incertezas.find((i) => i.id === r.principalIncerteza)!;
+  return (
+    <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_19rem] xl:gap-6">
+      {/* O mapa vem primeiro na leitura: é a principal ferramenta de exploração. */}
+      <div className="min-w-0 xl:col-start-1 xl:row-span-2 xl:row-start-1">
+        <MapaDeAtores />
+      </div>
+      <div className="flex flex-col gap-4 xl:col-start-2 xl:row-start-1">
+        <div className="flex flex-col gap-2">
+          <p className="rotulo">Em síntese</p>
+          <p className="max-w-[66ch] font-editorial text-leitura text-texto">{r.sintese}</p>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-padrao border border-ambar/35 p-3">
+          <p className="flex items-center gap-1.5 text-micro text-ambar">
+            <Epistemico tipo="incerteza" compacto /> Principal incerteza
+          </p>
+          <p className="text-corpo text-texto">{principal.nome}</p>
+          <p className="text-legenda text-texto-2">{principal.pergunta}</p>
+          <button type="button" className="w-fit text-legenda text-ciano-texto hover:underline" onClick={() => irPara("cenarios")}>
+            Como ela separa os cenários
+          </button>
         </div>
       </div>
-      {aba !== "metodo" && aba !== "fatores" && aba !== "sistema" && <SeletorDeVista comPresente={aba !== "cenarios"} />}
+      <div className="xl:col-start-2 xl:row-start-2">
+        <FaixaDeCenarios vertical />
+      </div>
     </div>
   );
 }
 
 function Conteudo() {
-  const { r, ix, aba, irPara, selecao } = useResultado();
-  const principal = r.incertezas.find((i) => i.id === r.principalIncerteza)!;
-  const passo = FLUXO.find((f) => f.aba === aba)!;
+  const { r, aba, selecao, selecionar } = useResultado();
 
   // Mede a altura do cabeçalho do app para a barra de abas grudar logo abaixo dele.
   useEffect(() => {
@@ -85,83 +108,51 @@ function Conteudo() {
   }, []);
 
   return (
-    <article className={`flex flex-col gap-6 transition-[margin] duration-300 ${selecao ? "lg:mr-[380px] xl:mr-[360px]" : ""}`}>
+    <article className={`flex flex-col gap-5 transition-[margin] duration-300 ${selecao ? "lg:mr-[380px] xl:mr-[360px]" : ""}`}>
       <Link to={ROTAS.investigacoes} className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto">
         <ArrowLeft size={14} aria-hidden="true" />
         Investigações
       </Link>
 
-      <header className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <p className="rotulo">Investigação prospectiva · {r.natureza}</p>
-          <Epistemico tipo="limitacao" rotulo="Exemplo ilustrativo, elaborado por IA, não pelo motor do Iris" />
-        </div>
+      <header className="flex flex-col gap-2.5">
+        <p className="rotulo">Investigação prospectiva · {r.natureza}</p>
         <h1 className="max-w-[44ch] font-editorial text-titulo font-medium tracking-[-0.01em] text-balance text-texto">{r.pergunta}</h1>
-        <p className="flex flex-wrap gap-x-4 gap-y-1 text-legenda text-texto-2">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-legenda text-texto-2">
+          <span className="numeros font-dados text-ambar">
+            {r.horizonte.inicio}–{r.horizonte.fim}
+          </span>
+          <span aria-hidden="true" className="hidden text-texto-3 sm:inline">·</span>
+          <span className="hidden sm:inline">{r.escopo}</span>
+          <span aria-hidden="true" className="hidden text-texto-3 sm:inline">·</span>
           <span>
-            Horizonte{" "}
-            <span className="numeros font-dados text-ambar">
-              {r.horizonte.inicio}–{r.horizonte.fim}
-            </span>
+            Versão {r.versao}, {dataLegivel(r.atualizadoEm)}
           </span>
-          <span>{r.escopo}</span>
-          <span>{r.dimensoes.join(" · ")}</span>
-          <span>
-            Versão {r.versao} · {dataLegivel(r.atualizadoEm)}
-          </span>
-        </p>
-        <p className="flex max-w-[80ch] flex-wrap items-start gap-2 rounded-padrao border border-ambar/35 bg-ambar-suave px-3 py-2 text-legenda text-texto">
-          <span className="font-medium">Contrafactual.</span>
-          <span className="min-w-0 flex-1">
-            {r.avisoDeContexto.texto}
-            <Citacoes ids={r.avisoDeContexto.evidencias} />
-          </span>
+          <button
+            type="button"
+            onClick={() => selecionar({ tipo: "metodo", id: "metodo" })}
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-linha-forte px-3 text-legenda text-texto-2 transition-colors duration-150 hover:border-texto-2 hover:text-texto sm:ml-auto"
+          >
+            <BookOpen size={14} aria-hidden="true" />
+            Como esta análise foi feita
+          </button>
+        </div>
+        <p className="max-w-[90ch] text-legenda text-texto-2">
+          <span className="font-medium text-ambar">Contrafactual. </span>
+          {r.avisoDeContexto.texto}
+          <Citacoes ids={r.avisoDeContexto.evidencias} />
+          <span className="text-texto-3"> Exemplo elaborado por IA, não pelo motor do Iris.</span>
         </p>
       </header>
 
-      {/* primeira leitura: síntese curta e a principal incerteza; o mapa vem logo abaixo */}
-      <section aria-label="Visão geral" className="grid gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-        <div className="flex flex-col gap-2">
-          <p className="rotulo">Síntese</p>
-          <p className="max-w-[66ch] font-editorial text-leitura text-texto">{r.sintese}</p>
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-legenda">
-            <button type="button" className="text-ciano-texto hover:underline" onClick={() => irPara("cenarios")}>
-              {r.cenarios.length} cenários: {r.cenarios.map((c) => c.arquetipo.toLowerCase()).join(", ")}
-            </button>
-            <button type="button" className="text-ciano-texto hover:underline" onClick={() => irPara("evidencias")}>
-              {r.evidencias.length} evidências · {r.fontes.length} fontes
-            </button>
-          </p>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-padrao border border-ambar/35 p-3.5">
-          <p className="flex items-center gap-2 text-micro text-ambar">
-            <Epistemico tipo="incerteza" compacto /> Principal incerteza estratégica
-          </p>
-          <p className="font-editorial text-corpo text-texto">{principal.nome}</p>
-          <p className="text-legenda text-texto-2">{principal.pergunta}</p>
-          <button type="button" className="w-fit text-legenda text-ciano-texto hover:underline" onClick={() => irPara("fatores")}>
-            Ver fatores de mudança
-          </button>
-        </div>
-      </section>
-
       <BarraDeAbas />
 
-      <div id="painel-aba" role="tabpanel" aria-labelledby={`aba-${aba}`} className="flex min-w-0 flex-col gap-5">
-        <p className="text-micro text-texto-3">
-          Passo {FLUXO.indexOf(passo) + 1} de {FLUXO.length} · <span className="text-texto-2">{passo.titulo}</span>: {passo.texto}
-        </p>
-        {aba === "sistema" && <MapaDeAtores />}
-        {aba === "fatores" && <FatoresDeMudanca />}
+      <div id="painel-aba" role="tabpanel" aria-labelledby={`aba-${aba}`} className="flex min-w-0 flex-col">
+        {aba === "visao" && <VisaoGeral />}
         {aba === "cenarios" && <AreaDeCenarios />}
         {aba === "tempo" && <LinhaDoTempo />}
-        {aba === "evidencias" && <AreaDeEvidencias />}
-        {aba === "metodo" && <MetodoERevisao />}
+        {aba === "fontes" && <AreaDeEvidencias />}
       </div>
 
-      <p className="border-t border-linha pt-4 text-micro text-texto-3">
-        {r.origem} {ix.fontes.size} fontes reais; nenhuma demonstrativa.
-      </p>
       <PainelContextual />
     </article>
   );

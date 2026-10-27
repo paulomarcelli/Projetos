@@ -19,12 +19,14 @@ import type {
   Vista,
 } from "../../lib/investigacao";
 
-export type Aba = "sistema" | "fatores" | "cenarios" | "tempo" | "evidencias" | "metodo";
+/** As quatro tarefas de quem lê uma análise: o sistema, os futuros, o tempo e as fontes. */
+export type Aba = "visao" | "cenarios" | "tempo" | "fontes";
 export type Selecao =
   | { tipo: "ator"; id: string }
   | { tipo: "relacao"; id: string }
   | { tipo: "evento"; id: string }
   | { tipo: "evidencia"; id: string }
+  | { tipo: "metodo"; id: "metodo" }
   | null;
 
 interface Indices {
@@ -106,7 +108,7 @@ export function ProvedorDoResultado({ r, children }: { r: ResultadoDeInvestigaca
   const ix = useMemo(() => indexar(r), [r]);
   const [vista, setVista] = useState<Vista>("presente");
   const [selecao, selecionar] = useState<Selecao>(null);
-  const [aba, setAba] = useState<Aba>("sistema");
+  const [aba, setAba] = useState<Aba>("visao");
   const valor = useMemo(
     () => ({ r, ix, vista, setVista, selecao, selecionar, aba, irPara: setAba }),
     [r, ix, vista, selecao, aba],

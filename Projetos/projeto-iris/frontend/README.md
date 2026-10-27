@@ -11,14 +11,11 @@ centralizados em `src/styles/index.css`.
 |---|---|
 | `/` | Landing: missão, três dimensões, método (com o estado real de cada etapa), linguagem epistêmica, estado do projeto |
 | `/entrar` | Login (veja a nota abaixo) |
-| `/app` | Início: nova investigação, investigações recentes, base científica, cenários e sinais |
-| `/app/investigacoes` | Trilha do método, nova investigação e rascunhos |
-| `/app/investigacoes/:id` | Resultado de uma investigação prospectiva, em 6 abas que seguem o fluxo da análise: Sistema (mapa de atores), Fatores de mudança, Cenários, Linha do tempo, Evidências e Método e revisão. Sem API ainda: fora da prévia, mostra um estado vazio |
+| `/app` | Início: nova investigação, investigações recentes e base científica |
+| `/app/investigacoes` | Nova investigação e rascunhos |
+| `/app/investigacoes/:id` | Resultado de uma investigação: Visão geral (mapa), Cenários, Linha do tempo e Fontes. Sem API ainda: fora da prévia, mostra um estado vazio |
 | `/app/base-cientifica` | Painel da base (indicadores, anos de publicação, completude dos metadados, idiomas) e pesquisa de fontes |
 | `/app/base-cientifica/:id` | Leitor da fonte: texto por página, ficha bibliográfica com a origem de cada campo, integridade |
-| `/app/mapas` | Mapas e relações: mapa-múndi, tipos de relação e camadas previstas |
-| `/app/cenarios` | Quadro de comparação de trajetórias e como ler um cenário |
-| `/app/sinais` | Tabela de sinais e critérios de um sinal |
 | `/app/favoritos` | Fontes marcadas |
 | `/app/configuracoes` | Estado do sistema e acesso à gestão do acervo |
 | `/app/configuracoes/acervo` | **Gestão do acervo** (administração): envio de PDFs, lista com filtros e remoção |
@@ -53,9 +50,10 @@ institucionais, linhas finas de coordenadas e tipografia editorial.
   cada metadado), nos estados vazios e nas limitações.
 - **Símbolo.** Um globo visto como íris. Meridiano e equador formam o sistema de coordenadas (o
   presente mapeado); o arco ciano é a abertura do diafragma (o olhar adiante).
-- **Navegação pela estrutura intelectual:** Início, depois *Presente* (Investigações, Base
-  científica, Mapas e relações), *Futuros* (Cenários, Sinais) e *Acervo* (Documentos, Favoritos,
-  Configurações).
+- **Navegação enxuta, pelas tarefas de quem pesquisa:** Início, Investigações e Base científica;
+  depois Favoritos e Configurações. Mapa, cenários, linha do tempo e sinais ficam dentro de cada
+  investigação. Os endereços antigos `/app/mapas`, `/app/cenarios` e `/app/sinais` levam a
+  Investigações.
 - **Movimento.** Só anima o que tem função:
   - toque (140 ms, escala 0,97);
   - cor (180 ms);
@@ -71,36 +69,25 @@ A referência completa (cores, tipos, marcadores, componentes) fica na rota `/de
 
 ## Resultado de uma investigação prospectiva
 
-A prospectiva estratégica organiza a tela. O formato está em `src/lib/investigacao.ts` e os
-componentes ficam em `src/components/resultado/`.
+Organizado pelas tarefas de quem pesquisa, em quatro áreas (`src/components/resultado/`):
 
-- **Sistema** (`MapaDeAtores`): é a porta de entrada.
-  - Só países no mapa. Instituições e grupos internos (STF, Congresso, agro, facções) ficam no painel do Brasil.
-  - Blocos (Mercosul, Escudo das Américas, BRICS) aparecem como regiões, cada uma com um contorno próprio, que mudam de forma quando um país entra ou sai.
-  - Ao trocar de cenário, o sistema se move: os países deslizam no eixo esquemático "órbita de Washington ↔ autonomia ↔ órbita de Pequim" (vertical no celular), e as linhas nascem, somem, engrossam, afinam ou mudam de tipo com transições interrompíveis. Com "reduzir movimento", a troca é instantânea.
-  - "Percorrer cenários" passa por Hoje → A → B → C automaticamente.
-  - Também: zoom e arraste, filtros por categoria, tema e base, e lista em texto como alternativa.
-- **Painel contextual** (`PainelContextual`):
-  - Para atores e conexões, mostra identificação, papel, interesses e capacidades, relações, evidências, incertezas e implicações por cenário.
-  - Para evidências, mostra a cadeia Afirmação → Evidência → Fonte (com trecho literal) → Interpretação → Implicação, e onde ela é usada.
-  - Tem histórico para voltar ao item anterior. No celular vira folha inferior e mantém o mapa visível.
-- **Fatores de mudança**: as incertezas críticas (com a posição de cada cenário), as variáveis-chave (estado atual com evidência e direção por cenário) e as tendências.
-- **Cenários**:
-  - Saem de uma matriz de duas incertezas críticas, não de três textos soltos.
-  - Cada um segue a mesma estrutura: síntese, premissas, mecanismos causais, tendências, variáveis, atores decisivos, gatilhos, condições, consequências no mapa-múndi, indicadores, evidências a favor e contra, limitações e condições de revisão.
-  - Há uma tabela que compara A, B e C pelos mesmos critérios.
-- **Linha do tempo**:
-  - Quatro categorias com formas distintas: observado (sólido), inferido (tracejado), condicional (losango âmbar) e projetado (tracejado âmbar, em itálico).
-  - Filtros por cenário, horizonte, ator e categoria.
-  - No celular, um horizonte por vez.
-- **Evidências**:
-  - As 4 fontes principais são escolhidas por um critério explícito: quantos elementos da análise elas sustentam.
-  - "Ver todas as fontes" mostra natureza, gênero, trecho, limitação e o que cada fonte sustenta.
-- **Método e revisão**: métodos marcados como aplicado, parcial ou não aplicado; premissas, limitações e registro de revisões.
+| Área | O que mostra |
+|---|---|
+| **Visão geral** | Mapa de relações entre países (principal ferramenta), síntese, principal incerteza e a faixa de vistas Hoje → A → B → C |
+| **Cenários** | Os dois fatores que separam os futuros (barras com a posição de cada cenário); um cartão por cenário com nome, ideia central, horizonte, impacto principal e sinais; detalhes e comparação sob demanda |
+| **Linha do tempo** | Vertical, com divisor "Hoje": passado em traço contínuo, futuro hipotético em traço âmbar. Um único filtro: o cenário |
+| **Fontes** | Fontes principais (critério: quantos elementos sustentam), afirmações com as fontes e a lista completa sob demanda |
 
-Nada mostra probabilidade, peso ou índice de influência. O mapa de atores e os mecanismos causais
-respondem a perguntas diferentes: os mecanismos aparecem nos cenários, como cadeias condição →
-mecanismo → consequência, e não como um segundo diagrama.
+- **Método, premissas, limitações e revisões** não ocupam uma aba: abrem no painel lateral pelo botão "Como esta análise foi feita".
+- **Painel contextual:** selecionar país, conexão, evento ou citação abre o painel com o essencial e a cadeia de rastreabilidade.
+- **Mapa:**
+  - Só países no mapa. Blocos aparecem como regiões, cada uma com contorno próprio.
+  - A legenda fica sobre o mapa e também filtra as categorias.
+  - Uma dica aparece ao passar o cursor ou focar com o teclado.
+  - Pulsos em movimento mostram o sentido só em influência e dependência.
+  - Linhas sem marca são documentadas; ◌ indica inferência e ◇, hipótese do cenário.
+  - A troca de cenário move os países e transforma as linhas. Com "reduzir movimento", a troca é instantânea e não há pulsos.
+- Nada mostra probabilidade, peso ou índice numérico.
 
 ## O que é real e o que ainda não existe
 

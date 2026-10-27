@@ -92,15 +92,15 @@ describe("resultado de investigação", () => {
     expect(screen.getByText("Investigação não encontrada")).toBeInTheDocument();
   });
 
-  it("primeira tela: síntese, principal incerteza, mapa e acesso a cenários e evidências", () => {
+  it("primeira tela: síntese, principal incerteza, mapa e as quatro áreas", () => {
     montar();
-    expect(screen.getByText("Principal incerteza estratégica")).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /Sistema/ })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("Principal incerteza")).toBeInTheDocument();
+    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Visão geral", "Cenários", "Linha do tempo", "Fontes"]);
+    expect(screen.getByRole("tab", { name: "Visão geral" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("group", { name: /Mapa de relações entre países/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /evidências · 16 fontes/ })).toBeInTheDocument();
   });
 
-  it("selecionar um ator abre o painel com os 7 blocos; a citação abre a cadeia de rastreabilidade", async () => {
+  it("selecionar um país abre o painel; a citação abre a cadeia de rastreabilidade", async () => {
     montar();
     await userEvent.click(screen.getByRole("button", { name: /^Estados Unidos \(governo Trump\)/ }));
     const painel = screen.getByRole("complementary", { name: "Painel contextual" });
@@ -110,34 +110,54 @@ describe("resultado de investigação", () => {
     await userEvent.click(within(painel).getAllByRole("button", { name: /^Ver evidência e fontes/ })[0]);
     expect(within(painel).getByText("Implicação prospectiva")).toBeInTheDocument();
     expect(within(painel).getAllByRole("link").length).toBeGreaterThan(0);
-    // volta ao ator sem perder o contexto
     await userEvent.click(within(painel).getByRole("button", { name: "Voltar ao item anterior" }));
     expect(within(painel).getByText("Papel na dinâmica")).toBeInTheDocument();
   });
 
-  it("trocar para um cenário mostra o que muda em relação ao presente", async () => {
+  it("trocar para um cenário muda o mapa e lista as mudanças, inclusive de bloco", async () => {
     montar();
     await userEvent.click(screen.getByRole("button", { name: /Transformação.*Alinhamento hemisférico/ }));
-    expect(screen.getByText(/O que muda no cenário B/)).toBeInTheDocument();
-    // a filiação a blocos muda com o cenário
+    expect(screen.getByText(/mudanças em relação a hoje/)).toBeInTheDocument();
     expect(screen.getByText("Brasil entra no Escudo das Américas")).toBeInTheDocument();
   });
 
-  it("cenários podem ser comparados pelos mesmos critérios", async () => {
+  it("a legenda do mapa também filtra as categorias", async () => {
     montar();
-    await userEvent.click(screen.getByRole("tab", { name: /Cenários/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Comparar A, B e C" }));
-    const tabela = screen.getByRole("table", { name: /Comparação dos cenários/ });
-    expect(within(tabela).getByText("Mecanismo principal")).toBeInTheDocument();
-    expect(within(tabela).getByText("Revisar se")).toBeInTheDocument();
+    const coop = screen.getByRole("button", { name: /^Cooperação/ });
+    expect(coop).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(coop);
+    expect(coop).toHaveAttribute("aria-pressed", "false");
   });
 
-  it("a linha do tempo filtra por categoria e abre o evento no painel", async () => {
+  it("cenários: cartão curto, detalhes sob demanda e comparação pelos mesmos critérios", async () => {
     montar();
-    await userEvent.click(screen.getByRole("tab", { name: /Linha do tempo/ }));
-    await userEvent.click(within(screen.getByRole("group", { name: "Categorias de informação" })).getByRole("button", { name: /Projetado/ }));
+    await userEvent.click(screen.getByRole("tab", { name: "Cenários" }));
+    expect(screen.getAllByText("Impacto principal")).toHaveLength(3);
+    expect(screen.queryByText("Premissas")).not.toBeInTheDocument();
+    await userEvent.click(screen.getAllByRole("button", { name: /Ver detalhes/ })[1]);
+    expect(screen.getByText("Premissas")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /Comparar lado a lado/ }));
+    const tabela = screen.getByRole("table", { name: /Comparação dos cenários/ });
+    expect(within(tabela).getByText("Gatilho")).toBeInTheDocument();
+    expect(within(tabela).getByText("Rever se")).toBeInTheDocument();
+  });
+
+  it("linha do tempo: só o filtro de cenário, futuro separado do passado, evento abre no painel", async () => {
+    montar();
+    await userEvent.click(screen.getByRole("tab", { name: "Linha do tempo" }));
+    expect(screen.getByRole("separator", { name: /Hoje/ })).toBeInTheDocument();
     expect(screen.queryByText("Adesão plena ao Escudo das Américas.")).not.toBeInTheDocument();
+    await userEvent.click(within(screen.getByRole("group", { name: "Cenário projetado no futuro" })).getByRole("button", { name: /^B/ }));
+    expect(screen.getByText("Adesão plena ao Escudo das Américas.")).toBeInTheDocument();
     await userEvent.click(screen.getByText("STF condena Jair Bolsonaro a 27 anos e 3 meses."));
     expect(screen.getByRole("complementary", { name: "Painel contextual" })).toHaveTextContent("Atores envolvidos");
+  });
+
+  it("método e revisão abrem no painel, fora da navegação principal", async () => {
+    montar();
+    await userEvent.click(screen.getByRole("button", { name: "Como esta análise foi feita" }));
+    const painel = screen.getByRole("complementary", { name: "Painel contextual" });
+    expect(within(painel).getByText("Métodos")).toBeInTheDocument();
+    expect(within(painel).getByText("Revisões")).toBeInTheDocument();
   });
 });

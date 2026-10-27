@@ -1,7 +1,8 @@
 """Testes de integração com um PostgreSQL + pgvector REAL.
 
 Ficam ignorados quando IRIS_TEST_DATABASE_URL não está definida. Use um banco de TESTE: estes
-testes aplicam e desfazem a migração 0001 (habilitam e removem a extensão `vector`).
+testes aplicam e desfazem as migrações (habilitam e removem a extensão `vector`, criam e apagam
+as tabelas de documentos).
 
     docker compose up -d --wait
     IRIS_TEST_DATABASE_URL=postgresql+psycopg://USUARIO:SENHA@localhost:5432/iris_test \\
@@ -83,11 +84,11 @@ def test_migracao_e_idempotente(engine, banco_sem_migracao):
     command.upgrade(banco_sem_migracao, "head")
     command.upgrade(banco_sem_migracao, "head")  # segunda vez: nada a fazer, sem erro
     with engine.connect() as conn:
-        assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar() == "0001"
+        assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar() == "0002"
 
 
-def test_migracao_nao_cria_tabelas_alem_do_controle_do_alembic(engine, banco_sem_migracao):
-    command.upgrade(banco_sem_migracao, "head")
+def test_migracao_0001_nao_cria_tabelas_alem_do_controle_do_alembic(engine, banco_sem_migracao):
+    command.upgrade(banco_sem_migracao, "0001")
     with engine.connect() as conn:
         tabelas = conn.execute(
             text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")

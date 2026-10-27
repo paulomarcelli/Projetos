@@ -7,6 +7,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import create_engine, pool
 
+import app.db.models  # noqa: F401  (registra as tabelas no metadata)
 from app.core.config import ConfigError, get_settings
 from app.db.base import Base
 
@@ -14,7 +15,6 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name, disable_existing_loggers=False)
 
-# Quando a Fase 2 criar modelos, importe-os aqui para o autogenerate enxergá-los.
 target_metadata = Base.metadata
 
 

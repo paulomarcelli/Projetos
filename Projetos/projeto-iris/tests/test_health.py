@@ -96,9 +96,16 @@ def test_nenhuma_resposta_expoe_segredos(make_settings, caminho):
         assert segredo not in texto
 
 
-def test_documentacao_automatica_lista_apenas_os_endpoints_de_saude(make_settings):
+def test_documentacao_automatica_lista_saude_e_documentos(make_settings):
     c = cliente(make_settings)
     assert c.get("/docs").status_code == 200
     esquema = c.get("/openapi.json").json()
-    assert sorted(esquema["paths"]) == ["/health", "/health/ready"]
+    assert sorted(esquema["paths"]) == [
+        "/documents",
+        "/documents/upload",
+        "/documents/{document_id}",
+        "/documents/{document_id}/pages",
+        "/health",
+        "/health/ready",
+    ]
     assert esquema["info"]["title"] == "Projeto Iris"

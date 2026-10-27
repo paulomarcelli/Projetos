@@ -28,5 +28,7 @@ htmlcov/
 .vscode/
 .DS_Store
 *.log
+# PDFs recebidos pela API (STORAGE_DIR padrão)
+data/
 graphify-out/
 lightrag-out/

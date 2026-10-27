@@ -7,6 +7,7 @@ o NOME da variável e o motivo, nunca o valor: URLs de banco e chaves de API con
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, SecretStr, ValidationError, field_validator
@@ -44,6 +45,14 @@ class Settings(BaseSettings):
     openai_timeout_seconds: float = Field(default=30.0, gt=0, le=300)
     openai_max_retries: int = Field(default=2, ge=0, le=5)
 
+    # Ingestão de documentos (Fase 2). Os PDFs ficam em disco, nunca no banco.
+    storage_dir: Path = Field(
+        default=Path("data/documents"),
+        description="Diretório persistente dos PDFs recebidos (fora do controle de versão).",
+    )
+    max_upload_mb: int = Field(default=50, ge=1, le=1024)
+    max_pdf_pages: int = Field(default=2000, ge=1, le=100_000)
+
     @field_validator("database_url")
     @classmethod
     def _validar_database_url(cls, valor: SecretStr | None) -> SecretStr | None:
@@ -76,6 +85,10 @@ class Settings(BaseSettings):
         if isinstance(valor, str) and not valor.strip():
             return None
         return valor
+
+    @property
+    def max_upload_bytes(self) -> int:
+        return self.max_upload_mb * 1024 * 1024
 
     @property
     def database_configured(self) -> bool:

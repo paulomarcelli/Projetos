@@ -10,7 +10,16 @@ import pytest
 
 from app.core.config import Settings, get_settings
 
-PREFIXOS_DE_CONFIG = ("OPENAI_", "DATABASE_", "DB_", "APP_", "LOG_", "POSTGRES_")
+PREFIXOS_DE_CONFIG = (
+    "OPENAI_",
+    "DATABASE_",
+    "DB_",
+    "APP_",
+    "LOG_",
+    "POSTGRES_",
+    "STORAGE_",
+    "MAX_",
+)
 
 
 @pytest.fixture(autouse=True)

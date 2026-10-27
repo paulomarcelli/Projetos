@@ -10,12 +10,53 @@ import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import InterfaceError, OperationalError
 
 from app import __version__
-from app.api import routes_health
+from app.api import routes_documents, routes_health
+from app.api.upload_limit import CorpoGrandeDemais, LimiteDeUpload
 from app.core.config import Settings, get_settings
 from app.db.session import build_engine, build_session_factory
+from app.documents import errors
+from app.documents.storage import Armazenamento, StorageError
+
+logger = logging.getLogger(__name__)
+
+
+def _erro(e: errors.ErroDocumento) -> JSONResponse:
+    return JSONResponse(status_code=e.status, content={"detail": e.mensagem, "code": e.codigo})
+
+
+def _registrar_tratadores(app: FastAPI, settings: Settings) -> None:
+    """Respostas de erro curtas e fixas: sem caminhos, URLs, stack traces ou mensagens internas."""
+
+    @app.exception_handler(errors.ErroDocumento)
+    async def _documento(_: Request, e: errors.ErroDocumento) -> JSONResponse:
+        return _erro(e)
+
+    @app.exception_handler(CorpoGrandeDemais)
+    async def _grande(_: Request, __: CorpoGrandeDemais) -> JSONResponse:
+        return _erro(errors.arquivo_grande(settings.max_upload_mb))
+
+    @app.exception_handler(StorageError)
+    async def _armazenamento(_: Request, e: StorageError) -> JSONResponse:
+        logger.error("Falha no armazenamento: %s", e)
+        return _erro(errors.armazenamento_indisponivel())
+
+    @app.exception_handler(OperationalError)
+    @app.exception_handler(InterfaceError)
+    async def _banco(_: Request, e: Exception) -> JSONResponse:
+        logger.error("Banco indisponível (%s)", type(e).__name__)
+        return _erro(errors.banco_indisponivel())
+
+    @app.exception_handler(Exception)
+    async def _inesperado(_: Request, e: Exception) -> JSONResponse:
+        logger.exception("Erro inesperado")
+        return JSONResponse(
+            status_code=500, content={"detail": "Erro interno.", "code": "internal_error"}
+        )
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -37,7 +78,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         version=__version__,
         description=(
             "Plataforma de IA para prospectiva geopolítica e Relações Internacionais. "
-            "Fase 1: fundação técnica (apenas endpoints de saúde)."
+            "Fase 2: ingestão de documentos científicos em PDF. "
+            "ATENÇÃO: sem autenticação; use só em ambiente de desenvolvimento controlado."
         ),
         lifespan=lifespan,
     )
@@ -45,6 +87,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.engine = engine
     app.state.session_factory = build_session_factory(engine) if engine is not None else None
+    # Só guarda o caminho; as pastas são criadas no primeiro upload.
+    app.state.armazenamento = Armazenamento(settings.storage_dir)
 
+    app.add_middleware(
+        LimiteDeUpload,
+        caminhos={"/documents/upload"},
+        max_bytes=settings.max_upload_bytes,
+        max_mb=settings.max_upload_mb,
+    )
+    _registrar_tratadores(app, settings)
     app.include_router(routes_health.router)
+    app.include_router(routes_documents.router)
     return app

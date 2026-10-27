@@ -1,8 +1,7 @@
 """Base declarativa do SQLAlchemy e convenção de nomes das restrições.
 
-Ainda não há modelos (Fase 1 não cria tabelas). Esta base existe para que as migrações da Fase 2
-possam usar o autogenerate. A convenção de nomes dá a índices e chaves nomes estáveis e previsíveis,
-o que evita migrações frágeis quando o esquema evoluir.
+Os modelos ficam em `app/db/models.py`. A convenção de nomes dá a índices e chaves nomes
+estáveis e previsíveis, o que evita migrações frágeis quando o esquema evoluir.
 """
 
 from sqlalchemy import MetaData

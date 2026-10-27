@@ -155,7 +155,9 @@ describe("seção Relações (mapa geopolítico)", () => {
     await userEvent.click(screen.getByRole("button", { name: /Cenário B/ }));
     expect(screen.getByRole("group", { name: /cenário B: Alinhamento hemisférico/ })).toBeInTheDocument();
     expect(svg.getAttribute("viewBox")).toBe(antes);
-    await userEvent.click(screen.getByRole("button", { name: /mudanças em relação a hoje/ }));
+    await userEvent.click(screen.getByRole("button", { name: /O que mudou em relação a hoje/ }));
+    // agrupado pelo tipo de mudança, com o mesmo glifo do mapa
+    expect(screen.getByRole("region", { name: "Mudam de natureza" })).toHaveTextContent(/competição.*→.*cooperação/);
     expect(screen.getByText("Brasil entra no Escudo das Américas")).toBeInTheDocument();
   });
 

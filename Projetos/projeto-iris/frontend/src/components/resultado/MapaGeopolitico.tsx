@@ -12,7 +12,7 @@ import { RELACOES, type TipoRelacao } from "../Diagramas";
 import { EPISTEMICO } from "../Epistemico";
 import { LARGURA, ALTURA, prepararMapa } from "../../geo/mundo";
 import type { Ator, Vista } from "../../lib/investigacao";
-import { documentada, relacaoNaVista, ROTULO_MUDANCA, statusDaRelacao, useResultado } from "./contexto";
+import { documentada, relacaoNaVista, statusDaRelacao, useResultado } from "./contexto";
 import { Letra } from "./pecas";
 import { PainelContextual } from "./PainelContextual";
 
@@ -31,6 +31,23 @@ const ROTULO: Record<string, { dx: number; dy: number; ancora: "start" | "middle
   franca: { dx: 0, dy: -16, ancora: "middle" },
 };
 
+/** Linguagem visual das mudanças entre hoje e um cenário: o mesmo glifo no mapa e na lista. */
+const MUDANCA: { chave: "nova" | "transformada" | "reforcada" | "enfraquecida" | "ausente"; titulo: string; glifo: string }[] = [
+  { chave: "nova", titulo: "Novas", glifo: "+" },
+  { chave: "transformada", titulo: "Mudam de natureza", glifo: "⇄" },
+  { chave: "reforcada", titulo: "Reforçadas", glifo: "↑" },
+  { chave: "enfraquecida", titulo: "Enfraquecidas", glifo: "↓" },
+  { chave: "ausente", titulo: "Deixam de existir", glifo: "×" },
+];
+const GLIFO = Object.fromEntries(MUDANCA.map((m) => [m.chave, m.glifo])) as Record<string, string>;
+const curto = (t: string) => (ESTILO.get(t as TipoRelacao)?.rotulo.split(" / ")[0] ?? t).toLowerCase();
+
+/** Ponto numa curva quadrática (t de 0 a 1). */
+const naCurva = (p1: { x: number; y: number }, c: { x: number; y: number }, p2: { x: number; y: number }, t: number) => ({
+  x: (1 - t) * (1 - t) * p1.x + 2 * (1 - t) * t * c.x + t * t * p2.x,
+  y: (1 - t) * (1 - t) * p1.y + 2 * (1 - t) * t * c.y + t * t * p2.y,
+});
+
 type Base = "documentada" | "inferida" | "condicional";
 const baseDe = (status: string): Base => (documentada(status) ? "documentada" : status === "inferencia" ? "inferida" : "condicional");
 
@@ -39,7 +56,7 @@ const baseDe = (status: string): Base => (documentada(status) ? "documentada" : 
 const suave = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /** Interpola presença e espessura das linhas; interrompível (parte de onde a anterior estava). */
-function useTransicao(alvo: Record<string, number>, ms = 700) {
+function useTransicao(alvo: Record<string, number>, ms = 950) {
   const [atual, setAtual] = useState(alvo);
   const ref = useRef(alvo);
   useEffect(() => {
@@ -229,6 +246,9 @@ export function MapaGeopolitico() {
   const atorSel = selecao?.tipo === "ator" ? selecao.id : null;
   const relSel = selecao?.tipo === "relacao" ? selecao.id : null;
   const [sobre, setSobre] = useState<string | null>(null);
+  /** Relação em destaque pelo cursor (no mapa ou na lista de mudanças). */
+  const [relSobre, setRelSobre] = useState<string | null>(null);
+  const focoRel = relSobre ?? relSel;
   const focoAtor = sobre ?? (atorSel && ehPais.has(atorSel) ? atorSel : null);
   const vizinhos = useMemo(() => {
     if (!focoAtor) return null;
@@ -382,6 +402,10 @@ export function MapaGeopolitico() {
   const [listaAberta, setListaAberta] = useState(false);
   const [legendaAberta, setLegendaAberta] = useState(false);
   const [mudancasAbertas, setMudancasAbertas] = useState(false);
+  useEffect(() => {
+    if (vista !== "presente" && tela.w >= 1024) setMudancasAbertas(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vista]);
 
   // ---------------------------------------------------------------- render
   return (
@@ -418,11 +442,15 @@ export function MapaGeopolitico() {
           <filter id="brilho" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="1.6" />
           </filter>
+          <filter id="brilho-linha" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.2" />
+          </filter>
         </defs>
 
         <Territorios envolvidos={envolvidos} brasil={ix.atores.get("brasil")?.isoNum ?? null} selecionado={isoSel} bloco={territoriosDoBloco} />
 
-        {/* conexões: arcos entre capitais, uma camada por tipo para a troca de natureza ser um cruzamento suave */}
+        {/* conexões: arcos entre capitais. Cada tipo é uma camada desenhada da origem ao destino;
+            ao trocar de cenário, a camada antiga recolhe e a nova é traçada. */}
         {desenhaveis.map((rel) => {
           const a = ehPais.has(rel.de) ? ponto.get(rel.de)! : ancora(rel.de);
           const b = ehPais.has(rel.para) ? ponto.get(rel.para)! : ancora(rel.para);
@@ -438,92 +466,150 @@ export function MapaGeopolitico() {
           const mesmos = desenhaveis.filter((x) => [x.de, x.para].sort().join() === [rel.de, rel.para].sort().join());
           const ordem = mesmos.indexOf(rel);
           const curva = dist * (0.2 + ordem * 0.16);
-          const cx = (a.x + b.x) / 2 + nx * curva;
-          const cy = (a.y + b.y) / 2 + ny * curva;
+          const c = { x: (a.x + b.x) / 2 + nx * curva, y: (a.y + b.y) / 2 + ny * curva };
           const recuo = 9 * s;
-          const t1 = Math.hypot(cx - a.x, cy - a.y) || 1;
-          const t2 = Math.hypot(cx - b.x, cy - b.y) || 1;
-          const p1 = { x: a.x + ((cx - a.x) / t1) * recuo, y: a.y + ((cy - a.y) / t1) * recuo };
-          const p2 = { x: b.x + ((cx - b.x) / t2) * recuo, y: b.y + ((cy - b.y) / t2) * recuo };
-          const d = `M${p1.x} ${p1.y} Q${cx} ${cy} ${p2.x} ${p2.y}`;
-          const meio = { x: 0.25 * p1.x + 0.5 * cx + 0.25 * p2.x, y: 0.25 * p1.y + 0.5 * cy + 0.25 * p2.y };
-          const ux = (p2.x - cx) / t2;
-          const uy = (p2.y - cy) / t2;
+          const t1 = Math.hypot(c.x - a.x, c.y - a.y) || 1;
+          const t2 = Math.hypot(c.x - b.x, c.y - b.y) || 1;
+          const p1 = { x: a.x + ((c.x - a.x) / t1) * recuo, y: a.y + ((c.y - a.y) / t1) * recuo };
+          const p2 = { x: b.x + ((c.x - b.x) / t2) * recuo, y: b.y + ((c.y - b.y) / t2) * recuo };
+          const d = `M${p1.x} ${p1.y} Q${c.x} ${c.y} ${p2.x} ${p2.y}`;
+          const meio = naCurva(p1, c, p2, 0.5);
+          const marca = naCurva(p1, c, p2, 0.3);
+          const ux = (p2.x - c.x) / t2;
+          const uy = (p2.y - c.y) / t2;
           const L = 7 * s;
           const seta = `M${p2.x - ux * L - uy * L * 0.55} ${p2.y - uy * L + ux * L * 0.55} L${p2.x} ${p2.y} L${p2.x - ux * L + uy * L * 0.55} ${p2.y - uy * L - ux * L * 0.55}`;
-          const presenca = Math.max(...RELACOES.map((x) => v[`${rel.id}|${x.tipo}`] ?? 0));
-          if (presenca < 0.01) return null;
           const nv = relacaoNaVista(rel, vista);
+          const presenca = Math.max(...RELACOES.map((x) => v[`${rel.id}|${x.tipo}`] ?? 0));
+          // Relação que existe hoje e some no cenário: fica como fantasma, com o selo ×.
+          const fantasma = vista !== "presente" && rel.presente !== null && !nv.visivel;
+          if (presenca < 0.01 && !fantasma) return null;
           const sel = relSel === rel.id;
-          const apagada = (vizinhos && !(vizinhos.has(rel.de) && vizinhos.has(rel.para))) || (relSel && !sel);
+          const emFoco = focoRel === rel.id;
+          const apagada = (vizinhos && !(vizinhos.has(rel.de) && vizinhos.has(rel.para))) || (focoRel && !emFoco);
           const base = baseDe(statusDaRelacao(rel, vista));
           const largura = v[`${rel.id}|w`];
-          const rotulo = `${nome(rel.de)} → ${nome(rel.para)} · ${ESTILO.get(nv.tipo)?.rotulo.split(" / ")[0]}`;
+          const tipoTexto = ESTILO.get(nv.tipo)?.rotulo.split(" / ")[0];
+          const rotulo = `${nome(rel.de)} → ${nome(rel.para)} · ${tipoTexto}`;
+          const mudanca = nv.mudou && nv.estado ? nv.estado.mudanca : fantasma ? "ausente" : null;
+          const resumoMudanca =
+            mudanca === "transformada"
+              ? `Muda de ${curto(rel.tipo)} para ${curto(nv.tipo)}`
+              : mudanca === "nova"
+                ? "Nova neste cenário"
+                : mudanca === "reforcada"
+                  ? "Reforçada neste cenário"
+                  : mudanca === "enfraquecida"
+                    ? "Enfraquecida neste cenário"
+                    : mudanca === "ausente"
+                      ? "Deixa de existir neste cenário"
+                      : "";
+          const dicaTexto = `${resumoMudanca ? `${resumoMudanca}. ` : ""}${nv.visivel ? nv.texto : rel.presente?.texto ?? ""}`;
           const acao = () => selecionar({ tipo: "relacao", id: rel.id });
+          const extra = (sel ? 1 : 0) + (emFoco ? 0.8 : 0);
           return (
             <g
               key={rel.id}
               role="button"
-              tabIndex={nv.visivel ? 0 : -1}
-              aria-hidden={!nv.visivel}
+              tabIndex={nv.visivel || fantasma ? 0 : -1}
+              aria-hidden={!nv.visivel && !fantasma}
               aria-pressed={sel}
-              aria-label={`${rotulo}. ${nv.texto.replace(/\.$/, "")}. ${EPISTEMICO[statusDaRelacao(rel, vista)].rotulo}.`}
+              aria-label={`${rotulo}. ${resumoMudanca ? `${resumoMudanca}. ` : ""}${(nv.visivel ? nv.texto : rel.presente?.texto ?? "").replace(/\.$/, "")}. ${EPISTEMICO[statusDaRelacao(rel, vista)].rotulo}.`}
               className="conexao cursor-pointer outline-none"
-              opacity={(apagada ? 0.12 : 1) * v[`${rel.id}|o`]}
+              opacity={(apagada ? 0.14 : 1) * (fantasma ? 1 : v[`${rel.id}|o`])}
               onClick={clique(acao)}
               onKeyDown={ativar(acao)}
-              onPointerEnter={() => mostrarDica(meio, rotulo, ESTILO.get(nv.tipo)?.descricao ?? "")}
-              onPointerLeave={() => setDica(null)}
-              onFocus={() => mostrarDica(meio, rotulo, ESTILO.get(nv.tipo)?.descricao ?? "")}
-              onBlur={() => setDica(null)}
+              onPointerEnter={() => {
+                setRelSobre(rel.id);
+                mostrarDica(meio, rotulo, dicaTexto);
+              }}
+              onPointerLeave={() => {
+                setRelSobre(null);
+                setDica(null);
+              }}
+              onFocus={() => {
+                setRelSobre(rel.id);
+                mostrarDica(meio, rotulo, dicaTexto);
+              }}
+              onBlur={() => {
+                setRelSobre(null);
+                setDica(null);
+              }}
             >
-              {/* destaque: selecionada ou com foco */}
-              <path className="conexao-halo" d={d} fill="none" stroke="var(--color-ciano)" strokeWidth={9} strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={sel ? 0.3 : 0} />
-              {/* realce breve do que mudou ao trocar de cenário */}
-              {nv.mudou && <path key={`m-${vista}`} className="realce-mudanca" d={d} fill="none" stroke="var(--color-ambar)" strokeWidth={8} strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
-              {RELACOES.map((e) => {
-                const p = v[`${rel.id}|${e.tipo}`] ?? 0;
-                if (p < 0.01) return null;
-                return (
-                  <g key={e.tipo} opacity={p}>
-                    <path
-                      d={d}
-                      fill="none"
-                      stroke={e.cor}
-                      strokeWidth={(sel ? e.espessura + 1 : e.espessura) * largura * (0.4 + 0.6 * p)}
-                      strokeDasharray={e.traco || undefined}
-                      strokeLinecap="round"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    {e.seta && (
-                      <>
-                        <path d={seta} fill="none" stroke={e.cor} strokeWidth={1.6} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-                        {/* sentido documentado: pulso luminoso que vai da origem ao destino */}
-                        {p > 0.6 && (
+              {fantasma ? (
+                <path d={d} fill="none" stroke="var(--color-texto-3)" strokeWidth={1.2} strokeDasharray="2 6" strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={0.6} />
+              ) : (
+                <>
+                  {/* halo de seleção */}
+                  <path className="conexao-halo" d={d} fill="none" stroke="var(--color-ciano)" strokeWidth={10} strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={sel ? 0.28 : 0} />
+                  {/* o que mudou brilha uma vez ao trocar de cenário */}
+                  {nv.mudou && <path key={`m-${vista}`} className="realce-mudanca" d={d} fill="none" stroke="var(--color-ambar)" strokeWidth={9} strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
+                  {RELACOES.map((e) => {
+                    const p = v[`${rel.id}|${e.tipo}`] ?? 0;
+                    if (p < 0.01) return null;
+                    const traco = p < 0.995; // ainda sendo desenhada (ou recolhida)
+                    const idMascara = `tr-${rel.id}-${e.tipo}`;
+                    const w = e.espessura * largura + extra;
+                    return (
+                      <g key={e.tipo} mask={traco ? `url(#${idMascara})` : undefined}>
+                        {traco && (
+                          <mask id={idMascara} maskUnits="userSpaceOnUse" x={-500} y={-500} width={LARGURA + 1000} height={ALTURA + 1000}>
+                            {/* revela o traço da origem (0) ao destino (1) */}
+                            <path d={d} fill="none" stroke="white" strokeWidth={40 * s} pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - p} />
+                          </mask>
+                        )}
+                        {/* brilho suave sob a linha */}
+                        <path d={d} fill="none" stroke={e.cor} strokeWidth={w + 4} strokeLinecap="round" vectorEffect="non-scaling-stroke" filter="url(#brilho-linha)" opacity={emFoco || sel ? 0.55 : 0.22} className="conexao-brilho" />
+                        <path
+                          d={d}
+                          fill="none"
+                          stroke={e.cor}
+                          style={{ strokeWidth: w }}
+                          strokeDasharray={e.traco || undefined}
+                          strokeLinecap="round"
+                          vectorEffect="non-scaling-stroke"
+                          className="conexao-linha"
+                        />
+                        {e.seta && (
                           <>
-                            <path d={d} fill="none" stroke="var(--color-luz)" strokeWidth={4} strokeDasharray="1 23" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="fluxo-luz" filter="url(#brilho)" opacity={0.7} />
-                            <path d={d} fill="none" stroke="var(--color-luz)" strokeWidth={2} strokeDasharray="1 23" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="fluxo-luz" />
+                            <path d={seta} fill="none" stroke={e.cor} strokeWidth={1.7} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+                            {/* sentido documentado: cometa luminoso da origem ao destino */}
+                            {!traco && (
+                              <>
+                                <path d={d} fill="none" stroke="var(--color-luz)" strokeWidth={5} strokeDasharray="1 27" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="fluxo-luz" filter="url(#brilho)" opacity={0.75} />
+                                <path d={d} fill="none" stroke="var(--color-luz)" strokeWidth={2.2} strokeDasharray="1 27" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="fluxo-luz" />
+                              </>
+                            )}
                           </>
                         )}
-                      </>
-                    )}
-                  </g>
-                );
-              })}
+                      </g>
+                    );
+                  })}
+                </>
+              )}
               <path d={d} fill="none" stroke="transparent" strokeWidth={18} vectorEffect="non-scaling-stroke" pointerEvents="stroke" />
-              {base !== "documentada" && (
+              {!fantasma && base !== "documentada" && (
                 <g opacity={presenca}>
                   {base === "inferida" ? (
-                    <circle cx={meio.x} cy={meio.y} r={3.6 * s} fill="var(--color-abismo)" stroke="var(--color-texto-2)" strokeWidth={1.3} strokeDasharray="2 1.6" vectorEffect="non-scaling-stroke" />
+                    <circle cx={marca.x} cy={marca.y} r={3.4 * s} fill="var(--color-abismo)" stroke="var(--color-texto-2)" strokeWidth={1.3} strokeDasharray="2 1.6" vectorEffect="non-scaling-stroke" />
                   ) : (
                     <path
-                      d={`M${meio.x} ${meio.y - 4.6 * s} L${meio.x + 4.6 * s} ${meio.y} L${meio.x} ${meio.y + 4.6 * s} L${meio.x - 4.6 * s} ${meio.y}Z`}
+                      d={`M${marca.x} ${marca.y - 4.2 * s} L${marca.x + 4.2 * s} ${marca.y} L${marca.x} ${marca.y + 4.2 * s} L${marca.x - 4.2 * s} ${marca.y}Z`}
                       fill="var(--color-abismo)"
                       stroke="var(--color-ambar)"
                       strokeWidth={1.3}
                       vectorEffect="non-scaling-stroke"
                     />
                   )}
+                </g>
+              )}
+              {/* selo da mudança no meio da linha: o mesmo glifo da lista "O que mudou" */}
+              {mudanca && (
+                <g key={`selo-${vista}`} className="selo-mudanca" style={{ transformOrigin: `${meio.x}px ${meio.y}px` }}>
+                  <circle cx={meio.x} cy={meio.y} r={8 * s} fill="var(--color-abismo)" stroke="var(--color-ambar)" strokeWidth={emFoco ? 2 : 1.3} vectorEffect="non-scaling-stroke" />
+                  <text x={meio.x} y={meio.y + 3.6 * s} textAnchor="middle" fill="var(--color-ambar)" style={{ font: `700 ${10.5 * s}px var(--font-interface)` }}>
+                    {GLIFO[mudanca]}
+                  </text>
                 </g>
               )}
             </g>
@@ -663,7 +749,7 @@ export function MapaGeopolitico() {
             );
           })}
         </div>
-        <div key={vista} className="aparecer pointer-events-none flex w-fit max-w-[min(36rem,100%)] flex-col gap-1 rounded-padrao bg-abismo/70 px-2.5 py-1.5 backdrop-blur-sm">
+        <div key={vista} className="aparecer pointer-events-none flex w-fit max-w-[min(25rem,100%)] flex-col gap-1 rounded-padrao border border-linha bg-abismo/80 px-3 py-2 backdrop-blur-md">
           <p className="flex items-center gap-2 text-corpo text-texto">
             {cenario && <Letra id={cenario.id} ativa />}
             <span className="font-editorial">{cenario ? cenario.nome : "Hoje: o sistema observado em 2026"}</span>
@@ -671,46 +757,93 @@ export function MapaGeopolitico() {
           </p>
           {cenario && <p className="hidden text-legenda text-texto-2 sm:block">{cenario.ideia}</p>}
           {estreito && <p className="text-micro text-texto-3">Arraste para ver Europa e Ásia</p>}
-          {cenario && (
-            <div>
+        </div>
+      </div>
+
+      {cenario && !selecao && (
+            <div
+              key={`mud-${vista}`}
+              className="aparecer absolute right-2.5 bottom-14 left-2.5 z-20 rounded-padrao border border-ambar/30 bg-abismo/88 px-3 py-1.5 backdrop-blur-md sm:right-3 sm:bottom-3 sm:left-auto sm:w-[19rem]"
+            >
               <button
                 type="button"
                 aria-expanded={mudancasAbertas}
                 onClick={() => setMudancasAbertas((x) => !x)}
-                className="pointer-events-auto inline-flex min-h-8 items-center gap-1 text-micro text-ambar hover:underline"
+                className="pointer-events-auto flex min-h-8 w-full items-center justify-between gap-2 text-legenda text-ambar"
               >
-                {mudancas.length + mudancasDeBloco.length} mudanças em relação a hoje
-                <ChevronDown size={13} aria-hidden="true" className={`transition-transform duration-200 ${mudancasAbertas ? "rotate-180" : ""}`} />
+                <span>
+                  O que mudou em relação a hoje <span className="numeros font-dados">· {mudancas.length + mudancasDeBloco.length}</span>
+                </span>
+                <ChevronDown size={14} aria-hidden="true" className={`transition-transform duration-200 ${mudancasAbertas ? "rotate-180" : ""}`} />
               </button>
               {mudancasAbertas && (
-                <ul className="pointer-events-auto m-0 mt-1 flex max-h-48 list-none flex-col gap-0.5 overflow-y-auto p-0">
-                  {mudancasDeBloco.map((m) => (
-                    <li key={m.texto}>
-                      <button
-                        type="button"
-                        onClick={() => setBlocoAtivo((b) => (b === m.bloco ? null : m.bloco))}
-                        aria-pressed={blocoAtivo === m.bloco}
-                        className="w-full rounded-fino px-1.5 py-1 text-left text-micro text-texto hover:bg-grafite"
-                      >
-                        <span className="text-ambar">Bloco · </span>
-                        {m.texto}
-                      </button>
-                    </li>
-                  ))}
-                  {mudancas.map((l) => (
-                    <li key={l.rel.id}>
-                      <button type="button" onClick={() => selecionar({ tipo: "relacao", id: l.rel.id })} className="w-full rounded-fino px-1.5 py-1 text-left text-micro text-texto-2 hover:bg-grafite hover:text-texto">
-                        <span className="text-ambar">{l.estado ? ROTULO_MUDANCA[l.estado.mudanca] : ""} · </span>
-                        {nome(l.rel.de)} → {nome(l.rel.para)}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                <div className="pointer-events-auto flex max-h-[min(19rem,30dvh)] flex-col gap-2 overflow-y-auto pt-1 pb-0.5 sm:max-h-[min(21rem,48dvh)]" onPointerLeave={() => setRelSobre(null)}>
+                  {MUDANCA.map((g) => {
+                    const itens = mudancas.filter((l) => l.estado?.mudanca === g.chave);
+                    if (itens.length === 0) return null;
+                    return (
+                      <section key={g.chave} aria-label={g.titulo}>
+                        <p className="mb-0.5 flex items-center gap-1.5 text-micro text-texto-3">
+                          <span aria-hidden="true" className="grid size-4 place-items-center rounded-full border border-ambar/60 text-[0.625rem] font-bold text-ambar">
+                            {g.glifo}
+                          </span>
+                          {g.titulo}
+                        </p>
+                        <ul className="m-0 flex list-none flex-col p-0">
+                          {itens.map((l) => (
+                            <li key={l.rel.id}>
+                              <button
+                                type="button"
+                                onPointerEnter={() => setRelSobre(l.rel.id)}
+                                onFocus={() => setRelSobre(l.rel.id)}
+                                onBlur={() => setRelSobre(null)}
+                                onClick={() => selecionar({ tipo: "relacao", id: l.rel.id })}
+                                className={`flex w-full flex-col rounded-fino px-1.5 py-1 text-left transition-colors duration-150 ${relSobre === l.rel.id ? "bg-grafite" : "hover:bg-grafite"}`}
+                              >
+                                <span className="text-legenda text-texto">
+                                  {nome(l.rel.de)} → {nome(l.rel.para)}
+                                  {g.chave === "transformada" && (
+                                    <span className="text-texto-2">
+                                      {" "}
+                                      · {curto(l.rel.tipo)} <span className="text-ambar">→</span> {curto(l.tipo)}
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="text-micro text-texto-3">{l.visivel ? l.texto : l.rel.presente?.texto}</span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    );
+                  })}
+                  {mudancasDeBloco.length > 0 && (
+                    <section aria-label="Blocos">
+                      <p className="mb-0.5 flex items-center gap-1.5 text-micro text-texto-3">
+                        <span aria-hidden="true" className="size-4 rounded-sm border border-ciano/60 bg-[repeating-linear-gradient(45deg,rgb(143_218_240/0.5)_0_1px,transparent_1px_4px)]" />
+                        Blocos (no território)
+                      </p>
+                      <ul className="m-0 flex list-none flex-col p-0">
+                        {mudancasDeBloco.map((m) => (
+                          <li key={m.texto}>
+                            <button
+                              type="button"
+                              onClick={() => setBlocoAtivo((x) => (x === m.bloco ? null : m.bloco))}
+                              aria-pressed={blocoAtivo === m.bloco}
+                              className={`w-full rounded-fino px-1.5 py-1 text-left text-legenda text-texto transition-colors duration-150 ${blocoAtivo === m.bloco ? "bg-ciano-suave" : "hover:bg-grafite"}`}
+                            >
+                              {m.texto}
+                              <span className="block text-micro text-texto-3">{blocoAtivo === m.bloco ? "Destacado no mapa" : "Clique para ver no mapa"}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+                </div>
               )}
             </div>
           )}
-        </div>
-      </div>
 
       {/* estado vazio */}
       {visiveis.length === 0 && (

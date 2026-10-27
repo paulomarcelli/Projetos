@@ -85,10 +85,11 @@ Organizado pelas tarefas de quem pesquisa, em quatro áreas (`src/components/res
   - Cartografia real (Natural Earth): cada país fica na sua capital, e a orientação nunca muda. Só países no mapa.
   - Seletor Hoje | A | B | C sobre o mapa, deixando claro que são cenários da mesma investigação.
   - A troca de cenário:
-    - linhas nascem, somem, engrossam, afinam ou mudam de tipo em cruzamento suave;
-    - o que mudou brilha uma vez em âmbar;
-    - o zoom e a posição são preservados;
-    - a lista "N mudanças em relação a hoje" fica sob o nome do cenário.
+    - as linhas são traçadas da origem ao destino; as que somem recolhem; as que mudam de tipo recolhem e são retraçadas no novo traço;
+    - o que mudou brilha em âmbar e recebe um selo no meio da linha (+ nova, ⇄ muda de natureza, ↑ reforçada, ↓ enfraquecida, × deixa de existir, com a relação mantida como fantasma);
+    - o zoom e a posição são preservados.
+  - O cartão "O que mudou em relação a hoje" agrupa as mudanças com os mesmos glifos do mapa e mostra "competição → cooperação" quando muda a natureza. Passar o cursor num item isola a linha no mapa; clicar abre o detalhe.
+  - Linhas com brilho suave; espessura e brilho reagem ao cursor e à seleção.
   - Blocos (Escudo, Mercosul, BRICS) aparecem como hachura no território dos membros daquela vista.
   - Pulso luminoso só nas relações com sentido documentado (influência, dependência).
   - Linhas sem marca são documentadas; ◌ indica inferida e ◇, hipótese do cenário.

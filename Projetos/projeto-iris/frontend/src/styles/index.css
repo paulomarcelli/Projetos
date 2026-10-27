@@ -402,7 +402,7 @@ p {
   animation: fluxo-luz 2.2s linear infinite;
 }
 @keyframes fluxo-luz {
-  from { stroke-dashoffset: 24; }
+  from { stroke-dashoffset: 28; }
   to { stroke-dashoffset: 0; }
 }
 /* Ao trocar de cenário, o que mudou brilha uma vez em âmbar e some. */
@@ -415,6 +415,22 @@ p {
   30% { opacity: 0.55; }
   100% { opacity: 0; }
 }
+/* Linhas: espessura e brilho reagem ao cursor e à seleção. */
+.conexao-linha {
+  transition: stroke-width 180ms var(--ease-saida);
+}
+.conexao-brilho {
+  transition: opacity 200ms var(--ease-saida);
+}
+/* Selo da mudança: aparece depois que a linha termina de ser desenhada. */
+.selo-mudanca {
+  transition: opacity 250ms var(--ease-saida), transform 250ms var(--ease-saida);
+  transition-delay: 0.55s;
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
 /* Painel flutuante: entra pela direita, curto. */
 .painel-flutuante {
   transition: opacity 200ms var(--ease-saida), transform 200ms var(--ease-saida);
@@ -425,6 +441,7 @@ p {
 }
 @media (prefers-reduced-motion: reduce) {
   .fluxo-luz { animation: none; opacity: 0; }
+  .selo-mudanca { transition: none; }
   .realce-mudanca { animation: none; }
   .no-pais-marca { transition: none; }
   .painel-flutuante { transform: none; }

@@ -6,8 +6,11 @@ import { defineConfig } from "vitest/config";
 // na mesma origem e o backend não precisa de CORS. API_URL muda o destino (padrão: uvicorn local).
 const API = process.env.API_URL ?? "http://127.0.0.1:8000";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
+  // A prévia estática é servida de uma subpasta qualquer: caminhos relativos e pasta própria.
+  base: mode === "previa" ? "./" : "/",
+  build: { outDir: mode === "previa" ? "dist-previa" : "dist" },
   server: {
     port: 5173,
     proxy: {
@@ -21,4 +24,4 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: false,
   },
-});
+}));

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "gerar-regioes": "node scripts/gerar-regioes.mjs"
+    "gerar-regioes": "node scripts/gerar-regioes.mjs",
+    "build:previa": "tsc -b && vite build --mode previa"
   },
   "dependencies": {
     "@fontsource-variable/source-serif-4": "^5.3.1",

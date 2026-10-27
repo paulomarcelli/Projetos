@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes, useParams } from "react-router";
 import { EstadoVazio } from "./components/Estados";
 import { Shell } from "./components/Shell";
 import { AlternadorDados } from "./dev/AlternadorDados";
+import { PREVIA } from "./lib/api";
 import { ROTAS } from "./lib/rotas";
 import { Acervo } from "./pages/Acervo";
 import { Configuracoes } from "./pages/Configuracoes";
@@ -68,7 +69,15 @@ export function App() {
         <Route path="/documentos/:id" element={<RedirecionarDocumento />} />
         <Route path="*" element={<Navigate to={ROTAS.landing} replace />} />
       </Routes>
-      {import.meta.env.DEV && <AlternadorDados />}
+      {import.meta.env.DEV && !PREVIA && <AlternadorDados />}
+      {PREVIA && (
+        <p
+          role="note"
+          className="pointer-events-none fixed bottom-3 left-1/2 z-50 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-full border border-ambar/40 bg-abismo/95 px-3 py-1.5 text-center text-micro text-ambar shadow-lg"
+        >
+          Prévia estática · documentos de exemplo · envio e remoção desativados
+        </p>
+      )}
     </>
   );
 }

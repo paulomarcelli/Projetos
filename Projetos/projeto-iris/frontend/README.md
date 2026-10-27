@@ -100,6 +100,16 @@ npm run build
 npm run preview        # serve o build em http://localhost:4173, com o mesmo proxy
 ```
 
+Prévia estática (sem servidor, para mostrar a interface):
+
+```bash
+npm run build:previa   # gera dist-previa/ com caminhos relativos e MemoryRouter
+```
+
+A prévia usa `src/previa/snapshot.json`, uma cópia dos documentos de exemplo exportada da API.
+Ela mostra um selo de "prévia", e o envio e a remoção ficam desativados. O build normal não inclui
+nada disso.
+
 Em produção, sirva `dist/` e a API **na mesma origem** (por exemplo, atrás de um proxy reverso),
 ou defina `VITE_API_BASE` no build e habilite CORS na API.
 

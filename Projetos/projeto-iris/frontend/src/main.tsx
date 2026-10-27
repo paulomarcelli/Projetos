@@ -8,7 +8,8 @@ import "./styles/index.css";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router";
+import { BrowserRouter, MemoryRouter } from "react-router";
+import { PREVIA } from "./lib/api";
 import { App } from "./App";
 import { ProvedorDeNotificacoes } from "./components/Notificacoes";
 
@@ -17,10 +18,18 @@ if (!raiz) throw new Error("Elemento #raiz não encontrado.");
 
 createRoot(raiz).render(
   <StrictMode>
-    <BrowserRouter>
-      <ProvedorDeNotificacoes>
-        <App />
-      </ProvedorDeNotificacoes>
-    </BrowserRouter>
+    {PREVIA ? (
+      <MemoryRouter>
+        <ProvedorDeNotificacoes>
+          <App />
+        </ProvedorDeNotificacoes>
+      </MemoryRouter>
+    ) : (
+      <BrowserRouter>
+        <ProvedorDeNotificacoes>
+          <App />
+        </ProvedorDeNotificacoes>
+      </BrowserRouter>
+    )}
   </StrictMode>,
 );

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router";
-import { prontidao } from "../lib/api";
+import { PREVIA, prontidao } from "../lib/api";
 import { useDados } from "../lib/useDados";
 import { BuscaGlobal } from "./BuscaGlobal";
 import { Marca } from "./Marca";
@@ -58,8 +58,9 @@ const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
 
 function EstadoDoSistema() {
   const { tipo, dados } = useDados(prontidao, []);
-  const [rotulo, cor] =
-    tipo === "carregando"
+  const [rotulo, cor] = PREVIA
+    ? ["Prévia estática (sem servidor)", "var(--color-ambar)"]
+    : tipo === "carregando"
       ? ["Verificando…", "var(--color-texto-3)"]
       : tipo === "erro"
         ? ["API fora do ar", "var(--color-negativo)"]

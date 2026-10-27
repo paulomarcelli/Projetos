@@ -84,6 +84,10 @@ export interface MetadadosUpload {
   language?: string;
 }
 
+/** Build de prévia estática (`--mode previa`): dados de exemplo, sem servidor. */
+export const PREVIA = import.meta.env.MODE === "previa";
+const previa = () => import("../previa/api");
+
 const BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
 
 export class ErroApi extends Error {
@@ -138,6 +142,7 @@ async function pedir<T>(caminho: string, init?: RequestInit): Promise<T> {
 
 /** `/health/ready` responde 503 com corpo válido quando algo falta: os dois casos são dados. */
 export async function prontidao(): Promise<Prontidao> {
+  if (PREVIA) return (await previa()).prontidao();
   let resposta: Response;
   try {
     resposta = await fetch(`${BASE}/health/ready`, { headers: { Accept: "application/json" } });
@@ -156,6 +161,7 @@ export async function prontidao(): Promise<Prontidao> {
 export async function listarDocumentos(
   opcoes: { limit?: number; offset?: number; status?: StatusDocumento } = {},
 ): Promise<Paginado<DocumentoResumo>> {
+  if (PREVIA) return (await previa()).listar(opcoes);
   const modo = modoDados();
   if (import.meta.env.DEV && modo !== "api") return fixtureLista(modo, opcoes);
   const q = new URLSearchParams();
@@ -166,6 +172,7 @@ export async function listarDocumentos(
 }
 
 export async function obterDocumento(id: string): Promise<DocumentoDetalhe> {
+  if (PREVIA) return (await previa()).obter(id);
   const modo = modoDados();
   if (import.meta.env.DEV && modo !== "api") return fixtureDocumento(modo, id);
   return pedir(`/documents/${encodeURIComponent(id)}`);
@@ -175,6 +182,7 @@ export async function listarPaginas(
   id: string,
   opcoes: { limit?: number; offset?: number; incluirBruto?: boolean } = {},
 ): Promise<Paginado<PaginaDeTexto>> {
+  if (PREVIA) return (await previa()).paginas(id, opcoes);
   const modo = modoDados();
   if (import.meta.env.DEV && modo !== "api") return fixturePaginas(modo, id, opcoes);
   const q = new URLSearchParams({
@@ -186,6 +194,7 @@ export async function listarPaginas(
 }
 
 export async function removerDocumento(id: string): Promise<void> {
+  if (PREVIA) return (await previa()).desativado();
   if (import.meta.env.DEV && modoDados() !== "api") return;
   await pedir<void>(`/documents/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
@@ -200,6 +209,7 @@ export function enviarDocumento(
   aoProgredir?: (fracao: number) => void,
   sinal?: AbortSignal,
 ): Promise<RespostaUpload> {
+  if (PREVIA) return previa().then((m) => m.desativado());
   return new Promise((resolver, rejeitar) => {
     const formulario = new FormData();
     formulario.append("file", arquivo, arquivo.name);

@@ -20,6 +20,7 @@ const ESTADOS: Record<string, { texto: string; cor: string }> = {
   unavailable: { texto: "Indisponível", cor: "var(--color-negativo)" },
   missing: { texto: "Ausente: rode as migrações", cor: "var(--color-ambar)" },
   not_configured: { texto: "Não configurado", cor: "var(--color-texto-3)" },
+  previa: { texto: "Não conectado (prévia estática)", cor: "var(--color-ambar)" },
   unknown: { texto: "Desconhecido", cor: "var(--color-texto-3)" },
 };
 

@@ -415,6 +415,37 @@ p {
   30% { opacity: 0.55; }
   100% { opacity: 0; }
 }
+/* Troca de cenário: uma varredura de luz percorre cada linha, em onda (atraso por linha).
+   pathLength=1 nas varreduras: o traço mede 0,14 do comprimento, qualquer que seja a linha. */
+.varredura {
+  stroke-dasharray: 0.14 3;
+  opacity: 0;
+  animation-duration: 1.15s;
+  animation-timing-function: var(--ease-saida);
+  animation-fill-mode: both;
+}
+.varredura-ida { animation-name: varrer-ida; }
+.varredura-meio-fim { animation-name: varrer-meio-fim; }
+.varredura-meio-inicio { animation-name: varrer-meio-inicio; }
+@keyframes varrer-ida {
+  0% { stroke-dashoffset: 0.14; opacity: 0; }
+  12% { opacity: 0.95; }
+  80% { opacity: 0.9; }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+@keyframes varrer-meio-fim {
+  0% { stroke-dashoffset: -0.43; opacity: 0; }
+  15% { opacity: 0.9; }
+  80% { opacity: 0.85; }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+@keyframes varrer-meio-inicio {
+  0% { stroke-dashoffset: -0.43; opacity: 0; }
+  15% { opacity: 0.9; }
+  80% { opacity: 0.85; }
+  100% { stroke-dashoffset: 0.14; opacity: 0; }
+}
+
 /* Linhas: espessura e brilho reagem ao cursor e à seleção. */
 .conexao-linha {
   transition: stroke-width 180ms var(--ease-saida);
@@ -442,6 +473,7 @@ p {
 @media (prefers-reduced-motion: reduce) {
   .fluxo-luz { animation: none; opacity: 0; }
   .selo-mudanca { transition: none; }
+  .varredura { animation: none; opacity: 0; }
   .realce-mudanca { animation: none; }
   .no-pais-marca { transition: none; }
   .painel-flutuante { transform: none; }

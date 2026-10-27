@@ -61,7 +61,10 @@ institucionais, linhas finas de coordenadas e tipografia editorial.
   - cone de incerteza que acompanha o horizonte (240 ms);
   - gaveta e notificações, que entram e saem pelo mesmo caminho (400/200 ms);
   - uma única cena de entrada na landing, em que as trajetórias se abrem do presente para o
-    horizonte.
+    horizonte;
+  - no mapa de Relações, a cada troca de cenário uma onda de luz percorre todas as linhas
+    (origem → destino nas relações com direção, do meio para as pontas nas demais; âmbar nas
+    que mudaram).
 
   Busca pelo teclado, troca de página no leitor e gráficos não animam. Com "reduzir movimento",
   fica só a opacidade. Curvas e durações são tokens em `src/styles/index.css`.

@@ -451,7 +451,7 @@ export function MapaGeopolitico() {
 
         {/* conexões: arcos entre capitais. Cada tipo é uma camada desenhada da origem ao destino;
             ao trocar de cenário, a camada antiga recolhe e a nova é traçada. */}
-        {desenhaveis.map((rel) => {
+        {desenhaveis.map((rel, ordemNaOnda) => {
           const a = ehPais.has(rel.de) ? ponto.get(rel.de)! : ancora(rel.de);
           const b = ehPais.has(rel.para) ? ponto.get(rel.para)! : ancora(rel.para);
           const dx = b.x - a.x;
@@ -544,6 +544,20 @@ export function MapaGeopolitico() {
                   <path className="conexao-halo" d={d} fill="none" stroke="var(--color-ciano)" strokeWidth={10} strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={sel ? 0.28 : 0} />
                   {/* o que mudou brilha uma vez ao trocar de cenário */}
                   {nv.mudou && <path key={`m-${vista}`} className="realce-mudanca" d={d} fill="none" stroke="var(--color-ambar)" strokeWidth={9} strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
+                  {/* Varredura de luz a cada troca de cenário, em onda. Com sentido documentado, vai da
+                      origem ao destino; sem sentido, sai do meio para as duas pontas (não sugere direção). */}
+                  {nv.visivel && !ocultas.has(nv.tipo) && (
+                    <g key={`varre-${vista}`} aria-hidden="true">
+                      {ESTILO.get(nv.tipo)?.seta ? (
+                        <path d={d} fill="none" stroke={nv.mudou ? "var(--color-ambar)" : "var(--color-luz)"} strokeWidth={3.2 * s} strokeLinecap="round" pathLength={1} className="varredura varredura-ida" style={{ animationDelay: `${180 + ordemNaOnda * 55}ms` }} />
+                      ) : (
+                        <>
+                          <path d={d} fill="none" stroke={nv.mudou ? "var(--color-ambar)" : "var(--color-luz)"} strokeWidth={3.2 * s} strokeLinecap="round" pathLength={1} className="varredura varredura-meio-fim" style={{ animationDelay: `${180 + ordemNaOnda * 55}ms` }} />
+                          <path d={d} fill="none" stroke={nv.mudou ? "var(--color-ambar)" : "var(--color-luz)"} strokeWidth={3.2 * s} strokeLinecap="round" pathLength={1} className="varredura varredura-meio-inicio" style={{ animationDelay: `${180 + ordemNaOnda * 55}ms` }} />
+                        </>
+                      )}
+                    </g>
+                  )}
                   {RELACOES.map((e) => {
                     const p = v[`${rel.id}|${e.tipo}`] ?? 0;
                     if (p < 0.01) return null;

@@ -84,6 +84,7 @@
       <h2 style="color:#fff;font-size:clamp(2rem,3.4vw,3rem);line-height:1.08">A escola e a família<br>na mesma página.</h2>
       <p style="color:rgba(255,255,255,.75);max-width:44ch">Relatórios bimestrais revisados pela escola, publicados com segurança e acessíveis de qualquer tela.</p>
       <div class="auth-card">${K.avatar('Lucas Souza', '#5FD4A8')}<div class="grow"><b>Lucas Souza · 6º A</b><small>Matemática · 3º bimestre</small></div>${K.status('publicado')}</div>
+      <ul class="checklist auth-list">${['A coordenação revisa antes de publicar', 'A família registra ciência e pode responder', 'Só os responsáveis vinculados veem o aluno'].map((x) => `<li>${I('check', 'icon-sm')}${x}</li>`).join('')}</ul>
       <span class="auth-blob"></span></div>`;
   const ROLES = { administrador: ['shield', 'var(--sun)', 'Sou da coordenação', 'Administrador da escola', 'marina.rocha@aurora.edu.br', '#/admin/painel'], professor: ['book', 'var(--sky)', 'Sou professor', 'Registro o acompanhamento das turmas', 'carlos.lima@aurora.edu.br', '#/professor/painel'], responsavel: ['family', 'var(--mint)', 'Sou responsável', 'Acompanho meus filhos', 'ana.souza@email.com', '#/familia/selecionar'] };
   K.views.entrar = {

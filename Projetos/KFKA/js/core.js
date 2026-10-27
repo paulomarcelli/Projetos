@@ -314,6 +314,27 @@ window.KFKA = window.KFKA || {};
     K.qsa('[data-tema]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === t)));
     K.qsa('[data-action="tema-alternar"]').forEach((b) => { b.innerHTML = K.icon(K.escuroAtivo() ? 'sun' : 'moon'); b.setAttribute('aria-label', K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'); });
   };
+  /* Troca com uma revelação circular a partir do botão clicado (View Transitions).
+     Ação rara (escolher o tema), então cabe um pouco de encanto; com "menos movimento"
+     ou sem suporte no navegador, a troca é imediata. */
+  K.trocarTema = (t, origem) => {
+    const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const antes = K.escuroAtivo();
+    if (!document.startViewTransition || reduzir) return K.setTema(t);
+    const r = origem && origem.getBoundingClientRect();
+    const x = r ? r.left + r.width / 2 : innerWidth / 2;
+    const y = r ? r.top + r.height / 2 : 0;
+    const raio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const vt = document.startViewTransition(() => K.setTema(t));
+    // Se a aparência não muda (ex.: "Sistema" com o aparelho no mesmo modo), não há o que revelar.
+    vt.ready.then(() => {
+      if (antes === K.escuroAtivo()) return;
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${raio}px at ${x}px ${y}px)`] },
+        { duration: 480, easing: 'cubic-bezier(0.77, 0, 0.175, 1)', pseudoElement: '::view-transition-new(root)' },
+      );
+    }).catch(() => {});
+  };
   // Seletor de 3 opções (menu da conta e página de perfil)
   K.temaControl = (id = 'tema') => `<div class="segmented tema-seg" role="group" aria-labelledby="${id}-l">${K.TEMAS.map(([v, l, ic]) => `<button type="button" data-action="tema" data-tema="${v}" aria-pressed="${K.temaAtual() === v}">${K.icon(ic, 'icon-sm')}${l}</button>`).join('')}</div>`;
   // Botão único para as páginas públicas: alterna entre claro e escuro
@@ -331,8 +352,8 @@ window.KFKA = window.KFKA || {};
       dd.classList.toggle('open', open);
       el.setAttribute('aria-expanded', String(open));
     },
-    tema: (el) => { K.setTema(el.dataset.tema); K.toast(`Tema: ${K.TEMAS.find((t) => t[0] === el.dataset.tema)[1].toLowerCase()}`, el.dataset.tema === 'sistema' ? 'Acompanha o modo claro ou escuro do seu aparelho.' : 'Vale até você fechar ou recarregar a página.', 'info'); },
-    'tema-alternar': () => K.setTema(K.escuroAtivo() ? 'claro' : 'escuro'),
+    tema: (el) => { K.trocarTema(el.dataset.tema, el); K.toast(`Tema: ${K.TEMAS.find((t) => t[0] === el.dataset.tema)[1].toLowerCase()}`, el.dataset.tema === 'sistema' ? 'Acompanha o modo claro ou escuro do seu aparelho.' : 'Vale até você fechar ou recarregar a página.', 'info'); },
+    'tema-alternar': (el) => K.trocarTema(K.escuroAtivo() ? 'claro' : 'escuro', el),
     print: () => { window.print(); K.toast('Impressão', 'Se a janela não abrir (visualização incorporada), abra o index.html direto no navegador.', 'info', false); }
   };
   document.addEventListener('click', (e) => {

@@ -50,8 +50,8 @@
             <h2 style="font-size:24px">${feitos} de ${all.length} registros enviados</h2>
             <p style="color:var(--sky);font-weight:700;font-size:13px">3º bimestre · digitação aberta</p>
             <p style="color:rgba(255,255,255,.75)">O prazo termina em <b style="color:#fff">30/09 às 23:59</b>. Depois disso, só a coordenação pode reabrir.</p>
+            <div class="row" style="margin-top:var(--s2)"><a class="btn btn-light btn-sm" href="#/professor/turmas">${I('users')} Minhas turmas</a></div>
           </div>
-          <div class="row"><a class="btn btn-light" href="#/professor/turmas">${I('users')} Minhas turmas</a></div>
         </section>
         <section class="grid-3" aria-label="Pendências">
           <a class="card tight card-link kpi" href="#/professor/registros?status=devolvido"><div class="kpi-top"><span class="ico ico-bad">${I('undo', 'icon-sm')}</span><span class="lbl">Devolvidos para ajustes</span></div><div class="val">${dev.length}</div></a>

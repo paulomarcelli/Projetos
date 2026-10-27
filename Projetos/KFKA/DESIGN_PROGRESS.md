@@ -48,9 +48,18 @@
 - [x] A escolha vale para a sessão (em memória, como o tamanho do texto); nada é salvo no navegador nesta fase
 - [x] Testes: 5 novos em `flows.js` (41 no total), crawl e pior caso
 
+## Revisão 1.4 — polimento (ui-ux-pro-max, ui-styling, animate, emil-design-eng)
+- [x] Bug: faltava `[hidden] { display: none }`. O alerta "E-mail ou senha incorretos" aparecia no login sem erro algum, e os estados vazios das listas apareciam junto com a tabela
+- [x] Troca de tema com revelação circular a partir do botão (View Transitions). É imediata com "menos movimento" ou em navegador sem suporte, e cliques durante a revelação não se perdem
+- [x] Modo escuro: o botão claro sobre o fundo da marca vira vidro discreto (`--on-chrome-btn*`); antes era branco puro e ofuscava
+- [x] Anel e barras de progresso se preenchem ao abrir a página (`clip-path` e `@property --p`, 700–900 ms, só com movimento permitido)
+- [x] Painel do professor: "Minhas turmas" foi para a coluna de texto; a arte da marca no canto direito não passa mais por trás do botão
+- [x] Login: o painel da marca ganhou três garantias do PRD (revisão antes de publicar, ciência da família, acesso só de vinculados)
+- [x] Testes: crawl 277 rotas sem erro, flows 41/41 e pior caso sem quebras
+
 ## Testes (última execução)
 - `node tests/crawl.js`: 277 rotas visitadas por links, nenhuma 404 e nenhum erro de JS. O único erro de console é a fonte do Google, bloqueada pela rede do ambiente de teste.
-- `node tests/flows.js`: 36/36 PASS (inclui RF12, vínculo incompatível, nova área, datas, PDF, logout e um h1 por página de documentação). Cobre a visibilidade da família, ciência e observação, filtros, validações, o ciclo completo professor → revisão → devolução → ajuste → publicação, auditoria, bloqueio de edição, exportação e a gaveta no celular.
+- `node tests/flows.js`: 41/41 PASS (inclui RF12, vínculo incompatível, nova área, datas, PDF, logout e um h1 por página de documentação). Cobre a visibilidade da família, ciência e observação, filtros, validações, o ciclo completo professor → revisão → devolução → ajuste → publicação, auditoria, bloqueio de edição, exportação e a gaveta no celular.
 - `node tests/shots.js <pasta> <rotas…>`: capturas em 1366, 820 e 390px, com verificação de rolagem horizontal (nenhuma encontrada).
 
 ## Limitações conhecidas

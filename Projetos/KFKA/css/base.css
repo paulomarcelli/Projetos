@@ -2,6 +2,9 @@
    KFKA — Base: reset, tipografia, foco acessível, utilitários
    ========================================================= */
 *, *::before, *::after { box-sizing: border-box; }
+/* O atributo hidden precisa vencer o display de .alert, .empty etc.; sem isto o alerta de
+   senha incorreta e os estados vazios apareciam junto com o conteúdo. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 /* Menos movimento = movimentos menores e mais suaves, não zero.
    Mantemos as transições de opacidade/cor (ajudam a entender a mudança)
@@ -81,3 +84,10 @@ table { border-collapse: collapse; width: 100%; }
 .icon { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .icon-sm { width: 16px; height: 16px; }
 .icon-lg { width: 28px; height: 28px; }
+
+/* Troca de tema: a página nova é revelada em círculo (ver K.trocarTema); sem o
+   esmaecimento padrão do navegador, que deixaria as duas versões sobrepostas. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+/* A camada da transição não pode engolir cliques: um segundo toque no botão de tema
+   (ou em qualquer coisa) durante a revelação precisa chegar à página. */
+::view-transition { pointer-events: none; }

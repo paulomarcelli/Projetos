@@ -30,7 +30,8 @@
 .btn-danger:hover { background: var(--danger-bg-hover); color: var(--danger); }
 .btn-dark { background: var(--strong); color: #fff; }
 .btn-dark:hover { background: var(--chrome-deep); color: #fff; }
-.btn-light { background: #fff; color: var(--on-pastel); } /* usado só sobre fundos escuros: fica branco nos dois temas */
+.btn-light { background: var(--on-chrome-btn); color: var(--on-chrome-btn-text); border-color: var(--on-chrome-btn-line); } /* só sobre fundos escuros da marca */
+.btn-light:hover { background: var(--on-chrome-btn-hover); color: var(--on-chrome-btn-text); }
 .btn-ghost-light { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); }
 .btn-ghost-light:hover { background: rgba(255,255,255,.1); color: #fff; }
 .btn-sm { min-height: 36px; padding: 0 12px; font-size: 13px; border-radius: 10px; }
@@ -300,6 +301,15 @@
 /* ---------- Progresso e gráficos ---------- */
 .progress { height: 8px; border-radius: 999px; background: var(--bg-subtle); overflow: hidden; border: 1px solid var(--line); }
 .progress > span { display: block; height: 100%; border-radius: 999px; background: var(--teal); }
+/* clip-path (não width): não recalcula layout. Só na entrada; mudanças depois são instantâneas. */
+@media (prefers-reduced-motion: no-preference) {
+  .progress > span, .stacked { animation: preencher 700ms var(--ease-out) 120ms both; }
+  .ring { animation: anel 900ms var(--ease-out) 120ms both; }
+}
+@keyframes preencher { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+/* O anel usa --p no conic-gradient; registrado com @property para poder ser interpolado. */
+@property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+@keyframes anel { from { --p: 0; } }
 .progress.on-dark { background: rgba(255,255,255,.15); border: 0; }
 .progress.on-dark > span { background: var(--mint); }
 .bar-row { display: grid; grid-template-columns: 110px minmax(0,1fr) 48px; gap: 12px; align-items: center; font-size: 13px; font-weight: 600; }

@@ -99,6 +99,9 @@ h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 
 /* ---------------- LOGIN / ESCOLHA DE PERFIL ---------------- */
 .auth-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 16px; max-width: 420px; backdrop-filter: blur(6px); }
+.auth-list { position: relative; z-index: 1; max-width: 40ch; }
+.auth-list li { color: rgba(255,255,255,.85); }
+.auth-list .icon { color: var(--mint); }
 .auth-card small { display: block; color: rgba(255,255,255,.7); font-size: 12px; }
 .auth-blob { position: absolute; right: -170px; bottom: -150px; width: 460px; height: 460px; background: var(--brand-arcs) no-repeat center / contain; opacity: .9; pointer-events: none; }
 .role-option { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg-card); text-decoration: none; color: var(--text); transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-press) var(--ease-out); min-height: 72px; }
@@ -166,7 +169,8 @@ h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .format-opt:has(input:checked) { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
 
 /* ---------------- PROFESSOR ---------------- */
-.hero-prof { display: flex; flex-direction: row; align-items: center; gap: var(--s6); flex-wrap: wrap; padding: var(--s6) var(--s8); background: var(--brand-arcs) no-repeat right -230px center / 460px auto, var(--chrome); }
+.hero-prof { display: flex; flex-direction: row; align-items: center; gap: var(--s6); flex-wrap: wrap; padding: var(--s6) var(--s8); background: var(--brand-arcs) no-repeat right -230px center / 460px auto, var(--chrome); padding-right: 200px; } /* o botão fica na coluna de texto: o canto direito é só da arte */
+@media (max-width: 760px) { .hero-prof { padding-right: var(--s6); background: var(--chrome); } }
 .turma-card { display: flex; flex-direction: column; gap: var(--s4); text-decoration: none; color: inherit; }
 .tips { font-size: 14px; color: var(--text-2); }
 .tips summary { cursor: pointer; font-weight: 700; color: var(--teal); display: inline-flex; gap: 6px; align-items: center; min-height: 36px; }

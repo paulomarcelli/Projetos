@@ -61,7 +61,8 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process
   await go('/sessao-expirada'); ok(/Sua sessão expirou/.test(await txt()), 'sessão expirada');
   // Modo escuro: menu da conta, persistência entre telas (na sessão) e botão das páginas públicas
   await go('/admin/painel'); await p.click('.topbar .dropdown:last-child [data-action="toggle-dropdown"]'); await p.click('.menu [data-tema="escuro"]');
-  const tema = () => p.evaluate(() => ({ t: document.documentElement.dataset.theme || 'sistema', bg: getComputedStyle(document.body).backgroundColor }));
+  // A troca de tema usa View Transition (aplica no quadro seguinte e revela em ~0,5 s): espera terminar.
+  const tema = async () => { await p.waitForTimeout(650); return p.evaluate(() => ({ t: document.documentElement.dataset.theme || 'sistema', bg: getComputedStyle(document.body).backgroundColor })); };
   let tm = await tema(); ok(tm.t === 'dark' && tm.bg === 'rgb(12, 24, 29)', 'tema escuro pelo menu da conta');
   await go('/familia/perfil'); tm = await tema(); ok(tm.t === 'dark' && (await p.getAttribute('.content [data-tema="escuro"]', 'aria-pressed')) === 'true', 'tema mantido ao trocar de tela');
   await p.click('.content [data-tema="sistema"]'); tm = await tema(); ok(tm.t === 'sistema', 'voltar a seguir o sistema');

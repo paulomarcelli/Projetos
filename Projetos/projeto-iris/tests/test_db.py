@@ -1,10 +1,10 @@
 """Testes de integração com um PostgreSQL + pgvector REAL.
 
-Ficam ignorados quando RI_TEST_DATABASE_URL não está definida. Use um banco de TESTE: estes
+Ficam ignorados quando IRIS_TEST_DATABASE_URL não está definida. Use um banco de TESTE: estes
 testes aplicam e desfazem a migração 0001 (habilitam e removem a extensão `vector`).
 
     docker compose up -d --wait
-    RI_TEST_DATABASE_URL=postgresql+psycopg://USUARIO:SENHA@localhost:5432/ri_foresight_test \\
+    IRIS_TEST_DATABASE_URL=postgresql+psycopg://USUARIO:SENHA@localhost:5432/iris_test \\
         uv run pytest -m integration
 """
 
@@ -29,13 +29,13 @@ from app.db.session import (
 )
 from app.main import create_app
 
-URL = os.environ.get("RI_TEST_DATABASE_URL")
+URL = os.environ.get("IRIS_TEST_DATABASE_URL")
 RAIZ = Path(__file__).resolve().parents[1]
 
 pytestmark = [
     pytest.mark.integration,
     pytest.mark.skipif(
-        not URL, reason="defina RI_TEST_DATABASE_URL para rodar os testes com banco"
+        not URL, reason="defina IRIS_TEST_DATABASE_URL para rodar os testes com banco"
     ),
 ]
 

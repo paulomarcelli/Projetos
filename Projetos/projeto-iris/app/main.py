@@ -33,7 +33,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             engine.dispose()
 
     app = FastAPI(
-        title="RI Foresight",
+        title="Projeto Iris",
         version=__version__,
         description=(
             "Plataforma de IA para prospectiva geopolítica e Relações Internacionais. "

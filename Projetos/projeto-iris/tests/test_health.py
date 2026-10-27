@@ -101,4 +101,4 @@ def test_documentacao_automatica_lista_apenas_os_endpoints_de_saude(make_setting
     assert c.get("/docs").status_code == 200
     esquema = c.get("/openapi.json").json()
     assert sorted(esquema["paths"]) == ["/health", "/health/ready"]
-    assert esquema["info"]["title"] == "RI Foresight"
+    assert esquema["info"]["title"] == "Projeto Iris"

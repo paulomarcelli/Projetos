@@ -1,4 +1,4 @@
-# RI Foresight
+# Projeto Iris
 
 Plataforma de inteligência artificial para **prospectiva geopolítica e Relações Internacionais**: investigar questões internacionais, consultar evidências científicas, analisar atores e relações causais e construir cenários futuros fundamentados em fontes.
 
@@ -19,7 +19,7 @@ Implementado:
 ## Arquitetura
 
 ```text
-ri-foresight/
+projeto-iris/
 ├── app/
 │   ├── main.py              → create_app(): cria a API e registra as rotas
 │   ├── core/config.py       → Settings (pydantic-settings) e validação
@@ -60,7 +60,7 @@ ri-foresight/
 ## Instalação e configuração
 
 ```bash
-cd ri-foresight
+cd projeto-iris
 uv sync                      # instala o Python 3.12 e as dependências do uv.lock
 cp .env.example .env         # depois edite o .env
 ```
@@ -127,12 +127,12 @@ uv run pytest                       # unitários: sem chave, sem banco, sem inte
 uv run ruff check . && uv run ruff format --check .
 ```
 
-Os testes comuns **bloqueiam qualquer conexão fora da própria máquina**, para garantir que nenhuma chamada externa aconteça. Os testes de integração (`tests/test_db.py`) usam um PostgreSQL real e são ignorados sem `RI_TEST_DATABASE_URL`. **Use um banco de teste**: eles aplicam e desfazem a migração.
+Os testes comuns **bloqueiam qualquer conexão fora da própria máquina**, para garantir que nenhuma chamada externa aconteça. Os testes de integração (`tests/test_db.py`) usam um PostgreSQL real e são ignorados sem `IRIS_TEST_DATABASE_URL`. **Use um banco de teste**: eles aplicam e desfazem a migração.
 
 ```bash
 docker compose up -d --wait
-docker compose exec db createdb -U ri_foresight ri_foresight_test
-RI_TEST_DATABASE_URL="postgresql+psycopg://ri_foresight:SUA_SENHA@localhost:5432/ri_foresight_test" \
+docker compose exec db createdb -U iris iris_test
+IRIS_TEST_DATABASE_URL="postgresql+psycopg://iris:SUA_SENHA@localhost:5432/iris_test" \
   uv run pytest -m integration
 ```
 

@@ -2,7 +2,7 @@
 
 Plataforma de inteligência artificial para **prospectiva geopolítica e Relações Internacionais**: investigar questões internacionais, consultar evidências científicas, analisar atores e relações causais e construir cenários futuros fundamentados em fontes.
 
-> **Estado: Fase 2 (ingestão de documentos científicos).** A API recebe PDFs, valida, guarda, extrai o texto página por página e registra os metadados bibliográficos com a origem de cada um. Ainda **não** há embeddings, busca, RAG, grafo, agentes nem geração de cenários.
+> **Estado: Fase 2 (ingestão de documentos científicos) + interface.** A API recebe PDFs, valida, guarda, extrai o texto página por página e registra os metadados bibliográficos com a origem de cada um. A interface web (`frontend/`) traz a identidade visual, o painel inicial e as telas de documentos ligadas à API. Ainda **não** há embeddings, busca, RAG, grafo, agentes nem geração de cenários.
 
 > ⚠️ **Sem autenticação.** Os endpoints `/documents` não têm login nem controle de acesso: quem alcançar a API pode enviar, ler e apagar documentos. Use apenas em ambiente de desenvolvimento controlado (a API escuta em `127.0.0.1` por padrão). Veja [Limites de segurança](#limites-de-segurança-antes-de-qualquer-exposição-pública).
 
@@ -105,10 +105,25 @@ POST /documents/upload
 | Texto bruto **e** normalizado por página | A normalização pode mudar de versão; o bruto permite refazê-la sem reprocessar o PDF. `text_sha256` permite conferir integridade. |
 | Erros com código estável e mensagem fixa | Nenhuma resposta copia texto de exceção: não há como vazar caminho, URL do banco ou stack trace. |
 
+## Interface web
+
+![Início do Projeto Iris](frontend/docs/capturas/inicio-desktop.png)
+
+O frontend fica em [`frontend/`](frontend/README.md) e usa React, Vite, TypeScript e Tailwind CSS 4. Ele
+conversa com esta API por proxy em desenvolvimento, sem exigir mudanças no backend. Direção de
+design, o que é real e o que ainda é estado vazio, e como rodar: veja o
+[README do frontend](frontend/README.md).
+
+```bash
+uv run uvicorn app.main:create_app --factory    # API em :8000
+cd frontend && npm install && npm run dev       # interface em :5173
+```
+
 ## Pré-requisitos
 
 - [uv](https://docs.astral.sh/uv/) (gerencia o Python 3.12 e as dependências travadas em `uv.lock`)
 - Docker com Docker Compose (para o PostgreSQL com pgvector)
+- Node.js 22+ e npm (só para a interface web)
 
 ## Instalação e configuração
 

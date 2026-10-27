@@ -162,9 +162,9 @@ export function Landing() {
           <div className="mx-auto max-w-[1200px] py-16">
             <p className="rotulo mb-2">Método</p>
             <h2 id="titulo-metodo" className="max-w-[34ch] font-editorial text-titulo font-medium">
-              Da pergunta aos sinais, cada etapa apoiada na anterior.
+              Da pergunta aos futuros alternativos, cada etapa apoiada na anterior.
             </h2>
-            <ol className="mt-10 grid list-none gap-0 p-0 lg:grid-cols-5">
+            <ol className="mt-10 grid list-none gap-0 p-0 sm:grid-cols-2 lg:grid-cols-6">
               {METODO.map((m, i) => (
                 <li key={m.titulo} className="relative flex flex-col border-t border-linha py-6 lg:border-t-0 lg:border-l lg:px-5 lg:py-0">
                   <span className="numeros font-dados text-micro text-texto-3">{String(i + 1).padStart(2, "0")}</span>

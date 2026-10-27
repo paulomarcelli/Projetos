@@ -61,7 +61,7 @@ describe("landing", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/poder no presente/);
     expect(screen.getAllByText("Disponível")).toHaveLength(1);
     expect(screen.getAllByText("Próxima fase")).toHaveLength(1);
-    expect(screen.getAllByText("Planejada")).toHaveLength(3);
+    expect(screen.getAllByText("Planejada")).toHaveLength(4);
     // Sem estatísticas inventadas (ex.: "+500 analistas", "98%").
     expect(container.textContent).not.toMatch(/\d+\s?%|\+\s?\d{2,}/);
     expect(screen.getAllByRole("link", { name: /Entrar/ })[0]).toHaveAttribute("href", "/entrar");

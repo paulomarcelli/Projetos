@@ -24,7 +24,7 @@ const MapaMundo = lazy(() => import("../components/MapaMundo"));
 /** O caminho de uma investigação e o que já existe em cada etapa. */
 function TrilhaDoMetodo() {
   return (
-    <ol className="grid list-none gap-px overflow-hidden rounded-painel border border-linha bg-linha p-0 sm:grid-cols-5">
+    <ol className="grid list-none gap-px overflow-hidden rounded-painel border border-linha bg-linha p-0 sm:grid-cols-3 xl:grid-cols-6">
       {METODO.map((m, i) => (
         <li key={m.titulo} className="flex flex-col gap-1.5 bg-abismo p-4">
           <span className="flex items-center justify-between gap-2">

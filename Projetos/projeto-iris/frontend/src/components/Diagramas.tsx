@@ -41,14 +41,16 @@ export function EstruturaDeCenario() {
   );
 }
 
-export type TipoRelacao = "alianca" | "rivalidade" | "dependencia" | "fluxo" | "causalidade";
+export type TipoRelacao = "cooperacao" | "competicao" | "conflito" | "dependencia" | "influencia" | "fluxo";
 
-export const RELACOES: { tipo: TipoRelacao; rotulo: string; descricao: string; traco: string; seta?: boolean; cor: string }[] = [
-  { tipo: "alianca", rotulo: "Aliança / cooperação", descricao: "Acordos e alinhamentos declarados", traco: "", cor: "var(--color-ciano)" },
-  { tipo: "rivalidade", rotulo: "Rivalidade / disputa", descricao: "Competição ou conflito documentado", traco: "8 4", cor: "var(--color-texto-2)" },
-  { tipo: "dependencia", rotulo: "Dependência", descricao: "Assimetria: um ator depende do outro", traco: "", seta: true, cor: "var(--color-texto-2)" },
-  { tipo: "fluxo", rotulo: "Fluxo", descricao: "Comércio, energia, tecnologia ou capital", traco: "1 5", cor: "var(--color-ciano)" },
-  { tipo: "causalidade", rotulo: "Causalidade alegada", descricao: "Relação causal afirmada por uma fonte — não comprovada", traco: "6 3 1 3", seta: true, cor: "var(--color-ambar)" },
+/** Gramática visual das relações entre atores: cada tipo tem traço e cor próprios, nunca só cor. */
+export const RELACOES: { tipo: TipoRelacao; rotulo: string; descricao: string; traco: string; seta?: boolean; cor: string; espessura: number }[] = [
+  { tipo: "cooperacao", rotulo: "Cooperação / aliança", descricao: "Acordos e alinhamentos declarados", traco: "", cor: "var(--color-ciano)", espessura: 2 },
+  { tipo: "competicao", rotulo: "Competição / disputa", descricao: "Interesses em choque, sem confronto aberto", traco: "8 4", cor: "var(--color-texto-2)", espessura: 1.6 },
+  { tipo: "conflito", rotulo: "Conflito", descricao: "Confronto aberto, jurídico, político ou armado", traco: "", cor: "var(--color-texto)", espessura: 2.6 },
+  { tipo: "dependencia", rotulo: "Dependência", descricao: "Assimetria: a origem depende do destino", traco: "", seta: true, cor: "var(--color-texto-2)", espessura: 1.6 },
+  { tipo: "influencia", rotulo: "Influência", descricao: "A origem molda decisões do destino", traco: "6 4", seta: true, cor: "var(--color-ciano)", espessura: 1.6 },
+  { tipo: "fluxo", rotulo: "Fluxo", descricao: "Comércio, energia, tecnologia ou capital", traco: "1 5", cor: "var(--color-ciano)", espessura: 2.2 },
 ];
 
 export function GramaticaDeRelacoes({ tipos }: { tipos?: TipoRelacao[] } = {}) {
@@ -58,7 +60,7 @@ export function GramaticaDeRelacoes({ tipos }: { tipos?: TipoRelacao[] } = {}) {
       {lista.map((r) => (
         <li key={r.rotulo} className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-4">
           <svg width="72" height="12" viewBox="0 0 72 12" aria-hidden="true">
-            <line x1="4" y1="6" x2={r.seta ? 62 : 68} y2="6" stroke={r.cor} strokeWidth="1.6" strokeDasharray={r.traco || undefined} strokeLinecap="round" />
+            <line x1="4" y1="6" x2={r.seta ? 62 : 68} y2="6" stroke={r.cor} strokeWidth={r.espessura} strokeDasharray={r.traco || undefined} strokeLinecap="round" />
             {r.seta && <path d="M60 2 68 6 60 10" fill="none" stroke={r.cor} strokeWidth="1.6" />}
           </svg>
           <span className="min-w-0">

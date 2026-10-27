@@ -72,6 +72,12 @@ function Plataforma() {
 export function App() {
   return (
     <>
+      {/* Selo da prévia no fluxo da página (e não fixo): nunca cobre conteúdo, links ou fontes. */}
+      {PREVIA && (
+        <p role="note" className="border-b border-ambar/30 bg-ambar-suave px-4 py-1.5 text-center text-micro text-ambar">
+          Prévia estática · dados de exemplo · envio e remoção desativados
+        </p>
+      )}
       <Routes>
         <Route path={ROTAS.landing} element={<Landing />} />
         <Route path={ROTAS.entrar} element={<Entrar />} />
@@ -81,14 +87,6 @@ export function App() {
         <Route path="*" element={<Navigate to={ROTAS.landing} replace />} />
       </Routes>
       {import.meta.env.DEV && !PREVIA && <AlternadorDados />}
-      {PREVIA && (
-        <p
-          role="note"
-          className="pointer-events-none fixed bottom-3 left-1/2 z-50 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-full border border-ambar/40 bg-abismo/95 px-3 py-1.5 text-center text-micro text-ambar shadow-lg"
-        >
-          Prévia estática · documentos de exemplo · envio e remoção desativados
-        </p>
-      )}
     </>
   );
 }

@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it } from "vitest";
+import { Relacoes } from "../pages/Relacoes";
 import { PaginaDaInvestigacao, ResultadoInvestigacao } from "../pages/ResultadoInvestigacao";
 import { INVESTIGACAO_EXEMPLO as r } from "../previa/investigacao-exemplo";
 
@@ -92,43 +93,12 @@ describe("resultado de investigação", () => {
     expect(screen.getByText("Investigação não encontrada")).toBeInTheDocument();
   });
 
-  it("primeira tela: síntese, principal incerteza, mapa e as quatro áreas", () => {
+  it("visão geral: síntese, cenários e acesso à seção Relações (o mapa não fica aqui)", () => {
     montar();
-    expect(screen.getByText("Principal incerteza")).toBeInTheDocument();
     expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Visão geral", "Cenários", "Linha do tempo", "Fontes"]);
-    expect(screen.getByRole("tab", { name: "Visão geral" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("group", { name: /Mapa de relações entre países/ })).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: /Relações entre países/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Explorar as relações no mapa/ })).toHaveAttribute("href", "/app/relacoes/exemplo-flavio-2026");
   });
-
-  it("selecionar um país abre o painel; a citação abre a cadeia de rastreabilidade", async () => {
-    montar();
-    await userEvent.click(screen.getByRole("button", { name: /^Estados Unidos \(governo Trump\)/ }));
-    const painel = screen.getByRole("complementary", { name: "Painel contextual" });
-    for (const t of ["Identificação", "Papel na dinâmica", "Interesses e capacidades", "Evidências", "Incertezas e limitações", "Implicações nos cenários"]) {
-      expect(within(painel).getByText(t)).toBeInTheDocument();
-    }
-    await userEvent.click(within(painel).getAllByRole("button", { name: /^Ver evidência e fontes/ })[0]);
-    expect(within(painel).getByText("Implicação prospectiva")).toBeInTheDocument();
-    expect(within(painel).getAllByRole("link").length).toBeGreaterThan(0);
-    await userEvent.click(within(painel).getByRole("button", { name: "Voltar ao item anterior" }));
-    expect(within(painel).getByText("Papel na dinâmica")).toBeInTheDocument();
-  });
-
-  it("trocar para um cenário muda o mapa e lista as mudanças, inclusive de bloco", async () => {
-    montar();
-    await userEvent.click(screen.getByRole("button", { name: /Transformação.*Alinhamento hemisférico/ }));
-    expect(screen.getByText(/mudanças em relação a hoje/)).toBeInTheDocument();
-    expect(screen.getByText("Brasil entra no Escudo das Américas")).toBeInTheDocument();
-  });
-
-  it("a legenda do mapa também filtra as categorias", async () => {
-    montar();
-    const coop = screen.getByRole("button", { name: /^Cooperação/ });
-    expect(coop).toHaveAttribute("aria-pressed", "true");
-    await userEvent.click(coop);
-    expect(coop).toHaveAttribute("aria-pressed", "false");
-  });
-
   it("cenários: cartão curto, detalhes sob demanda e comparação pelos mesmos critérios", async () => {
     montar();
     await userEvent.click(screen.getByRole("tab", { name: "Cenários" }));
@@ -159,5 +129,57 @@ describe("resultado de investigação", () => {
     const painel = screen.getByRole("complementary", { name: "Painel contextual" });
     expect(within(painel).getByText("Métodos")).toBeInTheDocument();
     expect(within(painel).getByText("Revisões")).toBeInTheDocument();
+  });
+});
+
+describe("seção Relações (mapa geopolítico)", () => {
+  function montar() {
+    return render(
+      <MemoryRouter>
+        <Relacoes r={r} />
+      </MemoryRouter>,
+    );
+  }
+
+  it("mostra o título da investigação e o seletor Hoje / A / B / C da mesma investigação", () => {
+    montar();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(r.pergunta);
+    const seletor = screen.getByRole("group", { name: /Vista do mapa/ });
+    expect(within(seletor).getAllByRole("button").map((b) => b.textContent?.replace(/\s+/g, " ").trim())).toEqual(["Hoje", "Cenário A", "Cenário B", "Cenário C"]);
+  });
+
+  it("trocar de cenário atualiza a identificação, lista as mudanças e preserva o zoom", async () => {
+    montar();
+    const svg = screen.getByRole("group", { name: /Relações entre países/ });
+    const antes = svg.getAttribute("viewBox");
+    await userEvent.click(screen.getByRole("button", { name: /Cenário B/ }));
+    expect(screen.getByRole("group", { name: /cenário B: Alinhamento hemisférico/ })).toBeInTheDocument();
+    expect(svg.getAttribute("viewBox")).toBe(antes);
+    await userEvent.click(screen.getByRole("button", { name: /mudanças em relação a hoje/ }));
+    expect(screen.getByText("Brasil entra no Escudo das Américas")).toBeInTheDocument();
+  });
+
+  it("clicar num país abre o painel com o essencial; detalhes e fontes ficam a um clique", async () => {
+    montar();
+    await userEvent.click(screen.getByRole("button", { name: /^Estados Unidos \(governo Trump\)/ }));
+    const painel = screen.getByRole("complementary", { name: "Painel contextual" });
+    expect(within(painel).getByText("Papel na dinâmica")).toBeInTheDocument();
+    await userEvent.click(within(painel).getByText("Evidências e detalhes"));
+    await userEvent.click(within(painel).getAllByRole("button", { name: /^Ver evidência e fontes/ })[0]);
+    expect(within(painel).getByText("Implicação prospectiva")).toBeInTheDocument();
+  });
+
+  it("a legenda compacta também filtra as categorias de relação", async () => {
+    montar();
+    const coop = screen.getByRole("button", { name: /^Cooperação/ });
+    expect(coop).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(coop);
+    expect(coop).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("a lista em texto é a alternativa acessível ao mapa", async () => {
+    montar();
+    await userEvent.click(screen.getByRole("button", { name: /Lista/ }));
+    expect(screen.getByText(/relações hoje/)).toBeInTheDocument();
   });
 });

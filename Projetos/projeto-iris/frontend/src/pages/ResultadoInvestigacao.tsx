@@ -1,4 +1,4 @@
-import { ArrowLeft, BookOpen, ScanSearch } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, ScanSearch, Waypoints } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Link, useParams } from "react-router";
 import { Epistemico } from "../components/Epistemico";
@@ -7,9 +7,8 @@ import { AreaDeCenarios } from "../components/resultado/Cenarios";
 import { type Aba, ProvedorDoResultado, useResultado } from "../components/resultado/contexto";
 import { AreaDeEvidencias } from "../components/resultado/Evidencias";
 import { LinhaDoTempo } from "../components/resultado/LinhaDoTempo";
-import { FaixaDeCenarios, MapaDeAtores } from "../components/resultado/MapaDeAtores";
 import { PainelContextual } from "../components/resultado/PainelContextual";
-import { Citacoes } from "../components/resultado/pecas";
+import { Citacoes, Letra } from "../components/resultado/pecas";
 import type { ResultadoDeInvestigacao } from "../lib/investigacao";
 import { ROTAS } from "../lib/rotas";
 
@@ -67,32 +66,60 @@ function BarraDeAbas() {
 }
 
 function VisaoGeral() {
-  const { r, irPara } = useResultado();
+  const { r, irPara, setVista } = useResultado();
   const principal = r.incertezas.find((i) => i.id === r.principalIncerteza)!;
   return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_19rem] xl:gap-6">
-      {/* O mapa vem primeiro na leitura: é a principal ferramenta de exploração. */}
-      <div className="min-w-0 xl:col-start-1 xl:row-span-2 xl:row-start-1">
-        <MapaDeAtores />
-      </div>
-      <div className="flex flex-col gap-4 xl:col-start-2 xl:row-start-1">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <p className="rotulo">Em síntese</p>
           <p className="max-w-[66ch] font-editorial text-leitura text-texto">{r.sintese}</p>
         </div>
+        <ul className="m-0 flex list-none flex-col gap-2 p-0" aria-label="Cenários">
+          {r.cenarios.map((c) => (
+            <li key={c.id}>
+              <button
+                type="button"
+                onClick={() => {
+                  setVista(c.id);
+                  irPara("cenarios");
+                }}
+                className="flex w-full items-start gap-3 rounded-padrao border border-linha p-3 text-left transition-colors duration-150 hover:border-linha-forte"
+              >
+                <Letra id={c.id} />
+                <span className="min-w-0">
+                  <span className="block text-corpo text-texto">
+                    {c.nome} <span className="text-micro text-texto-3">· {c.arquetipo}</span>
+                  </span>
+                  <span className="block text-legenda text-texto-2">{c.ideia}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex flex-col gap-4">
+        <Link
+          to={ROTAS.relacoesDe(r.id)}
+          className="group flex flex-col gap-2 rounded-painel border border-ciano/30 bg-ciano-suave p-4 transition-colors duration-150 hover:border-ciano/60"
+        >
+          <span className="flex items-center gap-2 text-corpo text-texto">
+            <Waypoints size={17} aria-hidden="true" className="text-ciano" /> Explorar as relações no mapa
+          </span>
+          <span className="text-legenda text-texto-2">
+            {r.atores.filter((a) => a.tipo === "estado").length} países, {r.blocos.length} blocos e como as conexões mudam nos cenários A, B e C.
+          </span>
+          <span className="inline-flex items-center gap-1 text-legenda text-ciano-texto group-hover:underline">
+            Abrir Relações <ArrowRight size={14} aria-hidden="true" />
+          </span>
+        </Link>
         <div className="flex flex-col gap-1.5 rounded-padrao border border-ambar/35 p-3">
           <p className="flex items-center gap-1.5 text-micro text-ambar">
             <Epistemico tipo="incerteza" compacto /> Principal incerteza
           </p>
           <p className="text-corpo text-texto">{principal.nome}</p>
           <p className="text-legenda text-texto-2">{principal.pergunta}</p>
-          <button type="button" className="w-fit text-legenda text-ciano-texto hover:underline" onClick={() => irPara("cenarios")}>
-            Como ela separa os cenários
-          </button>
         </div>
-      </div>
-      <div className="xl:col-start-2 xl:row-start-2">
-        <FaixaDeCenarios vertical />
       </div>
     </div>
   );
@@ -176,23 +203,28 @@ const carregarExemplo = import.meta.env.MODE === "previa" ? () => import("../pre
  * leva a um estado vazio honesto. Na prévia, o exemplo é carregado sob demanda (e não entra no
  * build normal).
  */
-export function PaginaDaInvestigacao() {
-  const { id = "" } = useParams();
+/** Carrega uma investigação pelo id. Sem API: só a prévia tem um exemplo. */
+export function useInvestigacao(id: string | undefined) {
   const [estado, setEstado] = useState<{ tipo: "carregando" } | { tipo: "pronto"; r: ResultadoDeInvestigacao } | { tipo: "ausente" }>(
     carregarExemplo ? { tipo: "carregando" } : { tipo: "ausente" },
   );
-
   useEffect(() => {
     if (!carregarExemplo) return;
     let vivo = true;
     carregarExemplo().then(({ INVESTIGACAO_EXEMPLO }) => {
-      if (vivo) setEstado(INVESTIGACAO_EXEMPLO.id === id ? { tipo: "pronto", r: INVESTIGACAO_EXEMPLO } : { tipo: "ausente" });
+      // Sem id, abre a investigação principal (na prévia, o exemplo).
+      if (vivo) setEstado(!id || INVESTIGACAO_EXEMPLO.id === id ? { tipo: "pronto", r: INVESTIGACAO_EXEMPLO } : { tipo: "ausente" });
     });
     return () => {
       vivo = false;
     };
   }, [id]);
+  return estado;
+}
 
+export function PaginaDaInvestigacao() {
+  const { id = "" } = useParams();
+  const estado = useInvestigacao(id);
   if (estado.tipo === "carregando") return <LinhasEsqueleto linhas={6} />;
   if (estado.tipo === "pronto") return <ResultadoInvestigacao r={estado.r} />;
   return (

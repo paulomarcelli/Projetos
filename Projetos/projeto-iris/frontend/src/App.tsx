@@ -16,6 +16,7 @@ import { Landing } from "./pages/Landing";
 import { BaseCientifica, Favoritos, Investigacoes } from "./pages/Modulos";
 
 const PaginaDaInvestigacao = lazy(() => import("./pages/ResultadoInvestigacao"));
+const PaginaRelacoes = lazy(() => import("./pages/Relacoes"));
 
 function NaoEncontrado() {
   return (
@@ -53,10 +54,18 @@ function Plataforma() {
             </Suspense>
           }
         />
+        <Route
+          path="relacoes/:id?"
+          element={
+            <Suspense fallback={<LinhasEsqueleto linhas={6} />}>
+              <PaginaRelacoes />
+            </Suspense>
+          }
+        />
         <Route path="base-cientifica" element={<BaseCientifica />} />
         <Route path="base-cientifica/:id" element={<DocumentoDetalhe />} />
         {/* Mapa, cenários e sinais vivem dentro de cada investigação; os endereços antigos levam até lá. */}
-        <Route path="mapas" element={<Navigate to={ROTAS.investigacoes} replace />} />
+        <Route path="mapas" element={<Navigate to={ROTAS.relacoes} replace />} />
         <Route path="cenarios" element={<Navigate to={ROTAS.investigacoes} replace />} />
         <Route path="sinais" element={<Navigate to={ROTAS.investigacoes} replace />} />
         <Route path="favoritos" element={<Favoritos />} />

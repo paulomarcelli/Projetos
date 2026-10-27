@@ -71,6 +71,10 @@ export interface Ator {
   posRetrato: { x: number; y: number };
   /** Código ISO 3166 alfa-3 (só países). */
   iso?: string;
+  /** Código ISO 3166 numérico (liga o ator ao território no mapa). */
+  isoNum?: string;
+  /** Longitude e latitude da capital, onde o nó fica no mapa geográfico. */
+  coord?: [number, number];
   /**
    * Posição esquemática do país no mapa (quadro 1000×620) em cada vista. A horizontal indica a
    * direção do alinhamento descrito (Washington à esquerda, Pequim à direita); não é medida.

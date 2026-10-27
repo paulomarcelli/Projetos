@@ -13,7 +13,8 @@ centralizados em `src/styles/index.css`.
 | `/entrar` | Login (veja a nota abaixo) |
 | `/app` | Início: nova investigação, investigações recentes e base científica |
 | `/app/investigacoes` | Nova investigação e rascunhos |
-| `/app/investigacoes/:id` | Resultado de uma investigação: Visão geral (mapa), Cenários, Linha do tempo e Fontes. Sem API ainda: fora da prévia, mostra um estado vazio |
+| `/app/investigacoes/:id` | Resultado de uma investigação: Visão geral, Cenários, Linha do tempo e Fontes. Sem API ainda: fora da prévia, mostra um estado vazio |
+| `/app/relacoes` e `/app/relacoes/:id` | **Relações**: mapa geopolítico da investigação (sem id, a principal), com os cenários A, B e C |
 | `/app/base-cientifica` | Painel da base (indicadores, anos de publicação, completude dos metadados, idiomas) e pesquisa de fontes |
 | `/app/base-cientifica/:id` | Leitor da fonte: texto por página, ficha bibliográfica com a origem de cada campo, integridade |
 | `/app/favoritos` | Fontes marcadas |
@@ -73,20 +74,29 @@ Organizado pelas tarefas de quem pesquisa, em quatro áreas (`src/components/res
 
 | Área | O que mostra |
 |---|---|
-| **Visão geral** | Mapa de relações entre países (principal ferramenta), síntese, principal incerteza e a faixa de vistas Hoje → A → B → C |
+| **Visão geral** | Síntese, cenários em uma linha, principal incerteza e o acesso à seção Relações |
 | **Cenários** | Os dois fatores que separam os futuros (barras com a posição de cada cenário); um cartão por cenário com nome, ideia central, horizonte, impacto principal e sinais; detalhes e comparação sob demanda |
 | **Linha do tempo** | Vertical, com divisor "Hoje": passado em traço contínuo, futuro hipotético em traço âmbar. Um único filtro: o cenário |
 | **Fontes** | Fontes principais (critério: quantos elementos sustentam), afirmações com as fontes e a lista completa sob demanda |
 
 - **Método, premissas, limitações e revisões** não ocupam uma aba: abrem no painel lateral pelo botão "Como esta análise foi feita".
 - **Painel contextual:** selecionar país, conexão, evento ou citação abre o painel com o essencial e a cadeia de rastreabilidade.
-- **Mapa:**
-  - Só países no mapa. Blocos aparecem como regiões, cada uma com contorno próprio.
-  - A legenda fica sobre o mapa e também filtra as categorias.
-  - Uma dica aparece ao passar o cursor ou focar com o teclado.
-  - Pulsos em movimento mostram o sentido só em influência e dependência.
-  - Linhas sem marca são documentadas; ◌ indica inferência e ◇, hipótese do cenário.
-  - A troca de cenário move os países e transforma as linhas. Com "reduzir movimento", a troca é instantânea e não há pulsos.
+- **Relações (seção própria, `MapaGeopolitico`):**
+  - Cartografia real (Natural Earth): cada país fica na sua capital, e a orientação nunca muda. Só países no mapa.
+  - Seletor Hoje | A | B | C sobre o mapa, deixando claro que são cenários da mesma investigação.
+  - A troca de cenário:
+    - linhas nascem, somem, engrossam, afinam ou mudam de tipo em cruzamento suave;
+    - o que mudou brilha uma vez em âmbar;
+    - o zoom e a posição são preservados;
+    - a lista "N mudanças em relação a hoje" fica sob o nome do cenário.
+  - Blocos (Escudo, Mercosul, BRICS) aparecem como hachura no território dos membros daquela vista.
+  - Pulso luminoso só nas relações com sentido documentado (influência, dependência).
+  - Linhas sem marca são documentadas; ◌ indica inferida e ◇, hipótese do cenário.
+  - Passar o cursor ou focar mostra uma dica curta. Clicar em país ou conexão abre um painel flutuante com o essencial; evidências e detalhes ficam a um clique. Clicar no mar limpa a seleção.
+  - Controles: zoom no canto, legenda compacta que também filtra (recolhível no celular) e lista em texto como alternativa acessível.
+  - Teclado: setas movem, + e − ampliam, 0 enquadra; Tab percorre países e conexões.
+  - Com "reduzir movimento", a troca é instantânea e não há pulsos.
+  - No celular, o enquadramento começa pelas Américas.
 - Nada mostra probabilidade, peso ou índice numérico.
 
 ## O que é real e o que ainda não existe

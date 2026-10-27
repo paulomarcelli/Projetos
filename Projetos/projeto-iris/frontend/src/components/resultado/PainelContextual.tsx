@@ -1,11 +1,11 @@
 import { ArrowLeft, ChevronDown, ExternalLink, X } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { RELACOES } from "../Diagramas";
 import { Epistemico } from "../Epistemico";
 import type { CenarioId, Fonte, Vista } from "../../lib/investigacao";
 import { relacaoNaVista, ROTULO_MUDANCA, statusDaRelacao, useResultado, type Selecao } from "./contexto";
 import { PainelMetodo } from "./Analise";
-import { NOME_GRUPO, NOME_TEMA, NOME_TIPO_ATOR } from "./MapaDeAtores";
+import { NOME_GRUPO, NOME_TEMA, NOME_TIPO_ATOR } from "./nomes";
 import { CATEGORIA, ChipAtor, Citacoes, GlifoTempo, Letra, LinhaAfirmacao } from "./pecas";
 
 const ESTILO = new Map(RELACOES.map((x) => [x.tipo, x]));
@@ -14,6 +14,23 @@ export const NATUREZA: Record<Fonte["natureza"], string> = {
   secundaria: "Fonte secundária",
   terciaria: "Fonte terciária",
 };
+
+/** No painel flutuante do mapa, o essencial vem primeiro; o resto fica a um clique. */
+const Compacto = createContext(false);
+
+function MaisDetalhes({ children }: { children: ReactNode }) {
+  const compacto = useContext(Compacto);
+  if (!compacto) return <>{children}</>;
+  return (
+    <details className="group border-t border-linha pt-3">
+      <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between text-legenda text-ciano-texto [&::-webkit-details-marker]:hidden">
+        Evidências e detalhes
+        <ChevronDown size={15} aria-hidden="true" className="transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <div className="flex flex-col gap-4 pt-2">{children}</div>
+    </details>
+  );
+}
 
 function Bloco({ n, titulo, children }: { n?: number; titulo: string; children: ReactNode }) {
   return (
@@ -90,15 +107,6 @@ function PainelAtor({ id }: { id: string }) {
       <Bloco n={2} titulo="Papel na dinâmica">
         <p className="text-legenda text-texto">{a.papel}</p>
       </Bloco>
-      <Bloco n={3} titulo="Interesses e capacidades">
-        <ul className="m-0 flex list-none flex-col gap-3 p-0">
-          {a.caracteristicas.map((c, i) => (
-            <li key={i}>
-              <LinhaAfirmacao a={c} />
-            </li>
-          ))}
-        </ul>
-      </Bloco>
       <Bloco n={4} titulo={`Relações ${vista === "presente" ? "no presente" : `no cenário ${vista}`}`}>
         {rels.length === 0 ? (
           <p className="text-legenda text-texto-2">Nenhuma relação nesta vista.</p>
@@ -121,6 +129,16 @@ function PainelAtor({ id }: { id: string }) {
           </ul>
         )}
       </Bloco>
+      <MaisDetalhes>
+      <Bloco n={3} titulo="Interesses e capacidades">
+        <ul className="m-0 flex list-none flex-col gap-3 p-0">
+          {a.caracteristicas.map((c, i) => (
+            <li key={i}>
+              <LinhaAfirmacao a={c} />
+            </li>
+          ))}
+        </ul>
+      </Bloco>
       <Bloco n={5} titulo="Evidências">
         <ListaDeEvidencias ids={evs} />
       </Bloco>
@@ -130,6 +148,7 @@ function PainelAtor({ id }: { id: string }) {
       <Bloco n={7} titulo="Implicações nos cenários">
         <Implicacoes textos={a.implicacoes} />
       </Bloco>
+      </MaisDetalhes>
     </>
   );
 }
@@ -163,6 +182,7 @@ function PainelRelacao({ id }: { id: string }) {
           </p>
         )}
       </Bloco>
+      <MaisDetalhes>
       <Bloco n={3} titulo="Mecanismo">
         <p className="text-legenda text-texto">{rel.mecanismo}</p>
         <Epistemico tipo="inferencia" rotulo="Interpretação do analista" />
@@ -202,6 +222,7 @@ function PainelRelacao({ id }: { id: string }) {
           {rel.incerteza ?? "Nenhuma incerteza específica registrada."} A espessura da linha não mede força: não há método para quantificar a intensidade.
         </p>
       </Bloco>
+      </MaisDetalhes>
     </>
   );
 }
@@ -374,7 +395,7 @@ const TITULO: Record<NonNullable<Selecao>["tipo"], string> = {
  * Painel contextual. No desktop fica à direita; no celular é uma folha inferior que deixa o mapa
  * visível acima e pode ser recolhida. Guarda um histórico para voltar ao item anterior.
  */
-export function PainelContextual() {
+export function PainelContextual({ variante = "lateral" }: { variante?: "lateral" | "flutuante" }) {
   const { selecao, selecionar } = useResultado();
   const [historico, setHistorico] = useState<NonNullable<Selecao>[]>([]);
   const [recolhido, setRecolhido] = useState(false);
@@ -392,10 +413,11 @@ export function PainelContextual() {
       setRecolhido(false);
       titulo.current?.focus({ preventScroll: true });
       // No celular, a folha cobre a metade de baixo: traz o mapa para cima para não perder o contexto.
-      if ((selecao.tipo === "ator" || selecao.tipo === "relacao") && window.matchMedia?.("(max-width: 1023px)").matches) {
+      if (variante === "lateral" && (selecao.tipo === "ator" || selecao.tipo === "relacao") && window.matchMedia?.("(max-width: 1023px)").matches) {
         document.getElementById("mapa-atores")?.scrollIntoView({ block: "start" });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selecao]);
 
   useEffect(() => {
@@ -417,8 +439,12 @@ export function PainelContextual() {
   return (
     <aside
       aria-label="Painel contextual"
-      className="aparecer fixed inset-x-0 bottom-0 z-40 flex max-h-[52dvh] flex-col rounded-t-painel border-t border-linha-forte bg-institucional shadow-[0_-12px_40px_rgb(0_0_0/0.45)] lg:inset-x-auto lg:top-0 lg:right-0 lg:bottom-0 lg:max-h-none lg:w-[400px] lg:rounded-none lg:border-t-0 lg:border-l"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className={
+        variante === "flutuante"
+          ? "painel-flutuante absolute inset-x-2 bottom-2 z-30 flex max-h-[58%] flex-col rounded-painel border border-linha-forte bg-abismo/95 shadow-[0_16px_48px_rgb(0_0_0/0.5)] backdrop-blur-md sm:inset-x-auto sm:top-[4.75rem] sm:right-3 sm:bottom-14 sm:max-h-none sm:w-[340px]"
+          : "aparecer fixed inset-x-0 bottom-0 z-40 flex max-h-[52dvh] flex-col rounded-t-painel border-t border-linha-forte bg-institucional shadow-[0_-12px_40px_rgb(0_0_0/0.45)] lg:inset-x-auto lg:top-0 lg:right-0 lg:bottom-0 lg:max-h-none lg:w-[400px] lg:rounded-none lg:border-t-0 lg:border-l"
+      }
+      style={variante === "flutuante" ? undefined : { paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex items-center gap-1 border-b border-linha px-3 py-2" style={{ paddingRight: "max(0.75rem, env(safe-area-inset-right))" }}>
         {historico.length > 0 && (
@@ -444,11 +470,13 @@ export function PainelContextual() {
       </div>
       {!recolhido && (
         <div className="flex flex-col gap-4 overflow-y-auto overscroll-contain px-4 py-4" style={{ paddingRight: "max(1rem, env(safe-area-inset-right))" }}>
+          <Compacto.Provider value={variante === "flutuante"}>
           {selecao.tipo === "ator" && <PainelAtor id={selecao.id} />}
           {selecao.tipo === "relacao" && <PainelRelacao id={selecao.id} />}
           {selecao.tipo === "evento" && <PainelEvento id={selecao.id} />}
           {selecao.tipo === "evidencia" && <PainelEvidencia id={selecao.id} />}
           {selecao.tipo === "metodo" && <PainelMetodo />}
+          </Compacto.Provider>
         </div>
       )}
     </aside>

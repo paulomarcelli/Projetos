@@ -5,6 +5,7 @@ import {
   ScanSearch,
   Settings,
   Star,
+  Waypoints,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
     itens: [
       { para: ROTAS.inicio, rotulo: "Início", icone: Compass },
       { para: ROTAS.investigacoes, rotulo: "Investigações", icone: ScanSearch },
+      { para: ROTAS.relacoes, rotulo: "Relações", icone: Waypoints },
       { para: ROTAS.base, rotulo: "Base científica", icone: Library },
     ],
   },

@@ -43,6 +43,8 @@ function calcular() {
     }));
   return {
     paises: desenhados,
+    /** Projeta longitude/latitude no mesmo quadro 960×470 dos países. */
+    projetar: (lon: number, lat: number) => projecao([lon, lat]) ?? [0, 0],
     esfera: caminho({ type: "Sphere" } as never) ?? "",
     grade: caminho(geoGraticule10()) ?? "",
   };

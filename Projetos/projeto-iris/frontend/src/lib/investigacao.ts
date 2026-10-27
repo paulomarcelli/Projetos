@@ -69,6 +69,15 @@ export interface Ator {
   /** Posição esquemática no quadro paisagem (1000×640) e retrato (600×860). */
   pos: { x: number; y: number };
   posRetrato: { x: number; y: number };
+  /** Código ISO 3166 alfa-3 (só países). */
+  iso?: string;
+  /**
+   * Posição esquemática do país no mapa (quadro 1000×620) em cada vista. A horizontal indica a
+   * direção do alinhamento descrito (Washington à esquerda, Pequim à direita); não é medida.
+   */
+  mapa?: Record<Vista, { x: number; y: number }>;
+  /** Nota curta sob o nome no mapa, por vista (ex.: "crise institucional"). */
+  notaNoMapa?: Partial<Record<Vista, string>>;
   papel: string;
   caracteristicas: Afirmacao[]; // interesses e capacidades
   incerteza?: string;
@@ -188,6 +197,15 @@ export interface Sinal {
   quando: string;
 }
 
+/** Bloco desenhado como região em volta dos países membros; muda por vista. */
+export interface Bloco {
+  id: string;
+  nome: string;
+  ator: string; // ator (organização) com o painel do bloco
+  membros: Record<Vista, string[]>;
+  estado: Record<Vista, "ativo" | "reforcado" | "enfraquecido">;
+}
+
 export interface Metodo {
   nome: string;
   finalidade: string;
@@ -214,6 +232,7 @@ export interface ResultadoDeInvestigacao {
   incertezas: IncertezaCritica[];
   quadranteNaoDesenvolvido?: string;
   atores: Ator[];
+  blocos: Bloco[];
   relacoes: Relacao[];
   variaveis: Variavel[];
   cenarios: Cenario[];

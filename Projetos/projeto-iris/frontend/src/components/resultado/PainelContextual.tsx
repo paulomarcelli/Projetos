@@ -71,6 +71,7 @@ function PainelAtor({ id }: { id: string }) {
   if (!a) return null;
   const rels = r.relacoes.map((x) => relacaoNaVista(x, vista)).filter((x) => x.visivel && (x.rel.de === id || x.rel.para === id));
   const evs = a.caracteristicas.flatMap((c) => c.evidencias ?? []);
+  const blocos = r.blocos.filter((b) => b.membros[vista].includes(id));
   return (
     <>
       <Bloco n={1} titulo="Identificação">
@@ -78,6 +79,12 @@ function PainelAtor({ id }: { id: string }) {
         <p className="text-legenda text-texto-2">
           {NOME_TIPO_ATOR[a.tipo]} · {NOME_GRUPO[a.grupo]}
         </p>
+        {blocos.length > 0 && (
+          <p className="text-legenda text-texto-2">
+            Membro de: <span className="text-texto">{blocos.map((b) => b.nome).join(", ")}</span>
+            {vista !== "presente" && " (neste cenário)"}
+          </p>
+        )}
       </Bloco>
       <Bloco n={2} titulo="Papel na dinâmica">
         <p className="text-legenda text-texto">{a.papel}</p>

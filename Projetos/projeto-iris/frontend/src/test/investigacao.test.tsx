@@ -36,6 +36,11 @@ describe("integridade do exemplo (rastreabilidade)", () => {
       for (const s of ev.sinais ?? []) expect(sinais, ev.id).toContain(s);
       for (const e of ev.evidencias ?? []) expect(evidencias, ev.id).toContain(e);
     }
+    for (const b of r.blocos) {
+      expect(atores).toContain(b.ator);
+      for (const m of Object.values(b.membros).flat()) expect(atores, b.id).toContain(m);
+    }
+    for (const a of r.atores.filter((x) => x.tipo === "estado")) expect(a.mapa, a.id).toBeTruthy();
     for (const c of r.cenarios) {
       for (const s of c.indicadores) expect(sinais).toContain(s);
       for (const a of c.atoresDecisivos) expect(atores).toContain(a);
@@ -91,7 +96,7 @@ describe("resultado de investigação", () => {
     montar();
     expect(screen.getByText("Principal incerteza estratégica")).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /Sistema/ })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("group", { name: /Mapa de atores/ })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: /Mapa de relações entre países/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /evidências · 16 fontes/ })).toBeInTheDocument();
   });
 
@@ -112,8 +117,10 @@ describe("resultado de investigação", () => {
 
   it("trocar para um cenário mostra o que muda em relação ao presente", async () => {
     montar();
-    await userEvent.click(screen.getAllByRole("button", { name: /^B: Cenário B/ })[0]);
+    await userEvent.click(screen.getByRole("button", { name: /Transformação.*Alinhamento hemisférico/ }));
     expect(screen.getByText(/O que muda no cenário B/)).toBeInTheDocument();
+    // a filiação a blocos muda com o cenário
+    expect(screen.getByText("Brasil entra no Escudo das Américas")).toBeInTheDocument();
   });
 
   it("cenários podem ser comparados pelos mesmos critérios", async () => {

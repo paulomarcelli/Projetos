@@ -75,11 +75,11 @@ A prospectiva estratégica organiza a tela. O formato está em `src/lib/investig
 componentes ficam em `src/components/resultado/`.
 
 - **Sistema** (`MapaDeAtores`): é a porta de entrada.
-  - Atores com forma própria por tipo: Estado, organização, instituição e grupo.
-  - Seis categorias de relação, cada uma com traço próprio.
-  - Uma marca no meio de cada conexão diz se ela é documentada, inferida ou condicional ao cenário.
-  - Interações: zoom e arraste com mouse, toque e botões; filtros por região, tipo de ator, categoria, tema e base; vista "Presente" ou cenário A/B/C, com halo no que muda.
-  - Há uma lista em texto como alternativa ao mapa.
+  - Só países no mapa. Instituições e grupos internos (STF, Congresso, agro, facções) ficam no painel do Brasil.
+  - Blocos (Mercosul, Escudo das Américas, BRICS) aparecem como regiões, cada uma com um contorno próprio, que mudam de forma quando um país entra ou sai.
+  - Ao trocar de cenário, o sistema se move: os países deslizam no eixo esquemático "órbita de Washington ↔ autonomia ↔ órbita de Pequim" (vertical no celular), e as linhas nascem, somem, engrossam, afinam ou mudam de tipo com transições interrompíveis. Com "reduzir movimento", a troca é instantânea.
+  - "Percorrer cenários" passa por Hoje → A → B → C automaticamente.
+  - Também: zoom e arraste, filtros por categoria, tema e base, e lista em texto como alternativa.
 - **Painel contextual** (`PainelContextual`):
   - Para atores e conexões, mostra identificação, papel, interesses e capacidades, relações, evidências, incertezas e implicações por cenário.
   - Para evidências, mostra a cadeia Afirmação → Evidência → Fonte (com trecho literal) → Interpretação → Implicação, e onde ela é usada.

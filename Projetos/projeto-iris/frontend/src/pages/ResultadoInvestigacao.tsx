@@ -68,7 +68,7 @@ function BarraDeAbas() {
           ))}
         </div>
       </div>
-      {aba !== "metodo" && aba !== "fatores" && <SeletorDeVista comPresente={aba !== "cenarios"} />}
+      {aba !== "metodo" && aba !== "fatores" && aba !== "sistema" && <SeletorDeVista comPresente={aba !== "cenarios"} />}
     </div>
   );
 }

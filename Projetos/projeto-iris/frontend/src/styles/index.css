@@ -360,6 +360,36 @@ p {
   transition: transform var(--duracao-media) var(--ease-movimento);
 }
 
+/* Mapa de relações: fundo cartográfico discreto (gradiente e quadrícula finos). */
+.mapa-fundo {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 45%, rgb(82 199 232 / 0.06), transparent 70%),
+    linear-gradient(rgb(154 170 192 / 0.05) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, rgb(154 170 192 / 0.05) 1px, transparent 1px) 0 0 / 48px 48px,
+    var(--color-institucional);
+}
+/* Crise institucional (cenário C): anel âmbar que pulsa devagar em volta do Brasil. */
+.pulso-crise {
+  animation: pulso-crise 2.4s var(--ease-movimento) infinite;
+}
+@keyframes pulso-crise {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+/* Progresso da vista atual ao percorrer os cenários (3,2 s por vista). */
+.barra-progresso {
+  transform-origin: left;
+  animation: barra-progresso 3.2s linear forwards;
+}
+@keyframes barra-progresso {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulso-crise { animation: none; opacity: 1; }
+  .barra-progresso { animation: none; transform: none; }
+}
+
 /* Troca de trajetória: o mapa e a rede mudam de cor, sem deslocamento (vale também com
    "reduzir movimento", porque é só cor e opacidade). */
 .transicao-preenchimento {

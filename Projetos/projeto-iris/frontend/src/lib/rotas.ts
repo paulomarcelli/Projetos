@@ -7,6 +7,7 @@ export const ROTAS = {
   entrar: "/entrar",
   inicio: "/app",
   investigacoes: "/app/investigacoes",
+  investigacao: (id: string) => `/app/investigacoes/${encodeURIComponent(id)}`,
   rascunho: (id: string) => `/app/investigacoes?rascunho=${encodeURIComponent(id)}`,
   base: "/app/base-cientifica",
   fonte: (id: string) => `/app/base-cientifica/${encodeURIComponent(id)}`,

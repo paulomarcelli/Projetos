@@ -1,6 +1,7 @@
 import { Compass } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { Link, Navigate, Route, Routes, useParams } from "react-router";
-import { EstadoVazio } from "./components/Estados";
+import { EstadoVazio, LinhasEsqueleto } from "./components/Estados";
 import { Shell } from "./components/Shell";
 import { AlternadorDados } from "./dev/AlternadorDados";
 import { PREVIA } from "./lib/api";
@@ -13,6 +14,8 @@ import { Entrar } from "./pages/Entrar";
 import { Inicio } from "./pages/Inicio";
 import { Landing } from "./pages/Landing";
 import { BaseCientifica, Cenarios, Favoritos, Investigacoes, MapasRelacoes, Sinais } from "./pages/Modulos";
+
+const PaginaDaInvestigacao = lazy(() => import("./pages/ResultadoInvestigacao"));
 
 function NaoEncontrado() {
   return (
@@ -42,6 +45,14 @@ function Plataforma() {
       <Routes>
         <Route index element={<Inicio />} />
         <Route path="investigacoes" element={<Investigacoes />} />
+        <Route
+          path="investigacoes/:id"
+          element={
+            <Suspense fallback={<LinhasEsqueleto linhas={6} />}>
+              <PaginaDaInvestigacao />
+            </Suspense>
+          }
+        />
         <Route path="base-cientifica" element={<BaseCientifica />} />
         <Route path="base-cientifica/:id" element={<DocumentoDetalhe />} />
         <Route path="mapas" element={<MapasRelacoes />} />

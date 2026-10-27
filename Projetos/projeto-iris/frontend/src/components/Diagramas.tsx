@@ -41,18 +41,21 @@ export function EstruturaDeCenario() {
   );
 }
 
-const RELACOES: { rotulo: string; descricao: string; traco: string; seta?: boolean; cor: string }[] = [
-  { rotulo: "Aliança / cooperação", descricao: "Acordos e alinhamentos declarados", traco: "", cor: "var(--color-ciano)" },
-  { rotulo: "Rivalidade / disputa", descricao: "Competição ou conflito documentado", traco: "8 4", cor: "var(--color-texto-2)" },
-  { rotulo: "Dependência", descricao: "Assimetria: um ator depende do outro", traco: "", seta: true, cor: "var(--color-texto-2)" },
-  { rotulo: "Fluxo", descricao: "Comércio, energia, tecnologia ou capital", traco: "1 5", cor: "var(--color-ciano)" },
-  { rotulo: "Causalidade alegada", descricao: "Relação causal afirmada por uma fonte — não comprovada", traco: "6 3 1 3", seta: true, cor: "var(--color-ambar)" },
+export type TipoRelacao = "alianca" | "rivalidade" | "dependencia" | "fluxo" | "causalidade";
+
+export const RELACOES: { tipo: TipoRelacao; rotulo: string; descricao: string; traco: string; seta?: boolean; cor: string }[] = [
+  { tipo: "alianca", rotulo: "Aliança / cooperação", descricao: "Acordos e alinhamentos declarados", traco: "", cor: "var(--color-ciano)" },
+  { tipo: "rivalidade", rotulo: "Rivalidade / disputa", descricao: "Competição ou conflito documentado", traco: "8 4", cor: "var(--color-texto-2)" },
+  { tipo: "dependencia", rotulo: "Dependência", descricao: "Assimetria: um ator depende do outro", traco: "", seta: true, cor: "var(--color-texto-2)" },
+  { tipo: "fluxo", rotulo: "Fluxo", descricao: "Comércio, energia, tecnologia ou capital", traco: "1 5", cor: "var(--color-ciano)" },
+  { tipo: "causalidade", rotulo: "Causalidade alegada", descricao: "Relação causal afirmada por uma fonte — não comprovada", traco: "6 3 1 3", seta: true, cor: "var(--color-ambar)" },
 ];
 
-export function GramaticaDeRelacoes() {
+export function GramaticaDeRelacoes({ tipos }: { tipos?: TipoRelacao[] } = {}) {
+  const lista = tipos ? RELACOES.filter((r) => tipos.includes(r.tipo)) : RELACOES;
   return (
     <ul className="flex flex-col gap-3">
-      {RELACOES.map((r) => (
+      {lista.map((r) => (
         <li key={r.rotulo} className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-4">
           <svg width="72" height="12" viewBox="0 0 72 12" aria-hidden="true">
             <line x1="4" y1="6" x2={r.seta ? 62 : 68} y2="6" stroke={r.cor} strokeWidth="1.6" strokeDasharray={r.traco || undefined} strokeLinecap="round" />

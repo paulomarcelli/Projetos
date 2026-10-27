@@ -13,6 +13,7 @@ centralizados em `src/styles/index.css`.
 | `/entrar` | Login (veja a nota abaixo) |
 | `/app` | Início: nova investigação, investigações recentes, base científica, cenários e sinais |
 | `/app/investigacoes` | Trilha do método, nova investigação e rascunhos |
+| `/app/investigacoes/:id` | Resultado de uma investigação: síntese, ponto de partida, premissas, variáveis críticas, trajetórias, linha do tempo, mapa de efeitos, rede de atores, sinais, limitações e fontes numeradas. Sem API ainda: fora da prévia, mostra um estado vazio |
 | `/app/base-cientifica` | Painel da base (indicadores, anos de publicação, completude dos metadados, idiomas) e pesquisa de fontes |
 | `/app/base-cientifica/:id` | Leitor da fonte: texto por página, ficha bibliográfica com a origem de cada campo, integridade |
 | `/app/mapas` | Mapas e relações: mapa-múndi, tipos de relação e camadas previstas |
@@ -107,6 +108,10 @@ npm run build:previa   # gera dist-previa/ com caminhos relativos e MemoryRouter
 ```
 
 A prévia usa `src/previa/snapshot.json`, uma cópia dos documentos de exemplo exportada da API.
+Ela também traz um **exemplo de resultado de investigação** (`src/previa/investigacao-exemplo.ts`):
+um contrafactual sobre a eleição de 2026, pesquisado e escrito à mão, e não produzido pelo motor. Ele
+aparece marcado como "simulação ilustrativa" e mostra o formato que o motor deverá devolver
+(`src/lib/investigacao.ts`). Na prévia publicada, o endereço com `#investigacao` abre direto nele.
 Ela mostra um selo de "prévia", e o envio e a remoção ficam desativados. O build normal não inclui
 nada disso.
 

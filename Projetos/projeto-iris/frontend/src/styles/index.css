@@ -360,6 +360,14 @@ p {
   transition: transform var(--duracao-media) var(--ease-movimento);
 }
 
+/* Troca de trajetória: o mapa e a rede mudam de cor, sem deslocamento (vale também com
+   "reduzir movimento", porque é só cor e opacidade). */
+.transicao-preenchimento {
+  transition:
+    fill 240ms var(--ease-saida),
+    opacity 240ms var(--ease-saida);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

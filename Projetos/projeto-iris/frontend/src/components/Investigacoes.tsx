@@ -1,5 +1,5 @@
 import { ArrowRight, Pencil, ScanSearch, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Link } from "react-router";
 import { NOME_REGIAO, type RegiaoId } from "../geo/regioes-def";
 import { quando } from "../lib/formato";
@@ -7,6 +7,9 @@ import { useRascunhos, type Rascunho } from "../lib/local";
 import { Epistemico } from "./Epistemico";
 import { EstadoVazio } from "./Estados";
 import { ROTAS } from "../lib/rotas";
+
+// Condição escrita aqui (e não via PREVIA) para o build normal descartar o exemplo.
+const CartaoExemplo = import.meta.env.MODE === "previa" ? lazy(() => import("../previa/CartaoExemplo")) : null;
 
 function LinhaRascunho({ r }: { r: Rascunho }) {
   const { remover } = useRascunhos();
@@ -60,6 +63,11 @@ export function InvestigacoesRecentes({ limite }: { limite?: number }) {
   const visiveis = limite ? rascunhos.slice(0, limite) : rascunhos;
   return (
     <div className="flex flex-col gap-6">
+      {CartaoExemplo && (
+        <Suspense fallback={null}>
+          <CartaoExemplo />
+        </Suspense>
+      )}
       <EstadoVazio
         icone={<ScanSearch size={22} strokeWidth={1.5} aria-hidden="true" />}
         titulo="Nenhuma investigação processada"

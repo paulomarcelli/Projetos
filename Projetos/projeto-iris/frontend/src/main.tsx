@@ -19,7 +19,7 @@ if (!raiz) throw new Error("Elemento #raiz não encontrado.");
 createRoot(raiz).render(
   <StrictMode>
     {PREVIA ? (
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[location.hash === "#investigacao" ? "/app/investigacoes/exemplo-flavio-2026" : "/"]}>
         <ProvedorDeNotificacoes>
           <App />
         </ProvedorDeNotificacoes>

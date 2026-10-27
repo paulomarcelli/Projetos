@@ -161,7 +161,7 @@ export function EnvioDeDocumento({ aoConcluir }: { aoConcluir: (doc: RespostaUpl
       {enviando && (
         <div className="flex flex-col gap-1.5" role="status" aria-live="polite">
           <div className="h-1 overflow-hidden rounded-full bg-grafite">
-            <div className="h-full origin-left bg-ciano transition-transform duration-200" style={{ transform: `scaleX(${progresso ?? 0})` }} />
+            <div className="h-full origin-left bg-ciano transition-transform duration-200 ease-linear" style={{ transform: `scaleX(${progresso ?? 0})` }} />
           </div>
           <p className="text-micro text-texto-3">
             {progresso !== null && progresso < 1
@@ -172,18 +172,22 @@ export function EnvioDeDocumento({ aoConcluir }: { aoConcluir: (doc: RespostaUpl
       )}
 
       {erro && (
-        <Aviso tom="erro" titulo="Envio recusado">
-          {erro}
-        </Aviso>
+        <div className="aparecer">
+          <Aviso tom="erro" titulo="Envio recusado">
+            {erro}
+          </Aviso>
+        </div>
       )}
 
       {resultado && !enviando && (
+        <div className="aparecer">
         <Aviso tom={resultado.status === "failed" ? "erro" : resultado.duplicate ? "neutro" : "sucesso"}>
           {resultado.duplicate ? "Já estava no acervo: " : resultado.status === "failed" ? "Recebido, mas falhou: " : "Processado: "}
           <Link to={ROTAS.acervoDocumento(resultado.id)} className="text-ciano-texto underline-offset-4 hover:underline [overflow-wrap:anywhere]">
             {tituloDoDocumento(resultado).texto}
           </Link>
         </Aviso>
+        </div>
       )}
 
       <div className="flex flex-wrap gap-2">

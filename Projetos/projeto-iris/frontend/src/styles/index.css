@@ -69,6 +69,7 @@
   /* Movimento (rápido e preciso; nada de entretenimento) */
   --ease-saida: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-movimento: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-gaveta: cubic-bezier(0.32, 0.72, 0, 1);
   --duracao-toque: 140ms;
   --duracao-curta: 180ms;
   --duracao-media: 240ms;
@@ -318,11 +319,53 @@ p {
 
 }
 
+/* Landing: entrada única da primeira dobra (marketing, vista uma vez). */
+.entrada {
+  animation: entrada 480ms var(--ease-saida) both;
+  animation-delay: var(--atraso, 0ms);
+}
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Trajetórias do hero: reveladas da esquerda (presente) para a direita (horizonte). */
+.revelar-futuros {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: revelar-futuros 1100ms var(--ease-movimento) 420ms both;
+}
+@keyframes revelar-futuros {
+  /* É a máscara que cresce, não o conteúdo: equivale a clip-path inset(0 100% 0 0). */
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Avisos que surgem depois de uma ação (resultado do envio, login indisponível). */
+.aparecer {
+  transition:
+    opacity 200ms var(--ease-saida),
+    transform 200ms var(--ease-saida);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Cone de incerteza da linha do horizonte: abre e fecha com o horizonte escolhido. */
+.cone-incerteza {
+  transition: transform var(--duracao-media) var(--ease-movimento);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
   }
@@ -332,28 +375,65 @@ p {
   }
 }
 
-/* Notificações: entram de baixo (ease-out), saem mais rápido do que entram. */
+/* Notificações: entram por baixo e saem pelo mesmo caminho (transições: podem ser
+   interrompidas e redirecionadas quando várias chegam em sequência). */
 .notificacao {
   transition:
-    opacity var(--duracao-media) var(--ease-saida),
-    transform var(--duracao-media) var(--ease-saida);
+    opacity 400ms ease,
+    transform 400ms ease;
   @starting-style {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(100%);
   }
 }
 .notificacao[data-saindo] {
   opacity: 0;
-  transform: translateY(4px);
-  transition-duration: 150ms;
+  transform: translateY(100%);
+  transition-duration: 200ms;
 }
 
-/* Gaveta de navegação no celular: desliza da borda (curva de gaveta). */
+/* Gaveta de navegação no celular: entra pela borda e sai por ela (saída mais rápida). */
 .gaveta {
-  animation: gaveta var(--duracao-media) cubic-bezier(0.32, 0.72, 0, 1) both;
-}
-@keyframes gaveta {
-  from {
+  transition: transform 400ms var(--ease-gaveta);
+  @starting-style {
     transform: translateX(-100%);
+  }
+}
+.gaveta[data-fechando] {
+  transform: translateX(-100%);
+  transition-duration: 200ms;
+}
+.gaveta-fundo {
+  transition: opacity 400ms var(--ease-saida);
+  @starting-style {
+    opacity: 0;
+  }
+}
+.gaveta-fundo[data-fechando] {
+  opacity: 0;
+  transition-duration: 200ms;
+}
+
+/* Movimento reduzido: menos movimento, não zero. Fica a opacidade; sai o deslocamento. */
+@media (prefers-reduced-motion: reduce) {
+  .notificacao,
+  .gaveta,
+  .aparecer {
+    transition-property: opacity;
+    @starting-style {
+      opacity: 0;
+      transform: none;
+    }
+  }
+  .gaveta {
+    transition-duration: 200ms;
+  }
+  .notificacao[data-saindo],
+  .gaveta[data-fechando] {
+    transform: none;
+    opacity: 0;
+  }
+  .cone-incerteza {
+    transition: none;
   }
 }

@@ -45,6 +45,12 @@ function Ilustracao() {
   ];
   return (
     <g aria-hidden="true">
+      <defs>
+        <clipPath id="futuros-revelados">
+          <rect className="revelar-futuros" x="292" y="0" width="500" height="470" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#futuros-revelados)">
       <path d="M300 235 L760 95 L760 375 Z" fill="rgb(233 180 91 / 0.06)" />
       <line x1="300" y1="40" x2="300" y2="430" stroke="rgb(243 246 250 / 0.35)" strokeDasharray="2 4" />
       <text x="308" y="56" fill="var(--color-texto-2)" style={{ font: "500 13px var(--font-dados)" }}>
@@ -56,6 +62,7 @@ function Ilustracao() {
           <path d={`M760 ${r.y - 7} 767 ${r.y} 760 ${r.y + 7} 753 ${r.y}Z`} fill="var(--color-abismo)" stroke="var(--color-ambar)" strokeWidth="1.6" />
         </g>
       ))}
+      </g>
       <circle cx="300" cy="235" r="7" fill="var(--color-texto)" />
       <circle cx="300" cy="235" r="15" fill="none" stroke="var(--color-ciano)" strokeWidth="1.4" />
     </g>
@@ -89,17 +96,17 @@ export function Landing() {
         {/* Missão */}
         <section className="fundo-cartografico border-b border-linha" style={lateral}>
           <div className="mx-auto grid max-w-[1200px] items-center gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:py-24">
-            <div className="surgir flex flex-col gap-6">
-              <p className="rotulo">{MARCA.descritor}</p>
-              <h1 className="font-editorial text-[2.25rem] leading-[2.625rem] font-medium tracking-[-0.015em] sm:text-[3rem] sm:leading-[3.375rem]">
+            <div className="flex flex-col gap-6">
+              <p className="rotulo entrada">{MARCA.descritor}</p>
+              <h1 className="entrada font-editorial text-[2.25rem] leading-[2.625rem] font-medium tracking-[-0.015em] sm:text-[3rem] sm:leading-[3.375rem]" style={{ "--atraso": "60ms" } as React.CSSProperties}>
                 Compreender o poder no presente.{" "}
                 <span className="text-texto-2">Investigar os futuros da ordem internacional.</span>
               </h1>
-              <p className="max-w-[56ch] text-leitura text-texto-2">
+              <p className="entrada max-w-[56ch] text-leitura text-texto-2" style={{ "--atraso": "120ms" } as React.CSSProperties}>
                 O Iris reúne evidências científicas rastreáveis, mapeia as relações entre os atores e
                 constrói cenários condicionais — com premissas, incertezas e limitações à vista.
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="entrada flex flex-wrap gap-3" style={{ "--atraso": "180ms" } as React.CSSProperties}>
                 <Link to={ROTAS.entrar} className="botao botao-primario">
                   Entrar na plataforma
                   <ArrowRight size={16} aria-hidden="true" />
@@ -109,7 +116,7 @@ export function Landing() {
                 </a>
               </div>
             </div>
-            <figure className="m-0">
+            <figure className="entrada m-0" style={{ "--atraso": "240ms" } as React.CSSProperties}>
               <div className="overflow-hidden rounded-painel border border-linha bg-abismo">
                 <Suspense fallback={<div className="esqueleto aspect-[960/470] w-full" />}>
                   <MapaMundo rotulo="Ilustração: do presente, trajetórias alternativas se abrem para o horizonte." intensidade="minima">

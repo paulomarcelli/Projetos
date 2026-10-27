@@ -55,9 +55,16 @@ institucionais, linhas finas de coordenadas e tipografia editorial.
 - **Navegação pela estrutura intelectual:** Início, depois *Presente* (Investigações, Base
   científica, Mapas e relações), *Futuros* (Cenários, Sinais) e *Acervo* (Documentos, Favoritos,
   Configurações).
-- **Movimento.** Toque de 140 ms (escala 0,97), cores em 180 ms e entradas em 240 ms. A curva de
-  saída é forte e a saída é mais rápida que a entrada. Ações de teclado não têm animação, e o modo
-  "reduzir movimento" do sistema é respeitado.
+- **Movimento.** Só anima o que tem função:
+  - toque (140 ms, escala 0,97);
+  - cor (180 ms);
+  - cone de incerteza que acompanha o horizonte (240 ms);
+  - gaveta e notificações, que entram e saem pelo mesmo caminho (400/200 ms);
+  - uma única cena de entrada na landing, em que as trajetórias se abrem do presente para o
+    horizonte.
+
+  Busca pelo teclado, troca de página no leitor e gráficos não animam. Com "reduzir movimento",
+  fica só a opacidade. Curvas e durações são tokens em `src/styles/index.css`.
 
 A referência completa (cores, tipos, marcadores, componentes) fica na rota `/design-system`.
 

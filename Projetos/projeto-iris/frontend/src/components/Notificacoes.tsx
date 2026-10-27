@@ -25,7 +25,7 @@ export function ProvedorDeNotificacoes({ children }: { children: ReactNode }) {
 
   const fechar = useCallback((id: number) => {
     setItens((atual) => atual.map((n) => (n.id === id ? { ...n, saindo: true } : n)));
-    window.setTimeout(() => setItens((atual) => atual.filter((n) => n.id !== id)), 160);
+    window.setTimeout(() => setItens((atual) => atual.filter((n) => n.id !== id)), 200);
     const t = temporizadores.current.get(id);
     if (t) window.clearTimeout(t);
     temporizadores.current.delete(id);

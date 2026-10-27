@@ -153,18 +153,30 @@ export function DesignSystem() {
       </Secao>
 
       <Secao id="ds-movimento" titulo="Movimento">
-        <ul className="grid gap-3 text-legenda text-texto-2 sm:grid-cols-3">
+        <ul className="grid gap-x-6 gap-y-4 text-legenda text-texto-2 sm:grid-cols-2 lg:grid-cols-3">
           <li>
-            <span className="block text-corpo text-texto">140 ms</span>Toque em botões e fichas (escala 0,97)
+            <span className="block text-corpo text-texto">140 ms · toque</span>Botões e fichas encolhem para 0,97: a interface ouviu.
           </li>
           <li>
-            <span className="block text-corpo text-texto">180 ms</span>Cores, bordas e foco
+            <span className="block text-corpo text-texto">180 ms · cor</span>Cores, bordas e foco, com curva suave.
           </li>
           <li>
-            <span className="block text-corpo text-texto">240 ms</span>Entrada de conteúdo e notificações (saída mais rápida)
+            <span className="block text-corpo text-texto">240 ms · estado</span>O cone de incerteza abre e fecha com o horizonte escolhido.
+          </li>
+          <li>
+            <span className="block text-corpo text-texto">400 / 200 ms · gaveta</span>Entra e sai pela mesma borda; a saída é mais rápida.
+          </li>
+          <li>
+            <span className="block text-corpo text-texto">400 / 200 ms · notificação</span>Sobe de baixo e desce ao sair; pode ser interrompida.
+          </li>
+          <li>
+            <span className="block text-corpo text-texto">1,1 s · uma vez</span>Na landing, as trajetórias se abrem do presente para o horizonte.
           </li>
         </ul>
-        <p className="mt-3 text-micro text-texto-3">Curva de saída forte; ações de teclado sem animação; “reduzir movimento” respeitado.</p>
+        <p className="mt-3 max-w-[70ch] text-micro text-texto-3">
+          Sem animação: busca aberta pelo teclado, troca de página no leitor e dados de gráficos (quem lê
+          não deve ver números se mexendo). Com “reduzir movimento”, fica só a opacidade.
+        </p>
       </Secao>
     </div>
   );

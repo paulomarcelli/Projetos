@@ -11,7 +11,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router";
 import { prontidao } from "../lib/api";
 import { useDados } from "../lib/useDados";
@@ -118,22 +118,41 @@ function Navegacao({ aoNavegar }: { aoNavegar?: () => void }) {
 
 export function Shell({ children }: { children: ReactNode }) {
   const [gaveta, setGaveta] = useState(false);
+  const [fechando, setFechando] = useState(false);
+  const temporizador = useRef<number | undefined>(undefined);
   const local = useLocation();
   const principal = useRef<HTMLElement>(null);
 
+  // Fecha pela mesma borda por onde entrou; só desmonta quando a saída (200 ms) termina.
+  const fecharGaveta = useCallback(() => {
+    setFechando(true);
+    window.clearTimeout(temporizador.current);
+    temporizador.current = window.setTimeout(() => {
+      setGaveta(false);
+      setFechando(false);
+    }, 200);
+  }, []);
+  const abrirGaveta = () => {
+    window.clearTimeout(temporizador.current);
+    setFechando(false);
+    setGaveta(true);
+  };
+  useEffect(() => () => window.clearTimeout(temporizador.current), []);
+
   // Ao trocar de página: fecha a gaveta e leva o foco ao conteúdo (leitores de tela).
   useEffect(() => {
-    setGaveta(false);
+    if (gaveta) fecharGaveta();
     principal.current?.focus({ preventScroll: true });
     window.scrollTo({ top: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [local.pathname]);
 
   useEffect(() => {
     if (!gaveta) return;
-    const aoTeclar = (e: KeyboardEvent) => e.key === "Escape" && setGaveta(false);
+    const aoTeclar = (e: KeyboardEvent) => e.key === "Escape" && fecharGaveta();
     window.addEventListener("keydown", aoTeclar);
     return () => window.removeEventListener("keydown", aoTeclar);
-  }, [gaveta]);
+  }, [gaveta, fecharGaveta]);
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_minmax(0,1fr)]">
@@ -158,15 +177,23 @@ export function Shell({ children }: { children: ReactNode }) {
       {/* Gaveta (tablet e celular) */}
       {gaveta && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Navegação">
-          <button type="button" aria-label="Fechar navegação" className="absolute inset-0 bg-abismo/70" onClick={() => setGaveta(false)} />
-          <div className="gaveta absolute inset-y-0 left-0 flex w-[min(84vw,300px)] flex-col gap-6 overflow-y-auto border-r border-linha bg-abismo px-3 py-5" style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}>
+          <button
+            type="button"
+            aria-label="Fechar navegação"
+            className="gaveta-fundo absolute inset-0 bg-abismo/70"
+            data-fechando={fechando || undefined}
+            onClick={fecharGaveta}
+          />
+          <div
+            data-fechando={fechando || undefined}
+            className="gaveta absolute inset-y-0 left-0 flex w-[min(84vw,300px)] flex-col gap-6 overflow-y-auto border-r border-linha bg-abismo px-3 py-5" style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}>
             <div className="flex items-center justify-between px-3">
               <Marca />
-              <button type="button" className="botao botao-fantasma botao-pequeno -mr-2 px-2" aria-label="Fechar navegação" onClick={() => setGaveta(false)}>
+              <button type="button" className="botao botao-fantasma botao-pequeno -mr-2 px-2" aria-label="Fechar navegação" onClick={fecharGaveta}>
                 <X size={18} aria-hidden="true" />
               </button>
             </div>
-            <Navegacao aoNavegar={() => setGaveta(false)} />
+            <Navegacao aoNavegar={fecharGaveta} />
             <div className="mt-auto">
               <EstadoDoSistema />
             </div>
@@ -186,8 +213,8 @@ export function Shell({ children }: { children: ReactNode }) {
             type="button"
             className="botao botao-fantasma botao-pequeno -ml-1 px-2 lg:hidden"
             aria-label="Abrir navegação"
-            aria-expanded={gaveta}
-            onClick={() => setGaveta(true)}
+            aria-expanded={gaveta && !fechando}
+            onClick={abrirGaveta}
           >
             <Menu size={20} aria-hidden="true" />
           </button>

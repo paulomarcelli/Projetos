@@ -143,7 +143,7 @@ export function Entrar() {
           </form>
 
           {enviado && (
-            <div className="mt-5">
+            <div className="aparecer mt-5">
               <Aviso tom="atencao" titulo="Login ainda não disponível">
                 <span className="flex flex-col items-start gap-3">
                   A autenticação ainda não existe no servidor, então nenhuma senha foi verificada.

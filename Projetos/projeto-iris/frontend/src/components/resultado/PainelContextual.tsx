@@ -441,7 +441,7 @@ export function PainelContextual({ variante = "lateral" }: { variante?: "lateral
       aria-label="Painel contextual"
       className={
         variante === "flutuante"
-          ? "painel-flutuante absolute inset-x-2 bottom-2 z-30 flex max-h-[58%] flex-col rounded-painel border border-linha-forte bg-abismo/95 shadow-[0_16px_48px_rgb(0_0_0/0.5)] backdrop-blur-md sm:inset-x-auto sm:top-[4.75rem] sm:right-3 sm:bottom-14 sm:max-h-none sm:w-[340px]"
+          ? "painel-flutuante absolute inset-x-2 bottom-2 z-30 flex max-h-[58%] flex-col rounded-painel border border-linha-forte bg-abismo/95 shadow-[0_16px_48px_rgb(0_0_0/0.5)] backdrop-blur-md sm:inset-x-auto sm:top-[3.75rem] sm:right-3 sm:bottom-3 sm:max-h-none sm:w-[340px]"
           : "aparecer fixed inset-x-0 bottom-0 z-40 flex max-h-[52dvh] flex-col rounded-t-painel border-t border-linha-forte bg-institucional shadow-[0_-12px_40px_rgb(0_0_0/0.45)] lg:inset-x-auto lg:top-0 lg:right-0 lg:bottom-0 lg:max-h-none lg:w-[400px] lg:rounded-none lg:border-t-0 lg:border-l"
       }
       style={variante === "flutuante" ? undefined : { paddingBottom: "env(safe-area-inset-bottom)" }}

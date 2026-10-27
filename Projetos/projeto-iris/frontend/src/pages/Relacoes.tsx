@@ -14,7 +14,7 @@ import { useInvestigacao } from "./ResultadoInvestigacao";
 export function Relacoes({ r }: { r: ResultadoDeInvestigacao }) {
   return (
     <ProvedorDoResultado r={r}>
-      <div className="flex h-[max(560px,calc(100dvh-var(--altura-topo,61px)-3.5rem))] flex-col gap-3 lg:h-[max(600px,calc(100dvh-var(--altura-topo,61px)-5.5rem))]">
+      <div className="flex h-[max(560px,calc(100dvh-var(--altura-topo,0px)-3.5rem))] flex-col gap-3 lg:h-[max(600px,calc(100dvh-var(--altura-topo,0px)-5.5rem))]">
         <header className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
           <div className="min-w-0">
             <p className="rotulo">Relações · cenários da mesma investigação</p>

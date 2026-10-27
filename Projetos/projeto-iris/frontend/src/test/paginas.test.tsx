@@ -87,6 +87,13 @@ describe("rotas", () => {
     expect(await screen.findByRole("link", { name: /Abrir a gestão do acervo/ })).toHaveAttribute("href", "/app/configuracoes/acervo");
   });
 
+  it("a plataforma não tem barra de busca", async () => {
+    em("/app/configuracoes");
+    await screen.findAllByRole("navigation", { name: "Módulos" });
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Buscar/)).not.toBeInTheDocument();
+  });
+
   it("endereços antigos de documentos são redirecionados", () => {
     em("/documentos/abc");
     expect(screen.getByTestId("local")).toHaveTextContent("/app/base-cientifica/abc");

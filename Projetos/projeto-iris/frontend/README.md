@@ -66,7 +66,7 @@ institucionais, linhas finas de coordenadas e tipografia editorial.
     (origem → destino nas relações com direção, do meio para as pontas nas demais; âmbar nas
     que mudaram).
 
-  Busca pelo teclado, troca de página no leitor e gráficos não animam. Com "reduzir movimento",
+  Troca de página no leitor e gráficos não animam. Com "reduzir movimento",
   fica só a opacidade. Curvas e durações são tokens em `src/styles/index.css`.
 
 A referência completa (cores, tipos, marcadores, componentes) fica na rota `/design-system`.
@@ -97,7 +97,14 @@ Organizado pelas tarefas de quem pesquisa, em quatro áreas (`src/components/res
   - Pulso luminoso só nas relações com sentido documentado (influência, dependência).
   - Linhas sem marca são documentadas; ◌ indica inferida e ◇, hipótese do cenário.
   - Passar o cursor ou focar mostra uma dica curta. Clicar em país ou conexão abre um painel flutuante com o essencial; evidências e detalhes ficam a um clique. Clicar no mar limpa a seleção.
-  - Controles: zoom no canto, legenda compacta que também filtra (recolhível no celular) e lista em texto como alternativa acessível.
+  - Layout sem sobreposição: seletor de cenários e a ideia do cenário ficam acima do mapa; a legenda
+    (que também filtra) e os blocos ficam abaixo. Sobre o mapa, só o zoom e o cartão "O que mudou".
+  - Blocos: a legenda só lista blocos com algum país do mapa (hoje Escudo, Mercosul e BRICS), com o número
+    de membros e quem entra ou sai no cenário (ex.: Escudo +1 no B). Escolher um bloco hachura os
+    territórios, esmaece o resto e desliza o mapa até enquadrar os membros.
+  - Linhas com sentido vão de tênues na origem a plenas no destino; os selos de mudança desviam dos
+    nomes dos países.
+  - Lista em texto como alternativa acessível.
   - Teclado: setas movem, + e − ampliam, 0 enquadra; Tab percorre países e conexões.
   - Com "reduzir movimento", a troca é instantânea e não há pulsos.
   - No celular, o enquadramento começa pelas Américas.
@@ -114,7 +121,6 @@ Organizado pelas tarefas de quem pesquisa, em quatro áreas (`src/components/res
 | Favoritos | Reais, mas guardados só neste navegador |
 | Investigações processadas, cenários, sinais, mapas de relações | **Sem API ainda.** Mostram a estrutura do painel (quadro de cenários, tabela de sinais, mapa e tipos de relação) vazia e marcada como vazia; nenhum dado é simulado |
 | Login | Só interface; a API não tem autenticação |
-| Busca global | Procura em documentos (os 100 mais recentes) e rascunhos. Avisa que países, atores e eventos ainda não estão indexados |
 
 ## Executar
 

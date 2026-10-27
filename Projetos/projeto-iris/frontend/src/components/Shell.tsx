@@ -13,7 +13,6 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { NavLink, useLocation } from "react-router";
 import { PREVIA, prontidao } from "../lib/api";
 import { useDados } from "../lib/useDados";
-import { BuscaGlobal } from "./BuscaGlobal";
 import { Marca } from "./Marca";
 import { ROTAS } from "../lib/rotas";
 
@@ -113,6 +112,15 @@ export function Shell({ children }: { children: ReactNode }) {
   const temporizador = useRef<number | undefined>(undefined);
   const local = useLocation();
   const principal = useRef<HTMLElement>(null);
+  const topo = useRef<HTMLElement>(null);
+  // Altura da barra superior (0 no desktop, onde ela não existe): as páginas encaixam-se abaixo dela.
+  useEffect(() => {
+    const el = topo.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => document.documentElement.style.setProperty("--altura-topo", `${Math.round(el.getBoundingClientRect().height)}px`));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Fecha pela mesma borda por onde entrou; só desmonta quando a saída (200 ms) termina.
   const fecharGaveta = useCallback(() => {
@@ -194,7 +202,8 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <div className="flex min-w-0 flex-col">
         <header
-          className="sticky top-0 z-30 flex items-center gap-3 border-b border-linha bg-abismo/92 py-3 backdrop-blur-md"
+          ref={topo}
+          className="sticky top-0 z-30 flex items-center gap-3 border-b border-linha bg-abismo/92 py-3 backdrop-blur-md lg:hidden"
           style={{
             paddingLeft: "max(1rem, env(safe-area-inset-left))",
             paddingRight: "max(1rem, env(safe-area-inset-right))",
@@ -202,19 +211,14 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <button
             type="button"
-            className="botao botao-fantasma botao-pequeno -ml-1 px-2 lg:hidden"
+            className="botao botao-fantasma botao-pequeno -ml-1 px-2"
             aria-label="Abrir navegação"
             aria-expanded={gaveta && !fechando}
             onClick={abrirGaveta}
           >
             <Menu size={20} aria-hidden="true" />
           </button>
-          <span className="lg:hidden">
-            <Marca compacta />
-          </span>
-          <div className="flex min-w-0 flex-1 justify-end lg:justify-start">
-            <BuscaGlobal />
-          </div>
+          <Marca compacta />
         </header>
 
         <main

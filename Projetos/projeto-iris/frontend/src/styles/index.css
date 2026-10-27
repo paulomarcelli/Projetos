@@ -393,6 +393,11 @@ p {
 .conexao-halo {
   transition: opacity 200ms var(--ease-saida);
 }
+/* Foco num país ou bloco: o resto esmaece suavemente, sem salto. */
+.conexao,
+.no-pais {
+  transition: opacity 260ms var(--ease-saida);
+}
 .conexao:focus-visible .conexao-halo,
 .conexao:hover .conexao-halo {
   opacity: 0.22;

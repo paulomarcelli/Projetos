@@ -37,7 +37,7 @@ function BarraDeAbas() {
     refs.current[alvo]?.focus();
   };
   return (
-    <div className="z-20 -mx-1 overflow-x-auto border-b border-linha bg-abismo/95 px-1 backdrop-blur-md lg:sticky lg:top-[var(--altura-topo,61px)]">
+    <div className="z-20 -mx-1 overflow-x-auto border-b border-linha bg-abismo/95 px-1 backdrop-blur-md lg:sticky lg:top-[var(--altura-topo,0px)]">
       <div role="tablist" aria-label="Áreas da investigação" className="flex w-max gap-1">
         {ABAS.map((a, i) => (
           <button
@@ -127,12 +127,6 @@ function VisaoGeral() {
 
 function Conteudo() {
   const { r, aba, selecao, selecionar } = useResultado();
-
-  // Mede a altura do cabeçalho do app para a barra de abas grudar logo abaixo dele.
-  useEffect(() => {
-    const topo = document.querySelector("header");
-    if (topo) document.documentElement.style.setProperty("--altura-topo", `${Math.round(topo.getBoundingClientRect().height)}px`);
-  }, []);
 
   return (
     <article className={`flex flex-col gap-5 transition-[margin] duration-300 ${selecao ? "lg:mr-[380px] xl:mr-[360px]" : ""}`}>

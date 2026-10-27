@@ -179,6 +179,18 @@ describe("seção Relações (mapa geopolítico)", () => {
     expect(coop).toHaveAttribute("aria-pressed", "false");
   });
 
+  it("a legenda permite destacar os blocos com países do mapa e mostra quem entra no cenário", async () => {
+    montar();
+    const blocos = screen.getByRole("group", { name: /^Blocos/ });
+    expect(within(blocos).getAllByRole("button").map((b) => b.textContent?.replace(/\d|[+−]/g, "").trim())).toEqual(["Escudo", "Mercosul", "BRICS"]);
+    const brics = within(blocos).getByRole("button", { name: /BRICS/ });
+    await userEvent.click(brics);
+    expect(brics).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("Brasil, China")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /Cenário B/ }));
+    expect(within(blocos).getByRole("button", { name: /Escudo/ })).toHaveTextContent("+1");
+  });
+
   it("a lista em texto é a alternativa acessível ao mapa", async () => {
     montar();
     await userEvent.click(screen.getByRole("button", { name: /Lista/ }));

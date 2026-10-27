@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { listarDocumentos, type DocumentoResumo, type Paginado } from "../lib/api";
 import { autores, tituloDoDocumento } from "../lib/formato";
 import { useRascunhos } from "../lib/local";
+import { ROTAS } from "../lib/rotas";
 
 const LIMITE_INDICE = 100;
 
@@ -76,7 +77,7 @@ export function BuscaGlobal() {
         tipo: "documento",
         titulo: tituloDoDocumento(d).texto,
         detalhe: [autores(d.authors, 1), d.publication_year].filter(Boolean).join(" · ") || null,
-        destino: `/documentos/${d.id}`,
+        destino: ROTAS.fonte(d.id),
       }));
     const rasc: Resultado[] = rascunhos
       .filter((r) => normalizar(r.pergunta).includes(q))
@@ -86,7 +87,7 @@ export function BuscaGlobal() {
         tipo: "rascunho",
         titulo: r.pergunta,
         detalhe: "Rascunho de investigação · não processado",
-        destino: `/investigacoes?rascunho=${r.id}`,
+        destino: ROTAS.rascunho(r.id),
       }));
     return [...docs, ...rasc];
   }, [consulta, indice, rascunhos]);

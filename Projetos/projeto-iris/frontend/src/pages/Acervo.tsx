@@ -8,12 +8,14 @@ import { CabecalhoDePagina } from "../components/Shell";
 import { ROTULO_STATUS } from "../components/StatusDocumento";
 import { listarDocumentos, type StatusDocumento } from "../lib/api";
 import { contar, numero } from "../lib/formato";
+import { ROTAS } from "../lib/rotas";
 import { useDados } from "../lib/useDados";
 
 const POR_PAGINA = 20;
 const FILTROS: (StatusDocumento | null)[] = [null, "completed", "processing", "pending", "failed"];
 
-export function Documentos() {
+/** Gestão do acervo: envio, lista completa e (no detalhe) remoção de PDFs. Área de administração. */
+export function Acervo() {
   const [params, setParams] = useSearchParams();
   const status = (params.get("status") as StatusDocumento | null) ?? null;
   const pagina = Math.max(1, Number(params.get("pagina")) || 1);
@@ -35,9 +37,9 @@ export function Documentos() {
 
   return (
     <div>
-      <CabecalhoDePagina rotulo="Acervo" titulo="Documentos">
-        PDFs científicos recebidos pela plataforma: o arquivo original, o texto de cada página e os
-        metadados, com a origem de cada um.
+      <CabecalhoDePagina rotulo="Configurações" titulo="Gestão do acervo">
+        Alimente a base científica: envie PDFs, acompanhe o processamento e remova documentos. Quem
+        pesquisa consulta as fontes na Base científica; esta área é de administração.
       </CabecalhoDePagina>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
@@ -73,11 +75,11 @@ export function Documentos() {
               <EstadoVazio icone={<FileText size={22} strokeWidth={1.5} aria-hidden="true" />} titulo={status ? "Nenhum documento neste estado" : "Nenhum documento ainda"}>
                 {status
                   ? "Troque o filtro para ver os outros documentos."
-                  : "Envie o primeiro PDF ao lado. O texto de cada página e os metadados aparecem aqui."}
+                  : "Envie o primeiro PDF. O texto de cada página e os metadados aparecem aqui."}
               </EstadoVazio>
             </div>
           ) : (
-            <ListaDeDocumentos itens={lista.dados?.items ?? []} carregando={lista.tipo === "carregando"} />
+            <ListaDeDocumentos itens={lista.dados?.items ?? []} carregando={lista.tipo === "carregando"} destino={ROTAS.acervoDocumento} />
           )}
 
           {lista.tipo === "ok" && total > POR_PAGINA && (

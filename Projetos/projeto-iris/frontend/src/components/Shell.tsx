@@ -1,6 +1,5 @@
 import {
   Compass,
-  FileText,
   GitBranch,
   Library,
   Menu,
@@ -18,6 +17,7 @@ import { prontidao } from "../lib/api";
 import { useDados } from "../lib/useDados";
 import { BuscaGlobal } from "./BuscaGlobal";
 import { Marca } from "./Marca";
+import { ROTAS } from "../lib/rotas";
 
 interface Item {
   para: string;
@@ -31,28 +31,27 @@ interface Item {
  * no acervo.
  */
 const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
-  { titulo: null, itens: [{ para: "/", rotulo: "Início", icone: Compass }] },
+  { titulo: null, itens: [{ para: ROTAS.inicio, rotulo: "Início", icone: Compass }] },
   {
     titulo: "Presente",
     itens: [
-      { para: "/investigacoes", rotulo: "Investigações", icone: ScanSearch },
-      { para: "/base-cientifica", rotulo: "Base científica", icone: Library },
-      { para: "/mapas", rotulo: "Mapas e relações", icone: Waypoints },
+      { para: ROTAS.investigacoes, rotulo: "Investigações", icone: ScanSearch },
+      { para: ROTAS.base, rotulo: "Base científica", icone: Library },
+      { para: ROTAS.mapas, rotulo: "Mapas e relações", icone: Waypoints },
     ],
   },
   {
     titulo: "Futuros",
     itens: [
-      { para: "/cenarios", rotulo: "Cenários prospectivos", icone: GitBranch },
-      { para: "/sinais", rotulo: "Sinais antecipatórios", icone: Radar },
+      { para: ROTAS.cenarios, rotulo: "Cenários prospectivos", icone: GitBranch },
+      { para: ROTAS.sinais, rotulo: "Sinais antecipatórios", icone: Radar },
     ],
   },
   {
-    titulo: "Acervo",
+    titulo: "Pessoal",
     itens: [
-      { para: "/documentos", rotulo: "Documentos", icone: FileText },
-      { para: "/favoritos", rotulo: "Favoritos", icone: Star },
-      { para: "/configuracoes", rotulo: "Configurações", icone: Settings },
+      { para: ROTAS.favoritos, rotulo: "Favoritos", icone: Star },
+      { para: ROTAS.configuracoes, rotulo: "Configurações", icone: Settings },
     ],
   },
 ];
@@ -69,7 +68,7 @@ function EstadoDoSistema() {
           : ["Dependências pendentes", "var(--color-ambar)"];
   return (
     <NavLink
-      to="/configuracoes"
+      to={ROTAS.configuracoes}
       className="flex items-center gap-2 rounded-padrao px-3 py-2 text-micro text-texto-3 hover:bg-grafite hover:text-texto-2"
     >
       <svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" className="shrink-0">
@@ -90,7 +89,7 @@ function Navegacao({ aoNavegar }: { aoNavegar?: () => void }) {
             <NavLink
               key={para}
               to={para}
-              end={para === "/"}
+              end={para === ROTAS.inicio}
               onClick={aoNavegar}
               className={({ isActive }) =>
                 `group relative flex min-h-10 items-center gap-3 rounded-padrao px-3 text-corpo transition-colors duration-150 ${
@@ -144,12 +143,15 @@ export function Shell({ children }: { children: ReactNode }) {
 
       {/* Lateral fixa (desktop) */}
       <aside className="sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto border-r border-linha bg-abismo px-3 py-5 lg:flex">
-        <div className="px-3">
+        <NavLink to={ROTAS.inicio} className="w-fit px-3" aria-label="Início">
           <Marca />
-        </div>
+        </NavLink>
         <Navegacao />
-        <div className="mt-auto">
+        <div className="mt-auto flex flex-col gap-1">
           <EstadoDoSistema />
+          <NavLink to={ROTAS.landing} className="px-3 py-1 text-micro text-texto-3 hover:text-texto-2">
+            Sobre o Iris
+          </NavLink>
         </div>
       </aside>
 
@@ -227,7 +229,7 @@ export function CabecalhoDePagina({
   acoes?: ReactNode;
 }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-linha pb-6">
+    <div className="flex flex-wrap items-end justify-between gap-4 border-b border-linha pb-6 [&:not(:last-child)]:mb-8 [.flex>&]:mb-0">
       <div className="min-w-0 max-w-3xl">
         {rotulo && <p className="rotulo mb-2">{rotulo}</p>}
         <h1 className="font-editorial text-titulo font-medium tracking-[-0.01em] text-texto">{titulo}</h1>

@@ -3,7 +3,34 @@
 Interface web do Projeto Iris: React 19, Vite, TypeScript e Tailwind CSS 4, com os tokens de design
 centralizados em `src/styles/index.css`.
 
-![Início](docs/capturas/inicio-desktop.png)
+![Landing](docs/capturas/landing-desktop.png)
+
+## Telas e endereços
+
+| Endereço | Tela |
+|---|---|
+| `/` | Landing: missão, três dimensões, método (com o estado real de cada etapa), linguagem epistêmica, estado do projeto |
+| `/entrar` | Login (veja a nota abaixo) |
+| `/app` | Início: nova investigação, investigações recentes, base científica, cenários e sinais |
+| `/app/investigacoes` | Trilha do método, nova investigação e rascunhos |
+| `/app/base-cientifica` | Painel da base (indicadores, anos de publicação, completude dos metadados, idiomas) e pesquisa de fontes |
+| `/app/base-cientifica/:id` | Leitor da fonte: texto por página, ficha bibliográfica com a origem de cada campo, integridade |
+| `/app/mapas` | Mapas e relações: mapa-múndi, tipos de relação e camadas previstas |
+| `/app/cenarios` | Quadro de comparação de trajetórias e como ler um cenário |
+| `/app/sinais` | Tabela de sinais e critérios de um sinal |
+| `/app/favoritos` | Fontes marcadas |
+| `/app/configuracoes` | Estado do sistema e acesso à gestão do acervo |
+| `/app/configuracoes/acervo` | **Gestão do acervo** (administração): envio de PDFs, lista com filtros e remoção |
+| `/app/design-system` | Referência visual |
+
+**Documentos não estão no menu principal.** Quem pesquisa consulta as fontes na Base científica (é
+para lá que as citações vão apontar). Enviar e remover PDFs é tarefa de administração, em
+Configurações → Gestão do acervo. Os endereços antigos `/documentos` são redirecionados.
+
+**Login.** O servidor ainda não tem autenticação. A tela `/entrar` valida e-mail e senha, mas não
+finge entrar: ela explica que nenhuma senha foi verificada e oferece o acesso aberto de
+desenvolvimento. Contas, recuperação de senha e permissões chegam quando a autenticação existir na
+API.
 
 ## Direção de design
 
@@ -38,12 +65,13 @@ A referência completa (cores, tipos, marcadores, componentes) fica na rota `/de
 
 | Área | Situação |
 |---|---|
-| Documentos (envio, lista, filtros, leitura por página, remoção) | **Real**: usa a API (`/documents`) |
-| Base científica (contagens, idiomas, última ingestão, busca de fontes) | **Real**: cada número mostra a sua origem (`fonte GET /documents → total`) |
+| Gestão do acervo (envio, lista, filtros, remoção) e leitor de fontes | **Real**: usa a API (`/documents`) |
+| Base científica (indicadores, anos, completude, idiomas, busca de fontes) | **Real**: cada número mostra a sua origem (`fonte GET /documents → total`); distribuições usam os 100 documentos mais recentes e dizem isso |
 | Estado do sistema | **Real**: `/health/ready` |
 | Nova investigação | Formulário completo, com mapa de escopo, horizonte, dimensões e profundidade. **O motor ainda não existe**: a pergunta é salva como *rascunho neste navegador*, e a tela diz isso |
 | Favoritos | Reais, mas guardados só neste navegador |
-| Investigações processadas, cenários, sinais, mapas de relações | **Sem API ainda.** Mostram estados vazios que explicam o que vai aparecer; nenhum dado é simulado |
+| Investigações processadas, cenários, sinais, mapas de relações | **Sem API ainda.** Mostram a estrutura do painel (quadro de cenários, tabela de sinais, mapa e tipos de relação) vazia e marcada como vazia; nenhum dado é simulado |
+| Login | Só interface; a API não tem autenticação |
 | Busca global | Procura em documentos (os 100 mais recentes) e rascunhos. Avisa que países, atores e eventos ainda não estão indexados |
 
 ## Executar
@@ -71,7 +99,7 @@ ou defina `VITE_API_BASE` no build e habilite CORS na API.
 ## Testes e verificações
 
 ```bash
-npm test               # vitest: formatação, cliente da API, formulário, rascunhos, base científica
+npm test               # vitest: formatação, cliente da API, formulário, rascunhos, base científica, login, landing, rotas
 npm run typecheck
 ```
 

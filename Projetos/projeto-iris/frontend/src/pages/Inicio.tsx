@@ -7,6 +7,7 @@ import { InvestigacoesRecentes } from "../components/Investigacoes";
 import { NovaInvestigacao } from "../components/NovaInvestigacao";
 import { ResumoBase } from "../components/ResumoBase";
 import { Secao } from "../components/Secao";
+import { ROTAS } from "../lib/rotas";
 
 const LEITURA: TipoEpistemico[] = ["fato", "evidencia", "inferencia", "hipotese", "cenario", "incerteza", "limitacao"];
 
@@ -46,7 +47,7 @@ export function Inicio() {
             id="titulo-recentes"
             titulo="Investigações recentes"
             acao={
-              <Link to="/investigacoes" className="inline-flex items-center gap-1 text-legenda text-ciano-texto hover:underline">
+              <Link to={ROTAS.investigacoes} className="inline-flex items-center gap-1 text-legenda text-ciano-texto hover:underline">
                 Todas
                 <ArrowRight size={14} aria-hidden="true" />
               </Link>
@@ -78,7 +79,7 @@ export function Inicio() {
               trajetórias afetam os atores e as variáveis críticas.
             </EstadoVazio>
             <EstruturaDeCenario />
-            <Link to="/cenarios" className="inline-flex w-fit items-center gap-1 text-legenda text-ciano-texto hover:underline">
+            <Link to={ROTAS.cenarios} className="inline-flex w-fit items-center gap-1 text-legenda text-ciano-texto hover:underline">
               Sobre os cenários prospectivos
               <ArrowRight size={14} aria-hidden="true" />
             </Link>

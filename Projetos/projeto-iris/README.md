@@ -107,7 +107,7 @@ POST /documents/upload
 
 ## Interface web
 
-![Início do Projeto Iris](frontend/docs/capturas/inicio-desktop.png)
+![Projeto Iris](frontend/docs/capturas/landing-desktop.png)
 
 O frontend fica em [`frontend/`](frontend/README.md) e usa React, Vite, TypeScript e Tailwind CSS 4. Ele
 conversa com esta API por proxy em desenvolvimento, sem exigir mudanças no backend. Direção de
@@ -116,7 +116,7 @@ design, o que é real e o que ainda é estado vazio, e como rodar: veja o
 
 ```bash
 uv run uvicorn app.main:create_app --factory    # API em :8000
-cd frontend && npm install && npm run dev       # interface em :5173
+cd frontend && npm install && npm run dev       # interface em :5173 (landing em /, plataforma em /app)
 ```
 
 ## Pré-requisitos

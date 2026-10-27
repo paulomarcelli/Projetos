@@ -5,6 +5,7 @@ import { autores, data, dataCompacta, idioma, numero, tituloDoDocumento } from "
 import { useFavoritos } from "../lib/local";
 import { Esqueleto } from "./Estados";
 import { SeloStatus } from "./StatusDocumento";
+import { ROTAS } from "../lib/rotas";
 
 const COLUNAS = "md:grid-cols-[32px_minmax(0,1fr)_64px_96px_72px_112px_96px]";
 
@@ -25,7 +26,7 @@ export function BotaoFavorito({ id, titulo }: { id: string; titulo: string }) {
   );
 }
 
-function Linha({ d }: { d: DocumentoResumo }) {
+function Linha({ d, destino }: { d: DocumentoResumo; destino: (id: string) => string }) {
   const { texto: titulo, ehNomeDeArquivo } = tituloDoDocumento(d);
   const quem = autores(d.authors, 2);
   return (
@@ -33,7 +34,7 @@ function Linha({ d }: { d: DocumentoResumo }) {
       <BotaoFavorito id={d.id} titulo={titulo} />
       <div className="min-w-0">
         <Link
-          to={`/documentos/${d.id}`}
+          to={destino(d.id)}
           title={titulo}
           className={`line-clamp-2 text-corpo text-texto after:absolute after:inset-0 after:content-[''] group-hover:text-ciano-texto ${
             ehNomeDeArquivo ? "font-dados text-legenda [overflow-wrap:anywhere]" : "font-editorial text-[1rem]"
@@ -69,7 +70,16 @@ function Linha({ d }: { d: DocumentoResumo }) {
   );
 }
 
-export function ListaDeDocumentos({ itens, carregando }: { itens: DocumentoResumo[]; carregando?: boolean }) {
+export function ListaDeDocumentos({
+  itens,
+  carregando,
+  destino = ROTAS.fonte,
+}: {
+  itens: DocumentoResumo[];
+  carregando?: boolean;
+  /** Para onde cada linha leva: leitor de fontes (padrão) ou gestão do acervo. */
+  destino?: (id: string) => string;
+}) {
   return (
     <div>
       <div className={`hidden gap-x-3 border-b border-linha-forte pb-2 text-micro text-texto-3 md:grid ${COLUNAS}`} aria-hidden="true">
@@ -93,7 +103,7 @@ export function ListaDeDocumentos({ itens, carregando }: { itens: DocumentoResum
       ) : (
         <ul aria-label="Documentos">
           {itens.map((d) => (
-            <Linha key={d.id} d={d} />
+            <Linha key={d.id} d={d} destino={destino} />
           ))}
         </ul>
       )}

@@ -99,7 +99,7 @@ describe("base científica", () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [], total: 0, limit: 1, offset: 0 }), { status: 200 })));
     comApp(<ResumoBase />);
     expect(await screen.findByText("A base científica está vazia")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Enviar o primeiro PDF/ })).toHaveAttribute("href", "/documentos");
+    expect(screen.getByRole("link", { name: /Enviar o primeiro PDF/ })).toHaveAttribute("href", "/app/configuracoes/acervo");
   });
 
   it("API fora do ar mostra erro com opção de tentar de novo", async () => {

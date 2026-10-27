@@ -6,6 +6,7 @@ import { quando } from "../lib/formato";
 import { useRascunhos, type Rascunho } from "../lib/local";
 import { Epistemico } from "./Epistemico";
 import { EstadoVazio } from "./Estados";
+import { ROTAS } from "../lib/rotas";
 
 function LinhaRascunho({ r }: { r: Rascunho }) {
   const { remover } = useRascunhos();
@@ -36,7 +37,7 @@ function LinhaRascunho({ r }: { r: Rascunho }) {
           </>
         ) : (
           <>
-            <Link to={`/investigacoes?rascunho=${r.id}`} className="botao botao-secundario botao-pequeno">
+            <Link to={ROTAS.rascunho(r.id)} className="botao botao-secundario botao-pequeno">
               <Pencil size={14} aria-hidden="true" />
               Editar
             </Link>
@@ -73,7 +74,7 @@ export function InvestigacoesRecentes({ limite }: { limite?: number }) {
           <div className="flex items-baseline justify-between gap-3 border-b border-linha pb-2">
             <p className="rotulo">Rascunhos neste navegador</p>
             {limite && rascunhos.length > limite && (
-              <Link to="/investigacoes" className="inline-flex items-center gap-1 text-legenda text-ciano-texto hover:underline">
+              <Link to={ROTAS.investigacoes} className="inline-flex items-center gap-1 text-legenda text-ciano-texto hover:underline">
                 Ver todos ({rascunhos.length})
                 <ArrowRight size={14} aria-hidden="true" />
               </Link>

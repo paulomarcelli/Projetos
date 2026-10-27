@@ -1,13 +1,16 @@
 import { Compass } from "lucide-react";
-import { Link, Route, Routes } from "react-router";
+import { Link, Navigate, Route, Routes, useParams } from "react-router";
 import { EstadoVazio } from "./components/Estados";
 import { Shell } from "./components/Shell";
 import { AlternadorDados } from "./dev/AlternadorDados";
+import { ROTAS } from "./lib/rotas";
+import { Acervo } from "./pages/Acervo";
 import { Configuracoes } from "./pages/Configuracoes";
 import { DesignSystem } from "./pages/DesignSystem";
 import { DocumentoDetalhe } from "./pages/DocumentoDetalhe";
-import { Documentos } from "./pages/Documentos";
+import { Entrar } from "./pages/Entrar";
 import { Inicio } from "./pages/Inicio";
+import { Landing } from "./pages/Landing";
 import { BaseCientifica, Cenarios, Favoritos, Investigacoes, MapasRelacoes, Sinais } from "./pages/Modulos";
 
 function NaoEncontrado() {
@@ -16,7 +19,7 @@ function NaoEncontrado() {
       icone={<Compass size={22} strokeWidth={1.5} aria-hidden="true" />}
       titulo="Esta página não existe"
       acao={
-        <Link to="/" className="botao botao-secundario botao-pequeno">
+        <Link to={ROTAS.inicio} className="botao botao-secundario botao-pequeno">
           Voltar ao início
         </Link>
       }
@@ -26,25 +29,45 @@ function NaoEncontrado() {
   );
 }
 
+/** Endereços antigos de documentos levam ao leitor de fontes. */
+function RedirecionarDocumento() {
+  const { id = "" } = useParams();
+  return <Navigate to={ROTAS.fonte(id)} replace />;
+}
+
+function Plataforma() {
+  return (
+    <Shell>
+      <Routes>
+        <Route index element={<Inicio />} />
+        <Route path="investigacoes" element={<Investigacoes />} />
+        <Route path="base-cientifica" element={<BaseCientifica />} />
+        <Route path="base-cientifica/:id" element={<DocumentoDetalhe />} />
+        <Route path="mapas" element={<MapasRelacoes />} />
+        <Route path="cenarios" element={<Cenarios />} />
+        <Route path="sinais" element={<Sinais />} />
+        <Route path="favoritos" element={<Favoritos />} />
+        <Route path="configuracoes" element={<Configuracoes />} />
+        <Route path="configuracoes/acervo" element={<Acervo />} />
+        <Route path="configuracoes/acervo/:id" element={<DocumentoDetalhe gestao />} />
+        <Route path="design-system" element={<DesignSystem />} />
+        <Route path="*" element={<NaoEncontrado />} />
+      </Routes>
+    </Shell>
+  );
+}
+
 export function App() {
   return (
     <>
-      <Shell>
-        <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/investigacoes" element={<Investigacoes />} />
-          <Route path="/base-cientifica" element={<BaseCientifica />} />
-          <Route path="/mapas" element={<MapasRelacoes />} />
-          <Route path="/cenarios" element={<Cenarios />} />
-          <Route path="/sinais" element={<Sinais />} />
-          <Route path="/documentos" element={<Documentos />} />
-          <Route path="/documentos/:id" element={<DocumentoDetalhe />} />
-          <Route path="/favoritos" element={<Favoritos />} />
-          <Route path="/configuracoes" element={<Configuracoes />} />
-          <Route path="/design-system" element={<DesignSystem />} />
-          <Route path="*" element={<NaoEncontrado />} />
-        </Routes>
-      </Shell>
+      <Routes>
+        <Route path={ROTAS.landing} element={<Landing />} />
+        <Route path={ROTAS.entrar} element={<Entrar />} />
+        <Route path="/app/*" element={<Plataforma />} />
+        <Route path="/documentos" element={<Navigate to={ROTAS.acervo} replace />} />
+        <Route path="/documentos/:id" element={<RedirecionarDocumento />} />
+        <Route path="*" element={<Navigate to={ROTAS.landing} replace />} />
+      </Routes>
       {import.meta.env.DEV && <AlternadorDados />}
     </>
   );

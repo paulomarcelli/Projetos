@@ -1,4 +1,4 @@
-import { ArrowRight, RotateCw } from "lucide-react";
+import { ArrowRight, FolderInput, RotateCw } from "lucide-react";
 import { Link } from "react-router";
 import { ErroDeCarregamento, LinhasEsqueleto, Origem } from "../components/Estados";
 import { Secao } from "../components/Secao";
@@ -6,6 +6,7 @@ import { CabecalhoDePagina } from "../components/Shell";
 import { prontidao } from "../lib/api";
 import { MARCA } from "../lib/marca";
 import { useDados } from "../lib/useDados";
+import { ROTAS } from "../lib/rotas";
 
 const NOMES: Record<string, string> = {
   database: "Banco de dados (PostgreSQL)",
@@ -26,10 +27,26 @@ export function Configuracoes() {
   const estado = useDados(prontidao, []);
   return (
     <div>
-      <CabecalhoDePagina rotulo="Acervo" titulo="Configurações">
-        Estado do sistema e referência da identidade visual.
+      <CabecalhoDePagina rotulo="Pessoal" titulo="Configurações">
+        Administração do acervo, estado do sistema e referência da identidade visual.
       </CabecalhoDePagina>
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
+        <section aria-labelledby="titulo-acervo-cfg" className="painel flex flex-col items-start gap-3 p-5 sm:p-6 lg:col-span-2">
+          <div className="flex items-center gap-3">
+            <FolderInput size={20} strokeWidth={1.6} aria-hidden="true" className="text-ciano" />
+            <h2 id="titulo-acervo-cfg" className="font-editorial text-secao text-texto">
+              Gestão do acervo
+            </h2>
+          </div>
+          <p className="max-w-[65ch] text-corpo text-texto-2">
+            Envie PDFs científicos para a base, acompanhe o processamento e remova documentos. É a área
+            de administração: quem pesquisa consulta as fontes na Base científica.
+          </p>
+          <Link to={ROTAS.acervo} className="botao botao-secundario botao-pequeno">
+            Abrir a gestão do acervo
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </section>
         <Secao
           id="titulo-sistema"
           titulo="Estado do sistema"
@@ -79,7 +96,7 @@ export function Configuracoes() {
               Sem autenticação: use apenas em ambiente de desenvolvimento controlado. Rascunhos e
               favoritos ficam só neste navegador.
             </p>
-            <Link to="/design-system" className="inline-flex w-fit items-center gap-1 text-ciano-texto hover:underline">
+            <Link to={ROTAS.designSystem} className="inline-flex w-fit items-center gap-1 text-ciano-texto hover:underline">
               Ver o design system
               <ArrowRight size={14} aria-hidden="true" />
             </Link>

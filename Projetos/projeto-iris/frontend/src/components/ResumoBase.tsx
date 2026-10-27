@@ -5,6 +5,7 @@ import { contar, idioma, numero, quando } from "../lib/formato";
 import { useDados } from "../lib/useDados";
 import { Epistemico } from "./Epistemico";
 import { ErroDeCarregamento, Esqueleto, EstadoVazio, Origem } from "./Estados";
+import { ROTAS } from "../lib/rotas";
 
 function Indicador({
   rotulo,
@@ -94,7 +95,7 @@ export function ResumoBase() {
         icone={<Library size={22} strokeWidth={1.5} aria-hidden="true" />}
         titulo="A base científica está vazia"
         acao={
-          <Link to="/documentos" className="botao botao-secundario botao-pequeno">
+          <Link to={ROTAS.acervo} className="botao botao-secundario botao-pequeno">
             <Upload size={14} aria-hidden="true" />
             Enviar o primeiro PDF
           </Link>
@@ -142,12 +143,12 @@ export function ResumoBase() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Link to="/base-cientifica" className="botao botao-secundario botao-pequeno">
+        <Link to={ROTAS.base} className="botao botao-secundario botao-pequeno">
           Pesquisar fontes
           <ArrowRight size={14} aria-hidden="true" />
         </Link>
-        <Link to="/documentos" className="botao botao-fantasma botao-pequeno">
-          Gerenciar documentos
+        <Link to={ROTAS.acervo} className="botao botao-fantasma botao-pequeno">
+          Gerenciar o acervo
         </Link>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { enviarDocumento, ErroApi, type MetadadosUpload, type RespostaUpload } f
 import { tamanho, tituloDoDocumento } from "../lib/formato";
 import { Aviso } from "./Estados";
 import { useNotificar } from "./Notificacoes";
+import { ROTAS } from "../lib/rotas";
 
 const CAMPOS: { campo: keyof MetadadosUpload; rotulo: string; dica?: string; tipo?: string; largo?: boolean }[] = [
   { campo: "title", rotulo: "Título", largo: true },
@@ -179,7 +180,7 @@ export function EnvioDeDocumento({ aoConcluir }: { aoConcluir: (doc: RespostaUpl
       {resultado && !enviando && (
         <Aviso tom={resultado.status === "failed" ? "erro" : resultado.duplicate ? "neutro" : "sucesso"}>
           {resultado.duplicate ? "Já estava no acervo: " : resultado.status === "failed" ? "Recebido, mas falhou: " : "Processado: "}
-          <Link to={`/documentos/${resultado.id}`} className="text-ciano-texto underline-offset-4 hover:underline [overflow-wrap:anywhere]">
+          <Link to={ROTAS.acervoDocumento(resultado.id)} className="text-ciano-texto underline-offset-4 hover:underline [overflow-wrap:anywhere]">
             {tituloDoDocumento(resultado).texto}
           </Link>
         </Aviso>

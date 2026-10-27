@@ -16,6 +16,7 @@ import {
 } from "../lib/api";
 import { contar, cortarNoMeio, dataComHora, idioma, numero, tamanho, tituloDoDocumento } from "../lib/formato";
 import { useFavoritos } from "../lib/local";
+import { ROTAS } from "../lib/rotas";
 import { useDados } from "../lib/useDados";
 
 const JANELA = 20;
@@ -270,8 +271,8 @@ function Remocao({ doc }: { doc: Detalhe }) {
           try {
             await removerDocumento(doc.id);
             remover(doc.id);
-            notificar("sucesso", "Documento removido.");
-            navegar("/documentos");
+            notificar("sucesso", "Documento removido do acervo.");
+            navegar(ROTAS.acervo);
           } catch (e) {
             notificar("erro", e instanceof ErroApi ? e.message : "Não foi possível remover.");
             setRemovendo(false);
@@ -293,8 +294,13 @@ function Remocao({ doc }: { doc: Detalhe }) {
   );
 }
 
-export function DocumentoDetalhe() {
+/**
+ * Uma fonte do acervo. Em `gestao` (Configurações → Gestão do acervo) aparece a remoção;
+ * na Base científica, a página é só de leitura e consulta.
+ */
+export function DocumentoDetalhe({ gestao = false }: { gestao?: boolean }) {
   const { id = "" } = useParams();
+  const voltar = gestao ? { para: ROTAS.acervo, rotulo: "Gestão do acervo" } : { para: ROTAS.base, rotulo: "Base científica" };
   const doc = useDados(() => obterDocumento(id), [id]);
   const notificar = useNotificar();
 
@@ -311,12 +317,12 @@ export function DocumentoDetalhe() {
   if (doc.tipo === "erro") {
     return (
       <div className="flex flex-col gap-6">
-        <Link to="/documentos" className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto">
+        <Link to={voltar.para} className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto">
           <ArrowLeft size={14} aria-hidden="true" />
-          Documentos
+          {voltar.rotulo}
         </Link>
         {doc.erro.status === 404 ? (
-          <EstadoVazio titulo="Documento não encontrado">Ele pode ter sido removido. Volte à lista de documentos.</EstadoVazio>
+          <EstadoVazio titulo="Documento não encontrado">Ele pode ter sido removido do acervo.</EstadoVazio>
         ) : (
           <ErroDeCarregamento erro={doc.erro} aoTentarDeNovo={doc.recarregar} />
         )}
@@ -331,9 +337,9 @@ export function DocumentoDetalhe() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 border-b border-linha pb-6">
-        <Link to="/documentos" className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto">
+        <Link to={voltar.para} className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto">
           <ArrowLeft size={14} aria-hidden="true" />
-          Documentos
+          {voltar.rotulo}
         </Link>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <SeloStatus status={d.status} />
@@ -357,7 +363,7 @@ export function DocumentoDetalhe() {
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <BotaoFavorito id={d.id} titulo={titulo} />
-            <Remocao doc={d} />
+            {gestao && <Remocao doc={d} />}
           </div>
         </div>
 

@@ -27,6 +27,10 @@ Projetos/
 │   ├── src/
 │   ├── public/
 │   └── README.md
+├── landing page Karol Sevilla x Samsung/
+│   ├── index.html
+│   ├── src/ (three/, motion/, styles/)
+│   └── README.md
 ├── Joken-Po-Python/
 │   ├── pedra_papel_tesoura.py
 │   └── README.md
@@ -77,6 +81,7 @@ Projetos/
 | [Luna AI](Projetos/Luna-AI) | Python · Inteligência Artificial | Em desenvolvimento |
 | [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicado |
 | [Landing page Karol Sevilla](Projetos/landing%20page%20Karol%20Sevilla) | Vite · JavaScript · GSAP · WebGL | Publicado |
+| [Karol × Samsung (Galaxy S26 Ultra)](Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung) | Vite · Three.js · GSAP | Publicado |
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
 | [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | Publicado |
 | [Una Noche Más](Projetos/Una-Noche-Mas) | HTML · CSS · JavaScript | Publicado |
@@ -104,6 +109,8 @@ O GitHub Pages publica automaticamente o conteúdo do repositório a cada atuali
 [**Abrir a primeira versão do Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/primeira-versao/)
 
 [**Abrir a Landing page Karol Sevilla**](https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/) (projeto acadêmico de Gestalt, fictício)
+
+[**Abrir Karol × Samsung (Galaxy S26 Ultra, 3D)**](https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/) (projeto pessoal de fã)
 
 [**Abrir Site Cenicienta**](https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/)
 

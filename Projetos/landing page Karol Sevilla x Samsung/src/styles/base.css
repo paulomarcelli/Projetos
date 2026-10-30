@@ -1,0 +1,38 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--preto); }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+body { margin: 0; color: var(--texto); background: var(--preto); font-family: var(--f-display); font-variation-settings: 'wdth' 100; font-size: 16px; line-height: 1.45; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+h1, h2, p, ol, ul, figure { margin: 0; }
+ol, ul { padding: 0; list-style: none; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+img { display: block; max-width: 100%; }
+:focus-visible { outline: 1.5px solid var(--luz); outline-offset: 3px; }
+
+.mono { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400; }
+.display { font-family: var(--f-display); font-variation-settings: 'wdth' 125; font-weight: 800; text-transform: uppercase; letter-spacing: -0.035em; line-height: 0.88; }
+.rotulo { color: var(--texto-2); }
+.fio { color: var(--texto-2); }
+sup { font-size: 0.42em; vertical-align: 0; position: relative; top: -0.85em; margin-left: 0.04em; }
+
+/* máscara de linha (SplitText): folga para acento e descendente */
+.ln { padding: 0.12em 0 0.22em; margin: -0.12em 0 -0.22em; }
+
+/* o palco 3D atrás da página inteira */
+.stage { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.vinheta { position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: 0; background: radial-gradient(circle at var(--vx, 60%) var(--vy, 50%), transparent 0 16vmin, rgb(10 10 11 / 0.55) 30vmin, rgb(10 10 11 / 0.94) 58vmin); }
+main { position: relative; z-index: 3; }
+
+.botao { white-space: nowrap; display: inline-flex; align-items: center; gap: 0.6em; height: 32px; padding: 0 14px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+.botao--branco { background: var(--texto); color: var(--preto); }
+.botao--linha { border: 1px solid var(--fio); color: var(--texto); height: 40px; padding: 0 18px; transition: background-color 0.25s, color 0.25s; }
+.botao--linha:hover { background: var(--luz); color: var(--preto); }
+.quadrado { display: grid; place-items: center; width: 32px; height: 32px; background: var(--painel); color: var(--texto); font-family: var(--f-mono); font-size: 14px; }
+.quadrado--branco { background: var(--texto); color: var(--preto); }
+.menu-abre span { display: block; width: 12px; height: 1px; background: currentColor; }
+.menu-abre { gap: 0; align-content: center; row-gap: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}

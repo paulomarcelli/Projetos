@@ -32,6 +32,11 @@ jobs:
         run: |
           npm ci
           npm run build
+      - name: Gerar a landing Karol x Samsung (Vite + Three.js)
+        working-directory: Projetos/landing page Karol Sevilla x Samsung
+        run: |
+          npm ci
+          npm run build
       - name: Montar os sites
         run: |
           rm -rf _site
@@ -53,6 +58,9 @@ jobs:
           # Landing page Karol Sevilla: só o resultado do build (dist/)
           mkdir -p _site/Projetos/Landing-Page-Karol-Sevilla
           cp -a "Projetos/landing page Karol Sevilla/dist/." _site/Projetos/Landing-Page-Karol-Sevilla/
+          # Landing Karol x Samsung: só o resultado do build (dist/)
+          mkdir -p _site/Projetos/Karol-x-Samsung
+          cp -a "Projetos/landing page Karol Sevilla x Samsung/dist/." _site/Projetos/Karol-x-Samsung/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

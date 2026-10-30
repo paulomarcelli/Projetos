@@ -23,6 +23,15 @@ jobs:
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
+      - name: Preparar o Node (landing page Karol Sevilla)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Gerar a landing page Karol Sevilla (Vite)
+        working-directory: Projetos/landing page Karol Sevilla
+        run: |
+          npm ci
+          npm run build
       - name: Montar os sites
         run: |
           rm -rf _site
@@ -41,6 +50,9 @@ jobs:
           printf 'window.LUNA_CONFIG = { apiBase: %s };\n' "$(jq -Rn --arg u "$LUNA_API_URL" '$u')" > _site/Projetos/Luna/config.js
           # Cache: cada publicação usa uma versão nova dos scripts, para o navegador não ficar com a página antiga
           sed -i "s#\\(src=\"\\(config\\|script\\|voz\\|voz-tempo-real\\|intro\\|estrelas\\)\\.js\\)\"#\\1?v=${GITHUB_SHA::8}\"#g; s#href=\"style.css\"#href=\"style.css?v=${GITHUB_SHA::8}\"#" _site/Projetos/Luna/index.html
+          # Landing page Karol Sevilla: só o resultado do build (dist/)
+          mkdir -p _site/Projetos/Landing-Page-Karol-Sevilla
+          cp -a "Projetos/landing page Karol Sevilla/dist/." _site/Projetos/Landing-Page-Karol-Sevilla/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

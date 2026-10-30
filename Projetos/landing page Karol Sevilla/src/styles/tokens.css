@@ -1,0 +1,19 @@
+:root {
+  /* azul-bebê com branco nos detalhes; o marinho só para texto e botão principal */
+  --bebe: #a9d6f5;
+  --bebe-claro: #e3f2fd;
+  --bebe-medio: #cbe6fa;
+  --branco: #ffffff;
+  --marinho: #0e2a47;
+  --marinho-2: #45607e;
+  --marinho-3: #9fb8d3;
+  --linha: #bfddf3;
+  --erro: #b42318;
+
+  --f-titulo: 'Archivo Black', system-ui, sans-serif;
+  --f-corpo: 'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --gutter: clamp(16px, 2.2vw, 32px);
+  --saida: cubic-bezier(0.16, 1, 0.3, 1);
+}

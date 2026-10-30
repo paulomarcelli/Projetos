@@ -54,12 +54,11 @@ export function fisica({ section, reduced }) {
 
   if (reduced) {
     bodies.forEach((b, i) => { b.x = W * (0.1 + 0.8 * (i / (bodies.length - 1))); b.y = H - b.r; });
-    place();
-    return;
+    started = true;
   }
   place();
   // cai quando a pilha está quase toda na tela; voltando para cima, os objetos somem e caem de novo
-  ScrollTrigger.create({
+  if (!reduced) ScrollTrigger.create({
     trigger: area,
     start: 'top 30%',
     onEnter: drop,

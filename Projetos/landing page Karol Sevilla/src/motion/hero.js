@@ -18,13 +18,23 @@ export function hero({ section, image, caixa }) {
   const box = { L: 0, T: 0, W: 1, H: 1 };
   const ctx = document.createElement('canvas').getContext('2d');
   function layout() {
-    const gutter = parseFloat(getComputedStyle(section).getPropertyValue('--gutter')) || 20;
+    // --gutter é um clamp(): o valor em px vem de um elemento que usa a margem (a frase do topo)
+    const ref = section.querySelector('.hero__frase');
+    const gutter = (ref && parseFloat(getComputedStyle(ref).left)) || 20;
     const r = section.getBoundingClientRect();
-    const s = (r.width - gutter * 2) / (u.x1 - u.x0); // px por unidade do Blender
+    // px por unidade do Blender: ocupa a largura entre as margens, mas em tela larga e baixa
+    // (notebook) a altura do nome fica limitada, e o nome se centraliza
+    const s = Math.min((r.width - gutter * 2) / (u.x1 - u.x0), (r.height * 0.42) / (u.y1 - u.y0));
+    const esquerda = (r.width - (u.x1 - u.x0) * s) / 2;
     ctx.font = '400 200px "Archivo Black"';
     const S = caixa.letras[0];
     const mS = ctx.measureText(S.ch);
-    const size = (200 * (S.y1 - S.y0) * s) / (mS.actualBoundingBoxAscent + mS.actualBoundingBoxDescent);
+    const porAltura = (200 * (S.y1 - S.y0) * s) / (mS.actualBoundingBoxAscent + mS.actualBoundingBoxDescent);
+    const porLargura = Math.min(...caixa.letras.map((l) => {
+      const m = ctx.measureText(l.ch);
+      return (200 * (l.x1 - l.x0) * s) / (m.actualBoundingBoxLeft + m.actualBoundingBoxRight);
+    }));
+    const size = Math.min(porAltura, porLargura);
     const k = size / 200;
     const H = (u.y1 - u.y0) * s;
     const isMobile = r.width < 720;
@@ -36,10 +46,11 @@ export function hero({ section, image, caixa }) {
     word.style.fontSize = `${size}px`;
     caixa.letras.forEach((l, i) => {
       const m = ctx.measureText(l.ch);
-      const x = gutter + (l.x0 - u.x0) * s + m.actualBoundingBoxLeft * k;
+      const sobra = (l.x1 - l.x0) * s - (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) * k;
+      const x = esquerda + (l.x0 - u.x0) * s + sobra / 2 + m.actualBoundingBoxLeft * k;
       spans[i].style.transform = `translate(${x}px, ${baseline - baseOffset}px)`;
     });
-    Object.assign(box, { L: gutter, T: inkTop, W: (u.x1 - u.x0) * s, H });
+    Object.assign(box, { L: esquerda, T: inkTop, W: (u.x1 - u.x0) * s, H });
     ink?.resize();
   }
 

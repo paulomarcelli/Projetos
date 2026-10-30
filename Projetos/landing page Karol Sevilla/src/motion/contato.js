@@ -6,8 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 export function contato({ section, reduced }) {
   const word = section.querySelector('.contato__word');
   const spans = [...word.querySelectorAll('span')];
-  if (reduced) return;
-  const L = spans.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, s: 1, vs: 0, rise: 1, cx: 0, cy: 0 }));
+  const L = spans.map((el) => ({ el, x: 0, y: 0, vx: 0, vy: 0, s: 1, vs: 0, rise: reduced ? 0 : 1, cx: 0, cy: 0 }));
   const m = { x: -9999, y: -9999, on: false };
 
   // o nome ocupa a largura exata do rodapé, medido (a fonte larga não cabe em vw fixo)
@@ -35,7 +34,7 @@ export function contato({ section, reduced }) {
   fit();
   measure();
 
-  ScrollTrigger.create({
+  if (!reduced) ScrollTrigger.create({
     trigger: word,
     start: 'top 92%',
     onEnter: () => gsap.fromTo(L, { rise: 1 }, { rise: 0, duration: 1.3, ease: 'expo.out', stagger: 0.06, overwrite: true }),

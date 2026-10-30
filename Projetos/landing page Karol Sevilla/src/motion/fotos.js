@@ -6,28 +6,29 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 export function fotos({ section, reduced }) {
   const itens = [...section.querySelectorAll('[data-depth]')];
   const arco = section.querySelector('.arco');
-  if (reduced) return;
+  // com movimento reduzido, tudo já aparece no lugar e nada boia sozinho; fugir do cursor continua
+  if (!reduced) {
+    gsap.set(itens, { scale: 0 });
+    gsap.set(arco, { clipPath: 'inset(100% 0 0 0)' });
+    ScrollTrigger.create({
+      trigger: section.querySelector('.fotos__palco'),
+      start: 'top 75%',
+      onEnter: () => {
+        gsap.to(arco, { clipPath: 'inset(0% 0 0 0)', duration: 1.3, ease: 'expo.out' });
+        gsap.to(itens, { scale: 1, duration: 1.4, ease: 'elastic.out(1, 0.42)', stagger: 0.09, delay: 0.2 });
+      },
+      onLeaveBack: () => {
+        gsap.to(itens, { scale: 0, duration: 0.35, ease: 'power3.in', overwrite: true });
+        gsap.to(arco, { clipPath: 'inset(100% 0 0 0)', duration: 0.4, ease: 'power3.in' });
+      },
+    });
 
-  gsap.set(itens, { scale: 0 });
-  gsap.set(arco, { clipPath: 'inset(100% 0 0 0)' });
-  ScrollTrigger.create({
-    trigger: section.querySelector('.fotos__palco'),
-    start: 'top 75%',
-    onEnter: () => {
-      gsap.to(arco, { clipPath: 'inset(0% 0 0 0)', duration: 1.3, ease: 'expo.out' });
-      gsap.to(itens, { scale: 1, duration: 1.4, ease: 'elastic.out(1, 0.42)', stagger: 0.09, delay: 0.2 });
-    },
-    onLeaveBack: () => {
-      gsap.to(itens, { scale: 0, duration: 0.35, ease: 'power3.in', overwrite: true });
-      gsap.to(arco, { clipPath: 'inset(100% 0 0 0)', duration: 0.4, ease: 'power3.in' });
-    },
-  });
-
-  // subida no scroll: os mais "perto" sobem mais
-  itens.forEach((el) => {
-    const d = parseFloat(el.dataset.depth);
-    gsap.to(el, { yPercent: -40 * d, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true } });
-  });
+    // subida no scroll: os mais "perto" sobem mais
+    itens.forEach((el) => {
+      const d = parseFloat(el.dataset.depth);
+      gsap.to(el, { yPercent: -40 * d, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+  }
 
   // boiar + fugir do cursor, numa camada própria (o translate não briga com o yPercent do scroll)
   const corpos = itens.map((el, i) => ({ el, d: parseFloat(el.dataset.depth), fase: i * 1.7, x: 0, y: 0, vx: 0, vy: 0 }));
@@ -40,8 +41,9 @@ export function fotos({ section, reduced }) {
     if (!visivel) return;
     const dt = Math.min(0.05, dtMs / 1000);
     for (const c of corpos) {
-      let tx = Math.sin(t * 0.7 + c.fase) * 10 * c.d;
-      let ty = Math.cos(t * 0.55 + c.fase) * 14 * c.d;
+      const boia = reduced ? 0 : 1;
+      let tx = Math.sin(t * 0.7 + c.fase) * 10 * c.d * boia;
+      let ty = Math.cos(t * 0.55 + c.fase) * 14 * c.d * boia;
       if (m.on) {
         const r = c.el.getBoundingClientRect();
         const dx = r.left + r.width / 2 - m.x, dy = r.top + r.height / 2 - m.y;

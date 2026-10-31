@@ -1,0 +1,96 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/credits.gd" id="1_credits"]
+[ext_resource type="Shader" path="res://shaders/menu_background.gdshader" id="2_bg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
+shader = ExtResource("2_bg")
+shader_parameter/motion = 0.0
+
+[node name="Credits" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_credits")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_bg")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(1240, 0)
+layout_mode = 2
+
+[node name="Layout" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 72
+text = "CRÉDITOS"
+
+[node name="DevTitle" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "DESENVOLVIMENTO"
+
+[node name="Dev" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+text = "Projeto BRIGA DE PODER — código, interface e arte do menu feitos para este jogo."
+autowrap_mode = 3
+
+[node name="ToolsTitle" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "FERRAMENTAS E LICENÇAS"
+
+[node name="Engine" type="Label" parent="Center/Panel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Fonts" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+text = "Fonte Bungee — The Bungee Project Authors (David Jonathan Ross), SIL Open Font License 1.1
+Fonte Barlow Condensed — The Barlow Project Authors (Jeremy Tribby), SIL Open Font License 1.1
+Sons da interface — sintetizados pelo próprio jogo, sem gravações de terceiros"
+autowrap_mode = 3
+
+[node name="NoticeTitle" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "AVISO"
+
+[node name="Notice" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Obra de ficção e sátira. Os personagens são caricaturas de figuras públicas; falas, golpes e acontecimentos do jogo são inventados e não representam fatos reais nem a opinião de ninguém."
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="Center/Panel/Layout"]
+layout_mode = 2
+alignment = 2
+
+[node name="BackButton" type="Button" parent="Center/Panel/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "VOLTAR"

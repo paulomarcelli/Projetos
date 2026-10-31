@@ -1,0 +1,179 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
+[ext_resource type="Shader" path="res://shaders/menu_background.gdshader" id="2_bg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
+shader = ExtResource("2_bg")
+shader_parameter/motion = 0.0
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_bg")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(1240, 0)
+layout_mode = 2
+
+[node name="Layout" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 72
+text = "CONFIGURAÇÕES"
+
+[node name="Grid" type="GridContainer" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_override_constants/h_separation = 48
+theme_override_constants/v_separation = 14
+columns = 2
+
+[node name="Section1" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "ÁUDIO"
+
+[node name="SectionPad1" type="Control" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Volume geral"
+
+[node name="MasterSlider" type="HSlider" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 48)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label3" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Música"
+
+[node name="MusicSlider" type="HSlider" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 48)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label4" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Efeitos"
+
+[node name="SfxSlider" type="HSlider" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 48)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Section5" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "VÍDEO"
+
+[node name="SectionPad5" type="Control" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+
+[node name="Label6" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Tela cheia"
+
+[node name="FullscreenCheck" type="CheckButton" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label7" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Qualidade gráfica"
+
+[node name="QualityOption" type="OptionButton" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+
+[node name="NotePad8" type="Control" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+
+[node name="QualityNote" type="Label" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+
+[node name="Label9" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Reduzir efeitos e movimento"
+
+[node name="ReduceEffectsCheck" type="CheckButton" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Section10" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "CONTROLES DE TOQUE (usados a partir da Fase 3)"
+
+[node name="SectionPad10" type="Control" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+
+[node name="Label11" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Opacidade dos botões"
+
+[node name="TouchOpacitySlider" type="HSlider" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 48)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label12" type="Label" parent="Center/Panel/Layout/Grid"]
+layout_mode = 2
+text = "Tamanho dos botões"
+
+[node name="TouchScaleSlider" type="HSlider" parent="Center/Panel/Layout/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 48)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Actions" type="HBoxContainer" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 32
+alignment = 2
+
+[node name="DefaultsButton" type="Button" parent="Center/Panel/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "RESTAURAR PADRÃO"
+
+[node name="BackButton" type="Button" parent="Center/Panel/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "VOLTAR"

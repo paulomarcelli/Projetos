@@ -23,7 +23,7 @@ Protótipo navegável do **Projeto Interdisciplinar** · 2º semestre de ADS · 
 <br>
 
 > [!NOTE]
-> Protótipo **só de design**. Não há servidor, banco nem login de verdade: os dados são fictícios e toda ação é simulada no navegador (o aviso "SIMULAÇÃO LOCAL" aparece na tela).
+> Protótipo **de design**, sem servidor nem banco. O login e o cadastro funcionam dentro do navegador: as contas criadas ficam na memória da página e somem ao recarregar. Os dados da escola são fictícios e as ações nas telas são simuladas (o aviso "SIMULAÇÃO LOCAL" aparece na tela).
 
 ## ✨ A ideia
 
@@ -74,6 +74,37 @@ Fontes: **Bricolage Grotesque** nos títulos, **Plus Jakarta Sans** nos textos e
   <sub><b>No celular</b>: barra de abas embaixo, tabelas viram cartões e os modais abrem como folha</sub>
 </p>
 
+## 🔑 Entrar e criar conta
+
+Cada perfil entra com a **própria conta**: não existe atalho de demonstração no login.
+
+- **Criar conta** (`#/criar-conta`): a pessoa escolhe o perfil e preenche um formulário de uma coluna.
+  - **Coordenação:** nome da escola e cargo.
+  - **Professor:** código de convite da escola e disciplina principal.
+  - **Responsável:** código de convite do aluno, parentesco e consentimento LGPD.
+- **Entrar:** o login confere a conta e explica o problema: e-mail sem conta, conta de outro perfil ou senha errada (com as tentativas restantes e bloqueio na terceira).
+- **Depois de entrar**, o menu e as saudações mostram quem entrou. "Sair" encerra a sessão.
+- **Vitrine:** na página inicial, a seção "Três perfis" continua com o botão **Ver a demonstração** de cada perfil, que abre as telas com as pessoas fictícias, sem login.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/readme/cadastro.webp" alt="Criar conta de professor: dados, código de convite, disciplina e senha com medidor de força"></td>
+    <td width="50%"><img src="docs/readme/conta-criada.webp" alt="Conta criada: confirmação com o próximo passo e o botão Entrar agora"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Criar conta</b>: validação ao sair do campo, mostrar senha e força da senha</sub></td>
+    <td align="center"><sub><b>Conta criada</b>: o próximo passo de cada perfil e o atalho para entrar</sub></td>
+  </tr>
+</table>
+
+**Contas de teste** (pessoas fictícias da Escola Municipal Aurora, senha `kfka2026`):
+
+| Perfil | E-mail |
+|---|---|
+| Coordenação | `marina.rocha@aurora.edu.br` |
+| Professor | `carlos.lima@aurora.edu.br` |
+| Responsável | `ana.souza@email.com` |
+
 ## 🎨 Documentação de design
 
 O próprio protótipo traz as entregas de Design de Interface Digital:
@@ -111,13 +142,14 @@ Depois é só abrir `http://localhost:8000`.
 
 ## 🧪 Testes
 
-Testes automáticos com Playwright: navegação por todas as rotas, fluxos dos três perfis, estouro de layout e pior caso.
+Testes automáticos com Playwright: navegação por todas as rotas, fluxos dos três perfis, criar conta e login, estouro de layout e pior caso.
 
 ```bash
 node tests/crawl.js
 node tests/flows.js
 node tests/overflow.js
 node tests/pior-caso.js
+node tests/conta.js
 ```
 
 ## 📁 Estrutura

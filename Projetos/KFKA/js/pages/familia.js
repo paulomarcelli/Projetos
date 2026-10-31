@@ -28,7 +28,7 @@
       <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <div class="pick-screen" id="conteudo">
         <a class="logo" href="#/">${K.mark()}<span class="word">KFKA</span></a>
-        <div class="stack-sm" style="text-align:center"><h1 id="page-title" tabindex="-1">Quem você quer acompanhar?</h1><p class="lead">Olá, ${resp().nome.trim().split(/\s+/)[0]}. Escolha um dos alunos vinculados à sua conta.</p></div>
+        <div class="stack-sm" style="text-align:center"><h1 id="page-title" tabindex="-1">Quem você quer acompanhar?</h1><p class="lead">Olá, ${K.primeiroNome('familia', resp().nome.trim().split(/\s+/)[0])}. Escolha um dos alunos vinculados à sua conta.</p></div>
         <div class="pick-grid">${resp().alunos.map((id) => { const a = A.aluno(id); const t = A.turma(a.turma); const novos = rels(a).filter((r) => !r.lido).length; return `<a class="pick-card" href="#/familia/painel?aluno=${a.id}" data-action="pick-aluno" data-id="${a.id}">
           <span class="pick-avatar" style="background:${a.cor}">${K.initials(a.nome)}</span><b>${a.nome.trim().split(/\s+/)[0]}</b><small>${t.nome} · ${t.turno}</small>${novos ? `<span class="status nao-lido">${I('bell')}${novos} novo${novos > 1 ? 's' : ''}</span>` : '<span class="status lido">' + I('check') + 'Tudo lido</span>'}</a>`; }).join('')}</div>
         <div class="alert neutral" style="max-width:520px">${I('shield')}<div>Você vê apenas os alunos vinculados pela escola à sua conta. Algum aluno faltando? Fale com a secretaria.</div></div>

@@ -39,7 +39,7 @@
 .sidebar-foot { margin-top: auto; display: flex; flex-direction: column; gap: var(--s2); }
 /* Configurações fica sempre à mão, logo acima do cartão do usuário */
 .nav-config { position: relative; display: flex; align-items: center; gap: var(--s3); min-height: var(--tap); padding: 0 var(--s3); border-radius: var(--r-md); color: rgba(255,255,255,.78); text-decoration: none; font-weight: 600; font-size: 14px; }
-.nav-config .icon { transition: transform 400ms var(--ease-out); }
+.nav-config .icon { transition: transform 260ms var(--ease-out); }
 .nav-config:hover { background: rgba(255,255,255,.07); color: #fff; }
 @media (hover: hover) and (pointer: fine) { .nav-config:hover .icon { transform: rotate(60deg); } }
 .nav-config[aria-current="page"] { background: rgba(255,255,255,.13); color: #fff; font-weight: 800; }
@@ -78,6 +78,7 @@
   .app { grid-template-columns: 1fr; }
   .sidebar { position: fixed; z-index: 60; left: 0; top: 0; width: min(300px, 86vw); transform: translateX(-105%); transition: transform 400ms var(--ease-drawer); box-shadow: var(--sh-3); padding-top: calc(var(--s6) + env(safe-area-inset-top)); }
   .app.nav-open .scrim { animation: fade var(--dur-modal) var(--ease-out); }
+  .app:not(.nav-open) .sidebar { transition-duration: 260ms; transition-timing-function: var(--ease-out); }
   .app.nav-open .sidebar { transform: none; }
   .app.nav-open .scrim { display: block; position: fixed; inset: 0; z-index: 55; background: var(--scrim); }
   .menu-btn { display: inline-flex; }
@@ -126,4 +127,6 @@
 .auth-art { position: relative; overflow: hidden; background: var(--chrome-deep); /* fundo sólido; o motivo da marca (.auth-blob) faz o resto */ color: #fff; padding: var(--s12); display: flex; flex-direction: column; gap: var(--s8); }
 .auth-form { display: flex; align-items: center; justify-content: center; padding: var(--s10) var(--s6); }
 .auth-form > div { width: min(440px, 100%); }
+/* Formulários longos (criar conta): o painel da marca fica parado enquanto o formulário rola */
+@media (min-width: 961px) { .auth-art { position: sticky; top: 0; height: 100vh; height: 100dvh; } .auth { align-items: start; } .auth-form { min-height: 100vh; min-height: 100dvh; } }
 @media (max-width: 960px) { .auth { grid-template-columns: 1fr; } .auth-art { display: none; } .auth-form { align-items: flex-start; padding-top: var(--s10); } }

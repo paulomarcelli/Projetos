@@ -32,6 +32,7 @@ window.KFKA = window.KFKA || {};
     plus: '<path d="M12 5v14M5 12h14"/>',
     edit: '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
     eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+    'eye-off': '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>',
     file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8M16 17H8"/>',
     download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/>',
     upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><path d="M12 3v12"/>',
@@ -232,27 +233,44 @@ window.KFKA = window.KFKA || {};
 
   /* ---------------- Validação visual de formulários ---------------- */
   // Regras via atributos: required, data-min, data-max, type=email. Mostra mensagens claras.
+  // Um campo só: devolve a mensagem de erro ('' se ok) e atualiza o visual. Usado no envio e,
+  // nos formulários de conta, ao sair do campo (validar a cada tecla distrai quem digita).
+  K.checar = (input) => {
+    const field = input.closest('.field');
+    const v = (input.value || '').trim();
+    let msg = '';
+    if (input.type === 'checkbox') { if (input.required && !input.checked) msg = input.dataset.msgReq || 'Marque esta opção para continuar.'; }
+    else if (input.type === 'radio') { const grupo = K.qsa(`input[name="${input.name}"]`, input.form || document); if (input.required && !grupo.some((r) => r.checked)) msg = input.dataset.msgReq || 'Escolha uma opção.'; }
+    else if (input.required && !v) msg = input.dataset.msgReq || 'Preencha este campo.';
+    else if (input.type === 'email' && v && !/^\S+@\S+\.\S+$/.test(v)) msg = 'Informe um e-mail válido, como nome@escola.edu.br.';
+    else if (input.dataset.min && v) {
+      const n = Number(v.replace(',', '.'));
+      if (Number.isNaN(n) || n < Number(input.dataset.min) || n > Number(input.dataset.max)) msg = input.dataset.msgRange || `Use um valor entre ${input.dataset.min} e ${input.dataset.max}.`;
+    }
+    if (!msg && input.dataset.minlen && v && v.length < Number(input.dataset.minlen)) msg = `Use pelo menos ${input.dataset.minlen} caracteres (agora: ${v.length}).`;
+    if (!msg && input.dataset.pattern && v && !new RegExp(input.dataset.pattern, 'i').test(v)) msg = input.dataset.msgPattern || 'Confira o formato.';
+    field && field.classList.toggle('has-error', !!msg);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    const em = field && field.querySelector('.error-msg span');
+    if (em) em.textContent = msg;
+    return msg;
+  };
+  // Regras via atributos: required, data-min/max, data-minlen, data-pattern, type=email.
   K.validate = (form) => {
     let firstBad = null;
-    K.qsa('[data-validate]', form).forEach((input) => {
-      const field = input.closest('.field');
-      const v = (input.value || '').trim();
-      let msg = '';
-      if (input.required && !v) msg = input.dataset.msgReq || 'Preencha este campo.';
-      else if (input.type === 'email' && v && !/^\S+@\S+\.\S+$/.test(v)) msg = 'Informe um e-mail válido, como nome@escola.edu.br.';
-      else if (input.dataset.min && v) {
-        const n = Number(v.replace(',', '.'));
-        if (Number.isNaN(n) || n < Number(input.dataset.min) || n > Number(input.dataset.max)) msg = input.dataset.msgRange || `Use um valor entre ${input.dataset.min} e ${input.dataset.max}.`;
-      }
-      if (input.dataset.minlen && v && v.length < Number(input.dataset.minlen)) msg = `Escreva pelo menos ${input.dataset.minlen} caracteres (atual: ${v.length}).`;
-      field && field.classList.toggle('has-error', !!msg);
-      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-      const em = field && field.querySelector('.error-msg span');
-      if (em) em.textContent = msg;
-      if (msg && !firstBad) firstBad = input;
-    });
+    K.qsa('[data-validate]', form).forEach((input) => { if (K.checar(input) && !firstBad) firstBad = input; });
     if (firstBad) firstBad.focus();
     return !firstBad;
+  };
+  // Mostrar/ocultar senha: o botão troca o tipo do campo e o próprio rótulo, e o foco fica no campo.
+  K.verSenha = (el) => {
+    const input = el.parentElement.querySelector('input');
+    const ver = input.type === 'password';
+    input.type = ver ? 'text' : 'password';
+    el.setAttribute('aria-pressed', String(ver));
+    el.setAttribute('aria-label', ver ? 'Ocultar senha' : 'Mostrar senha');
+    el.innerHTML = K.icon(ver ? 'eye-off' : 'eye', 'icon-sm');
+    input.focus();
   };
   // Campo padronizado com rótulo associado (acessibilidade)
   K.field = ({ id, label, type = 'text', value = '', placeholder = '', required = false, hint = '', icon = '', attrs = '', options = null, span = '' }) => {
@@ -261,7 +279,9 @@ window.KFKA = window.KFKA || {};
     if (options) control = `<select id="${id}" name="${id}" class="select" ${req} ${attrs}>${options.map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${K.esc(v)}" ${String(v) === String(value) ? 'selected' : ''}>${K.esc(l)}</option>`; }).join('')}</select>`;
     else if (type === 'textarea') control = `<textarea id="${id}" name="${id}" class="textarea" placeholder="${K.esc(placeholder)}" ${req} ${attrs}>${K.esc(value)}</textarea>`;
     else control = `<input id="${id}" name="${id}" type="${type}" class="input" value="${K.esc(value)}" placeholder="${K.esc(placeholder)}" ${req} ${attrs}>`;
+    if (type === 'password') control = control.replace('class="input"', 'class="input com-olho"') + `<button type="button" class="ver-senha" data-action="ver-senha" aria-pressed="false" aria-label="Mostrar senha" aria-controls="${id}">${K.icon('eye', 'icon-sm')}</button>`;
     if (icon && !options && type !== 'textarea') control = `<div class="input-icon">${K.icon(icon)}${control}</div>`;
+    else if (type === 'password') control = `<div class="input-icon sem-icone">${control}</div>`;
     return `<div class="field ${span}"><label for="${id}">${label}${required ? '<span class="req" aria-hidden="true">*</span>' : ''}</label>${control}${hint ? `<span class="hint" id="${id}-hint">${hint}</span>` : ''}<span class="error-msg" role="alert">${K.icon('alert', 'icon-sm')}<span></span></span></div>`;
   };
 
@@ -344,6 +364,7 @@ window.KFKA = window.KFKA || {};
   K.temaToggle = () => `<button type="button" class="icon-btn tema-toggle" data-action="tema-alternar" aria-label="${K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'}">${K.icon(K.escuroAtivo() ? 'sun' : 'moon')}</button>`;
 
   K.actions = {
+    'ver-senha': (el) => K.verSenha(el),
     noop: () => K.toast('Interação demonstrativa', 'Este controle é ilustrativo neste protótipo.', 'info'),
     'close-modal': () => K.closeModal(),
     'toggle-nav': () => { const a = K.qs('.app'); a && a.classList.toggle('nav-open'); },

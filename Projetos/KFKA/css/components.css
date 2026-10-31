@@ -68,6 +68,13 @@
 .input-icon { position: relative; }
 .input-icon .icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
 .input-icon .input { padding-left: 42px; }
+.input-icon.sem-icone .input { padding-left: 14px; }
+/* Mostrar/ocultar senha: alvo de 44px dentro do campo, à direita; o texto não passa por baixo */
+.input-icon .input.com-olho { padding-right: 48px; }
+.ver-senha { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: var(--tap); height: var(--tap); display: grid; place-items: center; border: 0; background: none; color: var(--text-muted); border-radius: var(--r-md); cursor: pointer; }
+.ver-senha .icon { position: static; transform: none; }
+.ver-senha[aria-pressed="true"] { color: var(--teal); }
+@media (hover: hover) and (pointer: fine) { .ver-senha:hover { color: var(--ink); } }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s5); }
 .form-grid .span-2 { grid-column: 1 / -1; }
 @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }

@@ -8,7 +8,7 @@ const BASE = 'file://' + path.resolve(__dirname, '../index.html');
   const errors = [];
   page.on('pageerror', (e) => errors.push(['pageerror', page.url().split('#')[1], e.message]));
   page.on('console', (m) => { if (m.type() === 'error' && !/fonts\.g/.test(m.text())) errors.push(['console', page.url().split('#')[1], m.text()]); });
-  const seeds = ['/', '/entrar', '/entrar/administrador', '/recuperar-senha', '/design', '/documentacao', '/admin/painel', '/professor/painel', '/familia/selecionar', '/familia/painel'];
+  const seeds = ['/', '/entrar', '/entrar/administrador', '/criar-conta', '/criar-conta/administrador', '/criar-conta/professor', '/criar-conta/responsavel', '/recuperar-senha', '/design', '/documentacao', '/admin/painel', '/professor/painel', '/familia/selecionar', '/familia/painel'];
   const seen = new Set(); const queue = [...seeds]; const broken = [];
   while (queue.length) {
     const r = queue.shift(); if (seen.has(r)) continue; seen.add(r);

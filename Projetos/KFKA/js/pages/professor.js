@@ -43,7 +43,7 @@
       const rasc = A.relsFiltrados({ prof: PID, status: 'rascunho' });
       const pend = all.filter((r) => !r).length;
       return S('painel', `
-        ${K.pageHead({ crumbs: [{ label: 'Professor' }], title: 'Bom dia, Carlos', lead: 'Veja o que falta registrar no 3º bimestre e responda aos ajustes pedidos pela coordenação.', actions: `<a class="btn btn-primary" href="#/professor/registro/novo">${I('plus')} Novo acompanhamento</a>` })}
+        ${K.pageHead({ crumbs: [{ label: 'Professor' }], title: `${K.saudacao()}, ${K.primeiroNome('professor', 'Carlos')}`, lead: 'Veja o que falta registrar no 3º bimestre e responda aos ajustes pedidos pela coordenação.', actions: `<a class="btn btn-primary" href="#/professor/registro/novo">${I('plus')} Novo acompanhamento</a>` })}
         <section class="card card-dark hero-prof" aria-label="Progresso do bimestre">
           <div class="ring" style="--p:${pct}" data-label="${pct}%" role="img" aria-label="${pct}% dos registros enviados"></div>
           <div class="grow stack-sm">

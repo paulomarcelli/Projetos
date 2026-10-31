@@ -23,7 +23,15 @@
   const BASE = { admin: '#/admin/', professor: '#/professor/', familia: '#/familia/' };
   const ROLE_LABEL = { admin: 'Administrador', professor: 'Professor', familia: 'Responsável' };
 
+  // Quem entrou pelo login aparece no layout. Sem login (a vitrine "Ver a demonstração" da página
+  // inicial), o layout mostra a pessoa fictícia de cada perfil.
+  const PAPEL_DO_PERFIL = { administrador: 'admin', professor: 'professor', responsavel: 'familia' };
+  // Primeiro nome para saudações: o da conta que entrou, ou o da pessoa fictícia do perfil.
+  K.saudacao = () => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; };
+  K.primeiroNome = (role, padrao) => { const s = K.sessao; return K.esc(s && PAPEL_DO_PERFIL[s.perfil] === role ? s.nome.trim().split(/\s+/)[0] : padrao); };
   function who(role) {
+    const s = K.sessao;
+    if (s && PAPEL_DO_PERFIL[s.perfil] === role) return { nome: K.esc(s.nome), sub: K.esc(s.sub), cor: s.cor };
     if (role === 'admin') { const s = K.data.sessao.admin; return { nome: s.nome, sub: s.cargo, cor: s.cor }; }
     if (role === 'professor') { const p = K.api.prof('p1'); return { nome: p.nome, sub: 'Matemática · Geografia', cor: p.cor }; }
     const r = K.api.resp('r1'); return { nome: r.nome, sub: 'Responsável', cor: '#5FD4A8' };
@@ -108,6 +116,6 @@
     K.go(f.dataset.search === 'admin' ? `#/admin/alunos?q=${q}` : `#/professor/turmas/6A?q=${q}`);
   });
   // Logout simulado (RF01)
-  K.actions.sair = () => { K.go('#/entrar'); K.toast('Você saiu da sua conta', 'Sessão encerrada neste navegador.', 'info'); };
+  K.actions.sair = () => { K.sessao = null; K.go('#/entrar'); K.toast('Você saiu da sua conta', 'Sessão encerrada neste navegador.', 'info', false); };
   K.actions['pick-aluno'] = (el) => { K.state.alunoSel = el.dataset.id; K.go(el.getAttribute('href')); if (location.hash === el.getAttribute('href')) K.refresh(); };
 })(window.KFKA);

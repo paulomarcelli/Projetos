@@ -29,7 +29,7 @@
   - RF01: "Sair" e sessão expirada
 - [x] Contraste AA corrigido (`--text-muted` #56707B), favicon, Open Graph e revisores em `agents/`
 - [ ] Replicar as novidades no Figma (arquivo oficial da Entrega 2)
-- [ ] Publicar no GitHub/hosting (aguarda a equipe)
+- [x] Publicar no GitHub Pages (`paulomarcelli.github.io/Projetos/Projetos/KFKA/`)
 
 ## Revisão 1.2 — polimento de design
 - [x] Evolução da média (família) virou gráfico de linha (`KFKA.lineChart`): eixo rotulado, bimestre atual destacado e bimestre sem dados marcado como "a publicar"
@@ -87,3 +87,13 @@
   - eyebrow (pílula acima do título) removido, conforme a regra do projeto.
 - **Configurações** (`js/pages/configuracoes.js`), nos três perfis: tema Sistema/Claro/Escuro com miniaturas, tamanho do texto com amostra, "Reduzir animações" (classe `.menos-movimento`, mesmos tokens do `prefers-reduced-motion`). Atalho fixo na sidebar e no menu da conta. Só na sessão (sem localStorage).
 - Testes: crawl, flows (+ configurações, abas por teclado e história do hero) e pior caso passando.
+
+## Revisão 1.3 — contas de verdade no protótipo e revisão de movimento
+- [x] Login sem atalho de demonstração: e-mail vazio, sem a dica "qualquer senha entra" e sem o aviso "login simulado"
+- [x] Login confere a conta: mensagens para e-mail sem conta, conta de outro perfil, senha errada (com tentativas restantes) e bloqueio na 3ª tentativa
+- [x] Criar conta para os 3 perfis (`#/criar-conta`): coordenação (escola e cargo), professor (código de convite e disciplina) e responsável (código de convite, parentesco e consentimento LGPD)
+- [x] Formulário de uma coluna, rótulos sempre visíveis, validação ao sair do campo, mostrar/ocultar senha, medidor de força com texto e tela de conta criada
+- [x] O layout e as saudações mostram quem entrou; "Sair" encerra a sessão. Sem login, a vitrine "Ver a demonstração" continua com as pessoas fictícias
+- [x] Contas ficam só na memória da página (sem banco, como pede o escopo); as fictícias usam a senha de teste `kfka2026`
+- [x] Movimento: nada nasce de `scale(0)` (sol do K no topo e no logo), gaveta fecha mais rápido que abre, amostra de tamanho de texto sem animar `font-size`, engrenagem em 260 ms
+- [x] Testes: `node tests/conta.js` (21 verificações) e as rotas novas no `crawl.js`

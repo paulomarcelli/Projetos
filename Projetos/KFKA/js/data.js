@@ -246,5 +246,27 @@
       return r;
     }
   };
+  /* ---------- Contas de acesso (só em memória: somem ao recarregar a página) ----------
+     As pessoas fictícias da escola já têm conta, com a senha de teste "kfka2026"; quem se
+     cadastra em #/criar-conta entra na lista e passa a conseguir fazer login. Na etapa
+     funcional isto vira o cadastro e a autenticação do servidor (senha nunca fica no cliente). */
+  const SENHA_TESTE = 'kfka2026';
+  const contas = [
+    { perfil: 'administrador', nome: K.data.sessao.admin.nome, email: K.data.sessao.admin.email, sub: K.data.sessao.admin.cargo, cor: K.data.sessao.admin.cor, senha: SENHA_TESTE },
+    ...professores.filter((p) => p.ativo).map((p) => ({ perfil: 'professor', nome: p.nome, email: p.email, sub: p.disc.map((d) => A.disc(d)?.nome).filter(Boolean).join(' · '), cor: p.cor, senha: SENHA_TESTE })),
+    ...responsaveis.filter((r) => r.ativo).map((r) => ({ perfil: 'responsavel', nome: r.nome, email: r.email, sub: 'Responsável', cor: '#5FD4A8', senha: SENHA_TESTE })),
+  ];
+  const mesmoEmail = (a, b) => a.trim().toLowerCase() === b.trim().toLowerCase();
+  A.conta = (email) => contas.find((c) => mesmoEmail(c.email, email));
+  A.criarConta = (c) => { if (A.conta(c.email)) return { erro: 'email' }; contas.push(c); return { conta: c }; };
+  // Respostas iguais para "e-mail não existe" e "senha errada" evitariam enumeração de contas
+  // num sistema real; aqui o protótipo distingue os dois para a banca ver as duas mensagens.
+  A.entrar = (perfil, email, senha) => {
+    const c = A.conta(email);
+    if (!c) return { erro: 'sem-conta' };
+    if (c.perfil !== perfil) return { erro: 'outro-perfil', perfil: c.perfil };
+    if (c.senha !== senha) return { erro: 'senha' };
+    return { conta: c };
+  };
   K.api = A;
 })(window.KFKA);

@@ -25,7 +25,7 @@
       const tot = st.reduce((s, k) => s + cnt(k), 0) || 1;
       const turmasProg = D.turmas.map((t) => { const rs = b3.filter((r) => r.turma === t.id); const p = rs.length ? Math.round(rs.filter((r) => r.status === 'publicado').length / rs.length * 100) : 0; return [t.nome, p, t.id]; });
       return S('admin', 'painel', `
-        ${K.pageHead({ crumbs: [{ label: 'Coordenação' }], title: 'Olá, Marina', lead: 'Acompanhe o 3º bimestre em todas as turmas e revise o que os professores enviaram.', actions: `<a class="btn btn-secondary" href="#/admin/relatorios">${I('chart')} Relatórios</a><a class="btn btn-primary" href="#/admin/revisao">${I('review')} Revisar agora (${fila.length})</a>` })}
+        ${K.pageHead({ crumbs: [{ label: 'Coordenação' }], title: `Olá, ${K.primeiroNome('admin', 'Marina')}`, lead: 'Acompanhe o 3º bimestre em todas as turmas e revise o que os professores enviaram.', actions: `<a class="btn btn-secondary" href="#/admin/relatorios">${I('chart')} Relatórios</a><a class="btn btn-primary" href="#/admin/revisao">${I('review')} Revisar agora (${fila.length})</a>` })}
         <section class="grid-4" aria-label="Indicadores do 3º bimestre">
           ${kpi('review', 'ico-warn', fila.length, 'Aguardando revisão', 'ver fila', 'var(--warning)', '#/admin/revisao')}
           ${kpi('check-circle', 'ico-ok', cnt('publicado'), 'Publicados no 3º bimestre', 'para as famílias', 'var(--success)', '#/admin/relatorios?status=publicado')}

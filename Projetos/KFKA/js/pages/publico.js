@@ -86,7 +86,7 @@
       <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <header class="public-header">${logo(true)}
         <nav aria-label="Seções da página"><a href="#/" data-action="scroll-to" data-target="como-funciona">Como funciona</a><a href="#/" data-action="scroll-to" data-target="perfis">Perfis</a><a href="#/" data-action="scroll-to" data-target="seguranca">Segurança</a></nav>
-        ${K.temaToggle()}<a class="btn btn-light" href="#/entrar">${I('user')} Entrar</a>
+        ${K.temaToggle()}<a class="btn btn-ghost-light hide-mobile" href="#/criar-conta">Criar conta</a><a class="btn btn-light" href="#/entrar">${I('user')} Entrar</a>
       </header>
       <main id="conteudo">
         <section class="hero">
@@ -135,7 +135,7 @@
             <ul class="checklist sec-list">${['Acesso separado por perfil', 'Sessões que expiram sozinhas', 'Toda alteração fica na auditoria'].map((x, i) => `<li style="--i:${i}">${I('check', 'icon-sm')}${x}</li>`).join('')}</ul>
           </div>
         </section>
-        <section class="section" style="padding-top:0" data-revelar><div class="cta-final revela"><h2>Pronto para acompanhar de perto?</h2><p>Entre com o e-mail cadastrado pela escola.</p><a class="btn btn-light btn-lg" href="#/entrar">Acessar minha conta ${I('chevron-right')}</a></div></section>
+        <section class="section" style="padding-top:0" data-revelar><div class="cta-final revela"><h2>Pronto para acompanhar de perto?</h2><p>Entre com a sua conta ou crie a de coordenação, professor ou responsável.</p><div class="row cta-acoes"><a class="btn btn-light btn-lg" href="#/entrar">Acessar minha conta ${I('chevron-right')}</a><a class="btn btn-ghost-light btn-lg" href="#/criar-conta">Criar conta</a></div></div></section>
       </main>${footer()}`;
     },
     mount: (root) => {
@@ -173,43 +173,172 @@
       <div class="auth-card">${K.avatar('Lucas Souza', '#5FD4A8')}<div class="grow"><b>Lucas Souza · 6º A</b><small>Matemática · 3º bimestre</small></div>${K.status('publicado')}</div>
       <ul class="checklist auth-list">${['A coordenação revisa antes de publicar', 'A família registra ciência e pode responder', 'Só os responsáveis vinculados veem o aluno'].map((x) => `<li>${I('check', 'icon-sm')}${x}</li>`).join('')}</ul>
       <span class="auth-blob"></span></div>`;
-  const ROLES = { administrador: ['shield', 'var(--sun)', 'Sou da coordenação', 'Administrador da escola', 'marina.rocha@aurora.edu.br', '#/admin/painel'], professor: ['book', 'var(--sky)', 'Sou professor', 'Registro o acompanhamento das turmas', 'carlos.lima@aurora.edu.br', '#/professor/painel'], responsavel: ['family', 'var(--mint)', 'Sou responsável', 'Acompanho meus filhos', 'ana.souza@email.com', '#/familia/selecionar'] };
+  // Os três perfis do KFKA. "nome" entra nas frases ("conta de professor"); "destino" é a tela inicial.
+  const ROLES = {
+    administrador: { ic: 'shield', cor: 'var(--sun)', cor_hex: '#FFC94A', titulo: 'Sou da coordenação', sub: 'Administro a escola', nome: 'coordenação', pill: 'Coordenação', destino: '#/admin/painel' },
+    professor: { ic: 'book', cor: 'var(--sky)', cor_hex: '#74C0FC', titulo: 'Sou professor', sub: 'Registro o acompanhamento das turmas', nome: 'professor', pill: 'Professor', destino: '#/professor/painel' },
+    responsavel: { ic: 'family', cor: 'var(--mint)', cor_hex: '#5FD4A8', titulo: 'Sou responsável', sub: 'Acompanho meus filhos', nome: 'responsável', pill: 'Responsável', destino: '#/familia/selecionar' },
+  };
+  const papel = (k) => ROLES[k] || ROLES.responsavel;
+  const pilula = (r) => `<span class="role-pill-light"><span class="role-ico xs" style="background:${r.cor}">${I(r.ic, 'icon-sm')}</span>${r.pill}</span>`;
+  const escolhaDePerfil = (base) => `<div class="stack-sm">${Object.entries(ROLES).map(([k, r]) => `<a class="role-option" href="#/${base}/${k}"><span class="role-ico sm" style="background:${r.cor}">${I(r.ic)}</span><span class="grow"><b>${r.titulo}</b><small>${r.sub}</small></span>${I('chevron-right')}</a>`).join('')}</div>`;
+  const telaAuth = (corpo) => `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}<main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">${corpo}</div></main></div>`;
+
   K.views.entrar = {
     title: 'Entrar',
-    render: () => `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}
-      <main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">
+    render: () => telaAuth(`
         <div class="stack-sm"><span class="only-mobile">${logo(false)}</span><h1 id="page-title" tabindex="-1">Como você acessa o KFKA?</h1><p class="text-2">Escolha seu perfil para continuar. Se você tiver mais de um perfil, pode trocar depois de entrar.</p></div>
-        <div class="stack-sm">${Object.entries(ROLES).map(([k, [ic, c, t, s]]) => `<a class="role-option" href="#/entrar/${k}"><span class="role-ico sm" style="background:${c}">${I(ic)}</span><span class="grow"><b>${t}</b><small>${s}</small></span>${I('chevron-right')}</a>`).join('')}</div>
-        <p class="muted" style="font-size:13px">Primeiro acesso? A escola envia o convite para o e-mail cadastrado. <a href="#/">Voltar ao início</a></p>
-      </div></main></div>`
+        ${escolhaDePerfil('entrar')}
+        <p class="auth-rodape">Ainda não tem conta? <a href="#/criar-conta">Criar conta</a><span aria-hidden="true">·</span><a href="#/">Voltar ao início</a></p>`)
   };
+
+  // Tentativas de senha por e-mail (só nesta aba): na terceira, o acesso fica bloqueado por 15 min.
+  const tentativas = {};
   K.views.login = {
     title: 'Entrar',
     render: (p, q) => {
-      const r = ROLES[p.perfil] || ROLES.responsavel;
-      return `<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="auth">${authArt()}
-      <main class="auth-form" id="conteudo">${K.temaToggle()}<div class="stack-lg">
-        <a href="#/entrar" class="row" style="font-weight:700;text-decoration:none;gap:6px">${I('chevron-left', 'icon-sm')} Trocar perfil</a>
-        <div class="stack-sm"><span class="role-pill-light"><span class="role-ico xs" style="background:${r[1]}">${I(r[0], 'icon-sm')}</span>${r[2].replace('Sou ', '').replace(/^./, (c) => c.toUpperCase())}</span><h1 id="page-title" tabindex="-1">Bem-vindo de volta</h1><p class="text-2">Entre com o e-mail cadastrado pela escola.</p></div>
-        <div class="alert danger" id="login-alert" role="alert" hidden>${I('alert')}<div><b>E-mail ou senha incorretos</b>Restam 2 tentativas antes do bloqueio temporário de 15 minutos. (simulação)</div></div>
+      const r = papel(p.perfil);
+      return telaAuth(`
+        <a href="#/entrar" class="voltar">${I('chevron-left', 'icon-sm')} Trocar perfil</a>
+        <div class="stack-sm">${pilula(r)}<h1 id="page-title" tabindex="-1">Bem-vindo de volta</h1><p class="text-2">Entre com o e-mail da sua conta.</p></div>
+        <div class="alert danger" id="login-alert" role="alert" hidden></div>
         <form class="stack" id="login-form" novalidate>
-          ${K.field({ id: 'email', label: 'E-mail', type: 'email', value: r[4], required: true, icon: 'mail', attrs: 'autocomplete="email"' })}
-          ${K.field({ id: 'senha', label: 'Senha', type: 'password', required: true, icon: 'lock', hint: 'Demonstração: qualquer senha com 6+ caracteres entra; menos que isso mostra o erro.', attrs: 'autocomplete="current-password"' })}
+          ${K.field({ id: 'email', label: 'E-mail', type: 'email', value: q.email || '', required: true, icon: 'mail', placeholder: 'nome@email.com', attrs: 'autocomplete="email" autocapitalize="off" spellcheck="false"' })}
+          ${K.field({ id: 'senha', label: 'Senha', type: 'password', required: true, icon: 'lock', attrs: 'autocomplete="current-password"' })}
           <div class="row-between"><label class="check"><input type="checkbox" checked> Lembrar de mim</label><a href="#/recuperar-senha" style="font-weight:700">Esqueci minha senha</a></div>
           <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar ${I('chevron-right')}</button>
         </form>
-        <div class="alert info">${I('shield')}<div>Conexão segura. Seus dados e os dos alunos são protegidos conforme a LGPD.</div></div>
-      </div></main></div>`;
+        <p class="auth-rodape">Ainda não tem conta? <a href="#/criar-conta/${p.perfil in ROLES ? p.perfil : 'responsavel'}">Criar conta de ${r.nome}</a></p>
+        <div class="alert info">${I('shield')}<div>Conexão segura. Seus dados e os dos alunos são protegidos conforme a LGPD.</div></div>`);
+    },
+    mount: (root, p, q) => {
+      const perfil = p.perfil in ROLES ? p.perfil : 'responsavel';
+      const f = K.qs('#login-form', root);
+      const alerta = K.qs('#login-alert', root);
+      const avisar = (titulo, texto) => { alerta.innerHTML = `${I('alert')}<div><b>${titulo}</b>${texto}</div>`; alerta.hidden = false; };
+      (q.email ? K.qs('#senha', f) : K.qs('#email', f)).focus();
+      f.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alerta.hidden = true;
+        if (!K.validate(f)) return;
+        const email = K.qs('#email', f).value.trim(), senha = K.qs('#senha', f).value;
+        if ((tentativas[email] || 0) >= 3) return avisar('Acesso bloqueado por 15 minutos', 'Foram 3 tentativas com a senha errada. Use “Esqueci minha senha” para criar uma nova.');
+        const res = K.api.entrar(perfil, email, senha);
+        if (res.erro === 'sem-conta') return avisar('Não encontramos uma conta com este e-mail', `Confira o endereço ou <a href="#/criar-conta/${perfil}">crie sua conta de ${ROLES[perfil].nome}</a>.`);
+        if (res.erro === 'outro-perfil') return avisar(`Este e-mail é de uma conta de ${ROLES[res.perfil].nome}`, `<a href="#/entrar/${res.perfil}?email=${encodeURIComponent(email)}">Entrar como ${ROLES[res.perfil].nome}</a>`);
+        if (res.erro === 'senha') {
+          tentativas[email] = (tentativas[email] || 0) + 1;
+          const resta = 3 - tentativas[email];
+          const campo = K.qs('#senha', f);
+          campo.closest('.field').classList.add('has-error'); campo.setAttribute('aria-invalid', 'true');
+          campo.closest('.field').querySelector('.error-msg span').textContent = resta ? `Senha incorreta. ${resta === 1 ? 'Resta 1 tentativa' : `Restam ${resta} tentativas`} antes do bloqueio de 15 minutos.` : 'Senha incorreta. O acesso foi bloqueado por 15 minutos.';
+          campo.select(); return;
+        }
+        delete tentativas[email];
+        K.sessao = res.conta;
+        K.toast(`Olá, ${K.esc(res.conta.nome.trim().split(/\s+/)[0])}!`, `Você entrou como ${ROLES[perfil].nome}.`, 'ok', false);
+        K.go(ROLES[perfil].destino);
+      });
+    }
+  };
+
+  /* ---------- Criar conta: primeiro o perfil, depois um formulário de uma coluna ----------
+     Campos de cada perfil, rótulos sempre visíveis, validação ao sair do campo (e de novo enquanto
+     o erro é corrigido), senha com mostrar/ocultar e medidor de força. Sem confirmar senha: o
+     botão de mostrar resolve o erro de digitação com um campo a menos. */
+  K.views.criarConta = {
+    title: 'Criar conta',
+    render: () => telaAuth(`
+        <div class="stack-sm"><span class="only-mobile">${logo(false)}</span><h1 id="page-title" tabindex="-1">Para quem é a conta?</h1><p class="text-2">O KFKA tem três perfis. Cada um vê só o que precisa.</p></div>
+        ${escolhaDePerfil('criar-conta')}
+        <p class="auth-rodape">Já tem conta? <a href="#/entrar">Entrar</a><span aria-hidden="true">·</span><a href="#/">Voltar ao início</a></p>`)
+  };
+  const CONVITE = { pattern: '^[A-Z0-9]{4}-?[A-Z0-9]{4}$', msg: 'O código tem 8 letras ou números, como AURO-7K2P.' };
+  const campoConvite = (txt) => K.field({ id: 'convite', label: 'Código de convite', required: true, icon: 'link', placeholder: 'AURO-7K2P', hint: txt, attrs: `autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="9" data-pattern="${CONVITE.pattern}" data-msg-pattern="${CONVITE.msg}"` });
+  const CADASTRO = {
+    administrador: {
+      intro: 'Para coordenadores e diretores. Você cria o espaço da escola e depois cadastra turmas, professores e responsáveis.',
+      campos: () => `${K.field({ id: 'escola', label: 'Nome da escola', required: true, icon: 'cap', placeholder: 'Ex.: Escola Municipal Aurora', attrs: 'autocomplete="organization" data-minlen="3"' })}
+        ${K.field({ id: 'cargo', label: 'Seu cargo', required: true, options: [['', 'Selecione'], 'Coordenação pedagógica', 'Direção', 'Secretaria escolar'] })}`,
+      sub: (f) => K.qs('#cargo', f).value,
+      pronto: (f) => `O espaço da <b>${K.esc(K.qs('#escola', f).value.trim())}</b> está criado e você é a pessoa administradora. O próximo passo é abrir o bimestre e cadastrar as turmas.`,
+    },
+    professor: {
+      intro: 'Use o código de convite que a coordenação da sua escola enviou por e-mail.',
+      campos: () => `${campoConvite('Ele liga a sua conta à escola. Não recebeu? Fale com a coordenação.')}
+        ${K.field({ id: 'disciplina', label: 'Disciplina principal', required: true, options: [['', 'Selecione'], ...K.data.disciplinas.map((d) => [d.id, d.nome])] })}`,
+      sub: (f) => K.qs('#disciplina', f).selectedOptions[0].textContent,
+      pronto: () => 'A coordenação vai confirmar as suas turmas e disciplinas. Até lá, você já pode entrar e conhecer o painel.',
+    },
+    responsavel: {
+      intro: 'Use o código de convite que a escola enviou no comunicado do aluno.',
+      campos: () => `${campoConvite('Está no comunicado da escola. Um código por aluno.')}
+        <fieldset class="field"><legend>Parentesco<span class="req" aria-hidden="true">*</span></legend>
+          <div class="opcoes">${['Mãe', 'Pai', 'Avó ou avô', 'Outro responsável'].map((o, i) => `<label class="opcao"><input type="radio" name="parentesco" value="${o}" required ${i === 0 ? 'data-validate data-msg-req="Escolha o parentesco."' : ''}><span>${o}</span></label>`).join('')}</div>
+          <span class="error-msg" role="alert">${I('alert', 'icon-sm')}<span></span></span></fieldset>`,
+      sub: (f) => `Responsável · ${(K.qsa('[name="parentesco"]', f).find((r) => r.checked) || {}).value || ''}`,
+      pronto: () => 'A escola vai confirmar o vínculo com o aluno do código informado. Você recebe um e-mail quando o primeiro relatório for publicado.',
+    },
+  };
+  const caixa = (id, texto, attrs = '') => `<div class="field"><label class="check check-longo"><input type="checkbox" id="${id}" required data-validate ${attrs}><span>${texto}</span></label><span class="error-msg" role="alert">${I('alert', 'icon-sm')}<span></span></span></div>`;
+  K.views.cadastro = {
+    title: 'Criar conta',
+    render: (p) => {
+      const perfil = p.perfil in ROLES ? p.perfil : 'responsavel', r = ROLES[perfil], c = CADASTRO[perfil];
+      return telaAuth(`
+        <a href="#/criar-conta" class="voltar">${I('chevron-left', 'icon-sm')} Trocar perfil</a>
+        <div class="stack-sm">${pilula(r)}<h1 id="page-title" tabindex="-1">Criar conta de ${r.nome}</h1><p class="text-2">${c.intro}</p></div>
+        <form class="stack cadastro" id="cadastro-form" novalidate>
+          <h2 class="form-secao">Seus dados</h2>
+          ${K.field({ id: 'nome', label: 'Nome completo', required: true, icon: 'user', attrs: 'autocomplete="name" data-minlen="3"' })}
+          ${K.field({ id: 'cemail', label: 'E-mail', type: 'email', required: true, icon: 'mail', placeholder: 'nome@email.com', attrs: 'autocomplete="email" autocapitalize="off" spellcheck="false"' })}
+          <h2 class="form-secao">${perfil === 'administrador' ? 'A escola' : 'Vínculo com a escola'}</h2>
+          ${c.campos()}
+          <h2 class="form-secao">Senha</h2>
+          ${K.field({ id: 'csenha', label: 'Crie uma senha', type: 'password', required: true, icon: 'lock', hint: 'Pelo menos 8 caracteres. Misture letras, números e um símbolo.', attrs: 'autocomplete="new-password" data-minlen="8" aria-describedby="csenha-hint forca-txt"' })}
+          <div class="forca"><div class="strength" aria-hidden="true"><span></span><span></span><span></span><span></span></div><span id="forca-txt" class="forca-txt" aria-live="polite"></span></div>
+          ${caixa('termos', 'Li e aceito os <a href="#/privacidade">termos de uso e a política de privacidade</a>.', 'data-msg-req="Aceite os termos para criar a conta."')}
+          ${perfil === 'responsavel' ? caixa('lgpd', 'Autorizo a escola a tratar os dados de acompanhamento dos alunos vinculados a mim, conforme a LGPD.', 'data-msg-req="Sem esta autorização a família não consegue ver os relatórios."') : ''}
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Criar conta ${I('chevron-right')}</button>
+        </form>
+        <p class="auth-rodape">Já tem conta? <a href="#/entrar/${perfil}">Entrar</a></p>`);
     },
     mount: (root, p) => {
-      const r = ROLES[p.perfil] || ROLES.responsavel;
-      K.qs('#login-form', root).addEventListener('submit', (e) => {
+      const perfil = p.perfil in ROLES ? p.perfil : 'responsavel', r = ROLES[perfil], c = CADASTRO[perfil];
+      const f = K.qs('#cadastro-form', root);
+      // Valida ao sair de um campo já mexido; enquanto há erro, revalida a cada mudança (o erro some ao corrigir).
+      f.addEventListener('input', (e) => { const el = e.target; el.dataset.mexeu = '1'; if (el.closest('.has-error')) K.checar(el.name === 'parentesco' ? K.qs('[name="parentesco"][data-validate]', f) : el); });
+      f.addEventListener('change', (e) => { if (e.target.type === 'radio' || e.target.type === 'checkbox' || e.target.tagName === 'SELECT') K.checar(e.target.type === 'radio' ? K.qs('[name="parentesco"][data-validate]', f) : e.target); });
+      f.addEventListener('focusout', (e) => { const el = e.target; if (el.matches('[data-validate]') && el.dataset.mexeu && el.type !== 'radio' && el.type !== 'checkbox') K.checar(el); });
+      // Código de convite em maiúsculas, com o hífen no lugar
+      const conv = K.qs('#convite', f);
+      conv && conv.addEventListener('input', () => { const v = conv.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8); conv.value = v.length > 4 ? `${v.slice(0, 4)}-${v.slice(4)}` : v; });
+      const s = K.qs('#csenha', f), txt = K.qs('#forca-txt', f);
+      s.addEventListener('input', () => {
+        const v = s.value, n = v ? (v.length >= 8) + /\d/.test(v) + /[^\w\s]/.test(v) + (/[A-Z]/.test(v) && /[a-z]/.test(v)) : 0;
+        K.qsa('.strength span', f).forEach((b, i) => b.classList.toggle('on', i < n));
+        f.querySelector('.strength').dataset.nivel = n;
+        txt.textContent = v ? ['Senha muito fraca', 'Senha fraca', 'Senha média', 'Senha boa', 'Senha forte'][n] : '';
+      });
+      f.addEventListener('submit', (e) => {
         e.preventDefault();
-        const f = e.target;
         if (!K.validate(f)) return;
-        if (K.qs('#senha', f).value.length < 6) { K.qs('#login-alert').hidden = false; K.qs('#senha').closest('.field').classList.add('has-error'); K.qs('#senha').closest('.field').querySelector('.error-msg span').textContent = 'Senha incorreta.'; return; }
-        K.toast('Login simulado', 'Entrando com dados fictícios.', 'info');
-        K.go(r[5]);
+        const email = K.qs('#cemail', f).value.trim();
+        const res = K.api.criarConta({ perfil, nome: K.qs('#nome', f).value.trim().replace(/\s+/g, ' '), email, sub: c.sub(f), cor: r.cor_hex, senha: s.value });
+        if (res.erro) {
+          const campo = K.qs('#cemail', f);
+          campo.closest('.field').classList.add('has-error'); campo.setAttribute('aria-invalid', 'true');
+          campo.closest('.field').querySelector('.error-msg span').textContent = 'Já existe uma conta com este e-mail. Use “Entrar” ou outro endereço.';
+          campo.focus(); return;
+        }
+        // Sucesso no lugar do formulário: o momento final do cadastro merece um pouco de celebração.
+        const main = K.qs('.auth-form .stack-lg', root);
+        main.innerHTML = `<div class="sucesso stack-lg">
+          <span class="sucesso-ico" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16" pathLength="1"/></svg></span>
+          <div class="stack-sm">${pilula(r)}<h1 id="page-title" tabindex="-1">Conta criada</h1><p class="text-2">${c.pronto(f)}</p></div>
+          <a class="btn btn-primary btn-lg btn-block" href="#/entrar/${perfil}?email=${encodeURIComponent(email)}">Entrar agora ${I('chevron-right')}</a>
+          <p class="text-2" style="font-size:14px;margin:0">Enviamos uma confirmação para <b>${K.esc(email)}</b>.</p></div>`;
+        K.qs('#page-title', main).focus();
       });
     }
   };
@@ -274,6 +403,8 @@
   K.route('/', K.views.home);
   K.route('/entrar', K.views.entrar);
   K.route('/entrar/:perfil', K.views.login);
+  K.route('/criar-conta', K.views.criarConta);
+  K.route('/criar-conta/:perfil', K.views.cadastro);
   K.route('/recuperar-senha', K.views.recuperar);
   K.route('/privacidade', K.views.privacidade);
   K.route('/acesso-negado', K.views.negado);

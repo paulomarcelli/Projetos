@@ -119,7 +119,7 @@
   --motion: 1;          /* multiplicador de deslocamentos grandes (folha do celular) */
 
   /* ---- Layout ---- */
-  --sidebar-w: 264px;
+  --sidebar-w: 16.5rem; /* 264px no padrão; cresce com o tamanho do texto */
   --topbar-h: 72px;
   --content-max: 1240px;
   --tap: 44px; /* área mínima de toque */

@@ -100,12 +100,12 @@
           ${periodo}
           <div class="dropdown">
             <button type="button" class="icon-btn" data-action="toggle-dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Notificações (${K.data.notificacoes[role].length} novas)">${I('bell')}<span class="badge-dot"></span></button>
-            <div class="menu notif-panel" role="menu"><div class="row-between" style="padding:6px 8px 10px"><b style="font-family:var(--font-display);font-size:18px">Notificações</b><button type="button" class="link-btn" data-action="noop">Marcar como lidas</button></div>${notifs}</div>
+            <div class="menu notif-panel" role="menu"><div class="row-between" style="padding:6px 8px 10px"><b style="font-family:var(--font-display);font-size:1.125rem">Notificações</b><button type="button" class="link-btn" data-action="noop">Marcar como lidas</button></div>${notifs}</div>
           </div>
           <div class="dropdown">
             <button type="button" class="icon-btn" style="width:auto;padding:0 6px;gap:6px;border-radius:999px" data-action="toggle-dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Menu da conta">${K.avatar(u.nome, u.cor, 'sm')}${I('chevron-down', 'icon-sm')}</button>
             <div class="menu" role="menu">
-              <div style="padding:8px 12px 10px"><b>${u.nome}</b><div class="muted" style="font-size:12px">${u.sub}</div></div><hr>
+              <div style="padding:8px 12px 10px"><b>${u.nome}</b><div class="muted" style="font-size:0.75rem">${u.sub}</div></div><hr>
               <a href="${BASE[role]}perfil" role="menuitem">${I('user')} Meu perfil</a>
               <a href="${BASE[role]}configuracoes" role="menuitem">${I('settings')} Configurações</a>
               <a href="#/entrar" role="menuitem">${I('swap')} Trocar de perfil</a><hr>

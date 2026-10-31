@@ -47,8 +47,8 @@
         <section class="card card-dark hero-prof" aria-label="Progresso do bimestre">
           <div class="ring" style="--p:${pct}" data-label="${pct}%" role="img" aria-label="${pct}% dos registros enviados"></div>
           <div class="grow stack-sm">
-            <h2 style="font-size:24px">${feitos} de ${all.length} registros enviados</h2>
-            <p style="color:var(--sky);font-weight:700;font-size:13px">3º bimestre · digitação aberta</p>
+            <h2 style="font-size:1.5rem">${feitos} de ${all.length} registros enviados</h2>
+            <p style="color:var(--sky);font-weight:700;font-size:0.8125rem">3º bimestre · digitação aberta</p>
             <p style="color:rgba(255,255,255,.75)">O prazo termina em <b style="color:#fff">30/09 às 23:59</b>. Depois disso, só a coordenação pode reabrir.</p>
             <div class="row" style="margin-top:var(--s2)"><a class="btn btn-light btn-sm" href="#/professor/turmas">${I('users')} Minhas turmas</a></div>
           </div>
@@ -61,10 +61,10 @@
         ${dev.length ? `<section class="card"><div class="card-head"><div><h2>Precisa da sua atenção</h2><p>A coordenação devolveu estes registros com comentários</p></div></div>
           <div class="stack-sm">${dev.map((r) => { const a = A.aluno(r.aluno); const c = r.comentarios[r.comentarios.length - 1]; return `<div class="alert danger">${I('undo')}<div class="grow"><b>${a.nome} · ${A.disc(r.disc).nome} · ${A.turma(r.turma).nome}</b>${c ? `“${K.esc(c.texto)}” — ${c.quem}` : 'Devolvido para ajustes.'}</div><a class="btn btn-danger btn-sm" href="#/professor/registro/${r.id}/editar">Ajustar</a></div>`; }).join('')}</div></section>` : ''}
         <section class="stack">
-          <div class="row-between"><h2 style="font-size:20px">Minhas turmas</h2><div class="legend">${['publicado', 'revisao', 'enviado', 'rascunho', 'devolvido', 'pendente'].map((k) => `<span><i style="background:${COR[k]}"></i>${K.STATUS[k].short || K.STATUS[k].label}</span>`).join('')}</div></div>
+          <div class="row-between"><h2 style="font-size:1.25rem">Minhas turmas</h2><div class="legend">${['publicado', 'revisao', 'enviado', 'rascunho', 'devolvido', 'pendente'].map((k) => `<span><i style="background:${COR[k]}"></i>${K.STATUS[k].short || K.STATUS[k].label}</span>`).join('')}</div></div>
           <div class="grid-3">${vs.map((v) => { const t = A.turma(v.turma); const pg = progresso(v.turma, v.disc); const ok = pg.total - pg.st.pendente - pg.st.rascunho; return `<a class="card card-link turma-card" href="#/professor/turmas/${t.id}?disc=${v.disc}">
             <div class="row-between"><span class="turma-badge">${t.nome}</span><span class="tag t-neutro">${A.disc(v.disc).nome}</span></div>
-            <div><b style="font-size:16px">${ok}/${pg.total} enviados</b><div class="muted" style="font-size:13px">${t.turno} · ${t.sala}</div></div>${barra(pg)}
+            <div><b style="font-size:1rem">${ok}/${pg.total} enviados</b><div class="muted" style="font-size:0.8125rem">${t.turno} · ${t.sala}</div></div>${barra(pg)}
             ${pg.st.devolvido ? `<small style="color:var(--st-devolvido);font-weight:700">${I('undo', 'icon-sm')} ${K.plural(pg.st.devolvido, 'devolvido')}</small>` : `<small class="muted">${pg.st.pendente} sem registro</small>`}</a>`; }).join('')}</div>
         </section>
         <section class="card"><div class="card-head"><div><h2>Retornos das famílias</h2><p>Ciência e observações dos responsáveis sobre seus relatórios</p></div></div>
@@ -80,7 +80,7 @@
       ${K.pageHead({ crumbs: [{ label: 'Professor', href: '#/professor/painel' }, { label: 'Minhas turmas' }], title: 'Minhas turmas', lead: 'Turmas e disciplinas atribuídas a você pela coordenação no ano letivo de 2026.' })}
       <div class="grid-3">${minhas().map((v) => { const t = A.turma(v.turma); const pg = progresso(v.turma, v.disc); return `<article class="card turma-card">
         <div class="row-between"><span class="turma-badge lg">${t.nome}</span>${K.status(pg.st.devolvido ? 'devolvido' : pg.st.pendente ? 'pendente' : 'enviado', true)}</div>
-        <div><h2 style="font-size:18px">${A.disc(v.disc).nome}</h2><p class="muted" style="font-size:13px">${t.ano} · ${t.turno} · ${t.sala} · ${K.plural(pg.total, 'aluno ativo', 'alunos ativos')}</p></div>
+        <div><h2 style="font-size:1.125rem">${A.disc(v.disc).nome}</h2><p class="muted" style="font-size:0.8125rem">${t.ano} · ${t.turno} · ${t.sala} · ${K.plural(pg.total, 'aluno ativo', 'alunos ativos')}</p></div>
         ${barra(pg)}
         <a class="btn btn-secondary btn-block" href="#/professor/turmas/${t.id}?disc=${v.disc}">Abrir turma ${I('chevron-right', 'icon-sm')}</a></article>`; }).join('')}</div>`)
   };
@@ -98,7 +98,7 @@
       return S('turmas', `
         ${K.pageHead({ crumbs: [{ label: 'Minhas turmas', href: '#/professor/turmas' }, { label: `${t.nome} · ${A.disc(disc).nome}` }], title: `${t.nome} · ${A.disc(disc).nome}`, lead: `${al.length} alunos · ${t.turno} · ${t.sala} · 3º bimestre`, actions: `<a class="btn btn-primary" href="#/professor/registro/novo?disc=${disc}">${I('plus')} Novo acompanhamento</a>` })}
         ${vs.length > 1 ? `<div class="segmented" role="group" aria-label="Disciplina">${vs.map((v) => `<a href="#/professor/turmas/${t.id}?disc=${v.disc}" ${v.disc === disc ? 'aria-current="page"' : ''}>${A.disc(v.disc).nome}</a>`).join('')}</div>` : ''}
-        <section class="grid-4">${[['pendente', 'Sem registro'], ['rascunho', 'Rascunhos'], ['devolvido', 'Devolvidos'], ['publicado', 'Publicados']].map(([k, l]) => `<div class="card tight row"><span class="ico ${{ pendente: 'ico-warn', rascunho: 'ico-blue', devolvido: 'ico-bad', publicado: 'ico-ok' }[k]}" style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center">${I(K.STATUS[k].icon)}</span><div><b class="mono" style="font-size:22px">${pg.st[k]}</b><div class="muted" style="font-size:12px;font-weight:700">${l}</div></div></div>`).join('')}</section>
+        <section class="grid-4">${[['pendente', 'Sem registro'], ['rascunho', 'Rascunhos'], ['devolvido', 'Devolvidos'], ['publicado', 'Publicados']].map(([k, l]) => `<div class="card tight row"><span class="ico ${{ pendente: 'ico-warn', rascunho: 'ico-blue', devolvido: 'ico-bad', publicado: 'ico-ok' }[k]}" style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center">${I(K.STATUS[k].icon)}</span><div><b class="mono" style="font-size:1.375rem">${pg.st[k]}</b><div class="muted" style="font-size:0.75rem;font-weight:700">${l}</div></div></div>`).join('')}</section>
         <section class="card">
           <div class="toolbar" role="search">
             <div class="search grow"><label class="sr-only" for="tq">Buscar aluno</label>${I('search')}<input id="tq" class="input" type="search" placeholder="Buscar aluno pelo nome" value="${K.esc(q.q || '')}"></div>
@@ -140,12 +140,12 @@
             <div class="card-head"><div><h2>Acompanhamentos</h2><p>Registros seus para este aluno, por bimestre e disciplina</p></div></div>
             ${discs.map((d) => `<h3 class="eyebrow" style="margin-top:8px">${A.disc(d).nome}</h3>
               <div class="table-wrap"><table class="table"><thead><tr><th>Bimestre</th><th>Média</th><th>Tags</th><th>Status</th><th><span class="sr-only">Ação</span></th></tr></thead><tbody>
-              ${D.bimestres.filter((b) => b.status !== 'agendado').map((b) => { const r = rs.find((x) => x.disc === d && x.bim === b.n && x.status !== 'cancelado'); return `<tr><td class="cell-main"><b>${b.n}º bimestre</b></td><td data-label="Média" class="mono">${r ? K.fmtMedia(r.media) : '—'}</td><td data-label="Tags">${r ? K.tags(r.tags) : '<span class="muted">—</span>'}</td><td data-label="Status">${K.status(r ? r.status : 'pendente', true)}</td><td class="actions">${b.status === 'aberto' ? acao(a, d, r) : r ? `<a class="btn btn-ghost btn-sm" href="#/professor/registros/${r.id}">${I('eye', 'icon-sm')} Ver</a>` : '<span class="muted" style="font-size:12px">Período encerrado</span>'}</td></tr>`; }).join('')}
+              ${D.bimestres.filter((b) => b.status !== 'agendado').map((b) => { const r = rs.find((x) => x.disc === d && x.bim === b.n && x.status !== 'cancelado'); return `<tr><td class="cell-main"><b>${b.n}º bimestre</b></td><td data-label="Média" class="mono">${r ? K.fmtMedia(r.media) : '—'}</td><td data-label="Tags">${r ? K.tags(r.tags) : '<span class="muted">—</span>'}</td><td data-label="Status">${K.status(r ? r.status : 'pendente', true)}</td><td class="actions">${b.status === 'aberto' ? acao(a, d, r) : r ? `<a class="btn btn-ghost btn-sm" href="#/professor/registros/${r.id}">${I('eye', 'icon-sm')} Ver</a>` : '<span class="muted" style="font-size:0.75rem">Período encerrado</span>'}</td></tr>`; }).join('')}
               </tbody></table></div>`).join('')}
           </section>
           <aside class="stack">
-            <section class="card stack-sm" style="align-items:center;text-align:center">${K.avatar(a.nome, a.cor, 'xl')}<b style="font-size:18px">${a.nome}</b><span class="muted" style="font-size:13px">${t.nome} · ${t.turno}</span>${a.ativo ? '<span class="status publicado">Ativo</span>' : '<span class="status cancelado">Inativo</span>'}</section>
-            <section class="card tight stack-sm"><h2 style="font-size:16px">Responsáveis</h2>${A.respDoAluno(a.id).map((r) => `<div class="row">${K.avatar(r.nome, '#9FE3D0', 'sm')}<span><b style="font-size:14px">${r.nome}</b><small class="muted"> · ${r.parentesco}</small></span></div>`).join('') || '<p class="muted">Nenhum responsável vinculado.</p>'}<small class="muted">Contatos são gerenciados pela coordenação.</small></section>
+            <section class="card stack-sm" style="align-items:center;text-align:center">${K.avatar(a.nome, a.cor, 'xl')}<b style="font-size:1.125rem">${a.nome}</b><span class="muted" style="font-size:0.8125rem">${t.nome} · ${t.turno}</span>${a.ativo ? '<span class="status publicado">Ativo</span>' : '<span class="status cancelado">Inativo</span>'}</section>
+            <section class="card tight stack-sm"><h2 style="font-size:1rem">Responsáveis</h2>${A.respDoAluno(a.id).map((r) => `<div class="row">${K.avatar(r.nome, '#9FE3D0', 'sm')}<span><b style="font-size:0.875rem">${r.nome}</b><small class="muted"> · ${r.parentesco}</small></span></div>`).join('') || '<p class="muted">Nenhum responsável vinculado.</p>'}<small class="muted">Contatos são gerenciados pela coordenação.</small></section>
           </aside>
         </div>`);
     }
@@ -184,7 +184,7 @@
             </fieldset>
             <fieldset class="form-section"><legend>2. Desempenho</legend>
               <div class="form-grid">
-                ${K.field({ id: 'f-media', label: 'Média do bimestre', value: d0.media === '' || d0.media == null ? '' : K.fmtMedia(d0.media), required: true, placeholder: 'Ex.: 8,5', attrs: 'inputmode="decimal" data-min="0" data-max="10" style="max-width:160px;font-family:var(--font-mono);font-size:20px"', hint: 'De 0 a 10, com até uma casa decimal.' })}
+                ${K.field({ id: 'f-media', label: 'Média do bimestre', value: d0.media === '' || d0.media == null ? '' : K.fmtMedia(d0.media), required: true, placeholder: 'Ex.: 8,5', attrs: 'inputmode="decimal" data-min="0" data-max="10" style="max-width:160px;font-family:var(--font-mono);font-size:1.25rem"', hint: 'De 0 a 10, com até uma casa decimal.' })}
               </div>
               <div class="field"><span class="field-label" id="tags-lbl">Tags pedagógicas <small class="muted">(opcional, escolha quantas quiser)</small></span>
                 <div class="tag-picker" role="group" aria-labelledby="tags-lbl">${D.tags.map((t) => `<label class="tag-option"><input type="checkbox" name="tags" value="${t.id}" ${d0.tags.includes(t.id) ? 'checked' : ''}><span>${K.esc(t.nome)}</span></label>`).join('')}</div>
@@ -202,9 +202,9 @@
             </div>
           </form>
           <aside class="stack">
-            <section class="card tight stack-sm"><h2 style="font-size:16px">${I('info')} Como funciona</h2>${K.stepper(r ? r.status : 'rascunho')}<p class="muted" style="font-size:13px">Depois de enviado, o registro vai para a coordenação. Ela pode publicar para a família ou devolver com comentários.</p></section>
-            ${r ? `<section class="card tight"><h2 style="font-size:16px">Histórico</h2>${K.timeline(r)}</section>` : ''}
-            <section class="card tight stack-sm"><h2 style="font-size:16px">${I('shield')} Privacidade</h2><p class="muted" style="font-size:13px">Somente os responsáveis vinculados a este aluno verão o relato, e apenas após a publicação.</p></section>
+            <section class="card tight stack-sm"><h2 style="font-size:1rem">${I('info')} Como funciona</h2>${K.stepper(r ? r.status : 'rascunho')}<p class="muted" style="font-size:0.8125rem">Depois de enviado, o registro vai para a coordenação. Ela pode publicar para a família ou devolver com comentários.</p></section>
+            ${r ? `<section class="card tight"><h2 style="font-size:1rem">Histórico</h2>${K.timeline(r)}</section>` : ''}
+            <section class="card tight stack-sm"><h2 style="font-size:1rem">${I('shield')} Privacidade</h2><p class="muted" style="font-size:0.8125rem">Somente os responsáveis vinculados a este aluno verão o relato, e apenas após a publicação.</p></section>
           </aside>
         </div>`);
     },
@@ -248,7 +248,7 @@
   function confirmarEnvio(r) {
     const a = A.aluno(r.aluno);
     K.modal(`${K.modalHead('send', 'ico-blue', r.status === 'devolvido' ? 'Reenviar para revisão?' : 'Enviar para revisão?', `${a.nome} · ${A.disc(r.disc).nome} · ${r.bim}º bimestre`)}
-      <div class="publish-preview"><div class="row-between"><span class="eyebrow">Média</span><b class="mono" style="font-size:22px">${K.fmtMedia(r.media)}</b></div>${K.tags(r.tags)}</div>
+      <div class="publish-preview"><div class="row-between"><span class="eyebrow">Média</span><b class="mono" style="font-size:1.375rem">${K.fmtMedia(r.media)}</b></div>${K.tags(r.tags)}</div>
       <div class="alert info">${I('lock')}<div>Depois de enviar, você <b>não poderá editar</b> até a coordenação concluir a revisão ou devolver o registro.</div></div>
       <div class="modal-foot"><button class="btn btn-secondary" data-action="close-modal">Voltar e revisar</button><button class="btn btn-primary" data-action="envio-ok">${I('send')} Confirmar envio</button></div>`);
     K.actions['envio-ok'] = () => { A.mudarStatus(r.id, 'enviado', PNOME, 'Professor'); K.closeModal(); K.toast('Enviado para revisão', 'A coordenação foi avisada (simulação).'); K.go(`#/professor/registros/${r.id}`); };
@@ -264,7 +264,7 @@
         ${K.pageHead({ crumbs: [{ label: 'Professor', href: '#/professor/painel' }, { label: 'Pré-visualização' }], title: 'Como a família verá', lead: 'Confira o texto e a média antes de enviar. Esta é a visão do responsável após a publicação.', actions: K.status(r.status) })}
         <div class="alert neutral">${I('eye')}<div>Pré-visualização local. Nada foi enviado ainda.</div></div>
         <article class="card report-doc" aria-label="Prévia do relatório">
-          <header class="report-head"><div class="row">${K.avatar(a.nome, a.cor, 'lg')}<div><h2 style="font-size:24px">${a.nome}</h2><span class="muted" style="font-size:13px">${A.disc(r.disc).nome} · ${r.bim}º bimestre de ${r.ano} · ${A.turma(r.turma).nome} · Prof. ${PNOME}</span></div></div>
+          <header class="report-head"><div class="row">${K.avatar(a.nome, a.cor, 'lg')}<div><h2 style="font-size:1.5rem">${a.nome}</h2><span class="muted" style="font-size:0.8125rem">${A.disc(r.disc).nome} · ${r.bim}º bimestre de ${r.ano} · ${A.turma(r.turma).nome} · Prof. ${PNOME}</span></div></div>
             <div class="media-box sm"><span class="eyebrow">Média</span><b class="media-val">${K.fmtMedia(r.media)}</b></div></header>
           ${K.tags(r.tags)}
           <div class="desc-text">${K.esc(r.desc)}</div>
@@ -315,9 +315,9 @@
               <div class="grid-2"><div class="media-box"><span class="eyebrow">Média do bimestre</span><b class="media-val">${K.fmtMedia(r.media)}</b></div><div class="stack-sm"><span class="eyebrow">Tags</span>${r.tags.length ? K.tags(r.tags) : '<span class="muted">Nenhuma tag</span>'}</div></div>
               <div class="stack-sm"><span class="eyebrow">Descrição</span><div class="desc-text">${K.esc(r.desc)}</div></div>
             </section>
-            ${r.comentarios.length ? `<section class="card"><h2 style="font-size:18px">Comentários da coordenação</h2>${r.comentarios.map((c) => `<div class="comment">${K.avatar(c.quem, '#FFC94A', 'sm')}<div><b>${c.quem}</b> <small class="muted">· ${c.papel} · ${c.quando}</small><p>${K.esc(c.texto)}</p></div></div>`).join('')}</section>` : ''}
+            ${r.comentarios.length ? `<section class="card"><h2 style="font-size:1.125rem">Comentários da coordenação</h2>${r.comentarios.map((c) => `<div class="comment">${K.avatar(c.quem, '#FFC94A', 'sm')}<div><b>${c.quem}</b> <small class="muted">· ${c.papel} · ${c.quando}</small><p>${K.esc(c.texto)}</p></div></div>`).join('')}</section>` : ''}
           </div>
-          <aside class="stack">${K.retornoFamilia(r)}<section class="card"><h2 style="font-size:18px">${I('clock')} Histórico</h2>${K.timeline(r)}</section></aside>
+          <aside class="stack">${K.retornoFamilia(r)}<section class="card"><h2 style="font-size:1.125rem">${I('clock')} Histórico</h2>${K.timeline(r)}</section></aside>
         </div>`);
     }
   };
@@ -328,11 +328,11 @@
     render: () => { const pr = A.prof(PID); return S('', `
       ${K.pageHead({ crumbs: [{ label: 'Professor', href: '#/professor/painel' }, { label: 'Meu perfil' }], title: 'Meu perfil e preferências' })}
       <div class="grid-2">
-        <form id="pp" class="card stack" novalidate><div class="row">${K.avatar(pr.nome, pr.cor, 'xl')}<div><b style="font-size:20px">${pr.nome}</b><div class="muted">${pr.disc.map((d) => A.disc(d).nome).join(' · ')}</div></div></div>
+        <form id="pp" class="card stack" novalidate><div class="row">${K.avatar(pr.nome, pr.cor, 'xl')}<div><b style="font-size:1.25rem">${pr.nome}</b><div class="muted">${pr.disc.map((d) => A.disc(d).nome).join(' · ')}</div></div></div>
           ${K.field({ id: 'pp-email', label: 'E-mail institucional', type: 'email', value: pr.email, required: true })}
           ${K.field({ id: 'pp-tel', label: 'Telefone', value: pr.tel })}
           <div class="form-actions"><button class="btn btn-primary">${I('save')} Salvar</button></div></form>
-        <section class="card stack"><h2 style="font-size:18px">Avisos</h2>${[['Registro devolvido para ajustes', true], ['Registro publicado', true], ['Ciência das famílias', true], ['Lembrete de prazo do bimestre', true]].map(([l, on]) => `<label class="switch"><input type="checkbox" ${on ? 'checked' : ''}><span class="track"></span>${l}</label>`).join('')}</section>
+        <section class="card stack"><h2 style="font-size:1.125rem">Avisos</h2>${[['Registro devolvido para ajustes', true], ['Registro publicado', true], ['Ciência das famílias', true], ['Lembrete de prazo do bimestre', true]].map(([l, on]) => `<label class="switch"><input type="checkbox" ${on ? 'checked' : ''}><span class="track"></span>${l}</label>`).join('')}</section>
       </div>`); },
     mount: (root) => K.qs('#pp', root).addEventListener('submit', (e) => { e.preventDefault(); if (K.validate(e.target)) K.toast('Preferências salvas nesta sessão'); })
   };

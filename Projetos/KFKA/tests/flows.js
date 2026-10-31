@@ -73,8 +73,8 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process
   await go('/professor/configuracoes'); await p.click('.tema-card[data-tema="escuro"]'); await p.waitForTimeout(700); tm = await tema();
   ok(tm.t === 'dark' && (await p.getAttribute('.tema-card[data-tema="escuro"]', 'aria-checked')) === 'true', 'tema escuro nas configurações');
   await p.click('.tema-card[data-tema="sistema"]'); await p.waitForTimeout(700); tm = await tema(); ok(tm.t === 'sistema', 'configurações volta ao sistema');
-  await p.click('[data-action="cfg-fs"][data-fs="1.25"]'); ok(await p.evaluate(() => document.documentElement.style.getPropertyValue('--zoom') === '1.25'), 'tamanho do texto nas configurações');
-  await p.click('[data-action="cfg-fs"][data-fs="1"]');
+  await p.click('.tt-opcao:nth-child(3)'); ok(await p.evaluate(() => document.documentElement.style.fontSize === '125%'), 'tamanho do texto nas configurações');
+  await p.click('.tt-opcao:nth-child(1)');
   await p.click('label.switch:has([data-cfg="movimento"])'); ok(await p.evaluate(() => document.documentElement.classList.contains('menos-movimento')), 'reduzir animações');
   await p.click('label.switch:has([data-cfg="movimento"])');
   await go('/admin/painel'); ok(!!(await p.$('.sidebar .nav-config[href="#/admin/configuracoes"]')), 'atalho de configurações na sidebar');

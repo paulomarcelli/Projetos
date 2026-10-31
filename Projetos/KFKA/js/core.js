@@ -32,6 +32,7 @@ window.KFKA = window.KFKA || {};
     plus: '<path d="M12 5v14M5 12h14"/>',
     edit: '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
     eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+    refresh: '<path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/>',
     'eye-off': '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>',
     file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8M16 17H8"/>',
     download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/>',
@@ -326,17 +327,43 @@ window.KFKA = window.KFKA || {};
   K.views = {};
 
   /* ---------------- Ações delegadas ---------------- */
-  /* ---------------- Tema (claro / escuro) ----------------
-     Padrão: segue o sistema. A escolha vale para a sessão (em memória, como o tamanho
-     do texto): nesta fase o protótipo não guarda nada no navegador. */
+  /* ---------------- Preferências de aparência e acessibilidade ----------------
+     Tema, tamanho do texto, espaçamento de leitura, links sublinhados e menos animação.
+     Valem para a aba (sessionStorage, como o login): F5 mantém, fechar a aba volta ao padrão.
+     O tamanho do texto muda o font-size do <html>; como todo o CSS usa rem, o sistema inteiro
+     cresce junto (menu, tabelas, formulários) e o layout se reorganiza em vez de cortar.
+     O tamanho de letra escolhido no navegador ou no celular também é respeitado. */
   K.state = K.state || {};
+  K.TAMANHOS = [['100', 'Padrão'], ['112.5', 'Médio'], ['125', 'Grande'], ['150', 'Muito grande']];
+  const CHAVE_PREFS = 'kfka-prefs';
+  const PADRAO = { tema: 'sistema', texto: '100', espaco: false, links: false, menosMovimento: false };
+  K.prefs = (() => { try { return { ...PADRAO, ...JSON.parse(sessionStorage.getItem(CHAVE_PREFS) || '{}') }; } catch (e) { return { ...PADRAO }; } })();
+  K.aplicarPrefs = () => {
+    const html = document.documentElement, p = K.prefs;
+    html.style.fontSize = p.texto === '100' ? '' : `${p.texto}%`;
+    html.classList.toggle('texto-espacado', !!p.espaco);
+    html.classList.toggle('links-sublinhados', !!p.links);
+    html.classList.toggle('menos-movimento', !!p.menosMovimento);
+    if (p.tema === 'sistema') delete html.dataset.theme; else html.dataset.theme = p.tema === 'escuro' ? 'dark' : 'light';
+    larguraUtil();
+  };
+  // Largura útil = tela ÷ escala do texto. Com texto grande num computador, o menu vira gaveta.
+  const larguraUtil = () => { const esc = Number(K.prefs.texto) / 100; document.documentElement.classList.toggle('gaveta-forcada', esc > 1 && innerWidth >= 1024 && innerWidth / esc < 1024); };
+  addEventListener('resize', larguraUtil, { passive: true });
+  K.salvarPrefs = (mudanca) => {
+    Object.assign(K.prefs, mudanca);
+    try { sessionStorage.setItem(CHAVE_PREFS, JSON.stringify(K.prefs)); } catch (e) { /* vale só na memória */ }
+    K.aplicarPrefs();
+  };
+  K.restaurarPrefs = () => K.salvarPrefs({ ...PADRAO });
+  K.aplicarPrefs(); // antes do primeiro desenho: sem "piscar" no tamanho ou no tema
+
+  /* ---------------- Tema (claro / escuro) ---------------- */
   K.TEMAS = [['sistema', 'Sistema', 'monitor'], ['claro', 'Claro', 'sun'], ['escuro', 'Escuro', 'moon']];
-  K.temaAtual = () => K.state.tema || 'sistema';
+  K.temaAtual = () => K.prefs.tema || 'sistema';
   K.escuroAtivo = () => K.temaAtual() === 'escuro' || (K.temaAtual() === 'sistema' && matchMedia('(prefers-color-scheme: dark)').matches);
   K.setTema = (t) => {
-    K.state.tema = t;
-    const root = document.documentElement;
-    if (t === 'sistema') delete root.dataset.theme; else root.dataset.theme = t === 'escuro' ? 'dark' : 'light';
+    K.salvarPrefs({ tema: t });
     K.qsa('[data-tema]').forEach((b) => { b.setAttribute('aria-pressed', String(b.dataset.tema === t)); if (b.getAttribute('role') === 'radio') b.setAttribute('aria-checked', String(b.dataset.tema === t)); });
     K.qsa('[data-action="tema-alternar"]').forEach((b) => { b.innerHTML = K.icon(K.escuroAtivo() ? 'sun' : 'moon'); b.setAttribute('aria-label', K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'); });
   };

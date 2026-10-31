@@ -341,7 +341,7 @@
           <span class="sucesso-ico" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16" pathLength="1"/></svg></span>
           <div class="stack-sm">${pilula(r)}<h1 id="page-title" tabindex="-1">Conta criada</h1><p class="text-2">${c.pronto(f)}</p></div>
           <a class="btn btn-primary btn-lg btn-block" href="#/entrar/${perfil}?email=${encodeURIComponent(email)}">Entrar agora ${I('chevron-right')}</a>
-          <p class="text-2" style="font-size:14px;margin:0">Enviamos uma confirmação para <b>${K.esc(email)}</b>.</p></div>`;
+          <p class="text-2" style="font-size:0.875rem;margin:0">Enviamos uma confirmação para <b>${K.esc(email)}</b>.</p></div>`;
         K.qs('#page-title', main).focus();
       });
     }

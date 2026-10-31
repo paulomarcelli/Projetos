@@ -123,12 +123,25 @@ O próprio protótipo traz as entregas de Design de Interface Digital:
 
 Também há o **mapa de navegação** clicável (`#/mapa`) e a **pesquisa e matriz de requisitos** (`#/documentacao`).
 
-## ♿ Cuidados
+## ♿ Acessibilidade
 
-- Responsivo no computador, no tablet (menu em gaveta) e no celular.
+Em **Configurações** (nos três perfis), a seção **Acessibilidade** reúne:
+
+- **Tamanho do texto** em quatro níveis (Padrão, Médio, Grande e Muito grande, de 100% a 150%), com botões A−/A+ e uma prévia ao vivo. Aumenta o sistema inteiro: menu, tabelas, formulários e relatórios.
+- **Espaçamento de leitura:** mais espaço entre linhas, letras e palavras.
+- **Sublinhar links:** links no texto deixam de depender só da cor.
+- **Reduzir animações**, além do que o aparelho já pede.
+
+As escolhas valem enquanto a aba estiver aberta (F5 mantém) e podem voltar ao padrão com um clique. O perfil da família tem o mesmo controle de tamanho.
+
+Todo o texto usa `rem`, então o tamanho de letra configurado no navegador ou no celular também é respeitado. Com o texto grande num computador, o menu lateral vira gaveta quando a largura útil fica pequena.
+
+Outros cuidados:
+
+- Responsivo do celular de 320 px ao computador, sem rolagem lateral, inclusive com o texto em 150%: no tablet o menu vira gaveta, no celular as tabelas viram cartões e os modais abrem como folha.
 - Navegação pelo teclado, foco visível, alvos de toque de 44 px e contraste AA.
 - Status sempre com **texto, ícone e cor**, nunca só cor.
-- Respeita **"reduzir movimento"** e tem tamanho de texto ajustável.
+- Respeita **"reduzir movimento"** do sistema.
 - Modo pior caso (`index.html?dados=pior`) com nomes e textos extremos, para testar o layout.
 
 ## 🛠️ Como rodar
@@ -143,7 +156,7 @@ Depois é só abrir `http://localhost:8000`.
 
 ## 🧪 Testes
 
-Testes automáticos com Playwright: navegação por todas as rotas, fluxos dos três perfis, criar conta e login, estouro de layout e pior caso.
+Testes automáticos com Playwright: navegação por todas as rotas, fluxos dos três perfis, criar conta e login, acessibilidade (tamanho do texto e telas a 150%), estouro de layout e pior caso.
 
 ```bash
 node tests/crawl.js
@@ -151,6 +164,7 @@ node tests/flows.js
 node tests/overflow.js
 node tests/pior-caso.js
 node tests/conta.js
+node tests/acessibilidade.js
 ```
 
 ## 📁 Estrutura

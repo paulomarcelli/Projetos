@@ -77,9 +77,9 @@ table { border-collapse: collapse; width: 100%; }
 .grid-main-side { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--s5); align-items: start; }
 /* Coluna lateral acompanha a rolagem de formulários longos (ajuda e histórico sempre à vista) */
 @media (min-width: 1181px) { .grid-main-side.sticky-side > :last-child { position: sticky; top: calc(var(--topbar-h) + var(--s4)); } }
-@media (max-width: 1180px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid-main-side { grid-template-columns: 1fr; } }
+@media (max-width: 1180px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid-main-side { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: minmax(0, 1fr); } }
 .hide-mobile { }
 @media (max-width: 720px) { .hide-mobile { display: none !important; } }
 .only-mobile { display: none !important; }

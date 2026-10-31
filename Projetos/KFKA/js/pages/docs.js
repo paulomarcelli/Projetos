@@ -42,14 +42,14 @@
 
       ${sec('tipo', 'Tipografia', 'Bricolage Grotesque dá personalidade aos títulos. Plus Jakarta Sans é muito legível em telas pequenas e tem acentuação completa em português. JetBrains Mono alinha as médias e os números em colunas.', `
         <div class="card stack type-scale">
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:44px;font-weight:700;letter-spacing:-.02em;color:var(--ink)">Display 36–56</span><code>Bricolage 700 · altura 1,05</code></div>
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--ink)">Título de página 28–34</span><code>Bricolage 700 · altura 1,15</code></div>
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Título de seção 22</span><code>Bricolage 700</code></div>
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--ink)">Título de cartão 18</span><code>Bricolage 700</code></div>
-          <div class="row-between"><span style="font-size:16px">Corpo 15–16: relatos pedagógicos e textos longos.</span><code>Jakarta 400 · altura 1,55</code></div>
-          <div class="row-between"><span style="font-size:14px;font-weight:600">Interface 13–14: rótulos, tabelas, botões.</span><code>Jakarta 600–700</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:2.75rem;font-weight:700;letter-spacing:-.02em;color:var(--ink)">Display 36–56</span><code>Bricolage 700 · altura 1,05</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:1.875rem;font-weight:700;color:var(--ink)">Título de página 28–34</span><code>Bricolage 700 · altura 1,15</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:1.375rem;font-weight:700;color:var(--ink)">Título de seção 22</span><code>Bricolage 700</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:1.125rem;font-weight:700;color:var(--ink)">Título de cartão 18</span><code>Bricolage 700</code></div>
+          <div class="row-between"><span style="font-size:1rem">Corpo 15–16: relatos pedagógicos e textos longos.</span><code>Jakarta 400 · altura 1,55</code></div>
+          <div class="row-between"><span style="font-size:0.875rem;font-weight:600">Interface 13–14: rótulos, tabelas, botões.</span><code>Jakarta 600–700</code></div>
           <div class="row-between"><span class="eyebrow">Rótulo 12 em caixa alta</span><code>Jakarta 800 · espaço .08em</code></div>
-          <div class="row-between"><span class="mono" style="font-size:28px;font-weight:700">8,5 · 2026-0142</span><code>JetBrains Mono 500/700</code></div>
+          <div class="row-between"><span class="mono" style="font-size:1.75rem;font-weight:700">8,5 · 2026-0142</span><code>JetBrains Mono 500/700</code></div>
         </div>`)}
 
       ${sec('espaco', 'Espaçamento, raios, sombras e grid', 'Escala de 4 px: todo espaço é múltiplo de 4. Os cantos são arredondados e as sombras são suaves, para um visual amigável e sem peso.', `
@@ -174,8 +174,8 @@
           <div class="card bv" style="background:var(--blue)">${markMono('#fff', 'transparent')}<small style="color:#fff">Negativa</small></div>
         </div>
         <div class="grid-2">
-          <div class="card stack-sm"><h3 style="font-size:17px">Área de proteção e tamanho mínimo</h3><div class="row" style="gap:28px;flex-wrap:wrap"><div class="clear-space">${K.mark(80)}</div><div class="stack-sm"><p class="text-2" style="font-size:14px">Mantenha ao redor do símbolo um espaço livre igual ao diâmetro do ponto central (x).</p><div class="row">${K.mark(24)}<small class="muted">Mínimo digital: 24px</small></div><div class="row">${K.mark(16)}<small class="muted">Favicon: 16px (simplificado)</small></div></div></div></div>
-          <div class="card stack-sm"><h3 style="font-size:17px">Não faça</h3><div class="row dont-row">
+          <div class="card stack-sm"><h3 style="font-size:1.0625rem">Área de proteção e tamanho mínimo</h3><div class="row" style="gap:28px;flex-wrap:wrap"><div class="clear-space">${K.mark(80)}</div><div class="stack-sm"><p class="text-2" style="font-size:0.875rem">Mantenha ao redor do símbolo um espaço livre igual ao diâmetro do ponto central (x).</p><div class="row">${K.mark(24)}<small class="muted">Mínimo digital: 24px</small></div><div class="row">${K.mark(16)}<small class="muted">Favicon: 16px (simplificado)</small></div></div></div></div>
+          <div class="card stack-sm"><h3 style="font-size:1.0625rem">Não faça</h3><div class="row dont-row">
             <div class="dont"><span style="display:inline-block;transform:scaleX(1.5)">${K.mark(44)}</span><small>Distorcer</small></div>
             <div class="dont"><span style="filter:hue-rotate(140deg);display:inline-block">${K.mark(44)}</span><small>Trocar as cores</small></div>
             <div class="dont"><span style="display:inline-block;transform:rotate(-20deg)">${K.mark(44)}</span><small>Girar</small></div>
@@ -205,7 +205,7 @@
           ['Professor', ['#/professor/painel', 'Painel'], ['#/professor/turmas/6A?disc=MAT', 'Turma'], ['#/professor/alunos/a5', 'Aluno'], ['#/professor/registro/novo?aluno=a5&disc=MAT&bim=3', 'Novo registro'], ['#/professor/registros?status=devolvido', 'Ajuste após devolução']],
           ['Família', ['#/entrar/responsavel', 'Login'], ['#/familia/selecionar', 'Aluno'], ['#/familia/painel', 'Painel'], ['#/familia/relatorios?bim=3', 'Filtro'], ['#/familia/relatorios/rel-109', 'Relatório e ciência'], ['#/familia/imprimir/rel-109', 'PDF']],
           ['Gestão', ['#/admin/painel', 'Painel'], ['#/admin/relatorios', 'Filtros'], ['#/admin/relatorios?turma=6A', 'Lista'], ['#/admin/revisao/rel-103', 'Detalhe'], ['#/admin/auditoria', 'Histórico'], ['#/admin/relatorios', 'Exportar para Excel']]
-        ].map(([t, ...steps]) => `<div class="card stack-sm"><h3 style="font-size:17px">${t}</h3><ol class="flow">${steps.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join('')}</ol></div>`).join('')}</div>`)}
+        ].map(([t, ...steps]) => `<div class="card stack-sm"><h3 style="font-size:1.0625rem">${t}</h3><ol class="flow">${steps.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join('')}</ol></div>`).join('')}</div>`)}
     </main>`
   };
 
@@ -257,7 +257,7 @@
           ['tag', 'TutorMundi', 'Etiquetas em pílula e títulos fortes e arredondados.', 'Tags pedagógicas em pílula e títulos em Bricolage Grotesque.'],
           ['layers', 'Sponte · TOTVS · Kaits', 'Sistemas de gestão escolar: menu lateral denso e foco em cadastros.', 'Menu lateral agrupado por tarefa (Estrutura escolar e Acompanhamento) e contadores de pendências.'],
           ['palette', 'Moodboard “The Cutting Edge” (slide)', 'Primária fria (azuis) + secundária quente (amarelo e laranja). Ícones em formas geométricas.', 'Base tinta/teal + acentos sol e menta. Ícones de traço com grade de 24px.']
-        ].map(([ic, t, o, d]) => `<article class="card stack-sm"><span class="ico ico-teal" style="width:40px;height:40px;border-radius:12px">${I(ic)}</span><h3 style="font-size:17px">${t}</h3><p class="text-2" style="font-size:14px"><b>Observado:</b> ${o}</p><p style="font-size:14px"><b>No KFKA:</b> ${d}</p></article>`).join('')}</div>`)}
+        ].map(([ic, t, o, d]) => `<article class="card stack-sm"><span class="ico ico-teal" style="width:40px;height:40px;border-radius:12px">${I(ic)}</span><h3 style="font-size:1.0625rem">${t}</h3><p class="text-2" style="font-size:0.875rem"><b>Observado:</b> ${o}</p><p style="font-size:0.875rem"><b>No KFKA:</b> ${d}</p></article>`).join('')}</div>`)}
       ${sec('dec', 'Decisões de design', '', `<ul class="checklist card">${[
         'Um único layout logado (menu lateral + barra superior) para os três perfis, mudando só o menu e a cor do selo. Isso reduz o tempo de aprendizado.',
         'O bimestre é o eixo de navegação (abas de bimestre), porque é assim que escola e família pensam o ano.',
@@ -269,7 +269,7 @@
       ].map((x) => `<li>${I('check-circle')}${x}</li>`).join('')}</ul>`)}
       ${sec('matriz', 'Matriz requisito → tela → componente', 'IDs conforme o documento oficial do projeto. Clique na rota para abrir a tela.', `
         <div class="card flush"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>Requisito</th><th>Tela(s)</th><th>Rota</th><th>Componentes</th></tr></thead><tbody>
-        ${MATRIZ.map(([id, req, tela, rota, comp]) => `<tr><td class="cell-main"><b class="mono">${id}</b></td><td data-label="Requisito">${req}</td><td data-label="Tela">${tela}</td><td data-label="Rota"><a class="mono" href="${rota}" style="font-size:12px">${rota}</a></td><td data-label="Componentes"><small class="text-2">${comp}</small></td></tr>`).join('')}
+        ${MATRIZ.map(([id, req, tela, rota, comp]) => `<tr><td class="cell-main"><b class="mono">${id}</b></td><td data-label="Requisito">${req}</td><td data-label="Tela">${tela}</td><td data-label="Rota"><a class="mono" href="${rota}" style="font-size:0.75rem">${rota}</a></td><td data-label="Componentes"><small class="text-2">${comp}</small></td></tr>`).join('')}
         </tbody></table></div></div>`)}
     </main>`
   };

@@ -99,3 +99,12 @@
 - [x] Contas ficam só na memória da página (sem banco, como pede o escopo); as fictícias usam a senha de teste `kfka2026`
 - [x] Movimento: nada nasce de `scale(0)` (sol do K no topo e no logo), gaveta fecha mais rápido que abre, amostra de tamanho de texto sem animar `font-size`, engrenagem em 260 ms
 - [x] Testes: `node tests/conta.js` (28 verificações) e as rotas novas no `crawl.js`
+
+## Revisão 1.4 — acessibilidade e responsividade
+- [x] Todo o texto em `rem` (253 tamanhos convertidos): o sistema inteiro acompanha o tamanho escolhido e o do navegador/celular
+- [x] Configurações › Acessibilidade: tamanho do texto em 4 níveis (rádios com setas do teclado, A−/A+, prévia ao vivo e aviso para leitor de tela), espaçamento de leitura (WCAG 1.4.12), sublinhar links e reduzir animações, com "Restaurar o padrão". O perfil da família usa o mesmo controle
+- [x] Preferências guardadas na aba (`sessionStorage`) e aplicadas antes do primeiro desenho; tema entrou no mesmo lugar
+- [x] Texto grande no computador: quando a largura útil (tela ÷ escala) fica abaixo de 1024 px, o menu vira gaveta (`html.gaveta-forcada`); a largura do menu está em `rem`
+- [x] Auditoria de 65 telas em 320, 360, 390, 768, 1024 e 1280 px e com texto a 125% e 150%: nenhuma rolagem lateral
+- [x] Correções: colunas `1fr` viraram `minmax(0, 1fr)`; topo público com consulta por contêiner em `rem`; abas da vitrine viram lista no celular; datas dos períodos não espremem mais (768 px); gráfico de colunas cabe em 320 px; botões grandes quebram a linha; área de toque maior em links-botão e no "remover vínculo"
+- [x] Testes: `node tests/acessibilidade.js` (34 verificações)

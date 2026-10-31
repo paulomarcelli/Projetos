@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": ["es2017", "es2019.array"],
+    "strict": true,
+    "typeRoots": ["./node_modules/@types", "./node_modules/@figma"],
+    "outFile": "dist/code.js",
+    "module": "none",
+    "noEmitOnError": true
+  },
+  "include": ["src/**/*.ts"]
+}

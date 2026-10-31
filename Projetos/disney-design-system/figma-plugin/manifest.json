@@ -1,0 +1,9 @@
+{
+  "name": "Disney DS Builder (acadêmico)",
+  "id": "disney-ds-builder-academic",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] }
+}

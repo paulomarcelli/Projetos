@@ -1,0 +1,200 @@
+/* =========================================================
+   KFKA — Tokens de design (cores, tipografia, espaço, raio, sombra)
+   Paleta herdada do design aprovado no Figma (azul-tinta + teal + céu).
+   Ajustes de contraste: textos "muted" e de status foram escurecidos
+   para atingir WCAG AA (≥ 4,5:1) sobre fundo branco/suave.
+   ========================================================= */
+:root {
+  /* ---- Marca ---- */
+  --ink: #1B3A4B;          /* primária institucional: sidebar, títulos */
+  --ink-deep: #10252F;     /* fundos escuros profundos */
+  --teal: #0B7285;         /* secundária: marca, links, destaques */
+  --teal-soft: #DDF3F6;    /* fundo de destaque suave */
+  --sky: #74C0FC;          /* acento claro (ilustrações, indicadores) */
+  --sky-soft: #E7F5FF;
+  --blue: #2A5CFF;         /* ação primária (botões) — 4,9:1 com branco */
+  --blue-hover: #1E48D9;
+  --blue-soft: #E8EEFF;
+  --sun: #FFC94A;          /* acento quente (avisos amigáveis, ilustração) */
+  --mint: #5FD4A8;         /* acento positivo */
+  --pink: #E0186F;         /* acento pontual (uso raro) */
+
+  /* ---- Superfícies ---- */
+  --bg-page: #F3F9FA;
+  --bg-paper: #E3FAFC;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F6FAFB;
+  --line: #D9E8EC;
+  --line-strong: #B5CDD4;
+
+  /* ---- Texto ---- */
+  --text: #0B2E3C;         /* 13,9:1 */
+  --text-2: #4E6B77;       /* 5,6:1 */
+  --text-muted: #56707B;   /* 4,9:1 sobre o fundo da página — AA para texto pequeno */
+  --text-inverse: #FFFFFF;
+
+  /* ---- Semânticas ---- */
+  --success: #26593F;  --success-bg: #E3F1EA;
+  --warning: #8A5A12;  --warning-bg: #FBF0DC;
+  --danger:  #9A3B26;  --danger-bg:  #F8E4DE;
+  --info:    #1E48D9;  --info-bg:    #E8EEFF;
+
+  /* ---- Status do fluxo editorial (texto escuro + fundo claro + ícone) ---- */
+  --st-rascunho: #4F5B65;  --st-rascunho-bg: #EEF1F3;
+  --st-enviado: #0A5F6F;   --st-enviado-bg: #DDF3F6;
+  --st-revisao: #8A5A12;   --st-revisao-bg: #FBF0DC;
+  --st-publicado: #26593F; --st-publicado-bg: #E3F1EA;
+  --st-devolvido: #9A3B26; --st-devolvido-bg: #F8E4DE;
+  --st-cancelado: #3F4A52; --st-cancelado-bg: #E2E6E9;
+
+  /* ---- Estados de interação ---- */
+  --focus-ring: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--blue);
+  --hover-tint: rgba(11, 114, 133, 0.06);
+  --selected-tint: var(--blue-soft);
+  --disabled-opacity: 0.45;
+
+  /* ---- Papéis de cor (separam "texto escuro" de "fundo escuro" para o modo escuro) ----
+     --ink continua sendo a cor dos títulos; estes tokens cobrem os outros usos. */
+  --chrome: #1B3A4B;        /* fundo da barra lateral, cartões escuros, toast */
+  --chrome-deep: #10252F;   /* rodapé, faixa de aviso, arte do login */
+  --strong: #1B3A4B;        /* item selecionado (segmentado, filtro, bimestre, página) */
+  --on-pastel: #0B2E3C;     /* texto sobre céu/sol/menta, que não mudam de tom */
+  --success-solid: #26593F; --success-solid-hover: #1D4631;
+  --danger-solid: #9A3B26;
+  --success-line: #BFE0CE;  --success-tint: #F7FCF9;
+  --danger-bg-hover: #F2D0C6; --danger-field: #FFF9F7;
+  --info-text: #16307F;     --warning-text: #6E470D;
+  --sun-bg: #FFF3D1;
+  --topbar-bg: rgba(243, 249, 250, .9);
+  --glass: rgba(255, 255, 255, .94);
+  --scrim: rgba(6, 25, 35, .55);
+  /* Botão claro sobre --chrome: branco no tema claro; vidro discreto no escuro (branco puro ofusca) */
+  --on-chrome-btn: #FFFFFF; --on-chrome-btn-text: #0B2E3C; --on-chrome-btn-line: transparent; --on-chrome-btn-hover: #E7F5FF;
+
+  /* ---- Tipografia ---- */
+  --font-display: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --fs-display: clamp(2.25rem, 4.2vw, 3.5rem); /* 36–56px */
+  --fs-h1: clamp(1.75rem, 2.6vw, 2.125rem);    /* 28–34px */
+  --fs-h2: 1.375rem;   /* 22px */
+  --fs-h3: 1.125rem;   /* 18px */
+  --fs-body: 0.9375rem;/* 15px */
+  --fs-sm: 0.8125rem;  /* 13px */
+  --fs-xs: 0.75rem;    /* 12px — rótulos em caixa alta */
+  --lh-tight: 1.15;
+  --lh-body: 1.55;
+
+  /* ---- Espaço (escala de 4px) ---- */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px;
+  --s6: 24px; --s8: 32px; --s10: 40px; --s12: 48px; --s16: 64px;
+
+  /* ---- Raio ---- */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
+
+  /* ---- Elevação ---- */
+  /* Sombras neutras e sempre com deslocamento (luz vindo de cima), nunca halo colorido */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, .05), 0 4px 12px rgba(0, 0, 0, .04);
+  --sh-2: 0 12px 32px -6px rgba(0, 0, 0, .14);
+  --sh-3: 0 24px 64px -8px rgba(0, 0, 0, .30);
+  /* Motivo da marca: os caminhos curvos do símbolo K (céu = professor, menta = família,
+     sol = publicação), os mesmos do logotipo. Usado nas áreas escuras no lugar de brilhos/gradientes genéricos. */
+  --brand-arcs: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' fill='none' stroke-linecap='round'%3E%3Cpath d='M244 300C320 300 368 214 470 112' stroke='%2374C0FC' stroke-width='56'/%3E%3Cpath d='M244 300C320 300 368 386 470 488' stroke='%235FD4A8' stroke-width='56'/%3E%3Ccircle cx='242' cy='300' r='48' fill='%23FFC94A' stroke='none'/%3E%3C/svg%3E");
+
+  /* ---- Movimento (skill emil-design-eng / animate) ----
+     Curvas fortes: as nativas do CSS são fracas demais.
+     ease-in nunca é usado em UI (atrasa o momento que o usuário observa). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);      /* entradas, saídas e feedback */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);  /* algo que se move na tela */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);   /* gaveta lateral (estilo iOS) */
+  --dur-press: 160ms;   /* clique em botão */
+  --dur-fast: 200ms;    /* menus, popovers, tooltips */
+  --dur-modal: 250ms;   /* modal e fundo escurecido */
+  --dur-exit: 150ms;    /* saída é sempre mais rápida que a entrada */
+  /* Distâncias de entrada: zeradas quando o usuário pede menos movimento */
+  --enter-y: 12px;      /* deslocamento vertical de modal/toast */
+  --enter-scale: .96;   /* nada surge de scale(0) */
+  --lift: -2px;         /* elevação de cartões no hover */
+  --press-scale: .97;   /* "afundar" ao pressionar */
+  --motion: 1;          /* multiplicador de deslocamentos grandes (folha do celular) */
+
+  /* ---- Layout ---- */
+  --sidebar-w: 264px;
+  --topbar-h: 72px;
+  --content-max: 1240px;
+  --tap: 44px; /* área mínima de toque */
+}
+
+/* =========================================================
+   Modo escuro: segue o sistema (padrão) ou a escolha da pessoa
+   (data-theme no <html>). Só os tokens mudam; os componentes não.
+   Contraste conferido: todos os pares de texto ≥ 4,5:1.
+   ========================================================= */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --teal: #5CCADB; --teal-soft: #113A44; --sky-soft: #10324A;
+    --blue-soft: #18275A;
+    --bg-page: #0C181D; --bg-paper: #0F2128; --bg-card: #13252C; --bg-subtle: #182D35;
+    --line: #23404A; --line-strong: #36575F;
+    --text: #E4EEF1; --text-2: #AFC4CA; --text-muted: #93ACB4;
+    --ink: #EEF6F8; --ink-deep: #08131A;
+    --success: #7DDBAA; --success-bg: #13352A;
+    --warning: #F2C066; --warning-bg: #3A2C12;
+    --danger: #FF9C85;  --danger-bg: #3D1E18;
+    --info: #8EA9FF;    --info-bg: #18275A;
+    --st-rascunho: #B4C0C8;  --st-rascunho-bg: #26333A;
+    --st-enviado: #6FD0E0;   --st-enviado-bg: #103A44;
+    --st-revisao: #F2C066;   --st-revisao-bg: #3A2C12;
+    --st-publicado: #7DDBAA; --st-publicado-bg: #13352A;
+    --st-devolvido: #FF9C85; --st-devolvido-bg: #3D1E18;
+    --st-cancelado: #C3CDD3; --st-cancelado-bg: #2A3338;
+    --hover-tint: rgba(92, 202, 219, .07);
+    --chrome: #0F2128; --chrome-deep: #08131A; --strong: #1F6E80;
+    --success-solid: #2A7350; --success-solid-hover: #2F8059; --danger-solid: #B1442D;
+    --success-line: #1F4D3A; --success-tint: #10261F;
+    --danger-bg-hover: #4A251D; --danger-field: #2A1814;
+    --info-text: #A8BDFF; --warning-text: #F2C066;
+    --sun-bg: #3A2F12;
+    --topbar-bg: rgba(12, 24, 29, .88);
+    --glass: rgba(19, 37, 44, .94);
+    --scrim: rgba(0, 0, 0, .6);
+    --on-chrome-btn: rgba(255, 255, 255, .1); --on-chrome-btn-text: #EEF6F8; --on-chrome-btn-line: rgba(255, 255, 255, .2); --on-chrome-btn-hover: rgba(255, 255, 255, .16);
+    --sh-1: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .2);
+    --sh-2: 0 12px 32px -6px rgba(0, 0, 0, .5);
+    --sh-3: 0 24px 64px -8px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+    --teal: #5CCADB; --teal-soft: #113A44; --sky-soft: #10324A;
+    --blue-soft: #18275A;
+    --bg-page: #0C181D; --bg-paper: #0F2128; --bg-card: #13252C; --bg-subtle: #182D35;
+    --line: #23404A; --line-strong: #36575F;
+    --text: #E4EEF1; --text-2: #AFC4CA; --text-muted: #93ACB4;
+    --ink: #EEF6F8; --ink-deep: #08131A;
+    --success: #7DDBAA; --success-bg: #13352A;
+    --warning: #F2C066; --warning-bg: #3A2C12;
+    --danger: #FF9C85;  --danger-bg: #3D1E18;
+    --info: #8EA9FF;    --info-bg: #18275A;
+    --st-rascunho: #B4C0C8;  --st-rascunho-bg: #26333A;
+    --st-enviado: #6FD0E0;   --st-enviado-bg: #103A44;
+    --st-revisao: #F2C066;   --st-revisao-bg: #3A2C12;
+    --st-publicado: #7DDBAA; --st-publicado-bg: #13352A;
+    --st-devolvido: #FF9C85; --st-devolvido-bg: #3D1E18;
+    --st-cancelado: #C3CDD3; --st-cancelado-bg: #2A3338;
+    --hover-tint: rgba(92, 202, 219, .07);
+    --chrome: #0F2128; --chrome-deep: #08131A; --strong: #1F6E80;
+    --success-solid: #2A7350; --success-solid-hover: #2F8059; --danger-solid: #B1442D;
+    --success-line: #1F4D3A; --success-tint: #10261F;
+    --danger-bg-hover: #4A251D; --danger-field: #2A1814;
+    --info-text: #A8BDFF; --warning-text: #F2C066;
+    --sun-bg: #3A2F12;
+    --topbar-bg: rgba(12, 24, 29, .88);
+    --glass: rgba(19, 37, 44, .94);
+    --scrim: rgba(0, 0, 0, .6);
+    --on-chrome-btn: rgba(255, 255, 255, .1); --on-chrome-btn-text: #EEF6F8; --on-chrome-btn-line: rgba(255, 255, 255, .2); --on-chrome-btn-hover: rgba(255, 255, 255, .16);
+    --sh-1: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .2);
+    --sh-2: 0 12px 32px -6px rgba(0, 0, 0, .5);
+    --sh-3: 0 24px 64px -8px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+}

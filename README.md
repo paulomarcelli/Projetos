@@ -87,6 +87,15 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
     </td>
   </tr>
   <tr>
+    <td colspan="2" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><img src="docs/capas/kfka.webp" alt="KFKA: A escola e a família acompanhando o aluno juntas"></a>
+      <h3>🎒 KFKA · Acompanhamento Escolar</h3>
+      Protótipo do Projeto Interdisciplinar (ADS, FECAP): o professor registra o bimestre de cada aluno, a coordenação revisa e publica, e a família acompanha, dá ciência e responde. Três perfis, modo escuro e documentação de design dentro do próprio protótipo.<br>
+      <sub>HTML · CSS · JavaScript · Playwright · dados fictícios</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><b>Abrir o protótipo ↗</b></a> · <a href="Projetos/KFKA">Código</a>
+    </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
       <h3>🌙 LUNA MIND</h3>
@@ -109,6 +118,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 | Projeto | Tecnologias | Status |
 |---|---|---|
 | [Iris](Projetos/Iris) | React · TypeScript · Vite · FastAPI · PostgreSQL | 🟡 Em desenvolvimento (prévia publicada) |
+| [KFKA · Acompanhamento Escolar](Projetos/KFKA) | HTML · CSS · JavaScript | 🟢 Publicado (protótipo) |
 | [Karol × Samsung (Galaxy S26 Ultra)](Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung) | Vite · Three.js · GSAP | 🟢 Publicado |
 | [Landing page Karol Sevilla](Projetos/landing%20page%20Karol%20Sevilla) | Vite · JavaScript · GSAP · WebGL | 🟢 Publicado |
 | [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | 🟢 Publicado |
@@ -127,6 +137,9 @@ A pasta `Projetos` é a área principal: cada projeto fica separado e documentad
 
 ```text
 Projetos/
+├── KFKA/                         (protótipo do Projeto Interdisciplinar)
+│   ├── index.html, css/, js/
+│   └── README.md
 ├── Iris/
 │   ├── frontend/                 (interface React + Vite)
 │   ├── app/                      (API FastAPI)

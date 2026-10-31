@@ -68,6 +68,9 @@ jobs:
           # Iris: só a prévia estática (dist-previa/), com os dados de exemplo identificados na tela
           mkdir -p _site/Projetos/Iris
           cp -a Projetos/Iris/frontend/dist-previa/. _site/Projetos/Iris/
+          # KFKA: o protótipo estático (sem testes e documentação)
+          mkdir -p _site/Projetos/KFKA
+          cp -a Projetos/KFKA/index.html Projetos/KFKA/css Projetos/KFKA/js _site/Projetos/KFKA/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

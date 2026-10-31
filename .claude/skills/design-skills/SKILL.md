@@ -1,11 +1,11 @@
 ---
 name: design-skills
-description: "Unified design toolkit (135 sub-skills) for UI/UX design, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
+description: "Unified design toolkit (136 sub-skills, including Impeccable) for UI/UX design, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
 ---
 
 # Design Skills (unified)
 
-This skill bundles 135 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
+This skill bundles 136 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
 
 ## How to use
 
@@ -190,3 +190,7 @@ This skill bundles 135 design sub-skills from several sources. Each sub-skill li
 - **critique-information-density** — Critique a rendered screen's density — cognitive load, content prioritisation, scanning patterns, and progressive disclosure. Use when a screen feels overwhelming. For the underlying choice-count principle, use `hicks-law` (interaction-design).
 - **critique-typography** — Critique a rendered screen's typography — scale usage, readability, consistency, and token compliance. Use when reviewing type on a screen. For defining the scale itself, use `typography-scale` (ui-design).
 - **critique-visual-hierarchy** — Critique a rendered screen's hierarchy — entry point, eye flow, weight distribution, and emphasis. Use when attention lands in the wrong place. For establishing hierarchy in new work, use `visual-hierarchy` (ui-design).
+
+## Impeccable (pbakaus) — direção de design e detector de "AI slop"
+
+- **impeccable** — Use when the user wants to design, redesign, shape, critique, audit, polish, simplify, harden, animate, or otherwise improve a frontend interface (websites, landing pages, dashboards, product UI, components, forms, onboarding, empty states, native iOS/Android screens). One skill with sub-commands: `shape`, `init`, `document`, `extract`, `critique`, `audit`, `polish`, `bolder`, `quieter`, `distill`, `harden`, `onboard`, `animate`, `colorize`, `delight`, `layout`, `overdrive`, `typeset`, `adapt`, `clarify`, `optimize`, `live`, `generate`. Picks a design mode (Persuade, Operate, Read, Experience) and reads `reference/craft-floor.md` before any UI edit. In this bundle its base directory is `skills/impeccable/`: run `skills/impeccable/scripts/impeccable context` (a launcher that downloads a checksum-verified engine from the project's GitHub releases on first run); if it cannot run, read PRODUCT.md and DESIGN.md directly as the skill describes. Its four helper subagents are in `skills/impeccable/agents/` (copy them to `.claude/agents/` to enable them; without them the skill uses `reference/degraded/`). The optional per-edit design hook is not installed. Overlaps: for animation decisions also see `animate`/`emil-design-eng`; for heuristic reviews also see `design-critique`.

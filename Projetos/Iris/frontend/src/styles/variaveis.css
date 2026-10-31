@@ -1,0 +1,114 @@
+/*
+ * PROJETO IRIS — TOKENS DE DESIGN (fonte única)
+ *
+ * Conceito: um gabinete de análise noturno, na mesma noite da landing (fundo quase preto, levemente
+ * frio). Painéis institucionais, linhas finas de coordenadas. Duas cores com significado fixo:
+ *   ciano  → interação, conexão, elemento ativo, vínculo com uma fonte;
+ *   âmbar  → incerteza, hipótese, atenção analítica, limitação.
+ * E um acento sem significado próprio, herdado da landing: o ouro, só em detalhes (o traço do item
+ * ativo, a aba selecionada, o passo em leitura). Nunca em texto de conteúdo nem no lugar do âmbar.
+ * Verde e vermelho só para estados operacionais reais (API no ar / fora do ar, falha).
+ *
+ * Tipografia: Inter (variável) em tudo, como na landing: títulos em peso regular com espaçamento
+ * apertado; texto corrido com entrelinha generosa. Mono (IBM Plex Mono) para coordenadas,
+ * identificadores e somas de verificação. Números sempre tabulares. (A serifada saiu em out/2026;
+ * o token --font-editorial continua, apontando para a Inter, e marca os títulos.)
+ *
+ * Contraste suave: no escuro, o texto principal é um branco frio rebaixado (não #fff), para não
+ * ofuscar em blocos longos; no claro, o fundo é papel acinzentado e os cartões, quase brancos.
+ * Todos os pares texto/fundo seguem AA (ver docs/DESIGN.md, §4).
+ */
+@theme {
+  /* Superfícies (do fundo para a frente) */
+  --color-abismo: #080c12;
+  --color-institucional: #0f1620;
+  --color-grafite: #16202c;
+  --color-grafite-alto: #1d2836;
+  /* Landing e autenticação: um degrau de tom acima do abismo, para alternar seções sem linhas
+     nem sombras (a separação é a mudança de campo, não um contorno). */
+  --color-mar: #0b1119;
+
+  /* Texto */
+  /* Branco rebaixado: ~14:1 sobre o abismo, sem o brilho do #fff em parágrafos longos. */
+  --color-texto: #e3e8ef;
+  /* Três degraus bem separados: principal, apoio (~9:1) e auxiliar (~6,4:1; AA mesmo sobre grafite-alto). */
+  --color-texto-2: #aab5c5;
+  --color-texto-3: #94a0b4;
+
+  /* Linhas (cartográficas: finas e discretas) */
+  --color-linha: rgb(154 170 192 / 0.14);
+  --color-linha-forte: rgb(154 170 192 / 0.26);
+
+  /* Significado */
+  --color-ciano: #52c7e8;
+  --color-ciano-suave: rgb(82 199 232 / 0.12);
+  --color-ciano-texto: #8fdaf0;
+  --color-ambar: #e9b45b;
+  --color-ambar-suave: rgb(233 180 91 / 0.12);
+  /* Acento de detalhe (o ouro da landing): traços e marcadores, sem significado próprio. */
+  --color-ouro: #f2c45a;
+  /* Cartografia da seção Relações */
+  --color-terra: #121c29;
+  --color-terra-envolvida: #1e2e41;
+  --color-terra-foco: #273b54;
+  --color-no: #0a121c;
+  --color-luz: #f3fbfe;
+  --color-positivo: #6ccb9a;
+  --color-positivo-suave: rgb(108 203 154 / 0.12);
+  --color-negativo: #ef8a7c;
+  --color-negativo-suave: rgb(239 138 124 / 0.12);
+  /* Fundo do mapa (única exceção à regra "sem gradientes": vinheta de visualização espacial). */
+  --color-mapa-centro: #0b1522;
+  --color-mapa-meio: #080f19;
+  --color-mapa-borda: #050a11;
+  /* Hover do botão primário. */
+  --color-ciano-hover: #74d3ee;
+
+  /* Tipografia */
+  --font-editorial: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-interface: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-dados: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Escala tipográfica. Base 16 px (o padrão do navegador, que respeita quem já o aumentou).
+     Cada passo é multiplicado por --escala-texto (preferência "Tamanho do texto"): o texto
+     cresce, os espaçamentos e ícones (em rem/px fixos) não. Os títulos crescem pela metade da
+     escala, para a hierarquia não estourar em "Ampliada". Entrelinhas sem unidade: acompanham
+     o tamanho. Nada abaixo de 13 px. */
+  --text-micro: calc(0.8125rem * var(--escala-texto)); /* 13 — rótulos, coordenadas */
+  --text-micro--line-height: 1.45;
+  --text-legenda: calc(0.875rem * var(--escala-texto)); /* 14 — metadados, apoio */
+  --text-legenda--line-height: 1.5;
+  --text-corpo: calc(1rem * var(--escala-texto)); /* 16 — interface e texto denso */
+  --text-corpo--line-height: 1.6;
+  --text-leitura: calc(1.0625rem * var(--escala-texto)); /* 17 — texto analítico */
+  --text-leitura--line-height: 1.65;
+  --text-secao: calc(1.3125rem * var(--escala-titulo)); /* 21 — títulos de seção */
+  --text-secao--line-height: 1.35;
+  --text-titulo: calc(1.875rem * var(--escala-titulo)); /* 30 — título de página */
+  --text-titulo--line-height: 1.2;
+  --text-manchete: calc(2.5rem * var(--escala-titulo)); /* 40 — manchete editorial */
+  --text-manchete--line-height: 1.1;
+
+  /* Larguras: a leitura fica numa coluna de 1200 px; mapa e timeline podem ir a 1600 px. */
+  --container-editorial: 75rem;
+  --container-ampla: 100rem;
+
+  /* Profundidade: só duas sombras, curtas e frias (nada de brilho). A do cartão em repouso é
+     quase invisível; a elevada marca o cartão sob o cursor ou selecionado. */
+  --shadow-cartao: 0 1px 2px rgb(2 6 16 / 0.22);
+  --shadow-elevado: 0 1px 2px rgb(2 6 16 / 0.22), 0 10px 28px -14px rgb(2 6 16 / 0.6);
+
+  /* Formas: cantos discretos, institucionais */
+  --radius-fino: 3px;
+  --radius-padrao: 6px;
+  --radius-painel: 10px;
+
+  /* Movimento (rápido e preciso; nada de entretenimento) */
+  --ease-saida: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-movimento: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-gaveta: cubic-bezier(0.32, 0.72, 0, 1);
+  --duracao-toque: 140ms;
+  --duracao-curta: 180ms;
+  --duracao-media: 240ms;
+  --duracao-tema: 220ms;
+}

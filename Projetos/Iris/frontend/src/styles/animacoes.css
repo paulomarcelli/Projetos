@@ -1,0 +1,71 @@
+/* Quadros-chave da interface. Quem os usa são as classes de globais.css e dos componentes. */
+
+@keyframes esqueleto {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes fluxo-luz {
+  from { stroke-dashoffset: 28; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes realce-mudanca {
+  0% { opacity: 0; }
+  30% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+@keyframes varrer-ida {
+  0% { stroke-dashoffset: 0.14; opacity: 0; }
+  12% { opacity: 0.95; }
+  80% { opacity: 0.9; }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes varrer-meio-fim {
+  0% { stroke-dashoffset: -0.43; opacity: 0; }
+  15% { opacity: 0.9; }
+  80% { opacity: 0.85; }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes varrer-meio-inicio {
+  0% { stroke-dashoffset: -0.43; opacity: 0; }
+  15% { opacity: 0.9; }
+  80% { opacity: 0.85; }
+  100% { stroke-dashoffset: 0.14; opacity: 0; }
+}
+
+@keyframes pulso-crise {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulso-iris {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes texto-brilho {
+  from { background-position: 100% 0; }
+  to { background-position: -50% 0; }
+}

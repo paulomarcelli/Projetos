@@ -1,0 +1,196 @@
+/**
+ * Cliente tipado da API do Projeto Iris. Os tipos espelham `app/documents/schemas.py`.
+ *
+ * Só existem, no backend atual: saúde (`/health`, `/health/ready`) e documentos
+ * (`/documents`...). Investigações, cenários, sinais e relações ainda não têm API — as telas
+ * correspondentes mostram estados vazios em vez de dados simulados.
+ */
+
+import { API_BASE, PREVIA } from "../config/env";
+import { fixtureDocumento, fixtureLista, fixturePaginas, modoDados } from "../dev/fixtures";
+
+import type {
+  DocumentoDetalhe,
+  DocumentoResumo,
+  MetadadosUpload,
+  Paginado,
+  PaginaDeTexto,
+  Prontidao,
+  RespostaUpload,
+  ResumoDaBase,
+  StatusDocumento,
+} from "../types/api";
+
+const previa = () => import("../previa/api");
+
+const BASE = API_BASE;
+
+export class ErroApi extends Error {
+  constructor(
+    readonly status: number,
+    readonly codigo: string,
+    mensagem: string,
+  ) {
+    super(mensagem);
+    this.name = "ErroApi";
+  }
+}
+
+const SEM_CONEXAO =
+  "Não foi possível falar com a API. Confira se o servidor está em execução e tente de novo.";
+
+function mensagemPadrao(status: number): string {
+  if (status === 404) return "Não encontrado.";
+  if (status >= 500) return "O servidor não conseguiu concluir a operação.";
+  return "A requisição não pôde ser concluída.";
+}
+
+function erroDoCorpo(status: number, corpo: unknown): ErroApi {
+  // A API sempre responde erros em JSON. Um 5xx sem JSON vem de um proxy ou gateway:
+  // a API em si não está acessível.
+  if (corpo === null && status >= 500) return new ErroApi(0, "offline", SEM_CONEXAO);
+  const c = (corpo ?? {}) as { detail?: unknown; code?: unknown };
+  const mensagem = typeof c.detail === "string" ? c.detail : mensagemPadrao(status);
+  const codigo = typeof c.code === "string" ? c.code : `http_${status}`;
+  return new ErroApi(status, codigo, mensagem);
+}
+
+async function pedir<T>(caminho: string, init?: RequestInit): Promise<T> {
+  let resposta: Response;
+  try {
+    resposta = await fetch(BASE + caminho, { headers: { Accept: "application/json" }, ...init });
+  } catch {
+    throw new ErroApi(0, "offline", SEM_CONEXAO);
+  }
+  if (resposta.status === 204) return undefined as T;
+  let corpo: unknown = null;
+  try {
+    corpo = await resposta.json();
+  } catch {
+    corpo = null;
+  }
+  if (!resposta.ok) throw erroDoCorpo(resposta.status, corpo);
+  return corpo as T;
+}
+
+// ------------------------------------------------------------------ saúde
+
+/** `/health/ready` responde 503 com corpo válido quando algo falta: os dois casos são dados. */
+export async function prontidao(): Promise<Prontidao> {
+  if (PREVIA) return (await previa()).prontidao();
+  let resposta: Response;
+  try {
+    resposta = await fetch(`${BASE}/health/ready`, { headers: { Accept: "application/json" } });
+  } catch {
+    throw new ErroApi(0, "offline", SEM_CONEXAO);
+  }
+  try {
+    return (await resposta.json()) as Prontidao;
+  } catch {
+    throw new ErroApi(resposta.status, "resposta_invalida", mensagemPadrao(resposta.status));
+  }
+}
+
+// ------------------------------------------------------------------ documentos
+
+export async function listarDocumentos(
+  opcoes: { limit?: number; offset?: number; status?: StatusDocumento } = {},
+): Promise<Paginado<DocumentoResumo>> {
+  if (PREVIA) return (await previa()).listar(opcoes);
+  const modo = modoDados();
+  if (import.meta.env.DEV && modo !== "api") return fixtureLista(modo, opcoes);
+  const q = new URLSearchParams();
+  q.set("limit", String(opcoes.limit ?? 20));
+  q.set("offset", String(opcoes.offset ?? 0));
+  if (opcoes.status) q.set("status", opcoes.status);
+  return pedir(`/documents?${q}`);
+}
+
+export async function obterDocumento(id: string): Promise<DocumentoDetalhe> {
+  if (PREVIA) return (await previa()).obter(id);
+  const modo = modoDados();
+  if (import.meta.env.DEV && modo !== "api") return fixtureDocumento(modo, id);
+  return pedir(`/documents/${encodeURIComponent(id)}`);
+}
+
+export async function listarPaginas(
+  id: string,
+  opcoes: { limit?: number; offset?: number; incluirBruto?: boolean } = {},
+): Promise<Paginado<PaginaDeTexto>> {
+  if (PREVIA) return (await previa()).paginas(id, opcoes);
+  const modo = modoDados();
+  if (import.meta.env.DEV && modo !== "api") return fixturePaginas(modo, id, opcoes);
+  const q = new URLSearchParams({
+    limit: String(opcoes.limit ?? 20),
+    offset: String(opcoes.offset ?? 0),
+  });
+  if (opcoes.incluirBruto) q.set("include_raw", "true");
+  return pedir(`/documents/${encodeURIComponent(id)}/pages?${q}`);
+}
+
+export async function removerDocumento(id: string): Promise<void> {
+  if (PREVIA) return (await previa()).desativado();
+  if (import.meta.env.DEV && modoDados() !== "api") return;
+  await pedir<void>(`/documents/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+/**
+ * Envia um PDF. Usa XMLHttpRequest só para poder mostrar o progresso real do envio
+ * (o fetch ainda não informa progresso de upload em todos os navegadores).
+ */
+export function enviarDocumento(
+  arquivo: File,
+  metadados: MetadadosUpload,
+  aoProgredir?: (fracao: number) => void,
+  sinal?: AbortSignal,
+): Promise<RespostaUpload> {
+  if (PREVIA) return previa().then((m) => m.desativado());
+  return new Promise((resolver, rejeitar) => {
+    const formulario = new FormData();
+    formulario.append("file", arquivo, arquivo.name);
+    for (const [campo, valor] of Object.entries(metadados)) {
+      if (typeof valor === "string" && valor.trim()) formulario.append(campo, valor.trim());
+    }
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${BASE}/documents/upload`);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && aoProgredir) aoProgredir(e.loaded / e.total);
+    };
+    xhr.onload = () => {
+      let corpo: unknown = null;
+      try {
+        corpo = JSON.parse(xhr.responseText);
+      } catch {
+        corpo = null;
+      }
+      if (xhr.status >= 200 && xhr.status < 300) resolver(corpo as RespostaUpload);
+      else rejeitar(erroDoCorpo(xhr.status, corpo));
+    };
+    xhr.onerror = () => rejeitar(new ErroApi(0, "offline", SEM_CONEXAO));
+    xhr.onabort = () => rejeitar(new ErroApi(0, "cancelado", "Envio cancelado."));
+    sinal?.addEventListener("abort", () => xhr.abort(), { once: true });
+    xhr.send(formulario);
+  });
+}
+
+// ------------------------------------------------------------------ base científica
+
+const STATUS: StatusDocumento[] = ["pending", "processing", "completed", "failed"];
+
+/** Contagens vêm do banco (campo `total`), nunca estimadas. */
+export async function resumoDaBase(): Promise<ResumoDaBase> {
+  const [lista, ...porStatus] = await Promise.all([
+    listarDocumentos({ limit: 100 }),
+    ...STATUS.map((s) => listarDocumentos({ limit: 1, status: s })),
+  ]);
+  return {
+    total: lista.total,
+    porStatus: Object.fromEntries(STATUS.map((s, i) => [s, porStatus[i].total])) as Record<
+      StatusDocumento,
+      number
+    >,
+    amostra: lista.items,
+    amostraCompleta: lista.items.length >= lista.total,
+  };
+}

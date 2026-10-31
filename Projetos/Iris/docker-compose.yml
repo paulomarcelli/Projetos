@@ -1,0 +1,25 @@
+# Infraestrutura de desenvolvimento do Projeto Iris: apenas o PostgreSQL com pgvector.
+# A API roda fora do Docker (uv run uvicorn ...). Os valores vêm do arquivo .env.
+services:
+  db:
+    # Imagem mantida pelo projeto pgvector, com a extensão já instalada. Versão fixada.
+    image: pgvector/pgvector:0.8.7-pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-iris}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
+      POSTGRES_DB: ${POSTGRES_DB:-iris}
+    ports:
+      # Só na própria máquina (127.0.0.1): o banco não fica exposto à rede.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - iris_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  iris_pgdata:

@@ -1,0 +1,295 @@
+/*
+ * Landing da Iris (out/2026): azul-noite com amarelo de destaque, a paleta da diplomacia (o azul das bandeiras e
+ * organizações, o ouro dos selos). Tudo fica dentro de `.lp`: a landing é sempre escura, independente do tema do app,
+ * e as variáveis de cor redefinidas aqui não vazam para a plataforma.
+ */
+.lp {
+  --lp-noite: #050b1a;
+  --lp-marinho: #0a1a3a;
+  --lp-marinho-2: #10264f;
+  --lp-azul: #4f7dff;
+  --lp-linha: rgba(160, 190, 255, 0.12);
+  --lp-linha-forte: rgba(160, 190, 255, 0.22);
+  --lp-texto: #eef2ff;
+  --lp-texto-2: #a9b5d4;
+  --lp-texto-3: #7383aa;
+  --lp-ouro: #f5c451;
+  --lp-ouro-claro: #ffdd85;
+
+  /* a marca e as peças compartilhadas leem estas: dentro da landing, sempre o par escuro (e o nó em ouro) */
+  --color-texto: var(--lp-texto);
+  --color-ciano: var(--lp-ouro);
+  --color-abismo: var(--lp-noite);
+
+  color-scheme: dark;
+  background: var(--lp-noite);
+  color: var(--lp-texto);
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+/* luz de fundo do herói: um brilho azul alto e um ouro baixo, sem nada que se mova */
+.lp-ceu {
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgba(79, 125, 255, 0.22), transparent 70%),
+    radial-gradient(40% 30% at 50% 100%, rgba(245, 196, 81, 0.07), transparent 70%);
+}
+/* o planeta no horizonte: some para baixo, no fundo */
+.lp-horizonte {
+  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 45%, transparent 92%);
+}
+/* grade fina, que some nas bordas */
+.lp-grade {
+  background-image:
+    linear-gradient(var(--lp-linha) 1px, transparent 1px),
+    linear-gradient(90deg, var(--lp-linha) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 30%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(70% 60% at 50% 30%, #000 30%, transparent 75%);
+  opacity: 0.5;
+}
+
+.lp-titulo {
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  font-weight: 500;
+}
+.lp-titulo-gradiente {
+  background: linear-gradient(180deg, #ffffff 20%, #b9c6ea 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lp-ouro-texto {
+  background: linear-gradient(90deg, var(--lp-ouro) 0%, var(--lp-ouro-claro) 50%, var(--lp-ouro) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: lp-brilho 6s linear infinite;
+}
+
+/* superfícies */
+.lp-painel {
+  background: linear-gradient(180deg, rgba(16, 38, 79, 0.55), rgba(10, 26, 58, 0.35));
+  border: 1px solid var(--lp-linha);
+  border-radius: 20px;
+}
+.lp-painel-borda-viva {
+  position: relative;
+}
+/* borda que acompanha o ponteiro (--mx/--my, escritos pelo componente) */
+.lp-painel-borda-viva::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(245, 196, 81, 0.55), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.lp-painel-borda-viva:hover::before {
+  opacity: 1;
+}
+
+.lp-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.15rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.12s ease;
+}
+.lp-botao:active {
+  transform: scale(0.97);
+}
+.lp-botao-ouro {
+  background: var(--lp-ouro);
+  color: #0a1226;
+  box-shadow: 0 8px 30px -10px rgba(245, 196, 81, 0.6);
+}
+.lp-botao-ouro:hover {
+  background: var(--lp-ouro-claro);
+}
+.lp-botao-linha {
+  border: 1px solid var(--lp-linha-forte);
+  color: var(--lp-texto);
+}
+.lp-botao-linha:hover {
+  border-color: rgba(245, 196, 81, 0.6);
+}
+.lp :focus-visible {
+  outline: 2px solid var(--lp-ouro);
+  outline-offset: 3px;
+}
+
+.lp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid var(--lp-linha);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--lp-texto-2);
+  background: rgba(10, 26, 58, 0.5);
+}
+
+/* faixa de temas: rola sozinha, para ao passar o mouse */
+.lp-faixa {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.lp-faixa-trilho {
+  animation: lp-faixa 40s linear infinite;
+}
+.lp-faixa:hover .lp-faixa-trilho {
+  animation-play-state: paused;
+}
+
+/* cursor de texto digitando */
+.lp-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--lp-ouro);
+  animation: lp-piscar 1s steps(1) infinite;
+}
+
+/* ponto pulsando (etapa em andamento, "ao vivo") */
+.lp-pulso {
+  animation: lp-pulso 1.6s ease-in-out infinite;
+}
+
+/* ilustrações dos recursos (só CSS) */
+.lp-desenho {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: lp-desenhar 5s var(--ease-saida, ease-out) infinite;
+}
+.lp-citacao {
+  animation: lp-acender 2.4s ease-in-out infinite;
+}
+.lp-no-pulso {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lp-pulso 2s ease-in-out infinite;
+}
+.lp-hoje {
+  animation: lp-hoje 7s ease-in-out infinite alternate;
+}
+/* fora da tela, nada anima (o traço que se desenha repinta a cada quadro) */
+[data-fora-da-tela] *,
+[data-fora-da-tela] *::after {
+  animation-play-state: paused !important;
+}
+.lp-viajante {
+  animation: lp-viajar 1.4s ease-in-out infinite;
+}
+
+@keyframes lp-desenhar {
+  0% {
+    stroke-dashoffset: 260;
+  }
+  45%,
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes lp-acender {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes lp-hoje {
+  to {
+    transform: translateX(55%);
+  }
+}
+@keyframes lp-viajar {
+  from {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(19px);
+    opacity: 0;
+  }
+}
+
+@keyframes lp-faixa {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes lp-piscar {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes lp-pulso {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes lp-brilho {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-faixa-trilho,
+  .lp-cursor::after,
+  .lp-pulso,
+  .lp-ouro-texto,
+  .lp-citacao,
+  .lp-no-pulso,
+  .lp-hoje,
+  .lp-viajante {
+    animation: none;
+  }
+  .lp-desenho {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

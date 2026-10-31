@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#080C12" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F1F3F6" media="(prefers-color-scheme: light)" />
+    <meta name="description" content="Iris: inteligência estratégica e prospectiva em Relações Internacionais." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Tema e tamanho do texto antes da primeira pintura (mesmas regras de src/store/preferencias.ts):
+         sem isto a página pintaria no padrão e depois saltaria para a escolha guardada. -->
+    <script>
+      try {
+        var t = localStorage.getItem("iris:tema") || "sistema";
+        if (t === "claro" || (t === "sistema" && matchMedia("(prefers-color-scheme: light)").matches)) document.documentElement.dataset.tema = "claro";
+        var x = localStorage.getItem("iris:texto");
+        if (x === "confortavel" || x === "ampliada") document.documentElement.dataset.texto = x;
+      } catch (e) {}
+    </script>
+    <title>Iris · Inteligência estratégica em R.I.</title>
+  </head>
+  <body>
+    <div id="raiz"></div>
+    <script type="module" src="/src/app/main.tsx"></script>
+  </body>
+</html>

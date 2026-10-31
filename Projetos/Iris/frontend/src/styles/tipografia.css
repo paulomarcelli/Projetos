@@ -1,0 +1,33 @@
+/* Escala do texto (preferência "Tamanho do texto"), quebra de linha e rótulos. As famílias e tamanhos estão em variaveis.css. */
+@layer base {
+:root[data-texto="confortavel"] {
+  --escala-texto: 1.125; /* corpo 18 px */
+}
+
+:root[data-texto="ampliada"] {
+  --escala-texto: 1.25; /* corpo 20 px */
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.numeros {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Rótulo de seção: pequeno, com leve espaçamento, sem caixa-alta excessiva. */
+.rotulo {
+  font-size: var(--text-micro);
+  line-height: var(--text-micro--line-height);
+  letter-spacing: 0.04em;
+  color: var(--color-texto-2);
+  font-weight: 500;
+}
+}

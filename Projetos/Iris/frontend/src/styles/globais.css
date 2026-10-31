@@ -1,0 +1,838 @@
+@import "tailwindcss";
+@import "./variaveis.css";
+@import "./tipografia.css";
+@import "./animacoes.css";
+
+
+@layer base {
+/* ------------------------------------------------------------------ base */
+
+/* Âncoras da landing rolam com suavidade; com "reduzir movimento", o salto é direto. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+:root {
+  /* Preferência "Tamanho do texto" (src/store/preferencias.ts → data-texto no <html>). */
+  --escala-texto: 1;
+  --escala-titulo: calc(1 + (var(--escala-texto) - 1) * 0.5);
+  color-scheme: dark;
+  background: var(--color-abismo);
+  color: var(--color-texto);
+  font-family: var(--font-interface);
+  /* Inter: algarismos e "l" mais distintos (cv11, ss01 desligado para manter o desenho neutro). */
+  font-feature-settings: "cv11";
+  font-size: 100%;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-abismo);
+  font-size: var(--text-corpo);
+}
+
+/* Troca de tema: um esmaecimento único da tela inteira (View Transitions API, ver
+   preferencias.ts). Curto, sem deslocamento; com "reduzir movimento" a troca nem passa por aqui. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duracao-tema);
+  animation-timing-function: var(--ease-saida);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-ciano) 32%, transparent);
+  color: var(--color-texto);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ciano);
+  outline-offset: 2px;
+  border-radius: var(--radius-fino);
+}
+
+/* Grade de pontos (a mesma ideia da landing): só no fundo da área principal, quase imperceptível. */
+.fundo-cartografico {
+  background-color: var(--color-abismo);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-texto-3) 16%, transparent) 1px, transparent 1.5px);
+  background-size: 32px 32px;
+  background-position: -16px -16px;
+}
+
+}
+
+@layer components {
+/* ------------------------------------------------------------------ controles */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding-inline: 1rem;
+  border-radius: var(--radius-padrao);
+  border: 1px solid transparent;
+  font-size: var(--text-corpo);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--duracao-toque) var(--ease-saida),
+    background-color var(--duracao-curta) ease,
+    border-color var(--duracao-curta) ease,
+    color var(--duracao-curta) ease;
+}
+.botao > svg {
+  transition: transform var(--duracao-media) var(--ease-saida);
+}
+.botao:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.botao:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.botao-primario {
+  background: var(--color-ciano);
+  color: var(--color-abismo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .botao-primario:hover:not(:disabled) {
+    background: var(--color-ciano-hover);
+  }
+  /* A seta de botões que levam adiante anda 3 px no hover: o botão "aponta" o caminho. */
+  .botao:hover:not(:disabled) > svg:last-child:not(:first-child) {
+    transform: translateX(3px);
+  }
+  .botao-secundario:hover:not(:disabled) {
+    border-color: var(--color-linha-forte);
+    background: var(--color-grafite-alto);
+  }
+  .botao-fantasma:hover:not(:disabled) {
+    background: var(--color-grafite);
+    color: var(--color-texto);
+  }
+  .botao-perigo:hover:not(:disabled) {
+    background: var(--color-negativo-suave);
+  }
+}
+.botao-secundario {
+  background: var(--color-grafite);
+  border-color: var(--color-linha);
+  color: var(--color-texto);
+}
+.botao-fantasma {
+  background: transparent;
+  color: var(--color-texto-2);
+}
+.botao-perigo {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-negativo) 40%, transparent);
+  color: var(--color-negativo);
+}
+/* Ação principal da landing: mais alta e com mais respiro (alvo de toque de 48px). */
+.botao-grande {
+  min-height: 3rem;
+  padding-inline: 1.375rem;
+  font-size: 1rem;
+}
+.botao-pequeno {
+  min-height: 2rem;
+  padding-inline: 0.75rem;
+  font-size: var(--text-legenda);
+}
+
+.campo {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-padrao);
+  border: 1px solid var(--color-linha-forte);
+  background: var(--color-abismo);
+  color: var(--color-texto);
+  /* 16 px: abaixo disso o Safari do iOS amplia a página ao focar o campo. */
+  font-size: 1rem;
+  transition: border-color var(--duracao-curta) ease;
+}
+.campo::placeholder {
+  color: var(--color-texto-3);
+}
+.campo:focus-visible {
+  outline: none;
+  border-color: var(--color-ciano);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ciano) 18%, transparent);
+}
+
+/* Fichas alternáveis (dimensões, regiões, filtros) */
+.ficha {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  padding-inline: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-linha-forte);
+  background: transparent;
+  color: var(--color-texto-2);
+  font-size: var(--text-legenda);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--duracao-toque) var(--ease-saida),
+    background-color var(--duracao-curta) ease,
+    border-color var(--duracao-curta) ease,
+    color var(--duracao-curta) ease;
+}
+.ficha:active {
+  transform: scale(0.97);
+}
+.ficha[aria-pressed="true"],
+.ficha[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--color-ciano) 60%, transparent);
+  background: var(--color-ciano-suave);
+  color: var(--color-ciano-texto);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ficha:hover {
+    color: var(--color-texto);
+    border-color: var(--color-linha-forte);
+    background: var(--color-grafite);
+  }
+  .ficha[aria-pressed="true"]:hover,
+  .ficha[aria-checked="true"]:hover {
+    background: color-mix(in srgb, var(--color-ciano) 18%, transparent);
+    color: var(--color-ciano-texto);
+  }
+}
+
+/* ------------------------------------------------------------------ superfícies */
+
+.painel {
+  background: var(--color-institucional);
+  border: 1px solid var(--color-linha);
+  border-radius: var(--radius-painel);
+}
+
+.divisoria {
+  border-top: 1px solid var(--color-linha);
+}
+
+/* Cartão: separado do fundo pelo TOM (e por uma sombra mínima), não por contorno. O contorno só
+   aparece para comunicar estado: cursor (linha mais forte) e seleção (ciano). */
+.cartao {
+  background: var(--color-institucional);
+  border: 1px solid transparent;
+  border-radius: var(--radius-painel);
+  box-shadow: var(--shadow-cartao);
+}
+/* Cartão interativo: no cursor sobe 2 px e ganha sombra; no toque, afunda um pouco. Só
+   transform, sombra e cores: nada que provoque novo layout. */
+.cartao-interativo {
+  transition:
+    transform var(--duracao-media) var(--ease-saida),
+    box-shadow var(--duracao-media) var(--ease-saida),
+    border-color var(--duracao-curta) ease,
+    background-color var(--duracao-curta) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cartao-interativo:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevado);
+    border-color: var(--color-linha-forte);
+  }
+}
+.cartao[data-selecionado] {
+  border-color: color-mix(in srgb, var(--color-ciano) 55%, transparent);
+  box-shadow: var(--shadow-elevado);
+}
+
+/* Dica de ferramenta do menu recolhido: o nome do item ao lado do ícone, no cursor E no foco do
+   teclado (não só no hover). É decorativa para leitores de tela: o nome já está no link. */
+.dica {
+  position: absolute;
+  left: calc(100% + 0.625rem);
+  top: 50%;
+  z-index: 60;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-padrao);
+  background: var(--color-texto);
+  color: var(--color-abismo);
+  font-size: var(--text-legenda);
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-4px, -50%);
+  transition:
+    opacity var(--duracao-curta) var(--ease-saida),
+    transform var(--duracao-curta) var(--ease-saida);
+}
+:hover > .dica,
+:focus-visible > .dica {
+  opacity: 1;
+  transform: translate(0, -50%);
+  transition-delay: 120ms; /* evita o pisca-pisca ao passar o cursor pela coluna */
+}
+
+/* Alça de redimensionar o menu: 8 px de área de toque sobre a borda, com uma linha de 2 px que
+   só aparece no cursor, no foco ou durante o arraste. */
+.alca-menu {
+  position: absolute;
+  inset-block: 0;
+  right: -4px;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 10;
+}
+.alca-menu::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 3px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--color-ciano);
+  opacity: 0;
+  transition: opacity var(--duracao-curta) ease;
+}
+.alca-menu:hover::after,
+.alca-menu:focus-visible::after,
+.alca-menu[data-arrastando]::after {
+  opacity: 0.7;
+}
+.alca-menu:focus-visible {
+  outline: none;
+}
+
+/* Sol e lua: um só desenho que se transforma. O disco central cresce e é "mordido" por um
+   círculo de máscara (lua crescente); os raios giram e somem. Tudo por transform/opacity. */
+.astro-tema * {
+  transition:
+    transform 420ms var(--ease-saida),
+    opacity 260ms var(--ease-saida);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.astro-tema .astro-mordida {
+  transform: translate(10px, -10px);
+}
+.astro-tema[data-lua] .astro-disco {
+  transform: scale(1.55);
+}
+.astro-tema[data-lua] .astro-mordida {
+  transform: translate(0, 0);
+}
+.astro-tema[data-lua] .astro-raios {
+  transform: rotate(-45deg) scale(0.4);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .astro-tema * {
+    transition-duration: 0ms;
+  }
+  .cartao-interativo:hover {
+    transform: none;
+  }
+}
+
+/* Esqueleto de carregamento: brilho lento e discreto. */
+.esqueleto {
+  background: linear-gradient(
+    90deg,
+    var(--color-grafite) 0%,
+    var(--color-grafite-alto) 50%,
+    var(--color-grafite) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--radius-fino);
+  animation: esqueleto 1.4s ease-in-out infinite;
+}
+
+
+/* Entrada de conteúdo: só opacidade e um deslocamento mínimo. */
+.surgir {
+  animation: surgir var(--duracao-media) var(--ease-saida) both;
+}
+
+
+}
+
+/* Avisos que surgem depois de uma ação (resultado do envio, login indisponível). */
+.aparecer {
+  transition:
+    opacity 200ms var(--ease-saida),
+    transform 200ms var(--ease-saida);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Cone de incerteza da linha do horizonte: abre e fecha com o horizonte escolhido. */
+.cone-incerteza {
+  transition: transform var(--duracao-media) var(--ease-movimento);
+}
+
+/* ---------------------------------------------------------------- mapa geopolítico (Relações) */
+/* Oceano profundo com vinheta: o mapa é o protagonista, sem textura decorativa. */
+.mapa-geo {
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 40%, var(--color-mapa-centro) 0%, var(--color-mapa-meio) 55%, var(--color-mapa-borda) 100%);
+}
+.mapa-geo:focus-visible {
+  outline: 2px solid var(--color-ciano);
+  outline-offset: 2px;
+}
+.territorio {
+  transition: fill 400ms var(--ease-saida), stroke 400ms var(--ease-saida);
+}
+.territorio-bloco {
+  transition: opacity 500ms var(--ease-saida);
+}
+/* Nós: crescem um pouco ao passar o cursor ou focar (feedback, não decoração). */
+.no-pais-marca {
+  transition: transform 160ms var(--ease-saida);
+}
+.no-pais[data-ativo] .no-pais-marca,
+.no-pais:focus-visible .no-pais-marca {
+  transform: scale(1.3);
+}
+.conexao-halo {
+  transition: opacity 200ms var(--ease-saida);
+}
+/* Foco num país ou bloco: o resto esmaece suavemente, sem salto. */
+.conexao,
+.no-pais {
+  transition: opacity 260ms var(--ease-saida);
+}
+.conexao:focus-visible .conexao-halo,
+.conexao:hover .conexao-halo {
+  opacity: 0.22;
+}
+/* Sentido documentado (influência, dependência): pulso luminoso da origem ao destino. */
+.fluxo-luz {
+  animation: fluxo-luz 2.2s linear infinite;
+}
+
+/* Ao trocar de cenário, o que mudou brilha uma vez em âmbar e some. */
+.realce-mudanca {
+  opacity: 0;
+  animation: realce-mudanca 1.6s var(--ease-saida) 0.35s;
+}
+
+/* Troca de cenário: uma varredura de luz percorre cada linha, em onda (atraso por linha).
+   pathLength=1 nas varreduras: o traço mede 0,14 do comprimento, qualquer que seja a linha. */
+.varredura {
+  stroke-dasharray: 0.14 3;
+  opacity: 0;
+  animation-duration: 1.15s;
+  animation-timing-function: var(--ease-saida);
+  animation-fill-mode: both;
+}
+.varredura-ida { animation-name: varrer-ida; }
+.varredura-meio-fim { animation-name: varrer-meio-fim; }
+.varredura-meio-inicio { animation-name: varrer-meio-inicio; }
+
+
+
+
+/* Linhas: espessura e brilho reagem ao cursor e à seleção. */
+.conexao-linha {
+  transition: stroke-width 180ms var(--ease-saida);
+}
+.conexao-brilho {
+  transition: opacity 200ms var(--ease-saida);
+}
+/* Selo da mudança: aparece depois que a linha termina de ser desenhada. */
+.selo-mudanca {
+  transition: opacity 250ms var(--ease-saida), transform 250ms var(--ease-saida);
+  transition-delay: 0.55s;
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+/* Painel flutuante: entra pela direita, curto. */
+.painel-flutuante {
+  transition: opacity 200ms var(--ease-saida), transform 200ms var(--ease-saida);
+  @starting-style {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fluxo-luz { animation: none; opacity: 0; }
+  .selo-mudanca { transition: none; }
+  .varredura { animation: none; opacity: 0; }
+  .realce-mudanca { animation: none; }
+  .no-pais-marca { transition: none; }
+  .painel-flutuante { transform: none; }
+}
+
+/* Crise institucional (cenário C): anel âmbar que pulsa devagar em volta do Brasil. */
+/* Conversa: o campo fica preso ao pé; o conteúdo passa por baixo e some num degradê do fundo. */
+.campo-fixo {
+  background: linear-gradient(to top, var(--color-abismo) 72%, color-mix(in srgb, var(--color-abismo) 0%, transparent));
+}
+/* Etapa em andamento: um ponto que respira (sem movimento com "reduzir movimento"). */
+/* A etapa atual da análise: um brilho passa pelo texto (só background-position, sem novo layout). */
+.texto-brilho {
+  background: linear-gradient(90deg, var(--color-texto) 0%, var(--color-texto) 40%, var(--color-ouro) 50%, var(--color-texto) 60%, var(--color-texto) 100%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: texto-brilho 2.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .texto-brilho { animation: none; background: none; color: var(--color-texto); }
+}
+.pulso-iris {
+  animation: pulso-iris 1.4s var(--ease-movimento) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulso-iris { animation: none; }
+}
+
+.pulso-crise {
+  animation: pulso-crise 2.4s var(--ease-movimento) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulso-crise { animation: none; opacity: 1; }
+}
+
+/* Troca de trajetória: o mapa e a rede mudam de cor, sem deslocamento (vale também com
+   "reduzir movimento", porque é só cor e opacidade). */
+.transicao-preenchimento {
+  transition:
+    fill 240ms var(--ease-saida),
+    opacity 240ms var(--ease-saida);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .botao:active,
+  .ficha:active {
+    transform: none;
+  }
+}
+
+/* Notificações: entram por baixo e saem pelo mesmo caminho (transições: podem ser
+   interrompidas e redirecionadas quando várias chegam em sequência). */
+.notificacao {
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+  @starting-style {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+.notificacao[data-saindo] {
+  opacity: 0;
+  transform: translateY(100%);
+  transition-duration: 200ms;
+}
+
+/* Gaveta de navegação no celular: entra pela borda e sai por ela (saída mais rápida). */
+.gaveta {
+  transition: transform 400ms var(--ease-gaveta);
+  @starting-style {
+    transform: translateX(-100%);
+  }
+}
+.gaveta[data-fechando] {
+  transform: translateX(-100%);
+  transition-duration: 200ms;
+}
+.gaveta-fundo {
+  transition: opacity 400ms var(--ease-saida);
+  @starting-style {
+    opacity: 0;
+  }
+}
+.gaveta-fundo[data-fechando] {
+  opacity: 0;
+  transition-duration: 200ms;
+}
+
+/* Movimento reduzido: menos movimento, não zero. Fica a opacidade; sai o deslocamento. */
+@media (prefers-reduced-motion: reduce) {
+  .notificacao,
+  .gaveta,
+  .aparecer {
+    transition-property: opacity;
+    @starting-style {
+      opacity: 0;
+      transform: none;
+    }
+  }
+  .gaveta {
+    transition-duration: 200ms;
+  }
+  .notificacao[data-saindo],
+  .gaveta[data-fechando] {
+    transform: none;
+    opacity: 0;
+  }
+  .cone-incerteza {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------- landing (escala editorial) */
+/* Só três tamanhos fazem o trabalho visível na landing: manchete, título de seção e texto.
+   clamp() faz a escala acompanhar a largura sem saltos entre pontos de quebra. */
+.landing-manchete {
+  font-family: var(--font-editorial);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 1.35rem + 3.6vw, 4.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.landing-titulo {
+  font-family: var(--font-editorial);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.landing-texto {
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  line-height: 1.6;
+}
+
+/* Landing v3 (referência: template Quinn): poucos tamanhos, muito afastados entre si.
+   Display (gigante) → escada → comando → linha de tabela → texto. Tudo na serifada editorial,
+   com entrelinha e espacejamento apertados nos tamanhos grandes. */
+.landing-gigante {
+  font-family: var(--font-editorial);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 0.6rem + 6.4vw, 5.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+.landing-escada {
+  font-family: var(--font-editorial);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 0.8rem + 4.4vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+.landing-campo {
+  font-family: var(--font-editorial);
+  font-size: clamp(2rem, 0.6rem + 4.6vw, 4.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  caret-shape: block; /* cursor em bloco onde o navegador suporta */
+}
+.landing-comando {
+  font-family: var(--font-editorial);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 0.9rem + 3.4vw, 3.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+.landing-linha {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.25rem, 0.9rem + 1.3vw, 1.875rem);
+  line-height: 1.5;
+}
+.landing-rodape-nome {
+  font-family: var(--font-editorial);
+  font-weight: 600;
+  font-size: clamp(6rem, 22vw, 20rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+/* ================================================================== tema claro
+   Mesmos tokens semânticos, outros valores: os componentes não sabem em que tema estão.
+   Ativado por <html data-tema="claro"> (escolha do usuário, ou "sistema" quando o sistema
+   operacional pede tema claro; ver src/store/preferencias.ts). Sem escolha guardada, segue o sistema. */
+:root[data-tema="claro"] {
+  color-scheme: light;
+  /* Superfícies: papel levemente frio; cartões brancos sobem um degrau. */
+  --color-abismo: #f1f3f6;
+  --color-mar: #e9edf2;
+  /* Cartões quase brancos (não #fff): sobem um degrau sem ofuscar. */
+  --color-institucional: #fafbfc;
+  --color-grafite: #e5e9ef;
+  --color-grafite-alto: #d9dfe7;
+  /* Texto: tinta azul-escura, não preta; AA em todas as superfícies (pior caso texto-3 sobre
+     grafite-alto, 4,5:1). */
+  --color-texto: #182234;
+  --color-texto-2: #3a4759;
+  --color-texto-3: #556276;
+  --color-linha: rgb(11 18 32 / 0.12);
+  --color-linha-forte: rgb(11 18 32 / 0.22);
+  /* Os mesmos significados, escurecidos para fundo claro (o ciano e o âmbar da versão escura
+     não têm contraste sobre papel). */
+  --color-ciano: #0a6f91;
+  --color-ciano-hover: #085f7c;
+  --color-ciano-suave: rgb(10 111 145 / 0.1);
+  --color-ciano-texto: #075b78;
+  --color-ambar: #8a5600;
+  --color-ambar-suave: rgb(178 112 0 / 0.12);
+  --color-ouro: #8a6a00;
+  --color-positivo: #1b6f45;
+  --color-positivo-suave: rgb(27 111 69 / 0.1);
+  --color-negativo: #a8352a;
+  --color-negativo-suave: rgb(168 53 42 / 0.08);
+  /* Cartografia: oceano claro, terras em cinza-azulado; o brilho das linhas vira tinta escura. */
+  --color-terra: #dde4ec;
+  --color-terra-envolvida: #c9d4e1;
+  --color-terra-foco: #b3c3d6;
+  --color-no: #ffffff;
+  --color-luz: #0a6f91;
+  --color-mapa-centro: #f8fafc;
+  --color-mapa-meio: #eef2f7;
+  --color-mapa-borda: #e3e9f0;
+  /* Sombras mais visíveis no papel (no escuro, a separação vem mais do tom que da sombra). */
+  --shadow-cartao: 0 1px 2px rgb(24 34 52 / 0.06);
+  --shadow-elevado: 0 1px 2px rgb(24 34 52 / 0.06), 0 12px 28px -16px rgb(24 34 52 / 0.28);
+}
+
+/* ================================================================== impressão
+   Analistas imprimem e exportam para PDF: a página sai sempre no tema claro, sem navegação,
+   abas, painéis flutuantes nem botões; só o conteúdo da área aberta. Elementos de interface
+   que não fazem sentido no papel usam a classe utilitária `print:hidden`. */
+@media print {
+  :root,
+  :root[data-tema="claro"] {
+  color-scheme: light;
+  /* Superfícies: papel levemente frio; cartões brancos sobem um degrau. */
+  --color-abismo: #f1f3f6;
+  --color-mar: #e9edf2;
+  /* Cartões quase brancos (não #fff): sobem um degrau sem ofuscar. */
+  --color-institucional: #fafbfc;
+  --color-grafite: #e5e9ef;
+  --color-grafite-alto: #d9dfe7;
+  /* Texto: tinta azul-escura, não preta; AA em todas as superfícies (pior caso texto-3 sobre
+     grafite-alto, 4,5:1). */
+  --color-texto: #182234;
+  --color-texto-2: #3a4759;
+  --color-texto-3: #556276;
+  --color-linha: rgb(11 18 32 / 0.12);
+  --color-linha-forte: rgb(11 18 32 / 0.22);
+  /* Os mesmos significados, escurecidos para fundo claro (o ciano e o âmbar da versão escura
+     não têm contraste sobre papel). */
+  --color-ciano: #0a6f91;
+  --color-ciano-hover: #085f7c;
+  --color-ciano-suave: rgb(10 111 145 / 0.1);
+  --color-ciano-texto: #075b78;
+  --color-ambar: #8a5600;
+  --color-ambar-suave: rgb(178 112 0 / 0.12);
+  --color-ouro: #8a6a00;
+  --color-positivo: #1b6f45;
+  --color-positivo-suave: rgb(27 111 69 / 0.1);
+  --color-negativo: #a8352a;
+  --color-negativo-suave: rgb(168 53 42 / 0.08);
+  /* Cartografia: oceano claro, terras em cinza-azulado; o brilho das linhas vira tinta escura. */
+  --color-terra: #dde4ec;
+  --color-terra-envolvida: #c9d4e1;
+  --color-terra-foco: #b3c3d6;
+  --color-no: #ffffff;
+  --color-luz: #0a6f91;
+  --color-mapa-centro: #f8fafc;
+  --color-mapa-meio: #eef2f7;
+  --color-mapa-borda: #e3e9f0;
+  }
+  @page {
+    margin: 16mm 14mm;
+  }
+  body,
+  .fundo-cartografico {
+    background: #ffffff !important;
+  }
+  /* Seções <details> recolhidas são abertas por src/utils/impressao.ts (beforeprint). */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75rem;
+    color: var(--color-texto-3);
+    word-break: break-all;
+  }
+  h1, h2, h3 {
+    break-after: avoid;
+  }
+  li, blockquote, figure, table {
+    break-inside: avoid;
+  }
+  * {
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ================================================================== larguras de página
+   Uma coluna de leitura (1200 px) para o texto; quem precisa de espaço (mapa, timeline) marca
+   um descendente com data-largura="ampla" e a coluna inteira se abre, centrada, até 1600 px.
+   :has evita estado no React para isso: a página só declara o que é. */
+.coluna-pagina {
+  max-width: var(--container-editorial);
+  transition: max-width var(--duracao-media) var(--ease-saida);
+}
+.coluna-pagina:has([data-largura="ampla"]) {
+  max-width: var(--container-ampla);
+}
+@media (prefers-reduced-motion: reduce) {
+  .coluna-pagina {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------ títulos (como na landing)
+   Inter em peso regular e espaçamento apertado; quanto maior, mais apertado. Só nos títulos
+   (font-editorial com tamanho de seção para cima); o texto de leitura fica com o espaçamento normal. */
+@layer utilities {
+  .font-editorial:is(.text-secao) {
+    letter-spacing: -0.018em;
+  }
+  .font-editorial:is(.text-titulo, .text-manchete) {
+    font-weight: 400;
+    letter-spacing: -0.032em;
+  }
+}
+
+/* ------------------------------------------------------------------ menu lateral (Dashboard Sidebar)
+   O componente (components/ui/dashboard-sidebar.tsx) traz o tema neutro dele; aqui ele veste os tokens da Iris, nos
+   dois temas (os tokens já mudam com data-tema). A classe repetida ganha das regras do componente sem depender da
+   ordem em que as folhas entram. O item ativo leva o traço de ouro, como no resto do app. */
+.ds-theme.iris-menu.iris-menu {
+  --ds-bg: var(--color-abismo);
+  --ds-card: var(--color-institucional);
+  --ds-fg: var(--color-texto);
+  --ds-muted: var(--color-texto-2);
+  --ds-border: var(--color-linha-forte);
+  --ds-hover: color-mix(in srgb, var(--color-texto) 6%, transparent);
+  --ds-active: var(--color-grafite);
+  --ds-primary: var(--color-texto);
+  --ds-primary-fg: var(--color-abismo);
+  font-family: var(--font-interface);
+}
+.iris-menu .ds-item__row[data-active] { box-shadow: inset 2px 0 0 var(--color-ouro); }
+/* Menu fixo do desktop: a largura muda de uma vez e a transição é só transform (FLIP, em LayoutDoApp). Ao recolher,
+   o menu fica por cima, com a largura cheia, até terminar de sair. */
+.menu-fixo .ds-sidebar { transition: none; }
+.menu-fixo[data-saindo] { width: 0; overflow: visible; }
+.menu-fixo[data-saindo] .ds-sidebar:not([data-open]) { width: var(--ds-width); opacity: 1; border-right-width: 1px; }
+.iris-menu .ds-badge { font-family: var(--font-interface); }

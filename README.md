@@ -16,7 +16,10 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 ![GSAP](https://img.shields.io/badge/GSAP-0AE448?style=flat-square&logo=greensock&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Phaser](https://img.shields.io/badge/Phaser_3-8B5CF6?style=flat-square&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Gemini_API-4285F4?style=flat-square&logo=google&logoColor=white)
 
 </div>
@@ -26,6 +29,15 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 ## 🌐 Projetos
 
 <table>
+  <tr>
+    <td colspan="2" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><img src="docs/capas/iris.webp" alt="Iris: Entenda o presente. Explore os futuros., com futuros em dourado"></a>
+      <h3>👁️ Iris · Inteligência estratégica em Relações Internacionais</h3>
+      Plataforma de prospectiva: pergunte sobre uma questão internacional e veja o diagnóstico, as dinâmicas, cenários como hipóteses e os sinais a acompanhar, com a fonte de cada afirmação. A prévia roda sem servidor, com dados de exemplo.<br>
+      <sub>React 19 · TypeScript · Vite · Tailwind 4 · FastAPI · PostgreSQL + pgvector · em desenvolvimento</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><b>Abrir a prévia ↗</b></a> · <a href="Projetos/Iris">Código</a>
+    </td>
+  </tr>
   <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><img src="docs/capas/karol-samsung.webp" alt="Karol × Samsung: o Galaxy S26 Ultra em 3D com o título A cena na palma da mão"></a>
@@ -96,6 +108,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 
 | Projeto | Tecnologias | Status |
 |---|---|---|
+| [Iris](Projetos/Iris) | React · TypeScript · Vite · FastAPI · PostgreSQL | 🟡 Em desenvolvimento (prévia publicada) |
 | [Karol × Samsung (Galaxy S26 Ultra)](Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung) | Vite · Three.js · GSAP | 🟢 Publicado |
 | [Landing page Karol Sevilla](Projetos/landing%20page%20Karol%20Sevilla) | Vite · JavaScript · GSAP · WebGL | 🟢 Publicado |
 | [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | 🟢 Publicado |
@@ -114,6 +127,11 @@ A pasta `Projetos` é a área principal: cada projeto fica separado e documentad
 
 ```text
 Projetos/
+├── Iris/
+│   ├── frontend/                 (interface React + Vite)
+│   ├── app/                      (API FastAPI)
+│   ├── migrations/, tests/
+│   └── README.md
 ├── Luna-AI/
 │   ├── app.py, luna.py
 │   ├── web/                      (a tela publicada no Pages)
@@ -178,7 +196,7 @@ Projetos/
 
 ## ⚙️ Como os sites são publicados
 
-O workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) roda a cada push na `main`: gera as landings feitas com Vite (`npm ci` e `npm run build`), junta os sites numa pasta só e publica no GitHub Pages.
+O workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) roda a cada push na `main`: gera as landings feitas com Vite (`npm ci` e `npm run build`) e a prévia da Iris (`npm run build:previa`), junta os sites numa pasta só e publica no GitHub Pages.
 
 > [!NOTE]
 > As landings da Karol Sevilla e o site Karol × Samsung são projetos de fã e acadêmicos, sem vínculo oficial com a artista ou com marcas. As imagens pertencem aos seus autores.

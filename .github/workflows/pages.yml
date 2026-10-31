@@ -37,6 +37,11 @@ jobs:
         run: |
           npm ci
           npm run build
+      - name: Gerar a prévia da Iris (Vite, sem servidor)
+        working-directory: Projetos/Iris/frontend
+        run: |
+          npm ci
+          npm run build:previa
       - name: Montar os sites
         run: |
           rm -rf _site
@@ -60,6 +65,9 @@ jobs:
           # Landing Karol x Samsung: só o resultado do build (dist/)
           mkdir -p _site/Projetos/Karol-x-Samsung
           cp -a "Projetos/landing page Karol Sevilla x Samsung/dist/." _site/Projetos/Karol-x-Samsung/
+          # Iris: só a prévia estática (dist-previa/), com os dados de exemplo identificados na tela
+          mkdir -p _site/Projetos/Iris
+          cp -a Projetos/Iris/frontend/dist-previa/. _site/Projetos/Iris/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

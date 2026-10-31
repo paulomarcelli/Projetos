@@ -23,7 +23,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 
 <br>
 
-## 🌐 Sites no ar
+## 🌐 Projetos
 
 <table>
   <tr>
@@ -76,22 +76,18 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Role-peoes/"><img src="docs/capas/role-peoes.webp" alt="Rolê dos Peões: votação do apê e da balada, com placar"></a>
-      <h3>🎃 Rolê dos Peões</h3>
-      Votação ao vivo entre amigos: o apê no Centro e a balada de Halloween, com placar.<br>
-      <sub>HTML · CSS · JavaScript · Firebase</sub><br><br>
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Role-peoes/"><b>Abrir site ↗</b></a> · <a href="Projetos/Role-peoes">Código</a>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
+      <h3>🌙 LUNA MIND</h3>
+      Assistente de apoio emocional por texto e voz, com biblioteca de pesquisa (RAG) e uma camada de segurança que não depende da IA.<br>
+      <sub>Python · Flask · OpenAI · Gemini API · Render</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>Abrir a Luna ↗</b></a> · <a href="Projetos/Luna-AI">Código</a>
     </td>
     <td width="50%" valign="top">
-      <h3>🤖 Inteligência artificial</h3>
-      <b><a href="Projetos/Luna-AI">🌙 Luna MIND</a></b>: assistente em Python com Flask e Gemini API.<br>
-      <sub>Em desenvolvimento</sub><br><br>
-      <b><a href="Projetos/Gemini-Chatbot">💬 Gemini Chatbot</a></b>: chatbot com a Gemini API.<br>
-      <sub>Em desenvolvimento</sub><br><br>
-      <b><a href="Projetos/chatbot-AI">🧠 Chatbot AI</a></b>: chat em Python com <code>google-genai</code>.<br>
-      <sub>Em desenvolvimento</sub><br><br>
-      <b><a href="Projetos/Joken-Po-Python">✊ Joken-Po em Python</a></b>: pedra, papel e tesoura no terminal.<br>
-      <sub>Lógica de programação</sub>
+      <a href="Projetos/Joken-Po-Python"><img src="docs/capas/joken-po.webp" alt="Joken-Po: uma partida de pedra, papel e tesoura no terminal"></a>
+      <h3>✊ Joken-Po em Python</h3>
+      Pedra, papel e tesoura no terminal contra o computador, comentado linha a linha para estudar lógica de programação.<br>
+      <sub>Python · lógica de programação</sub><br><br>
+      <a href="Projetos/Joken-Po-Python"><b>Ver o código ↗</b></a>
     </td>
   </tr>
 </table>
@@ -106,11 +102,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 | [Geometry Heroes (Tarefa de POO)](Projetos/Tarefa-POO-JavaScript) | JavaScript · Phaser 3 · POO | 🟢 Publicado |
 | [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | 🟢 Publicado |
 | [Una Noche Más](Projetos/Una-Noche-Mas) | HTML · CSS · JavaScript | 🟢 Publicado |
-| [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | 🟢 Publicado |
-| [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | 🟢 Publicado |
-| [Luna AI](Projetos/Luna-AI) | Python · Inteligência Artificial | 🟡 Em desenvolvimento |
-| [Gemini Chatbot](Projetos/Gemini-Chatbot) | Python · Gemini API | 🟡 Em desenvolvimento |
-| [Chatbot AI](Projetos/chatbot-AI) | Python · Gemini API (`google-genai`) | 🟡 Em desenvolvimento |
+| [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | 🟢 Concluído |
+| [LUNA MIND](Projetos/Luna-AI) | Python · Flask · OpenAI · Gemini API | 🟢 Publicado |
 
 ## 📂 Estrutura
 
@@ -122,8 +115,9 @@ A pasta `Projetos` é a área principal: cada projeto fica separado e documentad
 ```text
 Projetos/
 ├── Luna-AI/
-│   ├── AI
-│   ├── LUNA.py
+│   ├── app.py, luna.py
+│   ├── web/                      (a tela publicada no Pages)
+│   ├── rag/, conhecimento/
 │   └── README.md
 ├── Site-Karol-Sevilla/
 │   ├── index.html
@@ -163,15 +157,6 @@ Projetos/
 │   ├── nochemas.png
 │   ├── unanochemas.mp4
 │   └── README.md
-├── Role-peoes/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-├── Gemini-Chatbot/
-│   ├── .gitkeep
-│   └── README.md
-├── chatbot-AI/
-│   └── chat.py
 └── Tarefa-POO-JavaScript/        (Geometry Heroes)
     ├── index.html
     ├── style.css

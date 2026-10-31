@@ -40,11 +40,10 @@ jobs:
       - name: Montar os sites
         run: |
           rm -rf _site
-          mkdir -p _site/Projetos/Cenicienta _site/Projetos/Una-Noche-Mas _site/Projetos/Role-peoes
+          mkdir -p _site/Projetos/Cenicienta _site/Projetos/Una-Noche-Mas
           cp -a Projetos/Site-Karol-Sevilla/. _site/
           cp -a Projetos/Cenicienta/. _site/Projetos/Cenicienta/
           cp -a Projetos/Una-Noche-Mas/. _site/Projetos/Una-Noche-Mas/
-          cp -a Projetos/Role-peoes/. _site/Projetos/Role-peoes/
           mkdir -p _site/Projetos/Geometry-Heroes
           # Geometry Heroes: só o que o jogo precisa para rodar (sem testes, vídeo e documentação)
           cp -a Projetos/Tarefa-POO-JavaScript/index.html Projetos/Tarefa-POO-JavaScript/main.js Projetos/Tarefa-POO-JavaScript/style.css Projetos/Tarefa-POO-JavaScript/js Projetos/Tarefa-POO-JavaScript/assets _site/Projetos/Geometry-Heroes/

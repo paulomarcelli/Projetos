@@ -1,86 +1,105 @@
+<div align="center">
+
 # 🌐 Site Karol Sevilla
 
-<div align="center">
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+**Um fã-site sobre a história, a superação e a música de uma das minhas grandes ídolas.**
+
+[![Abrir o site](https://img.shields.io/badge/ABRIR_O_SITE-0d0d15?style=for-the-badge&logo=githubpages&logoColor=69b9ff)](https://paulomarcelli.github.io/Projetos/)
+[![Primeira versão](https://img.shields.io/badge/1%C2%AA_VERS%C3%83O-1b1b27?style=for-the-badge&logo=githubpages&logoColor=ff69b4)](https://paulomarcelli.github.io/Projetos/primeira-versao/)
+
+![HTML5](https://img.shields.io/badge/HTML5-69b9ff?style=flat-square&logo=html5&logoColor=0d0d15)
+![CSS3](https://img.shields.io/badge/CSS3-69b9ff?style=flat-square&logo=css3&logoColor=0d0d15)
+![JavaScript](https://img.shields.io/badge/JavaScript-69b9ff?style=flat-square&logo=javascript&logoColor=0d0d15)
+![Sem frameworks](https://img.shields.io/badge/sem_frameworks-1b1b27?style=flat-square)
+
+<br>
+
+<img src="docs/hero.webp" alt="Início do site no estilo de um app de música: menu lateral, foto da Karol, o nome Karol Sevilla e os três capítulos da história" width="860">
+
+<sub>A navegação lembra um app de música: menu lateral, cartões, faixas e uma barra de player embaixo.</sub>
+
 </div>
 
-<p align="center">
-  <b>Um site de fã sobre a história, a superação e a música de uma das minhas grandes ídolas.</b>
-</p>
+<br>
 
----
+> [!NOTE]
+> Site **de fã**, sem vínculo oficial com Karol Sevilla, Disney, gravadoras ou Spotify. Toda informação tem fonte citada, e o que é opinião minha aparece marcado como **"Nossa leitura"**.
 
-## 📌 Sobre o projeto
+## ✨ A ideia
 
-O **Site Karol Sevilla** começou como o meu primeiro projeto web e agora ganhou uma nova versão. Criei esta página para contar a trajetória da Karol Sevilla, atriz, cantora e compositora que admiro, em três capítulos, apresentar as músicas *Mariposas* e *Más linda* e refletir sobre o que a história dela ensina.
+O Site Karol Sevilla foi o meu **primeiro projeto web** e ganhou uma versão nova. Ele conta a trajetória da Karol, atriz, cantora e compositora, em três capítulos, apresenta *Mariposas* e *Más linda* e pergunta: **o que a história dela tem a nos ensinar?**
 
-A navegação foi inspirada em players de música (barra lateral, cartões, faixas e uma barra inferior), mas as cores, os textos, os ícones e a identidade são meus. Todas as informações têm fonte citada, e o que é opinião minha aparece marcado como "Nossa leitura".
+A navegação foi inspirada em players de música, mas as cores, os textos, os ícones e a identidade são meus.
 
-É um site de fã, sem vínculo oficial com Karol Sevilla, Disney, gravadoras ou Spotify.
+| Cor | | Uso |
+|---|---|---|
+| Noite | `#0D0D15` | Fundo |
+| Azul | `#69B9FF` | Botões, links e marcos da linha do tempo |
+| Rosa | `#FF69B4` | Destaques |
+| Lilás | `#B79CFF` | Etiquetas e detalhes |
 
-## ✨ Funcionalidades
+Fontes: **Fredoka** nos títulos e **Figtree** nos textos.
+
+## 🖼️ As seções
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/historia.webp" alt="Seção História com a linha do tempo de 1999 a 2026 e os três capítulos"></td>
+    <td width="50%"><img src="docs/musica.webp" alt="Universo musical com Mariposas e Más linda em destaque"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>História</b>: uma linha do tempo de 1999 a 2026 que abre o trecho certo do capítulo</sub></td>
+    <td align="center"><sub><b>Universo musical</b>: <i>Mariposas</i> e <i>Más linda</i> com os links oficiais</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/licoes.webp" alt="Seção O que Karol tem a nos ensinar com seis lições e a base factual de cada uma"></td>
+    <td width="50%"><img src="docs/celular.webp" alt="O site no celular: início, linha do tempo e lições, com a barra de navegação embaixo"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Lições</b>: seis lições, cada uma ligada a um fato ou a uma fala dela</sub></td>
+    <td align="center"><sub><b>Celular</b>: barra de navegação embaixo, como num app</sub></td>
+  </tr>
+</table>
+
+## 🎧 O que o site tem
 
 - **Início** com apresentação, atalhos para os capítulos, destaques musicais e cartões de reflexão.
-- **História** com uma linha do tempo de 1999 a 2026: ao clicar (ou apertar Enter) em um marco, o site abre o trecho certo do capítulo.
+- **História** com uma linha do tempo: ao clicar (ou apertar Enter) num marco, o site abre o trecho certo do capítulo.
 - **Três capítulos** com etiquetas que mostram o tipo de informação: *Fato*, *Nas palavras dela* e *Nossa leitura*, além das fontes numeradas.
-- **Universo musical** com *Mariposas* e *Más linda* em destaque, lista de faixas com filtros e links oficiais (YouTube, Apple Music e Spotify, quando confirmados).
-- **Player honesto**: ao escolher uma música, a barra de baixo mostra o título e os links oficiais. O site **não toca áudio** e avisa isso na tela.
-- **O que Karol tem a nos ensinar?** com seis lições, cada uma ligada a um fato ou a uma fala dela.
-- **Créditos e fontes** com a lista numerada de fontes, os links oficiais e os créditos de todas as imagens.
-- Funciona no celular, no tablet e no computador, pelo teclado e também com o JavaScript desligado (as seções aparecem uma embaixo da outra).
+- **Universo musical** com lista de faixas, filtros e links oficiais (YouTube, Apple Music e Spotify, quando confirmados).
+- **Player honesto**: ao escolher uma música, a barra de baixo mostra o título e os links. O site **não toca áudio** e avisa isso na tela.
+- **Créditos e fontes** com todas as referências e os créditos das imagens.
+- Funciona no celular, no tablet e no computador, pelo teclado e até com o JavaScript desligado.
 
-## 🛠️ Tecnologias utilizadas
+## 🛠️ Como rodar
 
-| Tecnologia | Utilização |
-|---|---|
-| HTML5 | Estrutura e todo o conteúdo do site (capítulos, músicas, lições e fontes) |
-| CSS3 | Variáveis de design (tokens), layout em grid, responsividade e animações leves |
-| JavaScript | Navegação entre as seções pelo `#` da URL, player, filtros e setas das prateleiras |
-| Google Fonts | Fontes Fredoka (títulos) e Figtree (textos) |
-
-Não usei frameworks nem bibliotecas: é HTML, CSS e JavaScript puro, sem etapa de build.
-
-## 📁 Arquivos
-
-```text
-Site-Karol-Sevilla/
-├── index.html                  → o site novo (todas as seções)
-├── assets/
-│   ├── css/
-│   │   ├── tokens.css          → cores, fontes, espaçamentos (variáveis)
-│   │   └── main.css            → estilos do layout e dos componentes
-│   ├── js/
-│   │   ├── ui.js               → prateleiras, imagens com erro, realce de trechos
-│   │   ├── player.js           → player honesto e filtros de músicas
-│   │   └── app.js              → estado do site e navegação por #
-│   └── img/                    → fotos livres (WebP), ícone e imagem de compartilhamento
-├── primeira-versao/            → o meu primeiro site, preservado
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-├── docs/                       → planejamento, pesquisa, design e testes
-└── README.md
-```
-
-## ▶️ Como visualizar
-
-Abra o arquivo `index.html` no navegador ou utilize o **Live Server** no Visual Studio Code.
-
-Também dá para usar um servidor simples do Python dentro da pasta:
+Não tem build: é HTML, CSS e JavaScript puro. Abra o `index.html` no navegador, use o **Live Server** do VS Code ou rode na pasta:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Depois é só abrir `http://localhost:8000` no navegador.
+Depois é só abrir `http://localhost:8000`.
 
-## 🌐 Ver o site online
+## 📁 Estrutura
 
-Acesse o projeto publicado no GitHub Pages: [**Abrir Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/)
+```text
+Site-Karol-Sevilla/
+├── index.html              # o site novo (todas as seções)
+├── assets/
+│   ├── css/
+│   │   ├── tokens.css      # cores, fontes e espaçamentos
+│   │   └── main.css        # layout e componentes
+│   ├── js/
+│   │   ├── ui.js           # prateleiras, imagens com erro, realce de trechos
+│   │   ├── player.js       # player honesto e filtros de músicas
+│   │   └── app.js          # estado do site e navegação por #
+│   └── img/                # fotos (WebP), ícone e imagem de compartilhamento
+├── primeira-versao/        # o meu primeiro site, preservado
+└── docs/                   # planejamento, pesquisa, design, testes e as imagens deste README
+```
 
-## 🖼️ Imagens e créditos
+## 📷 Imagens e créditos
 
 - **Fotos do Wikimedia Commons**, com licenças abertas (CC BY 3.0 e CC BY-SA 4.0): eu só redimensionei e converti para WebP. Os créditos completos (autor, licença e link do arquivo) estão na seção **Créditos e fontes** do site.
 - **Capas das músicas, imagens de divulgação de *Soy Luna* e a foto do Capítulo 1**: enviadas por mim. Os direitos pertencem aos respectivos titulares (artistas, gravadoras e Disney), e as imagens aparecem só para identificar e ilustrar as obras citadas. A autoria da foto do Capítulo 1 ainda não foi informada.
@@ -125,10 +144,9 @@ Testei o site no navegador (Chromium, com Playwright e com a ferramenta REA) em 
 
 O meu primeiro site continua guardado em [`primeira-versao/`](primeira-versao/), do jeitinho que eu fiz. Online: [**Abrir a primeira versão**](https://paulomarcelli.github.io/Projetos/primeira-versao/). O site novo também tem um link para ela no rodapé.
 
-## 👤 Autor
+<div align="center">
+<br>
 
-Desenvolvido por **Paulo Marcelli** — Estudante de ADS na **FECAP**.
+Feito com 💙 por **Paulo Marcelli** · ADS · FECAP
 
-## 📍 Localização
-
-Este projeto está organizado em `Projetos/Site-Karol-Sevilla` dentro do repositório principal `Projetos`.
+</div>

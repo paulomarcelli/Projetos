@@ -1,25 +1,33 @@
+<div align="center">
+
 # 🌙 LUNA MIND
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask" />
-  <img src="https://img.shields.io/badge/Gemini%20API-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini API" />
-  <img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />
-  <img src="https://img.shields.io/badge/Status-Online-brightgreen?style=for-the-badge" alt="Status: online" />
+**Uma assistente de apoio emocional, com conversa por texto e por voz.**
+
+*Um lugar calmo pra respirar e conversar, no seu tempo.*
+
+[![Abrir a Luna](https://img.shields.io/badge/ABRIR_A_LUNA-0a1230?style=for-the-badge&logo=githubpages&logoColor=e3e9f5)](https://paulomarcelli.github.io/Projetos/Projetos/Luna/)
+
+![Python](https://img.shields.io/badge/Python-1a2757?style=flat-square&logo=python&logoColor=e3e9f5)
+![Flask](https://img.shields.io/badge/Flask-1a2757?style=flat-square&logo=flask&logoColor=e3e9f5)
+![OpenAI](https://img.shields.io/badge/OpenAI-1a2757?style=flat-square&logo=openai&logoColor=e3e9f5)
+![Gemini](https://img.shields.io/badge/Gemini_API-1a2757?style=flat-square&logo=googlegemini&logoColor=e3e9f5)
+![RAG](https://img.shields.io/badge/RAG-1a2757?style=flat-square)
+![Render](https://img.shields.io/badge/Render-1a2757?style=flat-square&logo=render&logoColor=e3e9f5)
+
+<br>
+
+<img src="docs/hero.webp" alt="Abertura da Luna: o logo de linhas prateadas e o nome LUNA MIND num céu azul-noite com estrelas" width="860">
+
 </div>
 
-<p align="center">
-  <b>Assistente de apoio emocional com conversa por texto e por voz.</b>
-</p>
+<br>
 
-<p align="center">
-  <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>🌙 Abrir a Luna online →</b></a><br>
-  <sub><code>https://paulomarcelli.github.io/Projetos/Projetos/Luna/</code></sub>
-</p>
+> [!IMPORTANT]
+> A Luna **não é psicóloga**, não faz diagnóstico e não substitui atendimento profissional. Em crise, ligue **188 (CVV)**, 24 horas e de graça.
 
-> ⏳ **Primeira mensagem demorada?** A parte que pensa (o servidor) roda num plano gratuito que "dorme" depois de uns 15 minutos sem uso. Na primeira mensagem depois disso, a Luna mostra "Acordando a Luna…" e pode levar até 1 minuto. Depois responde em poucos segundos.
-
----
+> [!TIP]
+> **Primeira mensagem demorada?** O servidor roda num plano gratuito que "dorme" depois de uns 15 minutos sem uso. A Luna mostra "Acordando a Luna…" e pode levar até 1 minuto; depois responde em poucos segundos.
 
 ## 📌 Sobre o projeto
 
@@ -40,6 +48,20 @@ O que ela faz:
 - Funciona no celular, no tablet e no computador, com opções de **texto maior** e **menos animação**.
 
 > ⚠️ Para maiores de 18 anos (exigência dos termos das APIs de IA usadas).
+
+## 🖼️ As telas
+
+<table>
+  <tr>
+    <td width="62%"><img src="docs/conversa.webp" alt="Tela de conversa: Oi. Que bom que você veio., sugestões de início e o campo de mensagem com microfone"></td>
+    <td width="38%"><img src="docs/celular.webp" alt="A Luna no celular: a abertura e a tela de conversa"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Conversa</b>: sugestões para começar, texto ou voz, e a ajuda sempre à vista</sub></td>
+    <td align="center"><sub><b>Celular</b>: a abertura e a mesma conversa</sub></td>
+  </tr>
+</table>
+
 
 ## 🧩 Como as peças se encaixam
 
@@ -215,7 +237,7 @@ Luna-AI/
 ├── voz_tempo_real.py    → cria a sessão temporária da voz ao vivo e avalia a segurança das falas
 ├── rag/                 → busca na biblioteca: ingestão, consulta, índices, recuperação, prompt
 ├── conhecimento/        → biblioteca de pesquisa (capítulos, manifesto, taxonomia, catálogo de fontes)
-├── docs/                → registro de progresso e continuidade
+├── docs/                → registro de progresso e as imagens deste README
 ├── seguranca.py         → camada de segurança (risco, contatos de ajuda, verificações)
 ├── web/                 → a página publicada no GitHub Pages
 │   ├── index.html, style.css, script.js   → interface e conversa
@@ -237,6 +259,9 @@ Luna-AI/
 └── .github/workflows/pages.yml → publicação da tela no GitHub Pages
 ```
 
-## 👤 Autor
+<div align="center">
+<br>
 
-Desenvolvido por **Paulo Marcelli** — Estudante de ADS na **FECAP**.
+Feito com 🤍 por **Paulo Marcelli** · ADS · FECAP
+
+</div>

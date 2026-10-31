@@ -1,0 +1,199 @@
+[gd_resource type="Resource" script_class="FighterData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/fighter_data.gd" id="1_fighter"]
+[ext_resource type="Script" path="res://scripts/combat/attack_data.gd" id="2_attack"]
+
+[sub_resource type="Resource" id="stand_light"]
+script = ExtResource("2_attack")
+display_name = "Jab de pedra"
+startup = 5
+active = 2
+recovery = 8
+damage = 35
+chip_damage = 0
+hitstun = 15
+blockstun = 10
+hitstop = 7
+pushback = 1400
+hitbox = Rect2i(40, -205, 95, 40)
+guard = 1
+knockdown = false
+cancelable = true
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="stand_medium"]
+script = ExtResource("2_attack")
+display_name = "Cotovelada"
+startup = 8
+active = 3
+recovery = 15
+damage = 70
+chip_damage = 0
+hitstun = 18
+blockstun = 13
+hitstop = 9
+pushback = 2200
+hitbox = Rect2i(45, -195, 120, 50)
+guard = 1
+knockdown = false
+cancelable = true
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="stand_heavy"]
+script = ExtResource("2_attack")
+display_name = "Marretada"
+startup = 13
+active = 4
+recovery = 24
+damage = 120
+chip_damage = 0
+hitstun = 23
+blockstun = 18
+hitstop = 12
+pushback = 3000
+hitbox = Rect2i(50, -225, 140, 65)
+guard = 1
+knockdown = false
+cancelable = false
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="crouch_light"]
+script = ExtResource("2_attack")
+display_name = "Soco baixo"
+startup = 5
+active = 2
+recovery = 8
+damage = 30
+chip_damage = 0
+hitstun = 12
+blockstun = 8
+hitstop = 7
+pushback = 1300
+hitbox = Rect2i(40, -75, 100, 35)
+guard = 2
+knockdown = false
+cancelable = true
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="crouch_medium"]
+script = ExtResource("2_attack")
+display_name = "Canelada"
+startup = 8
+active = 3
+recovery = 16
+damage = 60
+chip_damage = 0
+hitstun = 17
+blockstun = 12
+hitstop = 9
+pushback = 2000
+hitbox = Rect2i(45, -60, 135, 40)
+guard = 2
+knockdown = false
+cancelable = true
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="crouch_heavy"]
+script = ExtResource("2_attack")
+display_name = "Rasteira de pedra"
+startup = 12
+active = 4
+recovery = 26
+damage = 100
+chip_damage = 0
+hitstun = 20
+blockstun = 16
+hitstop = 11
+pushback = 2600
+hitbox = Rect2i(40, -45, 165, 45)
+guard = 2
+knockdown = true
+cancelable = false
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="air"]
+script = ExtResource("2_attack")
+display_name = "Queda de joelho"
+startup = 7
+active = 6
+recovery = 6
+damage = 80
+chip_damage = 0
+hitstun = 18
+blockstun = 12
+hitstop = 10
+pushback = 1800
+hitbox = Rect2i(15, -130, 110, 75)
+guard = 0
+knockdown = false
+cancelable = false
+motion = ""
+move_vx = 0
+move_vy = 0
+invulnerable_until = -1
+
+[sub_resource type="Resource" id="special"]
+script = ExtResource("2_attack")
+display_name = "Avalanche"
+startup = 12
+active = 6
+recovery = 28
+damage = 140
+chip_damage = 14
+hitstun = 24
+blockstun = 20
+hitstop = 12
+pushback = 3200
+hitbox = Rect2i(40, -210, 120, 95)
+guard = 1
+knockdown = true
+cancelable = false
+motion = "qcf"
+move_vx = 900
+move_vy = 0
+invulnerable_until = -1
+
+[resource]
+script = ExtResource("1_fighter")
+id = "rocha"
+display_name = "PROTÓTIPO ROCHA"
+provisional = true
+max_health = 1100
+walk_forward = 380
+walk_back = 300
+jump_velocity = 2300
+jump_forward = 450
+gravity = 115
+push_half_width = 60
+hurt_stand = Rect2i(-65, -270, 130, 270)
+hurt_crouch = Rect2i(-65, -170, 130, 170)
+hurt_air = Rect2i(-55, -230, 110, 190)
+color_main = Color(1.000, 0.761, 0.239, 1)
+color_accent = Color(1.000, 0.302, 0.427, 1)
+attacks = {"stand_light": SubResource("stand_light"),
+"stand_medium": SubResource("stand_medium"),
+"stand_heavy": SubResource("stand_heavy"),
+"crouch_light": SubResource("crouch_light"),
+"crouch_medium": SubResource("crouch_medium"),
+"crouch_heavy": SubResource("crouch_heavy"),
+"air": SubResource("air"),
+"special": SubResource("special")
+}

@@ -7,7 +7,7 @@ config_version=5
 
 config/name="Briga de Poder"
 config/description="Jogo de luta 2D satírico, jogável no navegador (desktop e celular)."
-config/version="0.1.0"
+config/version="0.2.0"
 run/main_scene="res://scenes/menus/main_menu.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.051, 0.039, 0.098, 1)
@@ -60,3 +60,7 @@ renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.051, 0.039, 0.098, 1)
 anti_aliasing/quality/msaa_2d=0
+
+[debug]
+
+gdscript/warnings/integer_division=0

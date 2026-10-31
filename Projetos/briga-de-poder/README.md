@@ -4,18 +4,32 @@ Jogo de luta 2D 1 contra 1, satírico, feito em **Godot 4.4 (GDScript)** para ro
 
 > Obra de ficção e sátira. Os personagens são caricaturas de figuras públicas e nada do que acontece no jogo é real.
 
-## Estado atual: Fase 1 (fundação) concluída
+## Estado atual: Fase 2 (primeiro combate) concluída
 
 | Funciona hoje | Ainda não existe |
 |---|---|
-| Menu inicial com layout próprio para desktop e para toque | Combate (Fase 2) |
+| **Luta local 1 contra 1** com dois lutadores provisórios, rounds, relógio, HUD, combos, especiais, derrubada, pausa e revanche | Arte definitiva dos lutadores e arenas (Fases 4 e 5) |
+| Menu inicial com layout próprio para desktop e para toque | Agarrão, carga e golpe supremo (Fases 3 e 4) |
 | Configurações salvas no navegador (volume, tela cheia, qualidade, reduzir efeitos) | Controles de toque na luta (Fase 3) |
 | Créditos com licenças | Personagens e seleção (Fases 4 e 5) |
 | Detecção automática de teclado, controle ou toque | Multiplayer online (Fase 6) |
 | Aviso para girar o celular e pausa quando a aba perde o foco | |
 | Exportação Web sem threads (funciona em qualquer hospedagem estática) | |
 
-As opções Jogar, Multiplayer, Treinamento e Personagens aparecem no menu **desativadas e marcadas "em breve"**, com a fase em que chegam.
+Multiplayer, Treinamento e Personagens aparecem no menu **desativadas e marcadas "em breve"**, com a fase em que chegam.
+
+### Controles da luta
+
+| | Jogador 1 | Jogador 2 |
+|---|---|---|
+| Mover / pular / agachar | W A S D | setas |
+| Leve · médio · forte | J · K · L | 1 · 2 · 3 (teclado numérico) ou , . / |
+| Controle | controle 1 (direcional ou analógico, X · Y · B) | controle 2 |
+| Defender | segurar para trás (agachado defende golpe baixo) | igual |
+| Especial | Rocha: baixo, diagonal, frente + ataque | Faísca: frente, baixo, diagonal + ataque |
+| Pausa | Esc, P ou Start | Start |
+
+Na pausa dá para trocar o adversário (jogador 2, boneco parado ou boneco que defende) e mostrar as caixas de colisão. No celular a luta ainda precisa de teclado ou controle: os controles de toque são a Fase 3.
 
 ## Requisitos
 

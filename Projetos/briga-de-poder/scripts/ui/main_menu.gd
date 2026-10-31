@@ -4,7 +4,7 @@ extends Control
 ## e marcadas como "em breve", com a fase em que chegam (nenhum botão decorativo).
 
 const ITEMS := [
-	{"id": "play", "label": "JOGAR", "hint": "Combate local 1 contra 1.", "phase": 2},
+	{"id": "play", "label": "JOGAR", "hint": "Luta local 1 contra 1 com teclado ou controle (lutadores provisórios).", "scene": "fight"},
 	{"id": "multiplayer", "label": "MULTIPLAYER", "hint": "Partidas online pelo navegador.", "phase": 6},
 	{"id": "training", "label": "TREINAMENTO", "hint": "Treino livre contra boneco e IA.", "phase": 4},
 	{"id": "characters", "label": "PERSONAGENS", "hint": "Elenco, atributos e golpes.", "phase": 5},
@@ -28,7 +28,7 @@ var buttons: Dictionary = {}  # id -> Button (lido pelos testes)
 
 func _ready() -> void:
 	GameManager.set_state(GameManager.State.MENU)
-	_version.text = "v%s · Fase 1 (fundação)" % ProjectSettings.get_setting("application/config/version")
+	_version.text = "v%s · Fase 2 (primeiro combate)" % ProjectSettings.get_setting("application/config/version")
 	_build_buttons()
 	_apply_layout()
 	_update_device_label()

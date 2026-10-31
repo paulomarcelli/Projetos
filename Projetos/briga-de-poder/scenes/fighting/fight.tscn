@@ -1,0 +1,238 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/fighting/fight_scene.gd" id="1_fight"]
+[ext_resource type="Script" path="res://scripts/fighting/stage_view.gd" id="2_stage"]
+[ext_resource type="Script" path="res://scripts/fighting/fighter_view.gd" id="3_fighter"]
+[ext_resource type="Script" path="res://scripts/fighting/effects_view.gd" id="4_effects"]
+[ext_resource type="Script" path="res://scripts/fighting/debug_boxes.gd" id="5_debug"]
+[ext_resource type="Script" path="res://scripts/fighting/hud.gd" id="6_hud"]
+
+[node name="Fight" type="Node2D"]
+script = ExtResource("1_fight")
+
+[node name="Stage" type="Node2D" parent="."]
+script = ExtResource("2_stage")
+
+[node name="Fighter1" type="Node2D" parent="."]
+script = ExtResource("3_fighter")
+
+[node name="Fighter2" type="Node2D" parent="."]
+script = ExtResource("3_fighter")
+
+[node name="Effects" type="Node2D" parent="."]
+script = ExtResource("4_effects")
+
+[node name="DebugBoxes" type="Node2D" parent="."]
+script = ExtResource("5_debug")
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Hud" type="Control" parent="UI"]
+script = ExtResource("6_hud")
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PausePanel" type="Control" parent="UI"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="UI/PausePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03, 0.02, 0.07, 0.72)
+
+[node name="Center" type="CenterContainer" parent="UI/PausePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="UI/PausePanel/Center"]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+
+[node name="Box" type="VBoxContainer" parent="UI/PausePanel/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="PauseTitle" type="Label" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 80
+text = "PAUSA"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ResumeButton" type="Button" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CONTINUAR"
+
+[node name="OpponentButton" type="Button" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ADVERSÁRIO"
+
+[node name="BoxesButton" type="Button" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CAIXAS DE COLISÃO"
+
+[node name="RestartButton" type="Button" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "REINICIAR LUTA"
+
+[node name="MenuButton" type="Button" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MENU PRINCIPAL"
+
+[node name="ControlsLabel" type="Label" parent="UI/PausePanel/Center/Panel/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EndPanel" type="Control" parent="UI"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="UI/EndPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03, 0.02, 0.07, 0.72)
+
+[node name="Center" type="CenterContainer" parent="UI/EndPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="UI/EndPanel/Center"]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+
+[node name="Box" type="VBoxContainer" parent="UI/EndPanel/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="EndTitle" type="Label" parent="UI/EndPanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 80
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EndScore" type="Label" parent="UI/EndPanel/Center/Panel/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="RematchButton" type="Button" parent="UI/EndPanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "REVANCHE"
+
+[node name="EndMenuButton" type="Button" parent="UI/EndPanel/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MENU PRINCIPAL"
+
+[node name="TouchNotice" type="Control" parent="UI"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="UI/TouchNotice"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03, 0.02, 0.07, 0.72)
+
+[node name="Center" type="CenterContainer" parent="UI/TouchNotice"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="UI/TouchNotice/Center"]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+
+[node name="Box" type="VBoxContainer" parent="UI/TouchNotice/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="TouchTitle" type="Label" parent="UI/TouchNotice/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 80
+text = "TECLADO OU CONTROLE"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TouchText" type="Label" parent="UI/TouchNotice/Center/Panel/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Os controles de toque chegam na Fase 3. Por enquanto, a luta usa teclado ou controle conectado ao aparelho."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TouchOkButton" type="Button" parent="UI/TouchNotice/Center/Panel/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ENTENDI"

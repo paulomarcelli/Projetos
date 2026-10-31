@@ -11,6 +11,7 @@ const SCENES := {
 	"main_menu": "res://scenes/menus/main_menu.tscn",
 	"settings": "res://scenes/menus/settings_menu.tscn",
 	"credits": "res://scenes/menus/credits.tscn",
+	"fight": "res://scenes/fighting/fight.tscn",
 }
 
 var state: State = State.MENU

@@ -31,9 +31,28 @@ Carregados nesta ordem, cada um com uma responsabilidade:
 
 Barramentos de áudio: `Master` ← `Music`, `SFX`.
 
-## 3. Plano para o combate (Fase 2) já pensando no online
+## 3. Motor de luta (Fase 2, implementado)
 
-O motor de luta será construído desde o início para permitir **rollback** depois, sem reescrita:
+| Arquivo | Papel |
+|---|---|
+| `scripts/combat/fight_sim.gd` | Simulação: rounds, controle, física, colisão de caixas, acertos, defesa, combos. Sem Input, sem floats na lógica, sem aleatoriedade. `snapshot()`/`restore()`/`checksum()` |
+| `scripts/combat/fighter_state.gd` | Estado copiável de um lutador (só inteiros) |
+| `scripts/combat/input_bits.gd` | Entrada por quadro (bitmask), direções relativas, detecção de comandos |
+| `scripts/combat/attack_data.gd`, `fighter_data.gd` | Resources com os dados de golpes e lutadores (`data/characters/*.tres`) |
+| `scripts/input/player_bindings.gd` | Teclas e controles dos dois jogadores no InputMap; lê o bitmask de cada quadro |
+| `scripts/fighting/*` | Só leitura da simulação: arena, lutadores, faíscas, HUD, caixas de depuração, cena da luta |
+
+Decisões:
+- A simulação avança apenas em `_physics_process` (60 ticks fixos). A tela lê o estado e os `events` do quadro (sons, faíscas), nunca escreve.
+- Unidades: 1 pixel = 100 unidades inteiras. Caixas em `Rect2i`.
+- Os dois acertos de um mesmo quadro são aplicados juntos (troca), sem vantagem para o jogador 1.
+- Vitória por tempo compara a **porcentagem** de vida (multiplicação cruzada de inteiros), porque os lutadores têm vida máxima diferente.
+- O quadro do impacto não conta no hitstun/blockstun; vantagem = hitstun − (active restante + recovery). Medido em teste.
+- Pausa de impacto (hitstop) congela toda a simulação e o relógio; entradas continuam gravadas (o buffer funciona durante a pausa).
+- Determinismo validado: 1200 quadros de entradas aleatórias repetidos dão a mesma soma; restaurar um estado e ressimular dá o mesmo final.
+- Lutadores atuais são **provisórios** (bonecos geométricos desenhados em código) e servem só para validar o motor.
+
+Princípios que valem para as próximas fases (rollback sem reescrita):
 
 - **Simulação em quadros fixos de 60 Hz**, separada da renderização. A lógica avança só em `_physics_process` (ou num laço próprio com acumulador), nunca com `delta` variável.
 - **Entrada por quadro como bitmask** (8 direções + 6 botões cabem em 16 bits). A simulação só lê esse valor, nunca `Input` direto. Assim o mesmo motor aceita teclado, toque, IA ou entrada vinda da rede.

@@ -1,5 +1,5 @@
 extends Node
-## Testes automáticos da Fase 1. Rodar (sem janela):
+## Testes automáticos (Fases 1 e 2). Rodar (sem janela):
 ##   godot --headless --path . res://tests/test_runner.tscn
 ## Sai com código 0 se tudo passar, 1 se algo falhar. Roda como cena (e não com -s) para que
 ## os autoloads existam exatamente como no jogo.
@@ -27,6 +27,8 @@ func _ready() -> void:
 	await _test_settings_menu()
 	await _test_scene_change()
 	_test_focus_pause()
+	preload("res://tests/combat/fight_sim_tests.gd").new().run(check)
+	await _test_fight_scene()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SETTINGS_PATH))
 	print("\n%d verificações, %d falhas" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -173,6 +175,35 @@ func _test_scene_change() -> void:
 	check(outcome[0] == GameManager.SCENES.credits, "troca de cena concluída e sinalizada")
 	check(get_tree().current_scene != null and get_tree().current_scene.name == "Credits", "cena atual é a de créditos")
 	check(not SceneManager.is_changing, "trava de troca liberada ao final")
+
+
+func _test_fight_scene() -> void:
+	print("Tela de luta")
+	var fight: Node = load("res://scenes/fighting/fight.tscn").instantiate()
+	add_child(fight)
+	await get_tree().process_frame
+	check(GameManager.state == GameManager.State.FIGHT, "abrir a luta muda o estado para FIGHT")
+	for i in 120:
+		fight._physics_process(1.0 / 60.0)
+	check(fight.sim.phase == FightSim.Phase.FIGHT, "a luta começa depois da apresentação do round")
+	fight._set_paused(true)
+	var frame: int = fight.sim.frame
+	fight._physics_process(1.0 / 60.0)
+	check(fight.sim.frame == frame and fight.get_node("%PausePanel").visible, "pausa congela a simulação e mostra o menu")
+	fight.get_node("%OpponentButton").pressed.emit()
+	check(fight.opponent == fight.Opponent.DUMMY_IDLE, "botão de adversário troca para boneco")
+	fight.get_node("%ResumeButton").pressed.emit()
+	check(not fight.paused, "continuar retoma a luta")
+	fight.sim.wins = [1, 0]
+	fight.sim.fighters[1].health = 0
+	for i in 400:
+		fight._physics_process(1.0 / 60.0)
+	check(fight.get_node("%EndPanel").visible and "VENCEU" in fight.get_node("%EndTitle").text, "fim da luta mostra o vencedor e a revanche")
+	fight.get_node("%RematchButton").pressed.emit()
+	check(fight.sim.wins == [0, 0] and not fight.get_node("%EndPanel").visible, "revanche reinicia a luta")
+	fight.queue_free()
+	GameManager.set_state(GameManager.State.MENU)
+	await get_tree().process_frame
 
 
 func _test_focus_pause() -> void:

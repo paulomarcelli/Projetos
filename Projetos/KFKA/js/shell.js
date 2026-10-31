@@ -23,14 +23,33 @@
   const BASE = { admin: '#/admin/', professor: '#/professor/', familia: '#/familia/' };
   const ROLE_LABEL = { admin: 'Administrador', professor: 'Professor', familia: 'Responsável' };
 
+  /* ---------- Sessão de login ----------
+     Fica só nesta aba (sessionStorage): F5 não desloga e fechar a aba encerra. Guarda nome,
+     e-mail e perfil, nunca a senha. Sem sessionStorage (modo privado restrito), vale a memória. */
+  const CHAVE = 'kfka-sessao';
+  let emMemoria = null;
+  K.sessaoAtual = () => { try { const s = sessionStorage.getItem(CHAVE); if (s) return JSON.parse(s); } catch (e) { /* armazenamento indisponível */ } return emMemoria; };
+  K.abrirSessao = (c) => { emMemoria = { perfil: c.perfil, nome: c.nome, email: c.email, sub: c.sub, cor: c.cor }; try { sessionStorage.setItem(CHAVE, JSON.stringify(emMemoria)); } catch (e) { /* fica só na memória */ } };
+  K.fecharSessao = () => { emMemoria = null; try { sessionStorage.removeItem(CHAVE); } catch (e) { /* nada a limpar */ } };
+  // As áreas logadas só abrem com a conta do perfil certo; sem ela, o roteador leva ao login
+  // daquele perfil e, depois de entrar, volta para a tela pedida.
+  const PERFIL_DA_AREA = { admin: 'administrador', professor: 'professor', familia: 'responsavel' };
+  K.guarda = (path, query) => {
+    const m = /^\/(admin|professor|familia)(\/|$)/.exec(path);
+    if (!m) return null;
+    const perfil = PERFIL_DA_AREA[m[1]], s = K.sessaoAtual();
+    if (s && s.perfil === perfil) return null;
+    const qs = new URLSearchParams(query).toString();
+    return `/entrar/${perfil}?volta=${encodeURIComponent(path + (qs ? `?${qs}` : ''))}${s ? '&motivo=perfil' : ''}`;
+  };
   // Quem entrou pelo login aparece no layout. Sem login (a vitrine "Ver a demonstração" da página
   // inicial), o layout mostra a pessoa fictícia de cada perfil.
   const PAPEL_DO_PERFIL = { administrador: 'admin', professor: 'professor', responsavel: 'familia' };
   // Primeiro nome para saudações: o da conta que entrou, ou o da pessoa fictícia do perfil.
   K.saudacao = () => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; };
-  K.primeiroNome = (role, padrao) => { const s = K.sessao; return K.esc(s && PAPEL_DO_PERFIL[s.perfil] === role ? s.nome.trim().split(/\s+/)[0] : padrao); };
+  K.primeiroNome = (role, padrao) => { const s = K.sessaoAtual(); return K.esc(s && PAPEL_DO_PERFIL[s.perfil] === role ? s.nome.trim().split(/\s+/)[0] : padrao); };
   function who(role) {
-    const s = K.sessao;
+    const s = K.sessaoAtual();
     if (s && PAPEL_DO_PERFIL[s.perfil] === role) return { nome: K.esc(s.nome), sub: K.esc(s.sub), cor: s.cor };
     if (role === 'admin') { const s = K.data.sessao.admin; return { nome: s.nome, sub: s.cargo, cor: s.cor }; }
     if (role === 'professor') { const p = K.api.prof('p1'); return { nome: p.nome, sub: 'Matemática · Geografia', cor: p.cor }; }
@@ -116,6 +135,6 @@
     K.go(f.dataset.search === 'admin' ? `#/admin/alunos?q=${q}` : `#/professor/turmas/6A?q=${q}`);
   });
   // Logout simulado (RF01)
-  K.actions.sair = () => { K.sessao = null; K.go('#/entrar'); K.toast('Você saiu da sua conta', 'Sessão encerrada neste navegador.', 'info', false); };
+  K.actions.sair = () => { K.fecharSessao(); K.go('#/entrar'); K.toast('Você saiu da sua conta', 'Sessão encerrada neste navegador.', 'info', false); };
   K.actions['pick-aluno'] = (el) => { K.state.alunoSel = el.dataset.id; K.go(el.getAttribute('href')); if (location.hash === el.getAttribute('href')) K.refresh(); };
 })(window.KFKA);

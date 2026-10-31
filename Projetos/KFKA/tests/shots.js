@@ -7,7 +7,7 @@ const routes = process.argv.slice(3);
 (async () => {
   const b = await chromium.launch();
   for (const [vw, vh, tag] of [[1366, 900, 'd'], [820, 1100, 't'], [390, 844, 'm']]) {
-    const p = await b.newPage({ viewport: { width: vw, height: vh } });
+    const p = await b.newPage({ viewport: { width: vw, height: vh } }); await require('./sessao')(p);
     for (const r of routes) {
       await p.goto(BASE + '#' + r); await p.waitForTimeout(80);
       const sw = await p.evaluate(() => document.documentElement.scrollWidth);

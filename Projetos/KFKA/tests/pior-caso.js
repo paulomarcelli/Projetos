@@ -13,7 +13,7 @@ const LARGURAS = [390, 1280];
   const b = await chromium.launch();
   let total = 0;
   for (const w of LARGURAS) {
-    const p = await b.newPage({ viewport: { width: w, height: 900 } });
+    const p = await b.newPage({ viewport: { width: w, height: 900 } }); await require('./sessao')(p);
     for (const r of ROTAS) {
       await p.goto(BASE + '#' + r);
       await p.waitForTimeout(120);

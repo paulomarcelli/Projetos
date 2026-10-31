@@ -83,8 +83,9 @@ Cada perfil entra com a **própria conta**: não existe atalho de demonstração
   - **Professor:** código de convite da escola e disciplina principal.
   - **Responsável:** código de convite do aluno, parentesco e consentimento LGPD.
 - **Entrar:** o login confere a conta e explica o problema: e-mail sem conta, conta de outro perfil ou senha errada (com as tentativas restantes e bloqueio na terceira).
-- **Depois de entrar**, o menu e as saudações mostram quem entrou. "Sair" encerra a sessão.
-- **Vitrine:** na página inicial, a seção "Três perfis" continua com o botão **Ver a demonstração** de cada perfil, que abre as telas com as pessoas fictícias, sem login.
+- **Só com login:** as áreas da coordenação, do professor e da família só abrem com a conta do perfil certo. Quem abre uma dessas telas sem entrar vai para o login e, depois de entrar, volta para ela.
+- **Depois de entrar**, o menu e as saudações mostram quem entrou. A sessão vale para a aba: F5 não desloga, fechar a aba ou "Sair" encerra.
+- **Vitrine:** na página inicial, a seção "Três perfis" mostra uma prévia do que cada perfil vê, com o botão **Entrar como …** do perfil.
 
 <table>
   <tr>

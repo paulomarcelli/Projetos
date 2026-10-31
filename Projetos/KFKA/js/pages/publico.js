@@ -56,20 +56,21 @@
     depois(fimDasNotas + 1300, () => arte.classList.add('historia-fim'));
   }
 
-  // Prévias da seção de perfis: o que cada perfil vê, em miniatura (sem dados reais).
+  // Prévias da seção de perfis: o que cada perfil vê, em miniatura (sem dados reais). As telas
+  // de verdade só abrem com login: o botão de cada perfil leva ao login dele.
   const PERFIS = [
-    { id: 'coordenacao', ic: 'shield', cor: 'var(--sun)', titulo: 'Coordenação', sub: 'Revisa e publica', href: '#/admin/painel',
+    { id: 'coordenacao', ic: 'shield', cor: 'var(--sun)', titulo: 'Coordenação', sub: 'Revisa e publica', href: '#/entrar/administrador', entrar: 'Entrar como coordenação',
       itens: ['Cadastros e vínculos de turma', 'Períodos dos quatro bimestres', 'Revisão, publicação e devolução', 'Relatórios e auditoria'],
       previa: () => `<div class="pv-head"><b>Fila de revisão</b>${K.status('revisao')}</div>${[['Lucas Souza', 'Ciências · 6º A'], ['Júlia Souza', 'Matemática · 4º B'], ['Rafael Lima', 'Geografia · 6º A']].map(([n, d], i) => `<div class="pv-row">${K.avatar(n, ['#5FD4A8', '#F8B4C8', '#74C0FC'][i], 'sm')}<span class="grow"><b>${n}</b><small>${d}</small></span><span class="pv-btn">Publicar</span></div>`).join('')}` },
-    { id: 'professor', ic: 'book', cor: 'var(--sky)', titulo: 'Professor', sub: 'Registra o bimestre', href: '#/professor/painel',
+    { id: 'professor', ic: 'book', cor: 'var(--sky)', titulo: 'Professor', sub: 'Registra o bimestre', href: '#/entrar/professor', entrar: 'Entrar como professor',
       itens: ['Turmas e alunos atribuídos', 'Média, descrição e tags', 'Rascunho, prévia e envio', 'Ajustes após devolução'],
       previa: () => `<div class="pv-head"><b>Lucas · Ciências</b>${K.status('rascunho')}</div><div class="pv-media"><small>Média</small><b class="mono">9,0</b></div><div class="pv-tags"><span class="tag t-verde">Participativo</span><span class="tag t-azul">Colabora em grupo</span><span class="tag t-amarelo">Curioso</span></div><p class="pv-texto">Participou com curiosidade do projeto sobre o ciclo da água…</p><span class="pv-btn pv-btn-azul">Enviar para revisão</span>` },
-    { id: 'familia', ic: 'family', cor: 'var(--mint)', titulo: 'Família', sub: 'Acompanha e responde', href: '#/familia/selecionar',
+    { id: 'familia', ic: 'family', cor: 'var(--mint)', titulo: 'Família', sub: 'Acompanha e responde', href: '#/entrar/responsavel', entrar: 'Entrar como responsável',
       itens: ['Somente alunos vinculados', 'Só relatórios já publicados', 'Filtro por bimestre e disciplina', 'Ciência, observação e PDF'],
       previa: () => `<div class="pv-head"><b>Ciências · 3º bimestre</b>${K.status('publicado')}</div><div class="pv-media"><small>Média</small><b class="mono">9,0</b></div><p class="pv-texto">Participou com curiosidade do projeto sobre o ciclo da água e ajudou os colegas a registrar as medições.</p><span class="pv-btn pv-btn-verde">${I('check', 'icon-sm')} Li e estou ciente</span>` },
   ];
   const painelPerfil = (p) => `<div class="perfil-painel" role="tabpanel" id="painel-perfil" aria-labelledby="aba-${p.id}">
-      <div class="perfil-texto"><ul class="checklist">${p.itens.map((x) => `<li>${I('check', 'icon-sm')}${x}</li>`).join('')}</ul><a class="btn btn-secondary" href="${p.href}">Ver a demonstração ${I('chevron-right', 'icon-sm')}</a></div>
+      <div class="perfil-texto"><ul class="checklist">${p.itens.map((x) => `<li>${I('check', 'icon-sm')}${x}</li>`).join('')}</ul><a class="btn btn-secondary" href="${p.href}">${I('user', 'icon-sm')} ${p.entrar}</a></div>
       <div class="perfil-previa" aria-hidden="true">${p.previa()}</div></div>`;
   K.actions['perfil-aba'] = (el) => {
     const p = PERFIS.find((x) => x.id === el.dataset.perfil);
@@ -201,6 +202,7 @@
       return telaAuth(`
         <a href="#/entrar" class="voltar">${I('chevron-left', 'icon-sm')} Trocar perfil</a>
         <div class="stack-sm">${pilula(r)}<h1 id="page-title" tabindex="-1">Bem-vindo de volta</h1><p class="text-2">Entre com o e-mail da sua conta.</p></div>
+        ${q.volta ? `<div class="alert info" role="status">${I('lock')}<div><b>${q.motivo === 'perfil' ? `Esta área é de ${r.nome}` : 'Entre para continuar'}</b>${q.motivo === 'perfil' ? `Para abrir, entre com uma conta de ${r.nome}.` : 'Esta tela só abre com login.'}</div></div>` : ''}
         <div class="alert danger" id="login-alert" role="alert" hidden></div>
         <form class="stack" id="login-form" novalidate>
           ${K.field({ id: 'email', label: 'E-mail', type: 'email', value: q.email || '', required: true, icon: 'mail', placeholder: 'nome@email.com', attrs: 'autocomplete="email" autocapitalize="off" spellcheck="false"' })}
@@ -235,9 +237,11 @@
           campo.select(); return;
         }
         delete tentativas[email];
-        K.sessao = res.conta;
+        K.abrirSessao(res.conta);
         K.toast(`Olá, ${K.esc(res.conta.nome.trim().split(/\s+/)[0])}!`, `Você entrou como ${ROLES[perfil].nome}.`, 'ok', false);
-        K.go(ROLES[perfil].destino);
+        // Volta para a tela que pediu o login, se for da área deste perfil
+        const area = ROLES[perfil].destino.split('/')[1];
+        K.go(q.volta && q.volta.startsWith(`/${area}/`) ? `#${q.volta}` : ROLES[perfil].destino);
       });
     }
   };

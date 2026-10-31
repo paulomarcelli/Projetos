@@ -302,6 +302,9 @@ window.KFKA = window.KFKA || {};
   }
   function render() {
     const { path, query } = parse();
+    // Área logada sem a conta certa: troca a rota pelo login (replace, para o voltar não cair em laço)
+    const desvio = K.guarda && K.guarda(path, query);
+    if (desvio) { location.replace('#' + desvio); return; }
     K.current = { path, query };
     const root = document.getElementById('app');
     let match = null;

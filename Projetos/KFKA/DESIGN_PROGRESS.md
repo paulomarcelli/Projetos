@@ -93,7 +93,9 @@
 - [x] Login confere a conta: mensagens para e-mail sem conta, conta de outro perfil, senha errada (com tentativas restantes) e bloqueio na 3ª tentativa
 - [x] Criar conta para os 3 perfis (`#/criar-conta`): coordenação (escola e cargo), professor (código de convite e disciplina) e responsável (código de convite, parentesco e consentimento LGPD)
 - [x] Formulário de uma coluna, rótulos sempre visíveis, validação ao sair do campo, mostrar/ocultar senha, medidor de força com texto e tela de conta criada
-- [x] O layout e as saudações mostram quem entrou; "Sair" encerra a sessão. Sem login, a vitrine "Ver a demonstração" continua com as pessoas fictícias
+- [x] O layout e as saudações mostram quem entrou; "Sair" encerra a sessão
+- [x] Áreas só com login: sem a conta do perfil, a rota leva ao login e depois volta para a tela pedida. A vitrine da página inicial mostra só a prévia e o botão "Entrar como …" (saiu o "Ver a demonstração")
+- [x] Sessão na aba (`sessionStorage`, só nome, e-mail e perfil): F5 não desloga, fechar a aba encerra. Os testes abrem a sessão de cada área com `tests/sessao.js`
 - [x] Contas ficam só na memória da página (sem banco, como pede o escopo); as fictícias usam a senha de teste `kfka2026`
 - [x] Movimento: nada nasce de `scale(0)` (sol do K no topo e no logo), gaveta fecha mais rápido que abre, amostra de tamanho de texto sem animar `font-size`, engrenagem em 260 ms
-- [x] Testes: `node tests/conta.js` (21 verificações) e as rotas novas no `crawl.js`
+- [x] Testes: `node tests/conta.js` (28 verificações) e as rotas novas no `crawl.js`

@@ -3,7 +3,7 @@ const { chromium } = require('playwright'); const path = require('path');
 const BASE = 'file://' + path.resolve(__dirname, '../index.html');
 const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process.exitCode = 1; };
 (async () => {
-  const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1280, height: 900 } });
+  const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1280, height: 900 } }); await require('./sessao')(p);
   const errs = []; p.on('pageerror', (e) => errs.push(e.message));
   const go = async (h) => { await p.goto(BASE + '#' + h); await p.waitForTimeout(60); };
   const txt = () => p.textContent('body');

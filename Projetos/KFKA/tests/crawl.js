@@ -4,7 +4,7 @@ const path = require('path');
 const BASE = 'file://' + path.resolve(__dirname, '../index.html');
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+  const page = await browser.newPage({ viewport: { width: 1366, height: 900 } }); await require('./sessao')(page);
   const errors = [];
   page.on('pageerror', (e) => errors.push(['pageerror', page.url().split('#')[1], e.message]));
   page.on('console', (m) => { if (m.type() === 'error' && !/fonts\.g/.test(m.text())) errors.push(['console', page.url().split('#')[1], m.text()]); });

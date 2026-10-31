@@ -11,6 +11,17 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process
   const entrar = async (perfil, email, senha) => { await go(`/entrar/${perfil}`); await p.fill('#email', email); await p.fill('#senha', senha); await p.click('#login-form button[type=submit]'); await p.waitForTimeout(120); };
   await p.goto(BASE + '#/'); await p.waitForTimeout(80);
 
+  // Vitrine sem demonstração e áreas só com login
+  ok(!/Ver a demonstração/.test(await txt()) && (await p.$$('a[href="#/entrar/administrador"]')).length >= 1, 'vitrine leva ao login, sem "Ver a demonstração"');
+  for (const [area, perfil] of [['/admin/revisao', 'administrador'], ['/professor/painel', 'professor'], ['/familia/relatorios?bim=3', 'responsavel']]) {
+    await go(area); ok(p.url().includes(`#/entrar/${perfil}?volta=`) && /Entre para continuar/.test(await txt()), `${area} sem login leva ao login`);
+  }
+  await p.fill('#email', 'ana.souza@email.com'); await p.fill('#senha', 'kfka2026'); await p.click('#login-form button[type=submit]'); await p.waitForTimeout(150);
+  ok(p.url().endsWith('#/familia/relatorios?bim=3'), 'depois do login volta para a tela pedida');
+  await go('/admin/painel'); ok(/Esta área é de coordenação/.test(await txt()), 'conta de outro perfil não abre a área');
+  await p.reload(); await p.waitForTimeout(150); await go('/familia/painel'); ok(/familia\/painel/.test(p.url()), 'F5 não desloga (sessão da aba)');
+  await p.click('[data-action="sair"]').catch(() => {}); await p.waitForTimeout(80);
+
   // Login sem atalho de demonstração
   await go('/entrar/professor');
   ok(await p.inputValue('#email') === '', 'login começa com o e-mail vazio');
@@ -53,7 +64,7 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process
   ok(p.url().endsWith('#/admin/painel') && /Olá, Rita/.test(await txt()), 'conta nova entra e é cumprimentada');
   ok(/Rita Alves/.test(await p.textContent('.user-card')), 'layout mostra a conta que entrou');
   await p.click('.user-card [data-action="sair"]'); await p.waitForTimeout(80);
-  await go('/admin/painel'); ok(/Olá, Marina/.test(await txt()), 'depois de sair, a vitrine volta à pessoa fictícia');
+  await go('/admin/painel'); ok(p.url().includes('#/entrar/administrador?volta='), 'depois de sair, a área volta a pedir login');
   await entrar('professor', 'carlos.lima@aurora.edu.br', 'kfka2026'); ok(/Carlos/.test(await txt()) && p.url().endsWith('#/professor/painel'), 'conta fictícia da escola entra');
 
   // Nome com HTML não vira marcação

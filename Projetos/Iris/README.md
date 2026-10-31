@@ -119,26 +119,33 @@ uv sync
 cp .env.example .env
 docker compose up -d --wait
 uv run alembic upgrade head
-uv run uvicorn app.main:create_app --factory --reload
+uv run uvicorn backend.main:create_app --factory --reload
 ```
 
 O passo a passo completo da API, os testes e os limites de segurança estão em [`docs/BACKEND.md`](docs/BACKEND.md).
 
 ## 📁 Estrutura
 
+Uma pasta por módulo. As que ainda não existem têm só um `README.md` dizendo o que vão fazer, sem código simulado.
+
 ```text
 Iris/
-├── frontend/              # interface: React 19, Vite, TypeScript, Tailwind 4
-│   ├── src/
-│   │   ├── features/      # conversa, investigação, cenários, relações, timeline, evidências
-│   │   ├── pages/         # landing, conversa, análise e contas
-│   │   ├── components/    # peças de interface compartilhadas
-│   │   └── styles/        # tokens de design
-│   └── docs/              # arquitetura, design e o contrato da conversa
-├── app/                   # API FastAPI: saúde, documentos, banco e cliente de IA
-├── migrations/            # Alembic
+├── frontend/              # interface completa: React 19, Vite, TypeScript, Tailwind 4
+│   └── src/
+│       ├── components/    # layout, analysis, relations, timeline, news, common, research…
+│       ├── pages/         # Research, Analysis, DailyIntelligence, Relations, Scenarios…
+│       └── services/ hooks/ types/ utils/ styles/
+├── backend/               # API e coordenação dos módulos (FastAPI)
+├── ingestion/             # coleta e preparação de dados (PDFs científicos)
+├── database/              # persistência: modelos, sessão e migrações
+├── shared/                # configuração e cliente de IA
+├── rag/                   # 🟡 pesquisa e recuperação documental
+├── graphrag/              # 🟡 conhecimento e relações entre entidades
+├── prospective_engine/    # 🟡 motor de inteligência prospectiva
+├── daily_intelligence/    # 🟡 notícias e inteligência diária
 ├── tests/                 # testes da API (pytest)
-└── docs/                  # BACKEND.md e as imagens deste README
+├── docs/                  # BACKEND.md e as imagens deste README
+└── infra/                 # 🟡 Docker, deploy e infraestrutura
 ```
 
 <div align="center">

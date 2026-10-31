@@ -23,7 +23,7 @@ type EventoDaPergunta =
   | { tipo: "resposta"; resposta: Resposta };
 ```
 
-O motor (`src/features/conversa/motor.ts`), o histórico e todos os componentes já consomem esses eventos. Quando o
+O motor (`src/components/analysis/conversa/motor.ts`), o histórico e todos os componentes já consomem esses eventos. Quando o
 endpoint existir, só `perguntar` muda.
 
 ## Dados necessários
@@ -63,7 +63,7 @@ Saída esperada (a definir com o backend):
 
 ### 3. Leitura
 
-- obter uma investigação por id (hoje `useInvestigacao`, em `src/features/investigacao/hooks/useInvestigacao.ts`);
+- obter uma investigação por id (hoje `useInvestigacao`, em `src/components/analysis/investigacao/hooks/useInvestigacao.ts`);
 - listar as investigações e conversas da pessoa, para o histórico deixar de ser só deste navegador.
 
 ## Regras que a interface já cumpre e o servidor deve manter
@@ -81,7 +81,7 @@ Saída esperada (a definir com o backend):
 A resposta segue a lógica: compreender o presente → identificar dinâmicas → construir futuros → monitorar sinais →
 atualizar cenários. Na tela, nesta ordem:
 
-| Parte | Componente (`src/features/conversa/components/resposta/`) | De onde vêm os dados |
+| Parte | Componente (`src/components/analysis/conversa/resposta/`) | De onde vêm os dados |
 | --- | --- | --- |
 | 01 Diagnóstico estratégico | `Diagnostico.tsx` | `diagnostico` (opcional) ou, sem ele, `montarDiagnostico`: `avisoDeContexto`, a incerteza principal (`porQue`) e a `implicacao` das evidências ligadas a ela |
 | 02 Dinâmicas geopolíticas | `Dinamicas.tsx` | `dinamicas` (opcional) ou, sem ele, `montarDinamicas`: últimos acontecimentos observados, interesses e relações dos atores centrais, variáveis e demais incertezas, em texto corrido |
@@ -89,7 +89,7 @@ atualizar cenários. Na tela, nesta ordem:
 | 04 Indicadores e monitoramento | `Monitoramento.tsx` | `sinais` (`favorece`, `enfraquece`, `leitura`, `ondeAcompanhar`, `quando`), `versao`, `revisoes` |
 | 05 Explorar a investigação | `Exploracao.tsx` | mapa, timeline, evidências e fontes, `metodos` e `limitacoes`, recolhidos |
 
-`montarDiagnostico` e `montarDinamicas` (`src/features/investigacao/estrutura.ts`) só reorganizam afirmações que já
+`montarDiagnostico` e `montarDinamicas` (`src/components/analysis/investigacao/estrutura.ts`) só reorganizam afirmações que já
 existem no resultado, mantendo o tipo epistêmico e as evidências de cada uma; a única afirmação nova é a implicação
 de cada evidência, marcada como **inferência**. Quando o motor redigir o diagnóstico e as dinâmicas, deve enviar os
 campos opcionais:

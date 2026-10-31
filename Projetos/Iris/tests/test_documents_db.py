@@ -26,15 +26,15 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-import app.db.models  # noqa: F401
-from app.db.base import Base
-from app.db.models import Document, DocumentStatus
-from app.db.session import check_pgvector
-from app.documents import processing, service
-from app.documents.extraction import PdfIlegivel
-from app.documents.schemas import MetadadosInformados
-from app.documents.storage import Armazenamento, StorageError
-from app.main import create_app
+import database.models  # noqa: F401
+from backend.main import create_app
+from database.base import Base
+from database.models import Document, DocumentStatus
+from database.session import check_pgvector
+from ingestion import processing, service
+from ingestion.extraction import PdfIlegivel
+from ingestion.schemas import MetadadosInformados
+from ingestion.storage import Armazenamento, StorageError
 
 URL = os.environ.get("IRIS_TEST_DATABASE_URL")
 RAIZ = Path(__file__).resolve().parents[1]
@@ -61,7 +61,7 @@ TEXTO_PT = [
 @pytest.fixture
 def banco():
     cfg = Config(str(RAIZ / "alembic.ini"))
-    cfg.set_main_option("script_location", str(RAIZ / "migrations"))
+    cfg.set_main_option("script_location", str(RAIZ / "database" / "migrations"))
     cfg.attributes["database_url"] = URL
     command.upgrade(cfg, "head")
     eng = create_engine(URL)

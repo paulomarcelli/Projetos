@@ -15,9 +15,9 @@ import { ArrowLeft } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { Suspense, useEffect, useRef } from "react";
 import { Link, useLocation, useOutlet } from "react-router";
-import { RedeIlustrativa } from "../../features/landing/components/RedeIlustrativa";
-import { Marca } from "../../components/ui/Marca";
-import { CURVA_SAIDA, Movimento } from "../../components/ui/movimento";
+import { RedeIlustrativa } from "../../components/landing/RedeIlustrativa";
+import { Marca } from "../../components/common/Marca";
+import { CURVA_SAIDA, Movimento } from "../../components/common/movimento";
 import { MARCA } from "../../config/marca";
 import { ROTAS } from "../../config/rotas";
 

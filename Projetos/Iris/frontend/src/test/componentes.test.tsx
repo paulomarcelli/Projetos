@@ -3,13 +3,13 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Epistemico } from "../components/ui/Epistemico";
-import { InvestigacoesRecentes } from "../features/historico/components/ListaDeInvestigacoes";
+import { Epistemico } from "../components/common/Epistemico";
+import { InvestigacoesRecentes } from "../components/research/historico/ListaDeInvestigacoes";
 import { ProvedorDeNotificacoes } from "../app/provedores/ProvedorDeNotificacoes";
-import { NovaInvestigacao } from "../features/consulta/components/NovaInvestigacao";
-import { AlternarTema, SeletorTamanhoTexto, SeletorTema } from "../components/ui/SeletorTema";
-import { PainelBase } from "../features/base-cientifica/components/PainelBase";
-import { SeloStatus } from "../features/base-cientifica/components/StatusDocumento";
+import { NovaInvestigacao } from "../components/research/consulta/NovaInvestigacao";
+import { AlternarTema, SeletorTamanhoTexto, SeletorTema } from "../components/common/SeletorTema";
+import { PainelBase } from "../components/research/base-cientifica/PainelBase";
+import { SeloStatus } from "../components/research/base-cientifica/StatusDocumento";
 
 function comApp(no: ReactNode) {
   return render(

@@ -37,36 +37,49 @@ Implementado:
 ## Arquitetura
 
 ```text
-projeto-iris/
-├── app/
+IRIS/
+├── frontend/                    → interface completa (React 19, Vite, TypeScript, Tailwind 4); ver frontend/README.md
+│   └── src/
+│       ├── components/          → layout, analysis, relations, timeline, news, common (+ research, landing, autenticacao)
+│       ├── pages/               → Research, Analysis, DailyIntelligence, Relations, Scenarios (+ Landing, Autenticacao…)
+│       ├── services/ hooks/ types/ utils/ styles/
+│       └── app/ config/ store/ previa/ dev/ test/
+├── backend/                     → API e coordenação dos módulos (FastAPI)
 │   ├── main.py                  → create_app(): rotas, limite de upload, tratadores de erro
-│   ├── core/config.py           → Settings (pydantic-settings) e validação
-│   ├── api/
-│   │   ├── routes_health.py     → /health e /health/ready
-│   │   ├── routes_documents.py  → /documents (upload, listagem, detalhe, páginas, remoção)
-│   │   └── upload_limit.py      → middleware ASGI: 413 antes de ler corpos grandes demais
-│   ├── db/
-│   │   ├── base.py              → Base do SQLAlchemy + convenção de nomes
-│   │   ├── models.py            → Document, DocumentPage, estados e transições
-│   │   └── session.py           → engine, sessão por requisição, checagens do banco
-│   ├── documents/
-│   │   ├── validation.py        → nome, tipo, assinatura, tamanho, estrutura do PDF
-│   │   ├── storage.py           → disco: temporário → definitivo, lixeira reversível
-│   │   ├── extraction.py        → texto por página (pypdf, sem OCR)
-│   │   ├── normalization.py     → normalização conservadora (versão "1")
-│   │   ├── metadata.py          → metadados embutidos, idioma, combinação com o usuário
-│   │   ├── processing.py        → pending → processing → completed | failed (só recebe o ID)
-│   │   ├── service.py           → casos de uso (upload, listar, obter, páginas, remover)
-│   │   ├── schemas.py           → entrada e saída da API (sem caminhos internos)
-│   │   └── errors.py            → códigos de erro e mensagens públicas fixas
+│   └── api/
+│       ├── routes_health.py     → /health e /health/ready
+│       ├── routes_documents.py  → /documents (upload, listagem, detalhe, páginas, remoção)
+│       └── upload_limit.py      → middleware ASGI: 413 antes de ler corpos grandes demais
+├── ingestion/                   → coleta e preparação de dados (PDFs científicos)
+│   ├── validation.py            → nome, tipo, assinatura, tamanho, estrutura do PDF
+│   ├── storage.py               → disco: temporário → definitivo, lixeira reversível
+│   ├── extraction.py            → texto por página (pypdf, sem OCR)
+│   ├── normalization.py         → normalização conservadora (versão "1")
+│   ├── metadata.py              → metadados embutidos, idioma, combinação com o usuário
+│   ├── processing.py            → pending → processing → completed | failed (só recebe o ID)
+│   ├── service.py               → casos de uso (upload, listar, obter, páginas, remover)
+│   ├── schemas.py               → entrada e saída da API (sem caminhos internos)
+│   └── errors.py                → códigos de erro e mensagens públicas fixas
+├── database/                    → persistência e armazenamento
+│   ├── base.py                  → Base do SQLAlchemy + convenção de nomes
+│   ├── models.py                → Document, DocumentPage, estados e transições
+│   ├── session.py               → engine, sessão por requisição, checagens do banco
+│   └── migrations/versions/     → 0001_habilitar_pgvector.py, 0002_documentos.py
+├── shared/                      → componentes e estruturas compartilhadas
+│   ├── config.py                → Settings (pydantic-settings) e validação
 │   └── llm/client.py            → LLMClient (Protocol) + OpenAIClient
-├── migrations/versions/
-│   ├── 0001_habilitar_pgvector.py
-│   └── 0002_documentos.py       → tabelas documents e document_pages
+├── rag/                         → pesquisa e recuperação documental (ainda não implementado)
+├── graphrag/                    → conhecimento e relações entre entidades (ainda não implementado)
+├── prospective_engine/          → motor de inteligência prospectiva (ainda não implementado)
+├── daily_intelligence/          → notícias e inteligência diária (ainda não implementado)
 ├── tests/                       → unitários, API sem banco e integração com PostgreSQL real
-│   └── pdfs.py                  → gera PDFs pequenos nos próprios testes
-└── docker-compose.yml · .env.example · alembic.ini · pyproject.toml · uv.lock
+├── docs/                        → documentação técnica e metodológica
+├── infra/                       → Docker, deploy e infraestrutura (hoje só o README)
+└── .env.example · .gitignore · pyproject.toml · docker-compose.yml · alembic.ini · uv.lock · README.md
 ```
+
+As pastas marcadas como "ainda não implementado" têm só um `README.md` (e um `__init__.py` vazio): reservam o lugar
+do módulo, sem código simulado.
 
 ### Fluxo do upload
 
@@ -115,7 +128,7 @@ design, o que é real e o que ainda é estado vazio, e como rodar: veja o
 [README do frontend](../frontend/README.md).
 
 ```bash
-uv run uvicorn app.main:create_app --factory    # API em :8000
+uv run uvicorn backend.main:create_app --factory    # API em :8000
 cd frontend && npm install && npm run dev       # interface em :5173 (landing em /, plataforma em /app)
 ```
 
@@ -177,7 +190,7 @@ Tabelas:
 ## Executar a API
 
 ```bash
-uv run uvicorn app.main:create_app --factory --reload
+uv run uvicorn backend.main:create_app --factory --reload
 ```
 
 Documentação interativa em <http://127.0.0.1:8000/docs>.
@@ -370,5 +383,5 @@ Depois: GraphRAG, extração de entidades e o motor de prospectiva, respeitando 
 Os testes automáticos nunca chamam a OpenAI. Para verificar a integração de verdade, com UMA chamada curta e paga que você mesmo dispara:
 
 ```bash
-uv run python -m app.llm.client "Responda apenas: ok"
+uv run python -m shared.llm.client "Responda apenas: ok"
 ```

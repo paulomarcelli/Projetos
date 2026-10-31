@@ -8,9 +8,9 @@ import httpx
 import openai
 import pytest
 
-import app.llm.client as modulo
-from app.core.config import Settings
-from app.llm.client import (
+import shared.llm.client as modulo
+from shared.config import Settings
+from shared.llm.client import (
     LLMAuthenticationError,
     LLMClient,
     LLMError,

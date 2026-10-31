@@ -1,7 +1,7 @@
 /** Cenários (A, B, C), fatores de mudança e incertezas críticas. */
 
-import type { TipoEpistemico } from "../components/ui/Epistemico";
-import type { RegiaoId } from "../features/relacoes/geo/regioes-def";
+import type { TipoEpistemico } from "../components/common/Epistemico";
+import type { RegiaoId } from "../components/relations/geo/regioes-def";
 import type { Afirmacao } from "./fonte";
 
 export type CenarioId = "A" | "B" | "C";

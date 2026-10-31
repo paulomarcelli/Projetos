@@ -1,6 +1,6 @@
 /** Fontes, evidências e afirmações: a cadeia de rastreabilidade. */
 
-import type { TipoEpistemico } from "../components/ui/Epistemico";
+import type { TipoEpistemico } from "../components/common/Epistemico";
 
 export type NaturezaFonte = "primaria" | "secundaria" | "terciaria";
 

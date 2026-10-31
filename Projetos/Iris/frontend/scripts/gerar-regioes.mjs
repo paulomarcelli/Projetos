@@ -1,4 +1,4 @@
-// Gera src/features/relacoes/geo/regioes.ts: código ISO 3166-1 numérico → região geopolítica do Iris.
+// Gera src/components/relations/geo/regioes.ts: código ISO 3166-1 numérico → região geopolítica do Iris.
 // Fonte: pacote world-countries (região e sub-região da ONU), cruzado com os países do
 // mapa world-atlas 110m. Rode com `npm run gerar-regioes` só se mudar as regras abaixo.
 import { readFileSync, writeFileSync } from "node:fs";
@@ -38,7 +38,7 @@ const linhas = Object.entries(saida)
   .map(([k, v]) => `  "${k}": "${v}",`)
   .join("\n");
 writeFileSync(
-  "src/features/relacoes/geo/regioes.ts",
+  "src/components/relations/geo/regioes.ts",
   `// Gerado por scripts/gerar-regioes.mjs. Não edite à mão.\n` +
     `import type { RegiaoId } from "./regioes-def";\n\n` +
     `export const REGIAO_POR_PAIS: Record<string, RegiaoId> = {\n${linhas}\n};\n`,

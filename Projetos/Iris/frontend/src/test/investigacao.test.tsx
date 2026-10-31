@@ -2,9 +2,9 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it } from "vitest";
-import { abaDoEndereco } from "../features/investigacao/contexto";
-import { PaginaAnalise } from "../pages/Analise/PaginaAnalise";
-import { ResultadoDaInvestigacao } from "../features/investigacao/components/ResultadoDaInvestigacao";
+import { abaDoEndereco } from "../components/analysis/investigacao/contexto";
+import { PaginaAnalise } from "../pages/Analysis/PaginaAnalise";
+import { ResultadoDaInvestigacao } from "../components/analysis/investigacao/ResultadoDaInvestigacao";
 import { INVESTIGACAO_EXEMPLO as r } from "../previa/investigacao-exemplo";
 
 describe("integridade do exemplo (rastreabilidade)", () => {

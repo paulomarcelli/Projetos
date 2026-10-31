@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from app.core.config import ConfigError, Settings, get_settings, load_settings
+from shared.config import ConfigError, Settings, get_settings, load_settings
 
 RAIZ = Path(__file__).resolve().parents[1]
 

@@ -5,7 +5,7 @@
  * diz isso (mostra a pergunta que o exemplo responde). As perguntas seguintes viram complementos montados com os
  * campos do mesmo exemplo. Os tempos de espera só existem para mostrar como a interface acompanha o processamento.
  */
-import { detectarIntencao } from "../features/conversa/complementos";
+import { detectarIntencao } from "../components/analysis/conversa/complementos";
 import type { ContextoDaPergunta, Etapa, EventoDaPergunta } from "../types/conversa";
 import { INVESTIGACAO_EXEMPLO } from "./investigacao-exemplo";
 

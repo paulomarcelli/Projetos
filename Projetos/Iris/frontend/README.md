@@ -87,7 +87,7 @@ A referência completa (cores, tipos, marcadores, componentes) fica na rota `/de
 ## Resultado de uma investigação prospectiva
 
 Fluxo: pergunta → **Análise** → **Mapa de relações** → **Timeline prospectiva**
-(`src/features/investigacao/`, `analise/`, `relacoes/`, `linha-do-tempo/`, `prospectiva/`). As três áreas compartilham UM estado (`contexto.tsx`): o cenário
+(`src/components/analysis/investigacao/`, `analise/`, `relacoes/`, `linha-do-tempo/`, `prospectiva/`). As três áreas compartilham UM estado (`contexto.tsx`): o cenário
 escolhido numa vale nas outras, e um ator selecionado no mapa aparece com a sua relevância no
 detalhe do cenário. Endereço: `?area=relacoes` ou `?area=timeline` (a análise é o padrão; os
 antigos `?area=visao|cenarios|evidencias` continuam funcionando).

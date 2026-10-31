@@ -10,7 +10,7 @@ import pytest
 from fastapi.testclient import TestClient
 from pdfs import gerar_pdf
 
-from app.main import create_app
+from backend.main import create_app
 
 BANCO_FECHADO = "postgresql+psycopg://iris:senha-do-teste@127.0.0.1:9/iris"
 

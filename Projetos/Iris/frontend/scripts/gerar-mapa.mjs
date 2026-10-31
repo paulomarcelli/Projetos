@@ -1,4 +1,4 @@
-// Gera src/features/relacoes/geo/contornos.json: o contorno de cada país, o globo e a grade já projetados no quadro
+// Gera src/components/relations/geo/contornos.json: o contorno de cada país, o globo e a grade já projetados no quadro
 // 960×470 (Natural Earth 1). Projetar e recortar os 177 países custava ~100 ms no primeiro mapa aberto (mais num
 // celular), bem no clique da aba; agora isso acontece uma vez aqui. Rode com `npm run gerar-mapa` só se mudar a
 // projeção, o quadro (LARGURA × ALTURA em geo/mundo.ts) ou os dados do world-atlas.
@@ -26,5 +26,5 @@ const paises = feature(mundo, mundo.objects.countries)
   .map((f) => ({ id: String(f.id ?? ""), d: caminho(f) ?? "" }));
 
 const saida = { paises, esfera: caminho({ type: "Sphere" }) ?? "", grade: caminho(geoGraticule10()) ?? "" };
-writeFileSync(new URL("../src/features/relacoes/geo/contornos.json", import.meta.url), JSON.stringify(saida));
-console.log(`${paises.length} países gravados em src/features/relacoes/geo/contornos.json`);
+writeFileSync(new URL("../src/components/relations/geo/contornos.json", import.meta.url), JSON.stringify(saida));
+console.log(`${paises.length} países gravados em src/components/relations/geo/contornos.json`);

@@ -1,12 +1,12 @@
 import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import { useSearchParams } from "react-router";
-import { EnvioDeDocumento } from "../../features/base-cientifica/components/EnvioDeDocumento";
-import { ErroDeCarregamento } from "../../components/feedback/ErroDeCarregamento";
-import { EstadoVazio } from "../../components/feedback/EstadoVazio";
-import { ListaDeDocumentos } from "../../features/base-cientifica/components/ListaDeDocumentos";
-import { Secao } from "../../components/ui/Secao";
+import { EnvioDeDocumento } from "../../components/research/base-cientifica/EnvioDeDocumento";
+import { ErroDeCarregamento } from "../../components/common/ErroDeCarregamento";
+import { EstadoVazio } from "../../components/common/EstadoVazio";
+import { ListaDeDocumentos } from "../../components/research/base-cientifica/ListaDeDocumentos";
+import { Secao } from "../../components/common/Secao";
 import { CabecalhoDePagina } from "../../components/layout/CabecalhoDePagina";
-import { ROTULO_STATUS } from "../../features/base-cientifica/components/StatusDocumento";
+import { ROTULO_STATUS } from "../../components/research/base-cientifica/StatusDocumento";
 import { listarDocumentos } from "../../services/api";
 import { type StatusDocumento } from "../../types/api";
 import { contar, numero } from "../../utils/formatadores";

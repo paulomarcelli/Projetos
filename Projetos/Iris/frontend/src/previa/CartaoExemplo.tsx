@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router";
-import { Epistemico } from "../components/ui/Epistemico";
+import { Epistemico } from "../components/common/Epistemico";
 import { ROTAS } from "../config/rotas";
 import { INVESTIGACAO_EXEMPLO as r } from "./investigacao-exemplo";
 

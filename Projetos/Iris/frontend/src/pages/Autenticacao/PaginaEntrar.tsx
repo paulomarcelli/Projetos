@@ -15,9 +15,9 @@
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Aviso } from "../../components/feedback/Aviso";
-import { Marca } from "../../components/ui/Marca";
-import { SignInPage } from "../../components/ui/sign-in-page";
+import { Aviso } from "../../components/common/Aviso";
+import { Marca } from "../../components/common/Marca";
+import { SignInPage } from "../../components/common/sign-in-page";
 import { usePreferencias } from "../../store/preferencias";
 import { BASE_PUBLICA } from "../../config/env";
 import { ROTAS } from "../../config/rotas";

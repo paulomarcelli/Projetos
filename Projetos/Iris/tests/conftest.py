@@ -8,7 +8,7 @@ import socket
 
 import pytest
 
-from app.core.config import Settings, get_settings
+from shared.config import Settings, get_settings
 
 PREFIXOS_DE_CONFIG = (
     "OPENAI_",

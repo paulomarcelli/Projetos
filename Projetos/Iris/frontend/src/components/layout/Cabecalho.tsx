@@ -2,7 +2,7 @@
 import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import type { Ref } from "react";
 import { ajustarMenu } from "../../store/preferencias";
-import { Marca } from "../ui/Marca";
+import { Marca } from "../common/Marca";
 
 type Props = {
   ref?: Ref<HTMLElement>;

@@ -15,13 +15,13 @@ import { Activity, FolderOpen, History, Library, LogOut, MessagesSquare, Moon, P
 import { useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useDados } from "../../hooks/useDados";
-import { useMinhasInvestigacoes } from "../../features/historico/hooks/useMinhasInvestigacoes";
+import { useMinhasInvestigacoes } from "../research/historico/hooks/useMinhasInvestigacoes";
 import { escolherTema, usePreferencias } from "../../store/preferencias";
 import { ROTAS } from "../../config/rotas";
 import { PREVIA } from "../../config/env";
 import { prontidao } from "../../services/api";
-import { Marca } from "../ui/Marca";
-import { SidebarNav, type NavGroupData, type NavItemData } from "../ui/dashboard-sidebar";
+import { Marca } from "../common/Marca";
+import { SidebarNav, type NavGroupData, type NavItemData } from "../common/dashboard-sidebar";
 
 /** Quantas investigações cabem no menu antes de "Ver todas". */
 const LIMITE_NO_MENU = 6;

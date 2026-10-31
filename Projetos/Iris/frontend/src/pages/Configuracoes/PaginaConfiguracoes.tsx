@@ -1,10 +1,10 @@
 import { ArrowRight, FolderInput, RotateCw } from "lucide-react";
 import { Link } from "react-router";
-import { ErroDeCarregamento } from "../../components/feedback/ErroDeCarregamento";
-import { LinhasEsqueleto } from "../../components/ui/Carregando";
-import { Origem } from "../../components/ui/Origem";
-import { Secao } from "../../components/ui/Secao";
-import { SeletorTamanhoTexto, SeletorTema } from "../../components/ui/SeletorTema";
+import { ErroDeCarregamento } from "../../components/common/ErroDeCarregamento";
+import { LinhasEsqueleto } from "../../components/common/Carregando";
+import { Origem } from "../../components/common/Origem";
+import { Secao } from "../../components/common/Secao";
+import { SeletorTamanhoTexto, SeletorTema } from "../../components/common/SeletorTema";
 import { CabecalhoDePagina } from "../../components/layout/CabecalhoDePagina";
 import { prontidao } from "../../services/api";
 import { MARCA } from "../../config/marca";

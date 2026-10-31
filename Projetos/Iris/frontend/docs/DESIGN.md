@@ -371,7 +371,7 @@ prontos; os pulsos do mapa param; a troca de cenário fica instantânea.
 
 > **Abertura orbital (out/2026).** Referência pedida: a abertura de jobhunt.asmcleod.com (núcleo
 > brilhante num campo de estrelas, fios que brotam com o tempo, contador no canto, "pular
-> introdução", arrastar para girar). Refeita em `features/landing/components/CenaOrbital.tsx`:
+> introdução", arrastar para girar). Refeita em `features/landing/components/CenaOrbital.tsx` (já removida):
 > - Canvas 2D com projeção 3D simples (a referência usa WebGL/three.js, ~1,3 MB); +9 kB no
 >   trecho da landing, nenhuma dependência nova;
 > - mais rápida: ~4,5 s (24 fios, um a cada 130 ms, cada um cresce em 0,9 s); roda uma vez por
@@ -596,7 +596,7 @@ decidido e aplicado:
 
 Substitui as regras de landing acima (escala, abertura, seções e movimento). Estrutura e movimento vêm
 da demo "Breu" (perfumaria noturna num jardim escuro), adaptados à Iris; o código está em
-`src/pages/Landing/PaginaLanding.tsx`, `src/features/landing/mundo/` e `src/features/landing/landing-mundo.css`.
+`src/pages/Landing/PaginaLanding.tsx`, `src/components/landing/mundo/` e `src/components/landing/landing-mundo.css`.
 
 - **O mundo:** faixa vertical de sete imagens abstratas (WebP 2560 px, em `public/recursos/imagens/mundo/`) fixa atrás do
   texto, emendada por degradê em 263 px: globo de pontos sobre uma grade → mapas em camadas de pontos →
@@ -698,7 +698,7 @@ centro, a interface encenada e o que ela entrega. Substitui o "mundo noturno" (G
 saíram do projeto).
 
 - **Paleta:** azul-noite com ouro, as cores da diplomacia (o azul das bandeiras e organizações, o ouro dos selos).
-  Tokens próprios em `features/landing/landing.css`, todos dentro de `.lp`: a landing é sempre escura, seja qual for o
+  Tokens próprios em `components/landing/landing.css`, todos dentro de `.lp`: a landing é sempre escura, seja qual for o
   tema do app, e redefine `--color-texto`/`--color-ciano` só para dentro dela (a marca fica clara, com o nó em ouro).
 - **Sequência:** herói (selo, título com "futuros" em ouro, texto, campo de pergunta que digita exemplos sozinho,
   atalhos) → o planeta nascendo no horizonte → faixa de temas → "Uma pergunta. Uma investigação inteira." (janela que

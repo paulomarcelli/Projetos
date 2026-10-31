@@ -7,8 +7,8 @@ import time
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api import routes_health
-from app.main import create_app
+from backend.api import routes_health
+from backend.main import create_app
 
 SENHA = "SENHA_SECRETA_DO_BANCO"
 CHAVE = "sk-CHAVE-SECRETA-DA-OPENAI"

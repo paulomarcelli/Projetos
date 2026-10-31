@@ -11,13 +11,13 @@ import uuid
 import pytest
 from pdfs import gerar_pdf, xmp_basico
 
-from app.db.models import Document, DocumentStatus, PageStatus
-from app.documents import errors, metadata
-from app.documents.extraction import PdfIlegivel, abrir, extrair_paginas
-from app.documents.normalization import limpar_bruto, normalizar
-from app.documents.schemas import MetadadosInformados
-from app.documents.storage import Armazenamento, StorageError
-from app.documents.validation import (
+from database.models import Document, DocumentStatus, PageStatus
+from ingestion import errors, metadata
+from ingestion.extraction import PdfIlegivel, abrir, extrair_paginas
+from ingestion.normalization import limpar_bruto, normalizar
+from ingestion.schemas import MetadadosInformados
+from ingestion.storage import Armazenamento, StorageError
+from ingestion.validation import (
     contar_paginas,
     copiar_com_limite,
     sanitizar_nome,

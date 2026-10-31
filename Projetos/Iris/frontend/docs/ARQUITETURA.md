@@ -33,30 +33,29 @@ frontend/
     │   ├── roteador.tsx            todas as rotas (landing, conta, plataforma em /app)
     │   └── provedores/             ProvedorDeNotificacoes
     │
-    ├── pages/              uma pasta por tela; só compõem features e carregam dados
-    │   ├── Landing/  Autenticacao/  Inicio/  Historico/  Explorar/
-    │   ├── Analise/  Relacoes/  Configuracoes/  SistemaDeDesign/
+    ├── pages/              uma pasta por tela; só compõem componentes e carregam dados
+    │   ├── Research/       a conversa (PaginaConversa), o início, explorar a base e o histórico
+    │   ├── Analysis/       a investigação completa (PaginaAnalise)
+    │   ├── Relations/      o mapa das relações em página inteira
+    │   ├── Scenarios/      reservada (README): página só de cenários, ainda não existe
+    │   ├── DailyIntelligence/ reservada (README): depende do módulo daily_intelligence/ do servidor
+    │   └── Landing/  Autenticacao/  Configuracoes/  SistemaDeDesign/   (fora do desenho; continuam)
     │
-    ├── components/         genéricos, sem assunto
+    ├── components/         um assunto por pasta (com hooks e o que for só dele)
     │   ├── layout/         LayoutDoApp (moldura), Cabecalho, MenuLateral, ConteudoPrincipal, CabecalhoDePagina
-    │   ├── ui/             Carregando, Origem, Marca, Secao, Epistemico, SeletorTema, movimento,
-    │   │                   dashboard-sidebar, sign-in-page
-    │   └── feedback/       EstadoVazio, ErroDeCarregamento, Aviso
-    │
-    ├── features/           um assunto por pasta (components/, hooks/ e o que for só dele)
-    │   ├── conversa/       a experiência principal: motor (fora do React), histórico, complementos e a resposta
-    │   │                   (AnaliseEmTexto → CenariosProspectivos → Aprofundamento), CampoDePergunta, BoasVindas
-    │   ├── investigacao/   contexto (estado compartilhado), ResultadoDaInvestigacao, abas, painel contextual
-    │   ├── analise/        área "Análise"
-    │   ├── relacoes/       mapa geopolítico, legenda, lista, geo/ (cartografia)
-    │   ├── linha-do-tempo/ timeline prospectiva
-    │   ├── prospectiva/    cenários e sua comparação
-    │   ├── evidencias/     evidências e cartão de fonte
-    │   ├── consulta/       a pergunta de pesquisa (nova investigação)
-    │   ├── historico/      lista de investigações e favoritos
-    │   ├── base-cientifica/ documentos reais da API
+    │   ├── common/         genéricos: Carregando, Origem, Marca, Secao, Epistemico, SeletorTema, movimento,
+    │   │                   EstadoVazio, ErroDeCarregamento, Aviso, dashboard-sidebar, sign-in-page
+    │   ├── analysis/       área "Análise" e o que monta uma resposta:
+    │   │   ├── conversa/       motor (fora do React), histórico, complementos e a resposta em cinco partes
+    │   │   ├── investigacao/   contexto (estado compartilhado), estrutura, ResultadoDaInvestigacao, painel
+    │   │   ├── prospectiva/    cenários e sua comparação
+    │   │   └── evidencias/     evidências e cartão de fonte
+    │   ├── relations/      mapa geopolítico, legenda, lista, geo/ (cartografia)
+    │   ├── timeline/       timeline prospectiva
+    │   ├── news/           reservada (README): inteligência diária
+    │   ├── research/       consulta (nova investigação), historico, base-cientifica (documentos reais da API)
     │   ├── autenticacao/   peças das telas de conta
-    │   └── landing/        mundo noturno (GSAP/Lenis), cena orbital
+    │   └── landing/        globo, demonstração e seções da landing
     │
     ├── services/           ÚNICO ponto de contato com a rede
     │   ├── api.ts                  cliente tipado de /health e /documents (+ modo prévia)
@@ -112,17 +111,17 @@ prospectivos → mapa de relações, linha do tempo e evidências (os mesmos com
 Camadas, de baixo para cima:
 
 1. `services/conversa.ts`: a fronteira com a API (hoje, "indisponível"; na prévia, a demonstração);
-2. `features/conversa/motor.ts`: envia, acompanha as etapas e grava as respostas, fora do React (a primeira pergunta
+2. `components/analysis/conversa/motor.ts`: envia, acompanha as etapas e grava as respostas, fora do React (a primeira pergunta
    troca de página, e o processamento continua);
-3. `features/conversa/historico.ts`: as conversas deste navegador (`localStorage`), só com referências aos resultados;
-4. `features/conversa/complementos.ts`: regras puras das perguntas complementares;
+3. `components/analysis/conversa/historico.ts`: as conversas deste navegador (`localStorage`), só com referências aos resultados;
+4. `components/analysis/conversa/complementos.ts`: regras puras das perguntas complementares;
 5. componentes, que só leem.
 
 O contrato que o servidor precisará cumprir está em `docs/CONTRATO-CONVERSA.md`.
 
 ## Integração com o backend
 
-| Backend (app/api) | Frontend |
+| Backend (backend/api) | Frontend |
 |---|---|
 | `GET /health`, `GET /health/ready` | `prontidao()` → estado do sistema no menu e em Configurações |
 | `GET /documents`, `GET /documents/{id}` | Base científica, leitor de fonte, favoritos, painel da base |
@@ -140,7 +139,7 @@ Em desenvolvimento, o Vite encaminha `/documents` e `/health` para `API_URL` (pa
   prévia. Ponto de integração: `hooks/useInvestigacao.ts` (contrato de estado já pronto) e o tipo
   `ResultadoDeInvestigacao` em `types/investigacao.ts`, que precisa de um esquema equivalente na API.
 - **Relações, timeline e cenários:** dependem do resultado de investigação acima.
-- **RAG / modelo de linguagem:** `app/llm/client.py` existe, mas nenhuma rota o expõe; a busca
+- **RAG / modelo de linguagem:** `shared/llm/client.py` existe, mas nenhuma rota o expõe; a busca
   de evidências na base ainda não está disponível para a interface.
 - **Contas e sessão:** não existem na API; `services/autenticacao.ts` responde "indisponível".
 - **Busca textual nas fontes:** a Base científica filtra os títulos carregados no navegador; uma

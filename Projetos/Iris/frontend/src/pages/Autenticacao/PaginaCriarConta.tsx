@@ -14,8 +14,8 @@
 import { ArrowRight, MailCheck } from "lucide-react";
 import { useId, useState } from "react";
 import { Link } from "react-router";
-import { Aviso } from "../../components/feedback/Aviso";
-import { BotaoEnviar, Campo, CampoSenha, RegrasDaSenha, Retorno, TituloAuth } from "../../features/autenticacao/components/pecas";
+import { Aviso } from "../../components/common/Aviso";
+import { BotaoEnviar, Campo, CampoSenha, RegrasDaSenha, Retorno, TituloAuth } from "../../components/autenticacao/pecas";
 import { autenticacao, type CampoAuth, type ResultadoAuth } from "../../services/autenticacao";
 import { validarEmail, validarSenhaNova } from "../../utils/validadores";
 import { ROTAS } from "../../config/rotas";

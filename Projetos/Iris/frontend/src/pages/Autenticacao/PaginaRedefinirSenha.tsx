@@ -9,8 +9,8 @@
 import { ArrowLeft, CircleCheck, LinkIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Aviso } from "../../components/feedback/Aviso";
-import { BotaoEnviar, CampoSenha, RegrasDaSenha, Retorno, TituloAuth } from "../../features/autenticacao/components/pecas";
+import { Aviso } from "../../components/common/Aviso";
+import { BotaoEnviar, CampoSenha, RegrasDaSenha, Retorno, TituloAuth } from "../../components/autenticacao/pecas";
 import { autenticacao, type ResultadoAuth } from "../../services/autenticacao";
 import { validarSenhaNova } from "../../utils/validadores";
 import { ROTAS } from "../../config/rotas";

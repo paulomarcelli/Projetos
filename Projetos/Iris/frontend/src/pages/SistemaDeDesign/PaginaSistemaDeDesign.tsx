@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { GramaticaDeRelacoes, LegendaEpistemica } from "../../features/relacoes/components/Gramatica";
-import { Aviso } from "../../components/feedback/Aviso";
-import { Esqueleto } from "../../components/ui/Carregando";
-import { EstadoVazio } from "../../components/feedback/EstadoVazio";
-import { Origem } from "../../components/ui/Origem";
-import { LinhaHorizonte } from "../../features/consulta/components/LinhaHorizonte";
-import { Marca, SimboloIris } from "../../components/ui/Marca";
-import { Secao } from "../../components/ui/Secao";
+import { GramaticaDeRelacoes, LegendaEpistemica } from "../../components/relations/Gramatica";
+import { Aviso } from "../../components/common/Aviso";
+import { Esqueleto } from "../../components/common/Carregando";
+import { EstadoVazio } from "../../components/common/EstadoVazio";
+import { Origem } from "../../components/common/Origem";
+import { LinhaHorizonte } from "../../components/research/consulta/LinhaHorizonte";
+import { Marca, SimboloIris } from "../../components/common/Marca";
+import { Secao } from "../../components/common/Secao";
 import { CabecalhoDePagina } from "../../components/layout/CabecalhoDePagina";
-import { SeloStatus } from "../../features/base-cientifica/components/StatusDocumento";
+import { SeloStatus } from "../../components/research/base-cientifica/StatusDocumento";
 import { MARCA } from "../../config/marca";
 
 /** Valores do tema escuro / claro. Os componentes usam só o token; o tema troca o valor. */

@@ -21,14 +21,14 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import make_url
 
-from app.db.session import (
+from backend.main import create_app
+from database.session import (
     build_engine,
     build_session_factory,
     check_database,
     check_pgvector,
     get_session,
 )
-from app.main import create_app
 
 URL = os.environ.get("IRIS_TEST_DATABASE_URL")
 RAIZ = Path(__file__).resolve().parents[1]
@@ -56,7 +56,7 @@ def engine(settings):
 @pytest.fixture
 def alembic_cfg(settings) -> Config:
     cfg = Config(str(RAIZ / "alembic.ini"))
-    cfg.set_main_option("script_location", str(RAIZ / "migrations"))
+    cfg.set_main_option("script_location", str(RAIZ / "database" / "migrations"))
     cfg.set_main_option("prepend_sys_path", str(RAIZ))
     cfg.attributes["database_url"] = settings.database_url.get_secret_value()
     return cfg

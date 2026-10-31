@@ -1,23 +1,23 @@
 import { Compass } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Link, Navigate, Route, Routes, useParams } from "react-router";
-import { EstadoVazio } from "../components/feedback/EstadoVazio";
-import { LinhasEsqueleto } from "../components/ui/Carregando";
+import { EstadoVazio } from "../components/common/EstadoVazio";
+import { LinhasEsqueleto } from "../components/common/Carregando";
 import { LayoutDoApp } from "../components/layout/LayoutDoApp";
 import { ROTAS } from "../config/rotas";
 import { PaginaAcervo } from "../pages/Configuracoes/PaginaAcervo";
 import { PaginaConfiguracoes } from "../pages/Configuracoes/PaginaConfiguracoes";
 import { PaginaSistemaDeDesign } from "../pages/SistemaDeDesign/PaginaSistemaDeDesign";
-import { PaginaDocumento } from "../pages/Explorar/PaginaDocumento";
-import { PaginaInicio } from "../pages/Inicio/PaginaInicio";
-import { PaginaNovaComParametros } from "../pages/Inicio/PaginaNovaComParametros";
-import { PaginaConversa } from "../pages/Conversa/PaginaConversa";
-import { PaginaExplorar } from "../pages/Explorar/PaginaExplorar";
-import { PaginaHistorico } from "../pages/Historico/PaginaHistorico";
-import { PaginaFavoritos } from "../pages/Historico/PaginaFavoritos";
+import { PaginaDocumento } from "../pages/Research/PaginaDocumento";
+import { PaginaInicio } from "../pages/Research/PaginaInicio";
+import { PaginaNovaComParametros } from "../pages/Research/PaginaNovaComParametros";
+import { PaginaConversa } from "../pages/Research/PaginaConversa";
+import { PaginaExplorar } from "../pages/Research/PaginaExplorar";
+import { PaginaHistorico } from "../pages/Research/PaginaHistorico";
+import { PaginaFavoritos } from "../pages/Research/PaginaFavoritos";
 
-const PaginaAnalise = lazy(() => import("../pages/Analise/PaginaAnalise"));
-const PaginaRelacoes = lazy(() => import("../pages/Relacoes/PaginaRelacoes"));
+const PaginaAnalise = lazy(() => import("../pages/Analysis/PaginaAnalise"));
+const PaginaRelacoes = lazy(() => import("../pages/Relations/PaginaRelacoes"));
 
 // Landing e telas de conta usam a biblioteca Motion: carregadas sob demanda, para que ela não
 // pese no pacote da plataforma (/app), que anima só com CSS.

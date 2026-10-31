@@ -8,6 +8,7 @@
 - [ ] Servir o `.wasm` comprimido (gzip/brotli) na hospedagem final: 43,7 MB → ~9,4 MB.
 
 ## Fase 2 (próxima)
+- [ ] Usar os testes T-01 a T-16 de `docs/research/re-street-fighter-ii-snes/clone/parity.md` como critério de aceite do motor de luta.
 - [ ] `scripts/combat`: simulação em quadros fixos com entrada em bitmask e estado copiável.
 - [ ] Dois lutadores provisórios claramente marcados como provisórios.
 - [ ] Hitbox/hurtbox próprias, dano, hitstun, knockback, rounds, temporizador, HUD.

@@ -87,6 +87,8 @@ shaders/                 fundo animado do menu
 tests/                   testes automáticos
 ```
 
+Estudo de mecânicas do gênero (regras e testes de aceitação para as Fases 2–6): [docs/research/re-street-fighter-ii-snes/REPORT.html](docs/research/re-street-fighter-ii-snes/REPORT.html)
+
 Documentos: [ARCHITECTURE.md](ARCHITECTURE.md) · [ROADMAP.md](ROADMAP.md) · [GAME_DESIGN_DOCUMENT.md](GAME_DESIGN_DOCUMENT.md) · [CHANGELOG.md](CHANGELOG.md) · [TODO.md](TODO.md)
 
 ## Licenças de terceiros

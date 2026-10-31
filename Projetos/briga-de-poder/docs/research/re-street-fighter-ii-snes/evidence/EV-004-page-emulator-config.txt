@@ -1,0 +1,14 @@
+Source: view-source of https://www.retrogames.cz/play_304-SNES.php fetched 2026-10-31 (curl, no ROM requested)
+
+<meta property="og:title" content="Street Fighter II (SNES) - online game | RetroGames.cz" />
+<title>Street Fighter II (SNES) - online game | RetroGames.cz</title>
+EJS_player = '#game';
+EJS_gameUrl = 'SNES/Street_Fighter_II.zip';	// Url to Game rom
+EJS_gameID = 304; 				// ID in your website, required for netplay.
+EJS_gameName = "Street Fighter II";
+EJS_color = "#FFA500";
+EJS_core = 'snes';
+EJS_pathtodata = "EJS/";
+EJS_mouse = false; 				// SNES mouse
+EJS_multitap = false; 					// SNES Multitap
+EJS_oldCores = true;

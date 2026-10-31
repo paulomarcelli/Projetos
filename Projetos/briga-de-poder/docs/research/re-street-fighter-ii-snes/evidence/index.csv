@@ -1,0 +1,4 @@
+id,date,session,route,shows,masked
+EV-001,2026-10-31,s01,/play_304-SNES.php,área do emulador antes de START GAME (recorte),n/a: sem dados pessoais
+EV-003,2026-10-31,s01,/play_304-SNES.php,requisições da página com ROM/núcleo bloqueados e inventário do DOM,n/a: sem dados pessoais
+EV-004,2026-10-31,s01,/play_304-SNES.php,configuração do emulador no código-fonte da página,n/a: sem dados pessoais

@@ -1,0 +1,543 @@
+{
+  "captured": "2026-10-31",
+  "url": "https://www.retrogames.cz/play_304-SNES.php",
+  "note": "Requests for ROM/core files (.zip .7z .smc .sfc .data .wasm) were set to abort; ads and social SDKs aborted. None of those file types was requested before START GAME was pressed (START GAME was never pressed).",
+  "rom_or_core_requests": [],
+  "site_scripts": [
+    "https://www.retrogames.cz/style.css",
+    "https://mem.neptunjs.xyz/neptun/css/neptun.css",
+    "https://www.retrogames.cz/mouseover_popup.js",
+    "https://www.retrogames.cz/EJS/loader.js",
+    "https://www.retrogames.cz/multiswap.js",
+    "https://www.retrogames.cz/EJS/emu-css.min.css",
+    "https://www.retrogames.cz/EJS/emulator.min.js",
+    "https://www.retrogames.cz/EJS/webrtc-adapter.js"
+  ],
+  "game_container": {
+    "width": 512,
+    "height": 448,
+    "children": "one <canvas>"
+  },
+  "inventory": {
+    "page": {
+      "titleLength": 54,
+      "route": "/play_304-SNES.php",
+      "lang": null,
+      "viewport": "1366x900",
+      "themeHints": {
+        "htmlClass": null,
+        "dataTheme": null,
+        "prefersDark": false
+      },
+      "generator": null,
+      "serviceWorker": false,
+      "iframes": [
+        "www.retrogames.cz",
+        "www.retrogames.cz"
+      ]
+    },
+    "frameworks": {},
+    "designSystemHints": {
+      "classPrefixes": [
+        {
+          "name": "ejs",
+          "count": 121
+        },
+        {
+          "name": "buttonscontainer",
+          "count": 1
+        },
+        {
+          "name": "buttons",
+          "count": 1
+        },
+        {
+          "name": "sharethis",
+          "count": 1
+        }
+      ],
+      "utilityClassCount": 0
+    },
+    "components": {
+      "customElements": [],
+      "testIds": []
+    },
+    "accessibility": {
+      "roles": [
+        {
+          "name": "menuitemradio",
+          "count": 25
+        },
+        {
+          "name": "presentation",
+          "count": 14
+        },
+        {
+          "name": "menu",
+          "count": 6
+        },
+        {
+          "name": "menuitem",
+          "count": 5
+        },
+        {
+          "name": "slider",
+          "count": 1
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "header",
+          "count": 0
+        },
+        {
+          "name": "nav",
+          "count": 0
+        },
+        {
+          "name": "main",
+          "count": 0
+        },
+        {
+          "name": "aside",
+          "count": 0
+        },
+        {
+          "name": "footer",
+          "count": 0
+        },
+        {
+          "name": "dialog",
+          "count": 0
+        }
+      ],
+      "unnamedControls": [
+        "tr > td > p > a",
+        "tr > td > p > a",
+        "tr > td > p > input",
+        "tr > td > p > input",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a",
+        "tbody > tr > td > a"
+      ]
+    },
+    "routes": [
+      {
+        "name": "/play_304-SNES.php",
+        "count": 15
+      },
+      {
+        "name": "/play_717-DOS.php",
+        "count": 3
+      },
+      {
+        "name": "/index.php",
+        "count": 2
+      },
+      {
+        "name": "/offline.php",
+        "count": 2
+      },
+      {
+        "name": "/advsearch_form.php",
+        "count": 2
+      },
+      {
+        "name": "/konzole_SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1142-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1367-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1133-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1280-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1342-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1435-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1587-Genesis.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1228-Genesis.php",
+        "count": 2
+      },
+      {
+        "name": "/play_1075-N64.php",
+        "count": 2
+      },
+      {
+        "name": "/play_500-Genesis.php",
+        "count": 2
+      },
+      {
+        "name": "/play_229-SegaMS.php",
+        "count": 2
+      },
+      {
+        "name": "/play_310-Genesis.php",
+        "count": 2
+      },
+      {
+        "name": "/play_919-SNES.php",
+        "count": 2
+      },
+      {
+        "name": "/play_604-Genesis.php",
+        "count": 2
+      },
+      {
+        "name": "/",
+        "count": 2
+      },
+      {
+        "name": "/games_0.php",
+        "count": 1
+      },
+      {
+        "name": "/games_a.php",
+        "count": 1
+      },
+      {
+        "name": "/games_b.php",
+        "count": 1
+      },
+      {
+        "name": "/games_c.php",
+        "count": 1
+      },
+      {
+        "name": "/games_d.php",
+        "count": 1
+      },
+      {
+        "name": "/games_e.php",
+        "count": 1
+      },
+      {
+        "name": "/games_f.php",
+        "count": 1
+      },
+      {
+        "name": "/games_g.php",
+        "count": 1
+      },
+      {
+        "name": "/games_h.php",
+        "count": 1
+      },
+      {
+        "name": "/games_i.php",
+        "count": 1
+      },
+      {
+        "name": "/games_j.php",
+        "count": 1
+      },
+      {
+        "name": "/games_k.php",
+        "count": 1
+      },
+      {
+        "name": "/games_l.php",
+        "count": 1
+      },
+      {
+        "name": "/games_m.php",
+        "count": 1
+      },
+      {
+        "name": "/games_n.php",
+        "count": 1
+      },
+      {
+        "name": "/games_o.php",
+        "count": 1
+      },
+      {
+        "name": "/games_p.php",
+        "count": 1
+      },
+      {
+        "name": "/games_q.php",
+        "count": 1
+      },
+      {
+        "name": "/games_r.php",
+        "count": 1
+      },
+      {
+        "name": "/games_s.php",
+        "count": 1
+      },
+      {
+        "name": "/games_t.php",
+        "count": 1
+      },
+      {
+        "name": "/games_u.php",
+        "count": 1
+      },
+      {
+        "name": "/games_v.php",
+        "count": 1
+      },
+      {
+        "name": "/games_w.php",
+        "count": 1
+      },
+      {
+        "name": "/games_x.php",
+        "count": 1
+      },
+      {
+        "name": "/games_y.php",
+        "count": 1
+      },
+      {
+        "name": "/games_z.php",
+        "count": 1
+      },
+      {
+        "name": "/konzole.php",
+        "count": 1
+      },
+      {
+        "name": "/emulatory.php",
+        "count": 1
+      },
+      {
+        "name": "/ovladani.php",
+        "count": 1
+      },
+      {
+        "name": "/random.php",
+        "count": 1
+      },
+      {
+        "name": "/akcni.php",
+        "count": 1
+      },
+      {
+        "name": "/adventury.php",
+        "count": 1
+      },
+      {
+        "name": "/vzdelavaci.php",
+        "count": 1
+      },
+      {
+        "name": "/bojove.php",
+        "count": 1
+      },
+      {
+        "name": "/plosinovky.php",
+        "count": 1
+      },
+      {
+        "name": "/logicke.php",
+        "count": 1
+      },
+      {
+        "name": "/zavodni.php",
+        "count": 1
+      },
+      {
+        "name": "/RPG.php",
+        "count": 1
+      },
+      {
+        "name": "/strilecky.php",
+        "count": 1
+      },
+      {
+        "name": "/simulatory.php",
+        "count": 1
+      },
+      {
+        "name": "/sportovni.php",
+        "count": 1
+      },
+      {
+        "name": "/strategie.php",
+        "count": 1
+      },
+      {
+        "name": "/ostatni.php",
+        "count": 1
+      },
+      {
+        "name": "/all.php",
+        "count": 1
+      },
+      {
+        "name": "/zebricky.php",
+        "count": 1
+      },
+      {
+        "name": "/video.php",
+        "count": 1
+      },
+      {
+        "name": "/slovnik.php",
+        "count": 1
+      },
+      {
+        "name": "/pomoc.php",
+        "count": 1
+      },
+      {
+        "name": "/youtube.php",
+        "count": 1
+      },
+      {
+        "name": "/kniha.php",
+        "count": 1
+      },
+      {
+        "name": "/support.php",
+        "count": 1
+      },
+      {
+        "name": "/kontakt.php",
+        "count": 1
+      },
+      {
+        "name": "/play_304-SegaMS.php",
+        "count": 1
+      },
+      {
+        "name": "/play_304-Genesis.php",
+        "count": 1
+      },
+      {
+        "name": "/play_304-DOS.php",
+        "count": 1
+      },
+      {
+        "name": "/download_SNES_manual.php",
+        "count": 1
+      },
+      {
+        "name": "/play_255-SNES.php",
+        "count": 1
+      },
+      {
+        "name": "/privacy.php",
+        "count": 1
+      },
+      {
+        "name": "/terms.php",
+        "count": 1
+      },
+      {
+        "name": "/cookie_statement.php",
+        "count": 1
+      },
+      {
+        "name": "/prohlaseni.php",
+        "count": 1
+      },
+      {
+        "name": "/PR.pdf",
+        "count": 1
+      },
+      {
+        "name": "/report.php",
+        "count": 1
+      }
+    ],
+    "thirdParty": {
+      "scriptHosts": [
+        {
+          "name": "(same origin)",
+          "count": 19
+        },
+        {
+          "name": "pagead2.googlesyndication.com",
+          "count": 7
+        },
+        {
+          "name": "www.googletagmanager.com",
+          "count": 2
+        },
+        {
+          "name": "screechingfurniture.com",
+          "count": 1
+        },
+        {
+          "name": "platform-api.sharethis.com",
+          "count": 1
+        },
+        {
+          "name": "connect.facebook.net",
+          "count": 1
+        },
+        {
+          "name": "cdnjs.buymeacoffee.com",
+          "count": 1
+        },
+        {
+          "name": "static.cloudflareinsights.com",
+          "count": 1
+        }
+      ],
+      "sdks": [
+        "Google Analytics",
+        "Google Tag Manager"
+      ]
+    },
+    "storageKeys": {
+      "localStorage": [
+        "___test",
+        "ejs_settings"
+      ],
+      "sessionStorage": []
+    },
+    "notes": [
+      "Scanned 1162 elements in the main document.",
+      "Lists are capped: 150 entries (class prefixes 30, roles 50, script hosts 50, unnamed controls 30).",
+      "Storage lists key names only, never values. Long digit runs become :id.",
+      "Route segments made of names (for example /person/jane-doe) are not detected: review routes before saving at L3 and L4."
+    ]
+  }
+}

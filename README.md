@@ -30,12 +30,19 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 
 <table>
   <tr>
-    <td colspan="2" valign="top">
+    <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><img src="docs/capas/iris.webp" alt="Iris: Entenda o presente. Explore os futuros., com futuros em dourado"></a>
-      <h3>👁️ Iris · Inteligência estratégica em Relações Internacionais</h3>
-      Plataforma de prospectiva: pergunte sobre uma questão internacional e veja o diagnóstico, as dinâmicas, cenários como hipóteses e os sinais a acompanhar, com a fonte de cada afirmação. A prévia roda sem servidor, com dados de exemplo.<br>
-      <sub>React 19 · TypeScript · Vite · Tailwind 4 · FastAPI · PostgreSQL + pgvector · em desenvolvimento</sub><br><br>
+      <h3>👁️ Iris</h3>
+      Inteligência estratégica em Relações Internacionais: diagnóstico, cenários como hipóteses e sinais a acompanhar, com a fonte de cada afirmação.<br>
+      <sub>React · TypeScript · FastAPI · em desenvolvimento (prévia com dados de exemplo)</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><b>Abrir a prévia ↗</b></a> · <a href="Projetos/Iris">Código</a>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><img src="docs/capas/kfka.webp" alt="KFKA: A escola e a família acompanhando o aluno juntas"></a>
+      <h3>🎒 KFKA</h3>
+      Acompanhamento escolar (Projeto Interdisciplinar, FECAP · ADS): o professor registra, a coordenação publica e a família acompanha.<br>
+      <sub>HTML · CSS · JavaScript · protótipo com dados fictícios</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><b>Abrir o protótipo ↗</b></a> · <a href="Projetos/KFKA">Código</a>
     </td>
   </tr>
   <tr>
@@ -84,15 +91,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       Site do single de Alan Navarro e Karol Sevilla: a música, os compositores e as redes.<br>
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><b>Abrir site ↗</b></a> · <a href="Projetos/Una-Noche-Mas">Código</a>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" valign="top">
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><img src="docs/capas/kfka.webp" alt="KFKA: A escola e a família acompanhando o aluno juntas"></a>
-      <h3>🎒 KFKA · Acompanhamento Escolar</h3>
-      Protótipo do Projeto Interdisciplinar (ADS, FECAP): o professor registra o bimestre de cada aluno, a coordenação revisa e publica, e a família acompanha, dá ciência e responde. Três perfis, modo escuro e documentação de design dentro do próprio protótipo.<br>
-      <sub>HTML · CSS · JavaScript · Playwright · dados fictícios</sub><br><br>
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><b>Abrir o protótipo ↗</b></a> · <a href="Projetos/KFKA">Código</a>
     </td>
   </tr>
   <tr>

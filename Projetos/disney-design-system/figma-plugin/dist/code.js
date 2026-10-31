@@ -19,7 +19,11 @@ async function step(where, fn) {
         logError(where, e);
     }
 }
+/** No modo integração (MCP) não há figma.notify nem pluginData. */
+const IS_MCP = () => globalThis.__MCP === true;
 function progress(msg) {
+    if (IS_MCP())
+        return;
     figma.notify(msg, { timeout: 1500 });
 }
 // ---------------------------------------------------------------- cores
@@ -126,7 +130,8 @@ async function font(kind, weight) {
 }
 // ---------------------------------------------------------------- nós
 function mark(n) {
-    n.setPluginData(MARK, "1");
+    if (!IS_MCP())
+        n.setPluginData(MARK, "1");
     return n;
 }
 function frame(name, props = {}) {
@@ -1660,6 +1665,55 @@ async function buildSparkleLoader(parent) {
     return set;
 }
 /* =====================================================================
+   Recupera do arquivo (pelo nome) o que etapas anteriores criaram:
+   variáveis, estilos, ícones, artes e componentes. Usado quando a
+   construção é feita em várias chamadas pela integração (MCP).
+   ===================================================================== */
+const C_NAMES = {
+    Button: "Button", "Icon Button": "IconButton", Chip: "Chip", Badge: "Badge", Input: "Input", "Nav Link": "NavLink",
+    Header: "Header", "Media Card": "MediaCard", "Experience Card": "ExperienceCard", "Franchise Tile": "FranchiseTile",
+    "Section Header": "SectionHeader", Footer: "Footer", Toast: "Toast", "Sparkle Loader": "SparkleLoader", "Doc/Chapter Header": "ChapterHeader",
+};
+function pageByName(name) {
+    const p = figma.root.children.find((x) => x.name === name);
+    if (!p)
+        throw new Error(`página ausente: ${name}`);
+    return p;
+}
+async function restore() {
+    await initFonts();
+    const colls = await figma.variables.getLocalVariableCollectionsAsync();
+    const vars = await figma.variables.getLocalVariablesAsync();
+    for (const v of vars)
+        VAR[v.name] = v;
+    const col = colls.find((c) => c.name === "DS · Color");
+    if (col) {
+        COLOR_COLLECTION = col;
+        COLOR_MODES = { light: col.modes.find((m) => m.name === "Light").modeId, dark: col.modes.find((m) => m.name === "Dark").modeId };
+    }
+    for (const s of await figma.getLocalTextStylesAsync())
+        TSTYLE[s.name] = s;
+    for (const s of await figma.getLocalEffectStylesAsync())
+        ESTYLE[s.name] = s;
+    // Fontes dos text styles precisam estar carregadas para aplicar o estilo.
+    for (const t of TYPE)
+        await font(t.kind, t.weight);
+    for (const pn of ["Iconography", "Components"]) {
+        const p = figma.root.children.find((x) => x.name === pn);
+        if (!p)
+            continue;
+        await p.loadAsync();
+        for (const n of p.findAllWithCriteria({ types: ["COMPONENT", "COMPONENT_SET"] })) {
+            if (n.type === "COMPONENT" && n.name.startsWith("Icon/"))
+                ICON[n.name.slice(5)] = n;
+            else if (n.type === "COMPONENT" && n.name.startsWith("Art/"))
+                ART[n.name.slice(4)] = n;
+            else if (C_NAMES[n.name] && !(n.type === "COMPONENT" && n.parent && n.parent.type === "COMPONENT_SET"))
+                C[C_NAMES[n.name]] = n;
+        }
+    }
+}
+/* =====================================================================
    Peças de documentação: o mesmo cabeçalho de capítulo (componente com
    propriedades) e a mesma grade de seções em todas as páginas.
    Quadro: 1600 de largura, conteúdo de 1440 (margem 80).
@@ -3040,6 +3094,38 @@ async function preparePages() {
         await p.loadAsync();
     return pages;
 }
+/** resize() trava a altura de molduras com auto layout; aqui elas voltam a abraçar o conteúdo
+    quando ele não cabe (de dentro para fora, para os pais recalcularem depois dos filhos). */
+function hugOverflow(page) {
+    const depth = (n) => { let d = 0; let p = n.parent; while (p) {
+        d++;
+        p = p.parent;
+    } return d; };
+    const inInstance = (n) => { let p = n.parent; while (p) {
+        if (p.type === "INSTANCE")
+            return true;
+        p = p.parent;
+    } return false; };
+    const frames = page.findAll((n) => (n.type === "FRAME" || n.type === "COMPONENT") && n.layoutMode !== "NONE" && !inInstance(n));
+    frames.sort((a, b) => depth(b) - depth(a));
+    for (const f of frames) {
+        const vertical = f.layoutMode === "VERTICAL";
+        if ((vertical ? f.primaryAxisSizingMode : f.counterAxisSizingMode) !== "FIXED" || f.layoutSizingVertical === "FILL")
+            continue;
+        const kids = f.children.filter((c) => c.visible && !("layoutPositioning" in c && c.layoutPositioning === "ABSOLUTE"));
+        if (!kids.length)
+            continue;
+        const need = f.layoutWrap === "WRAP" ? Infinity : vertical
+            ? f.paddingTop + f.paddingBottom + kids.reduce((s, c) => s + c.height, 0) + f.itemSpacing * (kids.length - 1)
+            : f.paddingTop + f.paddingBottom + Math.max(...kids.map((c) => c.height));
+        if (need <= f.height + 0.5)
+            continue;
+        if (vertical)
+            f.primaryAxisSizingMode = "AUTO";
+        else
+            f.counterAxisSizingMode = "AUTO";
+    }
+}
 async function main() {
     progress("✨ Preparando a magia: fontes e páginas…");
     await initFonts();
@@ -3096,6 +3182,8 @@ async function main() {
     progress("Motion e aplicação…");
     await step("Page · Motion", async () => void (await pageMotion(pages.Motion)));
     await step("Page · Application", () => pageApplication(pages.Application));
+    for (const p of Object.values(pages))
+        await step(`Hug · ${p.name}`, () => hugOverflow(p));
     // Relatório honesto de qualquer falha, na própria capa.
     if (ERRORS.length) {
         await step("Error report", async () => {

@@ -21,7 +21,11 @@ async function step(where: string, fn: () => Promise<void> | void) {
   }
 }
 
+/** No modo integração (MCP) não há figma.notify nem pluginData. */
+const IS_MCP = () => (globalThis as unknown as { __MCP?: boolean }).__MCP === true;
+
 function progress(msg: string) {
+  if (IS_MCP()) return;
   figma.notify(msg, { timeout: 1500 });
 }
 
@@ -134,7 +138,7 @@ async function font(kind: "display" | "ui", weight: Weight): Promise<FontName> {
 
 // ---------------------------------------------------------------- nós
 function mark<T extends BaseNode>(n: T): T {
-  n.setPluginData(MARK, "1");
+  if (!IS_MCP()) n.setPluginData(MARK, "1");
   return n;
 }
 

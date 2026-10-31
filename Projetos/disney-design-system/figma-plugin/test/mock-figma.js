@@ -82,6 +82,7 @@ class Container extends Node {
   findAll(fn = () => true) { const out = []; const walk = (n) => { for (const ch of n.children || []) { if (fn(ch)) out.push(ch); walk(ch); } }; walk(this); return out; }
   findOne(fn) { return this.findAll(fn)[0] || null; }
   findChild(fn) { return this.children.find(fn) || null; }
+  findAllWithCriteria(c) { return this.findAll((n) => c.types.includes(n.type)); }
   set layoutWrap(v) { if (v === "WRAP" && this.layoutMode !== "HORIZONTAL") err(`WRAP só em auto layout horizontal (${this.name})`); this._wrap = v; }
   get layoutWrap() { return this._wrap || "NO_WRAP"; }
   set counterAxisAlignItems(v) { if (v === "BASELINE" && this.layoutMode !== "HORIZONTAL") err(`BASELINE só em horizontal (${this.name})`); this._caai = v; }
@@ -193,6 +194,26 @@ const figma = {
   },
 };
 
+if (process.env.MOCK_SEQ) {
+  (async () => {
+    let total = 0;
+    for (const f of process.env.MOCK_SEQ.split(",")) {
+      const code = fs.readFileSync(f, "utf8");
+      const c = vm.createContext({ figma, console, setTimeout, Math, JSON, Promise, Object, Array, String, Number, Error, Set, Map, parseInt, isNaN });
+      try {
+        const r = await vm.runInContext(`(async () => {\n${code}\n})()`, c);
+        const errs = r.errors || [];
+        total += errs.length;
+        console.log(path.basename(f), "OK", JSON.stringify(r).slice(0, 220), errs.length ? "\n   ERROS: " + errs.join("\n   ") : "");
+      } catch (e) { total++; console.log(path.basename(f), "FALHOU:", e.message); }
+    }
+    const count = (t) => [...ALL.values()].filter((n) => n.type === t).length;
+    console.log("páginas:", root.children.map((p) => `${p.name}(${p.children.length})`).join(", "));
+    console.log("componentes:", count("COMPONENT"), "sets:", count("COMPONENT_SET"), "instâncias:", count("INSTANCE"), "variáveis:", VARS.size, "estilos:", STYLES.size, "erros totais:", total);
+    process.exit(total ? 1 : 0);
+  })();
+  return;
+}
 const code = fs.readFileSync(process.env.MOCK_CODE || path.join(__dirname, "../dist/code.js"), "utf8");
 const ctx = vm.createContext({ figma, console, setTimeout, Math, JSON, Promise, Object, Array, String, Number, Error, Set, Map, parseInt, isNaN });
 vm.runInContext(code, ctx);

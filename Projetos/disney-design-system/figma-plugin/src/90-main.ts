@@ -36,6 +36,26 @@ async function preparePages(): Promise<Record<string, PageNode>> {
   return pages;
 }
 
+/** resize() trava a altura de molduras com auto layout; aqui elas voltam a abraçar o conteúdo
+    quando ele não cabe (de dentro para fora, para os pais recalcularem depois dos filhos). */
+function hugOverflow(page: PageNode) {
+  const depth = (n: BaseNode) => { let d = 0; let p = n.parent; while (p) { d++; p = p.parent; } return d; };
+  const inInstance = (n: BaseNode) => { let p = n.parent; while (p) { if (p.type === "INSTANCE") return true; p = p.parent; } return false; };
+  const frames = page.findAll((n) => (n.type === "FRAME" || n.type === "COMPONENT") && (n as FrameNode).layoutMode !== "NONE" && !inInstance(n)) as FrameNode[];
+  frames.sort((a, b) => depth(b) - depth(a));
+  for (const f of frames) {
+    const vertical = f.layoutMode === "VERTICAL";
+    if ((vertical ? f.primaryAxisSizingMode : f.counterAxisSizingMode) !== "FIXED" || f.layoutSizingVertical === "FILL") continue;
+    const kids = f.children.filter((c) => c.visible && !("layoutPositioning" in c && c.layoutPositioning === "ABSOLUTE"));
+    if (!kids.length) continue;
+    const need = f.layoutWrap === "WRAP" ? Infinity : vertical
+      ? f.paddingTop + f.paddingBottom + kids.reduce((s, c) => s + c.height, 0) + f.itemSpacing * (kids.length - 1)
+      : f.paddingTop + f.paddingBottom + Math.max(...kids.map((c) => c.height));
+    if (need <= f.height + 0.5) continue;
+    if (vertical) f.primaryAxisSizingMode = "AUTO"; else f.counterAxisSizingMode = "AUTO";
+  }
+}
+
 async function main() {
   progress("✨ Preparando a magia: fontes e páginas…");
   await initFonts();
@@ -94,6 +114,8 @@ async function main() {
   progress("Motion e aplicação…");
   await step("Page · Motion", async () => void (await pageMotion(pages.Motion)));
   await step("Page · Application", () => pageApplication(pages.Application));
+
+  for (const p of Object.values(pages)) await step(`Hug · ${p.name}`, () => hugOverflow(p));
 
   // Relatório honesto de qualquer falha, na própria capa.
   if (ERRORS.length) {

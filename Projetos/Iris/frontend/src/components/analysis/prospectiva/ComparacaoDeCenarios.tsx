@@ -1,24 +1,13 @@
 /**
- * Comparação entre os cenários, explicitamente qualitativa: matriz das incertezas críticas
- * (`posicao`), direções dos fatores (`direcao`), sinais de alerta (`favorece`/`enfraquece`) e
- * linha do tempo compartilhada (eventos com ano). Nenhuma probabilidade, nota ou peso.
+ * Peças da comparação entre cenários, explicitamente qualitativa: matriz das incertezas críticas (`posicao`, só
+ * quando ela se aplica: ver `matrizAplicavel`), direções dos fatores (`direcao`) e sinais (`favorece`/`enfraquece`).
+ * Nenhuma probabilidade, nota ou peso. A composição da seção 03 está em secoes/SecaoComparacao.tsx.
  */
-import { useMemo, type ReactNode } from "react";
-import type { Cenario, CenarioId } from "../../../types/cenario";
+import type { Cenario } from "../../../types/cenario";
+import type { ResultadoDeInvestigacao } from "../../../types/investigacao";
 import { useResultado } from "../investigacao/contexto";
 import { Letra } from "../investigacao/pecas";
 import { TabelaComparativa } from "./TabelaComparativa";
-
-function Subtitulo({ id, titulo, children }: { id: string; titulo: string; children?: ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <h3 id={id} className="text-leitura font-medium text-texto">
-        {titulo}
-      </h3>
-      {children && <p className="max-w-[72ch] text-legenda text-texto-2">{children}</p>}
-    </div>
-  );
-}
 
 /**
  * Matriz das incertezas críticas: cada eixo é uma incerteza, cada ponta um polo, e cada cenário
@@ -103,15 +92,21 @@ export function MatrizDasIncertezas() {
   );
 }
 
-/** Como cada fator determinante se move em cada futuro, mais gatilhos e o que obrigaria a rever. */
-function DirecoesDosFatores() {
-  const { r, ix } = useResultado();
-  const linhas = [
-    ...r.variaveis.map((v) => ({ rotulo: v.nome, valor: (c: Cenario) => v.direcao[c.id] })),
-    { rotulo: "Gatilho", valor: (c: Cenario) => c.gatilhos.join("; ") },
-    { rotulo: "Atores decisivos", valor: (c: Cenario) => c.atoresDecisivos.map((a) => ix.atores.get(a)?.curto).join(", ") },
-    { rotulo: "Rever se", valor: (c: Cenario) => c.revisao.join("; ") },
-  ];
+/**
+ * A matriz 2×2 só tem fundamento quando há exatamente duas incertezas críticas, todos os cenários declaram posição
+ * nas duas (polo ou "indiferente") e os cenários não caem todos no mesmo lugar. Fora disso, não se força a matriz.
+ */
+export function matrizAplicavel(r: ResultadoDeInvestigacao): boolean {
+  if (r.incertezas.length !== 2 || r.cenarios.length < 2) return false;
+  const [x, y] = r.incertezas;
+  if (!r.cenarios.every((c) => x.id in c.posicao && y.id in c.posicao)) return false;
+  return new Set(r.cenarios.map((c) => `${c.posicao[x.id]}|${c.posicao[y.id]}`)).size > 1;
+}
+
+/** Fatores críticos: como cada fator determinante se move em cada futuro. */
+export function DirecoesDosFatores() {
+  const { r } = useResultado();
+  const linhas = r.variaveis.map((v) => ({ rotulo: v.nome, valor: (c: Cenario) => v.direcao[c.id] }));
   return <TabelaComparativa linhas={linhas} legenda="Direção de cada fator determinante em cada cenário" />;
 }
 
@@ -119,7 +114,7 @@ function DirecoesDosFatores() {
  * Sinais de alerta: o que observar e a qual futuro cada observação dá força ou tira força.
  * Uma marca por célula, sempre com palavra (não só cor nem só símbolo).
  */
-function SinaisDeAlerta() {
+export function SinaisDeAlerta() {
   const { r, vista } = useResultado();
   const marca = (favorece: boolean, enfraquece: boolean) =>
     favorece ? (
@@ -185,105 +180,3 @@ function SinaisDeAlerta() {
   );
 }
 
-/**
- * Linha do tempo compartilhada: os anos do horizonte em colunas; a agenda comum em cima e os
- * eventos de cada cenário na sua faixa. Mostra o que acontece "ao mesmo tempo" em futuros
- * diferentes. Cada evento abre no painel (data, condição, atores, evidências).
- */
-function LinhaDoTempoCompartilhada() {
-  const { r, vista, selecionar, selecao } = useResultado();
-  const anos = useMemo(() => Array.from({ length: r.horizonte.fim - r.horizonte.inicio + 1 }, (_, i) => r.horizonte.inicio + i), [r]);
-  const faixas: { id: "comum" | CenarioId; rotulo: string }[] = [{ id: "comum", rotulo: "Agenda comum" }, ...r.cenarios.map((c) => ({ id: c.id, rotulo: `${c.id} · ${c.nome}` }))];
-  const eventos = (faixa: "comum" | CenarioId, ano: number) =>
-    r.linhaDoTempo.filter((e) => e.ano === ano && (faixa === "comum" ? !e.cenarios && e.agendado : e.cenarios?.includes(faixa)));
-  return (
-    <table className="w-full table-fixed border-collapse text-left text-legenda max-md:block">
-      <caption className="sr-only">Eventos por ano no horizonte da investigação, por cenário</caption>
-      <thead className="max-md:hidden">
-        <tr>
-          <th scope="col" className="w-[18%] pb-2 pr-3 text-micro font-medium text-texto-3">
-            Faixa
-          </th>
-          {anos.map((a) => (
-            <th key={a} scope="col" className="numeros px-2 pb-2 font-dados text-micro font-normal text-ambar">
-              {a}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="max-md:flex max-md:flex-col max-md:gap-5">
-        {faixas.map((f) => (
-          <tr key={f.id} className={`border-t border-linha align-top max-md:flex max-md:flex-col max-md:gap-2 max-md:pt-3 ${f.id !== "comum" && vista === f.id ? "bg-ciano-suave" : ""}`}>
-            <th scope="row" className="py-2.5 pr-3 font-medium text-texto-2 max-md:p-0">
-              {f.rotulo}
-            </th>
-            {anos.map((a) => {
-              const lista = eventos(f.id, a);
-              return (
-                <td key={a} className={`px-2 py-2.5 max-md:p-0 ${lista.length === 0 ? "max-md:hidden" : ""}`}>
-                  <span className="numeros mb-1 block font-dados text-micro text-ambar md:hidden">{a}</span>
-                  <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-                    {lista.map((e) => (
-                      <li key={e.id}>
-                        <button
-                          type="button"
-                          onClick={() => selecionar({ tipo: "evento", id: e.id })}
-                          aria-pressed={selecao?.tipo === "evento" && selecao.id === e.id}
-                          className="text-left text-texto underline decoration-linha-forte underline-offset-4 transition-colors duration-150 hover:decoration-ciano aria-pressed:decoration-ciano"
-                        >
-                          {e.texto}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-/**
- * Comparação: quatro leituras curtas, cada uma com uma pergunta própria. Sem abas nem acordeões:
- * a página rola, e o índice no topo leva direto a cada parte.
- */
-export function ComparacaoDosCenarios() {
-  return (
-    <div className="flex flex-col gap-12">
-      <p className="max-w-[72ch] border-l-2 border-linha-forte pl-4 text-legenda text-texto-2">
-        Comparação qualitativa. A Iris não atribui probabilidade, nota nem peso aos cenários: as posições vêm das premissas
-        de cada um, e os sinais dizem o que observar, não o que vai acontecer.
-      </p>
-
-      <section aria-labelledby="t-matriz" className="flex flex-col gap-4">
-        <Subtitulo id="t-matriz" titulo="Onde cada futuro se posiciona">
-          As duas incertezas críticas formam os eixos; cada cenário está no quadrante das suas premissas.
-        </Subtitulo>
-        <MatrizDasIncertezas />
-      </section>
-
-      <section aria-labelledby="t-direcoes" className="flex flex-col gap-4">
-        <Subtitulo id="t-direcoes" titulo="Os mesmos fatores, três direções" />
-        <DirecoesDosFatores />
-      </section>
-
-      <section aria-labelledby="t-sinais" className="flex flex-col gap-4">
-        <Subtitulo id="t-sinais" titulo="Sinais de alerta">
-          Se um destes sinais aparecer, ele dá força a uns futuros e tira de outros.
-        </Subtitulo>
-        <SinaisDeAlerta />
-      </section>
-
-      <section aria-labelledby="t-tempo-comum" className="flex flex-col gap-4">
-        <Subtitulo id="t-tempo-comum" titulo="Linha do tempo compartilhada">
-          O mesmo calendário para os três futuros. Datas de agenda são certas; os demais eventos só ocorrem no cenário da
-          sua faixa.
-        </Subtitulo>
-        <LinhaDoTempoCompartilhada />
-      </section>
-    </div>
-  );
-}

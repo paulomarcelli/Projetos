@@ -747,3 +747,42 @@ padrão das landings de IA, por decisão do responsável; nela só foram corrigi
   para com "reduzir movimento"; o detector o aponta, mas fica. Os números de fonte já têm área de toque ampliada
   por pseudo-elemento (cerca de 40 px de altura), apesar do botão visível ter 24 px.
 
+## Investigação em cinco seções (nov/2026)
+
+A página de uma investigação deixou de ser "relatório com abas" e passou a ser uma página só, na ordem do
+raciocínio prospectivo. Plano e diagnóstico: `docs/plans/2026-11-01-investigacao-prospectiva.md`.
+
+| Seção | Pergunta | Conteúdo |
+|---|---|---|
+| 01 Diagnóstico estratégico | O que está acontecendo e por que isso importa? | Síntese executiva em destaque (traço lateral, 22–24 px), interpretação da Iris (problema central, por que importa, implicações), dinâmicas com os fatores DENTRO da narrativa, incertezas críticas. A tabela de fatores saiu. |
+| 02 Cenários prospectivos | Quais futuros podem surgir? | Seção de maior protagonismo (faixa `institucional` com filete de ouro). Cartões com trajetória, lógica, premissas, consequências, indicadores e data; "Explorar o cenário" abre os dez itens no painel lateral (400 px). |
+| 03 Comparação estratégica | O que diferencia os futuros possíveis? | Fatores críticos, matriz 2×2 só quando há duas incertezas que a sustentem (`matrizAplicavel`), condições que favorecem, consequências divergentes, indicadores, o que levaria a revisar. Não repete os cartões. |
+| 04 Monitoramento prospectivo | O que devemos observar daqui para frente? | A. acontecimentos novos · B. impacto nos cenários · C. revisão de premissas · D. indicadores · E. histórico. Contrato em `docs/CONTRATO-MONITORAMENTO.md`; sem servidor, estados vazios honestos. |
+| 05 Exploração e evidências | Como as informações se relacionam e de onde vieram as conclusões? | Mapa de relações, linha do tempo e evidências como vistas (abas) da seção, montadas sob demanda. |
+
+**Navegação.** Índice fixo no topo (`IndiceDaInvestigacao`): no desktop as cinco numa linha, com um traço ciano que
+desliza até a seção atual; no celular, a seção atual numa linha e a lista ao tocar. Chegar a uma seção pelo índice
+foca o título dela e acende uma marca ciano ao lado (0,9 s). Botão "voltar ao topo" depois de 1,5 tela. `?area=`
+continua funcionando e abre a vista na seção 05.
+
+**Semântica das classificações** (`src/config/semantica.ts`, sempre símbolo + palavra):
+
+| Estado | Símbolo | Cor | Uso |
+|---|---|---|---|
+| Favorece / Reforçada | + | ciano-texto | o acontecimento ou a evidência sustenta a trajetória ou a premissa |
+| Enfraquece / Enfraquecida | − | texto-2 | reduz o apoio (não é erro, por isso não é vermelho) |
+| Contradita | × | negativo | contradição de premissa e risco analítico |
+| Exige investigação / revisão | ? / ! | âmbar | atenção: falta informação para decidir |
+| Ambíguo | ± | texto-2, borda tracejada | pode ser lido nos dois sentidos |
+| Neutro | = | texto-3 | sem efeito identificável |
+| Obsoleta | ∅ | texto-3 riscado | a premissa deixou de se aplicar |
+
+**Ouro e âmbar.** Ouro é estrutura, sem significado epistêmico: o núcleo (a seção dos cenários), a versão em vigor
+no histórico, etapas concluídas e o botão de enviar. Âmbar é epistêmico: hipótese, incerteza, horizonte, atenção e
+"exige revisão". Seleção e foco continuam sempre ciano.
+
+**Movimento.** Só CSS e tokens (a biblioteca Motion segue restrita à landing e às telas de conta): traço do índice
+(transform, 240 ms, `--ease-saida`), lista do índice (opacidade + 6 px, 160 ms), voltar ao topo (opacidade + 8 px,
+180 ms), marca de chegada (0,9 s, uma vez) e troca de vista na seção 05 (opacidade, 140 ms). Nada em loop; com
+"reduzir movimento", tudo aparece no lugar.
+

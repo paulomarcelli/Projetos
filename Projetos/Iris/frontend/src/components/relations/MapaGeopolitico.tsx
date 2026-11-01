@@ -28,7 +28,12 @@ function caixaDaCurva(a: { x: number; y: number }, c: { x: number; y: number }, 
   return { x, y, width: Math.max(...xs) + folga - x, height: Math.max(...ys) + folga - y };
 }
 
-export function MapaGeopolitico() {
+/**
+ * `painelProprio`: o mapa traz um painel flutuante para quando ocupa a tela sozinho. Dentro da página da
+ * investigação (seção 05), o painel lateral da página já mostra a seleção; aí o mapa não monta o seu, para não haver
+ * dois painéis com o mesmo conteúdo.
+ */
+export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: boolean } = {}) {
   const { r, ix, vista, setVista, selecao, selecionar } = useResultado();
   const caixa = useRef<HTMLDivElement>(null);
   const svg = useRef<SVGSVGElement>(null);
@@ -849,7 +854,7 @@ export function MapaGeopolitico() {
           />
         )}
 
-        <PainelContextual variante="flutuante" />
+        {painelProprio && <PainelContextual variante="flutuante" />}
       </div>
 
       {/* ------------------------------------------------ legenda: embaixo do mapa (não cobre nada), também filtra */}

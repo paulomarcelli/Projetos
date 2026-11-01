@@ -1,86 +1,66 @@
 /**
- * Resultado de uma investigação: cabeçalho, abas e as áreas (análise, relações, linha do tempo, leitura) sobre um
- * único estado compartilhado (ProvedorDoResultado). Quem carrega a investigação é a página (pages/Analise).
+ * Resultado de uma investigação: cabeçalho, índice fixo das cinco seções e as seções (AreaDeAnalise), sobre um único
+ * estado compartilhado (ProvedorDoResultado), com o painel contextual ao lado. Quem carrega a investigação é a página
+ * (pages/Analysis/PaginaAnalise).
  */
 import { ArrowLeft } from "lucide-react";
-import { useDeferredValue } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import { PREVIA } from "../../../config/env";
 import { ROTAS } from "../../../config/rotas";
+import { MONITORAMENTO_DEMONSTRACAO } from "../../../previa/monitoramento-demonstracao";
 import type { ResultadoDeInvestigacao } from "../../../types/investigacao";
 import { AreaDeAnalise } from "../AreaDeAnalise";
-import { AreaDaTimeline } from "../../timeline/AreaDaTimeline";
-import { MapaGeopolitico } from "../../relations/MapaGeopolitico";
 import { type Aba, ProvedorDoResultado, useResultado } from "./contexto";
-import { BarraDeAbas } from "./BarraDeAbas";
 import { CabecalhoDaInvestigacao } from "./CabecalhoDaInvestigacao";
+import { IndiceDaInvestigacao, VoltarAoTopo } from "./IndiceDaInvestigacao";
 import { PainelContextual } from "./PainelContextual";
 
-/**
- * Área Relações: o mapa ocupa a altura útil da janela (descontados o topo da plataforma, o
- * cabeçalho compacto e a barra de áreas). O mapa traz o seu próprio painel flutuante, então o
- * painel lateral da página não é montado aqui (evita dois painéis com o mesmo conteúdo).
- */
-function AreaDeRelacoes() {
+function Conteudo({ demonstracao }: { demonstracao?: { ativa: boolean; alternar: () => void } }) {
+  const { selecao } = useResultado();
   return (
-    <div className="h-[max(560px,calc(100dvh-var(--altura-topo,0px)-9rem))] lg:h-[max(600px,calc(100dvh-var(--altura-topo,0px)-11rem))]">
-      <MapaGeopolitico />
-    </div>
-  );
-}
-
-function Conteudo({ fontesAbertas }: { fontesAbertas: boolean }) {
-  const { aba: abaEscolhida, selecao } = useResultado();
-  // A barra de abas responde na hora; a área nova (mapa, timeline, leitura) renderiza em segundo plano, em fatias,
-  // sem prender o clique numa tarefa longa. Enquanto isso, a área anterior continua na tela.
-  const aba = useDeferredValue(abaEscolhida);
-  // O painel lateral é fixo à direita no desktop: abre espaço no conteúdo para não cobri-lo.
-  const painelLateral = aba !== "relacoes";
-
-  return (
-    // Mapa e timeline marcam a página como "ampla": a coluna se abre de 1200 para 1600 px (CSS
-    // .coluna-pagina). A análise fica na largura de leitura. O painel lateral (400 px) abre espaço
-    // à direita no desktop para não cobrir o conteúdo.
-    <article
-      data-largura={aba === "analise" ? undefined : "ampla"}
-      className={`flex flex-col gap-6 transition-[margin] duration-300 ${selecao && painelLateral ? "lg:mr-[400px] print:mr-0" : ""}`}
-    >
+    // A página fica na largura de leitura (coluna editorial). O painel lateral (400 px) abre espaço à direita no
+    // desktop para não cobrir o conteúdo; no celular é uma folha inferior.
+    <article className={`flex flex-col gap-6 transition-[margin] duration-300 ${selecao ? "lg:mr-[400px] print:mr-0" : ""}`}>
       <Link to={ROTAS.investigacoes} className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto print:hidden">
         <ArrowLeft size={14} aria-hidden="true" />
         Investigações
       </Link>
 
       <CabecalhoDaInvestigacao />
-      <BarraDeAbas />
+      <IndiceDaInvestigacao />
+      <AreaDeAnalise demonstracao={demonstracao} />
 
-      <div id="painel-aba" role="tabpanel" aria-labelledby={`aba-${aba}`} className="flex min-w-0 flex-col">
-        {aba === "analise" && <AreaDeAnalise fontesAbertas={fontesAbertas} />}
-        {aba === "relacoes" && <AreaDeRelacoes />}
-        {aba === "timeline" && <AreaDaTimeline />}
-      </div>
-
-      {painelLateral && <PainelContextual />}
+      <PainelContextual />
+      <VoltarAoTopo />
     </article>
   );
 }
 
 /**
- * Resultado de uma investigação. Um único provedor de estado envolve as quatro áreas: trocar de
- * área não desmonta o estado (cenário em vista, seleção), só o conteúdo da área.
+ * Resultado de uma investigação. Um único provedor de estado envolve as cinco seções: trocar a vista da seção 05 ou
+ * abrir o painel não desmonta o estado (cenário em vista, seleção).
+ *
+ * Demonstração do monitoramento: só na prévia e em desenvolvimento, e só quando a investigação não traz
+ * monitoramento próprio. Ligada, o resultado passa a carregar MONITORAMENTO_DEMONSTRACAO (fictício e marcado como
+ * tal em cada item); desligada, volta ao resultado como veio. Nada disso é salvo.
  */
 export function ResultadoDaInvestigacao({
   r,
   abaInicial,
-  fontesAbertas = false,
   aoTrocarAba,
 }: {
   r: ResultadoDeInvestigacao;
-  abaInicial?: Aba;
-  fontesAbertas?: boolean;
+  abaInicial?: Aba | null;
   aoTrocarAba?: (a: Aba) => void;
 }) {
+  const podeDemonstrar = (PREVIA || import.meta.env.DEV) && !r.monitoramento;
+  const [demonstrando, setDemonstrando] = useState(false);
+  const resultado = useMemo(() => (podeDemonstrar && demonstrando ? { ...r, monitoramento: MONITORAMENTO_DEMONSTRACAO } : r), [r, podeDemonstrar, demonstrando]);
+  const demonstracao = podeDemonstrar ? { ativa: demonstrando, alternar: () => setDemonstrando((v) => !v) } : undefined;
   return (
-    <ProvedorDoResultado r={r} abaInicial={abaInicial} aoTrocarAba={aoTrocarAba}>
-      <Conteudo fontesAbertas={fontesAbertas} />
+    <ProvedorDoResultado r={resultado} abaInicial={abaInicial} aoTrocarAba={aoTrocarAba}>
+      <Conteudo demonstracao={demonstracao} />
     </ProvedorDoResultado>
   );
 }

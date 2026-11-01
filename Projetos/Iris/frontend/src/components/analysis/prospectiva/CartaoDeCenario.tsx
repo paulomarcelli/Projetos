@@ -6,7 +6,7 @@ import { ArrowRight, PanelRightOpen } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Cenario, Efeito } from "../../../types/cenario";
 import { useResultado } from "../investigacao/contexto";
-import { ChipAtor, Letra } from "../investigacao/pecas";
+import { Letra } from "../investigacao/pecas";
 
 const EFEITO: Record<Efeito, { rotulo: string; cor: string }> = {
   aproximacao: { rotulo: "aproximação", cor: "var(--color-ciano)" },
@@ -33,12 +33,12 @@ function Parte({ rotulo, children }: { rotulo: string; children: ReactNode }) {
 }
 
 /** Número de partes do cartão: as linhas da subgrade (alinhamento entre os três cartões). */
-export const PARTES = 9;
+export const PARTES = 7;
 
 /**
- * Cartão de um cenário. O essencial fica visível (nome, ideia, lógica, consequências, atores,
- * condições, sinais, incertezas); o completo (premissas, mecanismos, mapa das consequências,
- * evidências a favor e contra, limitações) abre no painel, sem sair da página.
+ * Cartão de um cenário. O essencial fica visível (nome, trajetória, lógica, premissas, consequências, indicadores
+ * e a data da última atualização); o completo (os dez itens, com sinais de mudança, condições que favorecem e
+ * enfraquecem, evidências e versões anteriores) abre no painel lateral, sem sair da página.
  *
  * Interação: clicar no cartão destaca o cenário (mesmo destaque na matriz, nas tabelas, no mapa
  * e na timeline). Pelo teclado, o destaque é o botão do título (aria-pressed). Chips de ator e
@@ -50,6 +50,7 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
   const alternar = () => setVista(ativo ? "presente" : c.id);
   const sinais = c.indicadores.map((id) => ix.sinais.get(id)).filter((s) => s !== undefined);
   const nEvidencias = evidenciasDoCenario(c);
+  const revisadas = new Set(r.monitoramento?.revisoesDePremissas.filter((x) => x.cenario === c.id).map((x) => x.premissa)).size;
   return (
     <li
       // Entrada em cascata (60 ms entre cartões); com "reduzir movimento" o CSS zera a duração.
@@ -76,11 +77,13 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
         </h3>
       </header>
 
-      <p className="text-corpo text-texto">{c.ideia}</p>
+      <Parte rotulo="Trajetória">
+        <p className="text-corpo text-texto">{c.ideia}</p>
+      </Parte>
 
-      <Parte rotulo="Lógica">
+      <Parte rotulo="Lógica de desenvolvimento">
         <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-          {c.mecanismos.map((m) => (
+          {c.mecanismos.slice(0, 2).map((m) => (
             <li key={m.condicao} className="text-legenda text-texto-2">
               {m.condicao} <ArrowRight size={12} aria-label="leva a" className="inline align-[-1px] text-texto-3" /> <span className="text-texto">{m.consequencia}</span>
             </li>
@@ -88,7 +91,18 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
         </ul>
       </Parte>
 
-      <Parte rotulo="Consequências">
+      <Parte rotulo="Premissas fundamentais">
+        <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto-2">
+          {c.premissas.slice(0, 2).map((x) => (
+            <li key={x.texto} className="line-clamp-3">
+              {x.texto}
+            </li>
+          ))}
+        </ul>
+        {c.premissas.length > 2 && <p className="text-micro text-texto-3">+{c.premissas.length - 2} no detalhe</p>}
+      </Parte>
+
+      <Parte rotulo="Consequências estratégicas">
         <p className="text-legenda text-texto">{c.impacto}</p>
         <ul className="m-0 flex list-none flex-wrap gap-x-3 gap-y-1 p-0">
           {c.consequencias.map((q) => (
@@ -100,41 +114,23 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
         </ul>
       </Parte>
 
-      <Parte rotulo="Atores decisivos">
-        <div className="flex flex-wrap gap-1.5">
-          {c.atoresDecisivos.map((a) => (
-            <ChipAtor key={a} id={a} />
-          ))}
-        </div>
-      </Parte>
-
-      <Parte rotulo="Depende de">
+      <Parte rotulo="Indicadores observáveis">
         <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto-2">
-          {c.condicoes.map((x) => (
-            <li key={x}>{x}</li>
-          ))}
-        </ul>
-      </Parte>
-
-      <Parte rotulo="Sinais a acompanhar">
-        <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto-2">
-          {sinais.map((s) => (
+          {sinais.slice(0, 3).map((s) => (
             <li key={s.id}>{s.sinal}</li>
           ))}
         </ul>
       </Parte>
 
-      <Parte rotulo="Incertezas">
-        <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto-2">
-          {c.incertezas.map((x) => (
-            <li key={x}>{x}</li>
-          ))}
-        </ul>
-      </Parte>
-
       <footer className="flex flex-col gap-3 border-t border-linha pt-4">
-        <p className="text-micro text-texto-3">
-          {nEvidencias} {nEvidencias === 1 ? "evidência vinculada" : "evidências vinculadas"} · {c.favoraveis.length} a favor, {c.contrarias.length} contra
+        <p className="flex flex-wrap gap-x-2 text-micro text-texto-3">
+          <span>
+            {nEvidencias} {nEvidencias === 1 ? "evidência vinculada" : "evidências vinculadas"} · {c.favoraveis.length} a favor, {c.contrarias.length} contra
+          </span>
+          <span>
+            · Atualizado em {r.atualizadoEm} (v{r.versao})
+            {revisadas > 0 && <span className="text-ambar"> · {revisadas} {revisadas === 1 ? "premissa revista" : "premissas revistas"}</span>}
+          </span>
         </p>
         <div className="flex flex-wrap gap-2">
           <button
@@ -146,18 +142,18 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
             }}
           >
             <PanelRightOpen size={14} aria-hidden="true" />
-            Detalhes e evidências
+            Explorar o cenário
           </button>
           <button
             type="button"
             className="botao botao-fantasma botao-pequeno"
-            aria-label={`Abrir o cenário ${c.id} na timeline: ${c.nome}`}
+            aria-label={`Abrir o cenário ${c.id} na linha do tempo: ${c.nome}`}
             onClick={() => {
               setVista(c.id);
               irPara("timeline");
             }}
           >
-            Na timeline
+            Na linha do tempo
             <ArrowRight size={14} aria-hidden="true" />
           </button>
         </div>

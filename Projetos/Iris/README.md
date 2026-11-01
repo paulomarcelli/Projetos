@@ -45,6 +45,18 @@ Seleção e foco são sempre ciano; o ouro nunca marca o que está selecionado. 
 
 Fontes: **Inter** no texto e **IBM Plex Mono** nos dados e datas.
 
+## 🗂️ A investigação em cinco seções
+
+Cada investigação é uma página só, com índice fixo: **01 Diagnóstico estratégico** (o que está acontecendo e a
+interpretação da Iris) → **02 Cenários prospectivos** (os três futuros, explorados no painel lateral) →
+**03 Comparação estratégica** (só o que os diferencia) → **04 Monitoramento prospectivo** (acontecimentos novos,
+impacto nos cenários, revisão de premissas, indicadores e histórico de versões) → **05 Exploração e evidências**
+(mapa de relações, linha do tempo e fontes).
+
+O monitoramento ainda depende do servidor: a interface está pronta e o contrato está em
+[`frontend/docs/CONTRATO-MONITORAMENTO.md`](frontend/docs/CONTRATO-MONITORAMENTO.md). Na prévia, um botão mostra a seção
+com dados fictícios, marcados como tais.
+
 ## 🧭 Como é uma resposta
 
 <table>

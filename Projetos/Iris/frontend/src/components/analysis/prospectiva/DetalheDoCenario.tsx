@@ -1,7 +1,9 @@
 /**
- * Detalhe completo de um cenário, em seções recolhíveis: premissas, fatores e gatilhos,
- * consequências no mundo, indicadores, atores, evidências a favor e contra, limitações.
- * Usado no "Cenário em foco" da timeline e no painel contextual (aberto pelos cartões).
+ * Detalhe completo de um cenário, em seções recolhíveis, na ordem em que se avalia um futuro: identificação e
+ * trajetória (cabeçalho, com a última atualização), lógica de desenvolvimento, premissas fundamentais (com o estado
+ * de revisão de cada uma), consequências estratégicas, indicadores observáveis, sinais de mudança, condições que
+ * favorecem e que enfraquecem, atores decisivos, fatores e limitações, e as versões anteriores.
+ * Usado no "Cenário em foco" da linha do tempo e no painel contextual (aberto pelos cartões).
  */
 import { ArrowRight, ChevronDown, Map as IconeMapa } from "lucide-react";
 import { useId, type ReactNode } from "react";
@@ -11,6 +13,8 @@ import type { RegiaoId } from "../../relations/geo/regioes-def";
 import type { Cenario, Efeito } from "../../../types/cenario";
 import { relacaoNaVista, useResultado } from "../investigacao/contexto";
 import { ChipAtor, Citacoes, Letra, LinhaAfirmacao } from "../investigacao/pecas";
+import { EFEITO_NA_PREMISSA, SEM_REVISAO } from "../../../config/semantica";
+import { Etiqueta } from "../../common/Etiqueta";
 
 const EFEITO: Record<Efeito, { rotulo: string; cor: string }> = {
   aproximacao: { rotulo: "Aproximação", cor: "color-mix(in srgb, var(--color-ciano) 46%, transparent)" },
@@ -109,6 +113,9 @@ export function DetalheDoCenario({ c, embutido = false }: { c: Cenario; embutido
             {c.nome}
           </h3>
           <p className="mt-1 max-w-[70ch] text-legenda text-texto-2">{c.sintese}</p>
+          <p className="mt-2 text-micro text-texto-3">
+            {c.arquetipo} · atualizado em {r.atualizadoEm} (versão {r.versao}) · sem probabilidade atribuída
+          </p>
         </div>
         <button
           type="button"
@@ -130,26 +137,53 @@ export function DetalheDoCenario({ c, embutido = false }: { c: Cenario; embutido
       )}
 
       <div>
-        <Secao titulo="Premissas" aberta>
-          {c.premissas.map((p, i) => (
-            <LinhaAfirmacao key={i} a={p} compacta />
-          ))}
-        </Secao>
-        <Secao titulo="Fatores de mudança e eventos desencadeadores">
+        <Secao titulo="Lógica de desenvolvimento" aberta>
           {c.mecanismos.map((m, i) => (
             <CadeiaCausal key={i} m={m} />
           ))}
-          <p className="text-legenda text-texto-2">
-            <span className="text-texto-3">Gatilhos: </span>
-            {c.gatilhos.join("; ")}. <span className="text-texto-3">Condições: </span>
-            {c.condicoes.join("; ")}.
-          </p>
         </Secao>
-        <Secao titulo="Consequências no mundo">
+        <Secao titulo="Premissas fundamentais" aberta>
+          <Premissas c={c} />
+        </Secao>
+        <Secao titulo="Consequências estratégicas">
+          <p className="text-legenda text-texto">{c.impacto}</p>
           <EfeitosNoMundo c={c} />
         </Secao>
-        <Secao titulo="Indicadores de monitoramento">
+        <Secao titulo="Indicadores observáveis">
           <Indicadores c={c} />
+        </Secao>
+        <Secao titulo="Sinais de mudança">
+          <p className="text-legenda text-texto-2">Acontecimentos que, se ocorrerem, desencadeiam esta trajetória.</p>
+          <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-legenda text-texto">
+            {c.gatilhos.map((g) => (
+              <li key={g} className="flex gap-2">
+                <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-ambar" />
+                {g}
+              </li>
+            ))}
+          </ul>
+        </Secao>
+        <Secao titulo="Condições que favorecem">
+          <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-legenda text-texto">
+            {c.condicoes.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+          {c.favoraveis.length > 0 && <p className="text-micro text-texto-3">Evidências a favor</p>}
+          {c.favoraveis.map((a, i) => (
+            <LinhaAfirmacao key={i} a={a} compacta />
+          ))}
+        </Secao>
+        <Secao titulo="Condições que enfraquecem">
+          {c.contrarias.length > 0 ? (
+            c.contrarias.map((a, i) => <LinhaAfirmacao key={i} a={a} compacta />)
+          ) : (
+            <p className="text-legenda text-ambar">Nenhuma evidência contrária registrada. A ausência não confirma o cenário.</p>
+          )}
+          <p className="text-legenda text-texto-2">
+            <span className="text-texto-3">A Iris revê este cenário se: </span>
+            {c.revisao.join("; ")}.
+          </p>
         </Secao>
         <Secao titulo="Atores decisivos">
           <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
@@ -160,23 +194,7 @@ export function DetalheDoCenario({ c, embutido = false }: { c: Cenario; embutido
             ))}
           </ul>
         </Secao>
-        <Secao titulo="Evidências a favor e contra">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-3">
-              <p className="text-micro text-texto-3">A favor</p>
-              {c.favoraveis.map((a, i) => (
-                <LinhaAfirmacao key={i} a={a} compacta />
-              ))}
-            </div>
-            <div className="flex flex-col gap-3">
-              <p className="text-micro text-texto-3">Contra</p>
-              {c.contrarias.map((a, i) => (
-                <LinhaAfirmacao key={i} a={a} compacta />
-              ))}
-            </div>
-          </div>
-        </Secao>
-        <Secao titulo="Variáveis, tendências e incertezas">
+        <Secao titulo="Fatores, tendências e limitações">
           <dl className="m-0 grid gap-x-4 gap-y-1.5 text-legenda sm:grid-cols-[12rem_minmax(0,1fr)]">
             {r.variaveis.map((v) => (
               <div key={v.id} className="contents">
@@ -192,8 +210,6 @@ export function DetalheDoCenario({ c, embutido = false }: { c: Cenario; embutido
             <span className="text-texto-3">Incertezas: </span>
             {c.incertezas.join("; ")}.
           </p>
-        </Secao>
-        <Secao titulo="Incertezas, limitações e o que invalidaria">
           <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto">
             {c.limitacoes.map((t) => (
               <li key={t} className="flex gap-2">
@@ -201,10 +217,9 @@ export function DetalheDoCenario({ c, embutido = false }: { c: Cenario; embutido
               </li>
             ))}
           </ul>
-          <p className="text-legenda text-texto-2">
-            <span className="text-texto-3">Rever se: </span>
-            {c.revisao.join("; ")}.
-          </p>
+        </Secao>
+        <Secao titulo="Atualização e versões anteriores">
+          <Versoes c={c} />
         </Secao>
       </div>
     </section>
@@ -242,5 +257,70 @@ function Indicadores({ c }: { c: Cenario }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * Premissas do cenário com o estado de revisão de cada uma. A revisão vem do monitoramento (`r.monitoramento`); sem
+ * ele, cada premissa diz "sem revisão registrada", o que é verdade, e não "confirmada".
+ */
+export function Premissas({ c }: { c: Cenario }) {
+  const { r } = useResultado();
+  const revisoes = r.monitoramento?.revisoesDePremissas.filter((x) => x.cenario === c.id) ?? [];
+  return (
+    <ul className="m-0 flex list-none flex-col gap-3 p-0">
+      {c.premissas.map((p, i) => {
+        const ultima = revisoes.filter((x) => x.premissa === i).at(-1);
+        return (
+          <li key={i} className="flex flex-col gap-1.5">
+            <LinhaAfirmacao a={p} compacta />
+            <span className="flex flex-wrap items-center gap-2">
+              <Etiqueta estado={ultima ? EFEITO_NA_PREMISSA[ultima.efeito] : SEM_REVISAO} />
+              {ultima && (
+                <span className="text-micro text-texto-3">
+                  {ultima.data} · versão {ultima.versao}
+                </span>
+              )}
+            </span>
+            {ultima && <p className="text-micro leading-relaxed text-texto-2">{ultima.justificativa.texto}</p>}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Versões anteriores do cenário, preservadas pelo monitoramento. Sem servidor, diz o que falta e por quê. */
+function Versoes({ c }: { c: Cenario }) {
+  const { r } = useResultado();
+  const anteriores = r.monitoramento?.versoesAnteriores.filter((v) => v.cenario === c.id) ?? [];
+  return (
+    <div className="flex flex-col gap-3 text-legenda">
+      <p className="text-texto-2">
+        Versão atual: <span className="text-texto">{r.versao}</span>, de {r.atualizadoEm}.
+      </p>
+      {anteriores.length === 0 ? (
+        <p className="text-texto-3">
+          Nenhuma versão anterior deste cenário disponível. Guardar as versões depende do servidor, que ainda não faz o
+          acompanhamento das investigações.
+        </p>
+      ) : (
+        <ol className="m-0 flex list-none flex-col gap-3 p-0">
+          {anteriores.map((v) => (
+            <li key={v.versao} className="flex flex-col gap-1 rounded-padrao border border-linha px-3 py-2.5">
+              <span className="text-micro text-texto-3">
+                Versão {v.versao} · {v.data}
+              </span>
+              <span className={v.nome !== c.nome ? "text-texto" : "text-texto-2"}>
+                {v.nome}
+                {v.nome !== c.nome && <span className="ml-2 text-micro text-ambar">nome mudou</span>}
+              </span>
+              <span className="text-texto-2">{v.ideia}</span>
+              <span className="text-micro text-texto-3">{v.premissas.length} premissas nesta versão</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
   );
 }

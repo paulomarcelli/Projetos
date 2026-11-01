@@ -13,8 +13,8 @@ import { type Aba, abaDoEndereco } from "../../components/analysis/investigacao/
 import { useInvestigacao } from "../../components/analysis/investigacao/hooks/useInvestigacao";
 
 /**
- * A área aberta fica no endereço (`?area=relacoes`), para que links e o botão "voltar" do
- * navegador levem à área certa. `replace` evita encher o histórico a cada troca de aba.
+ * A vista aberta na seção 05 fica no endereço (`?area=relacoes`), para que links e o botão "voltar" do navegador
+ * levem a ela. `replace` evita encher o histórico a cada troca.
  */
 export function PaginaAnalise() {
   const { id = "" } = useParams();
@@ -26,8 +26,7 @@ export function PaginaAnalise() {
       setParams(
         (p) => {
           const novo = new URLSearchParams(p);
-          if (a === "analise") novo.delete("area");
-          else novo.set("area", a);
+          novo.set("area", a);
           return novo;
         },
         { replace: true },
@@ -35,9 +34,8 @@ export function PaginaAnalise() {
     [setParams],
   );
   if (estado.tipo === "carregando") return <LinhasEsqueleto linhas={6} />;
-  // `?area=evidencias` (endereço antigo) abre a análise já com as fontes expandidas.
-  if (estado.tipo === "pronto")
-    return <ResultadoDaInvestigacao r={estado.r} abaInicial={abaDoEndereco(area)} fontesAbertas={area === "evidencias"} aoTrocarAba={aoTrocarAba} />;
+  // `?area=relacoes|timeline|evidencias` abre a página já na seção 05, na vista pedida.
+  if (estado.tipo === "pronto") return <ResultadoDaInvestigacao r={estado.r} abaInicial={abaDoEndereco(area)} aoTrocarAba={aoTrocarAba} />;
   return (
     <EstadoVazio
       icone={<ScanSearch size={22} strokeWidth={1.5} aria-hidden="true" />}

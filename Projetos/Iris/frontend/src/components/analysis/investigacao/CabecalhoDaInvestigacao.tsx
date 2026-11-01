@@ -9,39 +9,19 @@ function dataLegivel(d: string) {
 }
 
 /**
- * Cabeçalho da investigação. No mapa e na timeline ele encolhe para uma linha (pergunta
- * truncada, com o texto completo no `title`), porque ali a prioridade é a visualização; na análise
- * mostra a pergunta inteira, o horizonte, a versão e o aviso de contexto.
+ * Cabeçalho da investigação, a abertura da seção 01: a pergunta original, o horizonte, o escopo, a data da análise
+ * (versão e atualização) e o aviso de contexto.
  * Ações: só as que existem de fato (método no painel; impressão/PDF, que tem folha de estilo
  * própria). Nada de "compartilhar" ou "exportar" sem implementação por trás.
  */
 export function CabecalhoDaInvestigacao() {
-  const { r, aba, selecionar } = useResultado();
-  // Nas duas visualizações (mapa e timeline) o cabeçalho encolhe: a tela é delas.
-  const compacto = aba !== "analise";
+  const { r, selecionar } = useResultado();
   const botaoMetodo = (
     <button type="button" onClick={() => selecionar({ tipo: "metodo", id: "metodo" })} className="botao botao-secundario botao-pequeno shrink-0 print:hidden">
       <BookOpen size={15} aria-hidden="true" />
       Como esta análise foi feita
     </button>
   );
-
-  if (compacto) {
-    return (
-      // No celular, título e botão empilham: a pergunta usa a largura toda antes de truncar.
-      <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-        <div className="min-w-0 sm:flex-1">
-          <p className="rotulo">
-            Investigação prospectiva · <span className="numeros font-dados text-ambar">{r.horizonte.inicio}–{r.horizonte.fim}</span>
-          </p>
-          <h1 className="truncate font-editorial text-leitura text-texto sm:text-secao" title={r.pergunta}>
-            {r.pergunta}
-          </h1>
-        </div>
-        {botaoMetodo}
-      </header>
-    );
-  }
 
   return (
     <header className="flex flex-col gap-4">
@@ -56,9 +36,9 @@ export function CabecalhoDaInvestigacao() {
                 {r.horizonte.inicio}–{r.horizonte.fim}
               </span>
             </span>
-            {/* O escopo fica na síntese (ao lado do horizonte); aqui, só o que situa a versão. */}
+            <span>{r.escopo}</span>
             <span>
-              Versão {r.versao}, atualizada em {dataLegivel(r.atualizadoEm)}
+              Análise de {dataLegivel(r.atualizadoEm)} · versão {r.versao}
             </span>
           </p>
         </div>

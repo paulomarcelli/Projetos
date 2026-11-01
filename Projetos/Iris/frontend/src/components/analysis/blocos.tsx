@@ -41,3 +41,68 @@ export function LinkDeArea({ children, aoClicar }: { children: ReactNode; aoClic
     </button>
   );
 }
+
+/**
+ * Uma das cinco seções da investigação: número, título, a pergunta que ela responde e o conteúdo. O título recebe o
+ * foco quando se chega pelo índice (leitor de tela anuncia), e a marca de chegada acende ao lado dele.
+ * `destaque` dá à seção dos cenários o protagonismo: faixa em `institucional` com um filete de ouro (o núcleo) no topo.
+ */
+export function SecaoDaInvestigacao({
+  secao,
+  children,
+  acao,
+  destaque = false,
+}: {
+  secao: { id: string; numero: string; titulo: string; pergunta: string };
+  children: ReactNode;
+  acao?: ReactNode;
+  destaque?: boolean;
+}) {
+  const titulo = `${secao.id}-t`;
+  return (
+    <section
+      id={secao.id}
+      aria-labelledby={titulo}
+      className={`relative flex scroll-mt-[calc(var(--altura-topo,0px)+4.5rem)] flex-col gap-8 ${
+        destaque ? "-mx-4 rounded-painel bg-institucional/60 px-4 py-8 sm:-mx-6 sm:px-6 sm:py-10 print:bg-transparent" : ""
+      }`}
+    >
+      {destaque && <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-ouro/60 sm:inset-x-6" />}
+      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div className="relative flex max-w-[68ch] flex-col gap-2">
+          <span aria-hidden="true" className="marca-chegada absolute top-1 -left-4 h-[calc(100%-0.5rem)] w-0.5 origin-top rounded-full bg-ciano sm:-left-5" />
+          <p className="flex items-center gap-2 text-micro text-texto-3">
+            <span className="numeros font-dados">{secao.numero}</span>
+            <span aria-hidden="true" className={`h-px w-6 ${destaque ? "bg-ouro/70" : "bg-linha-forte"}`} />
+          </p>
+          <h2 id={titulo} tabIndex={-1} data-titulo-secao className="font-editorial text-titulo font-medium tracking-[-0.01em] text-texto outline-none">
+            {secao.titulo}
+          </h2>
+          <p className="text-corpo text-texto-2">{secao.pergunta}</p>
+        </div>
+        {acao}
+      </header>
+      {children}
+    </section>
+  );
+}
+
+/** Subtítulo de uma parte dentro de uma seção, com uma linha opcional explicando o que a parte mostra. */
+export function Subtitulo({ id, titulo, children, acao, prefixo }: { id: string; titulo: string; children?: ReactNode; acao?: ReactNode; prefixo?: string }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
+      <div className="flex max-w-[64ch] flex-col gap-1">
+        <h3 id={id} className="flex items-baseline gap-2 text-leitura font-medium text-texto">
+          {prefixo && (
+            <span aria-hidden="true" className="font-dados text-micro text-texto-3">
+              {prefixo}
+            </span>
+          )}
+          {titulo}
+        </h3>
+        {children && <p className="text-legenda text-texto-2">{children}</p>}
+      </div>
+      {acao}
+    </div>
+  );
+}

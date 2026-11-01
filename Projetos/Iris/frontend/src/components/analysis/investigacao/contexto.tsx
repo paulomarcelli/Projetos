@@ -1,13 +1,15 @@
 /**
- * Estado compartilhado do resultado: o que está selecionado, qual cenário está em vista e qual
- * área está aberta. Análise, Mapa de relações e Timeline prospectiva leem e escrevem o mesmo estado, montado UMA vez por investigação. Por isso:
+ * Estado compartilhado do resultado: o que está selecionado, qual cenário está em vista e qual vista da seção 05
+ * está aberta. As cinco seções (e o mapa e a linha do tempo dentro da 05) leem e escrevem o mesmo estado, montado
+ * UMA vez por investigação. Por isso:
  * - o cenário escolhido na análise continua escolhido no mapa e na timeline;
  * - um ator selecionado no mapa continua selecionado ao abrir a timeline (o detalhe do cenário
  *   mostra a relevância dele);
  * - uma evidência aberta numa área continua no painel ao trocar de área.
  * Nenhuma área guarda cópia própria desses dados: todas consultam `r` e os índices em `ix`.
  */
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { irParaSecao } from "./secoes";
 import type { Ator } from "../../../types/ator";
 import type { Cenario, CenarioId, Vista } from "../../../types/cenario";
 import type { EstadoNoCenario, Relacao, TipoRelacao } from "../../../types/relacao";
@@ -16,21 +18,19 @@ import type { Evidencia, Fonte } from "../../../types/fonte";
 import type { ResultadoDeInvestigacao } from "../../../types/investigacao";
 
 /**
- * Três áreas, na ordem em que se lê uma investigação: compreender o fenômeno (análise), ver quem
- * se relaciona com quem (mapa) e ver como pode evoluir (timeline prospectiva, onde vivem os três
- * cenários). São áreas separadas porque cada uma pede um espaço diferente: a análise é leitura
- * curta; o mapa e a timeline são visualizações que precisam da largura da tela.
- * Evidências e método não são áreas: ficam na análise (seção recolhível) e no painel contextual.
+ * Vistas da seção 05 (Exploração e evidências): o mapa de relações, a linha do tempo e as evidências. Antes eram
+ * abas da página; agora a investigação é uma página só, em cinco seções (ver secoes.ts), e estas três ficam juntas
+ * no fim, porque servem para explorar e verificar o que as seções de cima afirmam.
  */
-export type Aba = "analise" | "relacoes" | "timeline";
+export type Aba = "relacoes" | "timeline" | "evidencias";
 export const ABAS: { id: Aba; nome: string }[] = [
-  { id: "analise", nome: "Análise" },
   { id: "relacoes", nome: "Mapa de relações" },
-  { id: "timeline", nome: "Timeline prospectiva" },
+  { id: "timeline", nome: "Linha do tempo" },
+  { id: "evidencias", nome: "Evidências e fontes" },
 ];
-/** Endereços antigos (?area=visao|cenarios|evidencias|leitura) continuam válidos. A leitura guiada saiu: abre a análise. */
-const ABAS_ANTIGAS: Record<string, Aba> = { visao: "analise", cenarios: "timeline", tempo: "timeline", evidencias: "analise", fontes: "analise", leitura: "analise" };
-export const abaDoEndereco = (x: string | null): Aba => (x && ABAS.some((a) => a.id === x) ? (x as Aba) : (x && ABAS_ANTIGAS[x]) || "analise");
+/** Endereços antigos (?area=…) continuam válidos. `null` = nenhuma vista pedida (a página abre no topo). */
+const ABAS_ANTIGAS: Record<string, Aba> = { cenarios: "timeline", tempo: "timeline", fontes: "evidencias" };
+export const abaDoEndereco = (x: string | null): Aba | null => (x && ABAS.some((a) => a.id === x) ? (x as Aba) : (x && ABAS_ANTIGAS[x]) || null);
 export type Selecao =
   | { tipo: "ator"; id: string }
   | { tipo: "relacao"; id: string }
@@ -64,8 +64,14 @@ interface Contexto {
   setVista: (v: Vista) => void;
   selecao: Selecao;
   selecionar: (s: Selecao) => void;
+  /** Vista aberta na seção 05. */
   aba: Aba;
+  /** Troca a vista da seção 05 sem rolar a página (as abas dentro da própria seção). */
+  escolherAba: (a: Aba) => void;
+  /** Troca a vista da seção 05 e leva até ela (links de outras seções). */
   irPara: (a: Aba) => void;
+  /** Uma vista da seção 05 foi pedida (endereço, link ou clique). */
+  exploracaoPedida: boolean;
 }
 
 const Ctx = createContext<Contexto | null>(null);
@@ -117,34 +123,51 @@ export function indexar(r: ResultadoDeInvestigacao): Indices {
 }
 
 /**
- * `abaInicial` vem do endereço (`?area=`), para que um link leve direto a uma área.
- * `aoTrocarAba` deixa a página refletir a área no endereço sem que o provedor dependa do roteador.
+ * `abaInicial` vem do endereço (`?area=`): com ela, a página abre já na seção 05, na vista pedida.
+ * `aoTrocarAba` deixa a página refletir a vista no endereço sem que o provedor dependa do roteador.
+ * `irPara` troca a vista E leva até a seção 05 (é o que os links "ver no mapa" e "na linha do tempo" pedem).
  */
 export function ProvedorDoResultado({
   r,
   children,
-  abaInicial = "analise",
+  abaInicial = null,
   aoTrocarAba,
 }: {
   r: ResultadoDeInvestigacao;
   children: ReactNode;
-  abaInicial?: Aba;
+  abaInicial?: Aba | null;
   aoTrocarAba?: (a: Aba) => void;
 }) {
   const ix = useMemo(() => indexar(r), [r]);
   const [vista, setVista] = useState<Vista>("presente");
   const [selecao, selecionar] = useState<Selecao>(null);
-  const [aba, setAba] = useState<Aba>(abaInicial);
-  const irPara = useCallback(
+  const [aba, setAba] = useState<Aba>(abaInicial ?? "relacoes");
+  // Alguém pediu uma vista da seção 05 (endereço, link ou clique): ela monta mesmo antes de chegar perto da tela.
+  const [exploracaoPedida, setExploracaoPedida] = useState(Boolean(abaInicial));
+  const escolherAba = useCallback(
     (a: Aba) => {
       setAba(a);
+      setExploracaoPedida(true);
       aoTrocarAba?.(a);
     },
     [aoTrocarAba],
   );
+  const irPara = useCallback(
+    (a: Aba) => {
+      escolherAba(a);
+      requestAnimationFrame(() => irParaSecao("sec-exploracao"));
+    },
+    [escolherAba],
+  );
+  // Endereço com ?area=: abre direto na seção 05 (depois da primeira pintura, quando a seção existe).
+  useEffect(() => {
+    if (abaInicial) requestAnimationFrame(() => irParaSecao("sec-exploracao"));
+    // só na montagem
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const valor = useMemo(
-    () => ({ r, ix, vista, setVista, selecao, selecionar, aba, irPara }),
-    [r, ix, vista, selecao, aba, irPara],
+    () => ({ r, ix, vista, setVista, selecao, selecionar, aba, escolherAba, irPara, exploracaoPedida }),
+    [r, ix, vista, selecao, aba, escolherAba, irPara, exploracaoPedida],
   );
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>;
 }

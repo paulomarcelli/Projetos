@@ -836,3 +836,50 @@ body {
 .menu-fixo[data-saindo] { width: 0; overflow: visible; }
 .menu-fixo[data-saindo] .ds-sidebar:not([data-open]) { width: var(--ds-width); opacity: 1; border-right-width: 1px; }
 .iris-menu .ds-badge { font-family: var(--font-interface); }
+
+/* ------------------------------------------------------------------ investigação em cinco seções (nov/2026)
+   Movimento só onde ele informa: onde estou (traço do índice), para onde fui (marca de chegada na seção), o que
+   apareceu (lista do índice, botão de voltar ao topo, troca de vista na seção 05). Só opacity e transform. */
+.indice-traco {
+  transition: transform var(--duracao-media) var(--ease-saida);
+}
+.indice-lista {
+  animation: indice-entra 160ms var(--ease-saida) both;
+}
+@keyframes indice-entra {
+  from { opacity: 0; transform: translateY(-6px); }
+}
+.voltar-ao-topo {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity var(--duracao-curta) var(--ease-saida), transform var(--duracao-curta) var(--ease-saida);
+}
+.voltar-ao-topo[data-visivel] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+/* Ao chegar numa seção pelo índice, um traço ciano acende ao lado do título e apaga (0,9 s, sem repetir). */
+.marca-chegada {
+  opacity: 0;
+}
+.secao-chegou .marca-chegada {
+  animation: marca-chegada 900ms var(--ease-saida) both;
+}
+@keyframes marca-chegada {
+  0% { opacity: 0; transform: scaleY(0.4); }
+  25% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: none; }
+}
+/* Troca de vista na seção 05: a vista nova entra por opacidade (sem deslocar o mapa, que é grande). */
+.vista-entra {
+  animation: vista-entra 140ms var(--ease-saida) both;
+}
+@keyframes vista-entra {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .indice-traco, .voltar-ao-topo { transition: none; }
+  .indice-lista, .secao-chegou .marca-chegada, .vista-entra { animation: none; }
+}

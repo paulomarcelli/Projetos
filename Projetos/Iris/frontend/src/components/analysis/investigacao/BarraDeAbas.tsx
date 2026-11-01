@@ -1,14 +1,28 @@
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import { mascaraDeBordas, useBordasDeRolagem } from "../../../hooks/useBordasDeRolagem";
-import { ABAS, useResultado } from "./contexto";
 
 /**
- * Barra das quatro áreas (padrão de abas do WAI-ARIA: setas, Home e End movem o foco e ativam).
- * Fica presa ao topo no desktop para que a troca de área esteja sempre a um clique. No celular as
- * abas rolam de lado: um degradê na borda mostra que há mais abas, e a aba ativa entra na tela.
+ * Barra de abas (padrão do WAI-ARIA: setas, Home e End movem o foco e ativam). Genérica: a seção 05 usa para o
+ * mapa, a linha do tempo e as evidências. No celular as abas rolam de lado: um degradê na borda mostra que há mais
+ * abas, e a aba ativa entra na tela.
  */
-export function BarraDeAbas() {
-  const { aba, irPara } = useResultado();
+export function BarraDeAbas<T extends string>({
+  itens,
+  ativa: aba,
+  aoEscolher: irPara,
+  rotulo,
+  idBase,
+  painel,
+}: {
+  itens: { id: T; nome: string }[];
+  ativa: T;
+  aoEscolher: (id: T) => void;
+  rotulo: string;
+  idBase: string;
+  /** id do tabpanel controlado */
+  painel: string;
+}) {
+  const ABAS = itens;
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const { ref: rolagem, inicio, fim } = useBordasDeRolagem<HTMLDivElement>();
   const mascara = mascaraDeBordas(inicio, fim);
@@ -34,9 +48,9 @@ export function BarraDeAbas() {
     <div
       ref={rolagem}
       style={mascara ? { maskImage: mascara, WebkitMaskImage: mascara } : undefined}
-      className="relative z-20 -mx-1 overflow-x-auto overscroll-x-contain border-b border-linha bg-abismo/95 px-1 [scrollbar-width:none] lg:sticky lg:top-[var(--altura-topo,0px)] print:hidden [&::-webkit-scrollbar]:hidden"
+      className="relative -mx-1 overflow-x-auto overscroll-x-contain border-b border-linha px-1 [scrollbar-width:none] print:hidden [&::-webkit-scrollbar]:hidden"
     >
-      <div role="tablist" aria-label="Áreas da investigação" className="flex w-max gap-1">
+      <div role="tablist" aria-label={rotulo} className="flex w-max gap-1">
         {ABAS.map((a, i) => (
           <button
             key={a.id}
@@ -45,9 +59,9 @@ export function BarraDeAbas() {
             }}
             type="button"
             role="tab"
-            id={`aba-${a.id}`}
+            id={`${idBase}-${a.id}`}
             aria-selected={aba === a.id}
-            aria-controls="painel-aba"
+            aria-controls={painel}
             tabIndex={aba === a.id ? 0 : -1}
             onClick={() => irPara(a.id)}
             onKeyDown={(e) => teclado(e, i)}

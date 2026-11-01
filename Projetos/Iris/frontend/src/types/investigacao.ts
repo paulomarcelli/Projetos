@@ -12,6 +12,7 @@ import type { Ator } from "./ator";
 import type { Cenario, IncertezaCritica, Variavel, Vista } from "./cenario";
 import type { EventoTempo, Horizonte, Sinal } from "./evento";
 import type { Afirmacao, Evidencia, Fonte } from "./fonte";
+import type { Monitoramento } from "./monitoramento";
 import type { Relacao } from "./relacao";
 
 /** Bloco desenhado como região em volta dos países membros; muda por vista. */
@@ -83,4 +84,6 @@ export interface ResultadoDeInvestigacao {
   limitacoes: Afirmacao[];
   fontes: Fonte[];
   revisoes: { data: string; texto: string }[];
+  /** Opcional: acompanhamento depois da investigação (contrato em types/monitoramento.ts; ainda sem servidor). */
+  monitoramento?: Monitoramento;
 }

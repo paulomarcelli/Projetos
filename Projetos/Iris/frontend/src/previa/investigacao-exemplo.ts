@@ -32,6 +32,7 @@ export const INVESTIGACAO_EXEMPLO: ResultadoDeInvestigacao = {
     evidencias: ["e-resultado"],
   },
 
+  manchete: "Uma vitória estreita diante de duas escolhas decisivas",
   sintese:
     "Um governo Flávio teria começado com margem estreita e duas escolhas que separam os futuros: até onde ir no alinhamento com os EUA sem perder a China, maior parceira comercial, e como conduzir a promessa de libertar o pai sem um confronto aberto com o STF.",
   principalIncerteza: "i-alinhamento",

@@ -23,7 +23,7 @@ import { SecaoDaInvestigacao, Subtitulo } from "../blocos";
 import { Frase } from "../conversa/resposta/partes";
 import { useResultado } from "../investigacao/contexto";
 import { Citacoes, Letra } from "../investigacao/pecas";
-import { SECOES } from "../investigacao/secoes";
+import { SECOES_EM_PAUSA } from "../investigacao/secoes";
 import { Premissas } from "../prospectiva/DetalheDoCenario";
 
 export function SecaoMonitoramento({
@@ -36,7 +36,7 @@ export function SecaoMonitoramento({
   const m = r.monitoramento;
   return (
     <SecaoDaInvestigacao
-      secao={SECOES[3]}
+      secao={SECOES_EM_PAUSA[1]}
       acao={
         demonstracao && (
           <button type="button" onClick={demonstracao.alternar} aria-pressed={demonstracao.ativa} className="botao botao-fantasma botao-pequeno">

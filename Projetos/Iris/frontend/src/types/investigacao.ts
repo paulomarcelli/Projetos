@@ -62,6 +62,9 @@ export interface ResultadoDeInvestigacao {
   atualizadoEm: string;
   versao: number;
   avisoDeContexto: Afirmacao;
+  /** Título do diagnóstico, numa frase curta ("Um equilíbrio estratégico sob pressão"). Opcional: sem ele, a seção
+   *  abre direto na síntese. */
+  manchete?: string;
   sintese: string;
   /** Opcional: escrito pelo motor. Sem ele, montado dos campos abaixo. */
   diagnostico?: Diagnostico;

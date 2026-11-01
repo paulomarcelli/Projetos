@@ -39,7 +39,7 @@ export function SecaoExploracao() {
   const aba = useDeferredValue(abaEscolhida);
   const { ref, perto } = usePerto<HTMLDivElement>(exploracaoPedida);
   return (
-    <SecaoDaInvestigacao secao={SECOES[4]}>
+    <SecaoDaInvestigacao secao={SECOES[2]}>
       <div ref={ref} className="flex min-w-0 flex-col gap-6">
         <BarraDeAbas itens={ABAS} ativa={abaEscolhida} aoEscolher={escolherAba} rotulo="Vistas de exploração" idBase="vista" painel="painel-exploracao" />
         <div id="painel-exploracao" role="tabpanel" aria-labelledby={`vista-${aba}`} key={aba} className="vista-entra flex min-w-0 flex-col">

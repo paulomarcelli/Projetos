@@ -1,6 +1,7 @@
 /** Peças de composição da área de análise (seção, parte, link para outra área). */
 import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
+import { RotuloDeSecao } from "./secoes/RotuloDeSecao";
 
 /** Seção da análise: título editorial e, à direita, uma nota ou ação. Sem caixa nem linha. */
 export function Bloco({ id, titulo, children, acao, descricao }: { id: string; titulo: string; children: ReactNode; acao?: ReactNode; descricao?: string }) {
@@ -43,9 +44,10 @@ export function LinkDeArea({ children, aoClicar }: { children: ReactNode; aoClic
 }
 
 /**
- * Uma das cinco seções da investigação: número, título, a pergunta que ela responde e o conteúdo. O título recebe o
- * foco quando se chega pelo índice (leitor de tela anuncia), e a marca de chegada acende ao lado dele.
- * `destaque` dá à seção dos cenários o protagonismo: faixa em `institucional` com um filete de ouro (o núcleo) no topo.
+ * Uma seção da investigação, no mesmo formato do diagnóstico e dos futuros: o rótulo ("03 · Exploração e evidências")
+ * e, como frase-título, a pergunta que a seção responde. A frase recebe o foco quando se chega pelo índice (o leitor de
+ * tela anuncia) e a marca de chegada acende ao lado dela. O nome da região é o título da seção.
+ * `destaque` dá protagonismo à seção: faixa em `institucional` com um filete de ouro no topo.
  */
 export function SecaoDaInvestigacao({
   secao,
@@ -58,30 +60,22 @@ export function SecaoDaInvestigacao({
   acao?: ReactNode;
   destaque?: boolean;
 }) {
-  const titulo = `${secao.id}-t`;
   return (
     <section
       id={secao.id}
-      aria-labelledby={titulo}
+      aria-label={secao.titulo}
       className={`relative flex scroll-mt-[calc(var(--altura-topo,0px)+4.5rem)] flex-col gap-6 ${
         destaque ? "-mx-4 rounded-painel bg-institucional/60 px-4 py-8 sm:-mx-6 sm:px-6 sm:py-10 print:bg-transparent" : ""
       }`}
     >
       {destaque && <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-ouro/60 sm:inset-x-6" />}
-      {/* Cabeçalho de seção compacto: número e título numa linha, a pergunta logo abaixo. A estrutura vem do número e
-          do filete, não do tamanho da letra: assim cada seção começa a mostrar conteúdo mais cedo. */}
-      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-        <div className="relative flex max-w-[68ch] flex-col gap-1">
+      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div className="relative flex max-w-[68ch] flex-col gap-4">
           <span aria-hidden="true" className="marca-chegada absolute top-1 -left-4 h-[calc(100%-0.5rem)] w-0.5 origin-top rounded-full bg-ciano sm:-left-5" />
-          <div className="flex items-baseline gap-3">
-            <span aria-hidden="true" className={`numeros font-dados text-micro ${destaque ? "text-ouro" : "text-texto-3"}`}>
-              {secao.numero}
-            </span>
-            <h2 id={titulo} tabIndex={-1} data-titulo-secao className="font-editorial text-secao font-medium tracking-[-0.01em] text-texto outline-none">
-              {secao.titulo}
-            </h2>
-          </div>
-          <p className="text-legenda text-texto-2">{secao.pergunta}</p>
+          <RotuloDeSecao numero={secao.numero} nome={secao.titulo} nucleo={destaque} />
+          <h2 tabIndex={-1} data-titulo-secao className="font-editorial text-secao font-medium text-balance text-texto outline-none sm:text-titulo">
+            {secao.pergunta}
+          </h2>
         </div>
         {acao}
       </header>

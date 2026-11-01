@@ -809,3 +809,16 @@ não mudou; mudou quanto cada uma ocupa e o que aparece sem rolar.
 
 Altura da página no exemplo da prévia, a 1440 px: de 10.687 px para cerca de 5.000 px; a 390 px, de 19.389 px para
 cerca de 10.000 px.
+
+## Tela de análise refeita por partes — parte 1 (nov/2026)
+
+A tela passa a ser refeita em etapas. Nesta primeira, a análise mostra só:
+
+- **Cabeçalho:** o rótulo "Iris · Investigação prospectiva" e a pergunta (com as ações de método e impressão).
+- **01 · Diagnóstico atual:** uma frase-título (`manchete`, campo novo e opcional) e um parágrafo (`sintese`).
+- **02 · Futuros possíveis:** "Núcleo prospectivo", "Três trajetórias até 2030" (contado dos cenários) e cada cenário
+  com letra, nome e uma frase (`ideia`). Sem etiqueta de chance. O cartão abre o detalhe completo no painel.
+
+O mapa, a linha do tempo e as fontes continuam separados, na seção 03 · Exploração e evidências, que ganhou o mesmo
+formato de cabeçalho (rótulo + frase-título). Comparação e monitoramento estão prontos e fora da tela
+(`SECOES_EM_PAUSA`), à espera das próximas partes.

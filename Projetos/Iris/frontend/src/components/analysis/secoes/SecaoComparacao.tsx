@@ -13,7 +13,7 @@ import type { Cenario, Efeito } from "../../../types/cenario";
 import { SecaoDaInvestigacao, Subtitulo } from "../blocos";
 import { useResultado } from "../investigacao/contexto";
 import { Letra } from "../investigacao/pecas";
-import { SECOES } from "../investigacao/secoes";
+import { SECOES_EM_PAUSA } from "../investigacao/secoes";
 import { DirecoesDosFatores } from "../prospectiva/ComparacaoDeCenarios";
 import { TabelaComparativa } from "../prospectiva/TabelaComparativa";
 
@@ -32,7 +32,7 @@ export function SecaoComparacao() {
   const { r } = useResultado();
   if (r.cenarios.length < 2) return null;
   return (
-    <SecaoDaInvestigacao secao={SECOES[2]}>
+    <SecaoDaInvestigacao secao={SECOES_EM_PAUSA[0]}>
       <p className="max-w-[72ch] border-l-2 border-linha-forte pl-4 text-legenda text-texto-2">
         Comparação qualitativa. A Iris não atribui probabilidade, nota nem peso aos cenários: as posições vêm das premissas de cada um, e os indicadores dizem o
         que observar, não o que vai acontecer.

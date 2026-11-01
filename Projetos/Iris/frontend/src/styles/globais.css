@@ -841,7 +841,9 @@ body {
    Movimento só onde ele informa: onde estou (traço do índice), para onde fui (marca de chegada na seção), o que
    apareceu (lista do índice, botão de voltar ao topo, troca de vista na seção 05). Só opacity e transform. */
 .indice-traco {
-  transition: transform var(--duracao-media) var(--ease-saida);
+  transition:
+    transform var(--duracao-media) var(--ease-saida),
+    width var(--duracao-media) var(--ease-saida);
 }
 .indice-lista {
   animation: indice-entra 160ms var(--ease-saida) both;

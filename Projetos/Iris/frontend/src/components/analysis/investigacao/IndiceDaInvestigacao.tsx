@@ -2,8 +2,9 @@
  * Índice das cinco seções, preso ao topo enquanto se lê. Mostra em que seção o leitor está (a que cruza a linha do
  * meio da tela) e leva a qualquer outra com um clique.
  *
- * - Desktop: as cinco seções numa linha; um traço ciano desliza até a seção atual (só transform, 220 ms, a curva de
- *   saída do sistema). É o único movimento: diz "você está aqui" quando a seção muda durante a rolagem.
+ * - Desktop: as cinco seções numa pílula (controle segmentado); a pílula preenchida desliza até a seção atual
+ *   (transform e largura, 220 ms, a curva de saída do sistema). É o único movimento: diz "você está aqui" quando a
+ *   seção muda durante a rolagem.
  * - Celular: uma linha só com a seção atual ("02 · Cenários prospectivos"); tocar abre a lista das cinco. A lista
  *   entra com opacidade e 6 px de deslocamento (160 ms) e fecha ao escolher, com Esc ou ao tocar fora.
  * Com "reduzir movimento", nada desliza: o traço e a lista só aparecem no lugar.
@@ -43,7 +44,7 @@ export function IndiceDaInvestigacao() {
   const itens = useRef<(HTMLAnchorElement | null)[]>([]);
   const [traco, setTraco] = useState<{ x: number; w: number } | null>(null);
 
-  // posição do traço da seção atual (mede o item; o traço anda só por transform)
+  // posição da pílula da seção atual (mede o item; a pílula anda por transform e ajusta a largura)
   useLayoutEffect(() => {
     const el = itens.current[indice];
     if (el) setTraco({ x: el.offsetLeft, w: el.offsetWidth });
@@ -77,7 +78,7 @@ export function IndiceDaInvestigacao() {
       className="indice-investigacao sticky top-[var(--altura-topo,0px)] z-20 -mx-1 border-b border-linha bg-abismo px-1 print:hidden"
     >
       {/* desktop: as cinco numa linha */}
-      <ol className="relative m-0 hidden list-none items-stretch gap-1 p-0 lg:flex">
+      <ol className="relative my-2 hidden w-fit list-none items-stretch gap-0.5 rounded-full border border-linha bg-mar/70 p-1 lg:flex">
         {SECOES.map((x, i) => (
           <li key={x.id}>
             <a
@@ -87,11 +88,11 @@ export function IndiceDaInvestigacao() {
               href={`#${x.id}`}
               onClick={ir(x.id)}
               aria-current={x.id === atual ? "location" : undefined}
-              className={`flex min-h-11 items-center gap-2 px-3 text-corpo whitespace-nowrap transition-colors duration-150 ${
+              className={`relative z-10 flex min-h-9 items-center gap-2 rounded-full px-3.5 text-legenda whitespace-nowrap transition-colors duration-150 ${
                 x.id === atual ? "text-texto" : "text-texto-2 hover:text-texto"
               }`}
             >
-              <span className="numeros font-dados text-micro text-texto-3">{x.numero}</span>
+              <span className={`numeros font-dados text-micro ${x.id === atual ? "text-ouro" : "text-texto-3"}`}>{x.numero}</span>
               {x.nome}
             </a>
           </li>
@@ -99,8 +100,8 @@ export function IndiceDaInvestigacao() {
         {traco && (
           <span
             aria-hidden="true"
-            className="indice-traco absolute bottom-0 left-0 h-0.5 w-px origin-left rounded-full bg-ciano"
-            style={{ transform: `translateX(${traco.x + 12}px) scaleX(${Math.max(1, traco.w - 24)})` }}
+            className="indice-traco absolute top-1 bottom-1 left-0 rounded-full bg-grafite-alto shadow-cartao"
+            style={{ transform: `translateX(${traco.x}px)`, width: traco.w }}
           />
         )}
       </ol>

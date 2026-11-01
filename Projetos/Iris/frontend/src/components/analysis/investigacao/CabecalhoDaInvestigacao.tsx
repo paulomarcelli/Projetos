@@ -1,6 +1,7 @@
 import { BookOpen, ChevronDown, Printer } from "lucide-react";
 import { useState } from "react";
 import { useResultado } from "./contexto";
+import { irParaSecao } from "./secoes";
 import { Citacoes } from "./pecas";
 
 function dataLegivel(d: string) {
@@ -10,8 +11,8 @@ function dataLegivel(d: string) {
 }
 
 /**
- * Cabeçalho da investigação, a abertura da seção 01: a pergunta original, o horizonte, o escopo, a data da análise
- * (versão e atualização) e o aviso de contexto.
+ * Cabeçalho da investigação, a abertura da seção 01: a pergunta original, o escopo, a data da análise (versão e
+ * atualização), o aviso de contexto e a investigação em números (horizonte, cenários, incertezas, sinais, evidências).
  * Ações: só as que existem de fato (método no painel; impressão/PDF, que tem folha de estilo
  * própria). Nada de "compartilhar" ou "exportar" sem implementação por trás.
  */
@@ -37,15 +38,7 @@ export function CabecalhoDaInvestigacao() {
           <h1 className="max-w-[52ch] font-editorial text-[calc(1.375rem*var(--escala-titulo))] leading-[1.3] font-medium tracking-[-0.01em] text-balance text-texto sm:text-[calc(1.5rem*var(--escala-titulo))]">
             {r.pergunta}
           </h1>
-          <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-legenda text-texto-2">
-            <span>
-              Horizonte{" "}
-              <span className="numeros font-dados text-ambar">
-                {r.horizonte.inicio}–{r.horizonte.fim}
-              </span>
-            </span>
-            <span>{r.escopo}</span>
-          </p>
+          <p className="text-legenda text-texto-2">{r.escopo}</p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 print:hidden">
           {botaoMetodo}
@@ -61,7 +54,7 @@ export function CabecalhoDaInvestigacao() {
         <p className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
           <span className="font-medium text-ambar">{r.natureza}</span>
           {/* no celular o texto desce para a linha de baixo; do sm em diante fica entre o rótulo e o botão */}
-          <span className="order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1">
+          <span className="order-last min-w-0 basis-full sm:order-none sm:basis-0 sm:flex-1">
             {r.avisoDeContexto.texto}
             <Citacoes ids={r.avisoDeContexto.evidencias} />
           </span>
@@ -80,6 +73,65 @@ export function CabecalhoDaInvestigacao() {
           {r.origem}
         </p>
       </div>
+      <FaixaDeNumeros />
     </header>
+  );
+}
+
+/**
+ * A investigação em números, numa faixa: horizonte, cenários, incertezas críticas, sinais a observar e evidências.
+ * Números grandes, rótulos pequenos e filetes entre eles, sem caixas (a cor fica no dado: o ouro no horizonte).
+ * Cada número leva ao lugar onde o conjunto está; todos vêm do próprio resultado, nada é estimado.
+ */
+function FaixaDeNumeros() {
+  const { r, irPara } = useResultado();
+  const itens: { rotulo: string; valor: string; ouro?: boolean; ir?: () => void; destino?: string }[] = [
+    { rotulo: "Horizonte", valor: `${r.horizonte.inicio}–${r.horizonte.fim}`, ouro: true },
+    {
+      rotulo: r.cenarios.length === 1 ? "Cenário" : "Cenários",
+      valor: String(r.cenarios.length),
+      ir: () => irParaSecao("sec-cenarios"),
+      destino: "02 Cenários",
+    },
+    {
+      rotulo: r.incertezas.length === 1 ? "Incerteza crítica" : "Incertezas críticas",
+      valor: String(r.incertezas.length),
+      ir: () => irParaSecao("sec-diagnostico"),
+      destino: "01 Diagnóstico",
+    },
+    { rotulo: "Sinais a observar", valor: String(r.sinais.length), ir: () => irParaSecao("sec-monitoramento"), destino: "04 Monitoramento" },
+    { rotulo: "Evidências", valor: String(r.evidencias.length), ir: () => irPara("evidencias"), destino: "05 Evidências e fontes" },
+  ];
+  return (
+    <ul aria-label="A investigação em números" className="m-0 grid list-none p-0 grid-cols-2 border-y border-linha sm:grid-cols-3 lg:grid-cols-5">
+      {itens.map((x, i) => {
+        const conteudo = (
+          <>
+            <span className="text-micro text-texto-3">{x.rotulo}</span>
+            <span className={`font-dados text-[calc(1.375rem*var(--escala-titulo))] leading-tight numeros ${x.ouro ? "text-ouro" : "text-texto"}`}>
+              {x.valor}
+            </span>
+          </>
+        );
+        // filete à esquerda de cada número, menos o primeiro de cada linha
+        const filete = i === 0 ? "" : "lg:border-l lg:border-linha";
+        return x.ir ? (
+          <li key={x.rotulo} className={`flex ${filete}`}>
+            <button
+              type="button"
+              onClick={x.ir}
+              aria-label={`${x.valor} ${x.rotulo.toLowerCase()}: ir para ${x.destino}`}
+              className="group flex w-full flex-col items-start gap-1 py-3 pr-4 text-left lg:px-4 transition-colors duration-150 hover:bg-grafite/40 print:pointer-events-none"
+            >
+              {conteudo}
+            </button>
+          </li>
+        ) : (
+          <li key={x.rotulo} className={`flex flex-col gap-1 py-3 pr-4 lg:px-4 lg:first:pl-0 ${filete}`}>
+            {conteudo}
+          </li>
+        );
+      })}
+    </ul>
   );
 }

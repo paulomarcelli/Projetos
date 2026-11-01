@@ -6,21 +6,22 @@
  *   Biblioteca: Fontes salvas (os favoritos da base científica);
  *   Sistema: Configurações (⌘,).
  * Não há "Análises salvas" nem "Coleções": as conversas já ficam no histórico, e coleções não existem. No pé: o tema, o
- * estado do sistema e "Voltar ao site". Cenários, mapa, timeline e fontes vivem DENTRO de cada resposta.
+ * seletor de tema (Escuro | Claro, em pílula), o estado do sistema e "Voltar ao site". Cenários, mapa, timeline e fontes vivem DENTRO de cada resposta.
  *
  * No topo vai a marca Iris, no lugar da troca de workspace (a Iris não tem workspaces). As cores vêm dos tokens da Iris
  * (.iris-menu, em styles/globais.css), nos dois temas.
  */
-import { Activity, FolderOpen, History, Library, LogOut, MessagesSquare, Moon, Plus, Settings, Star, Sun } from "lucide-react";
+import { Activity, FolderOpen, History, Library, LogOut, MessagesSquare, Plus, Settings, Star } from "lucide-react";
 import { useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useDados } from "../../hooks/useDados";
 import { useMinhasInvestigacoes } from "../research/historico/hooks/useMinhasInvestigacoes";
-import { escolherTema, usePreferencias } from "../../store/preferencias";
+import { usePreferencias } from "../../store/preferencias";
 import { ROTAS } from "../../config/rotas";
 import { PREVIA } from "../../config/env";
 import { prontidao } from "../../services/api";
 import { Marca } from "../common/Marca";
+import { SeletorTemaSegmentado } from "../common/SeletorTema";
 import { SidebarNav, type NavGroupData, type NavItemData } from "../common/dashboard-sidebar";
 
 /** Quantas investigações cabem no menu antes de "Ver todas". */
@@ -38,7 +39,17 @@ function useEstadoDoSistema() {
  * aberto=false recolhe a barra (largura zero). atalhos=false desliga o ⌘, desta instância: só uma pode
  * ouvir o teclado (a gaveta do celular monta uma segunda).
  */
-export function MenuLateral({ aberto = true, atalhos = true, aoNavegar, className }: { aberto?: boolean; atalhos?: boolean; aoNavegar?: () => void; className?: string }) {
+export function MenuLateral({
+  aberto = true,
+  atalhos = true,
+  aoNavegar,
+  className,
+}: {
+  aberto?: boolean;
+  atalhos?: boolean;
+  aoNavegar?: () => void;
+  className?: string;
+}) {
   const navegar = useNavigate();
   const local = useLocation();
   const { temaEfetivo } = usePreferencias();
@@ -67,7 +78,12 @@ export function MenuLateral({ aberto = true, atalhos = true, aoNavegar, classNam
         heading: "Principal",
         items: [
           { id: "nova", title: "Nova investigação", icon: Plus },
-          { id: "investigacoes", title: "Histórico de análises", icon: History, badge: investigacoes.length > LIMITE_NO_MENU ? investigacoes.length : undefined },
+          {
+            id: "investigacoes",
+            title: "Histórico de análises",
+            icon: History,
+            badge: investigacoes.length > LIMITE_NO_MENU ? investigacoes.length : undefined,
+          },
           { id: "base", title: "Base científica", icon: Library },
         ],
       },
@@ -98,8 +114,8 @@ export function MenuLateral({ aberto = true, atalhos = true, aoNavegar, classNam
     [investigacoes],
   );
 
+  // O tema sai da lista do pé e vira um controle segmentado (Escuro | Claro) acima dela: mostra o estado e troca num clique.
   const rodape: NavItemData[] = [
-    { id: "tema", title: claro ? "Usar tema escuro" : "Usar tema claro", icon: claro ? Sun : Moon },
     { id: "estado", title: estado, icon: Activity },
     { id: "site", title: "Voltar ao site", icon: LogOut },
   ];
@@ -117,7 +133,6 @@ export function MenuLateral({ aberto = true, atalhos = true, aoNavegar, classNam
   })();
 
   const escolher = (id: string) => {
-    if (id === "tema") return escolherTema(claro ? "escuro" : "claro");
     const para = destinos.get(id);
     if (!para) return;
     navegar(para);
@@ -137,6 +152,7 @@ export function MenuLateral({ aberto = true, atalhos = true, aoNavegar, classNam
           </Link>
         }
         groups={grupos}
+        footerTop={<SeletorTemaSegmentado />}
         footer={rodape}
         activeId={ativo}
         onSelect={escolher}

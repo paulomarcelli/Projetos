@@ -4,8 +4,9 @@
  *
  * - SeletorTema (Configurações): Escuro | Claro | Igual ao sistema.
  * - SeletorTamanhoTexto (Configurações): Padrão 16 | Confortável 18 | Ampliada 20.
- * - AlternarTema (menu): um botão com sol e lua que se transformam um no outro. O rótulo diz o
- *   que o clique FAZ ("Usar tema claro"), não o estado atual.
+ * - SeletorTemaSegmentado (pé do menu): Escuro | Claro num controle segmentado em pílula, a opção marcada preenchida.
+ * - AlternarTema: um botão com sol e lua que se transformam um no outro. O rótulo diz o que o clique FAZ ("Usar tema
+ *   claro"), não o estado atual.
  */
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
@@ -20,11 +21,14 @@ function GrupoDeOpcoes<T extends string>({
   valor,
   opcoes,
   aoEscolher,
+  segmentado = false,
 }: {
   rotulo: string;
   valor: T;
   opcoes: { id: T; conteudo: ReactNode; descricao?: string }[];
   aoEscolher: (v: T) => void;
+  /** Controle segmentado: as opções lado a lado numa pílula, a marcada preenchida (sem bordas por opção). */
+  segmentado?: boolean;
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const teclado = (e: KeyboardEvent, i: number) => {
@@ -37,7 +41,11 @@ function GrupoDeOpcoes<T extends string>({
     refs.current[alvo]?.focus();
   };
   return (
-    <div role="radiogroup" aria-label={rotulo} className="flex flex-wrap gap-2">
+    <div
+      role="radiogroup"
+      aria-label={rotulo}
+      className={segmentado ? "grid auto-cols-fr grid-flow-col gap-1 rounded-full border border-linha bg-abismo/60 p-1" : "flex flex-wrap gap-2"}
+    >
       {opcoes.map((o, i) => (
         <button
           key={o.id}
@@ -49,7 +57,11 @@ function GrupoDeOpcoes<T extends string>({
           aria-checked={valor === o.id}
           aria-description={o.descricao}
           tabIndex={valor === o.id ? 0 : -1}
-          className="ficha min-h-11 px-4 text-corpo"
+          className={
+            segmentado
+              ? "flex min-h-9 items-center justify-center gap-1.5 rounded-full px-3 text-legenda text-texto-2 transition-colors duration-150 hover:text-texto aria-checked:bg-grafite-alto aria-checked:text-texto aria-checked:shadow-cartao"
+              : "ficha min-h-11 px-4 text-corpo"
+          }
           onClick={() => aoEscolher(o.id)}
           onKeyDown={(e) => teclado(e, i)}
         >
@@ -78,6 +90,28 @@ export function SeletorTema() {
         conteudo: (
           <>
             <Icone size={16} aria-hidden="true" />
+            {rotulo}
+          </>
+        ),
+      }))}
+    />
+  );
+}
+
+/** Escuro | Claro em pílula, para o pé do menu ("Igual ao sistema" fica nas Configurações). */
+export function SeletorTemaSegmentado() {
+  const { temaEfetivo } = usePreferencias();
+  return (
+    <GrupoDeOpcoes
+      segmentado
+      rotulo="Tema de cor"
+      valor={temaEfetivo}
+      aoEscolher={escolherTema}
+      opcoes={TEMAS.filter((t) => t.id !== "sistema").map(({ id, rotulo, icone: Icone }) => ({
+        id,
+        conteudo: (
+          <>
+            <Icone size={15} aria-hidden="true" />
             {rotulo}
           </>
         ),

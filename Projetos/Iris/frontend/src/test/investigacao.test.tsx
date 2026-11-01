@@ -100,7 +100,12 @@ describe("resultado de investigação", () => {
   it("cinco seções, na ordem do raciocínio, cada uma com a sua pergunta; o índice leva a cada uma", () => {
     montar();
     const titulos: string[] = SECOES.map((x) => x.titulo);
-    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent).filter((t) => titulos.includes(t ?? ""))).toEqual(titulos);
+    expect(
+      screen
+        .getAllByRole("heading", { level: 2 })
+        .map((h) => h.textContent)
+        .filter((t) => titulos.includes(t ?? "")),
+    ).toEqual(titulos);
     for (const x of SECOES) expect(screen.getByText(x.pergunta)).toBeInTheDocument();
     const indice = screen.getByRole("navigation", { name: "Seções da investigação" });
     const links = within(indice).getAllByRole("link");
@@ -123,6 +128,19 @@ describe("resultado de investigação", () => {
     expect(screen.getByRole("button", { name: /Ocultar contexto/ })).toHaveAttribute("aria-expanded", "true");
     expect(document.getElementById("contexto-da-investigacao")).not.toHaveClass("hidden");
     expect(screen.getByText(r.origem)).toBeInTheDocument();
+  });
+
+  it("faixa de números: horizonte, cenários, incertezas, sinais e evidências, cada um levando ao seu lugar", async () => {
+    montar();
+    const faixa = screen.getByRole("list", { name: "A investigação em números" });
+    expect(faixa).toHaveTextContent(`${r.horizonte.inicio}–${r.horizonte.fim}`);
+    const botao = (rotulo: RegExp) => within(faixa).getByRole("button", { name: rotulo });
+    expect(botao(new RegExp(`^${r.cenarios.length} cenários: ir para 02`))).toBeInTheDocument();
+    expect(botao(new RegExp(`^${r.incertezas.length} incertezas críticas: ir para 01`))).toBeInTheDocument();
+    expect(botao(new RegExp(`^${r.sinais.length} sinais a observar: ir para 04`))).toBeInTheDocument();
+    // evidências abre a vista de fontes na seção 05
+    await userEvent.click(botao(new RegExp(`^${r.evidencias.length} evidências: ir para 05`)));
+    expect(screen.getByRole("tab", { name: "Evidências e fontes" })).toHaveAttribute("aria-selected", "true");
   });
 
   it("01 diagnóstico: primeira dobra com síntese, o que separa os futuros e o mapa; a leitura completa abre na página", async () => {
@@ -249,7 +267,8 @@ describe("resultado de investigação", () => {
     expect(within(impacto).getAllByText("Exige investigação").length).toBeGreaterThan(0);
     expect(within(sec).getAllByText("Fictício").length).toBeGreaterThan(2);
     expect(within(sec).getByText("Contradita")).toBeInTheDocument();
-    for (const t of ["Nova evidência", "Nova interpretação", "Revisão de premissa", "Revisão de cenário"]) expect(within(sec).getByText(`· ${t}`)).toBeInTheDocument();
+    for (const t of ["Nova evidência", "Nova interpretação", "Revisão de premissa", "Revisão de cenário"])
+      expect(within(sec).getByText(`· ${t}`)).toBeInTheDocument();
     // sem placar: nenhuma soma de impactos por cenário
     expect(sec.textContent).not.toMatch(/\d+\s+(favorecem|confirmam)/);
     await userEvent.click(within(sec).getByRole("button", { name: "Voltar aos dados da investigação" }));
@@ -276,7 +295,11 @@ describe("resultado de investigação", () => {
   it("05 exploração: mapa, linha do tempo e evidências como vistas; links de outras seções abrem a vista", async () => {
     montar();
     const sec = screen.getByRole("region", { name: "Exploração e evidências" });
-    expect(within(sec).getAllByRole("tab").map((t) => t.textContent)).toEqual(["Mapa de relações", "Linha do tempo", "Evidências e fontes"]);
+    expect(
+      within(sec)
+        .getAllByRole("tab")
+        .map((t) => t.textContent),
+    ).toEqual(["Mapa de relações", "Linha do tempo", "Evidências e fontes"]);
     const b = r.cenarios[1];
     await userEvent.click(screen.getByRole("button", { name: /Abrir o cenário B na linha do tempo/ }));
     expect(within(sec).getByRole("tab", { name: "Linha do tempo" })).toHaveAttribute("aria-selected", "true");
@@ -343,7 +366,11 @@ describe("seção Relações (mapa geopolítico)", () => {
     montar();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(r.pergunta);
     const seletor = screen.getByRole("group", { name: /Vista do mapa/ });
-    expect(within(seletor).getAllByRole("button").map((b) => b.textContent?.replace(/\s+/g, " ").trim())).toEqual(["Hoje", "Cenário A", "Cenário B", "Cenário C"]);
+    expect(
+      within(seletor)
+        .getAllByRole("button")
+        .map((b) => b.textContent?.replace(/\s+/g, " ").trim()),
+    ).toEqual(["Hoje", "Cenário A", "Cenário B", "Cenário C"]);
   });
 
   it("trocar de cenário atualiza a identificação, lista as mudanças e preserva o zoom", async () => {
@@ -380,7 +407,11 @@ describe("seção Relações (mapa geopolítico)", () => {
   it("a legenda permite destacar os blocos com países do mapa e mostra quem entra no cenário", async () => {
     montar();
     const blocos = screen.getByRole("group", { name: /^Blocos/ });
-    expect(within(blocos).getAllByRole("button").map((b) => b.textContent?.replace(/\d|[+−]/g, "").trim())).toEqual(["Escudo", "Mercosul", "BRICS"]);
+    expect(
+      within(blocos)
+        .getAllByRole("button")
+        .map((b) => b.textContent?.replace(/\d|[+−]/g, "").trim()),
+    ).toEqual(["Escudo", "Mercosul", "BRICS"]);
     const brics = within(blocos).getByRole("button", { name: /BRICS/ });
     await userEvent.click(brics);
     expect(brics).toHaveAttribute("aria-pressed", "true");

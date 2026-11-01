@@ -298,7 +298,8 @@ function Legenda() {
 
 /** D. Os indicadores (sinais) com cenários relacionados, evidências do fator, última observação e tendência. */
 /**
- * D. Sinais a observar: os primeiros cinco à vista e o resto a um clique. A coluna "última observação / tendência"
+ * D. Sinais a observar, como linha do tempo vertical: a data à esquerda, o nó sobre um fio contínuo e o sinal à direita.
+ * Os primeiros cinco à vista e o resto a um clique. A coluna "última observação / tendência"
  * só aparece quando existe alguma observação; sem nenhuma, repetir "nenhuma registrada" em cada linha só ocupa espaço
  * (o cartão de estado já diz que o acompanhamento não está ativo).
  */
@@ -319,15 +320,23 @@ function Indicadores() {
           return (
             <li
               key={s.id}
-              className={`grid gap-x-8 gap-y-3 border-t border-linha py-4 first:border-t-0 first:pt-0 ${comObservacoes ? "lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]" : "sm:grid-cols-[6.5rem_minmax(0,1fr)]"}`}
+              className={`group/sinal grid gap-x-4 gap-y-2 pb-6 last:pb-0 ${
+                comObservacoes
+                  ? "sm:grid-cols-[6.5rem_1.25rem_minmax(0,1fr)] lg:grid-cols-[6.5rem_1.25rem_minmax(0,1.3fr)_minmax(0,1fr)]"
+                  : "sm:grid-cols-[6.5rem_1.25rem_minmax(0,1fr)]"
+              }`}
             >
-              {!comObservacoes && <p className="numeros pt-0.5 font-dados text-micro text-ambar">{s.quando}</p>}
+              <p className="numeros pt-0.5 font-dados text-micro text-ambar sm:text-right">{s.quando}</p>
+              {/* linha do tempo: o nó do sinal sobre um fio contínuo (some no celular, onde a data fica acima) */}
+              <span aria-hidden="true" className="relative hidden justify-center sm:flex">
+                <span className="absolute top-2 -bottom-6 w-px bg-linha-forte group-last/sinal:hidden" />
+                <span className="relative mt-1 size-3 rounded-full border-2 border-ambar bg-abismo" />
+              </span>
               <div className="flex min-w-0 flex-col gap-1.5">
                 <p className="text-corpo font-medium text-texto">{s.sinal}</p>
                 <p className="text-legenda leading-relaxed text-texto-2">{s.leitura}</p>
                 <p className="text-micro text-texto-3">
                   Onde acompanhar: {s.ondeAcompanhar}
-                  {comObservacoes && <> · {s.quando}</>}
                   {fator && (
                     <>
                       {" "}

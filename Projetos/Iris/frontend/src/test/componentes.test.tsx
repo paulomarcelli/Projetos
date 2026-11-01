@@ -7,7 +7,7 @@ import { Epistemico } from "../components/common/Epistemico";
 import { InvestigacoesRecentes } from "../components/research/historico/ListaDeInvestigacoes";
 import { ProvedorDeNotificacoes } from "../app/provedores/ProvedorDeNotificacoes";
 import { NovaInvestigacao } from "../components/research/consulta/NovaInvestigacao";
-import { AlternarTema, SeletorTamanhoTexto, SeletorTema } from "../components/common/SeletorTema";
+import { AlternarTema, SeletorTamanhoTexto, SeletorTema, SeletorTemaSegmentado } from "../components/common/SeletorTema";
 import { PainelBase } from "../components/research/base-cientifica/PainelBase";
 import { SeloStatus } from "../components/research/base-cientifica/StatusDocumento";
 
@@ -101,7 +101,10 @@ describe("base científica", () => {
   });
 
   it("acervo vazio mostra um estado vazio útil, sem zeros soltos", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [], total: 0, limit: 1, offset: 0 }), { status: 200 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ items: [], total: 0, limit: 1, offset: 0 }), { status: 200 })),
+    );
     comApp(<PainelBase />);
     expect(await screen.findByText("A base científica está vazia")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Ir para a gestão do acervo/ })).toHaveAttribute("href", "/app/configuracoes/acervo");
@@ -143,6 +146,21 @@ describe("tema de cor", () => {
     // Sem recarregar, o seletor já mostra a escolha feita no outro controle.
     expect(screen.getByRole("radio", { name: "Claro" })).toHaveAttribute("aria-checked", "true");
     expect(screen.getByRole("button", { name: "Usar tema escuro" })).toBeInTheDocument();
+  });
+});
+
+describe("tema no pé do menu", () => {
+  it("o controle segmentado mostra o tema em uso e troca pelo clique e pelas setas", async () => {
+    const u = userEvent.setup();
+    render(<SeletorTemaSegmentado />);
+    const grupo = screen.getByRole("radiogroup", { name: "Tema de cor" });
+    expect(grupo.querySelectorAll('[role="radio"]')).toHaveLength(2);
+    await u.click(screen.getByRole("radio", { name: "Claro" }));
+    expect(document.documentElement.dataset.tema).toBe("claro");
+    expect(screen.getByRole("radio", { name: "Claro" })).toHaveAttribute("aria-checked", "true");
+    await u.keyboard("{ArrowLeft}");
+    expect(screen.getByRole("radio", { name: "Escuro" })).toHaveAttribute("aria-checked", "true");
+    expect(document.documentElement.dataset.tema).toBeUndefined();
   });
 });
 

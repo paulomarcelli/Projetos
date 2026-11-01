@@ -328,6 +328,8 @@ export type SidebarNavProps = {
   groups: NavGroupData[]
   /** Os itens do pé, embaixo da linha. */
   footer?: NavItemData[]
+  /** Um conteúdo seu no pé, acima dos itens (um seletor de tema, por exemplo). Some com a barra recolhida. */
+  footerTop?: React.ReactNode
   /** Sem workspaces, a barra começa direto nos grupos. */
   workspaces?: Workspace[]
   /** O workspace atual, pelo nome (controlado); sem ele, a barra guarda a escolha. */
@@ -356,6 +358,7 @@ export type SidebarNavProps = {
 export function SidebarNav({
   groups,
   footer = [],
+  footerTop,
   workspaces = [],
   workspace,
   defaultWorkspace,
@@ -450,8 +453,9 @@ export function SidebarNav({
           ))}
         </nav>
 
-        {footer.length > 0 && (
+        {(footer.length > 0 || footerTop) && (
           <div className="ds-footer">
+            {footerTop && <div className="ds-footer__top">{footerTop}</div>}
             {footer.map(item => (
               <NavItem key={item.id} item={item} activeId={currentId} onSelect={select} />
             ))}
@@ -873,6 +877,8 @@ const DS_CSS = `
   padding-top: 16px;
   border-top: 1px solid color-mix(in srgb, var(--ds-border) 50%, transparent);
 }
+/* conteúdo próprio no pé (o seletor de tema), acima dos itens */
+.ds-footer__top { padding: 0 2px 8px; }
 
 /* um item */
 .ds-item { display: flex; flex-direction: column; width: 100%; }

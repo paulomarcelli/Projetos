@@ -1,11 +1,11 @@
 ---
 name: design-skills
-description: "Unified design toolkit (136 sub-skills, including Impeccable) for UI/UX design, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
+description: "Unified design toolkit (137 sub-skills, including Impeccable) for UI/UX design, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
 ---
 
 # Design Skills (unified)
 
-This skill bundles 136 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
+This skill bundles 137 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
 
 ## How to use
 
@@ -190,6 +190,10 @@ This skill bundles 136 design sub-skills from several sources. Each sub-skill li
 - **critique-information-density** — Critique a rendered screen's density — cognitive load, content prioritisation, scanning patterns, and progressive disclosure. Use when a screen feels overwhelming. For the underlying choice-count principle, use `hicks-law` (interaction-design).
 - **critique-typography** — Critique a rendered screen's typography — scale usage, readability, consistency, and token compliance. Use when reviewing type on a screen. For defining the scale itself, use `typography-scale` (ui-design).
 - **critique-visual-hierarchy** — Critique a rendered screen's hierarchy — entry point, eye flow, weight distribution, and emphasis. Use when attention lands in the wrong place. For establishing hierarchy in new work, use `visual-hierarchy` (ui-design).
+
+## Catálogo de referência (alexpate)
+
+- **awesome-design-systems** — Curated catalog of about 150 public design systems, tagged by components, voice & tone, designer kits and public source. Use to find and compare reference design systems (tokens, components, voice and tone, accessibility docs) before deciding a pattern. Points to external sites; not a component library.
 
 ## Impeccable (pbakaus) — direção de design e detector de "AI slop"
 

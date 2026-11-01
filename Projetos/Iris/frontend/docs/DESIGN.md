@@ -822,3 +822,21 @@ A tela passa a ser refeita em etapas. Nesta primeira, a análise mostra só:
 O mapa, a linha do tempo e as fontes continuam separados, na seção 03 · Exploração e evidências, que ganhou o mesmo
 formato de cabeçalho (rótulo + frase-título). Comparação e monitoramento estão prontos e fora da tela
 (`SECOES_EM_PAUSA`), à espera das próximas partes.
+
+## Análise do Cenário — parte 2 (nov/2026)
+
+Clicar em um cenário em "02 · Futuros possíveis" abre uma página própria (`/app/investigacoes/:id/cenarios/:letra`),
+em vez do painel de 400 px. A página tem largura total e trata o cenário como objeto de inteligência:
+
+- **Cabeçalho**: trilha "Iris / Cenários / Cenário B", "Análise aprofundada" em ouro, o nome como título, a linha
+  "Cenário B · arquétipo · Horizonte 2027–2030", a pílula para trocar de cenário e "Voltar aos 3 cenários".
+- **Índice fixo** com as oito partes (rola de lado; um esmaecimento na borda direita indica que há mais).
+- **Oito partes** no mesmo formato das seções da análise (rótulo "3 · Desenvolvimento temporal" e a pergunta como
+  título): tese, lógica de evolução, desenvolvimento temporal, dinâmicas, consequências, pontos de inflexão,
+  indicadores, premissas e vulnerabilidades.
+- **Trajetória** em linha do tempo vertical com marcos em ouro, sempre com o aviso "Os marcos são hipóteses de
+  desenvolvimento, não eventos confirmados nem datas previstas".
+- Os cartões da seção 02 viraram links ("Análise aprofundada →"). Na prévia, `#cenario-a|b|c` abre direto a página.
+
+O contrato com o servidor (o que o motor recupera para aprofundar, sem inventar) está em
+`docs/CONTRATO-ANALISE-DO-CENARIO.md`.

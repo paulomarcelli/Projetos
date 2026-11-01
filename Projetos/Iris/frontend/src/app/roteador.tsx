@@ -17,6 +17,7 @@ import { PaginaHistorico } from "../pages/Research/PaginaHistorico";
 import { PaginaFavoritos } from "../pages/Research/PaginaFavoritos";
 
 const PaginaAnalise = lazy(() => import("../pages/Analysis/PaginaAnalise"));
+const PaginaCenario = lazy(() => import("../pages/Analysis/PaginaCenario"));
 const PaginaRelacoes = lazy(() => import("../pages/Relations/PaginaRelacoes"));
 
 // Landing e telas de conta usam a biblioteca Motion: carregadas sob demanda, para que ela não
@@ -66,6 +67,14 @@ function Plataforma() {
           element={
             <Suspense fallback={<LinhasEsqueleto linhas={6} />}>
               <PaginaAnalise />
+            </Suspense>
+          }
+        />
+        <Route
+          path="investigacoes/:id/cenarios/:cenario"
+          element={
+            <Suspense fallback={<LinhasEsqueleto linhas={6} />}>
+              <PaginaCenario />
             </Suspense>
           }
         />

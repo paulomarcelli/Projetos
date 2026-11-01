@@ -15,6 +15,8 @@ export const ROTAS = {
   novaComParametros: "/app/nova",
   investigacoes: "/app/investigacoes",
   investigacao: (id: string) => `/app/investigacoes/${encodeURIComponent(id)}`,
+  /** A análise aprofundada de um cenário, ligada à investigação de origem. */
+  cenarioDaInvestigacao: (id: string, cenario: string) => `/app/investigacoes/${encodeURIComponent(id)}/cenarios/${encodeURIComponent(cenario)}`,
   relacoes: "/app/relacoes",
   relacoesDe: (id: string) => `/app/relacoes/${encodeURIComponent(id)}`,
   rascunho: (id: string) => `/app/investigacoes?rascunho=${encodeURIComponent(id)}`,

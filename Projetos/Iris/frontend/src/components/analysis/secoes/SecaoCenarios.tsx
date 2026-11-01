@@ -2,10 +2,12 @@
  * 02 · Futuros possíveis — o núcleo prospectivo: quantas trajetórias até o fim do horizonte e, para cada uma, a letra,
  * o nome e uma frase (`ideia`). Sem probabilidade nem etiqueta de chance: são trajetórias condicionais.
  *
- * Cada cartão é um botão: destaca o cenário (o mesmo destaque do mapa e da linha do tempo) e abre o detalhe completo
- * no painel lateral, sem sair da página. A tela de análise está sendo refeita por partes; o resto do cenário vive no
- * painel até voltar para a página.
+ * Cada cartão leva à Análise do Cenário (`/app/investigacoes/:id/cenarios/:letra`), o segundo nível da investigação:
+ * tese, lógica, trajetória, dinâmicas, consequências, inflexões, indicadores e premissas daquele futuro.
  */
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router";
+import { ROTAS } from "../../../config/rotas";
 import { useResultado } from "../investigacao/contexto";
 import { Letra } from "../investigacao/pecas";
 import { SECOES } from "../investigacao/secoes";
@@ -14,7 +16,7 @@ import { RotuloDeSecao } from "./RotuloDeSecao";
 const POR_EXTENSO = ["Nenhuma", "Uma", "Duas", "Três", "Quatro", "Cinco", "Seis"];
 
 export function SecaoCenarios() {
-  const { r, vista, setVista, selecionar } = useResultado();
+  const { r } = useResultado();
   const secao = SECOES[1];
   const n = r.cenarios.length;
   const quantas = `${POR_EXTENSO[n] ?? n} ${n === 1 ? "trajetória" : "trajetórias"} até ${r.horizonte.fim}`;
@@ -32,25 +34,23 @@ export function SecaoCenarios() {
       ) : (
         <ul className="m-0 mt-2 grid list-none gap-3 p-0 md:grid-cols-3">
           {r.cenarios.map((c) => {
-            const ativo = vista === c.id;
             return (
               <li key={c.id} className="flex">
-                <button
-                  type="button"
-                  aria-pressed={ativo}
-                  aria-label={`Cenário ${c.id}: ${c.nome}. Abrir o detalhe ao lado`}
-                  onClick={() => {
-                    setVista(c.id);
-                    selecionar({ tipo: "cenario", id: c.id });
-                  }}
-                  className={`cartao cartao-interativo flex w-full flex-col gap-3 p-5 text-left ${ativo ? "ring-1 ring-ciano/60" : ""}`}
+                <Link
+                  to={ROTAS.cenarioDaInvestigacao(r.id, c.id)}
+                  aria-label={`Cenário ${c.id}: ${c.nome}. Abrir a análise aprofundada`}
+                  className="group cartao cartao-interativo flex w-full flex-col gap-3 p-5 text-left no-underline"
                 >
                   <span className="flex items-center gap-2.5 text-corpo font-medium text-texto">
-                    <Letra id={c.id} ativa={ativo} tamanho="grande" />
+                    <Letra id={c.id} tamanho="grande" />
                     <span>{c.nome}</span>
                   </span>
                   <span className="text-legenda leading-relaxed text-texto-2">{c.ideia}</span>
-                </button>
+                  <span aria-hidden="true" className="mt-auto inline-flex items-center gap-1 pt-1 text-micro font-medium text-ciano-texto">
+                    Análise aprofundada
+                    <ArrowRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
               </li>
             );
           })}

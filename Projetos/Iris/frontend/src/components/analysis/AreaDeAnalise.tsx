@@ -4,7 +4,7 @@
  *   02 · Futuros possíveis  → as trajetórias até o fim do horizonte, cada uma com letra, nome e uma frase.
  * O mapa, a linha do tempo e as fontes continuam na seção própria deles (Exploração), separados da análise.
  * A comparação e o monitoramento estão prontos (secoes/SecaoComparacao, secoes/SecaoMonitoramento) e voltam nas
- * próximas partes; o detalhe de cada cenário continua no painel lateral.
+ * próximas partes; cada cenário abre a sua Análise do Cenário (components/analysis/cenario).
  * Nenhuma probabilidade; nenhuma afirmação sem tipo epistêmico e fonte.
  */
 import { SecaoCenarios } from "./secoes/SecaoCenarios";

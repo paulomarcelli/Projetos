@@ -11,6 +11,8 @@ import { SECOES } from "../components/analysis/investigacao/secoes";
 import { matrizAplicavel } from "../components/analysis/prospectiva/ComparacaoDeCenarios";
 import { MONITORAMENTO_DEMONSTRACAO } from "../previa/monitoramento-demonstracao";
 import { PaginaAnalise } from "../pages/Analysis/PaginaAnalise";
+import { PaginaCenario } from "../pages/Analysis/PaginaCenario";
+import { AnaliseDoCenario, PARTES_DO_CENARIO } from "../components/analysis/cenario/AnaliseDoCenario";
 import { ResultadoDaInvestigacao } from "../components/analysis/investigacao/ResultadoDaInvestigacao";
 import { INVESTIGACAO_EXEMPLO as r } from "../previa/investigacao-exemplo";
 
@@ -145,25 +147,39 @@ describe("resultado de investigação", () => {
     expect(within(sec).getByText(r.sintese)).toBeInTheDocument();
   });
 
-  it("02 futuros possíveis: núcleo prospectivo, quantas trajetórias e cada cenário com letra, nome e frase; o cartão abre o detalhe", async () => {
+  it("02 futuros possíveis: núcleo prospectivo, quantas trajetórias e cada cenário com letra, nome e frase; o cartão leva à análise aprofundada", () => {
     montar();
     const sec = screen.getByRole("region", { name: "Futuros possíveis" });
     expect(within(sec).getByText("Núcleo prospectivo")).toBeInTheDocument();
     expect(within(sec).getByRole("heading", { level: 2, name: `Três trajetórias até ${r.horizonte.fim}` })).toBeInTheDocument();
     for (const c of r.cenarios) {
-      expect(within(sec).getByRole("button", { name: new RegExp(`^Cenário ${c.id}: ${c.nome}`) })).toBeInTheDocument();
+      const cartao = within(sec).getByRole("link", { name: new RegExp(`^Cenário ${c.id}: ${c.nome}. Abrir a análise aprofundada`) });
+      expect(cartao).toHaveAttribute("href", `/app/investigacoes/${r.id}/cenarios/${c.id}`);
       expect(within(sec).getByText(c.ideia)).toBeInTheDocument();
     }
     // sem probabilidade nem etiqueta de chance
     expect(sec.textContent).not.toMatch(/%|provável|possível\b/i);
-    const b = within(sec).getByRole("button", { name: /^Cenário B:/ });
-    await userEvent.click(b);
-    expect(b).toHaveAttribute("aria-pressed", "true");
-    const painel = screen.getByRole("complementary", { name: "Painel contextual" });
-    expect(within(painel).getByRole("heading", { level: 3, name: r.cenarios[1].nome })).toBeInTheDocument();
-    for (const item of ["Lógica de desenvolvimento", "Premissas fundamentais", "Consequências estratégicas", "Indicadores observáveis", "Sinais de mudança"])
-      expect(within(painel).getByText(item)).toBeInTheDocument();
-    expect(within(painel).getAllByText("Sem revisão registrada")).toHaveLength(r.cenarios[1].premissas.length);
+  });
+
+  it("o cartão abre a análise do cenário numa página própria, ligada à investigação", async () => {
+    render(
+      <MemoryRouter initialEntries={["/app/investigacoes/x"]}>
+        <Routes>
+          <Route path="/app/investigacoes/x" element={<ResultadoDaInvestigacao r={r} />} />
+          <Route
+            path="/app/investigacoes/:id/cenarios/:cenario"
+            element={
+              <ProvedorDoResultado r={r}>
+                <AnaliseDoCenario id="B" />
+              </ProvedorDoResultado>
+            }
+          />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await userEvent.click(screen.getByRole("link", { name: /^Cenário B:/ }));
+    expect(screen.getByRole("heading", { level: 1, name: r.cenarios[1].nome })).toBeInTheDocument();
+    expect(screen.getByText("Análise aprofundada")).toBeInTheDocument();
   });
 
   // Comparação e monitoramento estão prontos, fora da tela por enquanto: os testes renderizam as seções diretamente.
@@ -230,9 +246,9 @@ describe("resultado de investigação", () => {
         .map((t) => t.textContent),
     ).toEqual(["Mapa de relações", "Linha do tempo", "Evidências e fontes"]);
     const b = r.cenarios[1];
-    // escolher o cenário na seção 02 destaca o mesmo cenário na linha do tempo e no mapa
-    await userEvent.click(screen.getByRole("button", { name: /^Cenário B:/ }));
+    // escolher o cenário na linha do tempo destaca o mesmo cenário no mapa
     await userEvent.click(within(sec).getByRole("tab", { name: "Linha do tempo" }));
+    await userEvent.click(within(within(sec).getByRole("tabpanel")).getByRole("button", { name: /^Cenário B:/ }));
     expect(within(sec).getByRole("tab", { name: "Linha do tempo" })).toHaveAttribute("aria-selected", "true");
     expect(within(sec).getByRole("heading", { level: 3, name: b.nome })).toBeInTheDocument();
     await userEvent.click(within(sec).getByRole("tab", { name: "Mapa de relações" }));
@@ -355,5 +371,76 @@ describe("seção Relações (mapa geopolítico)", () => {
     montar();
     await userEvent.click(screen.getByRole("button", { name: /Lista/ }));
     expect(screen.getByText(/relações hoje/)).toBeInTheDocument();
+  });
+});
+
+describe("análise do cenário", () => {
+  function montar(id: "A" | "B" | "C" = "A") {
+    return render(
+      <MemoryRouter>
+        <ProvedorDoResultado r={r}>
+          <AnaliseDoCenario id={id} />
+          <PainelContextual />
+        </ProvedorDoResultado>
+      </MemoryRouter>,
+    );
+  }
+
+  it("trilha, título e horizonte; volta aos cenários e troca de cenário sem passar pela análise principal", () => {
+    montar("A");
+    const c = r.cenarios[0];
+    const trilha = screen.getByRole("navigation", { name: "Trilha" });
+    expect(trilha.textContent?.replace(/\s+/g, " ")).toBe("Iris/Cenários/Cenário A");
+    expect(within(trilha).getByRole("link", { name: "Cenários" })).toHaveAttribute("href", `/app/investigacoes/${r.id}`);
+    expect(screen.getByRole("heading", { level: 1, name: c.nome })).toBeInTheDocument();
+    expect(screen.getByText(`${r.horizonte.inicio}–${r.horizonte.fim}`)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: `Voltar aos ${r.cenarios.length} cenários` })).toHaveAttribute("href", `/app/investigacoes/${r.id}`);
+    const troca = screen.getByRole("navigation", { name: "Outros cenários" });
+    expect(within(troca).getByRole("link", { name: /^Cenário A:/ })).toHaveAttribute("aria-current", "page");
+    expect(within(troca).getByRole("link", { name: /^Cenário C:/ })).toHaveAttribute("href", `/app/investigacoes/${r.id}/cenarios/C`);
+  });
+
+  it("as oito partes, na ordem, com a pergunta de cada uma; o índice leva a cada parte", () => {
+    montar("B");
+    const partes = PARTES_DO_CENARIO.map((p) => screen.getByRole("region", { name: p.nome }));
+    for (let i = 1; i < partes.length; i++) expect(partes[i - 1].compareDocumentPosition(partes[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    PARTES_DO_CENARIO.forEach((p, i) => expect(within(partes[i]).getByRole("heading", { level: 2, name: p.pergunta })).toBeInTheDocument());
+    const indice = screen.getByRole("navigation", { name: "Partes da análise do cenário" });
+    expect(
+      within(indice)
+        .getAllByRole("link")
+        .map((l) => l.getAttribute("href")),
+    ).toEqual(PARTES_DO_CENARIO.map((p) => `#${p.id}`));
+  });
+
+  it("tese e trajetória vêm do próprio resultado; a trajetória avisa que os marcos são hipóteses", () => {
+    montar("B");
+    const c = r.cenarios[1];
+    expect(within(screen.getByRole("region", { name: "Tese do cenário" })).getByText(c.sintese)).toBeInTheDocument();
+    const traj = screen.getByRole("region", { name: "Desenvolvimento temporal" });
+    expect(traj).toHaveTextContent("Os marcos são hipóteses de desenvolvimento, não eventos confirmados nem datas previstas.");
+    // só eventos projetados ou condicionais deste cenário; nada observado vira marco futuro
+    const doCenario = r.linhaDoTempo.filter((e) => e.cenarios?.includes("B") && (e.categoria === "projetado" || e.categoria === "condicional"));
+    for (const e of doCenario) expect(within(traj).getByText(e.texto, { exact: false })).toBeInTheDocument();
+    for (const e of r.linhaDoTempo.filter((x) => x.categoria === "observado")) expect(within(traj).queryByText(e.texto)).not.toBeInTheDocument();
+  });
+
+  it("premissas e vulnerabilidades: o que sustenta e onde o raciocínio pode falhar; sem probabilidade", () => {
+    montar("C");
+    const c = r.cenarios[2];
+    const sec = screen.getByRole("region", { name: "Premissas e vulnerabilidades" });
+    for (const p of c.premissas) expect(within(sec).getByText(p.texto, { exact: false })).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/\d+\s?%/);
+  });
+
+  it("fora da prévia, o endereço do cenário leva ao estado vazio (não há motor)", () => {
+    render(
+      <MemoryRouter initialEntries={["/app/investigacoes/exemplo-flavio-2026/cenarios/A"]}>
+        <Routes>
+          <Route path="/app/investigacoes/:id/cenarios/:cenario" element={<PaginaCenario />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("Cenário não encontrado")).toBeInTheDocument();
   });
 });

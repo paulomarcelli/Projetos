@@ -19,17 +19,24 @@ import { iniciarPreferencias } from "../store/preferencias";
 iniciarPreferencias();
 prepararImpressao();
 
+/** Na prévia (um arquivo só, sem servidor), o hash escolhe a tela de abertura. `#cenario-a` abre a análise do cenário A. */
+function entradaDaPrevia(hash: string) {
+  const exemplo = "/app/investigacoes/exemplo-flavio-2026";
+  const cenario = /^#cenario-([abc])$/i.exec(hash);
+  if (cenario) return `${exemplo}/cenarios/${cenario[1].toUpperCase()}`;
+  if (hash === "#investigacao") return exemplo;
+  if (hash === "#relacoes") return "/app/relacoes";
+  if (hash === "#app") return "/app";
+  return "/";
+}
+
 const raiz = document.getElementById("raiz");
 if (!raiz) throw new Error("Elemento #raiz não encontrado.");
 
 createRoot(raiz).render(
   <StrictMode>
     {PREVIA ? (
-      <MemoryRouter
-        initialEntries={[
-          location.hash === "#investigacao" ? "/app/investigacoes/exemplo-flavio-2026" : location.hash === "#relacoes" ? "/app/relacoes" : location.hash === "#app" ? "/app" : "/",
-        ]}
-      >
+      <MemoryRouter initialEntries={[entradaDaPrevia(location.hash)]}>
         <ProvedorDeNotificacoes>
           <App />
         </ProvedorDeNotificacoes>

@@ -20,7 +20,7 @@ import { SecaoMonitoramento } from "./secoes/SecaoMonitoramento";
 
 export function AreaDeAnalise({ demonstracao }: { demonstracao?: { ativa: boolean; alternar: () => void } }) {
   return (
-    <div className="flex flex-col gap-20 pt-4 lg:gap-24">
+    <div className="flex flex-col gap-14 pt-2 lg:gap-16">
       <SecaoDiagnostico />
       <SecaoCenarios />
       <SecaoComparacao />

@@ -63,22 +63,25 @@ export function SecaoDaInvestigacao({
     <section
       id={secao.id}
       aria-labelledby={titulo}
-      className={`relative flex scroll-mt-[calc(var(--altura-topo,0px)+4.5rem)] flex-col gap-8 ${
+      className={`relative flex scroll-mt-[calc(var(--altura-topo,0px)+4.5rem)] flex-col gap-6 ${
         destaque ? "-mx-4 rounded-painel bg-institucional/60 px-4 py-8 sm:-mx-6 sm:px-6 sm:py-10 print:bg-transparent" : ""
       }`}
     >
       {destaque && <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-ouro/60 sm:inset-x-6" />}
-      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-        <div className="relative flex max-w-[68ch] flex-col gap-2">
+      {/* Cabeçalho de seção compacto: número e título numa linha, a pergunta logo abaixo. A estrutura vem do número e
+          do filete, não do tamanho da letra: assim cada seção começa a mostrar conteúdo mais cedo. */}
+      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+        <div className="relative flex max-w-[68ch] flex-col gap-1">
           <span aria-hidden="true" className="marca-chegada absolute top-1 -left-4 h-[calc(100%-0.5rem)] w-0.5 origin-top rounded-full bg-ciano sm:-left-5" />
-          <p className="flex items-center gap-2 text-micro text-texto-3">
-            <span className="numeros font-dados">{secao.numero}</span>
-            <span aria-hidden="true" className={`h-px w-6 ${destaque ? "bg-ouro/70" : "bg-linha-forte"}`} />
-          </p>
-          <h2 id={titulo} tabIndex={-1} data-titulo-secao className="font-editorial text-titulo font-medium tracking-[-0.01em] text-texto outline-none">
-            {secao.titulo}
-          </h2>
-          <p className="text-corpo text-texto-2">{secao.pergunta}</p>
+          <div className="flex items-baseline gap-3">
+            <span aria-hidden="true" className={`numeros font-dados text-micro ${destaque ? "text-ouro" : "text-texto-3"}`}>
+              {secao.numero}
+            </span>
+            <h2 id={titulo} tabIndex={-1} data-titulo-secao className="font-editorial text-secao font-medium tracking-[-0.01em] text-texto outline-none">
+              {secao.titulo}
+            </h2>
+          </div>
+          <p className="text-legenda text-texto-2">{secao.pergunta}</p>
         </div>
         {acao}
       </header>

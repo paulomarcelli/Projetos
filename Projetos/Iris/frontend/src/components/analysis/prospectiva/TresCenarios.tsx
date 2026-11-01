@@ -21,8 +21,8 @@ import { useResultado } from "../investigacao/contexto";
 
 /**
  * Os três lado a lado quando há largura (consulta de contêiner, não de tela: o menu lateral e o
- * painel mudam a largura útil). Em três colunas, a subgrade alinha as partes: "Lógica" de A fica
- * na altura de "Lógica" de B e C, e o olho compara em linha reta. Abaixo disso, empilham.
+ * painel mudam a largura útil). Os cartões são curtos e da mesma altura (o sinal e o rodapé descem
+ * para a base), então o olho compara em linha reta. Abaixo disso, empilham.
  */
 export function TresCenarios() {
   const { r } = useResultado();

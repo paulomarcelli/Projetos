@@ -1,19 +1,12 @@
 /**
- * Cartão de um cenário (o mesmo componente para A, B e C). Campos vindos só do próprio cenário;
- * nada calculado nem estimado. Ver TresCenarios para a composição e a origem dos dados.
+ * Cartão de um cenário (o mesmo componente para A, B e C). Campos vindos só do próprio cenário e dos sinais que ele
+ * cita; nada calculado nem estimado. Ver TresCenarios para a composição e a origem dos dados.
  */
 import { ArrowRight, PanelRightOpen } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
-import type { Cenario, Efeito } from "../../../types/cenario";
+import type { CSSProperties } from "react";
+import type { Cenario } from "../../../types/cenario";
 import { useResultado } from "../investigacao/contexto";
 import { Letra } from "../investigacao/pecas";
-
-const EFEITO: Record<Efeito, { rotulo: string; cor: string }> = {
-  aproximacao: { rotulo: "aproximação", cor: "var(--color-ciano)" },
-  atrito: { rotulo: "atrito", cor: "var(--color-ambar)" },
-  misto: { rotulo: "misto", cor: "var(--color-texto-2)" },
-  neutro: { rotulo: "sem mudança", cor: "var(--color-texto-3)" },
-};
 
 /** Evidências distintas citadas pelo cenário (premissas, tendências, mecanismos, a favor, contra). */
 function evidenciasDoCenario(c: Cenario) {
@@ -22,44 +15,32 @@ function evidenciasDoCenario(c: Cenario) {
   return ids.size;
 }
 
-/** Uma parte do cartão: rótulo curto e conteúdo. Em três colunas, alinha com as dos vizinhos. */
-function Parte({ rotulo, children }: { rotulo: string; children: ReactNode }) {
-  return (
-    <div className="flex min-w-0 flex-col gap-1.5">
-      <p className="text-micro font-medium text-texto-3">{rotulo}</p>
-      {children}
-    </div>
-  );
-}
-
-/** Número de partes do cartão: as linhas da subgrade (alinhamento entre os três cartões). */
-export const PARTES = 7;
-
 /**
- * Cartão de um cenário. O essencial fica visível (nome, trajetória, lógica, premissas, consequências, indicadores
- * e a data da última atualização); o completo (os dez itens, com sinais de mudança, condições que favorecem e
- * enfraquecem, evidências e versões anteriores) abre no painel lateral, sem sair da página.
+ * Cartão curto de um cenário: o que basta para comparar os três de relance (nome, trajetória em uma frase e o
+ * primeiro sinal a observar) e as contagens do que está por trás. O completo (os dez itens: lógica, premissas,
+ * consequências, indicadores, condições, evidências e versões anteriores) abre no painel lateral, sem sair da página,
+ * para não repetir aqui o que o painel já mostra.
  *
- * Interação: clicar no cartão destaca o cenário (mesmo destaque na matriz, nas tabelas, no mapa
- * e na timeline). Pelo teclado, o destaque é o botão do título (aria-pressed). Chips de ator e
- * botões internos não propagam o clique.
+ * Interação: clicar no cartão destaca o cenário (mesmo destaque na matriz, nas tabelas, no mapa e na timeline). Pelo
+ * teclado, o destaque é o botão do título (aria-pressed). Os botões internos não propagam o clique.
  */
 export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
   const { r, ix, vista, setVista, selecionar, irPara } = useResultado();
   const ativo = vista === c.id;
   const alternar = () => setVista(ativo ? "presente" : c.id);
-  const sinais = c.indicadores.map((id) => ix.sinais.get(id)).filter((s) => s !== undefined);
+  const primeiroSinal = c.indicadores.map((id) => ix.sinais.get(id)).find((s) => s !== undefined);
   const nEvidencias = evidenciasDoCenario(c);
   const revisadas = new Set(r.monitoramento?.revisoesDePremissas.filter((x) => x.cenario === c.id).map((x) => x.premissa)).size;
+  const plural = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
   return (
     <li
       // Entrada em cascata (60 ms entre cartões); com "reduzir movimento" o CSS zera a duração.
-      style={{ animationDelay: `${indice * 60}ms`, "--partes": PARTES } as CSSProperties}
+      style={{ animationDelay: `${indice * 60}ms` } as CSSProperties}
       data-selecionado={ativo || undefined}
       onClick={(e) => {
         if (!(e.target as HTMLElement).closest("button, a")) alternar();
       }}
-      className="cartao cartao-interativo surgir flex cursor-pointer flex-col gap-5 p-5 @4xl:row-span-(--partes) @4xl:grid @4xl:grid-rows-subgrid @4xl:gap-y-5"
+      className="cartao cartao-interativo surgir flex cursor-pointer flex-col gap-4 p-5"
     >
       <header className="flex flex-col gap-2">
         <p className="flex items-center gap-2.5 text-micro text-texto-3">
@@ -77,62 +58,22 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
         </h3>
       </header>
 
-      <Parte rotulo="Trajetória">
-        <p className="text-corpo text-texto">{c.ideia}</p>
-      </Parte>
+      <p className="text-legenda leading-relaxed text-texto-2">{c.ideia}</p>
 
-      <Parte rotulo="Lógica de desenvolvimento">
-        <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-          {c.mecanismos.slice(0, 2).map((m) => (
-            <li key={m.condicao} className="text-legenda text-texto-2">
-              {m.condicao} <ArrowRight size={12} aria-label="leva a" className="inline align-[-1px] text-texto-3" /> <span className="text-texto">{m.consequencia}</span>
-            </li>
-          ))}
-        </ul>
-      </Parte>
+      {primeiroSinal && (
+        <div className="mt-auto flex flex-col gap-1 border-t border-linha pt-3.5">
+          <p className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">Primeiro sinal a observar</p>
+          <p className="text-legenda font-medium text-texto">{primeiroSinal.sinal}</p>
+          {primeiroSinal.quando && <p className="numeros font-dados text-micro text-ambar">{primeiroSinal.quando}</p>}
+        </div>
+      )}
 
-      <Parte rotulo="Premissas fundamentais">
-        <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto-2">
-          {c.premissas.slice(0, 2).map((x) => (
-            <li key={x.texto} className="line-clamp-3">
-              {x.texto}
-            </li>
-          ))}
-        </ul>
-        {c.premissas.length > 2 && <p className="text-micro text-texto-3">+{c.premissas.length - 2} no detalhe</p>}
-      </Parte>
-
-      <Parte rotulo="Consequências estratégicas">
-        <p className="text-legenda text-texto">{c.impacto}</p>
-        <ul className="m-0 flex list-none flex-wrap gap-x-3 gap-y-1 p-0">
-          {c.consequencias.map((q) => (
-            <li key={q.regiao} className="inline-flex items-center gap-1.5 text-micro text-texto-2" title={q.texto}>
-              <span aria-hidden="true" className="size-1.5 rounded-full" style={{ background: EFEITO[q.efeito].cor }} />
-              {q.regiao}: {EFEITO[q.efeito].rotulo}
-            </li>
-          ))}
-        </ul>
-      </Parte>
-
-      <Parte rotulo="Indicadores observáveis">
-        <ul className="m-0 flex list-none flex-col gap-1 p-0 text-legenda text-texto-2">
-          {sinais.slice(0, 3).map((s) => (
-            <li key={s.id}>{s.sinal}</li>
-          ))}
-        </ul>
-      </Parte>
-
-      <footer className="flex flex-col gap-3 border-t border-linha pt-4">
-        <p className="flex flex-wrap gap-x-2 text-micro text-texto-3">
-          <span>
-            {nEvidencias} {nEvidencias === 1 ? "evidência vinculada" : "evidências vinculadas"} · {c.favoraveis.length} a favor, {c.contrarias.length} contra
-          </span>
-          <span>
-            · Atualizado em {r.atualizadoEm} (v{r.versao})
-            {revisadas > 0 && <span className="text-ambar"> · {revisadas} {revisadas === 1 ? "premissa revista" : "premissas revistas"}</span>}
-          </span>
+      <footer className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <p className="text-micro text-texto-3">
+          {plural(c.premissas.length, "premissa", "premissas")} · {plural(nEvidencias, "evidência", "evidências")}
+          {revisadas > 0 && <span className="text-ambar"> · {plural(revisadas, "premissa revista", "premissas revistas")}</span>}
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           <button
             type="button"
             className="botao botao-secundario botao-pequeno"
@@ -153,7 +94,7 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
               irPara("timeline");
             }}
           >
-            Na linha do tempo
+            Linha do tempo
             <ArrowRight size={14} aria-hidden="true" />
           </button>
         </div>

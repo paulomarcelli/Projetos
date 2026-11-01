@@ -112,31 +112,59 @@ describe("resultado de investigação", () => {
     expect(topo).not.toHaveAttribute("data-visivel"); // só aparece depois de rolar
   });
 
-  it("01 diagnóstico: síntese em destaque, interpretação da Iris, fatores dentro da narrativa e incertezas", async () => {
+  it("cabeçalho compacto: aviso contrafactual numa linha; a origem abre em 'Ver contexto'", async () => {
+    montar();
+    expect(screen.getByRole("heading", { level: 1, name: r.pergunta })).toBeInTheDocument();
+    expect(screen.getByText(r.avisoDeContexto.texto, { exact: false })).toBeInTheDocument();
+    const ver = screen.getByRole("button", { name: /Ver contexto/ });
+    expect(ver).toHaveAttribute("aria-expanded", "false");
+    expect(document.getElementById("contexto-da-investigacao")).toHaveClass("hidden");
+    await userEvent.click(ver);
+    expect(screen.getByRole("button", { name: /Ocultar contexto/ })).toHaveAttribute("aria-expanded", "true");
+    expect(document.getElementById("contexto-da-investigacao")).not.toHaveClass("hidden");
+    expect(screen.getByText(r.origem)).toBeInTheDocument();
+  });
+
+  it("01 diagnóstico: primeira dobra com síntese, o que separa os futuros e o mapa; a leitura completa abre na página", async () => {
     montar();
     const sec = screen.getByRole("region", { name: "Diagnóstico estratégico" });
     expect(within(sec).getByText(r.sintese)).toBeInTheDocument();
-    for (const t of ["Interpretação estratégica da Iris", "Dinâmicas geopolíticas e fatores determinantes", "Incertezas críticas"])
+    // o que separa os futuros: cada incerteza com a pergunta e quais cenários ela separa (lido de `posicao`)
+    expect(within(sec).getByRole("heading", { name: "O que separa os futuros" })).toBeInTheDocument();
+    for (const i of r.incertezas) expect(within(sec).getAllByText(i.pergunta, { exact: false }).length).toBeGreaterThan(0);
+    expect(within(sec).getAllByText(/^Separa/).length).toBe(r.incertezas.length);
+    // o mapa dos futuros (matriz 2×2) está na primeira dobra
+    expect(within(sec).getByRole("heading", { name: "Mapa dos futuros" })).toBeInTheDocument();
+    const [x] = r.incertezas;
+    const a = r.cenarios[0];
+    expect(within(sec).getByRole("button", { name: new RegExp(`Cenário A, ${a.nome}: ${x.nome}, ${x.polos[a.posicao[x.id]!]}`) })).toBeInTheDocument();
+    // a leitura completa (interpretação e dinâmicas) abre na própria página
+    const abrir = within(sec).getByRole("button", { name: /Ler o diagnóstico completo/ });
+    expect(abrir).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(abrir);
+    expect(within(sec).getByRole("button", { name: /Recolher o diagnóstico completo/ })).toHaveAttribute("aria-expanded", "true");
+    for (const t of ["Interpretação estratégica da Iris", "Dinâmicas geopolíticas e fatores determinantes", "Por que estas incertezas"])
       expect(within(sec).getByRole("heading", { name: t })).toBeInTheDocument();
     // os fatores aparecem na narrativa (nome: estado atual), não numa tabela à parte
     expect(within(sec).getByText(new RegExp(`^${r.variaveis[0].nome}:`))).toBeInTheDocument();
-    for (const i of r.incertezas) expect(within(sec).getAllByText(i.pergunta, { exact: false }).length).toBeGreaterThan(0);
     expect(within(sec).getByText("Marcas:")).toBeInTheDocument();
     // um ator citado no texto abre no painel contextual
     await userEvent.click(within(sec).getAllByRole("button", { name: "EUA" })[0]);
     expect(screen.getByRole("complementary", { name: "Painel contextual" })).toHaveTextContent("Papel na dinâmica");
   });
 
-  it("02 cenários: três cartões com o essencial e o detalhe completo (os dez itens) no painel", async () => {
+  it("02 cenários: três cartões curtos e o detalhe completo (os dez itens) no painel", async () => {
     montar();
     const sec = screen.getByRole("region", { name: "Cenários prospectivos" });
     for (const c of r.cenarios) {
       expect(within(sec).getByRole("button", { name: new RegExp(`Cenário ${c.id}: ${c.nome}`) })).toBeInTheDocument();
       expect(within(sec).getByText(c.ideia)).toBeInTheDocument();
     }
-    for (const parte of ["Trajetória", "Lógica de desenvolvimento", "Premissas fundamentais", "Consequências estratégicas", "Indicadores observáveis"])
-      expect(within(sec).getAllByText(parte)).toHaveLength(3);
-    expect(within(sec).getAllByText(/Atualizado em/)).toHaveLength(3);
+    // cartão curto: a trajetória, o primeiro sinal a observar e as contagens; o resto fica no painel
+    expect(within(sec).getAllByText("Primeiro sinal a observar")).toHaveLength(3);
+    for (const c of r.cenarios) expect(within(sec).getByText(r.sinais.find((x) => x.id === c.indicadores[0])!.sinal)).toBeInTheDocument();
+    expect(within(sec).getAllByText(/premissas? · \d+ evidências?/)).toHaveLength(3);
+    expect(within(sec).queryByText("Lógica de desenvolvimento")).not.toBeInTheDocument();
     const titulo = within(sec).getByRole("button", { name: /Cenário C:/ });
     await userEvent.click(titulo);
     expect(titulo).toHaveAttribute("aria-pressed", "true");
@@ -159,22 +187,24 @@ describe("resultado de investigação", () => {
     expect(within(painel).getAllByText("Sem revisão registrada")).toHaveLength(r.cenarios[1].premissas.length);
   });
 
-  it("03 comparação: só o que diferencia os futuros, matriz só quando se aplica, sem percentuais", () => {
+  it("03 comparação: só o que diferencia os futuros, sem repetir a matriz (que subiu ao diagnóstico), sem percentuais", () => {
     montar();
     const sec = screen.getByRole("region", { name: "Comparação estratégica" });
     expect(within(sec).getByText(/não atribui probabilidade, nota nem peso/)).toBeInTheDocument();
     expect(within(within(sec).getByRole("table", { name: /Direção de cada fator/ })).getByText(r.variaveis[0].direcao.B)).toBeInTheDocument();
-    expect(within(within(sec).getByRole("table", { name: /O que levaria a revisar/ })).getByText(r.cenarios[0].revisao[0])).toBeInTheDocument();
-    expect(within(within(sec).getByRole("table", { name: /Sinais de alerta/ })).getAllByRole("row")).toHaveLength(r.sinais.length + 1);
-    // a matriz aparece porque o exemplo tem duas incertezas e todos os cenários têm posição nas duas
+    // condições, gatilhos e revisão numa tabela só
+    const condicoes = within(sec).getByRole("table", { name: /Condições, gatilhos e o que levaria a revisar/ });
+    expect(within(condicoes).getByText(r.cenarios[0].revisao[0])).toBeInTheDocument();
+    expect(within(condicoes).getByText(r.cenarios[0].condicoes[0])).toBeInTheDocument();
+    // os sinais não se repetem aqui: a comparação aponta para o monitoramento
+    expect(within(sec).queryByRole("table", { name: /Sinais de alerta/ })).not.toBeInTheDocument();
+    expect(within(sec).getByRole("link", { name: "04 Monitoramento" })).toHaveAttribute("href", "#sec-monitoramento");
     expect(matrizAplicavel(r)).toBe(true);
-    const [x] = r.incertezas;
-    const a = r.cenarios[0];
-    expect(within(sec).getByRole("button", { name: new RegExp(`Cenário A, ${a.nome}: ${x.nome}, ${x.polos[a.posicao[x.id]!]}`) })).toBeInTheDocument();
+    expect(within(sec).queryByRole("button", { name: /^Cenário A, / })).not.toBeInTheDocument();
     expect(within(sec).queryByRole("table", { name: /Linha do tempo/ })).not.toBeInTheDocument();
   });
 
-  it("03 a matriz 2×2 não é forçada quando a investigação não a sustenta", () => {
+  it("01 a matriz 2×2 não é forçada quando a investigação não a sustenta: o mapa vira lista", () => {
     const umaSo = { ...r, incertezas: r.incertezas.slice(0, 1) };
     expect(matrizAplicavel(umaSo)).toBe(false);
     render(
@@ -182,19 +212,28 @@ describe("resultado de investigação", () => {
         <ResultadoDaInvestigacao r={umaSo} />
       </MemoryRouter>,
     );
-    const sec = screen.getByRole("region", { name: "Comparação estratégica" });
-    expect(within(sec).getByText(/Sem matriz 2×2/)).toBeInTheDocument();
+    const sec = screen.getByRole("region", { name: "Diagnóstico estratégico" });
+    expect(within(sec).getByRole("heading", { name: "Mapa dos futuros" })).toBeInTheDocument();
+    expect(within(sec).queryByRole("button", { name: /^Cenário A, / })).not.toBeInTheDocument();
+    expect(within(sec).getByText(umaSo.incertezas[0].nome)).toBeInTheDocument();
   });
 
-  it("04 monitoramento sem servidor: estados vazios honestos; indicadores e histórico vêm do que existe", () => {
+  it("04 monitoramento sem servidor: sinais a observar na frente, estado num cartão e nenhuma caixa vazia", async () => {
     montar();
     const sec = screen.getByRole("region", { name: "Monitoramento prospectivo" });
-    expect(within(sec).getByText("Acompanhamento automático ainda não ativo.")).toBeInTheDocument();
-    expect(within(sec).getByText(/Nenhum acontecimento novo registrado/)).toBeInTheDocument();
-    expect(within(sec).getByText(/Sem acontecimentos novos, não há impactos/)).toBeInTheDocument();
+    expect(within(sec).getByText("Acompanhamento automático inativo")).toBeInTheDocument();
+    // sem servidor, acontecimentos, impacto e revisão não ocupam a página com estados vazios
+    expect(within(sec).queryByRole("heading", { name: "Novos acontecimentos" })).not.toBeInTheDocument();
+    expect(within(sec).queryByText(/Sem acontecimentos novos/)).not.toBeInTheDocument();
+    expect(within(sec).queryByText("Nenhuma registrada")).not.toBeInTheDocument();
+    // os sinais: os cinco primeiros à vista, o resto a um clique
+    expect(within(sec).getByRole("heading", { name: "Sinais a observar" })).toBeInTheDocument();
     expect(within(sec).getByText(r.sinais[0].sinal)).toBeInTheDocument();
-    expect(within(sec).getAllByText("Nenhuma registrada")).toHaveLength(r.sinais.length);
-    expect(within(sec).getAllByText("Dados insuficientes para dizer")).toHaveLength(r.sinais.length);
+    const ultimo = r.sinais.at(-1)!;
+    expect(within(sec).queryByText(ultimo.sinal)).not.toBeInTheDocument();
+    await userEvent.click(within(sec).getByRole("button", { name: `Ver os ${r.sinais.length} sinais` }));
+    expect(within(sec).getByText(ultimo.sinal)).toBeInTheDocument();
+    // o histórico continua vindo do que existe
     expect(within(sec).getByText(r.revisoes[0].texto)).toBeInTheDocument();
     expect(within(sec).getByText(new RegExp(`Versão ${r.versao} em vigor`))).toBeInTheDocument();
     expect(within(sec).getByText(/versões anteriores dos cenários não estão disponíveis/)).toBeInTheDocument();

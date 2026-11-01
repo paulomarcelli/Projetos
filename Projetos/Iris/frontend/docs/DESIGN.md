@@ -786,3 +786,26 @@ no histórico, etapas concluídas e o botão de enviar. Âmbar é epistêmico: h
 180 ms), marca de chegada (0,9 s, uma vez) e troca de vista na seção 05 (opacidade, 140 ms). Nada em loop; com
 "reduzir movimento", tudo aparece no lugar.
 
+
+## Tela de análise: primeira dobra e densidade (nov/2026)
+
+Proposta desenhada no Figma ("Iris — Interface de análise", página 02) e levada ao código. A estrutura em cinco seções
+não mudou; mudou quanto cada uma ocupa e o que aparece sem rolar.
+
+- **Cabeçalho compacto.** Natureza, versão e data numa linha de rótulo; título em 22–24 px; o aviso contrafactual numa
+  faixa âmbar de uma linha, com a origem em "Ver contexto" (sempre visível na impressão).
+- **Cabeçalho de seção compacto.** Número e título (21 px) numa linha, a pergunta logo abaixo. A estrutura vem do número
+  e do filete, não do tamanho da letra.
+- **01 Diagnóstico na primeira dobra.** Síntese executiva e "O que separa os futuros" (cada incerteza com os polos e
+  quais cenários ela separa, lido de `posicao`) à esquerda; "Mapa dos futuros" (a matriz 2×2) à direita. Interpretação
+  e dinâmicas ficam em "Ler o diagnóstico completo", na própria página.
+- **02 Cartões curtos.** Nome, trajetória numa frase, primeiro sinal a observar, contagens e "Explorar o cenário". Os
+  dez itens continuam no painel lateral.
+- **03 Comparação sem repetição.** A matriz subiu para o 01; condições, gatilhos e revisão viraram uma tabela só; os
+  sinais ficam no 04, com um link.
+- **04 Monitoramento pelo que dá para fazer.** "Sinais a observar" na frente (cinco à vista, o resto a um clique); um
+  cartão lateral com o estado do acompanhamento, o histórico de versões e a legenda. Acontecimentos, impacto e revisão
+  de premissas só aparecem quando houver monitoramento (sem três caixas vazias).
+
+Altura da página no exemplo da prévia, a 1440 px: de 10.687 px para cerca de 5.000 px; a 390 px, de 19.389 px para
+cerca de 10.000 px.

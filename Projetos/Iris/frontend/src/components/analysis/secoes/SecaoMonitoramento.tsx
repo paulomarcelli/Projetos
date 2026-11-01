@@ -14,8 +14,8 @@
  * registro de revisões que já existe (`r.revisoes`). Nada é guardado no navegador nem simulado como real.
  * Acontecimento não é confirmação: a interface nunca soma impactos num "placar" de cenários.
  */
-import { FlaskConical, Radar } from "lucide-react";
-import type { ReactNode } from "react";
+import { ChevronDown, FlaskConical, Radar } from "lucide-react";
+import { type ReactNode, useState } from "react";
 import { IMPACTO, TENDENCIA, TIPO_DE_ACONTECIMENTO, TIPO_DE_MUDANCA } from "../../../config/semantica";
 import type { Acontecimento, EntradaDoHistorico, TipoDeMudanca } from "../../../types/monitoramento";
 import { Etiqueta } from "../../common/Etiqueta";
@@ -46,83 +46,110 @@ export function SecaoMonitoramento({
         )
       }
     >
-      <Estado />
-
       {m?.demonstracao && (
         <p role="note" className="rounded-padrao border border-ambar/45 bg-ambar-suave px-4 py-3 text-legenda text-texto">
-          <span className="font-medium">Demonstração da interface.</span> Os acontecimentos, impactos, revisões e versões abaixo são fictícios,
-          criados só para mostrar como esta seção funciona. Não aconteceram e não alteram a investigação.
+          <span className="font-medium">Demonstração da interface.</span> Os acontecimentos, impactos, revisões e versões abaixo são fictícios, criados só para
+          mostrar como esta seção funciona. Não aconteceram e não alteram a investigação.
         </p>
       )}
 
-      <Parte id="t-acontecimentos" letra="A" titulo="Novos acontecimentos" texto="Notícias, documentos, declarações e dados identificados desde a última atualização.">
-        {m && m.acontecimentos.length > 0 ? (
-          <ol className="m-0 flex list-none flex-col p-0">
-            {m.acontecimentos.map((a) => (
-              <ItemDeAcontecimento key={a.id} a={a} />
-            ))}
-          </ol>
-        ) : (
-          <Vazio>
-            Nenhum acontecimento novo registrado desde {r.atualizadoEm}. A busca contínua por acontecimentos depende do servidor de
-            monitoramento, que ainda não existe; quando existir, cada acontecimento aparecerá aqui com a fonte e a relação com os cenários.
-          </Vazio>
-        )}
-      </Parte>
+      {/* O que fazer agora fica na frente: os sinais a observar (já existem na investigação). O estado do
+          acompanhamento, as versões e a legenda ficam num cartão ao lado, em vez de caixas vazias empilhadas. */}
+      <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+        <section aria-labelledby="t-indicadores" className="flex min-w-0 flex-col gap-4 lg:col-span-8">
+          <Subtitulo id="t-indicadores" titulo="Sinais a observar">
+            O que merece atenção contínua, quando e onde acompanhar, e a que futuros cada sinal dá ou tira força. Um sinal não confirma um cenário.
+          </Subtitulo>
+          <Indicadores />
+        </section>
+        <aside aria-label="Estado do acompanhamento" className="cartao flex min-w-0 flex-col gap-5 self-start p-5 lg:col-span-4">
+          <Estado />
+          <section aria-labelledby="t-historico" className="flex flex-col gap-3 border-t border-linha pt-4">
+            <h3 id="t-historico" className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">
+              Histórico de versões
+            </h3>
+            <Historico />
+          </section>
+          <section aria-labelledby="t-legenda-efeitos" className="flex flex-col gap-2 border-t border-linha pt-4">
+            <h3 id="t-legenda-efeitos" className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">
+              Como ler os efeitos
+            </h3>
+            <Legenda />
+          </section>
+        </aside>
+      </div>
 
-      <Parte id="t-impacto" letra="B" titulo="Impacto nos cenários" texto="Como cada acontecimento se relaciona com cada futuro, e por quê. Um acontecimento não confirma um cenário.">
-        {m && m.acontecimentos.length > 0 ? (
-          <MatrizDeImpacto acontecimentos={m.acontecimentos} />
-        ) : (
-          <Vazio>Sem acontecimentos novos, não há impactos a avaliar.</Vazio>
-        )}
-        <Legenda />
-      </Parte>
+      {/* Acontecimentos, impacto e revisão de premissas só existem com o servidor de monitoramento. Sem ele, o
+          cartão de estado diz o que falta, e a página não gasta altura com três caixas vazias. */}
+      {m && (
+        <>
+          <Parte
+            id="t-acontecimentos"
+            letra="A"
+            titulo="Novos acontecimentos"
+            texto="Notícias, documentos, declarações e dados identificados desde a última atualização."
+          >
+            {m.acontecimentos.length > 0 ? (
+              <ol className="m-0 flex list-none flex-col p-0">
+                {m.acontecimentos.map((a) => (
+                  <ItemDeAcontecimento key={a.id} a={a} />
+                ))}
+              </ol>
+            ) : (
+              <Vazio>Nenhum acontecimento novo registrado desde {m.verificadoEm}.</Vazio>
+            )}
+          </Parte>
 
-      <Parte id="t-premissas" letra="C" titulo="Revisão de premissas" texto="As premissas de cada cenário e o que as evidências novas fizeram com elas.">
-        <div className="grid gap-x-8 gap-y-8 lg:grid-cols-3">
-          {r.cenarios.map((c) => (
-            <section key={c.id} aria-label={`Premissas do cenário ${c.id}: ${c.nome}`} className="flex min-w-0 flex-col gap-3">
-              <p className="flex items-center gap-2 text-corpo text-texto">
-                <Letra id={c.id} /> {c.nome}
-              </p>
-              <Premissas c={c} />
-            </section>
-          ))}
-        </div>
-      </Parte>
+          {m.acontecimentos.length > 0 && (
+            <Parte
+              id="t-impacto"
+              letra="B"
+              titulo="Impacto nos cenários"
+              texto="Como cada acontecimento se relaciona com cada futuro, e por quê. Um acontecimento não confirma um cenário."
+            >
+              <MatrizDeImpacto acontecimentos={m.acontecimentos} />
+            </Parte>
+          )}
 
-      <Parte id="t-indicadores" letra="D" titulo="Indicadores de acompanhamento" texto="O que merece atenção contínua, os cenários a que cada indicador se liga e a última leitura.">
-        <Indicadores />
-      </Parte>
-
-      <Parte id="t-historico" letra="E" titulo="Histórico de atualizações" texto="Cada mudança na investigação, com o tipo e o que a motivou. Nenhuma versão é sobrescrita.">
-        <Historico />
-      </Parte>
+          <Parte id="t-premissas" letra="C" titulo="Revisão de premissas" texto="As premissas de cada cenário e o que as evidências novas fizeram com elas.">
+            <div className="grid gap-x-8 gap-y-8 lg:grid-cols-3">
+              {r.cenarios.map((c) => (
+                <section key={c.id} aria-label={`Premissas do cenário ${c.id}: ${c.nome}`} className="flex min-w-0 flex-col gap-3">
+                  <p className="flex items-center gap-2 text-corpo text-texto">
+                    <Letra id={c.id} /> {c.nome}
+                  </p>
+                  <Premissas c={c} />
+                </section>
+              ))}
+            </div>
+          </Parte>
+        </>
+      )}
     </SecaoDaInvestigacao>
   );
 }
 
-/** Linha de estado: quando foi a última verificação, ou que o acompanhamento ainda não existe. */
+/** Estado do acompanhamento: a última verificação, ou que ele ainda não existe e o que falta para existir. */
 function Estado() {
   const { r } = useResultado();
   const m = r.monitoramento;
   return (
-    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-legenda text-texto-2">
-      <Radar size={16} aria-hidden="true" className={m ? "text-ciano-texto" : "text-texto-3"} />
+    <div className="flex flex-col gap-2 text-legenda text-texto-2">
+      <p className="flex items-center gap-2 font-medium text-texto">
+        <Radar size={16} aria-hidden="true" className={m ? "text-ciano-texto" : "text-texto-3"} />
+        {m ? "Acompanhamento ativo" : "Acompanhamento automático inativo"}
+      </p>
       {m ? (
-        <span>
+        <p>
           Última verificação: <span className="text-texto">{m.verificadoEm}</span>
-        </span>
+        </p>
       ) : (
-        <span>
-          <span className="text-texto">Acompanhamento automático ainda não ativo.</span> Depende do servidor de monitoramento.
-        </span>
+        <p>
+          Novos acontecimentos, impacto nos cenários e revisão de premissas aparecem aqui quando o servidor de monitoramento existir. Até lá, a lista ao lado
+          diz o que vigiar e onde.
+        </p>
       )}
-      <span className="text-texto-3">
-        · Versão atual {r.versao}, de {r.atualizadoEm}
-      </span>
-    </p>
+    </div>
   );
 }
 
@@ -181,7 +208,10 @@ function ItemDeAcontecimento({ a }: { a: Acontecimento }) {
               ))}
             </>
           ) : (
-            <span className="text-ambar">Sem fonte verificável{a.fontes.length === 0 ? " (exemplo fictício)" : ""}.</span>
+            <span className="text-ambar">
+              Sem fonte verificável
+              {a.fontes.length === 0 ? " (exemplo fictício)" : ""}.
+            </span>
           )}
         </p>
         <ul aria-label="Cenários potencialmente afetados" className="m-0 flex list-none flex-wrap gap-x-4 gap-y-1.5 p-0">
@@ -267,63 +297,92 @@ function Legenda() {
 }
 
 /** D. Os indicadores (sinais) com cenários relacionados, evidências do fator, última observação e tendência. */
+/**
+ * D. Sinais a observar: os primeiros cinco à vista e o resto a um clique. A coluna "última observação / tendência"
+ * só aparece quando existe alguma observação; sem nenhuma, repetir "nenhuma registrada" em cada linha só ocupa espaço
+ * (o cartão de estado já diz que o acompanhamento não está ativo).
+ */
+const SINAIS_VISIVEIS = 5;
 function Indicadores() {
   const { r } = useResultado();
+  const [todos, setTodos] = useState(false);
   const observacoes = r.monitoramento?.observacoes ?? [];
   if (!r.sinais.length) return <Vazio>Esta investigação não declarou indicadores para acompanhar.</Vazio>;
+  const comObservacoes = observacoes.length > 0;
+  const lista = todos ? r.sinais : r.sinais.slice(0, SINAIS_VISIVEIS);
   return (
-    <ol className="m-0 flex list-none flex-col p-0">
-      {r.sinais.map((s) => {
-        const fator = r.variaveis.find((v) => v.id === s.variavel);
-        const ultima = observacoes.filter((o) => o.sinal === s.id).at(-1);
-        return (
-          <li key={s.id} className="grid gap-x-8 gap-y-3 border-t border-linha py-4 first:border-t-0 first:pt-0 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-            <div className="flex min-w-0 flex-col gap-1.5">
-              <p className="text-corpo text-texto">{s.sinal}</p>
-              <p className="text-legenda leading-relaxed text-texto-2">{s.leitura}</p>
-              <p className="text-micro text-texto-3">
-                Onde acompanhar: {s.ondeAcompanhar} · {s.quando}
-                {fator && (
-                  <>
-                    {" "}
-                    · Evidência do fator ({fator.nome}): <Citacoes ids={fator.estadoAtual.evidencias} />
-                  </>
-                )}
-              </p>
-              <ul aria-label="Cenários relacionados" className="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-micro">
-                {s.favorece.map((c) => (
-                  <li key={`f${c}`} className="inline-flex items-center gap-1.5">
-                    <Letra id={c} /> <Etiqueta estado={IMPACTO.favorece} />
-                  </li>
-                ))}
-                {s.enfraquece.map((c) => (
-                  <li key={`e${c}`} className="inline-flex items-center gap-1.5">
-                    <Letra id={c} /> <Etiqueta estado={IMPACTO.enfraquece} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <dl className="m-0 grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1.5 text-legenda">
-              <dt className="text-texto-3">Última observação</dt>
-              <dd className="m-0 text-texto-2">
-                {ultima ? (
-                  <>
-                    <span className="font-dados text-micro text-texto-3">{ultima.data}</span> · {ultima.texto} <Ficticio />
-                    <Citacoes ids={ultima.evidencias} />
-                  </>
-                ) : (
-                  "Nenhuma registrada"
-                )}
-              </dd>
-              <dt className="text-texto-3">Tendência</dt>
-              <dd className={`m-0 ${ultima?.tendencia ? "text-texto" : "text-texto-3"}`}>
-                {ultima?.tendencia ? TENDENCIA[ultima.tendencia] : "Dados insuficientes para dizer"}
-              </dd>
-            </dl>
-          </li>
-        );
-      })}
-    </ol>
+    <div className="flex flex-col gap-2">
+      <ol className="m-0 flex list-none flex-col p-0">
+        {lista.map((s) => {
+          const fator = r.variaveis.find((v) => v.id === s.variavel);
+          const ultima = observacoes.filter((o) => o.sinal === s.id).at(-1);
+          return (
+            <li
+              key={s.id}
+              className={`grid gap-x-8 gap-y-3 border-t border-linha py-4 first:border-t-0 first:pt-0 ${comObservacoes ? "lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]" : "sm:grid-cols-[6.5rem_minmax(0,1fr)]"}`}
+            >
+              {!comObservacoes && <p className="numeros pt-0.5 font-dados text-micro text-ambar">{s.quando}</p>}
+              <div className="flex min-w-0 flex-col gap-1.5">
+                <p className="text-corpo font-medium text-texto">{s.sinal}</p>
+                <p className="text-legenda leading-relaxed text-texto-2">{s.leitura}</p>
+                <p className="text-micro text-texto-3">
+                  Onde acompanhar: {s.ondeAcompanhar}
+                  {comObservacoes && <> · {s.quando}</>}
+                  {fator && (
+                    <>
+                      {" "}
+                      · Evidência do fator ({fator.nome}): <Citacoes ids={fator.estadoAtual.evidencias} />
+                    </>
+                  )}
+                </p>
+                <ul aria-label="Cenários relacionados" className="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-micro">
+                  {s.favorece.map((c) => (
+                    <li key={`f${c}`} className="inline-flex items-center gap-1.5">
+                      <Letra id={c} /> <Etiqueta estado={IMPACTO.favorece} />
+                    </li>
+                  ))}
+                  {s.enfraquece.map((c) => (
+                    <li key={`e${c}`} className="inline-flex items-center gap-1.5">
+                      <Letra id={c} /> <Etiqueta estado={IMPACTO.enfraquece} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {comObservacoes && (
+                <dl className="m-0 grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1.5 text-legenda">
+                  <dt className="text-texto-3">Última observação</dt>
+                  <dd className="m-0 text-texto-2">
+                    {ultima ? (
+                      <>
+                        <span className="font-dados text-micro text-texto-3">{ultima.data}</span> · {ultima.texto} <Ficticio />
+                        <Citacoes ids={ultima.evidencias} />
+                      </>
+                    ) : (
+                      "Nenhuma registrada"
+                    )}
+                  </dd>
+                  <dt className="text-texto-3">Tendência</dt>
+                  <dd className={`m-0 ${ultima?.tendencia ? "text-texto" : "text-texto-3"}`}>
+                    {ultima?.tendencia ? TENDENCIA[ultima.tendencia] : "Dados insuficientes para dizer"}
+                  </dd>
+                </dl>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+      {r.sinais.length > SINAIS_VISIVEIS && (
+        <button
+          type="button"
+          aria-expanded={todos}
+          onClick={() => setTodos((v) => !v)}
+          className="inline-flex min-h-10 w-fit items-center gap-1.5 text-legenda font-medium text-ciano-texto hover:underline"
+        >
+          {todos ? "Mostrar só os primeiros" : `Ver os ${r.sinais.length} sinais`}
+          <ChevronDown size={14} aria-hidden="true" className={`transition-transform duration-200 ${todos ? "rotate-180" : ""}`} />
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -344,8 +403,21 @@ function Historico() {
   const { r, selecionar } = useResultado();
   const m = r.monitoramento;
   const anteriores = m?.versoesAnteriores ?? [];
-  const entradas: (EntradaDoHistorico | { id: string; data: string; texto: string; versao?: undefined; tipo?: undefined })[] = [
-    ...r.revisoes.map((v, i) => ({ id: `rev-${i}`, data: v.data, texto: v.texto })),
+  const entradas: (
+    | EntradaDoHistorico
+    | {
+        id: string;
+        data: string;
+        texto: string;
+        versao?: undefined;
+        tipo?: undefined;
+      }
+  )[] = [
+    ...r.revisoes.map((v, i) => ({
+      id: `rev-${i}`,
+      data: v.data,
+      texto: v.texto,
+    })),
     ...(m?.historico ?? []),
   ];
   return (
@@ -353,7 +425,10 @@ function Historico() {
       <ol className="relative m-0 flex list-none flex-col gap-5 p-0 pl-6 before:absolute before:top-1 before:bottom-1 before:left-[4px] before:w-px before:bg-linha">
         {entradas.map((e) => (
           <li key={e.id} className="relative flex flex-col gap-1">
-            <span aria-hidden="true" className={`absolute top-1.5 -left-6 ${e.tipo ? MARCA[e.tipo] : "size-2.5 rounded-full border border-linha-forte bg-abismo"}`} />
+            <span
+              aria-hidden="true"
+              className={`absolute top-1.5 -left-6 ${e.tipo ? MARCA[e.tipo] : "size-2.5 rounded-full border border-linha-forte bg-abismo"}`}
+            />
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-micro text-texto-3">
               <span className="numeros font-dados">{e.data}</span>
               {e.versao !== undefined && <span>· versão {e.versao}</span>}
@@ -369,7 +444,10 @@ function Historico() {
             {"evidencias" in e && (e.evidencias?.length || e.acontecimentos?.length) ? (
               <p className="text-micro text-texto-3">
                 Motivado por: <Citacoes ids={e.evidencias} />
-                {e.acontecimentos?.map((id) => m?.acontecimentos.find((a) => a.id === id)?.titulo).filter(Boolean).join("; ")}
+                {e.acontecimentos
+                  ?.map((id) => m?.acontecimentos.find((a) => a.id === id)?.titulo)
+                  .filter(Boolean)
+                  .join("; ")}
               </p>
             ) : null}
           </li>
@@ -389,7 +467,11 @@ function Historico() {
             {anteriores.map((v, i) => (
               <span key={`${v.cenario}-${v.versao}`}>
                 {i > 0 && ", "}
-                <button type="button" onClick={() => selecionar({ tipo: "cenario", id: v.cenario })} className="text-ciano-texto underline-offset-4 hover:underline">
+                <button
+                  type="button"
+                  onClick={() => selecionar({ tipo: "cenario", id: v.cenario })}
+                  className="text-ciano-texto underline-offset-4 hover:underline"
+                >
                   cenário {v.cenario}, versão {v.versao}
                 </button>
               </span>

@@ -1,4 +1,5 @@
-import { BookOpen, Printer } from "lucide-react";
+import { BookOpen, ChevronDown, Printer } from "lucide-react";
+import { useState } from "react";
 import { useResultado } from "./contexto";
 import { Citacoes } from "./pecas";
 
@@ -16,6 +17,8 @@ function dataLegivel(d: string) {
  */
 export function CabecalhoDaInvestigacao() {
   const { r, selecionar } = useResultado();
+  // O aviso fica numa linha; a origem e as fontes abrem sob demanda (e sempre saem na impressão).
+  const [contextoAberto, setContextoAberto] = useState(false);
   const botaoMetodo = (
     <button type="button" onClick={() => selecionar({ tipo: "metodo", id: "metodo" })} className="botao botao-secundario botao-pequeno shrink-0 print:hidden">
       <BookOpen size={15} aria-hidden="true" />
@@ -24,11 +27,16 @@ export function CabecalhoDaInvestigacao() {
   );
 
   return (
-    <header className="flex flex-col gap-4">
+    <header className="flex flex-col gap-3">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-        <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-          <p className="rotulo">Investigação prospectiva · {r.natureza}</p>
-          <h1 className="max-w-[40ch] font-editorial text-[calc(1.5rem*var(--escala-titulo))] leading-[1.25] font-medium sm:text-titulo tracking-[-0.012em] text-balance text-texto">{r.pergunta}</h1>
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          {/* Natureza, versão e data numa linha só: o contexto da leitura sem ocupar a primeira tela. */}
+          <p className="rotulo">
+            Investigação prospectiva · {r.natureza} · versão {r.versao} · {dataLegivel(r.atualizadoEm)}
+          </p>
+          <h1 className="max-w-[52ch] font-editorial text-[calc(1.375rem*var(--escala-titulo))] leading-[1.3] font-medium tracking-[-0.01em] text-balance text-texto sm:text-[calc(1.5rem*var(--escala-titulo))]">
+            {r.pergunta}
+          </h1>
           <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-legenda text-texto-2">
             <span>
               Horizonte{" "}
@@ -37,9 +45,6 @@ export function CabecalhoDaInvestigacao() {
               </span>
             </span>
             <span>{r.escopo}</span>
-            <span>
-              Análise de {dataLegivel(r.atualizadoEm)} · versão {r.versao}
-            </span>
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 print:hidden">
@@ -50,13 +55,31 @@ export function CabecalhoDaInvestigacao() {
           </button>
         </div>
       </div>
-      {/* Status epistêmico da investigação inteira: sempre visível, numa linha de apoio. */}
-      <p className="max-w-[88ch] border-l-2 border-ambar/50 pl-3 text-legenda text-texto-2">
-        <span className="font-medium text-texto">{r.natureza}. </span>
-        {r.avisoDeContexto.texto}
-        <Citacoes ids={r.avisoDeContexto.evidencias} />
-        <span className="text-texto-3"> {r.origem}</span>
-      </p>
+      {/* Status epistêmico da investigação inteira: sempre visível, numa faixa âmbar de uma linha. A origem e as fontes
+          abrem em "Ver contexto" e saem sempre na impressão. */}
+      <div className="max-w-[96ch] rounded-padrao bg-ambar-suave px-3 py-2 text-legenda text-texto-2">
+        <p className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
+          <span className="font-medium text-ambar">{r.natureza}</span>
+          {/* no celular o texto desce para a linha de baixo; do sm em diante fica entre o rótulo e o botão */}
+          <span className="order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1">
+            {r.avisoDeContexto.texto}
+            <Citacoes ids={r.avisoDeContexto.evidencias} />
+          </span>
+          <button
+            type="button"
+            aria-expanded={contextoAberto}
+            aria-controls="contexto-da-investigacao"
+            onClick={() => setContextoAberto((v) => !v)}
+            className="inline-flex min-h-8 items-center gap-1 text-legenda font-medium whitespace-nowrap text-ciano-texto hover:underline print:hidden"
+          >
+            {contextoAberto ? "Ocultar contexto" : "Ver contexto"}
+            <ChevronDown size={14} aria-hidden="true" className={`transition-transform duration-200 ${contextoAberto ? "rotate-180" : ""}`} />
+          </button>
+        </p>
+        <p id="contexto-da-investigacao" className={`mt-1.5 text-texto-3 ${contextoAberto ? "" : "hidden print:block"}`}>
+          {r.origem}
+        </p>
+      </div>
     </header>
   );
 }

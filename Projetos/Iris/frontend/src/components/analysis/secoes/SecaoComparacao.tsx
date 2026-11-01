@@ -3,11 +3,10 @@
  *
  * Não repete os cartões da seção 02: mostra só o que separa uma trajetória da outra.
  *   1. fatores críticos: como cada fator determinante se move em cada futuro;
- *   2. onde cada futuro se posiciona (matriz 2×2), SÓ quando há duas incertezas críticas que a sustentem;
- *   3. condições que favorecem cada trajetória (do que cada uma depende e o que a desencadeia);
- *   4. consequências divergentes: as regiões em que os efeitos diferem entre os cenários;
- *   5. indicadores que favorecem ou enfraquecem cada cenário;
- *   6. o que levaria a Iris a revisar a interpretação.
+ *   2. (a matriz 2×2 das incertezas subiu para a primeira dobra, no diagnóstico, como "Mapa dos futuros");
+ *   3. do que cada trajetória depende, o que a desencadeia e o que levaria a revisá-la (uma tabela só);
+ *   4. consequências divergentes: as regiões em que os efeitos diferem entre os cenários.
+ * Os sinais que favorecem ou enfraquecem cada cenário ficam no 04 Monitoramento (sem repetir a mesma lista aqui).
  * Tudo qualitativo: nenhuma probabilidade, nota ou peso.
  */
 import type { Cenario, Efeito } from "../../../types/cenario";
@@ -15,11 +14,15 @@ import { SecaoDaInvestigacao, Subtitulo } from "../blocos";
 import { useResultado } from "../investigacao/contexto";
 import { Letra } from "../investigacao/pecas";
 import { SECOES } from "../investigacao/secoes";
-import { DirecoesDosFatores, MatrizDasIncertezas, matrizAplicavel, SinaisDeAlerta } from "../prospectiva/ComparacaoDeCenarios";
+import { DirecoesDosFatores } from "../prospectiva/ComparacaoDeCenarios";
 import { TabelaComparativa } from "../prospectiva/TabelaComparativa";
 
 const EFEITO: Record<Efeito, { rotulo: string; simbolo: string; cor: string }> = {
-  aproximacao: { rotulo: "aproximação", simbolo: "+", cor: "text-ciano-texto" },
+  aproximacao: {
+    rotulo: "aproximação",
+    simbolo: "+",
+    cor: "text-ciano-texto",
+  },
   atrito: { rotulo: "atrito", simbolo: "!", cor: "text-ambar" },
   misto: { rotulo: "misto", simbolo: "±", cor: "text-texto-2" },
   neutro: { rotulo: "sem mudança", simbolo: "=", cor: "text-texto-3" },
@@ -28,48 +31,42 @@ const EFEITO: Record<Efeito, { rotulo: string; simbolo: string; cor: string }> =
 export function SecaoComparacao() {
   const { r } = useResultado();
   if (r.cenarios.length < 2) return null;
-  const comMatriz = matrizAplicavel(r);
   return (
     <SecaoDaInvestigacao secao={SECOES[2]}>
       <p className="max-w-[72ch] border-l-2 border-linha-forte pl-4 text-legenda text-texto-2">
-        Comparação qualitativa. A Iris não atribui probabilidade, nota nem peso aos cenários: as posições vêm das premissas de cada um, e os
-        indicadores dizem o que observar, não o que vai acontecer.
+        Comparação qualitativa. A Iris não atribui probabilidade, nota nem peso aos cenários: as posições vêm das premissas de cada um, e os indicadores dizem o
+        que observar, não o que vai acontecer.
       </p>
 
       <Parte id="t-fatores-criticos" titulo="Fatores críticos que alteram o resultado" texto="O mesmo fator, três direções: é aqui que os futuros se separam.">
         <DirecoesDosFatores />
       </Parte>
 
-      {comMatriz ? (
-        <Parte id="t-matriz" titulo="Onde cada futuro se posiciona" texto="As duas incertezas críticas formam os eixos; cada cenário está no quadrante das suas premissas.">
-          <MatrizDasIncertezas />
-        </Parte>
-      ) : (
-        <p className="max-w-[72ch] text-legenda text-texto-3">
-          Sem matriz 2×2: ela só se aplica quando há duas incertezas críticas e todos os cenários têm posição nas duas. Esta investigação tem{" "}
-          {r.incertezas.length} {r.incertezas.length === 1 ? "incerteza crítica" : "incertezas críticas"}.
-        </p>
-      )}
-
-      <Parte id="t-condicoes" titulo="Condições que favorecem cada trajetória" texto="Do que cada futuro depende e o que o desencadearia.">
+      {/* Condições, gatilhos e o que levaria a revisar: uma tabela só, três linhas, em vez de duas tabelas. */}
+      <Parte
+        id="t-condicoes"
+        titulo="Do que cada futuro depende e quando a Iris o revisaria"
+        texto="O que precisa acontecer, o que o desencadearia e o que, se observado, obriga a rever o cenário."
+      >
         <TabelaComparativa
-          legenda="Condições e gatilhos de cada cenário"
+          legenda="Condições, gatilhos e o que levaria a revisar cada cenário"
           linhas={[
             { rotulo: "Depende de", valor: (c: Cenario) => <Lista itens={c.condicoes} /> },
             { rotulo: "Desencadeado por", valor: (c: Cenario) => <Lista itens={c.gatilhos} /> },
+            { rotulo: "Rever se", valor: (c: Cenario) => <Lista itens={c.revisao} /> },
           ]}
         />
       </Parte>
 
       <ConsequenciasDivergentes />
 
-      <Parte id="t-sinais" titulo="Indicadores que favorecem ou enfraquecem" texto="Se um destes sinais aparecer, ele dá força a uns futuros e tira de outros. Um sinal não confirma um cenário.">
-        <SinaisDeAlerta />
-      </Parte>
-
-      <Parte id="t-revisao" titulo="Quando a Iris revisaria esta interpretação" texto="Condições que, observadas, obrigam a rever cada cenário.">
-        <TabelaComparativa legenda="O que levaria a revisar cada cenário" linhas={[{ rotulo: "Rever se", valor: (c: Cenario) => <Lista itens={c.revisao} /> }]} />
-      </Parte>
+      <p className="text-legenda text-texto-3">
+        Os sinais que dão ou tiram força de cada futuro estão em{" "}
+        <a href="#sec-monitoramento" className="text-ciano-texto underline-offset-4 hover:underline">
+          04 Monitoramento
+        </a>
+        .
+      </p>
     </SecaoDaInvestigacao>
   );
 }
@@ -107,7 +104,11 @@ function ConsequenciasDivergentes() {
   const divergentes = regioes.filter((g) => new Set(r.cenarios.map((c) => efeito(c, g)?.efeito ?? "—")).size > 1);
   if (!divergentes.length) return null;
   return (
-    <Parte id="t-consequencias" titulo="Consequências estratégicas divergentes" texto="Regiões em que os futuros produzem efeitos diferentes. Passe o cursor para ler o efeito descrito.">
+    <Parte
+      id="t-consequencias"
+      titulo="Consequências estratégicas divergentes"
+      texto="Regiões em que os futuros produzem efeitos diferentes. Passe o cursor para ler o efeito descrito."
+    >
       <TabelaComparativa
         legenda="Efeito de cada cenário em cada região, onde os efeitos divergem"
         linhas={divergentes.map((g) => ({

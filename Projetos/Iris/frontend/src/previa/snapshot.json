@@ -1,0 +1,346 @@
+{
+ "documentos": [
+  {
+   "id": "e54221a1-857f-43ef-adeb-6df64b006050",
+   "status": "completed",
+   "original_filename": "exemplo-politica-externa.pdf",
+   "size_bytes": 3607,
+   "sha256": "f6e577fe6ca6d9a1695245956fcbe4baa966258f75cc512fa36661df7edee9dd",
+   "page_count": 4,
+   "text_extractable": true,
+   "title": "Exemplo: política externa brasileira e multilateralismo",
+   "authors": [
+    "Silva, Ana",
+    "Souza, Bruno"
+   ],
+   "publication_year": 2023,
+   "language": "pt",
+   "created_at": "2026-10-27T16:50:12.395734Z",
+   "processed_at": "2026-10-27T16:50:12.409675Z"
+  },
+  {
+   "id": "c936ecc6-e4b7-4398-844f-a518e67fb4b6",
+   "status": "completed",
+   "original_filename": "example-strategic-autonomy.pdf",
+   "size_bytes": 1640,
+   "sha256": "87d7197f9bc6176714ece2a78af445dea71fb5c72d15820ac9f6464beb80e1ff",
+   "page_count": 2,
+   "text_extractable": true,
+   "title": "Example: strategic autonomy in South American foreign policy",
+   "authors": [
+    "Doe, Jane",
+    "Roe, Richard"
+   ],
+   "publication_year": 2021,
+   "language": "en",
+   "created_at": "2026-10-27T16:50:12.301428Z",
+   "processed_at": "2026-10-27T16:50:12.310105Z"
+  },
+  {
+   "id": "131ec3f0-4be7-48f0-b9ed-2d9988f88dd5",
+   "status": "completed",
+   "original_filename": "ejemplo-integracion.pdf",
+   "size_bytes": 1044,
+   "sha256": "1a01a0d90f8b95daf8c5d0541f959df054925b444f15705ba3e89986472feee5",
+   "page_count": 1,
+   "text_extractable": true,
+   "title": "Ejemplo: integración regional y autonomía",
+   "authors": null,
+   "publication_year": 2009,
+   "language": "es",
+   "created_at": "2026-10-27T16:50:12.267445Z",
+   "processed_at": "2026-10-27T16:50:12.274571Z"
+  },
+  {
+   "id": "f3db9257-5b15-49f2-bd45-12ece3f67e54",
+   "status": "completed",
+   "original_filename": "digitalizacao-sem-texto.pdf",
+   "size_bytes": 1020,
+   "sha256": "37524293efb73698224b62d054633a368c8514726933ac92801b1685c439b362",
+   "page_count": 3,
+   "text_extractable": false,
+   "title": null,
+   "authors": null,
+   "publication_year": null,
+   "language": null,
+   "created_at": "2026-10-27T16:50:12.221797Z",
+   "processed_at": "2026-10-27T16:50:12.237191Z"
+  }
+ ],
+ "detalhes": {
+  "e54221a1-857f-43ef-adeb-6df64b006050": {
+   "id": "e54221a1-857f-43ef-adeb-6df64b006050",
+   "status": "completed",
+   "original_filename": "exemplo-politica-externa.pdf",
+   "size_bytes": 3607,
+   "sha256": "f6e577fe6ca6d9a1695245956fcbe4baa966258f75cc512fa36661df7edee9dd",
+   "page_count": 4,
+   "text_extractable": true,
+   "title": "Exemplo: política externa brasileira e multilateralismo",
+   "authors": [
+    "Silva, Ana",
+    "Souza, Bruno"
+   ],
+   "publication_year": 2023,
+   "language": "pt",
+   "created_at": "2026-10-27T16:50:12.395734Z",
+   "processed_at": "2026-10-27T16:50:12.409675Z",
+   "mime_type": "application/pdf",
+   "journal": "Periódico de exemplo",
+   "publisher": null,
+   "institution": "Instituição de exemplo",
+   "doi": null,
+   "source_url": null,
+   "metadata_sources": {
+    "title": "pdf_info",
+    "authors": "pdf_info",
+    "journal": "xmp",
+    "language": "heuristic",
+    "institution": "user",
+    "publication_year": "user"
+   },
+   "pdf_metadata": {
+    "/Title": "Exemplo: política externa brasileira e multilateralismo",
+    "/Author": "Silva, Ana; Souza, Bruno"
+   },
+   "warnings": [
+    "pages_without_text: 3"
+   ],
+   "error": null,
+   "updated_at": "2026-10-27T16:50:12.411434Z"
+  },
+  "c936ecc6-e4b7-4398-844f-a518e67fb4b6": {
+   "id": "c936ecc6-e4b7-4398-844f-a518e67fb4b6",
+   "status": "completed",
+   "original_filename": "example-strategic-autonomy.pdf",
+   "size_bytes": 1640,
+   "sha256": "87d7197f9bc6176714ece2a78af445dea71fb5c72d15820ac9f6464beb80e1ff",
+   "page_count": 2,
+   "text_extractable": true,
+   "title": "Example: strategic autonomy in South American foreign policy",
+   "authors": [
+    "Doe, Jane",
+    "Roe, Richard"
+   ],
+   "publication_year": 2021,
+   "language": "en",
+   "created_at": "2026-10-27T16:50:12.301428Z",
+   "processed_at": "2026-10-27T16:50:12.310105Z",
+   "mime_type": "application/pdf",
+   "journal": null,
+   "publisher": null,
+   "institution": null,
+   "doi": "10.5555/exemplo.2021.01",
+   "source_url": null,
+   "metadata_sources": {
+    "doi": "user",
+    "title": "user",
+    "authors": "user",
+    "language": "heuristic",
+    "publication_year": "user"
+   },
+   "pdf_metadata": null,
+   "warnings": [],
+   "error": null,
+   "updated_at": "2026-10-27T16:50:12.310785Z"
+  },
+  "131ec3f0-4be7-48f0-b9ed-2d9988f88dd5": {
+   "id": "131ec3f0-4be7-48f0-b9ed-2d9988f88dd5",
+   "status": "completed",
+   "original_filename": "ejemplo-integracion.pdf",
+   "size_bytes": 1044,
+   "sha256": "1a01a0d90f8b95daf8c5d0541f959df054925b444f15705ba3e89986472feee5",
+   "page_count": 1,
+   "text_extractable": true,
+   "title": "Ejemplo: integración regional y autonomía",
+   "authors": null,
+   "publication_year": 2009,
+   "language": "es",
+   "created_at": "2026-10-27T16:50:12.267445Z",
+   "processed_at": "2026-10-27T16:50:12.274571Z",
+   "mime_type": "application/pdf",
+   "journal": null,
+   "publisher": null,
+   "institution": null,
+   "doi": null,
+   "source_url": null,
+   "metadata_sources": {
+    "title": "user",
+    "language": "heuristic",
+    "publication_year": "user"
+   },
+   "pdf_metadata": null,
+   "warnings": [],
+   "error": null,
+   "updated_at": "2026-10-27T16:50:12.275697Z"
+  },
+  "f3db9257-5b15-49f2-bd45-12ece3f67e54": {
+   "id": "f3db9257-5b15-49f2-bd45-12ece3f67e54",
+   "status": "completed",
+   "original_filename": "digitalizacao-sem-texto.pdf",
+   "size_bytes": 1020,
+   "sha256": "37524293efb73698224b62d054633a368c8514726933ac92801b1685c439b362",
+   "page_count": 3,
+   "text_extractable": false,
+   "title": null,
+   "authors": null,
+   "publication_year": null,
+   "language": null,
+   "created_at": "2026-10-27T16:50:12.221797Z",
+   "processed_at": "2026-10-27T16:50:12.237191Z",
+   "mime_type": "application/pdf",
+   "journal": null,
+   "publisher": null,
+   "institution": null,
+   "doi": null,
+   "source_url": null,
+   "metadata_sources": {},
+   "pdf_metadata": null,
+   "warnings": [
+    "no_extractable_text: nenhuma página tem texto extraível (PDF escaneado ou só imagens?); OCR não é feito nesta fase"
+   ],
+   "error": null,
+   "updated_at": "2026-10-27T16:50:12.238618Z"
+  }
+ },
+ "paginas": {
+  "e54221a1-857f-43ef-adeb-6df64b006050": [
+   {
+    "page_number": 1,
+    "text": "A política externa brasileira passou por mudanças importantes nas últimas décadas.\nO país buscou ampliar sua presença nos fóruns multilaterais e também fortalecer as\nrelações com os vizinhos da região. Para muitos analistas, essa estratégia foi marcada\npela ideia de autonomia, e isso se refletiu na atuação do Itamaraty em temas como\ncomércio, meio ambiente e segurança, que são centrais para a inserção do Estado.",
+    "text_raw": "A política externa brasileira passou por mudanças importantes nas últimas décadas.\nO país buscou ampliar sua presença nos fóruns multilaterais e também fortalecer as\nrelações com os vizinhos da região. Para muitos analistas, essa estratégia foi marcada\npela ideia de autonomia, e isso se refletiu na atuação do Itamaraty em temas como\ncomércio, meio ambiente e segurança, que são centrais para a inserção do Estado.",
+    "char_count": 415,
+    "has_text": true,
+    "extraction_status": "ok",
+    "extraction_error": null,
+    "text_sha256": "538641bc93e0216c1917d8aa147e3a0333301945b3f8a1f526e6827cda1a17d9",
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.409675Z"
+   },
+   {
+    "page_number": 2,
+    "text": "A política externa brasileira passou por mudanças importantes nas últimas décadas.\nO país buscou ampliar sua presença nos fóruns multilaterais e também fortalecer as\nrelações com os vizinhos da região. Para muitos analistas, essa estratégia foi marcada",
+    "text_raw": "A política externa brasileira passou por mudanças importantes nas últimas décadas.\nO país buscou ampliar sua presença nos fóruns multilaterais e também fortalecer as\nrelações com os vizinhos da região. Para muitos analistas, essa estratégia foi marcada",
+    "char_count": 252,
+    "has_text": true,
+    "extraction_status": "ok",
+    "extraction_error": null,
+    "text_sha256": "1b7f6734af3f216f56fef6b6ac38248f558ca490ed4d7026f9ac3958b76e4c99",
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.409675Z"
+   },
+   {
+    "page_number": 3,
+    "text": "",
+    "text_raw": "",
+    "char_count": 0,
+    "has_text": false,
+    "extraction_status": "empty",
+    "extraction_error": null,
+    "text_sha256": null,
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.409675Z"
+   },
+   {
+    "page_number": 4,
+    "text": "A política externa brasileira passou por mudanças importantes nas últimas décadas.\nO país buscou ampliar sua presença nos fóruns multilaterais e também fortalecer as\nrelações com os vizinhos da região. Para muitos analistas, essa estratégia foi marcada\npela ideia de autonomia, e isso se refletiu na atuação do Itamaraty em temas como\ncomércio, meio ambiente e segurança, que são centrais para a inserção do Estado.",
+    "text_raw": "A política externa brasileira passou por mudanças importantes nas últimas décadas.\nO país buscou ampliar sua presença nos fóruns multilaterais e também fortalecer as\nrelações com os vizinhos da região. Para muitos analistas, essa estratégia foi marcada\npela ideia de autonomia, e isso se refletiu na atuação do Itamaraty em temas como\ncomércio, meio ambiente e segurança, que são centrais para a inserção do Estado.",
+    "char_count": 415,
+    "has_text": true,
+    "extraction_status": "ok",
+    "extraction_error": null,
+    "text_sha256": "538641bc93e0216c1917d8aa147e3a0333301945b3f8a1f526e6827cda1a17d9",
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.409675Z"
+   }
+  ],
+  "c936ecc6-e4b7-4398-844f-a518e67fb4b6": [
+   {
+    "page_number": 1,
+    "text": "The foreign policy of Brazil has changed in important ways over the last decades. The\ncountry sought to expand its presence in multilateral forums and to strengthen its relations\nwith the neighbours of the region. For many analysts, this strategy was marked by the idea of\nautonomy, and that was reflected in the role of the ministry on issues such as trade.",
+    "text_raw": "The foreign policy of Brazil has changed in important ways over the last decades. The\ncountry sought to expand its presence in multilateral forums and to strengthen its relations\nwith the neighbours of the region. For many analysts, this strategy was marked by the idea of\nautonomy, and that was reflected in the role of the ministry on issues such as trade.",
+    "char_count": 358,
+    "has_text": true,
+    "extraction_status": "ok",
+    "extraction_error": null,
+    "text_sha256": "2dba339c304d54247ec132c3d23a57e727374afb615c8ea60eebdb0ec544d553",
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.310105Z"
+   },
+   {
+    "page_number": 2,
+    "text": "The foreign policy of Brazil has changed in important ways over the last decades. The\ncountry sought to expand its presence in multilateral forums and to strengthen its relations\nwith the neighbours of the region. For many analysts, this strategy was marked by the idea of\nautonomy, and that was reflected in the role of the ministry on issues such as trade.",
+    "text_raw": "The foreign policy of Brazil has changed in important ways over the last decades. The\ncountry sought to expand its presence in multilateral forums and to strengthen its relations\nwith the neighbours of the region. For many analysts, this strategy was marked by the idea of\nautonomy, and that was reflected in the role of the ministry on issues such as trade.",
+    "char_count": 358,
+    "has_text": true,
+    "extraction_status": "ok",
+    "extraction_error": null,
+    "text_sha256": "2dba339c304d54247ec132c3d23a57e727374afb615c8ea60eebdb0ec544d553",
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.310105Z"
+   }
+  ],
+  "131ec3f0-4be7-48f0-b9ed-2d9988f88dd5": [
+   {
+    "page_number": 1,
+    "text": "La política exterior de México ha cambiado de manera notable en las últimas décadas. El país\nbuscó ampliar su presencia en los foros multilaterales y también fortalecer las relaciones\ncon los vecinos de la región. Para muchos analistas, esta estrategia fue marcada por la idea\nde autonomía, y esto se reflejó en la actuación de la cancillería en temas como el comercio.",
+    "text_raw": "La política exterior de México ha cambiado de manera notable en las últimas décadas. El país\nbuscó ampliar su presencia en los foros multilaterales y también fortalecer las relaciones\ncon los vecinos de la región. Para muchos analistas, esta estrategia fue marcada por la idea\nde autonomía, y esto se reflejó en la actuación de la cancillería en temas como el comercio.",
+    "char_count": 369,
+    "has_text": true,
+    "extraction_status": "ok",
+    "extraction_error": null,
+    "text_sha256": "4f4bf1ec1b3a180315740e05cfad1ae4343b8f48cd6cde8c2e2e4625ad52aeab",
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.274571Z"
+   }
+  ],
+  "f3db9257-5b15-49f2-bd45-12ece3f67e54": [
+   {
+    "page_number": 1,
+    "text": "",
+    "text_raw": "",
+    "char_count": 0,
+    "has_text": false,
+    "extraction_status": "empty",
+    "extraction_error": null,
+    "text_sha256": null,
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.237191Z"
+   },
+   {
+    "page_number": 2,
+    "text": "",
+    "text_raw": "",
+    "char_count": 0,
+    "has_text": false,
+    "extraction_status": "empty",
+    "extraction_error": null,
+    "text_sha256": null,
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.237191Z"
+   },
+   {
+    "page_number": 3,
+    "text": "",
+    "text_raw": "",
+    "char_count": 0,
+    "has_text": false,
+    "extraction_status": "empty",
+    "extraction_error": null,
+    "text_sha256": null,
+    "extractor": "pypdf 6.21.2",
+    "normalization_version": "1",
+    "extracted_at": "2026-10-27T16:50:12.237191Z"
+   }
+  ]
+ }
+}

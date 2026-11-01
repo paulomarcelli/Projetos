@@ -1,0 +1,80 @@
+/*
+ * Cristal — a dupla de botões do hero para fundo escuro (só CSS). A principal é uma pílula clara com um chip preto
+ * redondo segurando a seta; a secundária é de vidro líquido, que acende no hover. O vidro são dois degradês de
+ * brilho, três sombras internas, uma sombra de queda e o desfoque do que está atrás: só se lê com algo por trás.
+ * Usada na landing (Começar, Ver um exemplo, Ver a base científica); a Entrar tem a sua pílula dentro da sign-in page.
+ */
+.hero-actions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 16px; }
+
+.glass-btn {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 50px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none; /* para quando for um <a> */
+  cursor: pointer;
+  transition: background 0.16s var(--ease), border-color 0.16s var(--ease), color 0.16s var(--ease), transform 0.1s var(--ease);
+}
+.glass-btn:active { transform: translateY(1px); }
+.glass-btn:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.6); outline-offset: 3px; }
+.glass-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* principal: padding assimétrico; o chip fica com 8 px de folga em cima, embaixo e à direita (7 de padding + 1 da borda) */
+.glass-btn--light { padding: 7px 7px 7px 22px; background: #fafafa; color: #0a0a0a; }
+.glass-btn--light:hover { background: #fff; }
+.glass-btn__chip {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+/* secundária: vidro líquido */
+.glass-btn--glass {
+  padding: 0 26px;
+  color: #dcdcdc;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.02));
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.5),
+    inset 0 -8px 14px rgba(0, 0, 0, 0.2),
+    inset 0 2px 10px rgba(255, 255, 255, 0.05),
+    0 8px 22px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px) saturate(170%);
+  -webkit-backdrop-filter: blur(14px) saturate(170%);
+  transition: background 0.22s var(--ease), border-color 0.22s var(--ease), box-shadow 0.22s var(--ease), color 0.22s var(--ease), transform 0.12s var(--ease);
+}
+/* hover: o vidro acende (brilho mais forte, borda mais nítida, flutua mais) */
+.glass-btn--glass:hover {
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.045));
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.7),
+    inset 0 -8px 14px rgba(0, 0, 0, 0.22),
+    inset 0 2px 12px rgba(255, 255, 255, 0.1),
+    0 10px 28px rgba(0, 0, 0, 0.34);
+}
+
+/* celular: os dois empilham e o desfoque sai (sobre fundo quase liso ele custa caro e muda pouco;
+   os degradês e as sombras internas são o que lê como vidro, e ficam) */
+@media (max-width: 900px) {
+  .hero-actions { flex-direction: column; width: 100%; max-width: 320px; margin-inline: auto; }
+  .glass-btn { justify-content: center; }
+  .glass-btn--glass { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

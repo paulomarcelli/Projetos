@@ -93,6 +93,11 @@ class IndiceQdrant:
         for i in range(0, len(pontos), 256):
             self.cliente.upsert(self.colecao, pontos[i:i + 256])
 
+    def contar(self) -> int:
+        if not self.cliente.collection_exists(self.colecao):
+            return 0
+        return self.cliente.count(self.colecao, exact=True).count
+
     def buscar(self, vetor: list[float], k: int, continuidade: str = "MCU") -> list[Chunk]:
         from qdrant_client import models
 
@@ -132,6 +137,11 @@ class IndiceElasticsearch:
 
         bulk(self.cliente, ({"_index": self.indice, "_id": c.chunk_id, "_source": c.model_dump(include=set(_CAMPOS))} for c in chunks))
         self.cliente.indices.refresh(index=self.indice)
+
+    def contar(self) -> int:
+        if not self.cliente.indices.exists(index=self.indice):
+            return 0
+        return self.cliente.count(index=self.indice)["count"]
 
     def buscar(self, consulta: str, k: int, continuidade: str = "MCU") -> list[Chunk]:
         q = {"bool": {"must": {"multi_match": {"query": consulta, "fields": ["texto", "texto.en", "texto.pt", "titulo^2", "titulo.en^2"],

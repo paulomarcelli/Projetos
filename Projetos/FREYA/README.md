@@ -45,6 +45,26 @@ pip install -e '.[dev]'
 
 O modelo de embedding (`paraphrase-multilingual-MiniLM-L12-v2`, ~470 MB) é baixado na primeira indexação.
 
+## Servidor (online, com o RAG e o GraphRAG prontos)
+
+```bash
+cp .env.example .env            # NEO4J_PASSWORD, OPENAI_API_KEY (e OPENAI_BASE_URL, se for revendedor), FREYA_CORS_ORIGENS
+docker compose up -d --build
+curl http://SEU-SERVIDOR:8000/saude
+```
+
+O `docker compose` sobe a API e os três bancos. Na **primeira** subida a API roda `freya preparar`:
+coleta marvel.com no próprio servidor (o repositório não traz esse conteúdo; ~45 min), junta com os corpora da
+wiki que já vêm no repositório e indexa tudo no Qdrant, no Elasticsearch e no Neo4j. Depois disso:
+
+- reiniciar não reindexa: a assinatura dos corpora fica no volume `freya_estado` e os bancos guardam os índices;
+- atualizar um corpus no repositório e rodar `docker compose up -d --build` reindexa sozinho;
+- `GET /saude` mostra o motor e o tamanho da base (`base.hybrid.chunks`, `base.grafo.nos`).
+
+Só a API (porta 8000) fica exposta; os bancos escutam em 127.0.0.1. Para o frontend chamar a API pelo
+navegador, liste o endereço dele em `FREYA_CORS_ORIGENS`. Recursos mínimos: ~4 GB de RAM e ~10 GB de disco
+(imagem da API ~3 GB, Elasticsearch ~2 GB). Em produção, coloque um proxy com HTTPS (Caddy, Nginx) na frente da porta 8000.
+
 ## Base de conhecimento
 
 Três camadas de fonte, todas da continuidade cinematográfica, cada fato marcado com a sua confiabilidade
@@ -54,8 +74,9 @@ Três camadas de fonte, todas da continuidade cinematográfica, cada fato marcad
    personagens, partindo da cronologia oficial do MCU. Lê só os blocos `live_action` (os de quadrinhos são
    descartados e contados). Respeita o `robots.txt`, espera 2 s entre requisições, identifica-se como
    F.R.E.Y.A. e guarda uma cópia de cada página em `data/raw/` (com data e hash) para conferir as evidências.
-   **O conteúdo coletado fica só na sua máquina** (`data/raw/` e `data/corpus/` gerados estão no `.gitignore`):
-   os Termos de Uso da Marvel não permitem redistribuí-lo; o das wikis tem licença CC BY-SA e guarda a atribuição.
+   **O conteúdo de marvel.com não vai para o repositório** (`data/raw/`, `coletado/` e `unificado/` estão no
+   `.gitignore`): os Termos de Uso da Marvel não permitem redistribuí-lo, e cada servidor o coleta sozinho.
+   Os corpora da wiki (`data/corpus/wiki/` e `extraido/`, CC BY-SA, com atribuição) estão no repositório.
 2. **Corpus da Manus** (`data/corpus/manus_corpus.jsonl`): 37 páginas oficiais resumidas, migradas para o
    modelo novo (identidades tipadas, predicados normalizados, direção corrigida).
 3. **Aprofundamento** (`freya aprofundar`), a partir das entidades oficiais:

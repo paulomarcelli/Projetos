@@ -129,3 +129,17 @@ Pedido: aprofundar a história e os personagens, buscando outras fontes quando m
   foram consolidadas; regras de tipo por predicado (um artefato não é "membro" de nada);
 - toda relação leva a confiabilidade da fonte; o motor pesa oficial > Wikipedia > wiki de fãs e usa o ano e a
   nuance para separar relações antigas de atuais.
+
+## 9. Implantação (servidor com a base pronta)
+
+- `docker compose up -d --build` sobe a API e os três bancos; a API só abre depois de `freya preparar`.
+- `freya preparar`:
+  - coleta marvel.com no próprio servidor, porque o conteúdo não vai para o repositório (Termos de Uso);
+  - junta essa coleta com os corpora da wiki que vêm no repositório e indexa tudo;
+  - grava uma assinatura dos corpora. Reiniciar não reindexa; um corpus novo no repositório reindexa.
+  - Se marvel.com não devolver nenhuma página (bloqueio, rede), nada é gravado nem indexado, e a próxima subida tenta de novo.
+- `GET /saude` informa o tamanho da base. Só a porta 8000 fica exposta; os bancos escutam em 127.0.0.1.
+- `FREYA_CORS_ORIGENS` libera o futuro frontend.
+- Teste deste ambiente: as imagens subiram com os healthchecks, e a API indexou a base e respondeu investigações.
+  O CDN de marvel.com passou a recusar este ambiente (403) depois das rodadas de coleta. Para o teste, o volume
+  recebeu a coleta feita antes, e a recusa não foi contornada.

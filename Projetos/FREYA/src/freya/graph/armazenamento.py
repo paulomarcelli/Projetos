@@ -127,6 +127,10 @@ class GrafoNeo4j:
     def fechar(self) -> None:
         self.driver.close()
 
+    def contar(self) -> int:
+        with self.driver.session() as s:
+            return s.run("MATCH (e:Entity {base:$b}) RETURN count(e) AS n", b=self.base).single()["n"]
+
     def carregar(self, corpus: Corpus) -> dict:
         nos = [{"chave": e.chave, "nome": e.nome, "tipo": e.tipo.value, "rotulo": e.tipo.rotulo_neo4j, "apelidos": e.apelidos,
                 "descricao": e.descricao, **{f"a_{k}": v for k, v in e.atributos.items() if v is not None}} for e in corpus.entidades.values()]

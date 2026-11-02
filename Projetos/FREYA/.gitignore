@@ -6,6 +6,8 @@
 data/raw/
 data/corpus/coletado/
 data/freya.db
+data/estado/
+data/base_indexada.json
 # python
 __pycache__/
 *.py[cod]

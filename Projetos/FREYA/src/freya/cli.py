@@ -2,8 +2,9 @@
 
     freya coletar [--limite 450]          coleta páginas oficiais de marvel.com (lenta; respeita robots.txt)
     freya ingerir [--modo servicos]       unifica fontes, valida e indexa (Qdrant, Elasticsearch, Neo4j)
+    freya preparar                        servidor: coleta marvel.com se faltar e indexa só se a base mudou
     freya investigar "questão" [--horizonte ...] [--modo memoria]
-    freya servir [--modo servicos] [--porta 8000]
+    freya servir [--modo servicos] [--host 127.0.0.1] [--porta 8000] [--preparar]
 """
 from __future__ import annotations
 
@@ -23,6 +24,8 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--recoletar", action="store_true")
     ap = sub.add_parser("aprofundar", help="wiki do MCU (personagens e obras) e extração de relações dos enredos")
     ap.add_argument("--sem-extracao", action="store_true", help="não chama o modelo para extrair relações dos enredos")
+    pr = sub.add_parser("preparar", help="servidor: deixa o Hybrid RAG e o GraphRAG prontos (idempotente)")
+    pr.add_argument("--sem-coleta", action="store_true", help="falha em vez de coletar marvel.com quando faltar")
     i = sub.add_parser("ingerir")
     i.add_argument("--modo", choices=["servicos", "memoria"], default="servicos")
     q = sub.add_parser("investigar")
@@ -31,7 +34,9 @@ def main(argv: list[str] | None = None) -> int:
     q.add_argument("--modo", choices=["servicos", "memoria"], default="servicos")
     s = sub.add_parser("servir")
     s.add_argument("--modo", choices=["servicos", "memoria"], default="servicos")
+    s.add_argument("--host", default=None, help="padrão: FREYA_HOST ou 127.0.0.1 (no contêiner, 0.0.0.0)")
     s.add_argument("--porta", type=int, default=8000)
+    s.add_argument("--preparar", action="store_true", help="roda `preparar` antes de abrir a API")
     a = p.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     for ruidoso in ("neo4j", "httpx", "elastic_transport", "sentence_transformers"):
@@ -39,13 +44,11 @@ def main(argv: list[str] | None = None) -> int:
     cfg = config()
 
     if a.cmd == "coletar":
-        from freya.conhecimento.coleta.coletor import Coletor
+        from pathlib import Path
 
-        col = Coletor(intervalo=cfg.coleta_intervalo)
-        col.carregar_robots()
-        corpus, rel = col.coletar(col.obras_da_cronologia() + col.perfis_do_sitemap(), limite=a.limite, recoletar=a.recoletar)
-        corpus.salvar("data/corpus/coletado")
-        rel["resumo"] = corpus.resumo()
+        from freya.implantacao import coletar_marvel
+
+        rel = coletar_marvel(cfg, Path("data/corpus"), limite=a.limite, recoletar=a.recoletar)
         print(json.dumps(rel, ensure_ascii=False, indent=1)[:4000])
         return 0
 
@@ -94,6 +97,11 @@ def main(argv: list[str] | None = None) -> int:
             logging.info("indexado: %s", rel["indexacao"])
         return comp
 
+    if a.cmd == "preparar":
+        from freya.implantacao import preparar_base
+
+        print(json.dumps(preparar_base(cfg, montar(cfg, "servicos"), coletar_se_faltar=not a.sem_coleta), ensure_ascii=False, indent=1))
+        return 0
     if a.cmd == "ingerir":
         preparar(a.modo, sempre_indexar=True)
         return 0
@@ -108,7 +116,14 @@ def main(argv: list[str] | None = None) -> int:
 
         from freya.api.app import criar_app
 
-        uvicorn.run(criar_app(preparar(a.modo, sempre_indexar=False)), host="127.0.0.1", port=a.porta)
+        if a.preparar and a.modo == "servicos":
+            from freya.implantacao import preparar_base
+
+            comp = montar(cfg, "servicos")
+            preparar_base(cfg, comp)
+        else:
+            comp = preparar(a.modo, sempre_indexar=False)
+        uvicorn.run(criar_app(comp, origens=cfg.cors_origens_lista), host=a.host or cfg.freya_host, port=a.porta)
         return 0
     return 2
 

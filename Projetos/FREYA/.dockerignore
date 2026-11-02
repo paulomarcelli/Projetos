@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv
+.cache
+.pytest_cache
+**/__pycache__
+data/raw
+data/freya.db
+data/estado
+data/base_indexada.json
+data/corpus/coletado
+data/corpus/unificado
+data/corpus/wikipedia
+legado
+tests
+docs

@@ -15,7 +15,9 @@ from __future__ import annotations
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from freya.config import config
 from freya.fabrica import Componentes
+from freya.implantacao import estado_da_base
 from freya.investigacao.orquestrador import Estado
 
 
@@ -24,9 +26,13 @@ class PedidoDeInvestigacao(BaseModel):
     horizonte: str | None = Field(default=None, max_length=120, description="Ex.: 'após Avengers: Endgame', 'próxima fase'")
 
 
-def criar_app(comp: Componentes, sincrono: bool = False) -> FastAPI:
+def criar_app(comp: Componentes, sincrono: bool = False, origens: list[str] | None = None) -> FastAPI:
     app = FastAPI(title="F.R.E.Y.A.", version="0.1.0",
                   description="Inteligência prospectiva sobre o MCU: Hybrid RAG + GraphRAG + motor prospectivo.")
+    if origens:
+        from fastapi.middleware.cors import CORSMiddleware
+
+        app.add_middleware(CORSMiddleware, allow_origins=origens, allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
     orq = comp.orquestrador
 
     def obter(iid: str):
@@ -38,7 +44,7 @@ def criar_app(comp: Componentes, sincrono: bool = False) -> FastAPI:
     @app.get("/saude")
     def saude():
         return {"status": "ok", "motor": "modelo" if comp.modelo else "deterministico", "modelo": getattr(comp.modelo, "nome", None),
-                "grafo": type(comp.grafo).__name__}
+                "grafo": type(comp.grafo).__name__, "base": estado_da_base(config())}
 
     @app.post("/investigacoes", status_code=202)
     def criar(p: PedidoDeInvestigacao, tarefas: BackgroundTasks):

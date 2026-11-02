@@ -1,29 +1,73 @@
-# Serviços da F.R.E.Y.A. (os mesmos da entrega da Manus): Qdrant, Elasticsearch e Neo4j.
-# A senha do Neo4j vem do .env (NEO4J_PASSWORD); nenhuma senha fica neste arquivo.
+# F.R.E.Y.A. completa: API + Qdrant + Elasticsearch + Neo4j.
+#
+#   cp .env.example .env    # NEO4J_PASSWORD e, para o motor com modelo, OPENAI_API_KEY (e OPENAI_BASE_URL)
+#   docker compose up -d --build
+#
+# Na primeira subida a API coleta marvel.com e indexa tudo (cerca de 20 a 30 minutos); depois sobe em segundos.
+# Os bancos só escutam em 127.0.0.1: de fora do servidor, só a API (porta 8000) é acessível.
+# Nenhuma senha fica neste arquivo.
 services:
+  api:
+    build: .
+    restart: unless-stopped
+    ports: ["${FREYA_PORTA:-8000}:8000"]
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:?defina NEO4J_PASSWORD no .env}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      FREYA_CORS_ORIGENS: ${FREYA_CORS_ORIGENS:-}
+    volumes:
+      - freya_coletado:/app/data/corpus/coletado   # marvel.com, coletado no próprio servidor
+      - freya_estado:/app/data/estado              # investigações e a marca da última indexação
+    depends_on:
+      qdrant: {condition: service_healthy}
+      elasticsearch: {condition: service_healthy}
+      neo4j: {condition: service_healthy}
   qdrant:
     image: qdrant/qdrant:v1.13.2
-    ports: ["6333:6333"]
+    restart: unless-stopped
+    ports: ["127.0.0.1:6333:6333"]
     volumes: [qdrant_data:/qdrant/storage]
+    healthcheck:
+      test: ["CMD", "bash", "-c", ":> /dev/tcp/127.0.0.1/6333"]
+      interval: 5s
+      retries: 30
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
-    ports: ["9200:9200"]
+    restart: unless-stopped
+    ports: ["127.0.0.1:9200:9200"]
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
-      # desenvolvimento: não bloqueia a escrita quando o disco está quase cheio
+      # não bloqueia a escrita quando o disco está quase cheio
       cluster.routing.allocation.disk.threshold_enabled: "false"
       ES_JAVA_OPTS: -Xms512m -Xmx512m
     volumes: [es_data:/usr/share/elasticsearch/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://127.0.0.1:9200/_cluster/health || exit 1"]
+      interval: 10s
+      retries: 30
   neo4j:
     image: neo4j:5.26-community
-    ports: ["7474:7474", "7687:7687"]
+    restart: unless-stopped
+    ports: ["127.0.0.1:7474:7474", "127.0.0.1:7687:7687"]
     environment:
       NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?defina NEO4J_PASSWORD no .env}
       NEO4J_server_memory_heap_initial__size: 256m
       NEO4J_server_memory_heap_max__size: 512m
     volumes: [neo4j_data:/data]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:7474 || exit 1"]
+      interval: 10s
+      retries: 30
 volumes:
   qdrant_data:
   es_data:
   neo4j_data:
+  freya_coletado:
+  freya_estado:

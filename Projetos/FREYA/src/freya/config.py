@@ -23,11 +23,18 @@ class Config(BaseSettings):
     openai_base_url: str | None = None
 
     freya_db_path: str = "data/freya.db"
+    freya_host: str = "127.0.0.1"
+    # sites que podem chamar a API pelo navegador (o futuro frontend), separados por vírgula
+    freya_cors_origens: str = ""
     coleta_intervalo: float = 2.0
 
     # nomes dos índices
     colecao_vetorial: str = "freya_chunks"
     indice_lexical: str = "freya_chunks"
+
+    @property
+    def cors_origens_lista(self) -> list[str]:
+        return [o.strip() for o in self.freya_cors_origens.split(",") if o.strip()]
 
 
 @lru_cache

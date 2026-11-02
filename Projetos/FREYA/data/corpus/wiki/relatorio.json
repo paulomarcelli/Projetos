@@ -1,0 +1,86 @@
+{
+ "personagens": 154,
+ "encontradas": 150,
+ "nao_encontradas": [
+  "character:goose-the-cat",
+  "character:katy"
+ ],
+ "paginas_lidas": 150,
+ "trechos_incertos_descartados": 0,
+ "aparicoes_ignoradas": 413,
+ "resumo": {
+  "documentos": 4769,
+  "entidades": 3807,
+  "fatos": 9911,
+  "tipos": {
+   "character": 2634,
+   "event": 968,
+   "organization": 205
+  },
+  "predicados": {
+   "ALLY_OF": 4695,
+   "ENEMY_OF": 2936,
+   "EXPERIENCES": 968,
+   "APPEARS_IN": 494,
+   "RELATIVE_OF": 438,
+   "MEMBER_OF": 380
+  }
+ },
+ "obras": {
+  "obras": 59,
+  "com_pagina": 54,
+  "sem_pagina": [
+   "series:marvel-s-jessica-jones-3",
+   "series:marvel-s-luke-cage-2",
+   "series:marvel-s-iron-fist-2",
+   "series:marvel-s-the-punisher-2",
+   "series:marvel-s-the-defenders-1"
+  ],
+  "resumo": {
+   "documentos": 93,
+   "entidades": 1234,
+   "fatos": 1772,
+   "tipos": {
+    "artifact": 445,
+    "location": 401,
+    "organization": 218,
+    "event": 152,
+    "concept": 18
+   },
+   "predicados": {
+    "APPEARS_IN": 1772
+   }
+  }
+ },
+ "extracao": {
+  "trechos": 235,
+  "trechos_sem_par": 2,
+  "chamadas": 233,
+  "falhas": 0,
+  "propostas": 1069,
+  "aceitas": 1032,
+  "recusadas": {
+   "entidade_fora_da_lista": 4,
+   "predicado": 1,
+   "dominio": 7,
+   "citacao_nao_literal": 15,
+   "laço": 10
+  }
+ },
+ "extracao_complementar": {
+  "trechos": 55,
+  "trechos_sem_par": 2,
+  "chamadas": 53,
+  "falhas": 0,
+  "propostas": 99,
+  "aceitas": 52,
+  "recusadas": {
+   "entidade_fora_da_lista": 0,
+   "predicado": 0,
+   "dominio": 10,
+   "citacao_nao_literal": 1,
+   "laço": 1,
+   "citacao_nao_nomeia_as_duas_entidades": 35
+  }
+ }
+}

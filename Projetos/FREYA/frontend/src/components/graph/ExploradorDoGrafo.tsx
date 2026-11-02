@@ -91,17 +91,24 @@ function Explorador({
   const laco = useRef(0);
   const arrastando = useRef(false);
 
+  // durante a simulação as posições vão direto para o SVG (sem render do React a cada quadro);
+  // quando ela assenta, um render só sincroniza rótulos e o resto
+  const pintar = useRef<() => void>(() => {});
   const animar = useCallback(() => {
     if (laco.current) return;
     let quadros = 0;
+    simRef.current?.sim.alphaDecay(0.045);
     const passo = () => {
       const s = simRef.current;
       if (!s) return;
       s.sim.tick();
       quadros++;
-      redesenhar();
-      if ((s.sim.alpha() > 0.02 || arrastando.current) && quadros < 600) laco.current = requestAnimationFrame(passo);
-      else laco.current = 0;
+      pintar.current();
+      if ((s.sim.alpha() > 0.03 || arrastando.current) && quadros < 600) laco.current = requestAnimationFrame(passo);
+      else {
+        laco.current = 0;
+        redesenhar();
+      }
     };
     laco.current = requestAnimationFrame(passo);
   }, [redesenhar]);
@@ -187,6 +194,7 @@ function Explorador({
   const porId = useMemo(() => new Map(dados.nos.map((n) => [n.id, n])), [dados.nos]);
   const rotuloDe = useCallback((id: string) => porId.get(id)?.rotulo ?? evidencias?.rotuloDaEntidade(id) ?? id, [porId, evidencias]);
   const vizinhos = useMemo(() => vizinhanca(dados.arestas), [dados.arestas]);
+  const arestaPorId = useMemo(() => new Map(dados.arestas.map((a) => [a.id, a])), [dados.arestas]);
   const curvas = useMemo(() => curvaturas(dados.arestas), [dados.arestas]);
   const comRotulo = useMemo(() => nosComRotulo(dados.nos, compacto ? 4 : 14), [dados.nos, compacto]);
   const tipos = useMemo(() => {
@@ -497,6 +505,22 @@ function Explorador({
     escolherDestaque("");
     setCaminho(null);
     setSelecionado(null);
+  };
+
+  pintar.current = () => {
+    const el = svg.current;
+    const s = simRef.current;
+    if (!el || !s) return;
+    el.querySelectorAll<SVGGElement>("[data-no-id]").forEach((g) => {
+      const n = s.porId.get(g.getAttribute("data-no-id") ?? "");
+      if (n?.x !== undefined && n.y !== undefined) g.setAttribute("transform", `translate(${n.x.toFixed(1)},${n.y.toFixed(1)})`);
+    });
+    el.querySelectorAll<SVGPathElement>("[data-aresta-id]").forEach((p) => {
+      const a = arestaPorId.get(p.getAttribute("data-aresta-id") ?? "");
+      const o = a && s.porId.get(a.origem);
+      const d = a && s.porId.get(a.destino);
+      if (a && o && d) p.setAttribute("d", caminhoDaAresta(o, d, curvas.get(a.id) ?? 0, a.dirigida).d);
+    });
   };
 
   // ── desenho

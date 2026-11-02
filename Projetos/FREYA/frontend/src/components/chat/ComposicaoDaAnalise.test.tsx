@@ -23,7 +23,7 @@ describe("Composição da análise (Nova análise)", () => {
   it("exemplo preenche questão e horizonte; enviar cria a investigação e abre a página dela", async () => {
     s.criarInvestigacao.mockResolvedValue({ id: "abc123", estado: "pendente", acompanhar: "/investigacoes/abc123" });
     const { roteador } = montar("/analises/nova");
-    expect(screen.getByRole("heading", { level: 1, name: "Nova análise" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Nova análise" })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Como a relação entre Thor e Loki pode evoluir\?/ }));
     expect(screen.getByRole("textbox", { name: "Questão prospectiva" })).toHaveValue("Como a relação entre Thor e Loki pode evoluir?");
     expect(screen.getByRole("textbox", { name: "Horizonte (opcional)" })).toHaveValue("após Avengers: Endgame");

@@ -148,3 +148,30 @@ Itens marcados **(feito)** foram resolvidos pelo Agente 3 nesta entrega.
 - **conversa em várias mensagens**: não existe por decisão de produto. Cada pergunta é uma investigação nova.
 - **`/saude` com `base: null`**: a contagem da base vem de `base_indexada.json`, ao lado do banco
   (`FREYA_DB_PATH`). Rodando fora do contêiner sem esse arquivo, `base` vem nula mesmo com a base indexada.
+
+## Validação desta entrega
+
+- **Testes automatizados:**
+  - front-end: 117 de unidade e de componente;
+  - integração contra a API real: 9 (mais 1 opcional, que cria uma investigação nova);
+  - backend: 36.
+- **Navegador:** todas as rotas foram abertas contra a API real, nos dois temas, a 1440 e a 390 px de largura:
+  - sem erro no console, sem requisição com falha e sem rolagem horizontal;
+  - os fluxos de evidência, nó do grafo, guardar/remover e troca de tema (que persiste) foram conferidos.
+- **Análise nova do começo ao fim:** "Qual o futuro de Shuri como Pantera Negra?", criada pelo painel do dashboard
+  e acompanhada ao vivo até concluir (39 s).
+- **Questão fora do domínio** (China e Taiwan): conclui, e a página mostra o aviso "Pouca sustentação nas fontes"
+  calculado a partir dos dados.
+
+## Melhorias pedidas e ainda não feitas
+
+Agente 1:
+- tokens categóricos próprios para os tipos de nó do grafo; hoje reaproveitam os tons epistêmicos, e a legenda explica;
+- componentes `Seletor` (hoje é um `<select>` nativo estilizado) e `Gaveta` lateral (hoje é uma composição local
+  com `<dialog>`);
+- uma variante de `Pilula` que quebre linha.
+
+Backend:
+- o caminho entre nós devolve só os ids, então um nó fora do grafo aparece com um rótulo derivado do id;
+- não é possível cancelar uma investigação em andamento;
+- só se guarda a análise inteira, não um cenário ou uma evidência.

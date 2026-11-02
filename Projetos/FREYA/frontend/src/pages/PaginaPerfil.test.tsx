@@ -18,7 +18,7 @@ describe("Perfil", () => {
     const inv = fixtures.investigacao();
     s.listarInvestigacoes.mockResolvedValue([resumoDe(inv, { guardada: true }), resumoDe(fixtures.investigacaoFora())]);
     montar("/perfil");
-    expect(screen.getByText(/Seu perfil fica salvo só neste navegador — a F\.R\.E\.Y\.A\. ainda não tem contas de usuário/)).toBeInTheDocument();
+    expect(await screen.findByText(/Seu perfil fica salvo só neste navegador — a F\.R\.E\.Y\.A\. ainda não tem contas de usuário/)).toBeInTheDocument();
 
     const nome = screen.getByRole("textbox", { name: /Nome/ });
     await userEvent.clear(nome);
@@ -42,7 +42,7 @@ describe("Perfil", () => {
   it("nome vazio não salva", async () => {
     s.listarInvestigacoes.mockResolvedValue([]);
     montar("/perfil");
-    await userEvent.clear(screen.getByRole("textbox", { name: /Nome/ }));
+    await userEvent.clear(await screen.findByRole("textbox", { name: /Nome/ }));
     await userEvent.click(screen.getByRole("button", { name: "Salvar perfil" }));
     expect(screen.getByText("Escreva como a F.R.E.Y.A. deve chamar você.")).toBeInTheDocument();
   });

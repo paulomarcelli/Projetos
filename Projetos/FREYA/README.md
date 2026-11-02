@@ -109,12 +109,41 @@ freya servir                     # API em http://127.0.0.1:8000 (documentação 
 
 Sem os serviços, use `--modo memoria` (indexa em memória a cada execução).
 
+## Interface (front-end)
+
+A pasta `frontend/` contém a aplicação web da F.R.E.Y.A. (identidade Scarlet Reality):
+- dashboard com o explorador do grafo;
+- nova análise;
+- a análise estruturada em 9 seções, com evidências e cenários ligados ao grafo;
+- histórico, guardados, configurações de tipografia e perfil;
+- modo claro e escuro com o Scarlet Reality Shift.
+
+Para testar no seu computador (no VS Code, por exemplo), use dois terminais:
+
+```bash
+# terminal 1 — a API (sem Docker: modo memória; leva ~5 min para montar a base)
+freya servir --modo memoria
+
+# terminal 2 — a interface
+cd frontend
+npm install
+npm run dev                      # abre em http://localhost:5173
+```
+
+No desenvolvimento, a interface chama `/api/...` e o Vite repassa para `http://127.0.0.1:8000`, então não precisa de
+CORS. Em produção, defina `VITE_FREYA_API` com o endereço da API e coloque a origem do site em `FREYA_CORS_ORIGENS`.
+Testes: `npm test` (unidade) e `FREYA_API_INTEGRACAO=1 npx vitest run src/test/integracao` (contra a API real).
+Arquitetura, contratos e o que ainda falta no backend: [docs/FRONTEND.md](docs/FRONTEND.md).
+
 ### API
 
 | Método | Rota | O que faz |
 |---|---|---|
 | POST | `/investigacoes` | cria uma investigação `{questao, horizonte?}` e a executa em segundo plano |
-| GET | `/investigacoes/{id}` | estado, etapas, análise prospectiva e evidências |
+| GET | `/investigacoes?guardadas=&limite=` | histórico (mais recentes primeiro), com filtro de guardadas |
+| GET | `/investigacoes/{id}` | estado, etapas, análise prospectiva, evidências e se está guardada |
+| DELETE | `/investigacoes/{id}` | exclui (409 enquanto a investigação roda) |
+| PUT / DELETE | `/investigacoes/{id}/guardada` | guarda ou remove dos guardados |
 | GET | `/investigacoes/{id}/grafo` | grafo da investigação (contrato abaixo) |
 | GET | `/investigacoes/{id}/grafo/expandir?no=` | vizinhos de um nó, com evidências |
 | GET | `/investigacoes/{id}/grafo/caminho?de=&para=` | caminhos entre dois nós (`existe: false` se não houver) |

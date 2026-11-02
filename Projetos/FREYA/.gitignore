@@ -1,0 +1,17 @@
+# segredos
+.env
+.env.*
+!.env.example
+# dados coletados de marvel.com: ficam só na máquina (Termos de Uso da Marvel)
+data/raw/
+data/corpus/coletado/
+data/freya.db
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+# modelos e caches
+.cache/
+data/corpus/unificado/

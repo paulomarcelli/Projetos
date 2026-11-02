@@ -23,14 +23,32 @@ jobs:
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
+      - name: Preparar o Node (landing page Karol Sevilla)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Gerar a landing page Karol Sevilla (Vite)
+        working-directory: Projetos/landing page Karol Sevilla
+        run: |
+          npm ci
+          npm run build
+      - name: Gerar a landing Karol x Samsung (Vite + Three.js)
+        working-directory: Projetos/landing page Karol Sevilla x Samsung
+        run: |
+          npm ci
+          npm run build
+      - name: Gerar a prévia da Iris (Vite, sem servidor)
+        working-directory: Projetos/Iris/frontend
+        run: |
+          npm ci
+          npm run build:previa
       - name: Montar os sites
         run: |
           rm -rf _site
-          mkdir -p _site/Projetos/Cenicienta _site/Projetos/Una-Noche-Mas _site/Projetos/Role-peoes
+          mkdir -p _site/Projetos/Cenicienta _site/Projetos/Una-Noche-Mas
           cp -a Projetos/Site-Karol-Sevilla/. _site/
           cp -a Projetos/Cenicienta/. _site/Projetos/Cenicienta/
           cp -a Projetos/Una-Noche-Mas/. _site/Projetos/Una-Noche-Mas/
-          cp -a Projetos/Role-peoes/. _site/Projetos/Role-peoes/
           mkdir -p _site/Projetos/Geometry-Heroes
           # Geometry Heroes: só o que o jogo precisa para rodar (sem testes, vídeo e documentação)
           cp -a Projetos/Tarefa-POO-JavaScript/index.html Projetos/Tarefa-POO-JavaScript/main.js Projetos/Tarefa-POO-JavaScript/style.css Projetos/Tarefa-POO-JavaScript/js Projetos/Tarefa-POO-JavaScript/assets _site/Projetos/Geometry-Heroes/
@@ -41,6 +59,18 @@ jobs:
           printf 'window.LUNA_CONFIG = { apiBase: %s };\n' "$(jq -Rn --arg u "$LUNA_API_URL" '$u')" > _site/Projetos/Luna/config.js
           # Cache: cada publicação usa uma versão nova dos scripts, para o navegador não ficar com a página antiga
           sed -i "s#\\(src=\"\\(config\\|script\\|voz\\|voz-tempo-real\\|intro\\|estrelas\\)\\.js\\)\"#\\1?v=${GITHUB_SHA::8}\"#g; s#href=\"style.css\"#href=\"style.css?v=${GITHUB_SHA::8}\"#" _site/Projetos/Luna/index.html
+          # Landing page Karol Sevilla: só o resultado do build (dist/)
+          mkdir -p _site/Projetos/Landing-Page-Karol-Sevilla
+          cp -a "Projetos/landing page Karol Sevilla/dist/." _site/Projetos/Landing-Page-Karol-Sevilla/
+          # Landing Karol x Samsung: só o resultado do build (dist/)
+          mkdir -p _site/Projetos/Karol-x-Samsung
+          cp -a "Projetos/landing page Karol Sevilla x Samsung/dist/." _site/Projetos/Karol-x-Samsung/
+          # Iris: só a prévia estática (dist-previa/), com os dados de exemplo identificados na tela
+          mkdir -p _site/Projetos/Iris
+          cp -a Projetos/Iris/frontend/dist-previa/. _site/Projetos/Iris/
+          # KFKA: o protótipo estático (sem testes e documentação)
+          mkdir -p _site/Projetos/KFKA
+          cp -a Projetos/KFKA/index.html Projetos/KFKA/css Projetos/KFKA/js _site/Projetos/KFKA/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

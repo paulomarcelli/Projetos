@@ -42,14 +42,14 @@
 
       ${sec('tipo', 'Tipografia', 'Bricolage Grotesque dá personalidade aos títulos. Plus Jakarta Sans é muito legível em telas pequenas e tem acentuação completa em português. JetBrains Mono alinha as médias e os números em colunas.', `
         <div class="card stack type-scale">
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:44px;font-weight:700;letter-spacing:-.02em;color:var(--ink)">Display 36–56</span><code>Bricolage 700 · altura 1,05</code></div>
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--ink)">Título de página 28–34</span><code>Bricolage 700 · altura 1,15</code></div>
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Título de seção 22</span><code>Bricolage 700</code></div>
-          <div class="row-between"><span style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--ink)">Título de cartão 18</span><code>Bricolage 700</code></div>
-          <div class="row-between"><span style="font-size:16px">Corpo 15–16: relatos pedagógicos e textos longos.</span><code>Jakarta 400 · altura 1,55</code></div>
-          <div class="row-between"><span style="font-size:14px;font-weight:600">Interface 13–14: rótulos, tabelas, botões.</span><code>Jakarta 600–700</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:2.75rem;font-weight:700;letter-spacing:-.02em;color:var(--ink)">Display 36–56</span><code>Bricolage 700 · altura 1,05</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:1.875rem;font-weight:700;color:var(--ink)">Título de página 28–34</span><code>Bricolage 700 · altura 1,15</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:1.375rem;font-weight:700;color:var(--ink)">Título de seção 22</span><code>Bricolage 700</code></div>
+          <div class="row-between"><span style="font-family:var(--font-display);font-size:1.125rem;font-weight:700;color:var(--ink)">Título de cartão 18</span><code>Bricolage 700</code></div>
+          <div class="row-between"><span style="font-size:1rem">Corpo 15–16: relatos pedagógicos e textos longos.</span><code>Jakarta 400 · altura 1,55</code></div>
+          <div class="row-between"><span style="font-size:0.875rem;font-weight:600">Interface 13–14: rótulos, tabelas, botões.</span><code>Jakarta 600–700</code></div>
           <div class="row-between"><span class="eyebrow">Rótulo 12 em caixa alta</span><code>Jakarta 800 · espaço .08em</code></div>
-          <div class="row-between"><span class="mono" style="font-size:28px;font-weight:700">8,5 · 2026-0142</span><code>JetBrains Mono 500/700</code></div>
+          <div class="row-between"><span class="mono" style="font-size:1.75rem;font-weight:700">8,5 · 2026-0142</span><code>JetBrains Mono 500/700</code></div>
         </div>`)}
 
       ${sec('espaco', 'Espaçamento, raios, sombras e grid', 'Escala de 4 px: todo espaço é múltiplo de 4. Os cantos são arredondados e as sombras são suaves, para um visual amigável e sem peso.', `
@@ -115,7 +115,8 @@
 
   /* ======================= MARCA (processo criativo do logo) ======================= */
   // Versão monocromática do símbolo (para fundos de cor ou impressão em 1 cor)
-  const markMono = (fg, bg) => `<svg class="mark" width="64" height="64" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="${bg}"/><path d="M13 9.5v21M17.5 20 27 11.5M17.5 20 27 28.5" stroke="${fg}" stroke-width="4.2" stroke-linecap="round" fill="none"/><circle cx="17.5" cy="20" r="3.3" fill="${fg}"/></svg>`;
+  // Versão monocromática do símbolo (fundos de cor ou impressão em 1 cor): mesma geometria do K.mark
+  const markMono = (fg, bg) => `<svg class="mark" width="64" height="64" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="${bg}"/><path d="M13.5 10v20M15.5 20C20 20 23 15 27.5 10.5M15.5 20C20 20 23 25 27.5 29.5" fill="none" stroke="${fg}" stroke-width="4.4" stroke-linecap="round"/><circle cx="15.4" cy="20" r="4.4" fill="${fg}" stroke="${bg}" stroke-width="1.6"/></svg>`;
   const IDEIAS = [['K como encontro de caminhos', 7], ['Ponte escola–casa', 5], ['Balão de conversa', 4], ['Livro aberto', 3], ['Broto crescendo', 3], ['Check de leitura', 4], ['Calendário em 4 partes', 2], ['Lápis + coração', 1], ['Mochila', 0], ['Casa + escola', 2]];
   const MORF = [
     ['Palavra e letras', ['KFKA espaçado', 'kfka minúsculo', 'Monograma K', 'K + ponto'], [2, 3]],
@@ -136,9 +137,9 @@
         <div class="brand-hero"><div class="brand-stage">${K.mark(160)}</div>
           <ol class="brand-key">
             <li><span class="key-dot" style="background:#fff;border:2px solid var(--ink)"></span><div><b>Haste vertical: a escola</b><small>A base firme que organiza o ano letivo.</small></div></li>
-            <li><span class="key-dot" style="background:#74C0FC"></span><div><b>Braço de cima, céu: o professor</b><small>Quem observa e registra o desenvolvimento.</small></div></li>
-            <li><span class="key-dot" style="background:#5FD4A8"></span><div><b>Braço de baixo, menta: a família</b><small>Quem recebe, lê e responde.</small></div></li>
-            <li><span class="key-dot" style="background:#FFC94A"></span><div><b>Ponto central, sol: a publicação</b><small>O momento em que os três se encontram, que é o propósito do produto.</small></div></li>
+            <li><span class="key-dot" style="background:#74C0FC"></span><div><b>Caminho de cima, céu: o professor</b><small>Quem observa e registra; o traço se curva até o encontro.</small></div></li>
+            <li><span class="key-dot" style="background:#5FD4A8"></span><div><b>Caminho de baixo, menta: a família</b><small>Quem recebe, lê e responde; chega ao mesmo ponto.</small></div></li>
+            <li><span class="key-dot" style="background:#FFC94A"></span><div><b>Ponto de encontro, sol: a publicação</b><small>Fica sobre a haste: é ali que escola, professor e família se encontram. Versão 2: os caminhos agora tocam o ponto (na 1ª, os braços flutuavam soltos da haste).</small></div></li>
           </ol></div>`)}
 
       ${sec('associacoes', '1. Associações', 'Palavras que o tema evoca (OSTROWER, 2014). Em destaque, as que guiaram o símbolo.', `
@@ -173,8 +174,8 @@
           <div class="card bv" style="background:var(--blue)">${markMono('#fff', 'transparent')}<small style="color:#fff">Negativa</small></div>
         </div>
         <div class="grid-2">
-          <div class="card stack-sm"><h3 style="font-size:17px">Área de proteção e tamanho mínimo</h3><div class="row" style="gap:28px;flex-wrap:wrap"><div class="clear-space">${K.mark(80)}</div><div class="stack-sm"><p class="text-2" style="font-size:14px">Mantenha ao redor do símbolo um espaço livre igual ao diâmetro do ponto central (x).</p><div class="row">${K.mark(24)}<small class="muted">Mínimo digital: 24px</small></div><div class="row">${K.mark(16)}<small class="muted">Favicon: 16px (simplificado)</small></div></div></div></div>
-          <div class="card stack-sm"><h3 style="font-size:17px">Não faça</h3><div class="row dont-row">
+          <div class="card stack-sm"><h3 style="font-size:1.0625rem">Área de proteção e tamanho mínimo</h3><div class="row" style="gap:28px;flex-wrap:wrap"><div class="clear-space">${K.mark(80)}</div><div class="stack-sm"><p class="text-2" style="font-size:0.875rem">Mantenha ao redor do símbolo um espaço livre igual ao diâmetro do ponto central (x).</p><div class="row">${K.mark(24)}<small class="muted">Mínimo digital: 24px</small></div><div class="row">${K.mark(16)}<small class="muted">Favicon: 16px (simplificado)</small></div></div></div></div>
+          <div class="card stack-sm"><h3 style="font-size:1.0625rem">Não faça</h3><div class="row dont-row">
             <div class="dont"><span style="display:inline-block;transform:scaleX(1.5)">${K.mark(44)}</span><small>Distorcer</small></div>
             <div class="dont"><span style="filter:hue-rotate(140deg);display:inline-block">${K.mark(44)}</span><small>Trocar as cores</small></div>
             <div class="dont"><span style="display:inline-block;transform:rotate(-20deg)">${K.mark(44)}</span><small>Girar</small></div>
@@ -185,10 +186,10 @@
 
   /* ======================= MAPA DE NAVEGAÇÃO ======================= */
   const MAPA = [
-    ['Público', 'var(--line-strong)', [['#/', 'Home'], ['#/entrar', 'Escolha de perfil', [['#/entrar/administrador', 'Login · coordenação'], ['#/entrar/professor', 'Login · professor'], ['#/entrar/responsavel', 'Login · responsável']]], ['#/recuperar-senha', 'Recuperar senha (3 passos)'], ['#/sessao-expirada', 'Sessão expirada'], ['#/acesso-negado', 'Acesso negado'], ['#/privacidade', 'Privacidade e LGPD']]],
-    ['Coordenação', 'var(--sun)', [['#/admin/painel', 'Painel'], ['#/admin/alunos', 'Alunos', [['#/admin/alunos/novo', 'Novo / editar aluno']]], ['#/admin/professores', 'Professores', [['#/admin/professores/novo', 'Novo / editar']]], ['#/admin/responsaveis', 'Responsáveis', [['#/admin/responsaveis/novo', 'Novo / editar + consentimento']]], ['#/admin/turmas', 'Turmas', [['#/admin/turmas/6A', 'Detalhe da turma']]], ['#/admin/disciplinas', 'Áreas, disciplinas e tags'], ['#/admin/vinculos', 'Vínculos'], ['#/admin/periodos', 'Períodos letivos'], ['#/admin/revisao', 'Revisão', [['#/admin/revisao/rel-103', 'Revisar → publicar / devolver / cancelar']]], ['#/admin/relatorios', 'Relatórios gerenciais → exportar'], ['#/admin/auditoria', 'Histórico e auditoria'], ['#/admin/perfil', 'Perfil']]],
-    ['Professor', 'var(--sky)', [['#/professor/painel', 'Início'], ['#/professor/turmas', 'Minhas turmas', [['#/professor/turmas/6A?disc=MAT', 'Turma', [['#/professor/alunos/a5', 'Aluno']]]]], ['#/professor/registro/novo', 'Novo acompanhamento', [['#/professor/registro/rel-135/previa', 'Pré-visualização → enviar']]], ['#/professor/registros', 'Meus registros', [['#/professor/registros/rel-102', 'Detalhe + retorno da família'], ['#/professor/registro/rel-136/editar', 'Ajustar após devolução']]], ['#/professor/perfil', 'Perfil']]],
-    ['Família', 'var(--mint)', [['#/familia/selecionar', 'Escolha do aluno'], ['#/familia/painel', 'Início (por bimestre)'], ['#/familia/relatorios', 'Relatórios (filtros)', [['#/familia/relatorios/rel-109', 'Relatório → ciência e observação', [['#/familia/imprimir/rel-109', 'Impressão / PDF']]]]], ['#/familia/historico', 'Histórico'], ['#/familia/perfil', 'Perfil e tamanho do texto']]]
+    ['Público', 'var(--line-strong)', [['#/', 'Home'], ['#/entrar', 'Escolha de perfil', [['#/entrar/administrador', 'Login · coordenação'], ['#/entrar/professor', 'Login · professor'], ['#/entrar/responsavel', 'Login · responsável']]], ['#/criar-conta', 'Criar conta', [['#/criar-conta/administrador', 'Cadastro · coordenação'], ['#/criar-conta/professor', 'Cadastro · professor'], ['#/criar-conta/responsavel', 'Cadastro · responsável']]], ['#/recuperar-senha', 'Recuperar senha (3 passos)'], ['#/sessao-expirada', 'Sessão expirada'], ['#/acesso-negado', 'Acesso negado'], ['#/privacidade', 'Privacidade e LGPD']]],
+    ['Coordenação', 'var(--sun)', [['#/admin/painel', 'Painel'], ['#/admin/alunos', 'Alunos', [['#/admin/alunos/novo', 'Novo / editar aluno']]], ['#/admin/professores', 'Professores', [['#/admin/professores/novo', 'Novo / editar']]], ['#/admin/responsaveis', 'Responsáveis', [['#/admin/responsaveis/novo', 'Novo / editar + consentimento']]], ['#/admin/turmas', 'Turmas', [['#/admin/turmas/6A', 'Detalhe da turma']]], ['#/admin/disciplinas', 'Áreas, disciplinas e tags'], ['#/admin/vinculos', 'Vínculos'], ['#/admin/periodos', 'Períodos letivos'], ['#/admin/revisao', 'Revisão', [['#/admin/revisao/rel-103', 'Revisar → publicar / devolver / cancelar']]], ['#/admin/relatorios', 'Relatórios gerenciais → exportar'], ['#/admin/auditoria', 'Histórico e auditoria'], ['#/admin/perfil', 'Perfil'], ['#/admin/configuracoes', 'Configurações (tema, texto, animações)']]],
+    ['Professor', 'var(--sky)', [['#/professor/painel', 'Início'], ['#/professor/turmas', 'Minhas turmas', [['#/professor/turmas/6A?disc=MAT', 'Turma', [['#/professor/alunos/a5', 'Aluno']]]]], ['#/professor/registro/novo', 'Novo acompanhamento', [['#/professor/registro/rel-135/previa', 'Pré-visualização → enviar']]], ['#/professor/registros', 'Meus registros', [['#/professor/registros/rel-102', 'Detalhe + retorno da família'], ['#/professor/registro/rel-136/editar', 'Ajustar após devolução']]], ['#/professor/perfil', 'Perfil'], ['#/professor/configuracoes', 'Configurações']]],
+    ['Família', 'var(--mint)', [['#/familia/selecionar', 'Escolha do aluno'], ['#/familia/painel', 'Início (por bimestre)'], ['#/familia/relatorios', 'Relatórios (filtros)', [['#/familia/relatorios/rel-109', 'Relatório → ciência e observação', [['#/familia/imprimir/rel-109', 'Impressão / PDF']]]]], ['#/familia/historico', 'Histórico'], ['#/familia/perfil', 'Perfil e tamanho do texto'], ['#/familia/configuracoes', 'Configurações']]]
   ];
   const tree = (items) => `<ul>${items.map(([h, l, kids]) => `<li><a href="${h}">${l}</a>${kids ? tree(kids) : ''}</li>`).join('')}</ul>`;
   K.views.mapa = {
@@ -204,14 +205,14 @@
           ['Professor', ['#/professor/painel', 'Painel'], ['#/professor/turmas/6A?disc=MAT', 'Turma'], ['#/professor/alunos/a5', 'Aluno'], ['#/professor/registro/novo?aluno=a5&disc=MAT&bim=3', 'Novo registro'], ['#/professor/registros?status=devolvido', 'Ajuste após devolução']],
           ['Família', ['#/entrar/responsavel', 'Login'], ['#/familia/selecionar', 'Aluno'], ['#/familia/painel', 'Painel'], ['#/familia/relatorios?bim=3', 'Filtro'], ['#/familia/relatorios/rel-109', 'Relatório e ciência'], ['#/familia/imprimir/rel-109', 'PDF']],
           ['Gestão', ['#/admin/painel', 'Painel'], ['#/admin/relatorios', 'Filtros'], ['#/admin/relatorios?turma=6A', 'Lista'], ['#/admin/revisao/rel-103', 'Detalhe'], ['#/admin/auditoria', 'Histórico'], ['#/admin/relatorios', 'Exportar para Excel']]
-        ].map(([t, ...steps]) => `<div class="card stack-sm"><h3 style="font-size:17px">${t}</h3><ol class="flow">${steps.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join('')}</ol></div>`).join('')}</div>`)}
+        ].map(([t, ...steps]) => `<div class="card stack-sm"><h3 style="font-size:1.0625rem">${t}</h3><ol class="flow">${steps.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join('')}</ol></div>`).join('')}</div>`)}
     </main>`
   };
 
   /* ======================= PESQUISA + REQUISITOS ======================= */
   // IDs oficiais do documento PI_2ADS_202602_KFKA_FINAL
   const MATRIZ = [
-    ['RF01', 'Autenticação e perfis: login, logout, recuperação de senha e autorização por perfil', 'Escolha de perfil, Login, Recuperar senha, Sair, Sessão expirada, Acesso negado', '#/entrar', 'role-option, field, alert, strength'],
+    ['RF01', 'Autenticação e perfis: login, logout, recuperação de senha e autorização por perfil', 'Escolha de perfil, Login, Criar conta (3 perfis), Recuperar senha, Sair, Sessão expirada, Acesso negado', '#/entrar', 'role-option, field, opcao, alert, strength, ver-senha'],
     ['RF02', 'Cadastros: responsáveis, alunos, professores, áreas, disciplinas, turmas e tags (ativar/inativar)', 'Alunos, Professores, Responsáveis, Turmas, Áreas e disciplinas, Tags', '#/admin/disciplinas', 'table, toolbar, field, switch, modal'],
     ['RF03', 'Vínculos da turma, impedindo incompatíveis ou duplicados', 'Vínculos, Detalhe da turma', '#/admin/vinculos', 'select, alerta de duplicado/incompatível'],
     ['RF04', 'Períodos: data e hora de abertura e encerramento dos 4 bimestres', 'Períodos letivos', '#/admin/periodos', 'period-banner, year-line, validação de datas'],
@@ -256,7 +257,7 @@
           ['tag', 'TutorMundi', 'Etiquetas em pílula e títulos fortes e arredondados.', 'Tags pedagógicas em pílula e títulos em Bricolage Grotesque.'],
           ['layers', 'Sponte · TOTVS · Kaits', 'Sistemas de gestão escolar: menu lateral denso e foco em cadastros.', 'Menu lateral agrupado por tarefa (Estrutura escolar e Acompanhamento) e contadores de pendências.'],
           ['palette', 'Moodboard “The Cutting Edge” (slide)', 'Primária fria (azuis) + secundária quente (amarelo e laranja). Ícones em formas geométricas.', 'Base tinta/teal + acentos sol e menta. Ícones de traço com grade de 24px.']
-        ].map(([ic, t, o, d]) => `<article class="card stack-sm"><span class="ico ico-teal" style="width:40px;height:40px;border-radius:12px">${I(ic)}</span><h3 style="font-size:17px">${t}</h3><p class="text-2" style="font-size:14px"><b>Observado:</b> ${o}</p><p style="font-size:14px"><b>No KFKA:</b> ${d}</p></article>`).join('')}</div>`)}
+        ].map(([ic, t, o, d]) => `<article class="card stack-sm"><span class="ico ico-teal" style="width:40px;height:40px;border-radius:12px">${I(ic)}</span><h3 style="font-size:1.0625rem">${t}</h3><p class="text-2" style="font-size:0.875rem"><b>Observado:</b> ${o}</p><p style="font-size:0.875rem"><b>No KFKA:</b> ${d}</p></article>`).join('')}</div>`)}
       ${sec('dec', 'Decisões de design', '', `<ul class="checklist card">${[
         'Um único layout logado (menu lateral + barra superior) para os três perfis, mudando só o menu e a cor do selo. Isso reduz o tempo de aprendizado.',
         'O bimestre é o eixo de navegação (abas de bimestre), porque é assim que escola e família pensam o ano.',
@@ -268,7 +269,7 @@
       ].map((x) => `<li>${I('check-circle')}${x}</li>`).join('')}</ul>`)}
       ${sec('matriz', 'Matriz requisito → tela → componente', 'IDs conforme o documento oficial do projeto. Clique na rota para abrir a tela.', `
         <div class="card flush"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>Requisito</th><th>Tela(s)</th><th>Rota</th><th>Componentes</th></tr></thead><tbody>
-        ${MATRIZ.map(([id, req, tela, rota, comp]) => `<tr><td class="cell-main"><b class="mono">${id}</b></td><td data-label="Requisito">${req}</td><td data-label="Tela">${tela}</td><td data-label="Rota"><a class="mono" href="${rota}" style="font-size:12px">${rota}</a></td><td data-label="Componentes"><small class="text-2">${comp}</small></td></tr>`).join('')}
+        ${MATRIZ.map(([id, req, tela, rota, comp]) => `<tr><td class="cell-main"><b class="mono">${id}</b></td><td data-label="Requisito">${req}</td><td data-label="Tela">${tela}</td><td data-label="Rota"><a class="mono" href="${rota}" style="font-size:0.75rem">${rota}</a></td><td data-label="Componentes"><small class="text-2">${comp}</small></td></tr>`).join('')}
         </tbody></table></div></div>`)}
     </main>`
   };

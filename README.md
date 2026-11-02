@@ -1,14 +1,152 @@
+<div align="center">
+
 # 🚀 Projetos
 
-Repositório principal para organizar meus projetos de desenvolvimento em um único lugar. Cada projeto possui sua própria pasta, README, tecnologias e instruções de uso.
+**Meu portfólio de desenvolvimento num lugar só: sites, landing pages animadas, jogos e IA.**
+
+Cada projeto tem a própria pasta, README e instruções de uso.<br>
+Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`.
+
+[![Abrir o portfólio](https://img.shields.io/badge/ABRIR_OS_SITES-0a0a0b?style=for-the-badge&logo=githubpages&logoColor=white)](https://paulomarcelli.github.io/Projetos/)
+
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Three.js](https://img.shields.io/badge/Three.js-000000?style=flat-square&logo=threedotjs&logoColor=white)
+![GSAP](https://img.shields.io/badge/GSAP-0AE448?style=flat-square&logo=greensock&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Phaser](https://img.shields.io/badge/Phaser_3-8B5CF6?style=flat-square&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini_API-4285F4?style=flat-square&logo=google&logoColor=white)
+
+</div>
+
+<br>
+
+## 🌐 Projetos
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><img src="docs/capas/iris.webp" alt="Iris: Entenda o presente. Explore os futuros., com futuros em dourado"></a>
+      <h3>👁️ Iris</h3>
+      Inteligência estratégica em Relações Internacionais: diagnóstico, cenários como hipóteses e sinais a acompanhar, com a fonte de cada afirmação.<br>
+      <sub>React · TypeScript · FastAPI · em desenvolvimento (prévia com dados de exemplo)</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><b>Abrir a prévia ↗</b></a> · <a href="Projetos/Iris">Código</a>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><img src="docs/capas/kfka.webp" alt="KFKA: A escola e a família acompanhando o aluno juntas"></a>
+      <h3>🎒 KFKA</h3>
+      Acompanhamento escolar (Projeto Interdisciplinar, FECAP · ADS): o professor registra, a coordenação publica e a família acompanha.<br>
+      <sub>HTML · CSS · JavaScript · protótipo com dados fictícios</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><b>Abrir o protótipo ↗</b></a> · <a href="Projetos/KFKA">Código</a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><img src="docs/capas/karol-samsung.webp" alt="Karol × Samsung: o Galaxy S26 Ultra em 3D com o título A cena na palma da mão"></a>
+      <h3>📱 Karol × Samsung</h3>
+      Landing 3D do Galaxy S26 Ultra, desenhado em código: a planta carrega com os KB reais, as camadas caem, explodem e dá para "fotografar" a Karol.<br>
+      <sub>Vite · Three.js · GSAP · projeto pessoal de fã</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung">Código</a>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><img src="docs/capas/landing-karol.webp" alt="Landing Karol Sevilla: o nome KAROL com a tinta revelando letras infladas em azul-bebê"></a>
+      <h3>💙 Landing page Karol Sevilla</h3>
+      Atividade de Gestalt (Design, FECAP): passe o mouse no nome e a tinta revela as letras infladas, feitas em 3D no Blender.<br>
+      <sub>Vite · GSAP · WebGL · projeto acadêmico fictício</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla">Código</a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/"><img src="docs/capas/site-karol.webp" alt="Site Karol Sevilla no estilo de um app de música, com a foto dela e a história em 3 capítulos"></a>
+      <h3>🌐 Site Karol Sevilla</h3>
+      Fã-site inspirado na navegação de apps de música: a trajetória em três capítulos, <i>Mariposas</i> e <i>Más linda</i>, e "O que Karol tem a nos ensinar?". Tudo com fontes citadas.<br>
+      <sub>HTML · CSS · JavaScript</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/"><b>Abrir site ↗</b></a> · <a href="https://paulomarcelli.github.io/Projetos/primeira-versao/">1ª versão</a> · <a href="Projetos/Site-Karol-Sevilla">Código</a>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><img src="docs/capas/geometry-heroes.webp" alt="Tela inicial do Geometry Heroes com seis heróis em quadrinhos e o botão jogar"></a>
+      <h3>🎮 Geometry Heroes</h3>
+      Jogo de plataforma no ritmo da música (POO, FECAP · ADS): 6 fases, uma por herói, cada um com uma habilidade. 78 classes e 280 verificações automáticas.<br>
+      <sub>JavaScript · Phaser 3 · Programação Orientada a Objetos</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><b>Jogar ↗</b></a> · <a href="Projetos/Tarefa-POO-JavaScript">Código</a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><img src="docs/capas/cenicienta.webp" alt="Site Cenicienta com o título em rosa neon sobre o clipe"></a>
+      <h3>👠 Cenicienta</h3>
+      Site do single de 2024 da Karol Sevilla: a música, o significado e o clipe.<br>
+      <sub>HTML · CSS · JavaScript</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><b>Abrir site ↗</b></a> · <a href="Projetos/Cenicienta">Código</a>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><img src="docs/capas/una-noche-mas.webp" alt="Site Una Noche Más com o título em rosa e a Karol em cena do clipe"></a>
+      <h3>🌙 Una Noche Más</h3>
+      Site do single de Alan Navarro e Karol Sevilla: a música, os compositores e as redes.<br>
+      <sub>HTML · CSS · JavaScript</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><b>Abrir site ↗</b></a> · <a href="Projetos/Una-Noche-Mas">Código</a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
+      <h3>🌙 LUNA MIND</h3>
+      Assistente de apoio emocional por texto e voz, com biblioteca de pesquisa (RAG) e uma camada de segurança que não depende da IA.<br>
+      <sub>Python · Flask · OpenAI · Gemini API · Render</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>Abrir a Luna ↗</b></a> · <a href="Projetos/Luna-AI">Código</a>
+    </td>
+    <td width="50%" valign="top">
+      <a href="Projetos/Joken-Po-Python"><img src="docs/capas/joken-po.webp" alt="Joken-Po: uma partida de pedra, papel e tesoura no terminal"></a>
+      <h3>✊ Joken-Po em Python</h3>
+      Pedra, papel e tesoura no terminal contra o computador, comentado linha a linha para estudar lógica de programação.<br>
+      <sub>Python · lógica de programação</sub><br><br>
+      <a href="Projetos/Joken-Po-Python"><b>Ver o código ↗</b></a>
+    </td>
+  </tr>
+</table>
+
+## 🗂️ Todos os projetos
+
+| Projeto | Tecnologias | Status |
+|---|---|---|
+| [Iris](Projetos/Iris) | React · TypeScript · Vite · FastAPI · PostgreSQL | 🟡 Em desenvolvimento (prévia publicada) |
+| [KFKA · Acompanhamento Escolar](Projetos/KFKA) | HTML · CSS · JavaScript | 🟢 Publicado (protótipo) |
+| [Karol × Samsung (Galaxy S26 Ultra)](Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung) | Vite · Three.js · GSAP | 🟢 Publicado |
+| [Landing page Karol Sevilla](Projetos/landing%20page%20Karol%20Sevilla) | Vite · JavaScript · GSAP · WebGL | 🟢 Publicado |
+| [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | 🟢 Publicado |
+| [Geometry Heroes (Tarefa de POO)](Projetos/Tarefa-POO-JavaScript) | JavaScript · Phaser 3 · POO | 🟢 Publicado |
+| [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | 🟢 Publicado |
+| [Una Noche Más](Projetos/Una-Noche-Mas) | HTML · CSS · JavaScript | 🟢 Publicado |
+| [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | 🟢 Concluído |
+| [LUNA MIND](Projetos/Luna-AI) | Python · Flask · OpenAI · Gemini API | 🟢 Publicado |
 
 ## 📂 Estrutura
 
+A pasta `Projetos` é a área principal: cada projeto fica separado e documentado, para facilitar a navegação e a apresentação do portfólio.
+
+<details>
+<summary><b>Ver a árvore de pastas</b></summary>
+
 ```text
 Projetos/
+├── KFKA/                         (protótipo do Projeto Interdisciplinar)
+│   ├── index.html, css/, js/
+│   └── README.md
+├── Iris/
+│   ├── frontend/                 (interface React + Vite)
+│   ├── app/                      (API FastAPI)
+│   ├── migrations/, tests/
+│   └── README.md
 ├── Luna-AI/
-│   ├── AI
-│   ├── LUNA.py
+│   ├── app.py, luna.py
+│   ├── web/                      (a tela publicada no Pages)
+│   ├── rag/, conhecimento/
 │   └── README.md
 ├── Site-Karol-Sevilla/
 │   ├── index.html
@@ -21,6 +159,15 @@ Projetos/
 │   │   ├── index.html
 │   │   ├── style.css
 │   │   └── script.js
+│   └── README.md
+├── landing page Karol Sevilla/
+│   ├── index.html
+│   ├── src/
+│   ├── public/
+│   └── README.md
+├── landing page Karol Sevilla x Samsung/
+│   ├── index.html
+│   ├── src/ (three/, motion/, styles/)
 │   └── README.md
 ├── Joken-Po-Python/
 │   ├── pedra_papel_tesoura.py
@@ -39,15 +186,6 @@ Projetos/
 │   ├── nochemas.png
 │   ├── unanochemas.mp4
 │   └── README.md
-├── Role-peoes/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-├── Gemini-Chatbot/
-│   ├── .gitkeep
-│   └── README.md
-├── chatbot-AI/
-│   └── chat.py
 └── Tarefa-POO-JavaScript/        (Geometry Heroes)
     ├── index.html
     ├── style.css
@@ -65,42 +203,18 @@ Projetos/
     └── README.md
 ```
 
-## 🗂️ Projetos
+</details>
 
-| Projeto | Tecnologias | Status |
-|---|---|---|
-| [Luna AI](Projetos/Luna-AI) | Python · Inteligência Artificial | Em desenvolvimento |
-| [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | Publicado |
-| [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | Publicado |
-| [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | Publicado |
-| [Una Noche Más](Projetos/Una-Noche-Mas) | HTML · CSS · JavaScript | Publicado |
-| [Rolê dos Peões](Projetos/Role-peoes) | HTML · CSS · JavaScript · Firebase | Publicado |
-| [Gemini Chatbot](Projetos/Gemini-Chatbot) | Python · Gemini API | Em desenvolvimento |
-| [Chatbot AI](Projetos/chatbot-AI) | Python · Gemini API (`google-genai`) | Em desenvolvimento |
-| [Geometry Heroes (Tarefa de POO)](Projetos/Tarefa-POO-JavaScript) | JavaScript · Phaser 3 · Programação Orientada a Objetos | Publicado |
+## ⚙️ Como os sites são publicados
 
-A pasta `Projetos` funciona como a área principal. Dentro dela, cada projeto fica separado e documentado para facilitar a navegação e a apresentação do portfólio.
+O workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) roda a cada push na `main`: gera as landings feitas com Vite (`npm ci` e `npm run build`) e a prévia da Iris (`npm run build:previa`), junta os sites numa pasta só e publica no GitHub Pages.
 
-### ✨ Destaque: Site Karol Sevilla
+> [!NOTE]
+> As landings da Karol Sevilla e o site Karol × Samsung são projetos de fã e acadêmicos, sem vínculo oficial com a artista ou com marcas. As imagens pertencem aos seus autores.
 
-O site da Karol Sevilla ganhou uma nova versão: uma experiência inspirada na navegação de apps de música, que conta a trajetória da artista em três capítulos, apresenta *Mariposas* e *Más linda* e termina com a seção "O que Karol tem a nos ensinar?". Todo o conteúdo tem fontes citadas. A primeira versão do site continua disponível em `Site-Karol-Sevilla/primeira-versao/`.
+<div align="center">
+<br>
 
-### 🎮 Destaque: Geometry Heroes
+Feito com 💙 por **Paulo Marcelli**
 
-Jogo de plataforma no ritmo da música, feito em JavaScript com Phaser 3 para a tarefa de Programação Orientada a Objetos (FECAP, ADS). São 6 fases, uma por herói (Homem-Aranha, Hulk, Gavião Arqueiro, Doutor Estranho, Homem de Ferro e Feiticeira Escarlate), cada uma com uma habilidade diferente. O código tem 78 classes, com herança e polimorfismo, e 280 verificações automáticas passam nos testes. Jogue online pelo link na seção abaixo.
-
-## 🌐 Site online
-
-O GitHub Pages publica automaticamente o conteúdo do repositório a cada atualização na branch `main`, mantendo a estrutura de pastas dos projetos.
-
-[**Abrir Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/)
-
-[**Abrir a primeira versão do Site Karol Sevilla**](https://paulomarcelli.github.io/Projetos/primeira-versao/)
-
-[**Abrir Site Cenicienta**](https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/)
-
-[**Abrir Site Una Noche Más**](https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/)
-
-[**Abrir Rolê dos Peões**](https://paulomarcelli.github.io/Projetos/Projetos/Role-peoes/)
-
-[**Jogar Geometry Heroes**](https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/)
+</div>

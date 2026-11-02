@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR" class="is-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karol × Samsung · Galaxy S26 Ultra · conceito de fã</title>
+    <meta name="description" content="Projeto acadêmico e de fã: uma landing animada imaginando a Karol Sevilla com o Galaxy S26 Ultra. Não oficial, sem vínculo com a Samsung nem com a artista." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <style>
+      /* o mínimo da carga, antes do CSS */
+      html { background: #0a0a0b; }
+      .is-loading body { overflow: hidden; }
+      .intro { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+      /* preto só durante a carga: na passagem a planta deita por cima do 3D, que aparece por baixo */
+      .intro.is-loading { pointer-events: auto; background: #0a0a0b; }
+      .intro__plate { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .intro__count { position: absolute; left: 50%; bottom: 7vh; translate: -50% 0; opacity: 0; color: #f2f0eb; font: 400 12px/1.2 ui-monospace, monospace; letter-spacing: .1em; height: 1.2em; overflow: clip; white-space: nowrap; }
+      .intro__line { display: block; }
+      .intro__line + .intro__line { position: absolute; inset: 0; transform: translateY(140%); }
+    </style>
+    <script>
+      // failsafe: se o 3D não chegar em 20 s, a carga sai e a página abre sem a abertura
+      setTimeout(() => { const r = document.documentElement; if (r.classList.contains('is-loading')) { r.classList.add('no-intro'); r.classList.remove('is-loading'); } }, 20000);
+    </script>
+  </head>
+  <body>
+    <div class="intro is-loading" aria-hidden="true">
+      <canvas class="intro__plate"></canvas>
+      <p class="intro__count">
+        <span class="intro__line">[ <span class="intro__kb">0000</span> / <span class="intro__tot">0000</span> KB<span class="intro__hd" hidden> · HD</span> ]</span>
+        <span class="intro__line">[ <span class="intro__n">0</span> / 6 CAMADAS ]</span>
+      </p>
+    </div>
+
+    <div class="cortina" aria-hidden="true"></div>
+    <canvas class="stage" aria-hidden="true"></canvas>
+    <div class="vinheta" aria-hidden="true"></div>
+
+    <header class="nav">
+      <a class="marca" href="#topo" aria-label="Karol × Samsung, início">KAROL<sup>°</sup> <span class="marca__x">×</span> SAMSUNG</a>
+      <nav class="nav__links" aria-label="Seções">
+        <a href="#mergulho">A tela</a>
+        <a href="#camera">Câmera</a>
+        <a href="#duvidas">Dúvidas</a>
+      </nav>
+      <p class="nav__hora mono"><span class="relogio">14:21</span> CIDADE DO MÉXICO <span class="fio">|</span> UTC−6</p>
+      <a class="botao botao--branco nav__cta" href="#ficha">VER FICHA +</a>
+      <button class="quadrado menu-abre" type="button" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+    </header>
+    <div class="pilula" aria-hidden="true">
+      <a class="marca" href="#topo" tabindex="-1">KAROL<sup>°</sup> <span class="marca__x">×</span> SAMSUNG</a>
+      <a class="quadrado quadrado--branco" href="#ficha" tabindex="-1" aria-label="Ficha técnica">+</a>
+      <button class="quadrado menu-abre" type="button" tabindex="-1" aria-label="Abrir menu"><span></span><span></span></button>
+    </div>
+    <div class="contador mono" aria-hidden="true"><span class="contador__col"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span></span></div>
+
+    <div class="menu" hidden>
+      <button class="menu__fecha quadrado" type="button" aria-label="Fechar menu">×</button>
+      <ol>
+        <li><a href="#mergulho" data-p="0.15"><span class="mono">02</span>A tela</a></li>
+        <li><a href="#mergulho" data-p="0.6"><span class="mono">03</span>Por dentro</a></li>
+        <li><a href="#camera"><span class="mono">04</span>A câmera</a></li>
+        <li><a href="#fotografe"><span class="mono">05</span>Fotografe</a></li>
+        <li><a href="#campanha"><span class="mono">06</span>A campanha</a></li>
+        <li><a href="#ficha"><span class="mono">07</span>Ficha técnica</a></li>
+        <li><a href="#duvidas"><span class="mono">08</span>Dúvidas</a></li>
+      </ol>
+    </div>
+
+    <main>
+      <!-- 01 hero: o texto fica em camadas fixas; o aparelho é o canvas atrás -->
+      <section class="hero" id="topo" aria-labelledby="h-titulo">
+        <div class="hero__fixo">
+          <h1 id="h-titulo" class="display hero__titulo"><span data-split>A cena</span> <span data-split>na palma</span> <span data-split class="hero__ultima">da mão.</span></h1>
+          <p class="hero__lado mono" data-split>Karol Sevilla × Samsung Galaxy S26 Ultra.<br />200 MP, tela de 6,9″, 214 g.<br />Um conceito de campanha feito por fã.</p>
+          <p class="hero__role mono" data-split>[ Role para explorar ]</p>
+          <p class="hero__redes mono" data-split>IG YT X</p>
+        </div>
+      </section>
+
+      <!-- 02 a tela + 03 por dentro: uma seção presa -->
+      <section class="presa mergulho" id="mergulho" aria-label="A tela e por dentro">
+        <div class="quadro">
+          <div class="bloco toque">
+            <p class="rotulo mono" data-split>02 — A tela</p>
+            <h2 class="frase" data-split>Seis vírgula<br />nove polegadas<br />de palco.</h2>
+            <p class="apoio" data-split>QHD+ a 120 Hz, até 2.600 nits de pico. E a tela de privacidade esconde o que é só seu.</p>
+          </div>
+          <ul class="specs mono bloco specsbloco">
+            <li data-split>6,9″</li><li data-split>1440 × 3120</li><li data-split>120 Hz</li><li data-split>2.600 nits</li><li data-split>Gorilla Armor 2</li><li data-split>S Pen</li>
+          </ul>
+          <div class="bloco dentro">
+            <p class="rotulo mono" data-split>03 — Por dentro</p>
+            <h2 class="frase frase--media" data-split>Seis camadas<br />em 7,9 mm.</h2>
+          </div>
+          <div class="callouts">
+            <p class="callout" data-anchor="lente" data-side="l"><span class="mono num">200 MP</span><span class="mono rot">Câmera principal</span></p>
+            <p class="callout" data-anchor="chip" data-side="r"><span class="mono num">8 Elite Gen 5</span><span class="mono rot">Snapdragon · 3 nm</span></p>
+            <p class="callout" data-anchor="bateria" data-side="r"><span class="mono num">5.000 mAh</span><span class="mono rot">Bateria · 60 W</span></p>
+            <p class="callout" data-anchor="moldura" data-side="l"><span class="mono num">Alumínio</span><span class="mono rot">Moldura Armor Aluminum 2</span></p>
+          </div>
+          <svg class="fios" aria-hidden="true"></svg>
+        </div>
+      </section>
+
+      <!-- 04 a câmera -->
+      <section class="presa camera" id="camera" aria-labelledby="c-titulo">
+        <div class="quadro">
+          <div class="bloco cam">
+            <h2 id="c-titulo" class="display cam__titulo" data-split>Quatro<br />câmeras,<br />uma cena.</h2>
+            <p class="leitura mono"><span class="zoom">1,0</span>× <span class="fio">·</span> <span class="mm">23</span> mm <span class="rotulo">· distância focal</span></p>
+            <svg class="chart" viewBox="0 0 470 190" aria-label="Gráfico: zoom de 1× a 5× contra distância focal de 23 a 111 mm">
+              <g class="chart__eixos">
+                <line x1="40" y1="150" x2="440" y2="150" /><line x1="40" y1="20" x2="40" y2="150" />
+                <text x="40" y="168">0</text><text x="200" y="168">2×</text><text x="280" y="168">3×</text><text x="440" y="168">5×</text>
+                <text x="240" y="186" class="t">ZOOM</text><text x="10" y="90" class="t" transform="rotate(-90 10 90)">MM</text>
+              </g>
+              <path class="chart__line" d="M120 125.08 L440 29.75" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000" />
+              <g class="chart__p3"><circle cx="280" cy="77.4" r="3.5" /><text x="290" y="92">3× · 67 mm · 10 MP</text></g>
+              <g class="chart__p5"><circle cx="440" cy="29.75" r="3.5" /><text x="432" y="18" text-anchor="end">5× · 111 mm · 50 MP</text></g>
+              <circle class="chart__dot" cx="120" cy="125.08" r="4" />
+            </svg>
+          </div>
+          <p class="pe mono" data-split>Câmera principal · 200 MP · f/1,4 · estabilização óptica</p>
+        </div>
+      </section>
+
+      <!-- 05 fotografe -->
+      <section class="presa fotografe" id="fotografe" aria-labelledby="f-titulo">
+        <div class="quadro">
+          <div class="bloco foto">
+            <p class="rotulo mono" data-split>05 — Fotografe</p>
+            <h2 id="f-titulo" class="display foto__titulo" data-split>Fotografe<br />a Karol.</h2>
+            <p class="dica mono" data-split>[ Clique na tela do celular ou aperte espaço ]</p>
+            <p class="dica mono" data-split>[ Setas trocam o zoom ]</p>
+            <button class="botao botao--linha disparar" type="button">Fotografar</button>
+            <p class="foto__hud mono">Fotos <span class="shots">0000</span> <span class="fio">·</span> zoom <span class="zoomnow">1×</span></p>
+            <p class="foto__ultima mono" aria-live="polite">Última foto · <span class="ultima">Selfie com o Galaxy azul</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 a campanha -->
+      <section class="presa campanha" id="campanha" aria-labelledby="k-titulo">
+        <div class="quadro">
+          <div class="bloco camp">
+            <h2 id="k-titulo" class="display" data-split>Karol<br />com o<br />Galaxy.</h2>
+            <p class="apoio" data-split>Ela já apareceu com aparelhos Galaxy em campanhas e no dia a dia. Aqui, a gente imaginou o próximo capítulo.</p>
+          </div>
+          <div class="tira-janela"><div class="tira" aria-label="Fotos da Karol com aparelhos Galaxy">
+            <figure><img src="fotos/galaxy-ai.webp" alt="Karol em uma campanha Galaxy AI" loading="lazy" /><figcaption class="mono">Galaxy AI</figcaption></figure>
+            <figure><img src="fotos/campanha-s24fe.webp" alt="Karol em campanha do Galaxy S24 FE" loading="lazy" /><figcaption class="mono">S24 FE</figcaption></figure>
+            <figure><img src="fotos/selfie-azul.webp" alt="Karol fazendo selfie com um Galaxy azul" loading="lazy" /><figcaption class="mono">Selfie</figcaption></figure>
+            <figure><img src="fotos/espelho-ultra.webp" alt="Karol no espelho com um Galaxy Ultra" loading="lazy" /><figcaption class="mono">Espelho</figcaption></figure>
+            <figure><img src="fotos/ligacao.webp" alt="Karol ao telefone, com luz de fim de tarde" loading="lazy" /><figcaption class="mono">Ligação</figcaption></figure>
+            <figure><img src="fotos/flip.webp" alt="Galaxy Flip com uma foto da Karol na tela externa" loading="lazy" /><figcaption class="mono">Flip</figcaption></figure>
+            <figure><img src="fotos/espelho.webp" alt="Karol sorrindo em uma selfie no espelho" loading="lazy" /><figcaption class="mono">Sorriso</figcaption></figure>
+            <figure><img src="fotos/espelho-evento.webp" alt="Karol fazendo selfie no espelho em um evento" loading="lazy" /><figcaption class="mono">Evento</figcaption></figure>
+            <figure><img src="fotos/palco.webp" alt="Karol cantando no palco" loading="lazy" /><figcaption class="mono">Palco</figcaption></figure>
+          </div></div>
+          <p class="pe mono" data-split>As fotos são de campanhas e redes sociais da artista · direitos dos autores</p>
+        </div>
+      </section>
+
+      <!-- 07 ficha -->
+      <section class="ficha" id="ficha" aria-labelledby="t-titulo">
+        <div class="ficha__conteudo">
+          <h2 id="t-titulo" class="display" data-split>Tudo que<br />vai dentro.</h2>
+          <table class="tabela">
+            <thead><tr><th class="mono">Item</th><th class="mono">Especificação</th><th class="mono">Detalhe</th></tr></thead>
+            <tbody>
+              <tr><td>Tela</td><td>6,9″ Dynamic AMOLED 2X, 1440 × 3120</td><td>120 Hz · 2.600 nits</td></tr>
+              <tr><td>Processador</td><td>Snapdragon 8 Elite Gen 5</td><td>3 nm</td></tr>
+              <tr><td>Câmeras</td><td>200 MP + 50 MP + 10 MP (3×) + 50 MP (5×)</td><td>Frontal 12 MP</td></tr>
+              <tr><td>Bateria</td><td>5.000 mAh</td><td>60 W com fio · 25 W sem fio</td></tr>
+              <tr><td>Construção</td><td>Gorilla Armor 2 na frente, Victus 2 atrás, moldura de alumínio</td><td>IP68</td></tr>
+              <tr><td>Medidas</td><td>163,6 × 78,1 × 7,9 mm</td><td>214 g</td></tr>
+              <tr class="total"><td>Memória</td><td>12 GB + 256/512 GB · 16 GB + 1 TB</td><td>S Pen inclusa</td></tr>
+            </tbody>
+          </table>
+          <a class="comprar" href="https://www.samsung.com/br/" target="_blank" rel="noopener"><span>VER NO SITE DA SAMSUNG</span><span>↗</span></a>
+          <p class="ficha__nota mono">Especificações públicas do modelo (anunciado em 25/02/2026) · confira no site oficial · esta página não vende nada</p>
+        </div>
+      </section>
+
+      <!-- 08 dúvidas -->
+      <section class="duvidas" id="duvidas" aria-labelledby="d-titulo">
+        <h2 id="d-titulo" class="display" data-split>Dúvidas.</h2>
+        <div class="acordeao">
+          <details open><summary>Isso é oficial?<span aria-hidden="true">+</span></summary><p>Não. É um projeto acadêmico e de fã. Não tem vínculo com a Samsung nem com a Karol Sevilla ou a equipe dela.</p></details>
+          <details><summary>De quem são as fotos?<span aria-hidden="true">+</span></summary><p>De campanhas e das redes sociais da artista. Os direitos são dos autores; aqui elas aparecem só para fins de estudo.</p></details>
+          <details><summary>O celular é um modelo 3D baixado?<span aria-hidden="true">+</span></summary><p>Não. Ele foi desenhado em código, em Three.js, a partir das medidas públicas: 163,6 × 78,1 × 7,9 mm.</p></details>
+          <details><summary>Os números estão certos?<span aria-hidden="true">+</span></summary><p>São as especificações divulgadas do Galaxy S26 Ultra. Antes de comprar, confira no site oficial da Samsung.</p></details>
+          <details><summary>Dá para comprar aqui?<span aria-hidden="true">+</span></summary><p>Não. Esta página não vende nada e não pede nenhum dado seu.</p></details>
+          <details><summary>Como foi feito?<span aria-hidden="true">+</span></summary><p>Vite, Three.js, GSAP e Lenis. A rolagem move a câmera por uma lista de poses; os textos entram por tempo.</p></details>
+        </div>
+      </section>
+
+      <footer class="rodape">
+        <p class="rodape__linha mono"><span>Projeto de fã · não oficial · sem vínculo com Samsung ou Karol Sevilla</span><span>Cidade do México · <span class="relogio">14:21</span></span><span>IG YT X</span></p>
+        <p class="rodape__assina mono">KAROL° × SAMSUNG · GALAXY S26 ULTRA · CONCEITO DE FÃ</p>
+        <p class="rodape__marca" aria-hidden="true">KAROL<sup>°</sup></p>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

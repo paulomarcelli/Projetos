@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karol · Turnê no Brasil 2027 (projeto acadêmico)</title>
+    <meta name="description" content="Landing page acadêmica e fictícia: lista de pré-venda de uma turnê da Karol Sevilla no Brasil. Sem vínculo oficial." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="infla/cheio.webp" as="image" type="image/webp" />
+    <script>
+      // abertura liga só com JS e sai sozinha em 4 s se o script principal não subir
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('intro-on');
+        setTimeout(() => document.documentElement.classList.remove('intro-on'), 4000);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="intro" aria-hidden="true">
+      <div class="intro__marca">
+        <img src="img/ks-branco.webp" alt="" width="600" height="411" />
+        <span class="intro__grau"></span>
+      </div>
+      <span class="intro__conta">100</span>
+    </div>
+
+    <header class="nav" data-tema="claro">
+      <a class="nav__marca" href="#topo" aria-label="Karol, início">
+        <img class="nav__ks nav__ks--marinho" src="img/ks-marinho.webp" alt="" width="600" height="411" />
+        <img class="nav__ks nav__ks--branco" src="img/ks-branco.webp" alt="" width="600" height="411" />
+      </a>
+      <nav class="nav__links" aria-label="Seções">
+        <a href="#turne">A turnê</a>
+        <a href="#fotos">Fotos</a>
+        <a href="#lista">Lista</a>
+      </nav>
+      <a class="pilula pilula--cheia nav__cta" href="#lista">Entrar na lista →</a>
+    </header>
+
+    <main>
+      <!-- 1. Herói: o nome chapado; o cursor pinta a tinta e, dentro dela, as letras infladas -->
+      <section class="hero" id="topo" data-tema="claro" aria-labelledby="titulo">
+        <h1 id="titulo" class="sr-only">Karol: turnê no Brasil em 2027. Entre na lista de pré-venda.</h1>
+        <p class="hero__frase entra">Turnê no Brasil em 2027.<br />Entre na lista e compre antes de todo mundo.</p>
+        <p class="hero__tags mono entra">PROJETO ACADÊMICO · NÃO É UM SITE OFICIAL</p>
+        <div class="hero__word entra" aria-hidden="true"><span>K</span><span>A</span><span>R</span><span>O</span><span>L</span></div>
+        <canvas class="hero__ink" aria-hidden="true"></canvas>
+        <div class="hero__rodape">
+          <a class="pilula pilula--cheia entra" href="#lista">Entrar na lista →</a>
+          <p class="mono entra">PASSE O MOUSE NO NOME</p>
+          <p class="mono entra hero__redes">INSTAGRAM / TIKTOK</p>
+        </div>
+      </section>
+
+      <!-- 2. Descrição: texto no terço da esquerda, fotos nos dois terços da direita -->
+      <section class="turne" id="turne" data-tema="claro" aria-labelledby="turne-titulo">
+        <div class="turne__texto">
+          <p class="rotulo mono">(A TURNÊ)</p>
+          <h2 id="turne-titulo" class="titulo linhas"><span class="ln"><span>Uma noite</span></span><span class="ln"><span>para cantar</span></span><span class="ln"><span>junto.</span></span></h2>
+          <ol class="itens">
+            <li><span class="mono">01</span><div><h3>Show completo</h3><p>Os sucessos e as músicas novas, ao vivo.</p></div></li>
+            <li><span class="mono">02</span><div><h3>Pré-venda da lista</h3><p>Quem está na lista compra antes.</p></div></li>
+            <li><span class="mono">03</span><div><h3>Encontro com fãs</h3><p>Sorteio de meet &amp; greet para a lista.</p></div></li>
+          </ol>
+        </div>
+        <div class="turne__fotos">
+          <figure class="foto" style="--push: 0"><div class="foto__moldura"><img src="fotos/palco.webp" alt="Karol cantando no palco com o microfone" loading="lazy" /></div><figcaption class="mono">NO PALCO</figcaption></figure>
+          <figure class="foto" style="--push: 1"><div class="foto__moldura"><img src="fotos/estudio.webp" alt="Karol no estúdio, segurando uma câmera" loading="lazy" /></div><figcaption class="mono">NO ESTÚDIO</figcaption></figure>
+          <figure class="foto" style="--push: 0.3"><div class="foto__moldura"><img src="fotos/hollywood.webp" alt="Karol caminhando em Hollywood" loading="lazy" /></div><figcaption class="mono">EM HOLLYWOOD</figcaption></figure>
+        </div>
+      </section>
+
+      <!-- 3. Fotos: o arco no centro e as polaroides boiando em volta, fugindo do cursor -->
+      <section class="fotos" id="fotos" data-tema="escuro" aria-labelledby="fotos-titulo">
+        <p class="rotulo mono">(FOTOS)</p>
+        <h2 id="fotos-titulo" class="titulo linhas"><span class="ln"><span>De perto,</span></span><span class="ln"><span>do jeito dela.</span></span></h2>
+        <div class="fotos__palco">
+          <div class="arco"><img src="fotos/aponta.webp" alt="Karol de moletom azul apontando para cima" loading="lazy" /></div>
+          <span class="anel" aria-hidden="true"></span>
+          <figure class="polaroide" data-depth="1.2" style="--x: 6%; --y: 6%; --r: -7deg"><img src="fotos/beijinho.webp" alt="Karol mandando um beijo" loading="lazy" /><figcaption class="mono">♡ SORRISO</figcaption></figure>
+          <figure class="polaroide" data-depth="0.8" style="--x: 74%; --y: 2%; --r: 6deg"><img src="fotos/faixa-rosa.webp" alt="Selfie da Karol com faixa rosa no cabelo" loading="lazy" /><figcaption class="mono">BOM DIA ☼</figcaption></figure>
+          <figure class="polaroide" data-depth="1.4" style="--x: 2%; --y: 52%; --r: 5deg"><img src="fotos/evento.webp" alt="Karol sorrindo nos bastidores de um evento" loading="lazy" /><figcaption class="mono">BASTIDORES</figcaption></figure>
+          <figure class="polaroide" data-depth="0.6" style="--x: 80%; --y: 48%; --r: -5deg"><img src="fotos/bone.webp" alt="Selfie da Karol de boné" loading="lazy" /><figcaption class="mono">DE BONÉ</figcaption></figure>
+          <figure class="polaroide" data-depth="1" style="--x: 20%; --y: 74%; --r: -3deg"><img src="fotos/mesa.webp" alt="Karol posando para uma entrevista" loading="lazy" /><figcaption class="mono">ENTREVISTA</figcaption></figure>
+          <figure class="polaroide" data-depth="0.9" style="--x: 64%; --y: 76%; --r: 4deg"><img src="fotos/sanduiche.webp" alt="Karol num passeio, sentada na mureta" loading="lazy" /><figcaption class="mono">PASSEIO</figcaption></figure>
+          <img class="balao" data-depth="1.3" src="img/obj-nuvem.webp" alt="" style="--x: 40%; --y: -4%; --w: 9vw" />
+          <img class="balao" data-depth="0.7" src="img/obj-raio.webp" alt="" style="--x: 52%; --y: 86%; --w: 6vw" />
+        </div>
+      </section>
+
+      <!-- 4. Formulário: leitura em Z (título → cartão → botão) -->
+      <section class="lista" id="lista" data-tema="claro" aria-labelledby="lista-titulo">
+        <div class="lista__lado">
+          <p class="rotulo mono">(LISTA DE PRÉ-VENDA)</p>
+          <h2 id="lista-titulo" class="titulo linhas"><span class="ln"><span>Garanta seu</span></span><span class="ln"><span>lugar na lista.</span></span></h2>
+          <p class="lista__sub">Leva 30 segundos. É grátis.<br />Avisamos primeiro quem está na lista.</p>
+          <div class="lista__foto"><img src="fotos/jardineira.webp" alt="Karol de jardineira jeans, olhando para o lado do formulário" loading="lazy" /></div>
+        </div>
+        <form class="cartao" novalidate>
+          <h3>Seus dados</h3>
+          <div class="campo campo--largo">
+            <label for="nome">Nome completo</label>
+            <input id="nome" name="nome" autocomplete="name" required placeholder="Como está no documento" />
+            <p class="erro" id="nome-erro"></p>
+          </div>
+          <div class="campo campo--largo">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="voce@email.com" />
+            <p class="erro" id="email-erro"></p>
+          </div>
+          <div class="campo">
+            <label for="tel">Telefone (WhatsApp)</label>
+            <input id="tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required placeholder="(11) 90000-0000" />
+            <p class="erro" id="tel-erro"></p>
+          </div>
+          <div class="campo">
+            <label for="cidade">Cidade</label>
+            <input id="cidade" name="cidade" autocomplete="address-level2" required placeholder="São Paulo" />
+            <p class="erro" id="cidade-erro"></p>
+          </div>
+          <fieldset class="campo campo--largo opcoes">
+            <legend>Ingresso de interesse</legend>
+            <label><input type="radio" name="ingresso" value="pista" /><span>Pista</span></label>
+            <label><input type="radio" name="ingresso" value="premium" checked /><span>Pista Premium</span></label>
+            <label><input type="radio" name="ingresso" value="meet" /><span>Meet &amp; Greet</span></label>
+          </fieldset>
+          <label class="aceite campo--largo"><input type="checkbox" name="avisos" checked /><span>Quero receber os avisos da turnê por e-mail e WhatsApp.</span></label>
+          <button class="pilula pilula--cheia enviar campo--largo" type="submit">Quero meu lugar na lista →</button>
+          <p class="nota campo--largo">Projeto acadêmico: nenhum dado sai do seu navegador e nenhum ingresso é vendido.</p>
+          <div class="sucesso" role="status" aria-live="polite" hidden>
+            <img src="img/ks-marinho.webp" alt="" width="600" height="411" />
+            <h3>Você está na lista, <span class="sucesso__nome"></span>!</h3>
+            <p>Quando a pré-venda abrir, o aviso chega primeiro para você.</p>
+            <button type="button" class="pilula pilula--contorno refazer">Preencher de novo</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 5. Pilha: balões que caem e dá para arremessar -->
+      <section class="servicos" data-tema="claro" aria-label="Brincadeira: balões">
+        <div class="pilha__topo">
+          <p class="titulo-medio linhas"><span class="ln"><span>Ar, brilho</span></span><span class="ln"><span>e música.</span></span></p>
+          <p class="rotulo mono">ARRASTE OS BALÕES</p>
+        </div>
+        <div class="pilha" aria-hidden="true"></div>
+      </section>
+
+      <!-- 6. Contato / rodapé -->
+      <footer class="contato" data-tema="escuro">
+        <div class="contato__topo">
+          <h2 class="titulo titulo--grande linhas"><span class="ln"><span>Te vejo</span></span><span class="ln"><span>no show?</span></span></h2>
+          <img class="contato__ks" src="img/ks-branco.webp" alt="Logo KS" width="600" height="411" loading="lazy" />
+        </div>
+        <div class="contato__acoes">
+          <a class="pilula pilula--bebe" href="#lista">Entrar na lista →</a>
+          <a class="pilula pilula--contorno-claro" href="https://www.instagram.com/karolsevillaofc/" target="_blank" rel="noopener">@karolsevillaofc ↗</a>
+        </div>
+        <div class="contato__word" aria-hidden="true"><span>K</span><span>A</span><span>R</span><span>O</span><span>L</span></div>
+        <div class="contato__linha mono">
+          <span>© 2027 · PROJETO ACADÊMICO FICTÍCIO</span>
+          <span>SEM VÍNCULO COM KAROL SEVILLA OU SUA EQUIPE</span>
+          <a href="#topo">VOLTAR AO TOPO ↑</a>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

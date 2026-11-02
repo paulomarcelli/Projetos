@@ -3,7 +3,7 @@ const { chromium } = require('playwright'); const path = require('path');
 const BASE = 'file://' + path.resolve(__dirname, '../index.html');
 const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process.exitCode = 1; };
 (async () => {
-  const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1280, height: 900 } });
+  const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1280, height: 900 } }); await require('./sessao')(p);
   const errs = []; p.on('pageerror', (e) => errs.push(e.message));
   const go = async (h) => { await p.goto(BASE + '#' + h); await p.waitForTimeout(60); };
   const txt = () => p.textContent('body');
@@ -68,6 +68,20 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) process
   await p.click('.content [data-tema="sistema"]'); tm = await tema(); ok(tm.t === 'sistema', 'voltar a seguir o sistema');
   await go('/'); await p.click('.public-header .tema-toggle'); tm = await tema(); ok(tm.t === 'dark', 'botão de tema na página pública');
   await p.click('.public-header .tema-toggle'); tm = await tema(); ok(tm.t === 'light', 'botão de tema volta ao claro');
+  // Configurações: tema por cartões (radiogroup), tamanho do texto e reduzir animações
+  for (const r of ['admin', 'professor', 'familia']) { await go(`/${r}/configuracoes`); ok((await p.$$('.tema-card')).length === 3, 'configurações ' + r); }
+  await go('/professor/configuracoes'); await p.click('.tema-card[data-tema="escuro"]'); await p.waitForTimeout(700); tm = await tema();
+  ok(tm.t === 'dark' && (await p.getAttribute('.tema-card[data-tema="escuro"]', 'aria-checked')) === 'true', 'tema escuro nas configurações');
+  await p.click('.tema-card[data-tema="sistema"]'); await p.waitForTimeout(700); tm = await tema(); ok(tm.t === 'sistema', 'configurações volta ao sistema');
+  await p.click('.tt-opcao:nth-child(3)'); ok(await p.evaluate(() => document.documentElement.style.fontSize === '125%'), 'tamanho do texto nas configurações');
+  await p.click('.tt-opcao:nth-child(1)');
+  await p.click('label.switch:has([data-cfg="movimento"])'); ok(await p.evaluate(() => document.documentElement.classList.contains('menos-movimento')), 'reduzir animações');
+  await p.click('label.switch:has([data-cfg="movimento"])');
+  await go('/admin/painel'); ok(!!(await p.$('.sidebar .nav-config[href="#/admin/configuracoes"]')), 'atalho de configurações na sidebar');
+  // Landing: abas de perfis por teclado
+  await go('/'); await p.focus('#aba-coordenacao'); await p.keyboard.press('ArrowDown');
+  ok((await p.getAttribute('#aba-professor', 'aria-selected')) === 'true' && /Enviar para revisão/.test(await p.textContent('#painel-perfil')), 'abas de perfis com setas');
+  await p.waitForTimeout(5200); ok((await p.$$('.mock-row.publicada')).length === 3 && !!(await p.$('.hero-art.historia-fim')), 'história do hero termina publicada');
   // Documentação de design
   for (const r of ['/design', '/marca', '/mapa', '/documentacao']) { await go(r); ok((await p.$$('h1')).length === 1, 'um h1 em ' + r); }
   ok(errs.length === 0, 'sem erros JS ' + errs.join(' | '));

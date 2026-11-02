@@ -32,6 +32,8 @@ window.KFKA = window.KFKA || {};
     plus: '<path d="M12 5v14M5 12h14"/>',
     edit: '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
     eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+    refresh: '<path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/>',
+    'eye-off': '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>',
     file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8M16 17H8"/>',
     download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/>',
     upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><path d="M12 3v12"/>',
@@ -86,7 +88,10 @@ window.KFKA = window.KFKA || {};
   /* Símbolo da marca KFKA: um "K" formado por três traços que se encontram.
      Haste = a escola (base) · braço de cima = professor · braço de baixo = família.
      O ponto amarelo no centro é o momento da publicação, onde os três se encontram. */
-  K.mark = (size = 38, bg = 'var(--ink)') => `<svg class="mark" width="${size}" height="${size}" viewBox="0 0 40 40" role="img" aria-label="KFKA"><rect width="40" height="40" rx="11" fill="${bg}"/><path d="M13 9.5v21" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/><path d="M17.5 20 27 11.5" stroke="#74C0FC" stroke-width="4.2" stroke-linecap="round"/><path d="M17.5 20 27 28.5" stroke="#5FD4A8" stroke-width="4.2" stroke-linecap="round"/><circle cx="17.5" cy="20" r="3.3" fill="#FFC94A"/></svg>`;
+  /* Símbolo: três caminhos que se encontram. A haste branca é a escola; os braços céu (professor)
+     e menta (família) se CURVAM até o ponto de encontro sobre a haste; o ponto sol é a publicação.
+     O anel do ponto usa a cor do fundo para separá-lo da haste em qualquer tamanho (testado em 16px). */
+  K.mark = (size = 38, bg = 'var(--ink)') => `<svg class="mark" width="${size}" height="${size}" viewBox="0 0 40 40" role="img" aria-label="KFKA"><rect width="40" height="40" rx="11" fill="${bg}"/><g fill="none" stroke-width="4.4" stroke-linecap="round"><path d="M13.5 10v20" stroke="#fff"/><path d="M15.5 20C20 20 23 15 27.5 10.5" stroke="#74C0FC"/><path d="M15.5 20C20 20 23 25 27.5 29.5" stroke="#5FD4A8"/></g><circle cx="15.4" cy="20" r="4.4" fill="#FFC94A" stroke="${bg}" stroke-width="1.6"/></svg>`;
   K.esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   K.fmtMedia = (m) => (m == null || m === '' ? '—' : Number(m).toFixed(1).replace('.', ','));
   // Iniciais: primeira + última palavra ("Maria José da Cruz" → MC), ignorando "da/de/do"
@@ -229,27 +234,44 @@ window.KFKA = window.KFKA || {};
 
   /* ---------------- Validação visual de formulários ---------------- */
   // Regras via atributos: required, data-min, data-max, type=email. Mostra mensagens claras.
+  // Um campo só: devolve a mensagem de erro ('' se ok) e atualiza o visual. Usado no envio e,
+  // nos formulários de conta, ao sair do campo (validar a cada tecla distrai quem digita).
+  K.checar = (input) => {
+    const field = input.closest('.field');
+    const v = (input.value || '').trim();
+    let msg = '';
+    if (input.type === 'checkbox') { if (input.required && !input.checked) msg = input.dataset.msgReq || 'Marque esta opção para continuar.'; }
+    else if (input.type === 'radio') { const grupo = K.qsa(`input[name="${input.name}"]`, input.form || document); if (input.required && !grupo.some((r) => r.checked)) msg = input.dataset.msgReq || 'Escolha uma opção.'; }
+    else if (input.required && !v) msg = input.dataset.msgReq || 'Preencha este campo.';
+    else if (input.type === 'email' && v && !/^\S+@\S+\.\S+$/.test(v)) msg = 'Informe um e-mail válido, como nome@escola.edu.br.';
+    else if (input.dataset.min && v) {
+      const n = Number(v.replace(',', '.'));
+      if (Number.isNaN(n) || n < Number(input.dataset.min) || n > Number(input.dataset.max)) msg = input.dataset.msgRange || `Use um valor entre ${input.dataset.min} e ${input.dataset.max}.`;
+    }
+    if (!msg && input.dataset.minlen && v && v.length < Number(input.dataset.minlen)) msg = `Use pelo menos ${input.dataset.minlen} caracteres (agora: ${v.length}).`;
+    if (!msg && input.dataset.pattern && v && !new RegExp(input.dataset.pattern, 'i').test(v)) msg = input.dataset.msgPattern || 'Confira o formato.';
+    field && field.classList.toggle('has-error', !!msg);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    const em = field && field.querySelector('.error-msg span');
+    if (em) em.textContent = msg;
+    return msg;
+  };
+  // Regras via atributos: required, data-min/max, data-minlen, data-pattern, type=email.
   K.validate = (form) => {
     let firstBad = null;
-    K.qsa('[data-validate]', form).forEach((input) => {
-      const field = input.closest('.field');
-      const v = (input.value || '').trim();
-      let msg = '';
-      if (input.required && !v) msg = input.dataset.msgReq || 'Preencha este campo.';
-      else if (input.type === 'email' && v && !/^\S+@\S+\.\S+$/.test(v)) msg = 'Informe um e-mail válido, como nome@escola.edu.br.';
-      else if (input.dataset.min && v) {
-        const n = Number(v.replace(',', '.'));
-        if (Number.isNaN(n) || n < Number(input.dataset.min) || n > Number(input.dataset.max)) msg = input.dataset.msgRange || `Use um valor entre ${input.dataset.min} e ${input.dataset.max}.`;
-      }
-      if (input.dataset.minlen && v && v.length < Number(input.dataset.minlen)) msg = `Escreva pelo menos ${input.dataset.minlen} caracteres (atual: ${v.length}).`;
-      field && field.classList.toggle('has-error', !!msg);
-      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-      const em = field && field.querySelector('.error-msg span');
-      if (em) em.textContent = msg;
-      if (msg && !firstBad) firstBad = input;
-    });
+    K.qsa('[data-validate]', form).forEach((input) => { if (K.checar(input) && !firstBad) firstBad = input; });
     if (firstBad) firstBad.focus();
     return !firstBad;
+  };
+  // Mostrar/ocultar senha: o botão troca o tipo do campo e o próprio rótulo, e o foco fica no campo.
+  K.verSenha = (el) => {
+    const input = el.parentElement.querySelector('input');
+    const ver = input.type === 'password';
+    input.type = ver ? 'text' : 'password';
+    el.setAttribute('aria-pressed', String(ver));
+    el.setAttribute('aria-label', ver ? 'Ocultar senha' : 'Mostrar senha');
+    el.innerHTML = K.icon(ver ? 'eye-off' : 'eye', 'icon-sm');
+    input.focus();
   };
   // Campo padronizado com rótulo associado (acessibilidade)
   K.field = ({ id, label, type = 'text', value = '', placeholder = '', required = false, hint = '', icon = '', attrs = '', options = null, span = '' }) => {
@@ -258,7 +280,9 @@ window.KFKA = window.KFKA || {};
     if (options) control = `<select id="${id}" name="${id}" class="select" ${req} ${attrs}>${options.map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${K.esc(v)}" ${String(v) === String(value) ? 'selected' : ''}>${K.esc(l)}</option>`; }).join('')}</select>`;
     else if (type === 'textarea') control = `<textarea id="${id}" name="${id}" class="textarea" placeholder="${K.esc(placeholder)}" ${req} ${attrs}>${K.esc(value)}</textarea>`;
     else control = `<input id="${id}" name="${id}" type="${type}" class="input" value="${K.esc(value)}" placeholder="${K.esc(placeholder)}" ${req} ${attrs}>`;
+    if (type === 'password') control = control.replace('class="input"', 'class="input com-olho"') + `<button type="button" class="ver-senha" data-action="ver-senha" aria-pressed="false" aria-label="Mostrar senha" aria-controls="${id}">${K.icon('eye', 'icon-sm')}</button>`;
     if (icon && !options && type !== 'textarea') control = `<div class="input-icon">${K.icon(icon)}${control}</div>`;
+    else if (type === 'password') control = `<div class="input-icon sem-icone">${control}</div>`;
     return `<div class="field ${span}"><label for="${id}">${label}${required ? '<span class="req" aria-hidden="true">*</span>' : ''}</label>${control}${hint ? `<span class="hint" id="${id}-hint">${hint}</span>` : ''}<span class="error-msg" role="alert">${K.icon('alert', 'icon-sm')}<span></span></span></div>`;
   };
 
@@ -279,6 +303,9 @@ window.KFKA = window.KFKA || {};
   }
   function render() {
     const { path, query } = parse();
+    // Área logada sem a conta certa: troca a rota pelo login (replace, para o voltar não cair em laço)
+    const desvio = K.guarda && K.guarda(path, query);
+    if (desvio) { location.replace('#' + desvio); return; }
     K.current = { path, query };
     const root = document.getElementById('app');
     let match = null;
@@ -300,25 +327,51 @@ window.KFKA = window.KFKA || {};
   K.views = {};
 
   /* ---------------- Ações delegadas ---------------- */
-  /* ---------------- Tema (claro / escuro) ----------------
-     Padrão: segue o sistema. A escolha vale para a sessão (em memória, como o tamanho
-     do texto): nesta fase o protótipo não guarda nada no navegador. */
+  /* ---------------- Preferências de aparência e acessibilidade ----------------
+     Tema, tamanho do texto, espaçamento de leitura, links sublinhados e menos animação.
+     Valem para a aba (sessionStorage, como o login): F5 mantém, fechar a aba volta ao padrão.
+     O tamanho do texto muda o font-size do <html>; como todo o CSS usa rem, o sistema inteiro
+     cresce junto (menu, tabelas, formulários) e o layout se reorganiza em vez de cortar.
+     O tamanho de letra escolhido no navegador ou no celular também é respeitado. */
   K.state = K.state || {};
+  K.TAMANHOS = [['100', 'Padrão'], ['112.5', 'Médio'], ['125', 'Grande'], ['150', 'Muito grande']];
+  const CHAVE_PREFS = 'kfka-prefs';
+  const PADRAO = { tema: 'sistema', texto: '100', espaco: false, links: false, menosMovimento: false };
+  K.prefs = (() => { try { return { ...PADRAO, ...JSON.parse(sessionStorage.getItem(CHAVE_PREFS) || '{}') }; } catch (e) { return { ...PADRAO }; } })();
+  K.aplicarPrefs = () => {
+    const html = document.documentElement, p = K.prefs;
+    html.style.fontSize = p.texto === '100' ? '' : `${p.texto}%`;
+    html.classList.toggle('texto-espacado', !!p.espaco);
+    html.classList.toggle('links-sublinhados', !!p.links);
+    html.classList.toggle('menos-movimento', !!p.menosMovimento);
+    if (p.tema === 'sistema') delete html.dataset.theme; else html.dataset.theme = p.tema === 'escuro' ? 'dark' : 'light';
+    larguraUtil();
+  };
+  // Largura útil = tela ÷ escala do texto. Com texto grande num computador, o menu vira gaveta.
+  const larguraUtil = () => { const esc = Number(K.prefs.texto) / 100; document.documentElement.classList.toggle('gaveta-forcada', esc > 1 && innerWidth >= 1024 && innerWidth / esc < 1024); };
+  addEventListener('resize', larguraUtil, { passive: true });
+  K.salvarPrefs = (mudanca) => {
+    Object.assign(K.prefs, mudanca);
+    try { sessionStorage.setItem(CHAVE_PREFS, JSON.stringify(K.prefs)); } catch (e) { /* vale só na memória */ }
+    K.aplicarPrefs();
+  };
+  K.restaurarPrefs = () => K.salvarPrefs({ ...PADRAO });
+  K.aplicarPrefs(); // antes do primeiro desenho: sem "piscar" no tamanho ou no tema
+
+  /* ---------------- Tema (claro / escuro) ---------------- */
   K.TEMAS = [['sistema', 'Sistema', 'monitor'], ['claro', 'Claro', 'sun'], ['escuro', 'Escuro', 'moon']];
-  K.temaAtual = () => K.state.tema || 'sistema';
+  K.temaAtual = () => K.prefs.tema || 'sistema';
   K.escuroAtivo = () => K.temaAtual() === 'escuro' || (K.temaAtual() === 'sistema' && matchMedia('(prefers-color-scheme: dark)').matches);
   K.setTema = (t) => {
-    K.state.tema = t;
-    const root = document.documentElement;
-    if (t === 'sistema') delete root.dataset.theme; else root.dataset.theme = t === 'escuro' ? 'dark' : 'light';
-    K.qsa('[data-tema]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === t)));
+    K.salvarPrefs({ tema: t });
+    K.qsa('[data-tema]').forEach((b) => { b.setAttribute('aria-pressed', String(b.dataset.tema === t)); if (b.getAttribute('role') === 'radio') b.setAttribute('aria-checked', String(b.dataset.tema === t)); });
     K.qsa('[data-action="tema-alternar"]').forEach((b) => { b.innerHTML = K.icon(K.escuroAtivo() ? 'sun' : 'moon'); b.setAttribute('aria-label', K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'); });
   };
   /* Troca com uma revelação circular a partir do botão clicado (View Transitions).
      Ação rara (escolher o tema), então cabe um pouco de encanto; com "menos movimento"
      ou sem suporte no navegador, a troca é imediata. */
   K.trocarTema = (t, origem) => {
-    const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('menos-movimento');
     const antes = K.escuroAtivo();
     if (!document.startViewTransition || reduzir) return K.setTema(t);
     const r = origem && origem.getBoundingClientRect();
@@ -341,6 +394,7 @@ window.KFKA = window.KFKA || {};
   K.temaToggle = () => `<button type="button" class="icon-btn tema-toggle" data-action="tema-alternar" aria-label="${K.escuroAtivo() ? 'Usar tema claro' : 'Usar tema escuro'}">${K.icon(K.escuroAtivo() ? 'sun' : 'moon')}</button>`;
 
   K.actions = {
+    'ver-senha': (el) => K.verSenha(el),
     noop: () => K.toast('Interação demonstrativa', 'Este controle é ilustrativo neste protótipo.', 'info'),
     'close-modal': () => K.closeModal(),
     'toggle-nav': () => { const a = K.qs('.app'); a && a.classList.toggle('nav-open'); },
@@ -380,6 +434,15 @@ window.KFKA = window.KFKA || {};
     // Troca o conjunto recarregando a página (os dados são montados no carregamento)
     bar.innerHTML = [['demo', 'Dados de demonstração'], ['pior', 'Pior caso']].map(([v, l]) => `<a href="?dados=${v}${location.hash}" aria-current="${m[1] === v}">${l}</a>`).join('');
     document.body.appendChild(bar);
+  };
+  /* Revelação ao rolar: seções com [data-revelar] ganham .visivel uma vez, quando 15% delas
+     entra na tela. O CSS decide o que se move (só opacidade e transform, com os tokens de
+     movimento). Sem IntersectionObserver ou com "menos movimento", tudo já nasce visível. */
+  K.revelar = (root = document) => {
+    const alvos = K.qsa('[data-revelar]', root);
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('menos-movimento')) { alvos.forEach((a) => a.classList.add('visivel')); return; }
+    const io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } }), { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    alvos.forEach((a) => io.observe(a));
   };
   K.start = () => { injectSprite(); render(); dataToggle(); };
 })(window.KFKA);

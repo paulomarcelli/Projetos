@@ -1,0 +1,19 @@
+:root {
+  --preto: #0a0a0b;
+  --texto: #f2f0eb;
+  --texto-2: #8f8d88;
+  --fio: rgb(242 240 235 / 0.16);
+  --painel: #151517;
+  /* ficha: o azul-claro do Sky Blue, com texto preto */
+  --ficha: #dfeaf6;
+  --ficha-texto: #0a0a0b;
+  --ficha-fio: rgb(10 10 11 / 0.18);
+  /* acento único: a luz azul da tela */
+  --luz: #bfe0ff;
+
+  --f-display: 'Archivo Variable', system-ui, sans-serif;
+  --f-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --gut: max(16px, 1.8vw);
+  --entra: cubic-bezier(0.16, 1, 0.3, 1);
+  --sai: cubic-bezier(0.32, 0, 0.67, 0);
+}

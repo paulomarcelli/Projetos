@@ -23,7 +23,34 @@
   const BASE = { admin: '#/admin/', professor: '#/professor/', familia: '#/familia/' };
   const ROLE_LABEL = { admin: 'Administrador', professor: 'Professor', familia: 'Responsável' };
 
+  /* ---------- Sessão de login ----------
+     Fica só nesta aba (sessionStorage): F5 não desloga e fechar a aba encerra. Guarda nome,
+     e-mail e perfil, nunca a senha. Sem sessionStorage (modo privado restrito), vale a memória. */
+  const CHAVE = 'kfka-sessao';
+  let emMemoria = null;
+  K.sessaoAtual = () => { try { const s = sessionStorage.getItem(CHAVE); if (s) return JSON.parse(s); } catch (e) { /* armazenamento indisponível */ } return emMemoria; };
+  K.abrirSessao = (c) => { emMemoria = { perfil: c.perfil, nome: c.nome, email: c.email, sub: c.sub, cor: c.cor }; try { sessionStorage.setItem(CHAVE, JSON.stringify(emMemoria)); } catch (e) { /* fica só na memória */ } };
+  K.fecharSessao = () => { emMemoria = null; try { sessionStorage.removeItem(CHAVE); } catch (e) { /* nada a limpar */ } };
+  // As áreas logadas só abrem com a conta do perfil certo; sem ela, o roteador leva ao login
+  // daquele perfil e, depois de entrar, volta para a tela pedida.
+  const PERFIL_DA_AREA = { admin: 'administrador', professor: 'professor', familia: 'responsavel' };
+  K.guarda = (path, query) => {
+    const m = /^\/(admin|professor|familia)(\/|$)/.exec(path);
+    if (!m) return null;
+    const perfil = PERFIL_DA_AREA[m[1]], s = K.sessaoAtual();
+    if (s && s.perfil === perfil) return null;
+    const qs = new URLSearchParams(query).toString();
+    return `/entrar/${perfil}?volta=${encodeURIComponent(path + (qs ? `?${qs}` : ''))}${s ? '&motivo=perfil' : ''}`;
+  };
+  // Quem entrou pelo login aparece no layout. Sem login (a vitrine "Ver a demonstração" da página
+  // inicial), o layout mostra a pessoa fictícia de cada perfil.
+  const PAPEL_DO_PERFIL = { administrador: 'admin', professor: 'professor', responsavel: 'familia' };
+  // Primeiro nome para saudações: o da conta que entrou, ou o da pessoa fictícia do perfil.
+  K.saudacao = () => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; };
+  K.primeiroNome = (role, padrao) => { const s = K.sessaoAtual(); return K.esc(s && PAPEL_DO_PERFIL[s.perfil] === role ? s.nome.trim().split(/\s+/)[0] : padrao); };
   function who(role) {
+    const s = K.sessaoAtual();
+    if (s && PAPEL_DO_PERFIL[s.perfil] === role) return { nome: K.esc(s.nome), sub: K.esc(s.sub), cor: s.cor };
     if (role === 'admin') { const s = K.data.sessao.admin; return { nome: s.nome, sub: s.cargo, cor: s.cor }; }
     if (role === 'professor') { const p = K.api.prof('p1'); return { nome: p.nome, sub: 'Matemática · Geografia', cor: p.cor }; }
     const r = K.api.resp('r1'); return { nome: r.nome, sub: 'Responsável', cor: '#5FD4A8' };
@@ -60,6 +87,7 @@
         <span class="role-pill"><span class="dot" style="background:${role === 'admin' ? 'var(--sun)' : role === 'professor' ? 'var(--sky)' : 'var(--mint)'}"></span>Perfil ${ROLE_LABEL[role]}</span>
         <nav aria-label="Navegação do perfil">${nav}${kids}</nav>
         <div class="sidebar-foot">
+          <a class="nav-config" href="${BASE[role]}configuracoes" ${active === 'configuracoes' ? 'aria-current="page"' : ''}>${I('settings')}<span>Configurações</span></a>
           <div class="user-card">${K.avatar(u.nome, u.cor)}<div class="grow"><div class="name">${u.nome}</div><div class="sub">${u.sub}</div></div><a href="#/entrar" data-action="sair" aria-label="Sair">${I('logout')}</a></div>
         </div>
       </aside>
@@ -72,13 +100,14 @@
           ${periodo}
           <div class="dropdown">
             <button type="button" class="icon-btn" data-action="toggle-dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Notificações (${K.data.notificacoes[role].length} novas)">${I('bell')}<span class="badge-dot"></span></button>
-            <div class="menu notif-panel" role="menu"><div class="row-between" style="padding:6px 8px 10px"><b style="font-family:var(--font-display);font-size:18px">Notificações</b><button type="button" class="link-btn" data-action="noop">Marcar como lidas</button></div>${notifs}</div>
+            <div class="menu notif-panel" role="menu"><div class="row-between" style="padding:6px 8px 10px"><b style="font-family:var(--font-display);font-size:1.125rem">Notificações</b><button type="button" class="link-btn" data-action="noop">Marcar como lidas</button></div>${notifs}</div>
           </div>
           <div class="dropdown">
             <button type="button" class="icon-btn" style="width:auto;padding:0 6px;gap:6px;border-radius:999px" data-action="toggle-dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Menu da conta">${K.avatar(u.nome, u.cor, 'sm')}${I('chevron-down', 'icon-sm')}</button>
             <div class="menu" role="menu">
-              <div style="padding:8px 12px 10px"><b>${u.nome}</b><div class="muted" style="font-size:12px">${u.sub}</div></div><hr>
-              <a href="${BASE[role]}perfil" role="menuitem">${I('settings')} Meu perfil e preferências</a>
+              <div style="padding:8px 12px 10px"><b>${u.nome}</b><div class="muted" style="font-size:0.75rem">${u.sub}</div></div><hr>
+              <a href="${BASE[role]}perfil" role="menuitem">${I('user')} Meu perfil</a>
+              <a href="${BASE[role]}configuracoes" role="menuitem">${I('settings')} Configurações</a>
               <a href="#/entrar" role="menuitem">${I('swap')} Trocar de perfil</a><hr>
               <div class="menu-tema"><span id="tema-menu-l">Tema</span>${K.temaControl('tema-menu')}</div><hr>
               <a href="#/entrar" role="menuitem" class="danger" data-action="sair">${I('logout')} Sair</a><a href="#/sessao-expirada" role="menuitem">${I('clock')} Ver tela de sessão expirada</a>
@@ -106,6 +135,6 @@
     K.go(f.dataset.search === 'admin' ? `#/admin/alunos?q=${q}` : `#/professor/turmas/6A?q=${q}`);
   });
   // Logout simulado (RF01)
-  K.actions.sair = () => { K.go('#/entrar'); K.toast('Você saiu da sua conta', 'Sessão encerrada neste navegador.', 'info'); };
+  K.actions.sair = () => { K.fecharSessao(); K.go('#/entrar'); K.toast('Você saiu da sua conta', 'Sessão encerrada neste navegador.', 'info', false); };
   K.actions['pick-aluno'] = (el) => { K.state.alunoSel = el.dataset.id; K.go(el.getAttribute('href')); if (location.hash === el.getAttribute('href')) K.refresh(); };
 })(window.KFKA);

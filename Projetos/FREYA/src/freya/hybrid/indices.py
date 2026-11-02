@@ -14,7 +14,8 @@ from typing import Protocol
 from freya.conhecimento.normalizacao import normalizar
 from freya.hybrid.chunking import Chunk
 
-_CAMPOS = ("chunk_id", "doc_id", "texto", "titulo", "url", "entidade", "captura_id", "continuidade", "tipo_fonte", "ano", "secao")
+_CAMPOS = ("chunk_id", "doc_id", "texto", "titulo", "url", "entidade", "captura_id", "continuidade", "tipo_fonte", "ano", "secao",
+           "confiabilidade", "obras")
 
 
 class Embedder(Protocol):
@@ -107,7 +108,8 @@ _MAPEAMENTO = {
         "texto": {"type": "text", "analyzer": "standard",
                   "fields": {"en": {"type": "text", "analyzer": "english"}, "pt": {"type": "text", "analyzer": "portuguese"}}},
         "titulo": {"type": "text", "fields": {"en": {"type": "text", "analyzer": "english"}}},
-        **{c: {"type": "keyword"} for c in ("chunk_id", "doc_id", "url", "entidade", "captura_id", "continuidade", "tipo_fonte", "secao")},
+        **{c: {"type": "keyword"} for c in ("chunk_id", "doc_id", "url", "entidade", "captura_id", "continuidade", "tipo_fonte", "secao",
+                                            "confiabilidade", "obras")},
         "ano": {"type": "integer"},
     }
 }

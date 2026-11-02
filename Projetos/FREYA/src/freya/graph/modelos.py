@@ -11,6 +11,7 @@ class EvidenciaAresta(BaseModel):
     doc_id: str
     url: str
     captura_id: str | None = None
+    confiabilidade: str = "oficial"
 
 
 class No(BaseModel):
@@ -30,6 +31,8 @@ class Aresta(BaseModel):
     predicado_original: str | None = None
     ordem: int | None = None
     ano: int | None = None
+    obra: str | None = None
+    qualificador: str | None = None
     evidencia: EvidenciaAresta
 
 

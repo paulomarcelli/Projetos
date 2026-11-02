@@ -89,3 +89,43 @@ pytest && pytest -m integracao
   tecnológica e teste de soberania. A análise registra que a base não diz quem assume o trono.
 - **Thanos × Tony Stark:** inimizade recíproca e confronto em Titã confirmados; o efeito desse confronto
   sobre a busca pelas Joias fica como hipótese, porque a base não traz o resultado.
+
+
+## 8. Aprofundamento da história e dos personagens (segunda rodada)
+
+Pedido: aprofundar a história e os personagens, buscando outras fontes quando marvel.com não tivesse.
+
+**Fontes acrescentadas**
+- **marvel.com**: perfis on-screen que só estão no mapa do site (135 páginas no total; a fonte oficial se esgotou).
+- **Wiki do MCU** (marvelcinematicuniverse.fandom.com, CC BY-SA 3.0, confiabilidade `wiki_fas`):
+  150 de 154 personagens oficiais com a página conferida pela identidade; filiações atuais e
+  antigas, parentes, aliados e inimigos com a nuance da relação, estado (vivo/morto) e a biografia em capítulos
+  datados pelas obras que cita. 54 de 59 obras com enredo e aparições (5 temporadas da Netflix ficaram sem página confiável) (artefatos, locais, acontecimentos).
+- **Extração dos enredos** pelo modelo: relações entre entidades já existentes, com citação literal que
+  nomeia as duas pontas; cada uma com obra e ano.
+- **Wikipedia**: módulo pronto, mas a Wikimedia bloqueia o acesso automatizado deste ambiente (403/429); não
+  contornei o bloqueio.
+
+**Resultado**
+
+| | Antes | Depois |
+|---|---|---|
+| Documentos (trechos de busca) | 156 (427) | 5047 (12874) |
+| Entidades | 807 | 5711 |
+| Relações | 2.118 | 14566 |
+| Parentescos | 30 | 485 |
+| Filiações | 26 | 453 |
+| Capítulos/momentos de trajetória datados | 198 | 1175 |
+| Artefatos / locais | 5 / 10 | 490 / 461 |
+
+**Controles de qualidade aplicados**
+- identidade conferida antes de aceitar qualquer página da wiki; páginas de obra só com marcas de obra, nome
+  completo igual e temporada igual (quatro escolhas erradas da busca foram detectadas e corrigidas);
+- trechos que a wiki marca como de canonicidade incerta são descartados; menções, fotos e arquivos não contam
+  como aparição;
+- extração: 1.272 propostas do modelo (1.069 + 203); aceitas só as com citação literal que nomeia as duas entidades
+  (o filtro de suporte cortou, por exemplo, "Spider-Man usa o traje" apoiado em "Parker vai à festa de Liz");
+- uma entidade, um tipo: 99 entidades com dois tipos ("New Avengers" como personagem e como organização)
+  foram consolidadas; regras de tipo por predicado (um artefato não é "membro" de nada);
+- toda relação leva a confiabilidade da fonte; o motor pesa oficial > Wikipedia > wiki de fãs e usa o ano e a
+  nuance para separar relações antigas de atuais.

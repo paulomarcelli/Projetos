@@ -31,8 +31,9 @@ def _no(e) -> No:
 
 def _aresta(f: Fato) -> Aresta:
     return Aresta(id=f.id, origem=f.sujeito, destino=f.objeto, predicado=f.predicado.value, predicado_original=f.predicado_original,
-                  ordem=f.ordem, ano=f.ano, evidencia=EvidenciaAresta(citacao=f.evidencia, tipo=f.tipo_evidencia.value, campo=f.campo,
-                                                                      doc_id=f.doc_id, url=f.url, captura_id=f.captura_id))
+                  ordem=f.ordem, ano=f.ano, obra=f.obra, qualificador=f.qualificador,
+                  evidencia=EvidenciaAresta(citacao=f.evidencia, tipo=f.tipo_evidencia.value, campo=f.campo, doc_id=f.doc_id, url=f.url,
+                                            captura_id=f.captura_id, confiabilidade=f.confiabilidade.value))
 
 
 class ArmazenamentoGrafo(Protocol):
@@ -141,7 +142,8 @@ class GrafoNeo4j:
             for pred in sorted({f.predicado.value for f in fatos}):
                 lote = [{"s": f.sujeito, "o": f.objeto, "id": f.id, "citacao": f.evidencia, "tipo": f.tipo_evidencia.value, "campo": f.campo,
                          "doc_id": f.doc_id, "url": f.url, "captura_id": f.captura_id, "predicado_original": f.predicado_original,
-                         "ordem": f.ordem, "ano": f.ano} for f in fatos if f.predicado.value == pred]
+                         "ordem": f.ordem, "ano": f.ano, "obra": f.obra, "qualificador": f.qualificador,
+                         "confiabilidade": f.confiabilidade.value} for f in fatos if f.predicado.value == pred]
                 s.run(f"UNWIND $fs AS f MATCH (a:Entity {{uid:$b + '|' + f.s}}), (b:Entity {{uid:$b + '|' + f.o}}) "
                       f"MERGE (a)-[r:{pred} {{id:f.id}}]->(b) SET r += f", fs=lote, b=self.base)
             n = s.run("MATCH (e:Entity {base:$b}) RETURN count(e) AS n", b=self.base).single()["n"]
@@ -158,9 +160,9 @@ class GrafoNeo4j:
     def _aresta_de(tipo: str, props, origem: str, destino: str) -> Aresta:
         p = dict(props)
         return Aresta(id=p["id"], origem=origem, destino=destino, predicado=tipo, predicado_original=p.get("predicado_original"),
-                      ordem=p.get("ordem"), ano=p.get("ano"),
+                      ordem=p.get("ordem"), ano=p.get("ano"), obra=p.get("obra"), qualificador=p.get("qualificador"),
                       evidencia=EvidenciaAresta(citacao=p["citacao"], tipo=p["tipo"], campo=p.get("campo"), doc_id=p["doc_id"], url=p["url"],
-                                                captura_id=p.get("captura_id")))
+                                                captura_id=p.get("captura_id"), confiabilidade=p.get("confiabilidade") or "oficial"))
 
     def nos(self) -> list[No]:
         with self.driver.session() as s:

@@ -15,3 +15,6 @@ __pycache__/
 # modelos e caches
 .cache/
 data/corpus/unificado/
+data/corpus/wiki/
+data/corpus/wikipedia/
+data/corpus/extraido/

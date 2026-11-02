@@ -27,6 +27,8 @@ class Chunk(BaseModel):
     tipo_fonte: str = "official_marvel"
     ano: int | None = None
     secao: str | None = None
+    confiabilidade: str = "oficial"
+    obras: list[str] = []
 
 
 def _frases(texto: str) -> list[str]:
@@ -50,5 +52,6 @@ def dividir(doc: Documento, max_palavras: int = MAX_PALAVRAS, sobreposicao: int 
     if atual:
         grupos.append(atual)
     base = dict(doc_id=doc.doc_id, titulo=doc.titulo, url=doc.url, entidade=doc.entidade, captura_id=doc.captura_id,
-                continuidade=doc.continuidade.value, tipo_fonte=doc.tipo_fonte, ano=doc.ano, secao=doc.secao)
+                continuidade=doc.continuidade.value, tipo_fonte=doc.tipo_fonte, ano=doc.ano, secao=doc.secao,
+                confiabilidade=doc.confiabilidade.value, obras=doc.obras)
     return [Chunk(chunk_id=f"{doc.doc_id}#{i}", texto="\n".join(g), **base) for i, g in enumerate(grupos)]

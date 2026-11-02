@@ -53,6 +53,7 @@ class Dossie:
     trajetorias: dict[str, list[tuple[str, str]]] = field(default_factory=dict)  # personagem -> [(texto, eid)]
     relacoes_focais: list[tuple[str, str, str, str]] = field(default_factory=list)
     trechos: list[str] = field(default_factory=list)  # eids
+    detalhes: dict = field(default_factory=dict)  # aresta_id -> Aresta (nuance, ano, fonte)
 
     def nome(self, ch: str) -> str:
         return self.nomes.get(ch, ch)
@@ -76,9 +77,10 @@ def montar_dossie(questao: str, horizonte: str | None, hib: list[ResultadoHibrid
 
     relacoes: list[Aresta] = [a for a in gr.subgrafo.arestas.values() if a.predicado not in ("EXPERIENCES", "APPEARS_IN")]
     focais_set = set(focais)
-    for a in sorted(relacoes, key=lambda a: (a.origem not in focais_set, a.predicado, a.destino))[:60]:
+    for a in relacoes[:90]:  # já vêm priorizadas pelo GraphRAG
         if a.origem in focais_set or a.destino in focais_set:
             d.relacoes_focais.append((a.origem, a.predicado, a.destino, reg.de_aresta(a)))
+            d.detalhes[a.id] = a
 
     por_par: dict[frozenset, dict[str, list[Aresta]]] = {}
     for a in relacoes:
@@ -106,7 +108,7 @@ def montar_dossie(questao: str, horizonte: str | None, hib: list[ResultadoHibrid
         d.centrais = [(k, n) for k, n in grau.most_common(10) if k not in focais_set][:6]
 
     for t in gr.trajetorias:
-        itens = [(f"momento {a.ordem}: {nomes.get(a.destino, a.destino).split(': ', 1)[-1]} — {a.evidencia.citacao}", reg.de_aresta(a, "momento"))
+        itens = [(f"{a.ano or 's/ano'} — {nomes.get(a.destino, a.destino).split(': ', 1)[-1]}: {a.evidencia.citacao[:300]}", reg.de_aresta(a, "momento"))
                  for a in t.momentos]
         itens += [(f"aparece em {nomes.get(a.destino, a.destino)}" + (f" ({a.ano})" if a.ano else ""), reg.de_aresta(a, "aparicao"))
                   for a in t.aparicoes]
@@ -125,7 +127,19 @@ def dossie_em_texto(d: Dossie) -> str:
     for e in d.registro.itens.values():
         linhas.append(f"[{e.id}] ({e.tipo}; {e.fonte.titulo or e.fonte.doc_id}; {e.fonte.url}) {e.texto[:600]}")
     linhas += ["", "RELAÇÕES DO GRAFO EM TORNO DAS FOCAIS:"]
-    linhas += [f"- {n(o)} {ROTULO.get(p, p)} {n(t)} [{eid}]" for o, p, t, eid in d.relacoes_focais] or ["- nenhuma"]
+    def extra(eid: str) -> str:
+        a = d.detalhes.get(d.registro.itens[eid].aresta_id or "")
+        if not a:
+            return ""
+        partes = [a.qualificador] if a.qualificador else []
+        if a.ano:
+            partes.append(str(a.ano))
+        if a.obra:
+            partes.append(n(a.obra))
+        partes.append({"oficial": "fonte oficial", "enciclopedia": "Wikipedia", "wiki_fas": "wiki de fãs"}.get(a.evidencia.confiabilidade, ""))
+        return " (" + "; ".join(p for p in partes if p) + ")"
+
+    linhas += [f"- {n(o)} {ROTULO.get(p, p)} {n(t)}{extra(eid)} [{eid}]" for o, p, t, eid in d.relacoes_focais] or ["- nenhuma"]
     linhas += ["", "CAMINHOS ENTRE ENTIDADES FOCAIS:"]
     for c in d.caminhos:
         linhas.append("- " + " ; ".join(f"{n(o)} {ROTULO.get(p, p)} {n(t)} [{eid}]" for o, p, t, eid in c))
@@ -154,11 +168,13 @@ use a chave exatamente como no dossiê, sem colchetes (ex.: character:loki). No 
 nomes (ex.: "Loki"), nunca as chaves, e não coloque ids de evidência no texto: eles vão só no campo "evidencias".
 4. Onde o dossiê diz SEM CAMINHO, não afirme ligação entre essas entidades; trate como incerteza.
 5. Só a continuidade cinematográfica (MCU). Não use conhecimento de quadrinhos.
-6. O contexto contém apenas fatos confirmados. Cenários são condicionais: lógica, premissas, desenvolvimento, \
+6. Pese as fontes: "fonte oficial" (marvel.com) acima de "Wikipedia" acima de "wiki de fãs". Use a nuance e o ano \
+das relações (ex.: "Former Teammate", 2016) para ler a evolução no tempo: relações antigas não são atuais.
+7. O contexto contém apenas fatos confirmados. Cenários são condicionais: lógica, premissas, desenvolvimento, \
 consequências e sinais de confirmação, cada parte com seu tipo e suas evidências.
-7. Construa de 2 a 4 cenários contrastantes a partir das incertezas críticas. Registre em "limitacoes" o que a \
+8. Construa de 2 a 4 cenários contrastantes a partir das incertezas críticas. Registre em "limitacoes" o que a \
 base não cobre.
-8. Responda só com o objeto JSON pedido, em português."""
+9. Responda só com o objeto JSON pedido, em português."""
 
 
 def _deterministico(d: Dossie) -> CorpoDaAnalise:

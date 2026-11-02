@@ -17,6 +17,8 @@ class Fonte(BaseModel):
     url: str
     titulo: str | None = None
     captura_id: str | None = None
+    confiabilidade: str = "oficial"
+    licenca: str | None = None
 
 
 class Evidencia(BaseModel):
@@ -44,7 +46,8 @@ class RegistroDeEvidencias(BaseModel):
         if r.chunk.chunk_id in self._por_origem:
             return self._por_origem[r.chunk.chunk_id]
         e = Evidencia(id=self._novo_id(), tipo="trecho", texto=r.chunk.texto, chunk_id=r.chunk.chunk_id, nota=round(r.nota_rrf, 5),
-                      fonte=Fonte(doc_id=r.chunk.doc_id, url=r.chunk.url, titulo=r.chunk.titulo, captura_id=r.chunk.captura_id),
+                      fonte=Fonte(doc_id=r.chunk.doc_id, url=r.chunk.url, titulo=r.chunk.titulo, captura_id=r.chunk.captura_id,
+                                  confiabilidade=r.chunk.confiabilidade),
                       entidades=[r.chunk.entidade] if r.chunk.entidade else [])
         self.itens[e.id] = e
         self._por_origem[r.chunk.chunk_id] = e.id
@@ -54,7 +57,8 @@ class RegistroDeEvidencias(BaseModel):
         if a.id in self._por_origem:
             return self._por_origem[a.id]
         e = Evidencia(id=self._novo_id(), tipo=tipo, texto=a.evidencia.citacao, aresta_id=a.id,
-                      fonte=Fonte(doc_id=a.evidencia.doc_id, url=a.evidencia.url, captura_id=a.evidencia.captura_id),
+                      fonte=Fonte(doc_id=a.evidencia.doc_id, url=a.evidencia.url, captura_id=a.evidencia.captura_id,
+                                  confiabilidade=a.evidencia.confiabilidade),
                       entidades=[a.origem, a.destino])
         self.itens[e.id] = e
         self._por_origem[a.id] = e.id

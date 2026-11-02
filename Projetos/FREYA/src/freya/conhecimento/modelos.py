@@ -13,6 +13,14 @@ from pydantic import BaseModel, Field
 from freya.conhecimento.ontologia import Predicado, TipoEntidade
 
 
+class Confiabilidade(str, Enum):
+    """De onde vem a afirmação, em ordem de autoridade."""
+
+    OFICIAL = "oficial"  # marvel.com
+    ENCICLOPEDIA = "enciclopedia"  # Wikipedia (CC BY-SA)
+    WIKI_FAS = "wiki_fas"  # wiki do MCU feita por fãs (CC BY-SA): detalhada, mas secundária
+
+
 class Continuidade(str, Enum):
     MCU = "MCU"  # continuidade cinematográfica (live action) — a única ingerida hoje
     QUADRINHOS = "COMICS"  # existe para ser recusada explicitamente, nunca misturada
@@ -40,6 +48,10 @@ class Documento(BaseModel):
     captura_id: str | None = None
     ano: int | None = None
     secao: str | None = None  # ex.: "Story Moments: Suit Up"
+    confiabilidade: Confiabilidade = Confiabilidade.OFICIAL
+    licenca: str | None = None  # ex.: "CC BY-SA 3.0" (wiki), "CC BY-SA 4.0" (Wikipedia)
+    obras: list[str] = Field(default_factory=list)  # obras que o trecho cobre (âncora no tempo)
+    ordem: int | None = None  # posição numa biografia cronológica
 
 
 class Entidade(BaseModel):
@@ -70,6 +82,9 @@ class Fato(BaseModel):
     predicado_original: str | None = None
     ordem: int | None = None  # posição numa sequência (momentos da trajetória, cronologia)
     ano: int | None = None
+    obra: str | None = None  # obra em que a relação vale ou aparece (âncora no tempo)
+    qualificador: str | None = None  # nuance da relação, como a fonte escreve (ex.: "Adoptive Brother, Former Teammate")
+    confiabilidade: Confiabilidade = Confiabilidade.OFICIAL
 
     @property
     def id(self) -> str:

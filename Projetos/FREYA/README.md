@@ -47,19 +47,32 @@ O modelo de embedding (`paraphrase-multilingual-MiniLM-L12-v2`, ~470 MB) é baix
 
 ## Base de conhecimento
 
-Duas fontes, ambas da continuidade cinematográfica:
+Três camadas de fonte, todas da continuidade cinematográfica, cada fato marcado com a sua confiabilidade
+(`oficial` > `enciclopedia` > `wiki_fas`):
 
 1. **Coleta oficial de marvel.com** (`freya coletar`): páginas de filmes, séries e perfis *on-screen* de
    personagens, partindo da cronologia oficial do MCU. Lê só os blocos `live_action` (os de quadrinhos são
    descartados e contados). Respeita o `robots.txt`, espera 2 s entre requisições, identifica-se como
    F.R.E.Y.A. e guarda uma cópia de cada página em `data/raw/` (com data e hash) para conferir as evidências.
-   **O conteúdo coletado fica só na sua máquina** (`data/raw/` e `data/corpus/coletado/` estão no `.gitignore`):
-   os Termos de Uso da Marvel não permitem redistribuí-lo.
+   **O conteúdo coletado fica só na sua máquina** (`data/raw/` e `data/corpus/` gerados estão no `.gitignore`):
+   os Termos de Uso da Marvel não permitem redistribuí-lo; o das wikis tem licença CC BY-SA e guarda a atribuição.
 2. **Corpus da Manus** (`data/corpus/manus_corpus.jsonl`): 37 páginas oficiais resumidas, migradas para o
    modelo novo (identidades tipadas, predicados normalizados, direção corrigida).
+3. **Aprofundamento** (`freya aprofundar`), a partir das entidades oficiais:
+   - **wiki do MCU** (marvelcinematicuniverse.fandom.com, CC BY-SA 3.0, fonte secundária): para cada personagem
+     oficial, a página cuja identidade confere; dela vêm filiações (atuais e antigas), parentes, aliados e
+     inimigos com a nuance da relação ("Adoptive Brother, Former Teammate"), estado (vivo/morto) e a biografia
+     em capítulos cronológicos ancorados nas obras citadas (logo, no ano). Trechos que a própria wiki marca
+     como de canonicidade incerta são descartados. Das páginas de obra vêm o enredo e as aparições
+     (personagens, organizações, locais, acontecimentos, artefatos);
+   - **extração de relações dos enredos** pelo modelo de linguagem: só entre entidades já existentes, só
+     predicados da ontologia, e só com citação literal conferida no texto; cada fato leva a obra e o ano;
+   - **Wikipedia** (CC BY-SA 4.0): o módulo existe (`coleta/wikipedia.py`), mas a Wikimedia bloqueia o acesso
+     automatizado em alguns ambientes; rode de uma rede que ela aceite.
 
 ```bash
-freya coletar --limite 450      # ~45 min; retoma de onde parou
+freya coletar                   # marvel.com, ~45 min; retoma de onde parou
+freya aprofundar                # wiki do MCU + extração dos enredos (usa o modelo; ~1 h)
 freya ingerir                   # unifica, resolve entidades, valida e indexa nos três serviços
 ```
 

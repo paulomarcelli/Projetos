@@ -189,4 +189,28 @@ def dominio_valido(predicado: Predicado, tipo_sujeito: TipoEntidade, tipo_objeto
         return (tipo_sujeito.narrativo or tipo_sujeito.obra) and tipo_objeto in (TipoEntidade.LOCAL, TipoEntidade.CONCEITO)
     if predicado == Predicado.RELACIONADO_A:
         return True
+    if predicado in _NARRATIVO:
+        sujeitos, objetos = _NARRATIVO[predicado]
+        return tipo_sujeito in sujeitos and tipo_objeto in objetos
     return tipo_sujeito.narrativo and tipo_objeto.narrativo
+
+
+_AGENTES = {TipoEntidade.PERSONAGEM, TipoEntidade.ORGANIZACAO}
+_COISAS = {TipoEntidade.ARTEFATO, TipoEntidade.TECNOLOGIA, TipoEntidade.CONCEITO}
+_NARRATIVO = {
+    Predicado.ALIADO_DE: (_AGENTES, _AGENTES),
+    Predicado.INIMIGO_DE: (_AGENTES, _AGENTES),
+    Predicado.PARENTE_DE: ({TipoEntidade.PERSONAGEM}, {TipoEntidade.PERSONAGEM}),
+    Predicado.COMPARTILHA_CORPO_COM: ({TipoEntidade.PERSONAGEM}, {TipoEntidade.PERSONAGEM}),
+    Predicado.MEMBRO_DE: (_AGENTES, {TipoEntidade.ORGANIZACAO}),
+    Predicado.LIDERA: (_AGENTES, {TipoEntidade.ORGANIZACAO}),
+    Predicado.POSSUI: (_AGENTES, _COISAS),
+    Predicado.USA: (_AGENTES, _COISAS),
+    Predicado.TEM_CAPACIDADE: ({TipoEntidade.PERSONAGEM}, _COISAS),
+    Predicado.BUSCA: (_AGENTES, _COISAS | {TipoEntidade.LOCAL} | _AGENTES),
+    Predicado.CRIOU: (_AGENTES, _COISAS | _AGENTES),
+    Predicado.AMEACA: (_AGENTES | _COISAS, _AGENTES | {TipoEntidade.LOCAL}),
+    Predicado.GOVERNA: (_AGENTES, {TipoEntidade.LOCAL, TipoEntidade.ORGANIZACAO}),
+    Predicado.VIVENCIA: ({TipoEntidade.PERSONAGEM}, {TipoEntidade.ACONTECIMENTO}),
+    Predicado.PARTICIPA_DE: (_AGENTES, {TipoEntidade.ACONTECIMENTO}),
+}

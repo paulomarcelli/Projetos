@@ -107,6 +107,14 @@ class Coletor:
                 saida.append(url)
         return saida
 
+    def perfis_do_sitemap(self) -> list[str]:
+        """Perfis on-screen listados no mapa do site (alguns não são alcançados pelos links das páginas)."""
+        indice = self._get(f"{BASE}/sitemap.xml").text
+        perfis = []
+        for mapa in re.findall(r"<loc>([^<]+)</loc>", indice):
+            perfis += [u for u in re.findall(r"<loc>([^<]+)</loc>", self._get(mapa).text) if u.endswith("/on-screen/profile")]
+        return sorted(set(perfis))
+
     # ---------------------------------------------------------------- coleta completa
     def coletar(self, sementes: list[str], limite: int = 400, recoletar: bool = False) -> tuple[Corpus, dict]:
         """Percorre filmes, séries e perfis on-screen a partir das sementes (busca em largura)."""
@@ -145,7 +153,7 @@ class Coletor:
                     fila.append(l)
             log.info("[%d] %s (+%d fatos)", relatorio["paginas"], url, len(pagina.fatos))
         relatorio["restantes_na_fila"] = len(fila)
-        relatorio["obras_da_cronologia_oficial"] = [chave_por_link(u)[1] for u in sementes if chave_por_link(u)]
+        relatorio["obras_da_cronologia_oficial"] = [chave_por_link(u)[1] for u in sementes if chave_por_link(u) and chave_por_link(u)[0].obra]
         return corpus, relatorio
 
 

@@ -15,6 +15,7 @@ from pathlib import Path
 
 from freya.conhecimento.modelos import Continuidade, Documento, Entidade, Fato, TipoEvidencia
 from freya.conhecimento.normalizacao import normalizar
+from freya.conhecimento.ontologia import dominio_valido
 
 
 @dataclass
@@ -72,6 +73,9 @@ class Corpus:
                 erros.append(f"{f.id}: evidência não está no texto do documento")
             if f.sujeito == f.objeto:
                 erros.append(f"{f.id}: laço (sujeito = objeto)")
+            elif f.sujeito in self.entidades and f.objeto in self.entidades and not dominio_valido(
+                    f.predicado, self.entidades[f.sujeito].tipo, self.entidades[f.objeto].tipo):
+                erros.append(f"{f.id}: tipos incompatíveis com {f.predicado.value}")
         return erros
 
     # ---------------------------------------------------------------- arquivos

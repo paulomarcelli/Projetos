@@ -28,6 +28,13 @@ def unificar(pasta_dados: str | Path = "data/corpus") -> tuple[Corpus, dict]:
         corpus, rel["resolucao"] = resolver(oficial, manus)
     else:
         corpus = oficial
+    # fontes de aprofundamento (wiki do MCU, Wikipedia): entram depois das oficiais e são resolvidas contra elas
+    for fonte in ("wiki", "wikipedia", "extraido"):
+        if (p / fonte).exists():
+            extra = Corpus.carregar(p / fonte)
+            corpus, rel[f"resolucao_{fonte}"] = resolver(corpus, extra)
+            rel[fonte] = extra.resumo()
+    corpus, rel["tipos_consolidados"] = consolidar_tipos(corpus)
     corpus, rel["fora_da_continuidade"] = filtrar_continuidade(corpus, p / "coletado" / "relatorio.json")
     problemas = corpus.problemas()
     for prob in problemas:  # fato com entidade ou documento ausente não entra no grafo
@@ -36,6 +43,48 @@ def unificar(pasta_dados: str | Path = "data/corpus") -> tuple[Corpus, dict]:
     rel["fatos_descartados_na_validacao"] = problemas
     rel["unificado"] = corpus.resumo()
     return corpus, rel
+
+
+_PRIORIDADE_TIPO = ["organization", "location", "artifact", "event", "concept", "technology", "character"]
+
+
+def consolidar_tipos(corpus: Corpus) -> tuple[Corpus, dict]:
+    """Uma entidade, um tipo. A wiki não diz se o alvo de uma relação é pessoa ou grupo ("New Avengers" virava
+    personagem); quando o mesmo nome aparece com dois tipos, fica o oficial ou, na falta dele, o tipo explícito
+    das listas de aparições (organização, local, artefato…), e o resto da base passa a apontar para ele."""
+    from collections import defaultdict
+
+    from freya.conhecimento.modelos import Entidade, Fato
+
+    por_slug: dict[str, list[str]] = defaultdict(list)
+    for ch, e in corpus.entidades.items():
+        if not e.tipo.obra and e.tipo.value not in ("person", "company"):
+            por_slug[ch.split(":", 1)[1]].append(ch)
+    mapa = {}
+    for sl, chaves in por_slug.items():
+        if len(chaves) < 2:
+            continue
+        oficiais = [c for c in chaves if corpus.entidades[c].atributos.get("url")]
+        alvo = oficiais[0] if len(oficiais) == 1 else sorted(chaves, key=lambda c: _PRIORIDADE_TIPO.index(c.split(":")[0])
+                                                               if c.split(":")[0] in _PRIORIDADE_TIPO else 99)[0]
+        for c in chaves:
+            if c != alvo:
+                mapa[c] = alvo
+    for de, para in mapa.items():
+        e = corpus.entidades.pop(de)
+        d = corpus.entidades[para]
+        corpus.adicionar_entidade(Entidade(chave=para, nome=d.nome, tipo=d.tipo, apelidos=[e.nome, *e.apelidos], atributos=e.atributos, fontes=e.fontes))
+    novos = {}
+    for fid, f in corpus.fatos.items():
+        if f.sujeito in mapa or f.objeto in mapa:
+            f = Fato.model_validate(f.model_copy(update={"sujeito": mapa.get(f.sujeito, f.sujeito), "objeto": mapa.get(f.objeto, f.objeto)}).model_dump())
+        if f.sujeito != f.objeto:
+            novos[f.id] = f
+    corpus.fatos = novos
+    for doc in corpus.documentos.values():
+        if doc.entidade in mapa:
+            doc.entidade = mapa[doc.entidade]
+    return corpus, {"fundidas": len(mapa), "exemplos": dict(list(mapa.items())[:15])}
 
 
 def filtrar_continuidade(corpus: Corpus, relatorio_coleta: Path) -> tuple[Corpus, list[str]]:

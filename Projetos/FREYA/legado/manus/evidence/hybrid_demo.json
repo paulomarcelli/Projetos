@@ -1,0 +1,35 @@
+[
+  {
+    "doc_id": "marvel-iron-man",
+    "chunk_id": "marvel-iron-man:0",
+    "title": "Iron Man",
+    "url": "https://www.marvel.com/movies/iron-man",
+    "source_type": "official_marvel",
+    "continuity": "MCU",
+    "language": "en/pt",
+    "text": "Título oficial: Iron Man Resumo em português (paráfrase do conteúdo Marvel): Tony Stark, industrialista bilionário e inventor genial, é sequestrado e obrigado a construir uma arma devastadora. Em vez disso, usa sua inteligência para criar uma armadura tecnológica e escapar. Ao descobrir uma conspiração com implicações globais, veste a armadura e decide proteger o mundo como Iron Man. Trechos da fonte oficial: Iron Man tells the story of Tony Stark Tony builds a high-tech suit of armor builds a high-tech suit of armor and escapes captivity Directed By Jon Favreau",
+    "rrf_score": 0.03252247488101534
+  },
+  {
+    "doc_id": "marvel-iron-man-2",
+    "chunk_id": "marvel-iron-man-2:0",
+    "title": "Iron Man 2",
+    "url": "https://www.marvel.com/movies/iron-man-2",
+    "source_type": "official_marvel",
+    "continuity": "MCU",
+    "language": "en/pt",
+    "text": "Título oficial: Iron Man 2 Resumo em português (paráfrase do conteúdo Marvel): Com o mundo ciente de que ele é o Homem de Ferro, o inventor bilionário Tony Stark enfrenta pressão para compartilhar sua tecnologia com os militares. Relutante em revelar os segredos de sua armadura, ele teme que caiam em mãos erradas. Com Pepper Potts e “Rhodey” Rhodes ao seu lado, precisa formar novas alianças e enfrentar um poderoso novo inimigo. Dirigido por Jon Favreau; lançado em 7 de maio de 2010. Trechos da fonte oficial: With the world now aware that he is Iron Man, billionaire inventor Tony Stark faces pressure With Pepper Potts and \"Rhodey\" Rhodes by his side Directed By Jon Favreau Written By Justin Theroux",
+    "rrf_score": 0.03252247488101534
+  },
+  {
+    "doc_id": "marvel-avengers-age-of-ultron",
+    "chunk_id": "marvel-avengers-age-of-ultron:0",
+    "title": "Avengers: Age of Ultron",
+    "url": "https://www.marvel.com/movies/avengers-age-of-ultron",
+    "source_type": "official_marvel",
+    "continuity": "MCU",
+    "language": "en/pt",
+    "text": "Título oficial: Avengers: Age of Ultron Resumo em português (paráfrase do conteúdo Marvel): Quando Tony Stark tenta reativar um programa de manutenção da paz adormecido, algo dá errado. Os heróis mais poderosos da Terra são postos à prova enquanto o destino do planeta está em risco. Com a ameaça de Ultron, cabe aos Vingadores impedi-lo de realizar seus planos; alianças instáveis e ações inesperadas conduzem a uma aventura global. Trechos da fonte oficial: Directed By Joss Whedon Written By Joss Whedon it is up to the Avengers to stop him",
+    "rrf_score": 0.015873015873015872
+  }
+]

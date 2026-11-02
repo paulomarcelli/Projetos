@@ -1,0 +1,41 @@
+{
+  "entities": [
+    {
+      "key": "the avengers",
+      "name": "The Avengers",
+      "type": "FILM"
+    },
+    {
+      "key": "loki",
+      "name": "Loki",
+      "type": "PERSON"
+    },
+    {
+      "key": "tesseract",
+      "name": "Tesseract",
+      "type": "ARTIFACT"
+    }
+  ],
+  "relations": [
+    {
+      "predicate": "GAINS_ACCESS_TO",
+      "evidence": "Loki, gains access to the unlimited power of the energy cube called the Tesseract",
+      "subject": "Loki",
+      "doc_id": "marvel-the-avengers",
+      "url": "https://www.marvel.com/movies/the-avengers",
+      "chunk_id": "marvel-the-avengers:0",
+      "object": "Tesseract"
+    }
+  ],
+  "evidence": [
+    {
+      "predicate": "GAINS_ACCESS_TO",
+      "evidence": "Loki, gains access to the unlimited power of the energy cube called the Tesseract",
+      "subject": "Loki",
+      "doc_id": "marvel-the-avengers",
+      "url": "https://www.marvel.com/movies/the-avengers",
+      "chunk_id": "marvel-the-avengers:0",
+      "object": "Tesseract"
+    }
+  ]
+}

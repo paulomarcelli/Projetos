@@ -1,0 +1,25 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.13.2
+    network_mode: host
+    volumes: [qdrant_data:/qdrant/storage]
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
+    network_mode: host
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes: [es_data:/usr/share/elasticsearch/data]
+  neo4j:
+    image: neo4j:5.26-community
+    network_mode: host
+    environment:
+      NEO4J_AUTH: neo4j/REMOVIDA-DA-COPIA
+      NEO4J_server_memory_heap_initial__size: 256m
+      NEO4J_server_memory_heap_max__size: 512m
+    volumes: [neo4j_data:/data]
+volumes:
+  qdrant_data:
+  es_data:
+  neo4j_data:

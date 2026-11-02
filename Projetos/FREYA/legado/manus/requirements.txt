@@ -1,0 +1,6 @@
+qdrant-client==1.13.2
+elasticsearch==8.17.1
+neo4j==5.28.1
+sentence-transformers==3.4.1
+openai>=1.60,<2
+pytest>=8.0,<9

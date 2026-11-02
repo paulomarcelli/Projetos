@@ -1,0 +1,31 @@
+{
+  "entities": [
+    {
+      "key": "marc spector",
+      "name": "Marc Spector",
+      "type": "PERSON"
+    }
+  ],
+  "relations": [
+    {
+      "predicate": "SHARES_BODY_WITH",
+      "evidence": "shares a body with mercenary Marc Spector",
+      "subject": "Steven Grant",
+      "doc_id": "marvel-moon-knight",
+      "url": "https://www.marvel.com/tv-shows/moon-knight/1",
+      "chunk_id": "marvel-moon-knight:0",
+      "object": "Marc Spector"
+    }
+  ],
+  "evidence": [
+    {
+      "predicate": "SHARES_BODY_WITH",
+      "evidence": "shares a body with mercenary Marc Spector",
+      "subject": "Steven Grant",
+      "doc_id": "marvel-moon-knight",
+      "url": "https://www.marvel.com/tv-shows/moon-knight/1",
+      "chunk_id": "marvel-moon-knight:0",
+      "object": "Marc Spector"
+    }
+  ]
+}

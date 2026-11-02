@@ -81,7 +81,7 @@ export function PaginaGuardados() {
           />
         </div>
       ) : (
-        <ul className="grid gap-4">
+        <ul className="grid grid-cols-[minmax(0,1fr)] gap-4">
           {itens.map((item) => (
             <CartaoDeAnalise
               key={item.id}

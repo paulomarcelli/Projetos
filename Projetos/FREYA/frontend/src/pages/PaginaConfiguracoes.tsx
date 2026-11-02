@@ -52,11 +52,11 @@ export function PaginaConfiguracoes() {
 
       <div className="flex flex-col gap-6">
         <Bloco id="tipografia" titulo="Tipografia" descricao="Escolha a fonte e o tamanho do texto. A prévia mostra o rascunho; nada muda no resto da F.R.E.Y.A. até você aplicar.">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="flex flex-col gap-6">
               <fieldset>
                 <legend className="mb-3 text-sm font-medium">Fonte</legend>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
                   {(Object.keys(FONTES) as Fonte[]).map((f) => (
                     <label
                       key={f}
@@ -194,7 +194,7 @@ function SobreAApi() {
   const base = baseDaApi() || "(mesma origem)";
   return (
     <Bloco id="sobre" titulo="Sobre e estado da API">
-      <dl className="grid gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
+      <dl className="grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
         <div>
           <dt className="text-xs text-texto-fraco">Estado</dt>
           <dd className="mt-0.5 flex items-center gap-2">

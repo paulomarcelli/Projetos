@@ -162,10 +162,12 @@ export function PaginaAnalise() {
             <p className="text-xs text-texto-fraco">
               {perfil.nome} perguntou · <time dateTime={inv.criada_em}>{dataLonga(inv.criada_em)}, {hora(inv.criada_em)}</time>
             </p>
-            <h1 className="mt-1 text-2xl leading-tight font-semibold text-balance sm:text-3xl">{inv.questao}</h1>
+            <h1 className={cx("mt-1 leading-tight font-semibold text-balance break-words", inv.questao.length > 140 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl")}>{inv.questao}</h1>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <PilulaDeEstado estado={inv.estado} />
-              <Pilula tamanho="pequeno">{inv.horizonte ? `Horizonte: ${inv.horizonte}` : "Sem horizonte definido"}</Pilula>
+              <span className="inline-flex max-w-full items-center rounded-full border border-borda bg-superficie-2 px-2.5 py-1 text-xs font-medium text-texto-suave" title={inv.horizonte ?? undefined}>
+                <span className="truncate">{inv.horizonte ? `Horizonte: ${inv.horizonte}` : "Sem horizonte definido"}</span>
+              </span>
               {inv.guardada && (
                 <Pilula tamanho="pequeno" icone={<BookmarkCheck size={12} />}>
                   Guardada
@@ -226,7 +228,7 @@ export function PaginaAnalise() {
             titulo="A análise falhou"
             texto={
               <>
-                {inv.erro ?? "O backend não informou o motivo."}
+                <span className="[overflow-wrap:anywhere]">{inv.erro ?? "O backend não informou o motivo."}</span>
                 {erroAoRepetir && <span className="mt-2 block text-perigo">Não consegui criar a nova análise: {erroAoRepetir}</span>}
               </>
             }
@@ -342,7 +344,7 @@ function EsqueletoDaAnalise() {
           </div>
         </div>
       </div>
-      <div className="grid gap-10 lg:grid-cols-[14rem_minmax(0,1fr)]" aria-hidden="true">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[14rem_minmax(0,1fr)]" aria-hidden="true">
         <div className="hidden flex-col gap-2 lg:flex">
           {Array.from({ length: 9 }, (_, i) => (
             <Esqueleto key={i} altura="2.25rem" />

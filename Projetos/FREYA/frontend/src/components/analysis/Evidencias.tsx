@@ -236,7 +236,7 @@ function GavetaDeEvidencia({ investigacaoId, id, local, aoFechar, aoCarregar, ro
                   <h3 id="ev-fonte" className="text-xs font-medium text-texto-fraco">
                     Fonte
                   </h3>
-                  <p className="mt-1.5 text-base font-medium text-texto">{ev.fonte.titulo ?? ev.fonte.doc_id}</p>
+                  <p className="mt-1.5 text-base font-medium text-texto">{tituloDaFonte(ev.fonte)}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <SeloConfiabilidade confiabilidade={ev.fonte.confiabilidade} />
                     {ev.fonte.licenca && <span className="text-xs text-texto-fraco">Licença: {ev.fonte.licenca}</span>}
@@ -308,6 +308,22 @@ function GavetaDeEvidencia({ investigacaoId, id, local, aoFechar, aoCarregar, ro
       )}
     </dialog>
   );
+}
+
+/** Título legível da fonte: o da API; sem ele, o nome da página no fim da URL (ex.: "Thor: The Dark World"). */
+export function tituloDaFonte(f: Evidencia["fonte"]): string {
+  if (f.titulo) return f.titulo;
+  try {
+    const u = new URL(f.url);
+    const ultimo = decodeURIComponent(u.pathname.split("/").filter(Boolean).pop() ?? "");
+    if (ultimo && !/^(profile|on-screen)$/i.test(ultimo)) return ultimo.replace(/_/g, " ");
+    const partes = u.pathname.split("/").filter(Boolean);
+    const nome = partes.find((_, i) => partes[i - 1] === "characters" || partes[i - 1] === "movies" || partes[i - 1] === "tv-shows");
+    if (nome) return nome.split("-").map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+  } catch {
+    /* url inválida: cai no doc_id */
+  }
+  return f.doc_id;
 }
 
 export function hostDaUrl(url: string): string {

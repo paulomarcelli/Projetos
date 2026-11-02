@@ -4,7 +4,7 @@ import { dataLonga, hora, numero, plural } from "../../hooks";
 import type { AnaliseProspectiva, Cenario, Evidencia, Investigacao } from "../../types/api";
 import { Botao, CampoTexto, GrupoSegmentado, Pilula, SeloConfiabilidade, cx } from "../ui";
 import { Afirmacao, ListaDeAfirmacoes } from "./Afirmacao";
-import { ChipDeEvidencia, hostDaUrl, rotuloDoTipoDeEvidencia } from "./Evidencias";
+import { ChipDeEvidencia, hostDaUrl, rotuloDoTipoDeEvidencia, tituloDaFonte } from "./Evidencias";
 
 export const SECOES = [
   { id: "interpretacao", titulo: "Interpretação da questão", curto: "Questão" },
@@ -146,7 +146,7 @@ export function SecoesDaAnalise({ investigacao, analise: a, rotuloDaEntidade, ce
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
       <div className="sticky top-16 z-[5] -mx-1 bg-fundo/80 px-1 py-2 backdrop-blur-vidro lg:static lg:top-auto lg:z-auto lg:m-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
         <NavegacaoDasSecoes ativa={ativa} contagens={contagens} />
       </div>
@@ -199,7 +199,7 @@ export function SecoesDaAnalise({ investigacao, analise: a, rotuloDaEntidade, ce
           {a.atores.length === 0 ? (
             <ListaDeAfirmacoes itens={[]} vazio="Nenhum ator identificado." />
           ) : (
-            <ul className="grid gap-4 md:grid-cols-2">
+            <ul className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
               {a.atores.map((ator) => (
                 <li key={ator.entidade} className="flex flex-col gap-4 rounded-3xl border border-borda bg-superficie p-5">
                   <div className="flex items-start justify-between gap-3">
@@ -240,7 +240,7 @@ export function SecoesDaAnalise({ investigacao, analise: a, rotuloDaEntidade, ce
                         </span>
                       ))}
                     </span>
-                    <Pilula tamanho="pequeno">{r.natureza}</Pilula>
+                    <span className="rounded-full border border-borda bg-superficie-2 px-2.5 py-0.5 text-xs text-texto-suave">{r.natureza}</span>
                   </div>
                   <Afirmacao afirmacao={r.descricao} />
                 </li>
@@ -251,7 +251,7 @@ export function SecoesDaAnalise({ investigacao, analise: a, rotuloDaEntidade, ce
 
         {/* 5 */}
         <Secao id="fatores" titulo="Fatores determinantes" contagem={a.variaveis.length + a.tendencias_e_sinais.length}>
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
             <div className="rounded-3xl border border-borda bg-superficie p-5">
               <h3 className="mb-4 text-base font-semibold">
                 Variáveis <span className="font-normal text-texto-fraco fr-numeros">{a.variaveis.length}</span>
@@ -436,7 +436,7 @@ function CartaoDeCenario({ cenario: c, destacado, rotuloDaEntidade, aoVerNoGrafo
         </div>
       </div>
       {aberto && (
-        <div id={idCorpo} className="grid gap-x-8 gap-y-6 border-t border-borda p-5 sm:p-6 md:grid-cols-2">
+        <div id={idCorpo} className="grid grid-cols-[minmax(0,1fr)] gap-x-8 gap-y-6 border-t border-borda p-5 sm:p-6 md:grid-cols-2">
           {partes.map((p) => (
             <div key={p.titulo}>
               <h4 className="mb-3 text-sm font-semibold">
@@ -513,7 +513,7 @@ function ListaDeEvidencias({ evidencias }: { evidencias: Evidencia[] }) {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="text-sm font-medium">{e.fonte.titulo ?? e.fonte.doc_id}</span>
+                <span className="text-sm font-medium">{tituloDaFonte(e.fonte)}</span>
                 <SeloConfiabilidade confiabilidade={e.fonte.confiabilidade} compacto />
                 <span className="text-xs text-texto-fraco">{rotuloDoTipoDeEvidencia(e.tipo)}</span>
               </div>

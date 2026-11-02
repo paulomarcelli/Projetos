@@ -36,7 +36,7 @@ export function PaginaPerfil() {
     <div className="mx-auto flex max-w-4xl flex-col">
       <CabecalhoDaPagina titulo="Perfil" subtitulo="Como a F.R.E.Y.A. chama você nas saudações e nas análises." />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <form onSubmit={salvar} noValidate className="flex flex-col gap-5 rounded-3xl border border-borda bg-superficie p-5 sm:p-6" aria-labelledby="perfil-form">
           <h2 id="perfil-form" className="sr-only">
             Dados do perfil

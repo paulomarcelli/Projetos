@@ -24,7 +24,7 @@ export function PaginaInicio() {
   const msg = historico.erro ? mensagemDoErro(historico.erro, "o histórico") : null;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[auto_1fr] lg:gap-x-8">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[auto_1fr] lg:gap-x-8">
       <header className="flex flex-wrap items-end justify-between gap-3 lg:col-start-1">
         <div>
           <h1 className="text-3xl font-normal tracking-tight">Análises</h1>

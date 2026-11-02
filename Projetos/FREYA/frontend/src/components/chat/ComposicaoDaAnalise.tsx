@@ -86,7 +86,7 @@ export function ComposicaoDaAnalise({ variante = "painel", questaoInicial = "", 
           rotulo="Questão prospectiva"
           rotuloOculto
           classeDoGrupo="flex-1 min-w-0 [&_.fr-campo-caixa]:rounded-full [&_.fr-campo-caixa]:min-h-14 [&_.fr-campo-caixa]:pl-2"
-          placeholder="Pergunte sobre o futuro de algo no MCU…"
+          placeholder="Pergunte sobre o futuro no MCU…"
           value={questao}
           onChange={(e) => {
             setQuestao(e.target.value);
@@ -189,7 +189,7 @@ export function ComposicaoDaAnalise({ variante = "painel", questaoInicial = "", 
         </div>
 
         {pagina && (
-          <ol className="grid gap-3 sm:grid-cols-3" aria-label="O que acontece depois de enviar">
+          <ol className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-3" aria-label="O que acontece depois de enviar">
             {[
               ["Recuperação", "Trechos da base e o subgrafo das entidades da questão."],
               ["Análise", "Contexto, atores, incertezas e cenários, citando evidências."],

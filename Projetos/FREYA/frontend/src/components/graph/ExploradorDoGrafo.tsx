@@ -165,7 +165,10 @@ function Explorador({
 
   // ── seleção, destaque, filtros
   const [selecionado, setSelecionado] = useState<string | null>(compacto ? null : noInicial);
-  const [hover, setHover] = useState<string | null>(null);
+  const [hoverPonteiro, setHover] = useState<string | null>(null);
+  // o foco do teclado num nó vale como passar o ponteiro (rótulo e vizinhança)
+  const [focado, setFocado] = useState<string | null>(null);
+  const hover = hoverPonteiro ?? focado;
   const [ativo, setAtivo] = useState<string | null>(null);
   const [ocultos, setOcultos] = useState<Set<string>>(new Set());
   const [destaque, setDestaque] = useState<string>(cenarioDestacado ? `cenario:${cenarioDestacado}` : "");
@@ -411,7 +414,7 @@ function Explorador({
   }, [compacto, tamanho.w, tamanho.h, zoomEm, vista]);
 
   const aoPressionar = (e: EventoDePonteiro<SVGSVGElement>) => {
-    if (e.button !== 0) return;
+    if (e.button > 0) return; // só o botão principal (ou toque)
     const p = pontoNaTela(e.clientX, e.clientY);
     ponteiros.current.set(e.pointerId, p);
     const alvo = (e.target as Element).closest?.("[data-no-id]");
@@ -502,6 +505,32 @@ function Explorador({
   const vazio = grafo.arestas.length === 0;
   const noSelecionado = selecionado ? porId.get(selecionado) ?? null : null;
   const ativoEfetivo = ativo && idsVisiveis.has(ativo) ? ativo : ordem[0]?.id;
+
+  // rótulos: por prioridade, e só os que não colidem na tela (o resto aparece ao passar o ponteiro ou aproximar)
+  const rotulados = new Set<string>();
+  {
+    const caixas: { x0: number; y0: number; x1: number; y1: number }[] = [];
+    const candidatos: string[] = [];
+    const por = (id: string | null | undefined) => id && idsVisiveis.has(id) && !candidatos.includes(id) && candidatos.push(id);
+    por(selecionado);
+    por(hover);
+    for (const n of ordem) if (n.papel === "focal") por(n.id);
+    if (enfase && enfase.nos.size <= 40) for (const id of enfase.nos) por(id);
+    for (const n of ordem) if (comRotulo.has(n.id) || k >= 1.9) por(n.id);
+    for (const id of candidatos) {
+      const ns = sim.porId.get(id);
+      const no = porId.get(id);
+      if (!ns || !no || ns.x === undefined || ns.y === undefined) continue;
+      const largura = Math.min(no.rotulo.length, 26) * 6.1 + 6;
+      const cx = t.x + ns.x * k;
+      const cy = t.y + (ns.y + ns.raio) * k + 12;
+      const caixa = { x0: cx - largura / 2, y0: cy - 8, x1: cx + largura / 2, y1: cy + 7 };
+      const fixo = id === selecionado || id === hover;
+      if (!fixo && caixas.some((c) => c.x0 < caixa.x1 && caixa.x0 < c.x1 && c.y0 < caixa.y1 && caixa.y0 < c.y1)) continue;
+      caixas.push(caixa);
+      rotulados.add(id);
+    }
+  }
   const legendaPapeis: [string, { rotulo: string; descricao: string }][] = Object.entries(grafo.legenda.papeis).map(([p, d]) => [p, { rotulo: PAPEIS[p]?.rotulo ?? p, descricao: d }]);
   if (dados.nos.some((n) => n.papel === "expansao")) legendaPapeis.push(["expansao", PAPEIS.expansao]);
 
@@ -590,12 +619,16 @@ function Explorador({
                   compacto={compacto}
                   selecionado={n.id === selecionado}
                   apagado={!!enfase && !enfase.nos.has(n.id)}
-                  rotulado={comRotulo.has(n.id) || n.id === selecionado || n.id === hover || (!!enfase && enfase.nos.has(n.id) && enfase.nos.size <= 24) || k >= 1.9}
+                  rotulado={rotulados.has(n.id)}
                   ativo={n.id === ativoEfetivo}
                   aoEntrar={() => setHover(n.id)}
                   aoSair={() => setHover((h) => (h === n.id ? null : h))}
                   aoTeclar={(e) => teclaNoNo(e, n.id)}
-                  aoFocar={() => setAtivo(n.id)}
+                  aoFocar={() => {
+                    setAtivo(n.id);
+                    setFocado(n.id);
+                  }}
+                  aoDesfocar={() => setFocado((f) => (f === n.id ? null : f))}
                 />
               ))}
           </g>
@@ -881,9 +914,10 @@ interface PropsDoNo {
   aoSair: () => void;
   aoTeclar: (e: KeyboardEvent<SVGGElement>) => void;
   aoFocar: () => void;
+  aoDesfocar: () => void;
 }
 
-function No({ no, sim, k, compacto, selecionado, apagado, rotulado, ativo, aoEntrar, aoSair, aoTeclar, aoFocar }: PropsDoNo) {
+function No({ no, sim, k, compacto, selecionado, apagado, rotulado, ativo, aoEntrar, aoSair, aoTeclar, aoFocar, aoDesfocar }: PropsDoNo) {
   if (!sim || sim.x === undefined || sim.y === undefined) return null;
   const r = sim.raio;
   const e = estiloDoTipo(no.tipo);
@@ -906,6 +940,7 @@ function No({ no, sim, k, compacto, selecionado, apagado, rotulado, ativo, aoEnt
       onPointerLeave={aoSair}
       onKeyDown={aoTeclar}
       onFocus={aoFocar}
+      onBlur={aoDesfocar}
     >
       {focal && <circle r={r + 5} className="fill-escarlate-brilho" />}
       {no.papel === "trajetoria" ? (

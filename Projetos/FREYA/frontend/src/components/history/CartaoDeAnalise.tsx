@@ -27,8 +27,14 @@ export function PilulaDeEstado({ estado, tamanho = "pequeno" }: { estado: Estado
   );
 }
 
-function IconeDoEstado({ estado }: { estado: EstadoInvestigacao }) {
+function IconeDoEstado({ estado, guardado }: { estado: EstadoInvestigacao; guardado?: boolean }) {
   const andamento = estaEmAndamento(estado);
+  if (guardado && estado === "concluida")
+    return (
+      <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full border border-escarlate-brilho bg-escarlate-tinta text-escarlate">
+        <BookmarkCheck size={18} strokeWidth={1.75} />
+      </span>
+    );
   return (
     <span
       aria-hidden="true"
@@ -76,23 +82,20 @@ export function CartaoDeAnalise({
   const andamento = estaEmAndamento(item.estado);
   const guardado = variante === "guardado";
   const meta = (
-    <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-texto-fraco">
-      <time dateTime={item.criada_em} className="fr-numeros">
-        {variante === "compacto" ? hora(item.criada_em) : quando(item.criada_em, agora)}
-      </time>
-      {item.horizonte && (
-        <>
-          <span aria-hidden="true">•</span>
-          <span className="truncate">{item.horizonte}</span>
-        </>
-      )}
-      {item.estado === "concluida" && (
-        <>
-          <span aria-hidden="true">•</span>
-          <span className="fr-numeros">{plural(item.cenarios, "cenário")}</span>
-        </>
-      )}
-    </p>
+    <div className="mt-1 text-xs text-texto-fraco">
+      <p className="flex flex-wrap items-center gap-x-2">
+        <time dateTime={item.criada_em} className="fr-numeros">
+          {variante === "compacto" ? hora(item.criada_em) : quando(item.criada_em, agora)}
+        </time>
+        {item.estado === "concluida" && (
+          <>
+            <span aria-hidden="true">•</span>
+            <span className="fr-numeros">{plural(item.cenarios, "cenário")}</span>
+          </>
+        )}
+      </p>
+      {item.horizonte && <p className="mt-0.5 truncate">Horizonte: {item.horizonte}</p>}
+    </div>
   );
 
   return (
@@ -101,11 +104,11 @@ export function CartaoDeAnalise({
       variante="interativo"
       raio="grande"
       espaco={guardado ? "medio" : "pequeno"}
-      className={cx("flex flex-col gap-3", guardado && "border-l-2 border-l-escarlate")}
+      className="flex flex-col gap-3"
       data-id={item.id}
     >
       <div className="flex items-start gap-3">
-        <IconeDoEstado estado={item.estado} />
+        <IconeDoEstado estado={item.estado} guardado={guardado} />
         <div className="min-w-0 flex-1 pt-0.5">
           <Link to={rotas.analise(item.id)} className={cx("fr-cartao-link line-clamp-2 font-medium text-texto", guardado ? "text-lg leading-snug" : "text-[0.9375rem] leading-snug")}>
             {item.questao}
@@ -155,7 +158,7 @@ export function CartaoDeAnalise({
           <PilulaDeEstado estado={item.estado} />
         </span>
       )}
-      {item.estado === "falhou" && item.erro && variante !== "compacto" && <p className="line-clamp-2 pl-14 text-xs text-perigo">{item.erro}</p>}
+      {item.estado === "falhou" && item.erro && variante !== "compacto" && <p className="line-clamp-2 pl-14 text-xs [overflow-wrap:anywhere] text-perigo">{item.erro}</p>}
       {guardado && cenarios !== undefined && (
         <div className="pl-14">
           {cenarios === null ? (

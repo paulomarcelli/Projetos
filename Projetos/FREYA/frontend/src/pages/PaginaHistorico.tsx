@@ -108,7 +108,7 @@ export function PaginaHistorico() {
               rotuloOculto
               type="search"
               prefixo={<Search size={16} />}
-              placeholder="Buscar pela questão ou horizonte"
+              placeholder="Buscar por questão"
               value={termo}
               onChange={(e) => setTermo(e.target.value)}
               classeDoGrupo="md:flex-1 md:min-w-64"
@@ -161,7 +161,7 @@ export function PaginaHistorico() {
             grupos.map((g) => (
               <section key={g.chave} aria-labelledby={`grupo-${g.chave}`} className="flex flex-col gap-3">
                 <h2 id={`grupo-${g.chave}`} className="flex items-baseline gap-2 text-xl font-normal">
-                  {g.titulo}
+                  {g.titulo}{" "}
                   <span className="text-sm text-texto-fraco">
                     {g.subtitulo} · {numero(g.itens.length)}
                   </span>

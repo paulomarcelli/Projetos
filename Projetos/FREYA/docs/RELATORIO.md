@@ -46,7 +46,7 @@ têm perfil on-screen em marvel.com (404); eles continuam no grafo pelas apariç
 | RRF com 5 candidatos por lista | reserva `k × 6`, limite por documento | teste |
 | BM25 sem análise de idioma | campos `english` e `portuguese` | integração |
 
-## 4. Resultados de investigações reais (modo determinístico)
+## 4. Resultados de investigações reais
 
 | Questão | Focais | O que a análise encontrou |
 |---|---|---|
@@ -55,12 +55,13 @@ têm perfil on-screen em marvel.com (404); eles continuam no grafo pelas apariç
 | Como a relação entre Thor e Loki pode evoluir? | Thor, Loki | aliados e inimigos nas fontes → incerteza crítica aliança × confronto |
 | O que pode acontecer com a Feiticeira Escarlate? | Wanda Maximoff (nome em português) | trajetória (Hydra, Pietro, Lagos, guerra civil); tensão Wanda × Ultron |
 
-## 5. Pendências e limites (o que preciso de você)
+## 5. Pendências e limites
 
-1. **Chave da OpenAI.** A chave do projeto Luna foi recusada pela OpenAI (401, "Incorrect API key"):
-   foi revogada ou expirou. Sem uma chave válida, o motor roda no modo determinístico, que monta contexto,
-   atores, relações, variáveis, trajetórias e incertezas a partir das evidências, **mas não escreve
-   desdobramentos nem cenários**. Basta pôr uma chave válida em `OPENAI_API_KEY` no `.env`; nada mais muda.
+1. **Modelo de linguagem: resolvido.** A chave da Luna é de um revendedor compatível com a OpenAI; com o endereço
+   dele em `OPENAI_BASE_URL`, o motor gera as análises completas (modelo `gpt-5.6-terra`, 45–70 s por análise).
+   O revendedor não aceita saída estruturada; o cliente passa sozinho para o modo JSON e valida a resposta.
+   Nas análises de teste: 0 citações inválidas e 0 entidades desconhecidas depois da validação; os cenários
+   saem como inferência ou hipótese, nunca como fato.
 2. **Nome ambíguo "Captain America"** (Steve Rogers e Sam Wilson): não é fundido; fica no relatório.
 3. **Obras recentes fora da lista oficial** (ex.: *Spider-Man: Brand New Day*) ficam de fora até entrarem
    na cronologia publicada pela Marvel.
@@ -71,10 +72,20 @@ têm perfil on-screen em marvel.com (404); eles continuam no grafo pelas apariç
 ## 6. Como reproduzir
 
 ```bash
-cp .env.example .env   # NEO4J_PASSWORD e OPENAI_API_KEY
+cp .env.example .env   # NEO4J_PASSWORD, OPENAI_API_KEY e, se for revendedor, OPENAI_BASE_URL
 docker compose up -d
 pip install -e '.[dev]'
 freya coletar && freya ingerir
 freya investigar "Qual o futuro dos Vingadores depois de Thanos?"
 pytest && pytest -m integracao
 ```
+
+## 7. Exemplos com o modelo (resumo)
+
+- **Thor × Loki:** três cenários — aliança circunstancial renovada, rivalidade persistente e trajetórias sem
+  ligação demonstrada —, cada um como hipótese ou inferência, com as evidências de aliança e de inimizade.
+- **Wakanda depois de T'Challa:** incertezas sobre liderança (trono e Pantera Negra juntos ou separados),
+  intensidade da interferência externa e peso da tecnologia; cenários de defesa coletiva, centralidade
+  tecnológica e teste de soberania. A análise registra que a base não diz quem assume o trono.
+- **Thanos × Tony Stark:** inimizade recíproca e confronto em Titã confirmados; o efeito desse confronto
+  sobre a busca pelas Joias fica como hipótese, porque a base não traz o resultado.

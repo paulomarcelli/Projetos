@@ -149,14 +149,16 @@ Regras invioláveis:
 1. Use somente as evidências do dossiê. Cite os ids (E1, E2…) em cada afirmação.
 2. Classifique cada afirmação: "confirmado" (dito explicitamente numa evidência), "inferencia" (decorre das \
 evidências citadas) ou "hipotese" (possibilidade levantada pela análise). Nunca apresente hipótese como fato.
-3. Não invente personagens, relações, acontecimentos ou datas. Use as chaves de entidade exatamente como \
-aparecem no dossiê ([character:...], [organization:...]).
+3. Não invente personagens, relações, acontecimentos ou datas. Nos campos de entidade (entidade, entidades), \
+use a chave exatamente como no dossiê, sem colchetes (ex.: character:loki). No texto das afirmações, escreva os \
+nomes (ex.: "Loki"), nunca as chaves, e não coloque ids de evidência no texto: eles vão só no campo "evidencias".
 4. Onde o dossiê diz SEM CAMINHO, não afirme ligação entre essas entidades; trate como incerteza.
 5. Só a continuidade cinematográfica (MCU). Não use conhecimento de quadrinhos.
 6. O contexto contém apenas fatos confirmados. Cenários são condicionais: lógica, premissas, desenvolvimento, \
 consequências e sinais de confirmação, cada parte com seu tipo e suas evidências.
 7. Construa de 2 a 4 cenários contrastantes a partir das incertezas críticas. Registre em "limitacoes" o que a \
-base não cobre."""
+base não cobre.
+8. Responda só com o objeto JSON pedido, em português."""
 
 
 def _deterministico(d: Dossie) -> CorpoDaAnalise:
@@ -216,7 +218,7 @@ class MotorProspectivo:
         if not d.registro.itens:
             corpo.limitacoes.append("Nenhuma evidência foi recuperada para esta questão; a base não cobre o tema.")
         conhecidas = set(d.nomes)
-        corpo, rv = validar(corpo, d.registro, conhecidas)
+        corpo, rv = validar(corpo, d.registro, conhecidas, d.nomes)
         if d.ambiguidades:
             corpo.limitacoes.append("Nomes ambíguos na questão: " + "; ".join(f"'{a['trecho']}' foi lido como {a['escolhida']}" for a in d.ambiguidades))
         analise = AnaliseProspectiva(**corpo.model_dump(), questao=questao, horizonte=horizonte, modo=modo, modelo=nome,

@@ -30,7 +30,8 @@ A arquitetura completa está em [docs/ARQUITETURA.md](docs/ARQUITETURA.md) e a a
 
 - Python 3.11+
 - Docker Compose v2 (Qdrant, Elasticsearch, Neo4j)
-- Opcional: chave da OpenAI para o motor prospectivo (sem ela, o motor roda no modo determinístico)
+- Opcional: chave da OpenAI (ou de um revendedor compatível, com `OPENAI_BASE_URL`) para o motor prospectivo;
+  sem ela, o motor roda no modo determinístico, sem cenários
 
 ## Instalação
 

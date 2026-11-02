@@ -14,12 +14,35 @@ from freya.evidencias.registro import RegistroDeEvidencias
 from freya.prospectivo.modelos import Afirmacao, CorpoDaAnalise, RegistroDeValidacao, TipoEpistemico
 
 
-def validar(corpo: CorpoDaAnalise, registro: RegistroDeEvidencias, entidades_conhecidas: set[str]) -> tuple[CorpoDaAnalise, RegistroDeValidacao]:
+def normalizar_chave(bruta: str, conhecidas: set[str], nomes: dict[str, str] | None = None) -> str | None:
+    """Aceita a chave como o modelo a escreveu ("[character:m'baku]", "Shuri") e devolve a chave real, ou None."""
+    from freya.conhecimento.normalizacao import normalizar, slug
+
+    c = bruta.strip().strip("[]()`'\" ").strip()
+    if c in conhecidas:
+        return c
+    if ":" in c:
+        tipo, resto = c.split(":", 1)
+        candidata = f"{tipo.strip().lower()}:{slug(resto)}"
+        if candidata in conhecidas:
+            return candidata
+        c = resto
+    if nomes:
+        alvo = normalizar(c)
+        achadas = [k for k, n in nomes.items() if normalizar(n) == alvo and k in conhecidas]
+        if len(achadas) == 1:
+            return achadas[0]
+    return None
+
+
+def validar(corpo: CorpoDaAnalise, registro: RegistroDeEvidencias, entidades_conhecidas: set[str],
+            nomes: dict[str, str] | None = None) -> tuple[CorpoDaAnalise, RegistroDeValidacao]:
     rv = RegistroDeValidacao()
 
     def afirm(a: Afirmacao, onde: str) -> Afirmacao:
-        validas = [e for e in dict.fromkeys(a.evidencias) if registro.existe(e)]
-        for e in a.evidencias:
+        evs = [e.strip().strip("[]") for e in a.evidencias]
+        validas = [e for e in dict.fromkeys(evs) if registro.existe(e)]
+        for e in evs:
             if not registro.existe(e):
                 rv.citacoes_invalidas.append(f"{onde}: {e}")
         tipo = a.tipo
@@ -34,8 +57,9 @@ def validar(corpo: CorpoDaAnalise, registro: RegistroDeEvidencias, entidades_con
     def ents(chaves: list[str], onde: str) -> list[str]:
         ok = []
         for c in chaves:
-            if c in entidades_conhecidas:
-                ok.append(c)
+            real = normalizar_chave(c, entidades_conhecidas, nomes)
+            if real:
+                ok.append(real)
             else:
                 rv.entidades_desconhecidas.append(f"{onde}: {c}")
         return list(dict.fromkeys(ok))
@@ -51,9 +75,11 @@ def validar(corpo: CorpoDaAnalise, registro: RegistroDeEvidencias, entidades_con
 
     atores = []
     for i, at in enumerate(c.atores):
-        if at.entidade not in entidades_conhecidas:
+        real = normalizar_chave(at.entidade, entidades_conhecidas, nomes)
+        if not real:
             rv.entidades_desconhecidas.append(f"atores[{i}]: {at.entidade}")
             continue
+        at.entidade = real
         at.fundamentos = lista(at.fundamentos, f"atores[{i}]")
         atores.append(at)
     c.atores = atores

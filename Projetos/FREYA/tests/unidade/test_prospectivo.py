@@ -108,3 +108,14 @@ def test_api_fluxo_completo(componentes):
     assert cli.get(f"/investigacoes/{iid}/grafo/caminho", params={"de": "character:alfa", "para": "character:isolado"}).json()["existe"] is False
     assert cli.get(f"/investigacoes/{iid}/grafo/expandir", params={"no": "character:nao-existe"}).status_code == 404
     assert cli.get("/investigacoes/naoexiste").status_code == 404
+
+
+def test_validador_aceita_chave_escrita_pelo_modelo_com_colchetes_ou_nome():
+    from freya.prospectivo.validador import normalizar_chave
+
+    conhecidas = {"location:wakanda", "character:m-baku", "character:shuri"}
+    nomes = {"location:wakanda": "Wakanda", "character:m-baku": "M’Baku", "character:shuri": "Shuri"}
+    assert normalizar_chave("[location:wakanda]", conhecidas, nomes) == "location:wakanda"
+    assert normalizar_chave("character:m'baku", conhecidas, nomes) == "character:m-baku"
+    assert normalizar_chave("Shuri", conhecidas, nomes) == "character:shuri"
+    assert normalizar_chave("character:inventado", conhecidas, nomes) is None

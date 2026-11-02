@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/freya-logo.svg" />
+    <title>F.R.E.Y.A.</title>
+    <script>
+      // Aplica o tema salvo antes da primeira pintura (sem piscar o tema errado).
+      try {
+        var p = JSON.parse(localStorage.getItem("freya:preferencias") || "{}");
+        var t = p.tema || (matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro");
+        document.documentElement.dataset.tema = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="raiz"></div>
+    <script type="module" src="/src/app/main.tsx"></script>
+  </body>
+</html>

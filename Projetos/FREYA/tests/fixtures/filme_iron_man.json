@@ -1,0 +1,99 @@
+{
+ "title": [
+  {
+   "value": "Iron Man Movie Detail Page",
+   "type": "string"
+  }
+ ],
+ "components": [
+  {
+   "component_type": "featured",
+   "body_text": "2008's Iron Man tells the story of Tony Stark, a billionaire industrialist and genius inventor who is kidnapped and forced to build a devastating weapon. Instead, using his intelligence and ingenuity, Tony builds a high-tech suit of armor and escapes captivity. When he uncovers a nefarious plot with global implications, he dons his powerful armor and vows to protect the world as Iron Man.",
+   "data": [
+    {
+     "label": "Directed By",
+     "copy": "Jon Favreau"
+    },
+    {
+     "label": "Written By",
+     "copy": "Mark Fergus, Hawk Ostby, Art Marcum, Matt Holloway"
+    },
+    {
+     "label": "Rating",
+     "copy": "PG-13"
+    },
+    {
+     "label": "Run Time",
+     "copy": "126"
+    },
+    {
+     "label": "Release Date",
+     "copy": "May 2, 2008"
+    }
+   ]
+  },
+  {
+   "component_type": "carousel",
+   "tabs": [
+    {
+     "label": "Cast & Characters",
+     "data": [
+      {
+       "headline": "Iron Man",
+       "secondary_text": "Tony Stark",
+       "link": {
+        "link": "/characters/iron-man-tony-stark",
+        "title": "Iron Man (Tony Stark)"
+       },
+       "context": "live_action",
+       "content_type": "character"
+      },
+      {
+       "headline": "War Machine",
+       "secondary_text": "James \"Rhodey\" Rhodes",
+       "link": {
+        "link": "/characters/war-machine-james-rhodes",
+        "title": "War Machine (James Rhodes)"
+       },
+       "context": "live_action",
+       "content_type": "character"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "component_type": "sets",
+   "title": "Iron Man: Legacy",
+   "card_set": [
+    {
+     "headline": "Iron Man (1968) #1",
+     "secondary_text": "1968",
+     "link": {
+      "link": "https://www.marvel.com/comics/issue/9327/iron-man-1968-1",
+      "title": "Iron Man (1968) #1"
+     },
+     "context": null
+    },
+    {
+     "headline": "Iron Man (1996) #1",
+     "secondary_text": "1996",
+     "link": {
+      "link": "https://www.marvel.com/comics/issue/16328/iron-man-1996-1",
+      "title": "Iron Man (1996) #1"
+     },
+     "context": null
+    },
+    {
+     "headline": "Iron Man (1998) #1",
+     "secondary_text": "1998",
+     "link": {
+      "link": "https://www.marvel.com/comics/issue/37769/iron-man-1998-1",
+      "title": "Iron Man (1998) #1"
+     },
+     "context": null
+    }
+   ]
+  }
+ ]
+}

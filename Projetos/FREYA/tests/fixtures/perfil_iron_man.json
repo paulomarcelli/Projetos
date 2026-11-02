@@ -1,0 +1,157 @@
+{
+ "title": [
+  {
+   "value": "Iron Man (Tony Stark) On Screen Profile",
+   "type": "string"
+  }
+ ],
+ "components": [
+  {
+   "component_type": "masthead",
+   "masthead_array": [
+    {
+     "eyebrow": "Tony Stark",
+     "headline": "Iron Man",
+     "secondary_text": "Genius. Billionaire. Philanthropist. Tony Stark's confidence is only matched by his high-flying abilities as the hero called Iron Man."
+    }
+   ]
+  },
+  {
+   "component_type": "sets",
+   "title": "Story Moments",
+   "tabs": [
+    {
+     "data": [
+      {
+       "title": "Suit Up",
+       "description": "In a cave in Afghanistan, Tony Stark and Ho Yinsen developed the first Iron Man suit, which Stark used to escape his captors."
+      }
+     ]
+    },
+    {
+     "data": [
+      {
+       "title": "Saving New York",
+       "description": "Fighting alongside the Avengers for the first time, Iron Man nearly sacrificed himself in order to save New York. "
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "component_type": "carousel",
+   "tabs": [
+    {
+     "label": "Allies",
+     "data": [
+      {
+       "headline": "Captain America",
+       "secondary_text": "Steve Rogers",
+       "description": "Recipient of the Super Soldier serum, World War II hero Steve Rogers fights for American ideals as one of the world’s mightiest heroes and the leader of the Avengers.",
+       "link": {
+        "link": "/characters/captain-america-steve-rogers",
+        "title": "Captain America (Steve Rogers)"
+       },
+       "context": "live_action",
+       "content_type": "character"
+      },
+      {
+       "headline": "War Machine",
+       "secondary_text": "James \"Rhodey\" Rhodes",
+       "description": "Military veteran James Rhodes is ready for combat in his advanced armor, adding a formidable arsenal to Tony Stark-created designs.  ",
+       "link": {
+        "link": "/characters/war-machine-james-rhodes",
+        "title": "War Machine (James Rhodes)"
+       },
+       "context": "live_action",
+       "content_type": "character"
+      }
+     ]
+    },
+    {
+     "label": "Enemies",
+     "data": [
+      {
+       "headline": "Ultron",
+       "secondary_text": null,
+       "description": "The creation gone awry, the sentient robot Ultron hates and seeks to wipe out humanity.",
+       "link": {
+        "link": "/characters/ultron",
+        "title": "Ultron"
+       },
+       "context": "live_action",
+       "content_type": "character"
+      },
+      {
+       "headline": "Thanos",
+       "secondary_text": null,
+       "description": "The Mad Titan Thanos quests across the universe in search of the Infinity Stones, intending to use their limitless power for shocking purposes.",
+       "link": {
+        "link": "/characters/thanos",
+        "title": "Thanos"
+       },
+       "context": "live_action",
+       "content_type": "character"
+      },
+      {
+       "headline": "CARD DE TESTE (quadrinhos)",
+       "secondary_text": null,
+       "description": null,
+       "link": {
+        "link": "/characters/teste-quadrinhos"
+       },
+       "context": "comics",
+       "content_type": "character"
+      }
+     ]
+    },
+    {
+     "label": "Relatives",
+     "data": []
+    },
+    {
+     "label": "Groups",
+     "data": [
+      {
+       "headline": "Avengers",
+       "secondary_text": null,
+       "description": null,
+       "link": {
+        "link": "/teams-and-groups/avengers",
+        "title": "Avengers"
+       },
+       "context": "live_action",
+       "content_type": "group"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "component_type": "sets",
+   "title": "Avengers Endgame",
+   "card_set": [
+    {
+     "headline": "Avengers: Endgame",
+     "secondary_text": "2019",
+     "link": {
+      "link": "/movies/avengers-endgame",
+      "title": "Avengers: Endgame"
+     },
+     "context": "live_action",
+     "content_type": "movie"
+    },
+    {
+     "headline": "Avengers: Infinity War",
+     "secondary_text": "2018",
+     "link": {
+      "link": "/movies/avengers-infinity-war",
+      "title": "Avengers: Infinity War"
+     },
+     "context": "live_action",
+     "content_type": "movie"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,80 @@
+# Relatório final — F.R.E.Y.A. (backend)
+
+Data: 2 nov. 2026.
+
+## 1. O que foi feito
+
+1. **Auditoria** da entrega da Manus (docs/AUDITORIA.md): código lido por inteiro, pilha executada de verdade
+   (Qdrant, Elasticsearch, Neo4j), números do README reproduzidos, defeitos confirmados no banco.
+2. **Arquitetura consolidada** (docs/ARQUITETURA.md): Hybrid RAG, GraphRAG e motor prospectivo como módulos
+   independentes, ligados por um registro de evidências.
+3. **Correções onde havia defeito**, mantendo o que funcionava (Qdrant, Elasticsearch, Neo4j, RRF, a regra
+   "sem citação, sem relação", o modelo de embedding).
+4. **Ampliação da base** com páginas oficiais de marvel.com (continuidade cinematográfica).
+5. **Backend completo:** motor prospectivo, validador epistêmico, orquestração, persistência, API e o
+   contrato de dados do grafo dinâmico.
+6. **Testes:** 22 de unidade (sem serviços, sem custo) e 2 de integração com os serviços reais.
+
+## 2. Base de conhecimento: antes e depois
+
+| | Manus | F.R.E.Y.A. |
+|---|---|---|
+| Documentos | 37 resumos | 156 (119 páginas oficiais coletadas + os 37 resumos da Manus; 8 páginas de obras fora da cronologia saíram) |
+| Entidades | 236 (com 11 colisões personagem/obra) | 807, com identidade tipada |
+| Relações | 269 (81 de lista, ~100 de equipe, ~75 narrativas) | 2.118, das quais 1.217 narrativas (595 alianças, 327 inimizades, 198 momentos de trajetória, 30 parentescos, 26 filiações…), mais 180 capacidades |
+| Personagens | menções em resumos | 151, com 50 perfis on-screen completos |
+| Tempo | nenhum | ano de cada obra, posição na cronologia oficial, ordem dos momentos de cada personagem |
+| Captura de fonte | nenhuma | 130 páginas com data e hash (data/raw/, local) |
+| Continuidade | campo `MCU` | só blocos `live_action`; 479 blocos de quadrinhos descartados; obras fora da cronologia oficial (Logan, X-Men da Fox, Deadpool 1 e 2) excluídas |
+
+A coleta respeitou o robots.txt (nenhuma página bloqueada), com 2 s entre requisições. 87 personagens não
+têm perfil on-screen em marvel.com (404); eles continuam no grafo pelas aparições e conexões.
+
+## 3. Defeitos da Manus corrigidos
+
+| Defeito | Correção | Verificação |
+|---|---|---|
+| Personagem e obra com o mesmo nome viravam um nó (Thor, Iron Man, Black Widow…) | chave `tipo:slug`, rótulo Neo4j por tipo | teste `test_migracao_da_manus_separa_identidades…` |
+| Predicados duplicados e com direção trocada | ontologia com direção fixa; produção orientada pelo tipo | migração sem nenhum problema de validação |
+| "Nick Fury, Director of S.H.I.E.L.D." virou direção de filme | vira `LEADS` | teste |
+| Diretor de *Thor: The Dark World* atribuído a *Thor* | créditos sempre da obra da página | teste |
+| Atriz "membro" da Dora Milaje | regra de domínio entre tipos | 2 fatos recusados, com motivo |
+| "T'Challa" ≠ "T’Challa" | normalização Unicode | investigação real resolvida |
+| Relações soltas apresentadas como conexão (Thanos × Tony Stark) | caminhos reais; "sem caminho" explícito | investigação real devolve "Iron Man inimigo de Thanos" com evidência |
+| `re.search` fixo para o caso Loki/Tesseract | removido | — |
+| Senha no código | só `.env`; `NEO4J_PASSWORD` obrigatória | varredura de segredos limpa |
+| RRF com 5 candidatos por lista | reserva `k × 6`, limite por documento | teste |
+| BM25 sem análise de idioma | campos `english` e `portuguese` | integração |
+
+## 4. Resultados de investigações reais (modo determinístico)
+
+| Questão | Focais | O que a análise encontrou |
+|---|---|---|
+| Que conexão existe entre Thanos e Tony Stark? | Thanos, Iron Man | inimizade direta com fonte; trajetória de Thanos (aliança com Loki, Orbe, Vormir, Estalo); tensão Loki × Thanos |
+| Qual o futuro de Wakanda depois de T'Challa? | Wakanda, Black Panther | "governa Wakanda"; trajetória de T'Challa (Bucky, Killmonger, Batalha de Wakanda); Shuri e Killmonger como variáveis |
+| Como a relação entre Thor e Loki pode evoluir? | Thor, Loki | aliados e inimigos nas fontes → incerteza crítica aliança × confronto |
+| O que pode acontecer com a Feiticeira Escarlate? | Wanda Maximoff (nome em português) | trajetória (Hydra, Pietro, Lagos, guerra civil); tensão Wanda × Ultron |
+
+## 5. Pendências e limites (o que preciso de você)
+
+1. **Chave da OpenAI.** A chave do projeto Luna foi recusada pela OpenAI (401, "Incorrect API key"):
+   foi revogada ou expirou. Sem uma chave válida, o motor roda no modo determinístico, que monta contexto,
+   atores, relações, variáveis, trajetórias e incertezas a partir das evidências, **mas não escreve
+   desdobramentos nem cenários**. Basta pôr uma chave válida em `OPENAI_API_KEY` no `.env`; nada mais muda.
+2. **Nome ambíguo "Captain America"** (Steve Rogers e Sam Wilson): não é fundido; fica no relatório.
+3. **Obras recentes fora da lista oficial** (ex.: *Spider-Man: Brand New Day*) ficam de fora até entrarem
+   na cronologia publicada pela Marvel.
+4. **Fatos da Manus sem captura:** as 250 relações migradas mantêm citação e URL, mas não têm cópia da página.
+   Duas citações conferidas não aparecem no HTML atual de marvel.com.
+5. **Personagens sem perfil on-screen** (87) têm só conexões e aparições, sem momentos de trajetória.
+
+## 6. Como reproduzir
+
+```bash
+cp .env.example .env   # NEO4J_PASSWORD e OPENAI_API_KEY
+docker compose up -d
+pip install -e '.[dev]'
+freya coletar && freya ingerir
+freya investigar "Qual o futuro dos Vingadores depois de Thanos?"
+pytest && pytest -m integracao
+```

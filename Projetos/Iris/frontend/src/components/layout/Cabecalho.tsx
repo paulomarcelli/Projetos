@@ -1,8 +1,12 @@
-/** Barra do topo da plataforma: recolher/abrir o menu no desktop; botão da gaveta e marca no celular. */
+/**
+ * Barra do topo da plataforma: recolher/abrir o menu no desktop; botão da gaveta e marca no celular. À direita, o tema
+ * (só o ícone de sol/lua): fica à vista em toda página, com o menu aberto, recolhido ou na gaveta.
+ */
 import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import type { Ref } from "react";
 import { ajustarMenu } from "../../store/preferencias";
 import { Marca } from "../common/Marca";
+import { BotaoTema } from "../common/SeletorTema";
 
 type Props = {
   ref?: Ref<HTMLElement>;
@@ -48,6 +52,9 @@ export function Cabecalho({ ref, desktop, menuAberto, gavetaAberta, aoAbrirGavet
           <Marca altura={22} />
         </>
       )}
+      <div className="ml-auto flex items-center">
+        <BotaoTema />
+      </div>
     </header>
   );
 }

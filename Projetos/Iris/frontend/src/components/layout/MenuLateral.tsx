@@ -1,38 +1,81 @@
 /**
- * O menu lateral da plataforma, sobre o SidebarNav (components/ui/dashboard-sidebar.tsx), discreto e com os itens que
- * existem de fato, na ordem de uso da conversa:
- *   Principal: Nova investigação (uma conversa nova), Histórico de análises, Base científica;
- *   Recentes: as últimas conversas, investigações e rascunhos deste navegador;
- *   Biblioteca: Fontes salvas (os favoritos da base científica);
- *   Sistema: Configurações (⌘,).
- * Não há "Análises salvas" nem "Coleções": as conversas já ficam no histórico, e coleções não existem. No pé: o tema, o
- * seletor de tema (Escuro | Claro, em pílula), o estado do sistema e "Voltar ao site". Cenários, mapa, timeline e fontes vivem DENTRO de cada resposta.
+ * O menu lateral da plataforma, sobre o SidebarNav (components/common/dashboard-sidebar.tsx):
+ *   Nova investigação (uma conversa nova), sem título de grupo;
+ *   Inteligência: Investigações, Monitoramento, Exploração geopolítica (o mapa de relações);
+ *   Conhecimento: Central de notícias, Base de conhecimento;
+ *   Sistema: Configurações (⌘,), Ajuda e metodologia.
+ * No pé, o usuário e o papel. O tema saiu do menu: é o ícone de sol/lua na barra do topo (layout/Cabecalho), à vista em
+ * toda página. Cenários, mapa, timeline e fontes de uma investigação vivem DENTRO dela.
  *
- * No topo vai a marca Iris, no lugar da troca de workspace (a Iris não tem workspaces). As cores vêm dos tokens da Iris
- * (.iris-menu, em styles/globais.css), nos dois temas.
+ * No topo vai a marca Iris. As cores vêm dos tokens da Iris (.iris-menu, em styles/globais.css), nos dois temas.
  */
-import { Activity, FolderOpen, History, Library, LogOut, MessagesSquare, Plus, Settings, Star } from "lucide-react";
+import { CircleHelp, Earth, FolderSearch, Library, Newspaper, Plus, Radar, Settings } from "lucide-react";
 import { useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { useDados } from "../../hooks/useDados";
-import { useMinhasInvestigacoes } from "../research/historico/hooks/useMinhasInvestigacoes";
 import { usePreferencias } from "../../store/preferencias";
 import { ROTAS } from "../../config/rotas";
-import { PREVIA } from "../../config/env";
-import { prontidao } from "../../services/api";
 import { Marca } from "../common/Marca";
-import { SeletorTemaSegmentado } from "../common/SeletorTema";
-import { SidebarNav, type NavGroupData, type NavItemData } from "../common/dashboard-sidebar";
+import { SidebarNav, type NavGroupData } from "../common/dashboard-sidebar";
 
-/** Quantas investigações cabem no menu antes de "Ver todas". */
-const LIMITE_NO_MENU = 6;
+/** O destino de cada item, pelo id. */
+const DESTINOS = new Map<string, string>([
+  ["nova", ROTAS.inicio],
+  ["investigacoes", ROTAS.investigacoes],
+  ["monitoramento", ROTAS.monitoramento],
+  ["exploracao", ROTAS.relacoes],
+  ["noticias", ROTAS.noticias],
+  ["base", ROTAS.base],
+  ["configuracoes", ROTAS.configuracoes],
+  ["ajuda", ROTAS.ajuda],
+]);
 
-function useEstadoDoSistema() {
-  const { tipo, dados } = useDados(prontidao, []);
-  if (PREVIA) return "Prévia estática (sem servidor)";
-  if (tipo === "carregando") return "Verificando…";
-  if (tipo === "erro") return "API fora do ar";
-  return dados.status === "ready" ? "Sistema operacional" : "Dependências pendentes";
+const GRUPOS: NavGroupData[] = [
+  { items: [{ id: "nova", title: "Nova investigação", icon: Plus }] },
+  {
+    heading: "Inteligência",
+    items: [
+      { id: "investigacoes", title: "Investigações", icon: FolderSearch },
+      { id: "monitoramento", title: "Monitoramento", icon: Radar },
+      { id: "exploracao", title: "Exploração geopolítica", icon: Earth },
+    ],
+  },
+  {
+    heading: "Conhecimento",
+    items: [
+      { id: "noticias", title: "Central de notícias", icon: Newspaper },
+      { id: "base", title: "Base de conhecimento", icon: Library },
+    ],
+  },
+  {
+    heading: "Sistema",
+    items: [
+      { id: "configuracoes", title: "Configurações", icon: Settings, shortcut: "⌘," },
+      { id: "ajuda", title: "Ajuda e metodologia", icon: CircleHelp },
+    ],
+  },
+];
+
+/** O usuário no pé do menu. Sem contas ainda: o nome e o papel são os padrões da plataforma. */
+function Usuario({ aoNavegar }: { aoNavegar?: () => void }) {
+  return (
+    <Link
+      to={ROTAS.configuracoes}
+      onClick={aoNavegar}
+      aria-label="Usuário, Analista. Abrir configurações"
+      className="flex items-center gap-2.5 rounded-[6px] px-2 py-1.5 transition-colors duration-200 hover:bg-[var(--ds-active)]"
+    >
+      <span
+        aria-hidden="true"
+        className="grid size-8 shrink-0 place-items-center rounded-full border border-linha-forte bg-grafite text-legenda font-medium text-texto"
+      >
+        U
+      </span>
+      <span className="flex min-w-0 flex-col leading-tight">
+        <span className="truncate text-[13px] font-medium text-[var(--ds-fg)]">Usuário</span>
+        <span className="truncate text-[12px] text-[var(--ds-muted)]">Analista</span>
+      </span>
+    </Link>
+  );
 }
 
 /**
@@ -53,87 +96,18 @@ export function MenuLateral({
   const navegar = useNavigate();
   const local = useLocation();
   const { temaEfetivo } = usePreferencias();
-  const investigacoes = useMinhasInvestigacoes();
-  const estado = useEstadoDoSistema();
   const claro = temaEfetivo === "claro";
 
-  // o destino de cada item, pelo id
-  const destinos = useMemo(() => {
-    const m = new Map<string, string>([
-      ["nova", ROTAS.inicio],
-      ["base", ROTAS.base],
-      ["investigacoes", ROTAS.investigacoes],
-      ["favoritos", ROTAS.favoritos],
-      ["configuracoes", ROTAS.configuracoes],
-      ["estado", ROTAS.configuracoes],
-      ["site", ROTAS.landing],
-    ]);
-    for (const it of investigacoes) m.set(`inv-${it.tipo}-${it.id}`, it.para);
-    return m;
-  }, [investigacoes]);
-
-  const grupos: NavGroupData[] = useMemo(
-    () => [
-      {
-        heading: "Principal",
-        items: [
-          { id: "nova", title: "Nova investigação", icon: Plus },
-          {
-            id: "investigacoes",
-            title: "Histórico de análises",
-            icon: History,
-            badge: investigacoes.length > LIMITE_NO_MENU ? investigacoes.length : undefined,
-          },
-          { id: "base", title: "Base científica", icon: Library },
-        ],
-      },
-      ...(investigacoes.length
-        ? [
-            {
-              heading: "Recentes",
-              items: investigacoes.slice(0, LIMITE_NO_MENU).map(
-                (it): NavItemData => ({
-                  id: `inv-${it.tipo}-${it.id}`,
-                  title: it.titulo,
-                  icon: it.tipo === "conversa" ? MessagesSquare : FolderOpen,
-                  badge: it.tipo === "rascunho" ? "rascunho" : undefined,
-                }),
-              ),
-            },
-          ]
-        : []),
-      {
-        heading: "Biblioteca",
-        items: [{ id: "favoritos", title: "Fontes salvas", icon: Star }],
-      },
-      {
-        heading: "Sistema",
-        items: [{ id: "configuracoes", title: "Configurações", icon: Settings, shortcut: "⌘," }],
-      },
-    ],
-    [investigacoes],
-  );
-
-  // O tema sai da lista do pé e vira um controle segmentado (Escuro | Claro) acima dela: mostra o estado e troca num clique.
-  const rodape: NavItemData[] = [
-    { id: "estado", title: estado, icon: Activity },
-    { id: "site", title: "Voltar ao site", icon: LogOut },
-  ];
-
-  // o item ativo vem do endereço (a investigação aberta, inclusive o rascunho em ?rascunho=)
-  const atual = local.pathname + local.search;
-  const ativo = (() => {
-    for (const it of investigacoes) if (atual.startsWith(it.para)) return `inv-${it.tipo}-${it.id}`;
-    if (local.pathname === ROTAS.inicio) return "nova";
-    if (local.pathname.startsWith(ROTAS.base)) return "base";
-    if (local.pathname.startsWith(ROTAS.investigacoes)) return "investigacoes";
-    if (local.pathname.startsWith(ROTAS.favoritos)) return "favoritos";
-    if (local.pathname.startsWith(ROTAS.configuracoes)) return "configuracoes";
+  // o item ativo vem do endereço; a análise de uma investigação fica sob "Investigações"
+  const ativo = useMemo(() => {
+    const p = local.pathname;
+    if (p === ROTAS.inicio || p.startsWith("/app/conversas") || p.startsWith(ROTAS.novaComParametros)) return "nova";
+    for (const [id, para] of DESTINOS) if (id !== "nova" && p.startsWith(para)) return id;
     return undefined;
-  })();
+  }, [local.pathname]);
 
   const escolher = (id: string) => {
-    const para = destinos.get(id);
+    const para = DESTINOS.get(id);
     if (!para) return;
     navegar(para);
     aoNavegar?.();
@@ -151,9 +125,8 @@ export function MenuLateral({
             <Marca altura={24} />
           </Link>
         }
-        groups={grupos}
-        footerTop={<SeletorTemaSegmentado />}
-        footer={rodape}
+        groups={GRUPOS}
+        footerTop={<Usuario aoNavegar={aoNavegar} />}
         activeId={ativo}
         onSelect={escolher}
         shortcuts={atalhos}

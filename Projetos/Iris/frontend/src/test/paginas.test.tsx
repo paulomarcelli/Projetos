@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -16,7 +16,10 @@ function Local() {
 }
 
 beforeEach(() => {
-  vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [], total: 0, limit: 20, offset: 0 }), { status: 200 })));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response(JSON.stringify({ items: [], total: 0, limit: 20, offset: 0 }), { status: 200 })),
+  );
 });
 
 /** Monta a moldura de conta com as quatro telas, como no App (rotas aninhadas). */
@@ -206,7 +209,9 @@ describe("landing", () => {
       "/app?pergunta=Como%20a%20OTAN%20pode%20afetar%20a%20ordem%20regional%3F",
     );
     await u.click(screen.getAllByRole("button", { name: "Mercosul e UE" })[1]);
-    expect(screen.getAllByLabelText(/Escreva uma pergunta/)[1]).toHaveValue("O acordo Mercosul–União Europeia muda o peso da América do Sul na economia mundial?");
+    expect(screen.getAllByLabelText(/Escreva uma pergunta/)[1]).toHaveValue(
+      "O acordo Mercosul–União Europeia muda o peso da América do Sul na economia mundial?",
+    );
   });
 });
 
@@ -239,28 +244,31 @@ describe("rotas", () => {
     expect(screen.queryByRole("dialog", { name: "Busca" })).not.toBeInTheDocument();
   });
 
-  it("Histórico de análises sempre no menu; Recentes aparece com o primeiro item, e um rascunho salvo abre direto", async () => {
-    const u = userEvent.setup();
+  it("o menu tem os grupos Inteligência, Conhecimento e Sistema, e o usuário no pé", () => {
     em("/app/configuracoes");
     const menu = screen.getAllByRole("complementary", { name: "Menu lateral" })[0];
-    expect(within(menu).getByRole("button", { name: "Histórico de análises" })).toBeInTheDocument();
+    for (const g of ["Inteligência", "Conhecimento", "Sistema"]) expect(within(menu).getByText(g)).toBeInTheDocument();
+    const nomes = [
+      "Nova investigação",
+      "Investigações",
+      "Monitoramento",
+      "Exploração geopolítica",
+      "Central de notícias",
+      "Base de conhecimento",
+      /Configurações/,
+      "Ajuda e metodologia",
+    ];
+    for (const n of nomes) expect(within(menu).getByRole("button", { name: n })).toBeInTheDocument();
     expect(within(menu).queryByText("Recentes")).not.toBeInTheDocument();
-    // Um rascunho salvo (aqui, como se fosse em outra aba) entra na lista sem recarregar.
-    window.localStorage.setItem(
-      "iris:rascunhos:v1",
-      JSON.stringify([
-        { id: "r1", pergunta: "Como a disputa por terras raras muda o comércio entre Europa e China?", horizonte: 5, regioes: [], dimensoes: ["economia"], profundidade: "padrao", criadoEm: "2026-10-01T10:00:00Z", atualizadoEm: "2026-10-02T10:00:00Z" },
-      ]),
-    );
-    act(() => {
-      window.dispatchEvent(new StorageEvent("storage", { key: "iris:rascunhos:v1" }));
-    });
-    expect(within(menu).getByText("Recentes")).toBeInTheDocument();
-    const item = within(menu).getByRole("button", { name: /terras raras/ });
-    expect(item).toHaveTextContent(/rascunho/);
-    await u.click(item);
-    expect(screen.getByTestId("local")).toHaveTextContent("/app/investigacoes");
-    window.localStorage.clear();
+    expect(within(menu).getByRole("link", { name: /Usuário, Analista/ })).toHaveAttribute("href", "/app/configuracoes");
+    // o tema é só o ícone de sol/lua, na barra do topo
+    expect(within(menu).queryByRole("radiogroup")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("banner")).getByRole("button", { name: /^Usar tema (claro|escuro)$/ })).toBeInTheDocument();
+  });
+
+  it("monitoramento, notícias e ajuda: páginas próprias, sem dados simulados", () => {
+    em("/app/monitoramento");
+    expect(screen.getByText("Nada sendo monitorado ainda")).toBeInTheDocument();
   });
 
   it("endereços antigos de documentos são redirecionados", () => {
@@ -288,11 +296,13 @@ describe("menu lateral", () => {
 
   it("navega pelos itens, marca a página atual e tem os atalhos ⌘K e ⌘,", async () => {
     const u = userEvent.setup();
-    app("/app/favoritos");
+    app("/app/relacoes");
     const menu = (await screen.findAllByRole("complementary", { name: "Menu lateral" }))[0];
-    expect(within(menu).getByRole("button", { name: "Fontes salvas" })).toHaveAttribute("aria-current", "page");
-    await u.click(within(menu).getByRole("button", { name: "Base científica" }));
+    expect(within(menu).getByRole("button", { name: "Exploração geopolítica" })).toHaveAttribute("aria-current", "page");
+    await u.click(within(menu).getByRole("button", { name: "Base de conhecimento" }));
     expect(screen.getByTestId("local")).toHaveTextContent("/app/base-cientifica");
+    await u.click(within(menu).getByRole("button", { name: "Ajuda e metodologia" }));
+    expect(screen.getByRole("heading", { level: 1, name: "Ajuda e metodologia" })).toBeInTheDocument();
     expect(within(menu).getByRole("button", { name: /Configurações/ })).toHaveAttribute("aria-keyshortcuts", "Meta+, Control+,");
     await u.keyboard("{Control>},{/Control}");
     expect(screen.getByTestId("local")).toHaveTextContent("/app/configuracoes");

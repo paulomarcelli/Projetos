@@ -200,3 +200,28 @@ export function AlternarTema({ compacto = false }: { compacto?: boolean }) {
     </button>
   );
 }
+
+/**
+ * Só o ícone: sol no tema claro, lua no escuro. Vai na barra do topo, sempre à vista (mesmo com o menu recolhido e no
+ * celular). Reativo: no hover o astro gira um pouco; ao pressionar, encolhe; ao trocar, o desenho se transforma (disco,
+ * mordida e raios, em .astro-tema) e dá um giro. O nome acessível diz o que o clique faz.
+ */
+export function BotaoTema() {
+  const { temaEfetivo } = usePreferencias();
+  const claro = temaEfetivo === "claro";
+  const acao = claro ? "Usar tema escuro" : "Usar tema claro";
+  return (
+    <button
+      type="button"
+      onClick={() => escolherTema(claro ? "escuro" : "claro")}
+      aria-label={acao}
+      title={acao}
+      className="botao-tema relative grid size-10 shrink-0 place-items-center rounded-full text-texto-2 transition-[color,background-color,scale] duration-150 hover:bg-grafite hover:text-texto active:scale-[0.92]"
+    >
+      {/* key: remonta o invólucro a cada troca, para o giro rodar de novo */}
+      <span key={claro ? "sol" : "lua"} className="botao-tema__giro grid place-items-center">
+        <Astro lua={!claro} />
+      </span>
+    </button>
+  );
+}

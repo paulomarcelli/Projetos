@@ -335,7 +335,32 @@ body {
   transform: rotate(-45deg) scale(0.4);
   opacity: 0;
 }
+/* Botão só com o ícone (barra do topo): gira um pouco no hover e dá um giro ao trocar de tema. */
+.botao-tema .astro-tema {
+  width: 20px;
+  height: 20px;
+  transition: rotate 300ms var(--ease-saida);
+}
+.botao-tema:hover .astro-tema {
+  rotate: 18deg;
+}
+.botao-tema__giro {
+  animation: giro-do-astro 520ms var(--ease-saida);
+}
+@keyframes giro-do-astro {
+  from {
+    rotate: -90deg;
+    scale: 0.6;
+    opacity: 0.4;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
+  .botao-tema__giro {
+    animation: none;
+  }
+  .botao-tema .astro-tema {
+    transition: none;
+  }
   .astro-tema * {
     transition-duration: 0ms;
   }

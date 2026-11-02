@@ -15,6 +15,7 @@ import { PaginaConversa } from "../pages/Research/PaginaConversa";
 import { PaginaExplorar } from "../pages/Research/PaginaExplorar";
 import { PaginaHistorico } from "../pages/Research/PaginaHistorico";
 import { PaginaFavoritos } from "../pages/Research/PaginaFavoritos";
+import { PaginaAjuda, PaginaMonitoramento, PaginaNoticias } from "../pages/Modulos/PaginasDosModulos";
 
 const PaginaAnalise = lazy(() => import("../pages/Analysis/PaginaAnalise"));
 const PaginaCenario = lazy(() => import("../pages/Analysis/PaginaCenario"));
@@ -92,6 +93,9 @@ function Plataforma() {
         <Route path="mapas" element={<Navigate to={ROTAS.relacoes} replace />} />
         <Route path="cenarios" element={<Navigate to={ROTAS.investigacoes} replace />} />
         <Route path="sinais" element={<Navigate to={ROTAS.investigacoes} replace />} />
+        <Route path="monitoramento" element={<PaginaMonitoramento />} />
+        <Route path="noticias" element={<PaginaNoticias />} />
+        <Route path="ajuda" element={<PaginaAjuda />} />
         <Route path="favoritos" element={<PaginaFavoritos />} />
         <Route path="configuracoes" element={<PaginaConfiguracoes />} />
         <Route path="configuracoes/acervo" element={<PaginaAcervo />} />

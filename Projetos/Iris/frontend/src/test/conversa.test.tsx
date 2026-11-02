@@ -39,13 +39,15 @@ describe("resposta da Iris", () => {
     comResultado(<Diagnostico />);
     expect(screen.getByRole("heading", { name: "Diagnóstico estratégico" })).toBeInTheDocument();
     expect(screen.getByText(r.sintese)).toBeInTheDocument();
-    for (const t of ["O que está acontecendo", "Problema estratégico central", "Por que importa", "Implicações para o futuro"]) expect(screen.getByText(t)).toBeInTheDocument();
+    for (const t of ["O que está acontecendo", "Problema estratégico central", "Por que importa", "Implicações para o futuro"])
+      expect(screen.getByText(t)).toBeInTheDocument();
   });
 
   it("dinâmicas: narrativa única, sem seções separadas de atores ou fatores", () => {
     comResultado(<Dinamicas />);
     expect(screen.getByRole("heading", { name: "Dinâmicas geopolíticas" })).toBeInTheDocument();
-    for (const t of ["Atores e interesses", "Atores estratégicos", "Fatores em jogo", "Fatores determinantes"]) expect(screen.queryByRole("heading", { name: t })).not.toBeInTheDocument();
+    for (const t of ["Atores e interesses", "Atores estratégicos", "Fatores em jogo", "Fatores determinantes"])
+      expect(screen.queryByRole("heading", { name: t })).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading")).toHaveLength(1);
   });
 
@@ -73,7 +75,14 @@ describe("resposta da Iris", () => {
     const abas = screen.getAllByRole("tab");
     expect(abas).toHaveLength(r.cenarios.length);
     expect(abas[0]).toHaveAttribute("aria-selected", "true");
-    for (const t of ["Premissas", "Condições para se materializar", "O que favorece", "O que dificulta", "Riscos e incertezas", "O que obrigaria a rever este cenário"])
+    for (const t of [
+      "Premissas",
+      "Condições para se materializar",
+      "O que favorece",
+      "O que dificulta",
+      "Riscos e incertezas",
+      "O que obrigaria a rever este cenário",
+    ])
       expect(screen.getByRole("heading", { name: t })).toBeInTheDocument();
     expect(screen.getByText("Probabilidade").parentElement).toHaveTextContent(/não há método nem dados/);
     await u.click(abas[2]);
@@ -130,8 +139,7 @@ describe("conversa sem motor de investigação (build normal)", () => {
     await u.click(screen.getByRole("button", { name: "Guardar como rascunho" }));
     expect(screen.getByRole("link", { name: /Rascunho salvo/ })).toHaveAttribute("href", expect.stringContaining("/app/investigacoes?rascunho="));
 
-    const menu = screen.getAllByRole("complementary", { name: "Menu lateral" })[0];
-    expect(within(menu).getAllByRole("button", { name: /guerra na Ucrânia/ }).length).toBeGreaterThan(0);
+    // o menu não lista conversas: elas ficam em Investigações (o histórico)
   });
 
   it("conversa nova: sem perguntas prontas, e o horizonte escolhido embaixo do campo vai com a conversa", async () => {

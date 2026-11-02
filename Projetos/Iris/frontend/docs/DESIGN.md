@@ -840,3 +840,15 @@ em vez do painel de 400 px. A página tem largura total e trata o cenário como 
 
 O contrato com o servidor (o que o motor recupera para aprofundar, sem inventar) está em
 `docs/CONTRATO-ANALISE-DO-CENARIO.md`.
+
+## Menu lateral reorganizado e tema no topo (nov/2026)
+
+- Menu: "Nova investigação" no topo; **Inteligência** (Investigações, Monitoramento, Exploração geopolítica);
+  **Conhecimento** (Central de notícias, Base de conhecimento); **Sistema** (Configurações, Ajuda e metodologia). No pé,
+  o usuário ("Usuário · Analista", leva às configurações). "Recentes" e "Fontes salvas" saíram do menu; as conversas
+  ficam em Investigações.
+- Monitoramento e Central de notícias são páginas honestas (sem motor, dizem o que falta). Ajuda e metodologia lista
+  os princípios que a interface já cumpre. Exploração geopolítica abre o mapa de relações.
+- Tema: só um ícone de sol/lua, no canto direito da barra do topo, à vista em toda página (com o menu aberto,
+  recolhido ou na gaveta do celular). Gira um pouco no hover, encolhe ao pressionar e, ao trocar, o sol vira lua
+  (disco mordido, raios somem) com um giro. Sem animação com "reduzir movimento".

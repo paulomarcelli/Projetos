@@ -64,8 +64,41 @@ class Investigacao(BaseModel):
     atualizada_em: datetime = Field(default_factory=agora)
 
 
+EM_ANDAMENTO = frozenset({Estado.PENDENTE, Estado.RECUPERANDO, Estado.ANALISANDO, Estado.VALIDANDO})
+
+
+class ResumoDeInvestigacao(BaseModel):
+    """Item do histórico: o bastante para listar sem abrir a análise inteira."""
+    id: str
+    questao: str
+    horizonte: str | None = None
+    estado: Estado
+    erro: str | None = None
+    guardada: bool = False
+    cenarios: int = 0
+    criada_em: datetime
+    atualizada_em: datetime
+
+
+def _iso(d: datetime) -> str:
+    """Instante em UTC com microssegundos fixos, para a ordem textual ser a ordem do tempo."""
+    if d.tzinfo is None:
+        d = d.replace(tzinfo=timezone.utc)
+    return d.astimezone(timezone.utc).isoformat(timespec="microseconds")
+
+
+# colunas de resumo acrescentadas ao esquema original (id, dados, atualizada_em)
+_COLUNAS_DE_RESUMO = {"questao": "TEXT", "horizonte": "TEXT", "estado": "TEXT", "erro": "TEXT",
+                      "cenarios": "INTEGER NOT NULL DEFAULT 0", "criada_em": "TEXT", "guardada": "INTEGER NOT NULL DEFAULT 0"}
+_SELECAO_DO_RESUMO = "id, questao, horizonte, estado, erro, guardada, cenarios, criada_em, atualizada_em"
+
+
 class Repositorio:
-    """Investigações em SQLite (um documento JSON por investigação)."""
+    """Investigações em SQLite: um documento JSON por investigação, mais colunas de resumo para o histórico.
+
+    `guardada` só existe na tabela (não no documento): salvar a investigação nunca a desfaz.
+    Bancos antigos, sem as colunas de resumo, são migrados ao abrir (ALTER TABLE e preenchimento a partir do JSON).
+    """
 
     def __init__(self, caminho: str):
         if caminho != ":memory:":
@@ -74,19 +107,72 @@ class Repositorio:
         self._trava = threading.Lock()
         with self._trava:
             self._con.execute("CREATE TABLE IF NOT EXISTS investigacoes (id TEXT PRIMARY KEY, dados TEXT NOT NULL, atualizada_em TEXT NOT NULL)")
+            self._migrar()
             self._con.commit()
+
+    def _migrar(self) -> None:
+        existentes = {r[1] for r in self._con.execute("PRAGMA table_info(investigacoes)")}
+        for nome, tipo in _COLUNAS_DE_RESUMO.items():
+            if nome not in existentes:
+                self._con.execute(f"ALTER TABLE investigacoes ADD COLUMN {nome} {tipo}")
+        pendentes = self._con.execute("SELECT id, dados FROM investigacoes WHERE questao IS NULL OR criada_em IS NULL OR estado IS NULL").fetchall()
+        for iid, dados in pendentes:  # uma vez só, ao migrar: lê o JSON para preencher o resumo
+            inv = Investigacao.model_validate_json(dados)
+            self._con.execute("UPDATE investigacoes SET questao = ?, horizonte = ?, estado = ?, erro = ?, cenarios = ?, criada_em = ? WHERE id = ?",
+                              (*self._resumo_de(inv)[:5], _iso(inv.criada_em), iid))
+        self._con.execute("CREATE INDEX IF NOT EXISTS investigacoes_criada_em ON investigacoes (criada_em DESC)")
+        self._con.execute("CREATE INDEX IF NOT EXISTS investigacoes_guardada ON investigacoes (guardada, criada_em DESC)")
+
+    @staticmethod
+    def _resumo_de(inv: Investigacao) -> tuple:
+        return (inv.questao, inv.horizonte, inv.estado.value, inv.erro, len(inv.analise.cenarios) if inv.analise else 0)
 
     def salvar(self, inv: Investigacao) -> None:
         inv.atualizada_em = agora()
         with self._trava:
-            self._con.execute("INSERT OR REPLACE INTO investigacoes (id, dados, atualizada_em) VALUES (?, ?, ?)",
-                              (inv.id, inv.model_dump_json(), inv.atualizada_em.isoformat()))
+            self._con.execute(
+                "INSERT INTO investigacoes (id, dados, atualizada_em, questao, horizonte, estado, erro, cenarios, criada_em) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET dados = excluded.dados, atualizada_em = excluded.atualizada_em, "
+                "questao = excluded.questao, horizonte = excluded.horizonte, estado = excluded.estado, erro = excluded.erro, "
+                "cenarios = excluded.cenarios, criada_em = excluded.criada_em",
+                (inv.id, inv.model_dump_json(), _iso(inv.atualizada_em), *self._resumo_de(inv), _iso(inv.criada_em)))
             self._con.commit()
 
     def obter(self, iid: str) -> Investigacao | None:
         with self._trava:
             row = self._con.execute("SELECT dados FROM investigacoes WHERE id = ?", (iid,)).fetchone()
         return Investigacao.model_validate_json(row[0]) if row else None
+
+    def resumo(self, iid: str) -> ResumoDeInvestigacao | None:
+        with self._trava:
+            row = self._con.execute(f"SELECT {_SELECAO_DO_RESUMO} FROM investigacoes WHERE id = ?", (iid,)).fetchone()
+        return self._linha(row) if row else None
+
+    def listar(self, guardadas: bool | None = None, limite: int = 100) -> list[ResumoDeInvestigacao]:
+        """Mais recentes primeiro. `guardadas` True/False filtra; None traz todas."""
+        limite = max(1, min(int(limite), 1000))
+        filtro, params = ("WHERE guardada = ?", (int(guardadas),)) if guardadas is not None else ("", ())
+        with self._trava:
+            rows = self._con.execute(f"SELECT {_SELECAO_DO_RESUMO} FROM investigacoes {filtro} ORDER BY criada_em DESC, id DESC LIMIT ?",
+                                     (*params, limite)).fetchall()
+        return [self._linha(r) for r in rows]
+
+    @staticmethod
+    def _linha(r) -> ResumoDeInvestigacao:
+        return ResumoDeInvestigacao(id=r[0], questao=r[1], horizonte=r[2], estado=Estado(r[3]), erro=r[4], guardada=bool(r[5]), cenarios=r[6] or 0,
+                                    criada_em=datetime.fromisoformat(r[7]), atualizada_em=datetime.fromisoformat(r[8]))
+
+    def remover(self, iid: str) -> bool:
+        with self._trava:
+            n = self._con.execute("DELETE FROM investigacoes WHERE id = ?", (iid,)).rowcount
+            self._con.commit()
+        return n > 0
+
+    def marcar_guardada(self, iid: str, valor: bool) -> bool:
+        with self._trava:
+            n = self._con.execute("UPDATE investigacoes SET guardada = ? WHERE id = ?", (int(valor), iid)).rowcount
+            self._con.commit()
+        return n > 0
 
 
 class Orquestrador:

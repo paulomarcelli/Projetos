@@ -1,24 +1,34 @@
 """API da F.R.E.Y.A. Um único produto: a investigação prospectiva e o grafo que a sustenta.
 
-POST /investigacoes                         cria e executa (em segundo plano) uma investigação
-GET  /investigacoes/{id}                    estado, etapas e a análise prospectiva
-GET  /investigacoes/{id}/grafo              nós, arestas, evidências, sequência de animação, caminhos, cenários
-GET  /investigacoes/{id}/grafo/expandir     vizinhos de um nó (exploração)
-GET  /investigacoes/{id}/grafo/caminho      caminhos entre dois nós
-GET  /investigacoes/{id}/evidencias/{eid}   uma evidência com a fonte
-GET  /saude                                 serviços e modo do motor
+POST   /investigacoes                         cria e executa (em segundo plano) uma investigação (202; 422 se inválida)
+GET    /investigacoes?guardadas=&limite=      histórico: resumos, mais recentes primeiro (guardadas=true|false filtra)
+GET    /investigacoes/{id}                    estado, etapas, a análise prospectiva e `guardada`
+DELETE /investigacoes/{id}                    exclui (204; 404; 409 enquanto ainda está em execução)
+PUT    /investigacoes/{id}/guardada           guarda (204; 404)
+DELETE /investigacoes/{id}/guardada           deixa de guardar (204; 404)
+GET    /investigacoes/{id}/grafo              nós, arestas, evidências, sequência de animação, caminhos, cenários (409 se não concluída)
+GET    /investigacoes/{id}/grafo/expandir     vizinhos de um nó (exploração)
+GET    /investigacoes/{id}/grafo/caminho      caminhos entre dois nós
+GET    /investigacoes/{id}/evidencias/{eid}   uma evidência com a fonte
+GET    /saude                                 serviços e modo do motor
 
-Não há conversa, histórico de mensagens nem respostas livres: só investigações.
+Não há conversa, histórico de mensagens nem respostas livres: só investigações. O histórico é a lista de investigações.
 """
 from __future__ import annotations
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
+from datetime import timedelta
+
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 
 from freya.config import config
 from freya.fabrica import Componentes
 from freya.implantacao import estado_da_base
-from freya.investigacao.orquestrador import Estado
+from freya.investigacao.orquestrador import EM_ANDAMENTO, Estado, agora
+
+# Uma investigação num estado intermediário sem atualização há mais que isto é tida como abandonada
+# (o processo que a executava parou), e pode ser excluída. A etapa mais longa (o modelo) leva cerca de um minuto.
+ABANDONO = timedelta(minutes=15)
 
 
 class PedidoDeInvestigacao(BaseModel):
@@ -32,8 +42,15 @@ def criar_app(comp: Componentes, sincrono: bool = False, origens: list[str] | No
     if origens:
         from fastapi.middleware.cors import CORSMiddleware
 
-        app.add_middleware(CORSMiddleware, allow_origins=origens, allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
+        app.add_middleware(CORSMiddleware, allow_origins=origens, allow_methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["Content-Type"])
     orq = comp.orquestrador
+    em_execucao: set[str] = set()  # investigações que este processo está executando
+
+    def executar(iid: str):
+        try:
+            return orq.executar(iid)
+        finally:
+            em_execucao.discard(iid)
 
     def obter(iid: str):
         inv = orq.repo.obter(iid)
@@ -52,18 +69,48 @@ def criar_app(comp: Componentes, sincrono: bool = False, origens: list[str] | No
             inv = orq.criar(p.questao, p.horizonte)
         except ValueError as e:
             raise HTTPException(422, str(e)) from e
+        em_execucao.add(inv.id)
         if sincrono:
-            inv = orq.executar(inv.id)
+            inv = executar(inv.id)
         else:
-            tarefas.add_task(orq.executar, inv.id)
+            tarefas.add_task(executar, inv.id)
         return {"id": inv.id, "estado": inv.estado.value, "acompanhar": f"/investigacoes/{inv.id}"}
+
+    @app.get("/investigacoes")
+    def listar(guardadas: bool | None = Query(None, description="true: só as guardadas; false: só as não guardadas; ausente: todas"),
+               limite: int = Query(100, ge=1, le=1000)):
+        return [r.model_dump(mode="json") for r in orq.repo.listar(guardadas, limite)]
 
     @app.get("/investigacoes/{iid}")
     def ler(iid: str):
         inv = obter(iid)
+        resumo = orq.repo.resumo(iid)
         return inv.model_dump(mode="json", exclude={"grafo", "registro"}) | {
             "grafo": f"/investigacoes/{iid}/grafo" if inv.grafo else None,
-            "evidencias": {k: v.model_dump() for k, v in inv.registro.itens.items()}}
+            "evidencias": {k: v.model_dump() for k, v in inv.registro.itens.items()},
+            "guardada": bool(resumo and resumo.guardada)}
+
+    @app.delete("/investigacoes/{iid}", status_code=204)
+    def excluir(iid: str):
+        inv = obter(iid)
+        abandonada = agora() - inv.atualizada_em > ABANDONO
+        if iid in em_execucao or (inv.estado in EM_ANDAMENTO and not abandonada):
+            # a tarefa em segundo plano gravaria a investigação de novo ao terminar
+            raise HTTPException(409, f"investigação ainda em execução (estado: {inv.estado.value}); exclua depois que terminar")
+        orq.repo.remover(iid)
+        return Response(status_code=204)
+
+    @app.put("/investigacoes/{iid}/guardada", status_code=204)
+    def guardar(iid: str):
+        if not orq.repo.marcar_guardada(iid, True):
+            raise HTTPException(404, "investigação não encontrada")
+        return Response(status_code=204)
+
+    @app.delete("/investigacoes/{iid}/guardada", status_code=204)
+    def desguardar(iid: str):
+        if not orq.repo.marcar_guardada(iid, False):
+            raise HTTPException(404, "investigação não encontrada")
+        return Response(status_code=204)
 
     @app.get("/investigacoes/{iid}/grafo")
     def grafo(iid: str):

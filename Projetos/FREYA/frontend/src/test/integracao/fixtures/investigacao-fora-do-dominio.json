@@ -1,0 +1,450 @@
+{
+ "id": "e94eec4fda3c",
+ "questao": "Quais são os possíveis impactos de uma escalada entre China e Taiwan nos próximos cinco anos?",
+ "horizonte": null,
+ "estado": "concluida",
+ "etapas": [
+  {
+   "nome": "recuperacao",
+   "inicio": "2026-11-02T22:36:12.436504Z",
+   "fim": "2026-11-02T22:36:24.735366Z",
+   "resumo": {
+    "trechos": 8,
+    "entidades_focais": [
+     "location:china"
+    ],
+    "nos": 1,
+    "arestas": 0,
+    "caminhos": 0,
+    "sem_caminho": 0
+   }
+  },
+  {
+   "nome": "analise",
+   "inicio": "2026-11-02T22:36:24.735422Z",
+   "fim": "2026-11-02T22:36:53.980381Z",
+   "resumo": {
+    "modo": "modelo",
+    "modelo": "gpt-5.6-terra",
+    "evidencias": 8,
+    "cenarios": 3
+   }
+  },
+  {
+   "nome": "validacao_e_grafo",
+   "inicio": "2026-11-02T22:36:53.980401Z",
+   "fim": "2026-11-02T22:36:53.982941Z",
+   "resumo": {
+    "rebaixadas": 15,
+    "removidas": 2,
+    "citacoes_invalidas": 0,
+    "entidades_desconhecidas": 0
+   }
+  }
+ ],
+ "erro": null,
+ "analise": {
+  "contexto": [
+   {
+    "texto": "As evidências descrevem acontecimentos e personagens do MCU, incluindo a viagem de Shang-Chi à China, mas não estabelecem uma ligação entre esses fatos e uma escalada entre China e Taiwan.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E7"
+    ]
+   }
+  ],
+  "atores": [
+   {
+    "entidade": "location:china",
+    "papel": "Entidade focal da investigação; o dossiê não oferece evidências para caracterizar seu papel numa escalada com Taiwan.",
+    "fundamentos": [
+     {
+      "texto": "A China é indicada como entidade focal, sem evidências específicas sobre sua relação com Taiwan.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ]
+   }
+  ],
+  "relacoes_sistemicas": [],
+  "variaveis": [
+   {
+    "nome": "Escalada entre China e Taiwan",
+    "descricao": {
+     "texto": "A base não documenta a situação, os agentes, os mecanismos ou a intensidade de uma escalada entre China e Taiwan; qualquer trajetória dependeria de premissas externas ao dossiê.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "entidades": [
+     "location:china"
+    ]
+   },
+   {
+    "nome": "Resposta de atores do MCU",
+    "descricao": {
+     "texto": "O dossiê não informa se personagens ou organizações do MCU responderiam a uma crise entre China e Taiwan.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "entidades": []
+   }
+  ],
+  "tendencias_e_sinais": [
+   {
+    "texto": "As evidências fornecidas não permitem identificar tendências nem sinais observáveis de escalada entre China e Taiwan.",
+    "tipo": "hipotese",
+    "evidencias": []
+   }
+  ],
+  "incertezas_criticas": [
+   {
+    "nome": "Ocorrência e intensidade de uma escalada",
+    "por_que_importa": {
+     "texto": "Sem evidência sobre a ocorrência ou intensidade de uma escalada, não é possível fundamentar impactos específicos no horizonte solicitado.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "polos": [
+     "Ausência de escalada",
+     "Escalada significativa"
+    ]
+   },
+   {
+    "nome": "Relevância da crise para o MCU",
+    "por_que_importa": {
+     "texto": "O dossiê não estabelece conexão entre a entidade focal, Taiwan e personagens ou organizações do MCU; essa lacuna impede projetar respostas ou impactos internos à continuidade.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "polos": [
+     "Nenhuma conexão documentada",
+     "Conexão com atores do MCU"
+    ]
+   }
+  ],
+  "desdobramentos": [],
+  "cenarios": [
+   {
+    "id": "C1",
+    "nome": "Sem escalada observável no recorte do dossiê",
+    "logica": {
+     "texto": "Se a análise permanecer limitada às evidências fornecidas, não há base para afirmar que ocorrerá uma escalada nem para atribuir impactos a ela.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "premissas": [
+     {
+      "texto": "O dossiê não contém fatos sobre tensões, decisões ou incidentes entre China e Taiwan.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "desenvolvimento": [
+     {
+      "texto": "A análise se mantém agnóstica quanto à evolução da relação entre China e Taiwan, pois não há evidências para escolher uma trajetória.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "consequencias": [
+     {
+      "texto": "Não é possível especificar impactos políticos, econômicos, militares ou sociais, nem efeitos sobre a continuidade MCU, com base neste dossiê.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "sinais": [
+     {
+      "texto": "A ausência de evidências pertinentes no dossiê é o único sinal disponível para este cenário; ela não comprova ausência de escalada no mundo ficcional.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "entidades": [
+     "location:china"
+    ]
+   },
+   {
+    "id": "C2",
+    "nome": "Escalada sem conexão documentada com o MCU",
+    "logica": {
+     "texto": "Se uma escalada entre China e Taiwan for assumida como premissa, mas não surgir evidência de conexão com atores do MCU, seus impactos para a continuidade permanecem indeterminados.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "premissas": [
+     {
+      "texto": "Uma escalada é uma condição hipotética, não um acontecimento confirmado pelas evidências fornecidas.",
+      "tipo": "hipotese",
+      "evidencias": []
+     },
+     {
+      "texto": "O grafo fornecido não registra relações ou caminhos que conectem as entidades focais a atores relevantes do MCU.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "desenvolvimento": [
+     {
+      "texto": "A crise pode evoluir no cenário assumido, mas o dossiê não permite determinar agentes, meios, duração ou alcance.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "consequencias": [
+     {
+      "texto": "Não se pode inferir uma resposta de personagens, organizações ou instituições do MCU sem evidência que estabeleça tal vínculo.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "sinais": [
+     {
+      "texto": "A confirmação deste cenário exigiria evidência pertinente sobre a crise e sobre a inexistência ou existência de conexões com atores do MCU; o dossiê atual não oferece esses sinais.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "entidades": [
+     "location:china"
+    ]
+   },
+   {
+    "id": "C3",
+    "nome": "Escalada com envolvimento de atores do MCU",
+    "logica": {
+     "texto": "Se uma escalada ocorrer e evidências futuras estabelecerem envolvimento de personagens ou organizações do MCU, poderão existir impactos dentro da continuidade; essa possibilidade não é sustentada como fato pelo dossiê atual.",
+     "tipo": "hipotese",
+     "evidencias": []
+    },
+    "premissas": [
+     {
+      "texto": "A ocorrência da escalada e o envolvimento de atores do MCU são premissas condicionais, não fatos confirmados.",
+      "tipo": "hipotese",
+      "evidencias": []
+     },
+     {
+      "texto": "O dossiê registra a viagem de Shang-Chi à China, mas não vincula esse acontecimento a uma crise com Taiwan.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E7"
+      ]
+     }
+    ],
+    "desenvolvimento": [
+     {
+      "texto": "Caso novas evidências ligassem atores do MCU à crise, seria possível avaliar efeitos narrativos ou sistêmicos; a base atual não identifica quais seriam esses atores ou mecanismos.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "consequencias": [
+     {
+      "texto": "Não é possível especificar consequências para a continuidade MCU sem evidência que confirme a ligação e descreva seu desenvolvimento.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "sinais": [
+     {
+      "texto": "Um sinal relevante seria uma evidência da continuidade MCU que nomeasse atores envolvidos e estabelecesse uma ligação explícita com a crise; nenhum trecho fornecido faz isso.",
+      "tipo": "hipotese",
+      "evidencias": []
+     }
+    ],
+    "entidades": [
+     "location:china"
+    ]
+   }
+  ],
+  "limitacoes": [
+   "O dossiê não contém evidências sobre Taiwan, relações China-Taiwan, tensões, capacidades, intenções, políticas ou acontecimentos de escalada.",
+   "O dossiê não informa impactos políticos, econômicos, militares, sociais ou humanitários de uma eventual escalada.",
+   "As evidências MCU fornecidas não estabelecem conexão entre a entidade focal e uma crise entre China e Taiwan; SEM CAMINHO deve ser tratado como ausência de base para afirmar ligação.",
+   "Não há fontes sobre respostas de personagens, organizações ou instituições do MCU a essa questão.",
+   "O horizonte de cinco anos não pode ser operacionalizado com as evidências disponíveis; o horizonte informado também está marcado como não definido.",
+   "Os cenários são condicionais e não constituem previsões factuais."
+  ],
+  "questao": "Quais são os possíveis impactos de uma escalada entre China e Taiwan nos próximos cinco anos?",
+  "horizonte": null,
+  "continuidade": "MCU",
+  "modo": "modelo",
+  "modelo": "gpt-5.6-terra",
+  "gerada_em": "2026-11-02T22:36:53.980319Z",
+  "validacao": {
+   "removidas": [
+    "contexto[0]: 'O dossiê identifica a China como entidade focal, mas não traz evidências sobre r' (contexto aceita só fatos confirmados)",
+    "contexto[2]: 'O grafo não registra relações em torno da entidade focal nem caminhos entre enti' (contexto aceita só fatos confirmados)"
+   ],
+   "rebaixadas": [
+    "contexto[0]: 'O dossiê identifica a China como entidade focal, mas não traz evidências sobre r' (confirmado → hipotese, sem evidência)",
+    "contexto[2]: 'O grafo não registra relações em torno da entidade focal nem caminhos entre enti' (confirmado → hipotese, sem evidência)",
+    "atores[0][0]: 'A China é indicada como entidade focal, sem evidências específicas sobre sua rel' (confirmado → hipotese, sem evidência)",
+    "tendencias_e_sinais[0]: 'As evidências fornecidas não permitem identificar tendências nem sinais observáv' (confirmado → hipotese, sem evidência)",
+    "incertezas_criticas[0]: 'Sem evidência sobre a ocorrência ou intensidade de uma escalada, não é possível ' (inferencia → hipotese, sem evidência)",
+    "incertezas_criticas[1]: 'O dossiê não estabelece conexão entre a entidade focal, Taiwan e personagens ou ' (inferencia → hipotese, sem evidência)",
+    "cenarios[C1].logica: 'Se a análise permanecer limitada às evidências fornecidas, não há base para afir' (inferencia → hipotese, sem evidência)",
+    "cenarios[C1].premissas[0]: 'O dossiê não contém fatos sobre tensões, decisões ou incidentes entre China e Ta' (confirmado → hipotese, sem evidência)",
+    "cenarios[C1].desenvolvimento[0]: 'A análise se mantém agnóstica quanto à evolução da relação entre China e Taiwan,' (inferencia → hipotese, sem evidência)",
+    "cenarios[C1].consequencias[0]: 'Não é possível especificar impactos políticos, econômicos, militares ou sociais,' (inferencia → hipotese, sem evidência)",
+    "cenarios[C1].sinais[0]: 'A ausência de evidências pertinentes no dossiê é o único sinal disponível para e' (inferencia → hipotese, sem evidência)",
+    "cenarios[C2].premissas[1]: 'O grafo fornecido não registra relações ou caminhos que conectem as entidades fo' (confirmado → hipotese, sem evidência)",
+    "cenarios[C2].consequencias[0]: 'Não se pode inferir uma resposta de personagens, organizações ou instituições do' (inferencia → hipotese, sem evidência)",
+    "cenarios[C3].consequencias[0]: 'Não é possível especificar consequências para a continuidade MCU sem evidência q' (inferencia → hipotese, sem evidência)",
+    "cenarios[C3].sinais[0]: 'Um sinal relevante seria uma evidência da continuidade MCU que nomeasse atores e' (inferencia → hipotese, sem evidência)"
+   ],
+   "citacoes_invalidas": [],
+   "entidades_desconhecidas": []
+  }
+ },
+ "criada_em": "2026-11-02T22:36:12.430234Z",
+ "atualizada_em": "2026-11-02T22:36:53.982955Z",
+ "grafo": "/investigacoes/e94eec4fda3c/grafo",
+ "evidencias": {
+  "E1": {
+   "id": "E1",
+   "tipo": "trecho",
+   "texto": "Shang-Chi became close to Chen's family during this time, often coming over to the Chen's apartment for breakfast before work.\nIn 2018, Shang-Chi survived the Snap.\nDespite the easy job, Shang-Chi and Chen disliked their job as being a valet workers, being bored of doing the same thing all of the time, and hoped to find another job.\nOne day in 2024, Chen decided to take a resident's car for a joyride and pleaded with Shang-Chi to join her.\nReluctantly, he went with her.\nThat night, Shang-Chi and Chen met up with Soo and her husband for dinner, where they discussed how they all met.\nAfter Soo told them they should do something with their lives, Shang-Chi and Chen decided to go to karaoke, as opposed to going to sleep.\nThe next day, Shang-Chi went to the Chen Residence to meet up with Chen before work and have breakfast.",
+   "fonte": {
+    "doc_id": "wiki:character:shang-chi:bio:5",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Shang-Chi",
+    "titulo": "Shang-Chi — Early Life › Moving On",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:shang-chi:bio:5#1",
+   "aresta_id": null,
+   "entidades": [
+    "character:shang-chi"
+   ],
+   "nota": 0.01639
+  },
+  "E2": {
+   "id": "E2",
+   "tipo": "trecho",
+   "texto": "Título oficial: Captain Marvel\nResumo em português (paráfrase do conteúdo Marvel): Ambientado nos anos 1990, o filme acompanha Carol Danvers em sua jornada para se tornar uma das heroínas mais poderosas do universo.\nEnquanto uma guerra galáctica entre duas raças alienígenas chega à Terra, Danvers e um pequeno grupo de aliados ficam no centro do conflito.\nTrechos da fonte oficial:\nfollows the journey of Carol Danvers\nDirected By Anna Boden, Ryan Fleck\nWritten By Anna Boden, Ryan Fleck, Geneva Robertson-Dworet\nNick Fury Nick Fury\nTalos Talos",
+   "fonte": {
+    "doc_id": "manus:marvel-captain-marvel",
+    "url": "https://www.marvel.com/movies/captain-marvel",
+    "titulo": "Captain Marvel",
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": "manus:marvel-captain-marvel#0",
+   "aresta_id": null,
+   "entidades": [],
+   "nota": 0.01639
+  },
+  "E3": {
+   "id": "E3",
+   "tipo": "trecho",
+   "texto": "Xu went on to accuse Shang-Chi of bouncing from one family to the next, and meeting Chen in the United States, who he called Shang-Chi's girlfriend, while they worked at the Fairmont San Francisco parking cars for rich guests.\nXu had then told Shang-Chi that he had given him ten years to live his life, while questioning where these years had gotten him, before telling him that it was time for Shang-Chi to take his place by his side, as the leader of the Ten Rings.\nHowever, Shang-Chi still insisted that this was not going to happen.\nIn response, Xu simply told Shang-Chi that he reminded him of Ying, before noting that he must be hungry, and inviting him to join them for dinner.",
+   "fonte": {
+    "doc_id": "wiki:character:wenwu:bio:19",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Xu_Wenwu",
+    "titulo": "Wenwu — Family Reunion › Returning to Headquarters",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:wenwu:bio:19#2",
+   "aresta_id": null,
+   "entidades": [
+    "character:wenwu"
+   ],
+   "nota": 0.01613
+  },
+  "E4": {
+   "id": "E4",
+   "tipo": "trecho",
+   "texto": "Título oficial: Eternals\nResumo em português (paráfrase do conteúdo Marvel): Marvel Studios’ Eternals apresenta uma nova equipe de super-heróis no Universo Cinematográfico Marvel: alienígenas antigos que vivem secretamente na Terra há milhares de anos.\nApós os eventos de Avengers: Endgame, uma tragédia inesperada os leva a se reunir contra os Deviants.\nDirigido por Chloé Zhao, o filme foi lançado em 5 de novembro de 2021.\nO elenco listado inclui Angelina Jolie, Gemma Chan, Richard Madden, Kumail Nanjiani, Lauren Ridloff, Brian Tyree Henry, Salma Hayek, Lia McHugh, Don Lee e Kit Harrington.\nTrechos da fonte oficial:\nMarvel Studios' Eternals features an exciting new team\nin the Marvel Cinematic Universe\nFollowing the events of Avengers: Endgame\nliving on Earth in secret for thousands of years\nreunite against mankind's most ancient enemy, the Deviants\nDirector\nChloé Zhao",
+   "fonte": {
+    "doc_id": "manus:marvel-eternals",
+    "url": "https://www.marvel.com/movies/eternals",
+    "titulo": "Eternals",
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": "manus:marvel-eternals#0",
+   "aresta_id": null,
+   "entidades": [],
+   "nota": 0.01613
+  },
+  "E5": {
+   "id": "E5",
+   "tipo": "trecho",
+   "texto": "Shang-Chi and Katy Chen returned to San Francisco and met their friends, Soo and John, at their favourite restaurant.\nWhile they were eating, they told their friends about their recent experiences, but Soo and John didn't believe them.\nHowever, an Inter-Dimensional Portal appeared behind them and Wong stepped out into the restaurant.\nHe called for Shang-Chi, and when Shang-Chi stood up, he told him and Chen to come with him, much to their friends and the rest of the public's amazement.\nShang-Chi and Chen followed Wong and were transported to Kamar-Taj in Nepal.\nThere they met Carol Danvers and Bruce Banner via holographic call and Wong discussed the rings, telling Shang-Chi that after he used it, it sent out a beacon to a location unknown.\nDanvers reported that the rings weren't alien technology and Banner said they weren't vibranium and that they were far older than the thousand years for which Wenwu had been using them.",
+   "fonte": {
+    "doc_id": "wiki:character:shang-chi:bio:16",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Shang-Chi",
+    "titulo": "Shang-Chi — Recruited by Wong",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:shang-chi:bio:16#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:shang-chi"
+   ],
+   "nota": 0.01587
+  },
+  "E6": {
+   "id": "E6",
+   "tipo": "trecho",
+   "texto": "Título oficial: Moon Knight\nResumo em português (paráfrase do conteúdo Marvel): Moon Knight acompanha Steven Grant, funcionário de uma loja de presentes que sofre apagões e recordações de outra vida.\nEle descobre ter transtorno dissociativo de identidade e compartilhar o corpo com o mercenário Marc Spector.\nCom inimigos convergindo, Steven e Marc precisam lidar com suas identidades complexas enquanto enfrentam um mistério mortal entre os poderosos deuses do Egito.\nTrechos da fonte oficial:\nMoon Knight follows Steven Grant\nshares a body with mercenary Marc Spector\nNETWORK\nDisney+\nDirector\nMohamed Diab",
+   "fonte": {
+    "doc_id": "manus:marvel-moon-knight",
+    "url": "https://www.marvel.com/tv-shows/moon-knight/1",
+    "titulo": "Moon Knight",
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": "manus:marvel-moon-knight#0",
+   "aresta_id": null,
+   "entidades": [],
+   "nota": 0.01587
+  },
+  "E7": {
+   "id": "E7",
+   "tipo": "trecho",
+   "texto": "Shang-Chi returned to his apartment and began to pack a bag with his belongings, when Katy Chen arrived.\nChen demanded he explain to her what had occurred on the bus, but Shang-Chi told her he had no time and that he had to travel to China.\nHowever, Chen told him to wait for her at the airport, as she felt she needed to go with him.\nShang-Chi then left his apartment and headed for the San Francisco airport.\nThere he met Chen and while on the flight, explained to her his past and how he was trained to kill by his father.\nHe also revealed that his name wasn't Shaun, but Shang-Chi, which Chen teased him about, due to the two names sounded very similar.\nAfter landing in Macau, they headed for the postcard's origin.",
+   "fonte": {
+    "doc_id": "wiki:character:shang-chi:bio:7",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Shang-Chi",
+    "titulo": "Shang-Chi — Facing The Past › Trip to Macau",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:shang-chi:bio:7#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:shang-chi"
+   ],
+   "nota": 0.01562
+  },
+  "E8": {
+   "id": "E8",
+   "tipo": "trecho",
+   "texto": "Título oficial: Marvel Studios' She-Hulk: Attorney-at-Law\nResumo em português (paráfrase do conteúdo Marvel): A página apresenta She-Hulk: Attorney-at-Law como série de Marvel Studios.\nJennifer Walters, interpretada por Tatiana Maslany, é uma advogada especializada em casos jurídicos relacionados a super-humanos e precisa lidar com a vida de uma solteira na casa dos 30 anos que também é uma Hulk superpoderosa verde de 1,80 m.\nA página informa direção de Kat Coiro e Anu Valia, roteiro principal de Jessica Gao, estreia em 18 de agosto de 2022 e exibição exclusiva no Disney+.\nTrechos da fonte oficial:\nMarvel Studios' She-Hulk: Attorney-at-Law\nIn She-Hulk: Attorney at Law, Jennifer Walters (Tatiana Maslany)—an attorney specializing in superhuman-oriented legal cases\nJennifer Walters (Tatiana Maslany)\nDirectors\nKat Coiro and Anu Valia\nKat Coiro and Anu Valia\nHead Writer\nJessica Gao\nStreaming exclusively on Disney+.",
+   "fonte": {
+    "doc_id": "manus:marvel-marvel-studios-she-hulk-attorney-at-law",
+    "url": "https://www.marvel.com/tv-shows/she-hulk-attorney-at-law/1",
+    "titulo": "Marvel Studios' She-Hulk: Attorney-at-Law",
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": "manus:marvel-marvel-studios-she-hulk-attorney-at-law#0",
+   "aresta_id": null,
+   "entidades": [],
+   "nota": 0.01562
+  }
+ },
+ "guardada": false
+}

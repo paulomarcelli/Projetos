@@ -119,9 +119,32 @@ O contexto aplica no `<html>`:
 
 ## Ausências no backend
 
-Itens marcados **(feito)** foram resolvidos pelo Agente 3 nesta entrega:
-- lista de investigações, exclusão e guardados (ver a seção do Agente 3 abaixo);
-- **autenticação e perfil**: não existem. O perfil fica neste navegador e a tela avisa disso. Para várias
-  pessoas, o backend precisa de contas, sessões e investigações por usuário;
+Itens marcados **(feito)** foram resolvidos pelo Agente 3 nesta entrega.
+
+- **(feito) histórico, exclusão e guardados**. Endpoints novos em `src/freya/api/app.py`:
+
+  | Método e caminho | Respostas |
+  |---|---|
+  | `GET /investigacoes?guardadas=true\|false&limite=1..1000` | 200: lista de `ResumoDeInvestigacao`, mais recentes primeiro (`criada_em` desc); sem `guardadas`, traz todas; `limite` padrão 100 |
+  | `DELETE /investigacoes/{id}` | 204; 404; **409 enquanto está em execução** (`pendente`, `recuperando`, `analisando`, `validando`), porque a tarefa em segundo plano gravaria a investigação de novo |
+  | `PUT /investigacoes/{id}/guardada` | 204 (idempotente); 404 |
+  | `DELETE /investigacoes/{id}/guardada` | 204 (idempotente); 404 |
+  | `GET /investigacoes/{id}` | agora também traz `guardada` |
+
+  O CORS aceita PUT e DELETE. Uma investigação presa num estado intermediário por mais de 15 minutos sem
+  atualização (o processo que a executava parou) é tida como abandonada e pode ser excluída.
+- **(feito) armazenamento do histórico**. O `Repositorio` (SQLite) ganhou colunas de resumo (`questao`, `horizonte`,
+  `estado`, `erro`, `cenarios`, `criada_em`) e `guardada`, com índices por data. A lista não abre o JSON de cada
+  investigação. Bancos antigos são migrados ao abrir: `ALTER TABLE ADD COLUMN` e preenchimento a partir do JSON,
+  uma vez só. `guardada` só existe na tabela, e regravar a investigação (por exemplo, ao explorar o grafo) não a desfaz.
+- **autenticação e perfil**: não existem. Qualquer um que alcance a API lista, guarda e exclui todas as
+  investigações. O perfil fica neste navegador e a tela avisa disso. Para várias pessoas, o backend precisa de
+  contas, sessões e investigações por usuário.
+- **cancelar uma investigação em andamento**: não existe. Ela só pode ser excluída depois de terminar.
+- **paginação por cursor e busca no histórico**: não existem. Há só `limite` (até 1000); filtrar por texto é
+  feito na interface.
+- **eventos ao vivo (SSE ou WebSocket)**: não existem. O acompanhamento consulta `GET /investigacoes/{id}` a cada 1,5 s.
 - **preferências no servidor**: não existem; ficam no navegador.
 - **conversa em várias mensagens**: não existe por decisão de produto. Cada pergunta é uma investigação nova.
+- **`/saude` com `base: null`**: a contagem da base vem de `base_indexada.json`, ao lado do banco
+  (`FREYA_DB_PATH`). Rodando fora do contêiner sem esse arquivo, `base` vem nula mesmo com a base indexada.

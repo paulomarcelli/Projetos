@@ -1,0 +1,4134 @@
+{
+ "id": "32aa2add9f5b",
+ "questao": "Como a relação entre Thor e Loki pode evoluir?",
+ "horizonte": "após Avengers: Endgame",
+ "estado": "concluida",
+ "etapas": [
+  {
+   "nome": "recuperacao",
+   "inicio": "2026-11-02T22:36:12.421123Z",
+   "fim": "2026-11-02T22:36:25.921300Z",
+   "resumo": {
+    "trechos": 8,
+    "entidades_focais": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ],
+    "nos": 99,
+    "arestas": 169,
+    "caminhos": 3,
+    "sem_caminho": 0
+   }
+  },
+  {
+   "nome": "analise",
+   "inicio": "2026-11-02T22:36:25.921336Z",
+   "fim": "2026-11-02T22:37:15.238170Z",
+   "resumo": {
+    "modo": "modelo",
+    "modelo": "gpt-5.6-terra",
+    "evidencias": 177,
+    "cenarios": 3
+   }
+  },
+  {
+   "nome": "validacao_e_grafo",
+   "inicio": "2026-11-02T22:37:15.238202Z",
+   "fim": "2026-11-02T22:37:15.243460Z",
+   "resumo": {
+    "rebaixadas": 0,
+    "removidas": 0,
+    "citacoes_invalidas": 0,
+    "entidades_desconhecidas": 0
+   }
+  }
+ ],
+ "erro": null,
+ "analise": {
+  "contexto": [
+   {
+    "texto": "Thor e Loki cresceram juntos como irmãos próximos e também foram rivais pela sucessão ao trono de Asgard.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E4"
+    ]
+   },
+   {
+    "texto": "A relação teve fases de manipulação e conflito: Loki influenciou Thor a atacar Jotunheim, e mais tarde confrontaram-se durante a invasão de Nova York.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E2",
+     "E8"
+    ]
+   },
+   {
+    "texto": "Em 2013, Thor libertou Loki para enfrentarem os Elfos Negros, após Loki aceitar ajudar em busca de vingança pela morte de Frigga.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E1",
+     "E159"
+    ]
+   },
+   {
+    "texto": "Em 2017, os irmãos puseram as diferenças de lado diante de Hela; Thor também tentou escapar de Sakaar com Loki, embora a relação continuasse marcada por traição e provocações.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E5",
+     "E7",
+     "E154"
+    ]
+   },
+   {
+    "texto": "A Marvel identifica Loki como parente e aliado de Thor, enquanto registros da Marvel também listam Thor entre os inimigos de Loki. Esses rótulos coexistem com evidências de cooperação e conflito em períodos diferentes.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E9",
+     "E22",
+     "E55",
+     "E65"
+    ]
+   },
+   {
+    "texto": "Loki morreu em 2018, e Thor lamentou sua morte; o dossiê não confirma uma reunião posterior entre eles nem esclarece se uma eventual aparição de Loki após esse ponto teria relação com Thor.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E156"
+    ]
+   },
+   {
+    "texto": "Após Avengers: Endgame, Thor continuou sua trajetória: em 2022 treinou Love e confiou a ela Stormbreaker. As evidências fornecidas não descrevem uma evolução da relação entre os irmãos nesse período.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E108",
+     "E134"
+    ]
+   }
+  ],
+  "atores": [
+   {
+    "entidade": "character:thor-thor-odinson",
+    "papel": "Irmão adotivo de Loki; possível agente de reconciliação, afastamento ou luto continuado.",
+    "fundamentos": [
+     {
+      "texto": "Thor e Loki foram criados como irmãos próximos, embora também rivais.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E4",
+       "E157"
+      ]
+     },
+     {
+      "texto": "Thor lamentou a morte de Loki em 2018.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E156"
+      ]
+     }
+    ]
+   },
+   {
+    "entidade": "character:loki",
+    "papel": "Irmão adotivo de Thor; sua morte confirmada e a falta de evidência de contato posterior são centrais para a projeção.",
+    "fundamentos": [
+     {
+      "texto": "Loki foi criado por Odin como filho e príncipe de Asgard junto com Thor.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E157"
+      ]
+     },
+     {
+      "texto": "Loki morreu em 2018, segundo a trajetória registrada no dossiê.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E156"
+      ]
+     }
+    ]
+   }
+  ],
+  "relacoes_sistemicas": [
+   {
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ],
+    "natureza": "parentesco, aliança e rivalidade",
+    "descricao": {
+     "texto": "O vínculo combina parentesco e cooperação com rivalidade, manipulação e antagonismo; o rótulo oficial de aliado e os registros de inimigo não estabelecem por si sós o estado atual da relação após a morte de Loki.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E4",
+      "E8",
+      "E9",
+      "E55",
+      "E65",
+      "E156"
+     ]
+    }
+   },
+   {
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ],
+    "natureza": "luto",
+    "descricao": {
+     "texto": "A morte de Loki é apresentada como causa de luto para Thor, mas a base não permite concluir como esse luto evolui depois de Avengers: Endgame.",
+     "tipo": "confirmado",
+     "evidencias": [
+      "E156"
+     ]
+    }
+   }
+  ],
+  "variaveis": [
+   {
+    "nome": "Disponibilidade de contato entre os irmãos",
+    "descricao": {
+     "texto": "O dossiê confirma a morte de Loki em 2018, mas não fornece evidência de reencontro ou contato posterior com Thor; qualquer evolução por interação direta depende de informação ausente.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E156"
+     ]
+    },
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ]
+   },
+   {
+    "nome": "Resposta de Thor ao luto",
+    "descricao": {
+     "texto": "Thor chorou a morte de Loki; a base não estabelece se, no horizonte posterior a Avengers: Endgame, ele preserva, transforma ou supera esse luto.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E156",
+      "E130"
+     ]
+    },
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ]
+   },
+   {
+    "nome": "Predominância de confiança ou desconfiança",
+    "descricao": {
+     "texto": "A história registrada contém ajuda mútua e aliança, mas também manipulação, traição e antagonismo. O dossiê não confirma qual dimensão prevaleceria num contato futuro.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E1",
+      "E5",
+      "E8",
+      "E9",
+      "E55",
+      "E79"
+     ]
+    },
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ]
+   }
+  ],
+  "tendencias_e_sinais": [
+   {
+    "texto": "A relação demonstrou capacidade de cooperação diante de ameaças e perdas compartilhadas, inclusive quando Thor libertou Loki para enfrentar os Elfos Negros e quando ambos tiveram de encarar Hela.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E1",
+     "E154",
+     "E159"
+    ]
+   },
+   {
+    "texto": "A cooperação não eliminou a instabilidade: o histórico inclui manipulação de Thor, traição durante a fuga de Sakaar e registros oficiais que também classificam os irmãos como inimigos.",
+    "tipo": "confirmado",
+    "evidencias": [
+     "E5",
+     "E8",
+     "E55",
+     "E65"
+    ]
+   },
+   {
+    "texto": "Uma nova cena de contato entre Thor e Loki, caso ocorresse, seria um sinal observável de que a relação poderia evoluir por interação direta; o dossiê não confirma que isso acontecerá.",
+    "tipo": "hipotese",
+    "evidencias": [
+     "E156",
+     "E172"
+    ]
+   }
+  ],
+  "incertezas_criticas": [
+   {
+    "nome": "Possibilidade de contato ou reencontro após a morte de Loki",
+    "por_que_importa": {
+     "texto": "A morte de Loki está registrada, mas não há evidência de um reencontro posterior com Thor; sem contato, a evolução do vínculo só pode ser descrita pelo lado do luto de Thor.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E156",
+      "E130"
+     ]
+    },
+    "polos": [
+     "Sem contato demonstrado; o vínculo permanece como memória e luto",
+     "Contato futuro demonstrado; há oportunidade de redefinir o vínculo"
+    ]
+   },
+   {
+    "nome": "Natureza de um eventual vínculo futuro",
+    "por_que_importa": {
+     "texto": "As evidências sustentam tanto cooperação quanto conflito, então qualquer interação futura poderia aprofundar a confiança ou reativar a desconfiança.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E1",
+      "E5",
+      "E8",
+      "E9",
+      "E55",
+      "E65"
+     ]
+    },
+    "polos": [
+     "Aproximação baseada em confiança e parceria",
+     "Distanciamento ou antagonismo renovado"
+    ]
+   }
+  ],
+  "desdobramentos": [
+   {
+    "descricao": {
+     "texto": "Se não houver contato posterior confirmado, a relação de Thor com Loki pode permanecer definida pelo luto e pela memória de uma história fraterna ambivalente.",
+     "tipo": "hipotese",
+     "evidencias": [
+      "E4",
+      "E156"
+     ]
+    },
+    "consequencias_diretas": [
+     {
+      "texto": "A relação não teria uma nova interação direta demonstrada no horizonte considerado.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E156"
+      ]
+     }
+    ],
+    "consequencias_indiretas": [
+     {
+      "texto": "O legado emocional do vínculo poderia continuar relevante para Thor, mas o dossiê não confirma efeitos específicos sobre suas decisões posteriores.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E108",
+       "E156"
+      ]
+     }
+    ]
+   },
+   {
+    "descricao": {
+     "texto": "Se um contato futuro entre os irmãos fosse confirmado, a cooperação anterior ofereceria precedente para uma aproximação, sem garantir que a confiança fosse restaurada.",
+     "tipo": "hipotese",
+     "evidencias": [
+      "E1",
+      "E9",
+      "E159"
+     ]
+    },
+    "consequencias_diretas": [
+     {
+      "texto": "Uma interação poderia permitir que Thor e Loki expressassem ou revisassem a relação entre eles.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E1",
+       "E4",
+       "E156"
+      ]
+     }
+    ],
+    "consequencias_indiretas": [
+     {
+      "texto": "Se a interação demonstrasse confiança sustentada, a relação poderia deslocar-se de um vínculo marcado por traições para uma parceria; isso permanece condicional.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E5",
+       "E9",
+       "E55"
+      ]
+     }
+    ]
+   }
+  ],
+  "cenarios": [
+   {
+    "id": "C1",
+    "nome": "Luto sem reencontro demonstrado",
+    "logica": {
+     "texto": "A morte de Loki é confirmada e a base não registra contato posterior com Thor; portanto, o cenário mantém a relação no campo da memória, sem afirmar que um reencontro seja impossível.",
+     "tipo": "inferencia",
+     "evidencias": [
+      "E156",
+      "E172"
+     ]
+    },
+    "premissas": [
+     {
+      "texto": "Loki morreu em 2018, e Thor lamentou sua morte.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E156"
+      ]
+     },
+     {
+      "texto": "O dossiê não documenta uma evolução direta da relação entre eles após Avengers: Endgame.",
+      "tipo": "inferencia",
+      "evidencias": [
+       "E130",
+       "E134",
+       "E156"
+      ]
+     }
+    ],
+    "desenvolvimento": [
+     {
+      "texto": "Na ausência de evidência de contato posterior, a relação permanece descrita pelo luto de Thor e pelo histórico ambivalente dos irmãos.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E4",
+       "E5",
+       "E156"
+      ]
+     }
+    ],
+    "consequencias": [
+     {
+      "texto": "Não se pode concluir que Thor tenha superado o luto ou que o vínculo tenha mudado depois de Avengers: Endgame.",
+      "tipo": "inferencia",
+      "evidencias": [
+       "E130",
+       "E156"
+      ]
+     }
+    ],
+    "sinais": [
+     {
+      "texto": "Este cenário ganha sustentação se novas evidências mostrarem Thor lembrando ou lamentando Loki, sem registrar contato direto entre eles.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E156"
+      ]
+     }
+    ],
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ]
+   },
+   {
+    "id": "C2",
+    "nome": "Reaproximação condicional",
+    "logica": {
+     "texto": "Se for confirmado um contato futuro entre Thor e Loki, os precedentes de colaboração e parentesco podem sustentar uma reaproximação, embora não assegurem reconciliação plena.",
+     "tipo": "hipotese",
+     "evidencias": [
+      "E1",
+      "E4",
+      "E9",
+      "E156"
+     ]
+    },
+    "premissas": [
+     {
+      "texto": "Thor e Loki já cooperaram quando enfrentaram os Elfos Negros e quando tiveram de lidar com Hela.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E1",
+       "E154",
+       "E159"
+      ]
+     },
+     {
+      "texto": "Loki morreu em 2018; a base não estabelece como poderia ocorrer um contato posterior.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E156"
+      ]
+     }
+    ],
+    "desenvolvimento": [
+     {
+      "texto": "Caso um contato fosse mostrado, os irmãos poderiam retomar a cooperação e renegociar um vínculo que combinou proximidade familiar e conflito.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E4",
+       "E5",
+       "E9",
+       "E156"
+      ]
+     }
+    ],
+    "consequencias": [
+     {
+      "texto": "Uma reaproximação dependeria de evidência de contato e não apagaria automaticamente o histórico de manipulação ou antagonismo.",
+      "tipo": "inferencia",
+      "evidencias": [
+       "E5",
+       "E8",
+       "E55",
+       "E65"
+      ]
+     }
+    ],
+    "sinais": [
+     {
+      "texto": "Uma cena que mostre Thor e Loki reconhecendo o parentesco e cooperando seria um sinal favorável a este cenário.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E4",
+       "E9",
+       "E159"
+      ]
+     }
+    ],
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ]
+   },
+   {
+    "id": "C3",
+    "nome": "Rivalidade reativada após eventual contato",
+    "logica": {
+     "texto": "Se um contato futuro ocorrer, o histórico de manipulação e antagonismo permite levantar a possibilidade de desconfiança renovada; não há evidência que confirme que isso acontecerá.",
+     "tipo": "hipotese",
+     "evidencias": [
+      "E5",
+      "E8",
+      "E55",
+      "E65",
+      "E156"
+     ]
+    },
+    "premissas": [
+     {
+      "texto": "Loki já manipulou Thor e os irmãos tiveram episódios de traição e confronto.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E5",
+       "E8",
+       "E79",
+       "E84"
+      ]
+     },
+     {
+      "texto": "Os registros da Marvel incluem Thor entre os inimigos de Loki e Loki entre os inimigos de Thor, embora existam também registros de aliança.",
+      "tipo": "confirmado",
+      "evidencias": [
+       "E9",
+       "E55",
+       "E65"
+      ]
+     }
+    ],
+    "desenvolvimento": [
+     {
+      "texto": "Se um contato futuro trouxesse de volta a desconfiança, os irmãos poderiam manter distância ou entrar em conflito em vez de restabelecer uma aliança.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E5",
+       "E8",
+       "E55",
+       "E65"
+      ]
+     }
+    ],
+    "consequencias": [
+     {
+      "texto": "Este caminho preservaria o caráter instável da relação, mas depende de um contato futuro não confirmado pelo dossiê.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E5",
+       "E156"
+      ]
+     }
+    ],
+    "sinais": [
+     {
+      "texto": "Acusações, enganos ou confrontos entre os irmãos em material futuro seriam sinais favoráveis a este cenário.",
+      "tipo": "hipotese",
+      "evidencias": [
+       "E5",
+       "E8",
+       "E79"
+      ]
+     }
+    ],
+    "entidades": [
+     "character:thor-thor-odinson",
+     "character:loki"
+    ]
+   }
+  ],
+  "limitacoes": [
+   "O dossiê não confirma nenhum reencontro ou contato entre Thor e Loki após a morte de Loki em 2018.",
+   "Não há evidência suficiente para determinar como Thor processa o luto por Loki depois de Avengers: Endgame.",
+   "As aparições de Thor em obras posteriores não demonstram, por si sós, uma evolução de sua relação com Loki.",
+   "As relações catalogadas como aliado e inimigo têm escopo e temporalidade diferentes; não estabelecem sozinhas o estado atual do vínculo.",
+   "Não há base para afirmar o mecanismo de um eventual retorno, encontro ou comunicação de Loki; os cenários que dependem disso são condicionais.",
+   "A análise restringe-se às evidências fornecidas sobre a continuidade cinematográfica MCU e não usa material de quadrinhos.",
+   "Nomes ambíguos na questão: 'Thor' foi lido como character:thor-thor-odinson; 'Loki' foi lido como character:loki"
+  ],
+  "questao": "Como a relação entre Thor e Loki pode evoluir?",
+  "horizonte": "após Avengers: Endgame",
+  "continuidade": "MCU",
+  "modo": "modelo",
+  "modelo": "gpt-5.6-terra",
+  "gerada_em": "2026-11-02T22:37:15.238065Z",
+  "validacao": {
+   "removidas": [],
+   "rebaixadas": [],
+   "citacoes_invalidas": [],
+   "entidades_desconhecidas": []
+  }
+ },
+ "criada_em": "2026-11-02T22:36:12.417118Z",
+ "atualizada_em": "2026-11-02T22:37:15.243471Z",
+ "grafo": "/investigacoes/32aa2add9f5b/grafo",
+ "evidencias": {
+  "E1": {
+   "id": "E1",
+   "tipo": "trecho",
+   "texto": "Thor traveled into the Asgardian Dungeons and spoke to Loki.\nThor knew that Loki was maintaining an illusion and forced him to reveal the truth, that Loki had trashed his cell with grief upon learning of Frigga 's death at the hands of Kurse, who he had aided.\nThor promised Loki that if he had helped him then he would free him from his cell and grant him revenge for their mother's death.\nLoki agreed.\nThor and Loki made their escape through the halls of Asgard.\nTo remain unnoticed Loki then disguised himself as a Einherjar guard.\nHowever, when it became clear he was now annoying Thor with his constant talking, Loki decided to have more fun and changed Thor's appearance into Sif and his own into Captain America, mocking Thor as he went about his friendship with the Avengers as he joked about Captain America's own grand patriotism.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:38",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": "Thor — Second Dark Elf Conflict › Freeing Loki",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:thor-thor-odinson:bio:38#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:thor-thor-odinson"
+   ],
+   "nota": 0.02848
+  },
+  "E2": {
+   "id": "E2",
+   "tipo": "trecho",
+   "texto": "Having recovered, Thor used Mjølnir 's powers to replenish his own strength before he went to New York City to confront Loki.\nUpon arriving at Stark Tower once Loki had used the Tesseract to open a portal allowing the Chitauri and Leviathans to invade the Earth, Thor confronted his brother while Iron Man clashed with the invading Chitauri.\nGiving Loki a final warning, Thor ordered him to turn off the Tesseract or he would destroy it, only for Loki to tell him it could not be destroyed.\nSeeing that Loki could not be stopped, Thor prepared himself as Loki leapt off Stark Tower and attacked him with the Scepter, with Thor using Mjølnir to defend himself as all of their blows caused massive damage to the Tower while Loki destroyed the Avengers ' Quinjet and causing it to crash.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:28",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": "Thor — Chitauri Invasion › Confronting Loki",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:thor-thor-odinson:bio:28#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:thor-thor-odinson"
+   ],
+   "nota": 0.02832
+  },
+  "E3": {
+   "id": "E3",
+   "tipo": "trecho",
+   "texto": "As Thor and Loki grew up together, Loki developed a taste for mischief and magic, as he had been taught by Frigga.\nThor was once tricked by his brother when Loki transformed himself into a snake, knowing that Thor loved snakes.\nUpon picking up the snake, Thor was surprised as Loki turned back to himself and stabbed his brother, although Thor survived.\nIn another instance, Loki turned Thor into a frog for a brief time.\nWith Thor gone, Loki sat on the throne of Asgard and pretended to take over the crown, but frog Thor soon confronted his brother and pummeled him with Mjølnir.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:4",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": "Thor — Early Life › Loki's Mischief",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:thor-thor-odinson:bio:4#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:thor-thor-odinson"
+   ],
+   "nota": 0.02816
+  },
+  "E4": {
+   "id": "E4",
+   "tipo": "trecho",
+   "texto": "Thor grew up in Asgard, wishing to become a warrior like Odin and inherit the throne and the title of the King from him.\nHis friend and playmate was his brother Loki, and though the brothers were both rivals for their father's throne, they still remained close companions.\nLoki was taught magic by their mother, while Thor was taught how to be a warrior by their father.\nDuring his youth, Thor fostered a strong desire to join the Valkyrie until he learned they were an elite group of female-only soldiers.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:2",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": "Thor — Early Life › Youth with Loki",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:thor-thor-odinson:bio:2#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:thor-thor-odinson"
+   ],
+   "nota": 0.02788
+  },
+  "E5": {
+   "id": "E5",
+   "tipo": "trecho",
+   "texto": "Knowing that they would soon encounter more of Grandmaster's guards, Thor suggested that they utilize their \"Get Help\" strategy, much to Loki's horror.\nAlthough he tried to object, Thor still managed to convince Loki as they ran out with Thor pretending Loki needed some medical assistance before throwing his brother at the Sakaaran Guards, knocking him out.\nThor delighted in the successful strategy while Loki continued moaning about how humiliating it was.\nWhile they went to steal the Commodore from Grandmaster, Loki, inevitably, betrayed them as they are escaping, attempting to alert Grandmaster.\nHowever, Thor placed the Obedience Disk on his back, leaving him being shocked on the floor.\nThor told his brother that he knew Loki will always be the God of Mischief, but had hoped that he would have shown some capacity for growth before leaving, with Loki still being shocked and the remote just out of reach.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:76",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": "Thor — Saving Asgard › Farewell to Loki",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:thor-thor-odinson:bio:76#2",
+   "aresta_id": null,
+   "entidades": [
+    "character:thor-thor-odinson"
+   ],
+   "nota": 0.02727
+  },
+  "E6": {
+   "id": "E6",
+   "tipo": "trecho",
+   "texto": "Disgusted at the incident, Thor unleashed his rage by throwing over a dinner table and sitting in brooding silence.\nLoki had soon found his brother and sat calmly next to him, comforting him over his disappointment in Odin not crowning him as the king due to the actions of the Frost Giants.\nLoki calmly spoke with Thor and was able to manipulate him by claiming that he also agreed with his view that they should gain revenge for the Asgardian lives lost during the attack.\nHaving Loki agree with his belief that Jotunheim should pay for what they had done to Asgard and their Einherjar warriors increased Thor's confidence.\nAs Loki watched on, Thor then decided, just as Loki had planned, to disobey their father's orders and attack Jotunheim on their own so they could confront King Laufey, although Loki claimed that such a plan was madness knowing that Thor would just ignore his words.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:7",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": "Loki — Trickster's Schemes › Manipulating Thor",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:loki:bio:7#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:loki"
+   ],
+   "nota": 0.0272
+  },
+  "E7": {
+   "id": "E7",
+   "tipo": "trecho",
+   "texto": "However, when it became clear he was now annoying Thor with his constant talking, Loki decided to have more fun and changed Thor's appearance into Sif and his own into Captain America, mocking Thor as he went about his friendship with the Avengers as he joked about Captain America's own grand patriotism.\nLosing his patience, Thor pinned Loki against a wall when he spotted some guards, while Loki requested his dagger but Thor instead gave him a brand new pair of handcuffs, teasingly reminding Loki about how he normally enjoyed tricks like that.\nWhen they became corned by more Einherjar guards, Thor dropped Mjølnir and informed Loki that he did not intend to kill his Asgardian allies.\nThor then proceeded to subdue the guards with just his own bare hands.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:38",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": "Thor — Second Dark Elf Conflict › Freeing Loki",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:thor-thor-odinson:bio:38#1",
+   "aresta_id": null,
+   "entidades": [
+    "character:thor-thor-odinson"
+   ],
+   "nota": 0.02715
+  },
+  "E8": {
+   "id": "E8",
+   "tipo": "trecho",
+   "texto": "As Loki watched on, Thor then decided, just as Loki had planned, to disobey their father's orders and attack Jotunheim on their own so they could confront King Laufey, although Loki claimed that such a plan was madness knowing that Thor would just ignore his words.\nWhen the Warriors Three arrived with Lady Sif, Loki sat back and allowed Thor to convince them to follow him into the battle to gain answers as to why the Frost Giants had attacked, with Loki briefly claiming to be against such aggressive action.\nLoki followed the enraged Thor, along with Lady Sif and the Warriors Three, to the Bifrost Bridge in order to travel to Jotunheim to seek answers.\nHowever, just before they left, Loki informed a guard of their intention and ordered him to inform Odin to ensure their rescue and Thor's punishment.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:7",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": "Loki — Trickster's Schemes › Manipulating Thor",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:loki:bio:7#1",
+   "aresta_id": null,
+   "entidades": [
+    "character:loki"
+   ],
+   "nota": 0.02711
+  },
+  "E9": {
+   "id": "E9",
+   "tipo": "relacao",
+   "texto": "Connections › Allies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|ALLY_OF|character:thor-thor-odinson|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E10": {
+   "id": "E10",
+   "tipo": "relacao",
+   "texto": "Thor, Foster, and Loki hijack a downed Dark Elf ship and make their way out of Asgard",
+   "fonte": {
+    "doc_id": "wiki:film:thor-the-dark-world:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_The_Dark_World",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-the-dark-world:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E11": {
+   "id": "E11",
+   "tipo": "relacao",
+   "texto": "Thor finally agrees to work with the humans and joins them in bringing Loki to the Helicarrier",
+   "fonte": {
+    "doc_id": "wiki:film:the-avengers:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/The_Avengers",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:the-avengers:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E12": {
+   "id": "E12",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Hela Odinsdottir † - Half-Sister and Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:hela-odinsdottir|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:hela-odinsdottir"
+   ],
+   "nota": null
+  },
+  "E13": {
+   "id": "E13",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Bestia † - Grandmother",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:bestia|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:bestia"
+   ],
+   "nota": null
+  },
+  "E14": {
+   "id": "E14",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Odin Borson † - Father and Predecessor",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:odin|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:odin"
+   ],
+   "nota": null
+  },
+  "E15": {
+   "id": "E15",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Frigga † - Mother",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:frigga|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:frigga"
+   ],
+   "nota": null
+  },
+  "E16": {
+   "id": "E16",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Vili Borson † - Uncle",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:vili-borson|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:vili-borson"
+   ],
+   "nota": null
+  },
+  "E17": {
+   "id": "E17",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Loki Laufeyson † - Adoptive Brother, Former Attempted Killer and Former Teammate",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:loki-laufeyson|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki-laufeyson"
+   ],
+   "nota": null
+  },
+  "E18": {
+   "id": "E18",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Bor Burison † - Grandfather",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:bor-burison|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:bor-burison"
+   ],
+   "nota": null
+  },
+  "E19": {
+   "id": "E19",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Ve Borson † - Uncle",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:ve-borson|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:ve-borson"
+   ],
+   "nota": null
+  },
+  "E20": {
+   "id": "E20",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Love - Adoptive Daughter",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:love|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:love"
+   ],
+   "nota": null
+  },
+  "E21": {
+   "id": "E21",
+   "tipo": "relacao",
+   "texto": "Relationships › Family: Buri † - Great-Grandfather",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:buri|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:buri"
+   ],
+   "nota": null
+  },
+  "E22": {
+   "id": "E22",
+   "tipo": "relacao",
+   "texto": "Connections › Relatives: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|RELATIVE_OF|character:thor-thor-odinson|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E23": {
+   "id": "E23",
+   "tipo": "relacao",
+   "texto": "Connections › Relatives: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:hela:on-screen",
+    "url": "https://www.marvel.com/characters/hela/on-screen/profile",
+    "titulo": null,
+    "captura_id": "35ff480ac68341735f929abadbf0a34eac048c9847cbf34e2464a18a70a8b28d",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:hela|RELATIVE_OF|character:thor-thor-odinson|marvel:character:hela:on-screen",
+   "entidades": [
+    "character:hela",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E24": {
+   "id": "E24",
+   "tipo": "relacao",
+   "texto": "Connections › Relatives: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:odin:on-screen",
+    "url": "https://www.marvel.com/characters/odin/on-screen/profile",
+    "titulo": null,
+    "captura_id": "9cb17878f639ecf5162d541fa396dc5cba729e5f0bc9f911ce615a41d1f98f9e",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:odin|RELATIVE_OF|character:thor-thor-odinson|marvel:character:odin:on-screen",
+   "entidades": [
+    "character:odin",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E25": {
+   "id": "E25",
+   "tipo": "relacao",
+   "texto": "Connections › Relatives: Odin (Odin Borson)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:odin|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:odin"
+   ],
+   "nota": null
+  },
+  "E26": {
+   "id": "E26",
+   "tipo": "relacao",
+   "texto": "Connections › Relatives: Hela",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:hela|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:hela"
+   ],
+   "nota": null
+  },
+  "E27": {
+   "id": "E27",
+   "tipo": "relacao",
+   "texto": "As the son of Odin",
+   "fonte": {
+    "doc_id": "manus:marvel-thor",
+    "url": "https://www.marvel.com/movies/thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:odin|manus:marvel-thor",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:odin"
+   ],
+   "nota": null
+  },
+  "E28": {
+   "id": "E28",
+   "tipo": "relacao",
+   "texto": "Connections › Relatives: Loki",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:loki|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E29": {
+   "id": "E29",
+   "tipo": "relacao",
+   "texto": "Hela, the sister Thor and Loki never knew they had",
+   "fonte": {
+    "doc_id": "wiki:film:thor-ragnarok:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Ragnarok",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:hela|wiki:film:thor-ragnarok:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:hela"
+   ],
+   "nota": null
+  },
+  "E30": {
+   "id": "E30",
+   "tipo": "relacao",
+   "texto": "Thor experiences a panic attack after seeing his mother, Frigga",
+   "fonte": {
+    "doc_id": "wiki:film:avengers-endgame:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Avengers:_Endgame",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:frigga|wiki:film:avengers-endgame:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:frigga"
+   ],
+   "nota": null
+  },
+  "E31": {
+   "id": "E31",
+   "tipo": "relacao",
+   "texto": "Thor and Loki",
+   "fonte": {
+    "doc_id": "wiki:film:thor-ragnarok:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Ragnarok",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|RELATIVE_OF|character:loki|wiki:film:thor-ragnarok:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E32": {
+   "id": "E32",
+   "tipo": "relacao",
+   "texto": "Infobox › Affiliation: Avengers (formerly)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|MEMBER_OF|organization:avengers|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "organization:avengers"
+   ],
+   "nota": null
+  },
+  "E33": {
+   "id": "E33",
+   "tipo": "relacao",
+   "texto": "Infobox › Affiliation: Revengers (formerly)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|MEMBER_OF|organization:revengers|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "organization:revengers"
+   ],
+   "nota": null
+  },
+  "E34": {
+   "id": "E34",
+   "tipo": "relacao",
+   "texto": "Infobox › Affiliation: Asgardian Royal Family (formerly)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|MEMBER_OF|organization:asgardian-royal-family|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "organization:asgardian-royal-family"
+   ],
+   "nota": null
+  },
+  "E35": {
+   "id": "E35",
+   "tipo": "relacao",
+   "texto": "Infobox › Affiliation: Guardians of the Galaxy (formerly)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|MEMBER_OF|organization:guardians-of-the-galaxy|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "organization:guardians-of-the-galaxy"
+   ],
+   "nota": null
+  },
+  "E36": {
+   "id": "E36",
+   "tipo": "relacao",
+   "texto": "Connections › Groups: Avengers",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|MEMBER_OF|organization:avengers|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "organization:avengers"
+   ],
+   "nota": null
+  },
+  "E37": {
+   "id": "E37",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor - Former Fan, Attempted Victim, and Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:zeus:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Zeus",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:zeus|ENEMY_OF|character:thor-thor-odinson|wiki:character:zeus:perfil",
+   "entidades": [
+    "character:zeus",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E38": {
+   "id": "E38",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor - Attempted Victim and Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thanos:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thanos",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thanos|ENEMY_OF|character:thor-thor-odinson|wiki:character:thanos:perfil",
+   "entidades": [
+    "character:thanos",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E39": {
+   "id": "E39",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor - Former Prisoner",
+   "fonte": {
+    "doc_id": "wiki:character:grandmaster:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Grandmaster",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:grandmaster|ENEMY_OF|character:thor-thor-odinson|wiki:character:grandmaster:perfil",
+   "entidades": [
+    "character:grandmaster",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E40": {
+   "id": "E40",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Hailstrum † - Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:hailstrum|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:hailstrum"
+   ],
+   "nota": null
+  },
+  "E41": {
+   "id": "E41",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Zeus - Former Idol, Attempted Killer and Attempted Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:zeus|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:zeus"
+   ],
+   "nota": null
+  },
+  "E42": {
+   "id": "E42",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thanos † - Attempted Killer and Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:thanos|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:thanos"
+   ],
+   "nota": null
+  },
+  "E43": {
+   "id": "E43",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Algrim/Kurse † - Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:kurse|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:kurse"
+   ],
+   "nota": null
+  },
+  "E44": {
+   "id": "E44",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Laufey † - Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:laufey|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:laufey"
+   ],
+   "nota": null
+  },
+  "E45": {
+   "id": "E45",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Destroyer † - Killer and Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:destroyer|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:destroyer"
+   ],
+   "nota": null
+  },
+  "E46": {
+   "id": "E46",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Habooska the Horrible † - Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:habooska-the-horrible|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:habooska-the-horrible"
+   ],
+   "nota": null
+  },
+  "E47": {
+   "id": "E47",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thanos † - Attempted Victim and Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:thanos-cosmic-time-heist|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:thanos-cosmic-time-heist"
+   ],
+   "nota": null
+  },
+  "E48": {
+   "id": "E48",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Malekith † - Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:malekith|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:malekith"
+   ],
+   "nota": null
+  },
+  "E49": {
+   "id": "E49",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Kronan Stone Man † - Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:kronan-stone-man|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:kronan-stone-man"
+   ],
+   "nota": null
+  },
+  "E50": {
+   "id": "E50",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Lead Scrapper † - Attempted Killer",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:lead-scrapper|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:lead-scrapper"
+   ],
+   "nota": null
+  },
+  "E51": {
+   "id": "E51",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Surtur † - Attempted Killer and Victim",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:surtur|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:surtur"
+   ],
+   "nota": null
+  },
+  "E52": {
+   "id": "E52",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:ultron:on-screen",
+    "url": "https://www.marvel.com/characters/ultron/on-screen/profile",
+    "titulo": null,
+    "captura_id": "59b755507565aa11fe9b2f80d18c734e9e0dcc2095279b09511b6e40c73ee274",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:ultron|ENEMY_OF|character:thor-thor-odinson|marvel:character:ultron:on-screen",
+   "entidades": [
+    "character:ultron",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E53": {
+   "id": "E53",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:proxima-midnight:on-screen",
+    "url": "https://www.marvel.com/characters/proxima-midnight/on-screen/profile",
+    "titulo": null,
+    "captura_id": "64b6e96837507c0fe0295b3238298a8a6977382a2367227b7b09297a59af4372",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:proxima-midnight|ENEMY_OF|character:thor-thor-odinson|marvel:character:proxima-midnight:on-screen",
+   "entidades": [
+    "character:proxima-midnight",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E54": {
+   "id": "E54",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:hela:on-screen",
+    "url": "https://www.marvel.com/characters/hela/on-screen/profile",
+    "titulo": null,
+    "captura_id": "35ff480ac68341735f929abadbf0a34eac048c9847cbf34e2464a18a70a8b28d",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:hela|ENEMY_OF|character:thor-thor-odinson|marvel:character:hela:on-screen",
+   "entidades": [
+    "character:hela",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E55": {
+   "id": "E55",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|ENEMY_OF|character:thor-thor-odinson|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E56": {
+   "id": "E56",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:cull-obsidian:on-screen",
+    "url": "https://www.marvel.com/characters/cull-obsidian/on-screen/profile",
+    "titulo": null,
+    "captura_id": "043cdfa19c8871546268452daa08c1c5aa21182f9943934ff329dc3ce2bdf714",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:cull-obsidian|ENEMY_OF|character:thor-thor-odinson|marvel:character:cull-obsidian:on-screen",
+   "entidades": [
+    "character:cull-obsidian",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E57": {
+   "id": "E57",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:skurge:on-screen",
+    "url": "https://www.marvel.com/characters/skurge/on-screen/profile",
+    "titulo": null,
+    "captura_id": "4f82de1b1dce9154ff7b38c4765072edd0d86fb43e1c9622751e50543694b47e",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:skurge|ENEMY_OF|character:thor-thor-odinson|marvel:character:skurge:on-screen",
+   "entidades": [
+    "character:skurge",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E58": {
+   "id": "E58",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:thanos:on-screen",
+    "url": "https://www.marvel.com/characters/thanos/on-screen/profile",
+    "titulo": null,
+    "captura_id": "cec9ece4903ec57b1e735f89c3eb20cf9523cb23616103052c5fca31e98ea2ff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thanos|ENEMY_OF|character:thor-thor-odinson|marvel:character:thanos:on-screen",
+   "entidades": [
+    "character:thanos",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E59": {
+   "id": "E59",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:grandmaster:on-screen",
+    "url": "https://www.marvel.com/characters/grandmaster/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f4af18ae2e4d036ef12cdae3c7fa14ce560ae861ed072ac6abf85a7207692127",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:grandmaster|ENEMY_OF|character:thor-thor-odinson|marvel:character:grandmaster:on-screen",
+   "entidades": [
+    "character:grandmaster",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E60": {
+   "id": "E60",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:klaw:on-screen",
+    "url": "https://www.marvel.com/characters/klaw/on-screen/profile",
+    "titulo": null,
+    "captura_id": "fcb7ad90da4c7d628e35fe61f603f10ef6636ec661f9f1c951a4bb00688b23cb",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:klaw|ENEMY_OF|character:thor-thor-odinson|marvel:character:klaw:on-screen",
+   "entidades": [
+    "character:klaw",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E61": {
+   "id": "E61",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Proxima Midnight",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:proxima-midnight|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:proxima-midnight"
+   ],
+   "nota": null
+  },
+  "E62": {
+   "id": "E62",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Gorr",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:gorr-the-god-butcher|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:gorr-the-god-butcher"
+   ],
+   "nota": null
+  },
+  "E63": {
+   "id": "E63",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Thanos",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:thanos|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:thanos"
+   ],
+   "nota": null
+  },
+  "E64": {
+   "id": "E64",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Zeus",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:zeus|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:zeus"
+   ],
+   "nota": null
+  },
+  "E65": {
+   "id": "E65",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Loki",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:loki|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E66": {
+   "id": "E66",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Grandmaster",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:grandmaster|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:grandmaster"
+   ],
+   "nota": null
+  },
+  "E67": {
+   "id": "E67",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Corvus Glaive",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:corvus-glaive|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:corvus-glaive"
+   ],
+   "nota": null
+  },
+  "E68": {
+   "id": "E68",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Ebony Maw",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:ebony-maw|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:ebony-maw"
+   ],
+   "nota": null
+  },
+  "E69": {
+   "id": "E69",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Ulysses Klaue",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:ulysses-klaue|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:ulysses-klaue"
+   ],
+   "nota": null
+  },
+  "E70": {
+   "id": "E70",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Cull Obsidian",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:cull-obsidian|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:cull-obsidian"
+   ],
+   "nota": null
+  },
+  "E71": {
+   "id": "E71",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Ultron",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:ultron|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:ultron"
+   ],
+   "nota": null
+  },
+  "E72": {
+   "id": "E72",
+   "tipo": "relacao",
+   "texto": "Connections › Enemies: Hela",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:hela|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:hela"
+   ],
+   "nota": null
+  },
+  "E73": {
+   "id": "E73",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:klaw:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Ulysses_Klaue",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:klaw|ENEMY_OF|character:thor-thor-odinson|wiki:character:klaw:perfil",
+   "entidades": [
+    "character:klaw",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E74": {
+   "id": "E74",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:cull-obsidian:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Cull_Obsidian",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:cull-obsidian|ENEMY_OF|character:thor-thor-odinson|wiki:character:cull-obsidian:perfil",
+   "entidades": [
+    "character:cull-obsidian",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E75": {
+   "id": "E75",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:corvus-glaive:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Corvus_Glaive",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:corvus-glaive|ENEMY_OF|character:thor-thor-odinson|wiki:character:corvus-glaive:perfil",
+   "entidades": [
+    "character:corvus-glaive",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E76": {
+   "id": "E76",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:ultron:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Ultron",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:ultron|ENEMY_OF|character:thor-thor-odinson|wiki:character:ultron:perfil",
+   "entidades": [
+    "character:ultron",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E77": {
+   "id": "E77",
+   "tipo": "relacao",
+   "texto": "Hercules to kill Thor",
+   "fonte": {
+    "doc_id": "wiki:film:thor-love-and-thunder:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Love_and_Thunder",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:hercules|ENEMY_OF|character:thor-thor-odinson|wiki:film:thor-love-and-thunder:plot",
+   "entidades": [
+    "character:hercules",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E78": {
+   "id": "E78",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:proxima-midnight:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Proxima_Midnight",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:proxima-midnight|ENEMY_OF|character:thor-thor-odinson|wiki:character:proxima-midnight:perfil",
+   "entidades": [
+    "character:proxima-midnight",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E79": {
+   "id": "E79",
+   "tipo": "relacao",
+   "texto": "Loki appears to betray Thor, cutting off his hand",
+   "fonte": {
+    "doc_id": "wiki:film:thor-the-dark-world:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_The_Dark_World",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|ENEMY_OF|character:thor-thor-odinson|wiki:film:thor-the-dark-world:plot",
+   "entidades": [
+    "character:loki",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E80": {
+   "id": "E80",
+   "tipo": "relacao",
+   "texto": "Kurse then battles Thor while Malekith and his minions leave the planet",
+   "fonte": {
+    "doc_id": "wiki:film:thor-the-dark-world:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_The_Dark_World",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:kurse|ENEMY_OF|character:thor-thor-odinson|wiki:film:thor-the-dark-world:plot",
+   "entidades": [
+    "character:kurse",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E81": {
+   "id": "E81",
+   "tipo": "relacao",
+   "texto": "Gorr gains the upper hand against Thor",
+   "fonte": {
+    "doc_id": "wiki:film:thor-love-and-thunder:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Love_and_Thunder",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:gorr-the-god-butcher|ENEMY_OF|character:thor-thor-odinson|wiki:film:thor-love-and-thunder:plot",
+   "entidades": [
+    "character:gorr-the-god-butcher",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E82": {
+   "id": "E82",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:ebony-maw:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Ebony_Maw",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:ebony-maw|ENEMY_OF|character:thor-thor-odinson|wiki:character:ebony-maw:perfil",
+   "entidades": [
+    "character:ebony-maw",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E83": {
+   "id": "E83",
+   "tipo": "relacao",
+   "texto": "Thor uses the Thunderbolt to impale Zeus in the chest",
+   "fonte": {
+    "doc_id": "wiki:film:thor-love-and-thunder:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Love_and_Thunder",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:zeus|ENEMY_OF|character:thor-thor-odinson|wiki:film:thor-love-and-thunder:plot",
+   "entidades": [
+    "character:zeus",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E84": {
+   "id": "E84",
+   "tipo": "relacao",
+   "texto": "Thor takes Loki from the team's custody",
+   "fonte": {
+    "doc_id": "wiki:film:the-avengers:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/The_Avengers",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:loki|wiki:film:the-avengers:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E85": {
+   "id": "E85",
+   "tipo": "relacao",
+   "texto": "Wanda attacks Thor, Black Widow, and Captain America",
+   "fonte": {
+    "doc_id": "wiki:film:avengers-age-of-ultron:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Avengers:_Age_of_Ultron",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:captain-america-steve-rogers|wiki:film:avengers-age-of-ultron:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:captain-america-steve-rogers"
+   ],
+   "nota": null
+  },
+  "E86": {
+   "id": "E86",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Corvus Glaive †",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:corvus-glaive|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:corvus-glaive"
+   ],
+   "nota": null
+  },
+  "E87": {
+   "id": "E87",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Jasper Sitwell †",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:jasper-sitwell|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:jasper-sitwell"
+   ],
+   "nota": null
+  },
+  "E88": {
+   "id": "E88",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Berserkers †",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|organization:berserkers|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "organization:berserkers"
+   ],
+   "nota": null
+  },
+  "E89": {
+   "id": "E89",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Ebony Maw †",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:ebony-maw-cosmic-time-heist|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:ebony-maw-cosmic-time-heist"
+   ],
+   "nota": null
+  },
+  "E90": {
+   "id": "E90",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Imir",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:imir|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:imir"
+   ],
+   "nota": null
+  },
+  "E91": {
+   "id": "E91",
+   "tipo": "relacao",
+   "texto": "Relationships › Enemies: Klaue's Mercenary",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ENEMY_OF|character:klaues-mercenary|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:klaues-mercenary"
+   ],
+   "nota": null
+  },
+  "E92": {
+   "id": "E92",
+   "tipo": "momento",
+   "texto": "Born during the 960s A.D., Thor had an idyllic childhood, brought up in Asgard as the most treasured son of Odin and his wife Frigga, but he was falsely led to believe that he was the firstborn child of the Allfather.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:1",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-early-life|wiki:character:thor-thor-odinson:bio:1",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-early-life"
+   ],
+   "nota": null
+  },
+  "E93": {
+   "id": "E93",
+   "tipo": "momento",
+   "texto": "In May 2010, Thor was announced to be the next ruler of Asgard by Odin, as he was about to finally enter the Odinsleep after putting it off for so long.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:9",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-lokis-schemes|wiki:character:thor-thor-odinson:bio:9",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-lokis-schemes"
+   ],
+   "nota": null
+  },
+  "E94": {
+   "id": "E94",
+   "tipo": "momento",
+   "texto": "Thor was taken for questioning by Phil Coulson, who was convinced he was special forces; his remarkable fighting skills had allowed him to defeat all of Coulson's men, to which Coulson questioned if he was trained in Afghanistan or Chechnya.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:16",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-learning-humility|wiki:character:thor-thor-odinson:bio:16",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-learning-humility"
+   ],
+   "nota": null
+  },
+  "E95": {
+   "id": "E95",
+   "tipo": "momento",
+   "texto": "Two years later, in May 2012, Frigga successfully managed to contact Loki in the Sanctuary.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:23",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-chitauri-invasion|wiki:character:thor-thor-odinson:bio:23",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-chitauri-invasion"
+   ],
+   "nota": null
+  },
+  "E96": {
+   "id": "E96",
+   "tipo": "momento",
+   "texto": "Fearing for her safety, Thor returned to Earth and then went to finally reunite with Jane Foster to ensure that she was okay.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:35",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-second-dark-elf-conflict|wiki:character:thor-thor-odinson:bio:35",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-second-dark-elf-conflict"
+   ],
+   "nota": null
+  },
+  "E97": {
+   "id": "E97",
+   "tipo": "momento",
+   "texto": "Suddenly, a loud noise rang in the team's ear as they were greeted by a heavily damaged Iron Legion drone then accused them all of being killers.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:49",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-ultron-offensive|wiki:character:thor-thor-odinson:bio:49",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-ultron-offensive"
+   ],
+   "nota": null
+  },
+  "E98": {
+   "id": "E98",
+   "tipo": "momento",
+   "texto": "Thor joined the rest of the Avengers going to Sokovia, while Captain America organized the evacuation of all of the civilians before any fighting could have put them at risk.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:54",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-battle-of-sokovia|wiki:character:thor-thor-odinson:bio:54",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-battle-of-sokovia"
+   ],
+   "nota": null
+  },
+  "E99": {
+   "id": "E99",
+   "tipo": "momento",
+   "texto": "With Ultron finally defeated, and the world once again saved from its total annihilation, Thor regrouped with all of his fellow Avengers at the Avengers Compound where the newest generation of the Avengers was being trained to protect the planet.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:57",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-search-for-answers|wiki:character:thor-thor-odinson:bio:57",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-search-for-answers"
+   ],
+   "nota": null
+  },
+  "E100": {
+   "id": "E100",
+   "tipo": "momento",
+   "texto": "Before Thor caused an outburst of grief, he and Loki are stunned to see a portal from Hel appear directly in front of them.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:63",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-return-of-hela|wiki:character:thor-thor-odinson:bio:63",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-return-of-hela"
+   ],
+   "nota": null
+  },
+  "E101": {
+   "id": "E101",
+   "tipo": "momento",
+   "texto": "Thor attempted to get back to the Quinjet that brought Hulk into Sakaar in the first place, avoiding the Sakaarans as he made his way towards it.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:73",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-saving-asgard|wiki:character:thor-thor-odinson:bio:73",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-saving-asgard"
+   ],
+   "nota": null
+  },
+  "E102": {
+   "id": "E102",
+   "tipo": "momento",
+   "texto": "Heimdall found Thor wearing his eyepatch and noted to Thor that they had lost many people, but Thor assured him that no-one could have done more and that Odin would have been proud of Heimdall who told Thor that Odin was proud of him.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:81",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-infinity-war|wiki:character:thor-thor-odinson:bio:81",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-infinity-war"
+   ],
+   "nota": null
+  },
+  "E103": {
+   "id": "E103",
+   "tipo": "momento",
+   "texto": "Following the Snap, Thor and the remaining Avengers, along with Rocket, returned to the Avengers Compound.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:89",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-life-of-guilt|wiki:character:thor-thor-odinson:bio:89",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-life-of-guilt"
+   ],
+   "nota": null
+  },
+  "E104": {
+   "id": "E104",
+   "tipo": "momento",
+   "texto": "Thor arrived back at the Avengers Compound, where he continued to just drink while everyone else was working.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:93",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-time-heist|wiki:character:thor-thor-odinson:bio:93",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-time-heist"
+   ],
+   "nota": null
+  },
+  "E105": {
+   "id": "E105",
+   "tipo": "momento",
+   "texto": "In the aftermath of the battle, Thor attended the funeral for Tony Stark, where he watched Stark's recorded message with his family, Happy Hogan, James Rhodes and the remaining original Avengers.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:99",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-without-a-path|wiki:character:thor-thor-odinson:bio:99",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-without-a-path"
+   ],
+   "nota": null
+  },
+  "E106": {
+   "id": "E106",
+   "tipo": "momento",
+   "texto": "Finally getting to be with each other, Thor and Jane Foster would spend their time together doing many different activities like rollerblading, watching movies and going to parties.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:45",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-avengers-reassembled|wiki:character:thor-thor-odinson:bio:45",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-avengers-reassembled"
+   ],
+   "nota": null
+  },
+  "E107": {
+   "id": "E107",
+   "tipo": "momento",
+   "texto": "Thor then brought Toothgrinder and Toothgnasher on board the Benatar.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:104",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-conflict-with-gorr|wiki:character:thor-thor-odinson:bio:104",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-conflict-with-gorr"
+   ],
+   "nota": null
+  },
+  "E108": {
+   "id": "E108",
+   "tipo": "momento",
+   "texto": "Thor trained Love in combat and entrusted the Stormbreaker to her.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:113",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-a-new-purpose|wiki:character:thor-thor-odinson:bio:113",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-a-new-purpose"
+   ],
+   "nota": null
+  },
+  "E109": {
+   "id": "E109",
+   "tipo": "momento",
+   "texto": "Thor eventually found himself back on Svartalfheim with a mutant known as Deadpool.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:114",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-deadpools-sacrifice|wiki:character:thor-thor-odinson:bio:114",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-deadpools-sacrifice"
+   ],
+   "nota": null
+  },
+  "E110": {
+   "id": "E110",
+   "tipo": "momento",
+   "texto": "His hammer and power stripped from him by Odin, Thor found himself in a small New Mexico town, where he proved he was worthy in a battle against the Destroyer.",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--worthy-of-the-hammer|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--worthy-of-the-hammer"
+   ],
+   "nota": null
+  },
+  "E111": {
+   "id": "E111",
+   "tipo": "momento",
+   "texto": "After initial conflicts, Thor gained new comrades among the Avengers, taking part in the battle to defend New York from Loki and the Chitauri.",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--joining-the-avengers|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--joining-the-avengers"
+   ],
+   "nota": null
+  },
+  "E112": {
+   "id": "E112",
+   "tipo": "momento",
+   "texto": "Thor defeated the Dark Elf, Malekith, on the heels of a struggle that sent them hurtling through the Nine Realms.",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--defeating-malekith|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--defeating-malekith"
+   ],
+   "nota": null
+  },
+  "E113": {
+   "id": "E113",
+   "tipo": "momento",
+   "texto": "On the heels of her taking his hammer, Thor lost an eye fighting the goddess of death, Hela.",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--fighting-hela|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--fighting-hela"
+   ],
+   "nota": null
+  },
+  "E114": {
+   "id": "E114",
+   "tipo": "momento",
+   "texto": "With a new weapon, the axe called Stormbreaker, Thor joined the fight in Wakanda against Thanos and his forces, with the fate of the universe at stake.",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--acquiring-stormbreaker|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--acquiring-stormbreaker"
+   ],
+   "nota": null
+  },
+  "E115": {
+   "id": "E115",
+   "tipo": "momento",
+   "texto": "Despite having brought Loki back to Asgard to be imprisoned, his brother's actions still loomed over Asgard.",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:bio:32",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|EXPERIENCES|event:thor-thor-odinson--wiki-war-of-the-nine-realms|wiki:character:thor-thor-odinson:bio:32",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "event:thor-thor-odinson--wiki-war-of-the-nine-realms"
+   ],
+   "nota": null
+  },
+  "E116": {
+   "id": "E116",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Captain America: The First Avenger (art)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:captain-america-the-first-avenger|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:captain-america-the-first-avenger"
+   ],
+   "nota": null
+  },
+  "E117": {
+   "id": "E117",
+   "tipo": "aparicao",
+   "texto": "Related: Thor (2011)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor"
+   ],
+   "nota": null
+  },
+  "E118": {
+   "id": "E118",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor"
+   ],
+   "nota": null
+  },
+  "E119": {
+   "id": "E119",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: The Avengers",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:the-avengers|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E120": {
+   "id": "E120",
+   "tipo": "aparicao",
+   "texto": "Related: The Avengers (2012)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:the-avengers|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E121": {
+   "id": "E121",
+   "tipo": "aparicao",
+   "texto": "Related: Thor: The Dark World (2013)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-the-dark-world|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-the-dark-world"
+   ],
+   "nota": null
+  },
+  "E122": {
+   "id": "E122",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor: The Dark World",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-the-dark-world|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-the-dark-world"
+   ],
+   "nota": null
+  },
+  "E123": {
+   "id": "E123",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Avengers: Age of Ultron",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-age-of-ultron|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-age-of-ultron"
+   ],
+   "nota": null
+  },
+  "E124": {
+   "id": "E124",
+   "tipo": "aparicao",
+   "texto": "Related: Avengers: Age of Ultron (2015)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-age-of-ultron|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-age-of-ultron"
+   ],
+   "nota": null
+  },
+  "E125": {
+   "id": "E125",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Doctor Strange ( mid-credits scene )",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:doctor-strange|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:doctor-strange"
+   ],
+   "nota": null
+  },
+  "E126": {
+   "id": "E126",
+   "tipo": "aparicao",
+   "texto": "Related: Thor: Ragnarok (2017)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-ragnarok|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E127": {
+   "id": "E127",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor: Ragnarok",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-ragnarok|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E128": {
+   "id": "E128",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Avengers: Infinity War",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-infinity-war|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-infinity-war"
+   ],
+   "nota": null
+  },
+  "E129": {
+   "id": "E129",
+   "tipo": "aparicao",
+   "texto": "Related: Avengers: Infinity War (2018)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-infinity-war|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-infinity-war"
+   ],
+   "nota": null
+  },
+  "E130": {
+   "id": "E130",
+   "tipo": "aparicao",
+   "texto": "Related: Avengers: Endgame (2019)",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-endgame|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-endgame"
+   ],
+   "nota": null
+  },
+  "E131": {
+   "id": "E131",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Avengers: Endgame",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-endgame|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-endgame"
+   ],
+   "nota": null
+  },
+  "E132": {
+   "id": "E132",
+   "tipo": "aparicao",
+   "texto": "Infobox › tv series: What If...? (recap)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|series:animation|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "series:animation"
+   ],
+   "nota": null
+  },
+  "E133": {
+   "id": "E133",
+   "tipo": "aparicao",
+   "texto": "Infobox › tv series: WandaVision (memory)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|series:wandavision-1|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "series:wandavision-1"
+   ],
+   "nota": null
+  },
+  "E134": {
+   "id": "E134",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor: Love and Thunder",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-love-and-thunder|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-love-and-thunder"
+   ],
+   "nota": null
+  },
+  "E135": {
+   "id": "E135",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: The Marvels (art)",
+   "fonte": {
+    "doc_id": "wiki:character:thor-thor-odinson:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:the-marvels|wiki:character:thor-thor-odinson:perfil",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:the-marvels"
+   ],
+   "nota": null
+  },
+  "E136": {
+   "id": "E136",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:avengers-age-of-ultron",
+    "url": "https://www.marvel.com/movies/avengers-age-of-ultron",
+    "titulo": null,
+    "captura_id": "f428095a7a369663dba794582d276d16edd25c1d634b6a62909356496052f48d",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-age-of-ultron|marvel:film:avengers-age-of-ultron",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-age-of-ultron"
+   ],
+   "nota": null
+  },
+  "E137": {
+   "id": "E137",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:avengers-infinity-war",
+    "url": "https://www.marvel.com/movies/avengers-infinity-war",
+    "titulo": null,
+    "captura_id": "7aa44d4cd1e734b5fa6ea75bfc0f983987b3a42f6e792706de981044e35509d7",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:avengers-infinity-war|marvel:film:avengers-infinity-war",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:avengers-infinity-war"
+   ],
+   "nota": null
+  },
+  "E138": {
+   "id": "E138",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:doctor-strange",
+    "url": "https://www.marvel.com/movies/doctor-strange",
+    "titulo": null,
+    "captura_id": "e5a30ea46a726d78120d14aded909e7a8432bfd94dc6a2e5c80733a21fe5c8b9",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:doctor-strange|marvel:film:doctor-strange",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:doctor-strange"
+   ],
+   "nota": null
+  },
+  "E139": {
+   "id": "E139",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:the-avengers",
+    "url": "https://www.marvel.com/movies/the-avengers",
+    "titulo": null,
+    "captura_id": "f391552cb0e013744734ea1d973ad2309152527fbd523ea2cad66f95bcaaeb4c",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:the-avengers|marvel:film:the-avengers",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E140": {
+   "id": "E140",
+   "tipo": "aparicao",
+   "texto": "Thor, Captain America",
+   "fonte": {
+    "doc_id": "manus:marvel-the-avengers",
+    "url": "https://www.marvel.com/movies/the-avengers",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:the-avengers|manus:marvel-the-avengers",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E141": {
+   "id": "E141",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:thor",
+    "url": "https://www.marvel.com/movies/thor",
+    "titulo": null,
+    "captura_id": "33a7712033df7c0dd41033ecbcf50d2df95b9cd6421ccea29ef0e034e7fcf39e",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor|marvel:film:thor",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor"
+   ],
+   "nota": null
+  },
+  "E142": {
+   "id": "E142",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:thor-love-and-thunder",
+    "url": "https://www.marvel.com/movies/thor-love-and-thunder",
+    "titulo": null,
+    "captura_id": "6b4e68a820320be736c812403be1f1e96c3d13406963c81859a1cb2bae2746f2",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-love-and-thunder|marvel:film:thor-love-and-thunder",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-love-and-thunder"
+   ],
+   "nota": null
+  },
+  "E143": {
+   "id": "E143",
+   "tipo": "aparicao",
+   "texto": "Thor is imprisoned on the other side of the universe",
+   "fonte": {
+    "doc_id": "manus:marvel-thor-ragnarok",
+    "url": "https://www.marvel.com/movies/thor-ragnarok",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-ragnarok|manus:marvel-thor-ragnarok",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E144": {
+   "id": "E144",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:thor-ragnarok",
+    "url": "https://www.marvel.com/movies/thor-ragnarok",
+    "titulo": null,
+    "captura_id": "f0340b49a485ac079bc4a47132e3e7e08ff3f4f847fef9487f73fe0a82fc3d35",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-ragnarok|marvel:film:thor-ragnarok",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E145": {
+   "id": "E145",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Thor",
+   "fonte": {
+    "doc_id": "marvel:film:thor-the-dark-world",
+    "url": "https://www.marvel.com/movies/thor-the-dark-world",
+    "titulo": null,
+    "captura_id": "169f14f114a8a0ec7da73c5cbdb58fe02710a77cc40a82f9381b283dbd329edc",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|APPEARS_IN|film:thor-the-dark-world|marvel:film:thor-the-dark-world",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "film:thor-the-dark-world"
+   ],
+   "nota": null
+  },
+  "E146": {
+   "id": "E146",
+   "tipo": "momento",
+   "texto": "Loki was born on Jotunheim as the son of the Frost Giant King, Laufey.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:1",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-early-life|wiki:character:loki:bio:1",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-early-life"
+   ],
+   "nota": null
+  },
+  "E147": {
+   "id": "E147",
+   "tipo": "momento",
+   "texto": "In 2010, Loki was present when Thor was supposed to finally ascend to the throne of Asgard.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:6",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-tricksters-schemes|wiki:character:loki:bio:6",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-tricksters-schemes"
+   ],
+   "nota": null
+  },
+  "E148": {
+   "id": "E148",
+   "tipo": "momento",
+   "texto": "In an attempt to play the long game to ensure he remained in power, Loki then traveled to Jotunheim where he then visited Laufey.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:13",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-starting-a-war|wiki:character:loki:bio:13",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-starting-a-war"
+   ],
+   "nota": null
+  },
+  "E149": {
+   "id": "E149",
+   "tipo": "momento",
+   "texto": "Traveling through the wormhole, Loki arrived in a part of the universe called Sanctuary and met the Mad Titan Thanos and Other, the former offering a pact that would allow him to become ruler of the Earth while he would steal the Tesseract which was being studied by S.H.I.E.L.D.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:18",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-new-alliance|wiki:character:loki:bio:18",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-new-alliance"
+   ],
+   "nota": null
+  },
+  "E150": {
+   "id": "E150",
+   "tipo": "momento",
+   "texto": "Accepting Thanos ' deal without fear of failure, Loki turned his focus back to Erik Selvig, who had been summoned by S.H.I.E.L.D.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:19",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-chitauri-invasion|wiki:character:loki:bio:19",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-chitauri-invasion"
+   ],
+   "nota": null
+  },
+  "E151": {
+   "id": "E151",
+   "tipo": "momento",
+   "texto": "While Erik Selvig set up the upgraded Tesseract Accelerator on the roof of the skyscraper, Loki prepared to welcome his army of Chitauri and begin his glorious, but brief, war on the Earth.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:26",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-battle-of-new-york|wiki:character:loki:bio:26",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-battle-of-new-york"
+   ],
+   "nota": null
+  },
+  "E152": {
+   "id": "E152",
+   "tipo": "momento",
+   "texto": "Having been condemned to eternal imprisonment, Loki was locked in a cell within the Asgardian Dungeons deep beneath the Royal Palace of Valaskjalf.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:31",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-return-of-the-dark-elves|wiki:character:loki:bio:31",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-return-of-the-dark-elves"
+   ],
+   "nota": null
+  },
+  "E153": {
+   "id": "E153",
+   "tipo": "momento",
+   "texto": "Loki managed to take Odin 's place and usurped the throne of Asgard.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:37",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-king-of-asgard|wiki:character:loki:bio:37",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-king-of-asgard"
+   ],
+   "nota": null
+  },
+  "E154": {
+   "id": "E154",
+   "tipo": "momento",
+   "texto": "With Odin now dead and passed into the afterlife, Loki and Thor were then forced to put aside their differences as Hela, having now been released from her prison in Hel due to Odin's death, materialized before them.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:41",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-helas-return|wiki:character:loki:bio:41",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-helas-return"
+   ],
+   "nota": null
+  },
+  "E155": {
+   "id": "E155",
+   "tipo": "momento",
+   "texto": "As Thor put his new eyepatch on, Loki remarked his new look as reminiscent to their father's.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:49",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-asgards-final-days|wiki:character:loki:bio:49",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-asgards-final-days"
+   ],
+   "nota": null
+  },
+  "E156": {
+   "id": "E156",
+   "tipo": "momento",
+   "texto": "Loki's death was mourned by Thor, who cried over his lifeless body while Thanos used his newly acquired Infinity Stones to destroy the Statesman and teleport himself and the Black Order away.",
+   "fonte": {
+    "doc_id": "wiki:character:loki:bio:51",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--wiki-legacy|wiki:character:loki:bio:51",
+   "entidades": [
+    "character:loki",
+    "event:loki--wiki-legacy"
+   ],
+   "nota": null
+  },
+  "E157": {
+   "id": "E157",
+   "tipo": "momento",
+   "texto": "Following a war between the Frost Giants and Asgardians, Odin, King of Asgard, found Loki and took him home to raise as his son and an Asgardian prince along with his biological son Thor.",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--asgardian-prince|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "event:loki--asgardian-prince"
+   ],
+   "nota": null
+  },
+  "E158": {
+   "id": "E158",
+   "tipo": "momento",
+   "texto": "In Germany, Loki strode out into a terrified crowd of humans, amused by their inferiority, and demanded they kneel before him.",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--germany-kneels|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "event:loki--germany-kneels"
+   ],
+   "nota": null
+  },
+  "E159": {
+   "id": "E159",
+   "tipo": "momento",
+   "texto": "Overcome with grief and remorse, an imprisoned Loki agrees to aid Thor in confronting the Dark Elves, seeking revenge for their mother Frigga.",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--brothers-unite-over-revenge|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "event:loki--brothers-unite-over-revenge"
+   ],
+   "nota": null
+  },
+  "E160": {
+   "id": "E160",
+   "tipo": "momento",
+   "texto": "Masquerading for a long period as King Odin, Loki enjoys life as the ruler of Asgard.",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--playing-king|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "event:loki--playing-king"
+   ],
+   "nota": null
+  },
+  "E161": {
+   "id": "E161",
+   "tipo": "momento",
+   "texto": "Threatened with Thor’s death, Loki relinquishes the Tesseract to Thanos, promising his brother the sun will shine on both of them again.",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|EXPERIENCES|event:loki--relinquishing-the-tesseract|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "event:loki--relinquishing-the-tesseract"
+   ],
+   "nota": null
+  },
+  "E162": {
+   "id": "E162",
+   "tipo": "aparicao",
+   "texto": "Related: Thor (2011)",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "film:thor"
+   ],
+   "nota": null
+  },
+  "E163": {
+   "id": "E163",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor",
+   "fonte": {
+    "doc_id": "wiki:character:loki:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor|wiki:character:loki:perfil",
+   "entidades": [
+    "character:loki",
+    "film:thor"
+   ],
+   "nota": null
+  },
+  "E164": {
+   "id": "E164",
+   "tipo": "aparicao",
+   "texto": "Related: The Avengers (2012)",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:the-avengers|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E165": {
+   "id": "E165",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: The Avengers",
+   "fonte": {
+    "doc_id": "wiki:character:loki:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:the-avengers|wiki:character:loki:perfil",
+   "entidades": [
+    "character:loki",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E166": {
+   "id": "E166",
+   "tipo": "aparicao",
+   "texto": "Related: Thor: The Dark World (2013)",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor-the-dark-world|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "film:thor-the-dark-world"
+   ],
+   "nota": null
+  },
+  "E167": {
+   "id": "E167",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor: The Dark World",
+   "fonte": {
+    "doc_id": "wiki:character:loki:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor-the-dark-world|wiki:character:loki:perfil",
+   "entidades": [
+    "character:loki",
+    "film:thor-the-dark-world"
+   ],
+   "nota": null
+  },
+  "E168": {
+   "id": "E168",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Thor: Ragnarok",
+   "fonte": {
+    "doc_id": "wiki:character:loki:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor-ragnarok|wiki:character:loki:perfil",
+   "entidades": [
+    "character:loki",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E169": {
+   "id": "E169",
+   "tipo": "aparicao",
+   "texto": "Related: Thor: Ragnarok (2017)",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor-ragnarok|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E170": {
+   "id": "E170",
+   "tipo": "aparicao",
+   "texto": "Related: Avengers: Infinity War (2018)",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:avengers-infinity-war|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "film:avengers-infinity-war"
+   ],
+   "nota": null
+  },
+  "E171": {
+   "id": "E171",
+   "tipo": "aparicao",
+   "texto": "Infobox › movie: Avengers: Infinity War",
+   "fonte": {
+    "doc_id": "wiki:character:loki:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Loki",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:avengers-infinity-war|wiki:character:loki:perfil",
+   "entidades": [
+    "character:loki",
+    "film:avengers-infinity-war"
+   ],
+   "nota": null
+  },
+  "E172": {
+   "id": "E172",
+   "tipo": "aparicao",
+   "texto": "Related: Avengers: Endgame (2019)",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:avengers-endgame|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "film:avengers-endgame"
+   ],
+   "nota": null
+  },
+  "E173": {
+   "id": "E173",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Loki",
+   "fonte": {
+    "doc_id": "marvel:film:avengers-infinity-war",
+    "url": "https://www.marvel.com/movies/avengers-infinity-war",
+    "titulo": null,
+    "captura_id": "7aa44d4cd1e734b5fa6ea75bfc0f983987b3a42f6e792706de981044e35509d7",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:avengers-infinity-war|marvel:film:avengers-infinity-war",
+   "entidades": [
+    "character:loki",
+    "film:avengers-infinity-war"
+   ],
+   "nota": null
+  },
+  "E174": {
+   "id": "E174",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Loki",
+   "fonte": {
+    "doc_id": "marvel:film:the-avengers",
+    "url": "https://www.marvel.com/movies/the-avengers",
+    "titulo": null,
+    "captura_id": "f391552cb0e013744734ea1d973ad2309152527fbd523ea2cad66f95bcaaeb4c",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:the-avengers|marvel:film:the-avengers",
+   "entidades": [
+    "character:loki",
+    "film:the-avengers"
+   ],
+   "nota": null
+  },
+  "E175": {
+   "id": "E175",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Loki",
+   "fonte": {
+    "doc_id": "marvel:film:thor",
+    "url": "https://www.marvel.com/movies/thor",
+    "titulo": null,
+    "captura_id": "33a7712033df7c0dd41033ecbcf50d2df95b9cd6421ccea29ef0e034e7fcf39e",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor|marvel:film:thor",
+   "entidades": [
+    "character:loki",
+    "film:thor"
+   ],
+   "nota": null
+  },
+  "E176": {
+   "id": "E176",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Loki",
+   "fonte": {
+    "doc_id": "marvel:film:thor-ragnarok",
+    "url": "https://www.marvel.com/movies/thor-ragnarok",
+    "titulo": null,
+    "captura_id": "f0340b49a485ac079bc4a47132e3e7e08ff3f4f847fef9487f73fe0a82fc3d35",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor-ragnarok|marvel:film:thor-ragnarok",
+   "entidades": [
+    "character:loki",
+    "film:thor-ragnarok"
+   ],
+   "nota": null
+  },
+  "E177": {
+   "id": "E177",
+   "tipo": "aparicao",
+   "texto": "Cast & Characters: Loki",
+   "fonte": {
+    "doc_id": "marvel:film:thor-the-dark-world",
+    "url": "https://www.marvel.com/movies/thor-the-dark-world",
+    "titulo": null,
+    "captura_id": "169f14f114a8a0ec7da73c5cbdb58fe02710a77cc40a82f9381b283dbd329edc",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|APPEARS_IN|film:thor-the-dark-world|marvel:film:thor-the-dark-world",
+   "entidades": [
+    "character:loki",
+    "film:thor-the-dark-world"
+   ],
+   "nota": null
+  }
+ },
+ "guardada": false
+}

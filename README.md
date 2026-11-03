@@ -20,6 +20,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Neo4j](https://img.shields.io/badge/Neo4j-4581C3?style=flat-square&logo=neo4j&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Gemini_API-4285F4?style=flat-square&logo=google&logoColor=white)
 
 </div>
@@ -31,12 +32,21 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 <table>
   <tr>
     <td width="50%" valign="top">
+      <a href="Projetos/FREYA"><img src="docs/capas/freya.webp" alt="Logo da F.R.E.Y.A.: três estrelas em degradê escarlate sobre fundo branco, com F.R.E.Y.A. em preto embaixo"></a>
+      <h3>✨ F.R.E.Y.A.</h3>
+      Inteligência prospectiva sobre o MCU: análise em texto corrido ao lado do grafo que a sustenta, com notícias novas e estudo dos personagens a cada pergunta.<br>
+      <sub>Python · FastAPI · Hybrid RAG · GraphRAG (Neo4j) · React · TypeScript · roda localmente</sub><br><br>
+      <a href="Projetos/FREYA"><b>Ver o código ↗</b></a>
+    </td>
+    <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><img src="docs/capas/iris.webp" alt="Iris: Entenda o presente. Explore os futuros., com futuros em dourado"></a>
       <h3>👁️ Iris</h3>
       Inteligência estratégica em Relações Internacionais: diagnóstico, cenários como hipóteses e sinais a acompanhar, com a fonte de cada afirmação.<br>
       <sub>React · TypeScript · FastAPI · em desenvolvimento (prévia com dados de exemplo)</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><b>Abrir a prévia ↗</b></a> · <a href="Projetos/Iris">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><img src="docs/capas/kfka.webp" alt="KFKA: A escola e a família acompanhando o aluno juntas"></a>
       <h3>🎒 KFKA</h3>
@@ -44,8 +54,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript · protótipo com dados fictícios</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><b>Abrir o protótipo ↗</b></a> · <a href="Projetos/KFKA">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><img src="docs/capas/karol-samsung.webp" alt="Karol × Samsung: o Galaxy S26 Ultra em 3D com o título A cena na palma da mão"></a>
       <h3>📱 Karol × Samsung</h3>
@@ -53,6 +61,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Vite · Three.js · GSAP · projeto pessoal de fã</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><img src="docs/capas/landing-karol.webp" alt="Landing Karol Sevilla: o nome KAROL com a tinta revelando letras infladas em azul-bebê"></a>
       <h3>💙 Landing page Karol Sevilla</h3>
@@ -60,8 +70,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Vite · GSAP · WebGL · projeto acadêmico fictício</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/"><img src="docs/capas/site-karol.webp" alt="Site Karol Sevilla no estilo de um app de música, com a foto dela e a história em 3 capítulos"></a>
       <h3>🌐 Site Karol Sevilla</h3>
@@ -69,6 +77,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/"><b>Abrir site ↗</b></a> · <a href="https://paulomarcelli.github.io/Projetos/primeira-versao/">1ª versão</a> · <a href="Projetos/Site-Karol-Sevilla">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><img src="docs/capas/geometry-heroes.webp" alt="Tela inicial do Geometry Heroes com seis heróis em quadrinhos e o botão jogar"></a>
       <h3>🎮 Geometry Heroes</h3>
@@ -76,8 +86,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>JavaScript · Phaser 3 · Programação Orientada a Objetos</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><b>Jogar ↗</b></a> · <a href="Projetos/Tarefa-POO-JavaScript">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><img src="docs/capas/cenicienta.webp" alt="Site Cenicienta com o título em rosa neon sobre o clipe"></a>
       <h3>👠 Cenicienta</h3>
@@ -85,6 +93,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><b>Abrir site ↗</b></a> · <a href="Projetos/Cenicienta">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><img src="docs/capas/una-noche-mas.webp" alt="Site Una Noche Más com o título em rosa e a Karol em cena do clipe"></a>
       <h3>🌙 Una Noche Más</h3>
@@ -92,8 +102,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><b>Abrir site ↗</b></a> · <a href="Projetos/Una-Noche-Mas">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
       <h3>🌙 LUNA MIND</h3>
@@ -101,6 +109,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · Flask · OpenAI · Gemini API · Render</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>Abrir a Luna ↗</b></a> · <a href="Projetos/Luna-AI">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="Projetos/Joken-Po-Python"><img src="docs/capas/joken-po.webp" alt="Joken-Po: uma partida de pedra, papel e tesoura no terminal"></a>
       <h3>✊ Joken-Po em Python</h3>
@@ -108,6 +118,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · lógica de programação</sub><br><br>
       <a href="Projetos/Joken-Po-Python"><b>Ver o código ↗</b></a>
     </td>
+    <td width="50%" valign="top"></td>
   </tr>
 </table>
 
@@ -115,6 +126,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 
 | Projeto | Tecnologias | Status |
 |---|---|---|
+| [F.R.E.Y.A.](Projetos/FREYA) | Python · FastAPI · Qdrant · Neo4j · React · TypeScript | 🟡 Em desenvolvimento (roda localmente) |
 | [Iris](Projetos/Iris) | React · TypeScript · Vite · FastAPI · PostgreSQL | 🟡 Em desenvolvimento (prévia publicada) |
 | [KFKA · Acompanhamento Escolar](Projetos/KFKA) | HTML · CSS · JavaScript | 🟢 Publicado (protótipo) |
 | [Karol × Samsung (Galaxy S26 Ultra)](Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung) | Vite · Three.js · GSAP | 🟢 Publicado |
@@ -135,6 +147,11 @@ A pasta `Projetos` é a área principal: cada projeto fica separado e documentad
 
 ```text
 Projetos/
+├── FREYA/
+│   ├── src/freya/                (API FastAPI, Hybrid RAG, GraphRAG, motor prospectivo)
+│   ├── frontend/                 (interface React + Vite)
+│   ├── tests/, docs/
+│   └── README.md
 ├── KFKA/                         (protótipo do Projeto Interdisciplinar)
 │   ├── index.html, css/, js/
 │   └── README.md

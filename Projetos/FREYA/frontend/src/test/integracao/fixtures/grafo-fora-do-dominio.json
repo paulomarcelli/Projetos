@@ -1,0 +1,96 @@
+{
+ "nos": [
+  {
+   "id": "location:china",
+   "rotulo": "China",
+   "tipo": "location",
+   "papel": "focal",
+   "relevancia": 1.0,
+   "grau": 0,
+   "descricao": null,
+   "atributos": {},
+   "cenarios": [
+    "C1",
+    "C2",
+    "C3"
+   ]
+  }
+ ],
+ "arestas": [],
+ "evidencias": {
+  "E7": {
+   "id": "E7",
+   "tipo": "trecho",
+   "texto": "Shang-Chi returned to his apartment and began to pack a bag with his belongings, when Katy Chen arrived.\nChen demanded he explain to her what had occurred on the bus, but Shang-Chi told her he had no time and that he had to travel to China.\nHowever, Chen told him to wait for her at the airport, as she felt she needed to go with him.\nShang-Chi then left his apartment and headed for the San Francisco airport.\nThere he met Chen and while on the flight, explained to her his past and how he was trained to kill by his father.\nHe also revealed that his name wasn't Shaun, but Shang-Chi, which Chen teased him about, due to the two names sounded very similar.\nAfter landing in Macau, they headed for the postcard's origin.",
+   "fonte": {
+    "doc_id": "wiki:character:shang-chi:bio:7",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Shang-Chi",
+    "titulo": "Shang-Chi — Facing The Past › Trip to Macau",
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": "wiki:character:shang-chi:bio:7#0",
+   "aresta_id": null,
+   "entidades": [
+    "character:shang-chi"
+   ],
+   "nota": 0.01562
+  }
+ },
+ "sequencia": [
+  {
+   "passo": 0,
+   "motivo": "entidades focais",
+   "nos": [
+    "location:china"
+   ],
+   "arestas": []
+  }
+ ],
+ "caminhos": [],
+ "cenarios": [
+  {
+   "id": "C1",
+   "nome": "Sem escalada observável no recorte do dossiê",
+   "nos": [
+    "location:china"
+   ],
+   "arestas": []
+  },
+  {
+   "id": "C2",
+   "nome": "Escalada sem conexão documentada com o MCU",
+   "nos": [
+    "location:china"
+   ],
+   "arestas": []
+  },
+  {
+   "id": "C3",
+   "nome": "Escalada com envolvimento de atores do MCU",
+   "nos": [
+    "location:china"
+   ],
+   "arestas": []
+  }
+ ],
+ "legenda": {
+  "tipos_de_no": {
+   "location": {
+    "rotulo": "Local",
+    "quantidade": 1
+   }
+  },
+  "tipos_de_relacao": {},
+  "papeis": {
+   "focal": "citada na questão",
+   "ponte": "liga entidades focais",
+   "trajetoria": "momento ou obra da trajetória",
+   "contexto": "vizinhança relevante"
+  }
+ },
+ "focais": [
+  "location:china"
+ ]
+}

@@ -28,6 +28,12 @@ class Config(BaseSettings):
     freya_cors_origens: str = ""
     coleta_intervalo: float = 2.0
 
+    # Intelligence Day: notícias novas de marvel.com entram no RAG e no grafo durante a análise
+    intelligence_day: bool = True
+    intelligence_day_horas: float = 24.0  # intervalo mínimo entre duas varreduras das notícias
+    intelligence_day_maximo: int = 8  # notícias novas lidas por varredura
+    intelligence_day_trechos: int = 16  # chamadas ao modelo para extrair relações, por varredura
+
     # nomes dos índices
     colecao_vetorial: str = "freya_chunks"
     indice_lexical: str = "freya_chunks"

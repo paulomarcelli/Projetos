@@ -69,7 +69,10 @@ class ClienteWiki:
 
     def pagina(self, titulo: str) -> dict | None:
         """Página analisada (HTML), com cópia local comprimida. None se não existir."""
-        arq = self.raw / f"{slug(titulo)}.json.gz"
+        nome = slug(titulo)
+        if len(nome) > 40:  # nomes longos estouram o limite de 260 caracteres de caminho do Windows
+            nome = f"{nome[:32]}-{hashlib.sha1(titulo.encode()).hexdigest()[:8]}"
+        arq = self.raw / f"{nome}.json.gz"
         if arq.exists():
             return json.loads(gzip.decompress(arq.read_bytes()))
         d = self._get({"action": "parse", "page": titulo, "prop": "text|revid|displaytitle", "redirects": 1, "disablelimitreport": 1})

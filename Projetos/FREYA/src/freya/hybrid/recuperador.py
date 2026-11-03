@@ -10,6 +10,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from freya.conhecimento.corpus import Corpus
+from freya.conhecimento.modelos import Documento
 from freya.hybrid.chunking import Chunk, dividir
 from freya.hybrid.indices import Embedder, IndiceLexical, IndiceVetorial
 
@@ -24,6 +25,21 @@ class ResultadoHibrido(BaseModel):
 class RecuperadorHibrido:
     def __init__(self, embedder: Embedder, vetorial: IndiceVetorial, lexical: IndiceLexical, k_rrf: int = 60):
         self.embedder, self.vetorial, self.lexical, self.k_rrf = embedder, vetorial, lexical, k_rrf
+        self._por_doc: dict[str, list[Chunk]] = {}  # trechos indexados neste processo, por documento (leitura direta)
+
+    def _lembrar(self, chunks: list[Chunk]) -> None:
+        for c in chunks:
+            self._por_doc.setdefault(c.doc_id, []).append(c)
+
+    def trechos(self, doc_ids: list[str]) -> list[ResultadoHibrido]:
+        """Os trechos de documentos conhecidos, sem busca (os documentos-chave de um personagem estudado)."""
+        return [ResultadoHibrido(chunk=c, nota_rrf=0.0) for d in dict.fromkeys(doc_ids) for c in self._por_doc.get(d, [])]
+
+    def ultimos_capitulos(self, chave: str, n: int = 3) -> list[str]:
+        """Os últimos capítulos da biografia de uma entidade (onde ela está agora), do mais antigo ao mais recente."""
+        prefixo = f"wiki:{chave}:bio:"
+        caps = sorted((d for d in self._por_doc if d.startswith(prefixo) and d[len(prefixo):].isdigit()), key=lambda d: int(d[len(prefixo):]))
+        return caps[-n:]
 
     def indexar(self, corpus: Corpus) -> dict:
         chunks = [c for d in corpus.documentos.values() for c in dividir(d)]
@@ -33,7 +49,18 @@ class RecuperadorHibrido:
         if chunks:
             self.vetorial.indexar(chunks, vetores)
             self.lexical.indexar(chunks)
+        self._por_doc.clear()
+        self._lembrar(chunks)
         return {"documentos": len(corpus.documentos), "chunks": len(chunks)}
+
+    def adicionar(self, docs: list[Documento]) -> dict:
+        """Indexa documentos novos sem recriar os índices (as notícias do Intelligence Day)."""
+        chunks = [c for d in docs for c in dividir(d)]
+        if chunks:
+            self.vetorial.indexar(chunks, self.embedder.codificar([f"{c.titulo}\n{c.texto}" for c in chunks]))
+            self.lexical.indexar(chunks)
+        self._lembrar(chunks)
+        return {"documentos": len(docs), "chunks": len(chunks)}
 
     def buscar(self, consulta: str, k: int = 8, reserva: int = 6, por_documento: int = 2) -> list[ResultadoHibrido]:
         if not consulta.strip():

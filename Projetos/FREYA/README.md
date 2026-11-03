@@ -1,167 +1,152 @@
-# F.R.E.Y.A. — Marvel Knowledge Engine
+<div align="center">
 
-Inteligência prospectiva sobre o Universo Cinematográfico Marvel (MCU). Recebe um tema, acontecimento ou
-questão de investigação e devolve **uma análise prospectiva estruturada** e o **grafo** das entidades e
-relações que a sustentam. Não é um chatbot: não conversa, não guarda histórico de mensagens, não responde
-perguntas livres.
+# ✨ F.R.E.Y.A. · Inteligência prospectiva sobre o MCU
 
-```
-questão ─► Hybrid RAG (Qdrant + BM25 + RRF) ─┐
-        └► GraphRAG (Neo4j)  ────────────────┼─► registro de evidências ─► motor prospectivo ─► validador
-                                             │                                     │
-                                             └──────────────── grafo da investigação (nós, arestas, evidências, animação)
-```
+**Pergunte o que pode acontecer no Universo Marvel. Veja de onde vem cada resposta.**
 
-- **Hybrid RAG:** busca vetorial (embedding multilíngue, Qdrant) + BM25 (Elasticsearch, analisadores pt/en),
-  fundidas por Reciprocal Rank Fusion. Cada trecho mantém documento, URL e captura da fonte.
-- **GraphRAG:** grafo tipado no Neo4j (personagens, organizações, acontecimentos, locais, artefatos,
-  tecnologias, obras, pessoas reais). Toda aresta guarda a evidência literal e a fonte. Recupera vizinhança,
-  caminhos reais entre entidades e a trajetória de cada personagem (momentos e aparições por ano).
-- **Motor prospectivo:** monta um dossiê (pontes, tensões, centralidade, trajetórias, lacunas) e sintetiza
-  contexto, atores, relações sistêmicas, variáveis, tendências, incertezas críticas, desdobramentos e cenários.
-  Cada afirmação é `confirmado`, `inferencia` ou `hipotese` e cita evidências; o validador recusa o que não
-  se sustenta.
+Uma pergunta sobre personagens, relações ou acontecimentos do MCU vira uma análise prospectiva em texto corrido, ao lado do grafo das entidades que a sustentam, com a fonte de cada afirmação.
 
-A arquitetura completa está em [docs/ARQUITETURA.md](docs/ARQUITETURA.md) e a auditoria da versão anterior
-(Manus) em [docs/AUDITORIA.md](docs/AUDITORIA.md). O relatório desta entrega está em
-[docs/RELATORIO.md](docs/RELATORIO.md).
+[![Como rodar](https://img.shields.io/badge/COMO_RODAR-0a0a0b?style=for-the-badge&logo=visualstudiocode&logoColor=ff4d63)](COMO-RODAR-NO-VSCODE.md)
 
-## Requisitos
+![Python](https://img.shields.io/badge/Python_3.11+-0a0a0b?style=flat-square&logo=python&logoColor=ff4d63)
+![FastAPI](https://img.shields.io/badge/FastAPI-0a0a0b?style=flat-square&logo=fastapi&logoColor=ff4d63)
+![React](https://img.shields.io/badge/React_19-0a0a0b?style=flat-square&logo=react&logoColor=ff4d63)
+![TypeScript](https://img.shields.io/badge/TypeScript-0a0a0b?style=flat-square&logo=typescript&logoColor=ff4d63)
+![Vite](https://img.shields.io/badge/Vite-0a0a0b?style=flat-square&logo=vite&logoColor=ff4d63)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_4-0a0a0b?style=flat-square&logo=tailwindcss&logoColor=ff4d63)
+![Qdrant](https://img.shields.io/badge/Qdrant-0a0a0b?style=flat-square&logoColor=ff4d63)
+![Elasticsearch](https://img.shields.io/badge/Elasticsearch-0a0a0b?style=flat-square&logo=elasticsearch&logoColor=ff4d63)
+![Neo4j](https://img.shields.io/badge/Neo4j-0a0a0b?style=flat-square&logo=neo4j&logoColor=ff4d63)
+![OpenAI](https://img.shields.io/badge/API_compatível_com_OpenAI-0a0a0b?style=flat-square&logo=openai&logoColor=ff4d63)
 
-- Python 3.11+
-- Docker Compose v2 (Qdrant, Elasticsearch, Neo4j)
-- Opcional: chave da OpenAI (ou de um revendedor compatível, com `OPENAI_BASE_URL`) para o motor prospectivo;
-  sem ela, o motor roda no modo determinístico, sem cenários
+<br>
 
-## Instalação
+<img src="docs/readme/capa.webp" alt="Logo da F.R.E.Y.A.: três estrelas de quatro pontas em degradê escarlate sobre fundo branco, com F.R.E.Y.A. escrito em preto embaixo" width="720">
 
-```bash
-cp .env.example .env            # defina NEO4J_PASSWORD (e OPENAI_API_KEY, se tiver)
-docker compose up -d
-python -m venv .venv && source .venv/bin/activate
-pip install torch --index-url https://download.pytorch.org/whl/cpu   # opcional: torch só para CPU, mais leve
-pip install -e '.[dev]'
-```
+</div>
 
-O modelo de embedding (`paraphrase-multilingual-MiniLM-L12-v2`, ~470 MB) é baixado na primeira indexação.
+<br>
 
-## Servidor (online, com o RAG e o GraphRAG prontos)
+> [!NOTE]
+> **Projeto pessoal, roda no seu computador.** Não há site publicado: a API e a interface sobem localmente (passo a passo em [COMO-RODAR-NO-VSCODE.md](COMO-RODAR-NO-VSCODE.md)). O conteúdo de marvel.com **não** é publicado neste repositório (Termos de Uso da Marvel): a coleta roda na sua máquina e fica só nela.
 
-```bash
-cp .env.example .env            # NEO4J_PASSWORD, OPENAI_API_KEY (e OPENAI_BASE_URL, se for revendedor), FREYA_CORS_ORIGENS
-docker compose up -d --build
-curl http://SEU-SERVIDOR:8000/saude
-```
+## ✨ A ideia
 
-O `docker compose` sobe a API e os três bancos. Na **primeira** subida a API roda `freya preparar`:
-coleta marvel.com no próprio servidor (o repositório não traz esse conteúdo; ~45 min), junta com os corpora da
-wiki que já vêm no repositório e indexa tudo no Qdrant, no Elasticsearch e no Neo4j. Depois disso:
+A F.R.E.Y.A. não é um chatbot de curiosidades. Ela recebe uma questão de investigação ("Como a relação entre Thor e Loki pode evoluir?") e devolve **uma análise prospectiva**: o que já está estabelecido, quem são os atores e como se relacionam, o que está em aberto, o desdobramento mais plausível e os sinais que o confirmariam.
 
-- reiniciar não reindexa: a assinatura dos corpora fica no volume `freya_estado` e os bancos guardam os índices;
-- atualizar um corpus no repositório e rodar `docker compose up -d --build` reindexa sozinho;
-- `GET /saude` mostra o motor e o tamanho da base (`base.hybrid.chunks`, `base.grafo.nos`).
+O que a diferencia:
 
-Só a API (porta 8000) fica exposta; os bancos escutam em 127.0.0.1. Para o frontend chamar a API pelo
-navegador, liste o endereço dele em `FREYA_CORS_ORIGENS`. Recursos mínimos: ~4 GB de RAM e ~10 GB de disco
-(imagem da API ~3 GB, Elasticsearch ~2 GB). Em produção, coloque um proxy com HTTPS (Caddy, Nginx) na frente da porta 8000.
+- **Rastreável:** cada parágrafo diz se é **confirmado**, **inferência** ou **hipótese** e cita as evidências, que abrem a fonte original ao clicar.
+- **Validada:** um validador rebaixa ou remove o que não se sustenta (citação inexistente, "fato" sem evidência, entidade inventada).
+- **Atualizada:** antes de analisar, ela lê as notícias novas de marvel.com e estuda a fundo os personagens da pergunta.
 
-## Base de conhecimento
+## 💬 Como é uma análise
 
-Três camadas de fonte, todas da continuidade cinematográfica, cada fato marcado com a sua confiabilidade
-(`oficial` > `enciclopedia` > `wiki_fas`):
+<table>
+  <tr>
+    <td width="40%" valign="top"><b>À esquerda, o grafo</b><br>Só as entidades que a análise usa (os personagens da pergunta, as variantes deles e o que o raciocínio mobiliza), com as relações e a evidência de cada aresta. Dá para explorar, expandir vizinhos e buscar caminhos entre dois nós.</td>
+    <td width="60%" valign="top"><b>À direita, o chat</b><br>A pergunta e a resposta da F.R.E.Y.A. em parágrafos corridos, como um analista escreveria, sem seções. Cada parágrafo traz o selo epistêmico e os chips das evidências. Os limites da análise ficam recolhidos no fim.</td>
+  </tr>
+</table>
 
-1. **Coleta oficial de marvel.com** (`freya coletar`): páginas de filmes, séries e perfis *on-screen* de
-   personagens, partindo da cronologia oficial do MCU. Lê só os blocos `live_action` (os de quadrinhos são
-   descartados e contados). Respeita o `robots.txt`, espera 2 s entre requisições, identifica-se como
-   F.R.E.Y.A. e guarda uma cópia de cada página em `data/raw/` (com data e hash) para conferir as evidências.
-   **O conteúdo de marvel.com não vai para o repositório** (`data/raw/`, `coletado/` e `unificado/` estão no
-   `.gitignore`): os Termos de Uso da Marvel não permitem redistribuí-lo, e cada servidor o coleta sozinho.
-   Os corpora da wiki (`data/corpus/wiki/` e `extraido/`, CC BY-SA, com atribuição) estão no repositório.
-2. **Corpus da Manus** (`data/corpus/manus_corpus.jsonl`): 37 páginas oficiais resumidas, migradas para o
-   modelo novo (identidades tipadas, predicados normalizados, direção corrigida).
-3. **Aprofundamento** (`freya aprofundar`), a partir das entidades oficiais:
-   - **wiki do MCU** (marvelcinematicuniverse.fandom.com, CC BY-SA 3.0, fonte secundária): para cada personagem
-     oficial, a página cuja identidade confere; dela vêm filiações (atuais e antigas), parentes, aliados e
-     inimigos com a nuance da relação ("Adoptive Brother, Former Teammate"), estado (vivo/morto) e a biografia
-     em capítulos cronológicos ancorados nas obras citadas (logo, no ano). Trechos que a própria wiki marca
-     como de canonicidade incerta são descartados. Das páginas de obra vêm o enredo e as aparições
-     (personagens, organizações, locais, acontecimentos, artefatos);
-   - **extração de relações dos enredos** pelo modelo de linguagem: só entre entidades já existentes, só
-     predicados da ontologia, e só com citação literal conferida no texto; cada fato leva a obra e o ano;
-   - **Wikipedia** (CC BY-SA 4.0): o módulo existe (`coleta/wikipedia.py`), mas a Wikimedia bloqueia o acesso
-     automatizado em alguns ambientes; rode de uma rede que ela aceite.
+Cada pergunta gera **uma única análise prospectiva** (um cenário: o desdobramento mais plausível), e não um leque de cenários alternativos.
 
-```bash
-freya coletar                   # marvel.com, ~45 min; retoma de onde parou
-freya aprofundar                # wiki do MCU + extração dos enredos (usa o modelo; ~1 h)
-freya ingerir                   # unifica, resolve entidades, valida e indexa nos três serviços
-```
+## 🧠 O que acontece quando você pergunta
 
-`freya ingerir` grava `data/corpus/unificado/` e `relatorio.json` (entidades fundidas, nomes ambíguos,
-fatos descartados e por quê).
+| Etapa | O que faz |
+|---|---|
+| **1. Intelligence Day** | Uma vez por dia, lê as notícias novas de filmes e séries em marvel.com e as junta ao RAG e ao grafo. Obras recém-anunciadas (como *Avengers: Doomsday* e *VisionQuest*) viram nós pelas tags oficiais da notícia. |
+| **2. Estudo dos personagens** | Na primeira vez que um personagem aparece, lê na wiki do MCU as variantes dele com mais história e o enredo das séries, episódio por episódio. É o que faz a análise saber que o Loki da série é a variante de 2012, e não o que morre em *Guerra Infinita*, e como a série termina. |
+| **3. Recuperação** | **Hybrid RAG** (busca vetorial no Qdrant + BM25, fundidas por Reciprocal Rank Fusion) e **GraphRAG** (vizinhança, caminhos e trajetórias no Neo4j). Os documentos-chave de cada personagem estudado entram sempre. |
+| **4. Análise prospectiva** | O motor monta um dossiê (pontes, tensões, centralidade, trajetórias, lacunas) e o modelo de linguagem escreve a análise citando só ids do registro de evidências. |
+| **5. Validação e grafo** | Cada afirmação é conferida; o grafo mostrado é recortado ao que a análise usa. |
 
-## Uso
+A interface acompanha as etapas ao vivo. Se as notícias ou a wiki estiverem fora do ar, a etapa registra o erro e a análise segue com a base que já tem.
 
-```bash
-freya investigar "Qual o futuro dos Vingadores depois de Thanos?" --horizonte "após Avengers: Endgame"
-freya servir                     # API em http://127.0.0.1:8000 (documentação em /docs)
-```
+## 🧩 As peças
 
-Sem os serviços, use `--modo memoria` (indexa em memória a cada execução).
-
-### API
-
-| Método | Rota | O que faz |
+| Peça | Onde | Papel |
 |---|---|---|
-| POST | `/investigacoes` | cria uma investigação `{questao, horizonte?}` e a executa em segundo plano |
-| GET | `/investigacoes/{id}` | estado, etapas, análise prospectiva e evidências |
-| GET | `/investigacoes/{id}/grafo` | grafo da investigação (contrato abaixo) |
-| GET | `/investigacoes/{id}/grafo/expandir?no=` | vizinhos de um nó, com evidências |
-| GET | `/investigacoes/{id}/grafo/caminho?de=&para=` | caminhos entre dois nós (`existe: false` se não houver) |
-| GET | `/investigacoes/{id}/evidencias/{eid}` | uma evidência e sua fonte |
-| GET | `/saude` | modo do motor e armazenamento do grafo |
+| Base de conhecimento | `src/freya/conhecimento/` | Coleta de marvel.com (respeita o robots.txt), wiki do MCU, Wikipedia, extração de relações com citação literal, unificação e ontologia |
+| Hybrid RAG | `src/freya/hybrid/` | Trechos com fonte, embeddings multilíngues em cache, Qdrant + BM25 + RRF |
+| GraphRAG | `src/freya/graph/` | Grafo tipado (personagens, obras, organizações, artefatos, acontecimentos), Neo4j ou NetworkX |
+| Intelligence Day | `src/freya/intelligence_day/` | Notícias novas de marvel.com no RAG e no grafo, durante a análise |
+| Estudo dos personagens | `src/freya/estudo/` | Variantes e enredo das séries, lidos uma vez e guardados |
+| Motor prospectivo | `src/freya/prospectivo/` | Dossiê, síntese pelo modelo de linguagem e validador epistêmico |
+| API | `src/freya/api/` | FastAPI: criar, acompanhar, guardar e excluir análises; ler e explorar o grafo |
+| Interface | `frontend/` | React 19 + TypeScript + Vite + Tailwind, identidade Scarlet Reality, modo claro e escuro |
 
-### Grafo para o frontend
+## 🛠️ Como rodar
 
-`GET /investigacoes/{id}/grafo` devolve a estrutura que um frontend desenha e anima (não é imagem):
-
-- `nos`: `id`, `rotulo`, `tipo`, `papel` (`focal`, `ponte`, `trajetoria`, `contexto`), `relevancia` (0–1), `grau`, `cenarios`
-- `arestas`: `origem`, `destino`, `predicado`, `rotulo` (pt), `dirigida`, `tipo_epistemico`, `peso`, `evidencias`, `ordem`, `ano`, `em_caminhos`, `cenarios`
-- `evidencias`: texto literal ou campo da página, URL, documento, captura
-- `sequencia`: passos de revelação (focais → caminhos → relações diretas → trajetórias → contexto)
-- `caminhos`: caminhos entre as entidades focais, para destacar
-- `cenarios`: nós e arestas que cada cenário mobiliza
-- `legenda`: tipos de nó e de relação presentes, com rótulos em português
-
-## Testes
+O passo a passo completo, para o VS Code e sem Docker, está em **[COMO-RODAR-NO-VSCODE.md](COMO-RODAR-NO-VSCODE.md)**. Em resumo:
 
 ```bash
-pytest                          # unidade: sem serviços e sem chamadas pagas (modelo simulado)
-pytest -m integracao            # integração: precisa de docker compose up -d e NEO4J_PASSWORD
+# terminal 1 — a API
+python -m venv .venv
+.venv\Scripts\activate
+pip install torch --index-url https://download.pytorch.org/whl/cu128   # GPU NVIDIA; sem GPU: .../whl/cpu
+pip install -e ".[dev]"
+copy .env.example .env                                                # preencha OPENAI_API_KEY (e OPENAI_BASE_URL, se usar um revendedor)
+freya coletar                                                         # marvel.com, só na primeira vez
+freya servir --modo memoria                                           # http://127.0.0.1:8000
+
+# terminal 2 — a interface
+cd frontend
+npm install
+npm run dev                                                           # http://localhost:5173
 ```
 
-Os testes do motor, do grafo e da API usam um corpus sintético (entidades fictícias Alfa, Beta, Gama):
-nenhum fato do MCU é inventado nos testes. Os testes do leitor de marvel.com usam trechos reais capturados.
+- **Primeira subida:** monta a base e guarda os embeddings em `data/cache/`. Com GPU leva menos de um minuto; só com CPU, de alguns minutos a quase uma hora, conforme o processador. Depois sobe em segundos.
+- **Sem chave de API:** o motor roda no modo determinístico (só o que as evidências sustentam, sem projeção).
+- **Em servidor:** `docker compose up -d` sobe a API com Qdrant, Elasticsearch e Neo4j, e a base é indexada uma vez só. Detalhes em [docs/TECNICO.md](docs/TECNICO.md).
 
-## Estrutura
+> [!TIP]
+> No Windows, deixe o projeto num caminho curto (por exemplo `C:\projetos\FREYA`): caminhos longos passam do limite de 260 caracteres e quebram o pip e os caches.
 
-```
-src/freya/
-  conhecimento/   ontologia, modelos, corpus, migração da Manus, resolução de entidades, ingestão
-    coleta/       coletor de marvel.com e leitor das páginas (só live_action)
-  hybrid/         chunking, índices (Qdrant, Elasticsearch, memória), recuperador com RRF
-  graph/          armazenamento (Neo4j, NetworkX), reconhecimento de entidades, recuperador
-  evidencias/     registro de evidências (ids E1, E2… compartilhados pelos três mecanismos)
-  llm/            interface com o modelo (OpenAI) e modelo simulado
-  prospectivo/    modelos da análise, motor, validador epistêmico
-  grafo_visual/   grafo da investigação para o frontend
-  investigacao/   orquestrador e persistência (SQLite)
-  api/            FastAPI
-legado/manus/     entrega original da Manus, preservada para referência
+## 🧪 Testes
+
+```bash
+pytest                      # backend: unidade, sem rede (dados sintéticos e coletores falsos)
+cd frontend && npm test     # interface
 ```
 
-## Segurança e procedência
+Os testes de integração com Qdrant, Elasticsearch e Neo4j de verdade ficam marcados com `integracao` e rodam com `pytest -m integracao`.
 
-- Nenhum segredo no código: tudo vem do `.env` (fora do git). `NEO4J_PASSWORD` é obrigatória.
-- Só continuidade MCU: o corpus recusa documentos de outra continuidade e o leitor descarta blocos de quadrinhos.
-- Toda relação no grafo tem evidência literal e fonte; o motor só cita evidências do registro.
+## 📁 Estrutura
+
+```text
+FREYA/
+├── src/freya/
+│   ├── conhecimento/       coleta, unificação, ontologia, extração e conhecimento incremental
+│   ├── hybrid/             Hybrid RAG (Qdrant, BM25, RRF)
+│   ├── graph/              GraphRAG (Neo4j, NetworkX)
+│   ├── intelligence_day/   notícias novas de marvel.com
+│   ├── estudo/             estudo dos personagens (variantes e episódios)
+│   ├── prospectivo/        motor e validador
+│   ├── grafo_visual/       o grafo da análise para a interface
+│   ├── investigacao/       orquestrador e histórico
+│   └── api/                FastAPI
+├── frontend/               a interface (React + Vite)
+├── data/corpus/            corpora publicáveis (wiki do MCU, CC BY-SA); o de marvel.com fica só local
+├── tests/                  testes do backend
+├── docs/                   documentação técnica, arquitetura, interface, auditoria e relatório
+├── legado/manus/           a versão anterior, auditada em docs/AUDITORIA.md
+└── COMO-RODAR-NO-VSCODE.md
+```
+
+## ⚖️ Fontes e licenças
+
+| Fonte | Peso na análise | Uso |
+|---|---|---|
+| marvel.com (perfis, obras e notícias oficiais) | maior | Coletado na sua máquina, respeitando o robots.txt; não é redistribuído |
+| Wikipedia (CC BY-SA 4.0) | médio | Enciclopédia, para aprofundar |
+| Wiki do MCU, Fandom (CC BY-SA 3.0) | menor | Biografias, variantes e enredo dos episódios |
+
+Só a continuidade cinematográfica (live action) entra na análise: quadrinhos e animações ficam de fora.
+
+## 📚 Documentação
+
+- [docs/TECNICO.md](docs/TECNICO.md): instalação com Docker, pipeline de dados, API e contrato do grafo
+- [docs/ARQUITETURA.md](docs/ARQUITETURA.md): a arquitetura e as decisões
+- [docs/FRONTEND.md](docs/FRONTEND.md): a interface, os contratos e o que falta
+- [docs/AUDITORIA.md](docs/AUDITORIA.md) e [docs/RELATORIO.md](docs/RELATORIO.md): a auditoria da versão anterior e o relatório da entrega

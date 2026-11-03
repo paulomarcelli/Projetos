@@ -125,7 +125,7 @@ def dossie_em_texto(d: Dossie) -> str:
         linhas.append("AMBIGUIDADES DE NOME: " + "; ".join(f"'{a['trecho']}' → {a['escolhida']} (também: {', '.join(a['alternativas'])})" for a in d.ambiguidades))
     linhas += ["", "EVIDÊNCIAS (cite somente estes ids):"]
     for e in d.registro.itens.values():
-        linhas.append(f"[{e.id}] ({e.tipo}; {e.fonte.titulo or e.fonte.doc_id}; {e.fonte.url}) {e.texto[:600]}")
+        linhas.append(f"[{e.id}] ({e.tipo}; {e.fonte.titulo or e.fonte.doc_id}; {e.fonte.url}) {e.texto[:900]}")
     linhas += ["", "RELAÇÕES DO GRAFO EM TORNO DAS FOCAIS:"]
     def extra(eid: str) -> str:
         a = d.detalhes.get(d.registro.itens[eid].aresta_id or "")
@@ -170,11 +170,25 @@ nomes (ex.: "Loki"), nunca as chaves, e não coloque ids de evidência no texto:
 5. Só a continuidade cinematográfica (MCU). Não use conhecimento de quadrinhos.
 6. Pese as fontes: "fonte oficial" (marvel.com) acima de "Wikipedia" acima de "wiki de fãs". Use a nuance e o ano \
 das relações (ex.: "Former Teammate", 2016) para ler a evolução no tempo: relações antigas não são atuais.
-7. O contexto contém apenas fatos confirmados. Cenários são condicionais: lógica, premissas, desenvolvimento, \
+7. O contexto contém apenas fatos confirmados. O cenário é condicional: lógica, premissas, desenvolvimento, \
 consequências e sinais de confirmação, cada parte com seu tipo e suas evidências.
-8. Construa de 2 a 4 cenários contrastantes a partir das incertezas críticas. Registre em "limitacoes" o que a \
-base não cobre.
-9. Responda só com o objeto JSON pedido, em português."""
+8. Estude cada personagem antes de projetar: qual versão (variante) a questão envolve, de onde ela vem e onde ela \
+está AGORA, pela obra mais recente em que aparece (o enredo dos episódios e os últimos capítulos da biografia dizem \
+isso). Variantes são pessoas diferentes: o Loki da série "Loki" é a variante de 2012, não o que morre em "Guerra \
+Infinita". Uma relação vale pelo estado mais recente, não pelo histórico inteiro.
+9. Faça UMA única análise prospectiva: exatamente 1 cenário em "cenarios", o desdobramento mais plausível a partir \
+das incertezas críticas. Não proponha cenários alternativos.
+10. "resposta" é o que o usuário lê: de 4 a 7 parágrafos corridos, sem títulos, listas ou marcadores, que respondem \
+à questão explicando o raciocínio — o que já está estabelecido, quem são os atores e como se relacionam, o que \
+está em aberto, o desdobramento projetado e os sinais que o confirmariam. Cada parágrafo é um item com as \
+evidências que cita; o tipo do parágrafo é o mais especulativo do que ele afirma (se projeta o futuro, "hipotese"). \
+Escreva como um analista que conhece o MCU a fundo: afirmativo e específico, nomeando obras, episódios e \
+acontecimentos. Nunca fale do "dossiê", das "evidências fornecidas" ou do processo, e não abra parágrafos com \
+ressalvas: a incerteza fica no tipo do parágrafo, não no texto.
+11. "limitacoes": no máximo 2 itens de até 20 palavras, e só lacunas que mudariam a conclusão.
+12. Nos campos de entidades, liste só as entidades que a análise realmente usa: elas formam o grafo mostrado ao \
+usuário.
+13. Responda só com o objeto JSON pedido, em português."""
 
 
 def _deterministico(d: Dossie) -> CorpoDaAnalise:
@@ -217,6 +231,19 @@ def _deterministico(d: Dossie) -> CorpoDaAnalise:
                                                                          tipo=TipoEpistemico.HIPOTESE)))
     c.limitacoes.append("Modo determinístico (sem OPENAI_API_KEY): a análise lista só o que as evidências sustentam diretamente. "
                         "Desdobramentos e cenários exigem o modelo de linguagem e não foram gerados.")
+    # a resposta em parágrafos: o que as seções acima já sustentam, sem redação criativa
+    if c.contexto:
+        c.resposta.append(Afirmacao(texto=" ".join(a.texto for a in c.contexto[:3]), tipo=TipoEpistemico.CONFIRMADO,
+                                    evidencias=[e for a in c.contexto[:3] for e in a.evidencias]))
+    rels = [f for at in c.atores for f in at.fundamentos[:3]]
+    if rels:
+        c.resposta.append(Afirmacao(texto="No grafo: " + "; ".join(f.texto for f in rels[:8]) + ".", tipo=TipoEpistemico.CONFIRMADO,
+                                    evidencias=[e for f in rels[:8] for e in f.evidencias]))
+    if c.incertezas_criticas:
+        c.resposta.append(Afirmacao(texto="Em aberto: " + "; ".join(x.por_que_importa.texto for x in c.incertezas_criticas[:3]),
+                                    tipo=TipoEpistemico.INFERENCIA, evidencias=[e for x in c.incertezas_criticas[:3] for e in x.por_que_importa.evidencias]))
+    c.resposta.append(Afirmacao(texto="Sem o modelo de linguagem, a F.R.E.Y.A. não projeta o desdobramento: esta resposta reúne só o que as fontes "
+                                      "registram.", tipo=TipoEpistemico.HIPOTESE))
     return c
 
 
@@ -228,6 +255,7 @@ class MotorProspectivo:
         d = montar_dossie(questao, horizonte, hib, gr)
         if self.modelo is not None and d.registro.itens:
             corpo = self.modelo.gerar(SISTEMA, dossie_em_texto(d), CorpoDaAnalise)
+            corpo.cenarios = corpo.cenarios[:1]  # uma única análise prospectiva
             modo, nome = "modelo", self.modelo.nome
         else:
             corpo, modo, nome = _deterministico(d), "deterministico", None
@@ -235,8 +263,7 @@ class MotorProspectivo:
             corpo.limitacoes.append("Nenhuma evidência foi recuperada para esta questão; a base não cobre o tema.")
         conhecidas = set(d.nomes)
         corpo, rv = validar(corpo, d.registro, conhecidas, d.nomes)
-        if d.ambiguidades:
-            corpo.limitacoes.append("Nomes ambíguos na questão: " + "; ".join(f"'{a['trecho']}' foi lido como {a['escolhida']}" for a in d.ambiguidades))
+        corpo.limitacoes = corpo.limitacoes[:3]
         analise = AnaliseProspectiva(**corpo.model_dump(), questao=questao, horizonte=horizonte, modo=modo, modelo=nome,
                                      gerada_em=datetime.now(timezone.utc), validacao=rv)
         return analise, d

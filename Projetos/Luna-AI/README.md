@@ -126,14 +126,14 @@ A Luna fala com um modelo de linguagem por provedor. A ordem é:
 1. **OpenAI (ou serviço compatível)**, se `OPENAI_API_KEY` estiver no `.env`. Também aceita um serviço de terceiros com a mesma interface, definindo o endereço e o modelo:
    ```text
    OPENAI_API_KEY=sua-chave
-   LUNA_OPENAI_URL=https://endereco-do-servico/v1/chat/completions
+   OPENAI_BASE_URL=https://endereco-do-servico/v1
    LUNA_OPENAI_MODELO=nome-do-modelo
    ```
 2. **Gemini**, como padrão e como **reserva**: se o primeiro falhar (chave recusada, limite, instabilidade), o Gemini assume e a conversa não para.
 
 Para usar **só** o Gemini, ponha `LUNA_PROVEDOR=gemini` no `.env`.
 
-> 🔎 **Privacidade com serviços de terceiros:** se você apontar `LUNA_OPENAI_URL` para um revendedor, tudo o que a pessoa escrever passa pelos servidores dele antes de chegar à IA. Para um app de apoio emocional, prefira a OpenAI direta ou o Gemini.
+> 🔎 **Privacidade com serviços de terceiros:** se você apontar `OPENAI_BASE_URL` (ou `LUNA_OPENAI_URL`) para um revendedor, tudo o que a pessoa escrever passa pelos servidores dele antes de chegar à IA. Para um app de apoio emocional, prefira a OpenAI direta ou o Gemini.
 
 ## 🎙️ Voz
 
@@ -164,7 +164,7 @@ O workflow `.github/workflows/pages.yml` publica a pasta `web/` em `https://paul
 O arquivo `render.yaml` (na raiz do repositório) descreve o serviço:
 
 1. No Render: **New → Blueprint**, escolha o repositório e a branch `main`.
-2. Informe as chaves quando ele pedir (`GEMINI_API_KEY`, `OPENAI_API_KEY`, `LUNA_OPENAI_URL`, `LUNA_OPENAI_MODELO`). Elas ficam guardadas no Render, não no código.
+2. Informe as chaves quando ele pedir (`GEMINI_API_KEY`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `LUNA_OPENAI_MODELO`). Elas ficam guardadas no Render, não no código.
 3. Aguarde o status **Live** e confira `https://luna-mind.onrender.com/status`.
 
 Já vêm configurados: `LUNA_ORIGENS_PERMITIDAS=https://paulomarcelli.github.io` (só o seu site pode usar o servidor), `LUNA_PROXY=1` (enxerga o endereço real de quem acessa) e `LUNA_LIMITE_CHAT_HORA=60` (**60 mensagens por hora por pessoa**, para proteger os créditos das chaves).

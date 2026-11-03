@@ -13,11 +13,17 @@ import re
 import threading
 import time
 
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 
-import luna
-import rag
-import voz_tempo_real
+# Lê o .env ANTES de importar os módulos da Luna e de ler as variáveis abaixo: várias são lidas
+# na importação (LUNA_MODELO, LUNA_LIMITE_CHAT_HORA, LUNA_ORIGENS_PERMITIDAS...). Vale também com
+# gunicorn. Variáveis já definidas no sistema (ex.: no Render) têm prioridade sobre o .env.
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+
+import luna  # noqa: E402
+import rag  # noqa: E402
+import voz_tempo_real  # noqa: E402
 
 app = Flask(__name__, static_folder="web", static_url_path="")
 app.config["MAX_CONTENT_LENGTH"] = 512 * 1024            # corta requisições gigantes antes de ler
@@ -183,8 +189,6 @@ def voz_avaliar():
 
 
 if __name__ == "__main__":
-    from flask.cli import load_dotenv
-    load_dotenv()                                             # lê o arquivo .env, se existir
     logging.basicConfig(level=logging.INFO)
     if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
         log.warning("GEMINI_API_KEY não definida: o chat vai avisar que a chave falta (os textos de segurança continuam funcionando).")

@@ -7,7 +7,7 @@
 Cada projeto tem a própria pasta, README e instruções de uso.<br>
 Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`.
 
-[![Abrir o portfólio](https://img.shields.io/badge/ABRIR_OS_SITES-0a0a0b?style=for-the-badge&logo=githubpages&logoColor=white)](https://paulomarcelli.github.io/Projetos/)
+[![Abrir o portfólio](https://img.shields.io/badge/ABRIR_O_PORTF%C3%93LIO-0a0a0b?style=for-the-badge&logo=githubpages&logoColor=c8102e)](https://paulomarcelli.github.io/Projetos/Projetos/Portfolio/)
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
@@ -32,12 +32,21 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 <table>
   <tr>
     <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Portfolio/"><img src="docs/capas/portfolio.webp" alt="Portfólio: paulo marcelli em letras grandes sobre um túnel escuro com as telas dos projetos"></a>
+      <h3>🌀 Portfólio</h3>
+      O meu portfólio: o scroll entra num túnel 3D com as telas dos projetos, e F.R.E.Y.A., Iris, LUNA MIND e KFKA saem da parede como cases.<br>
+      <sub>Vite · Three.js · GSAP · JavaScript</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Portfolio/"><b>Abrir o portfólio ↗</b></a> · <a href="Projetos/Portfolio">Código</a>
+    </td>
+    <td width="50%" valign="top">
       <a href="Projetos/FREYA"><img src="docs/capas/freya.webp" alt="Logo da F.R.E.Y.A.: três estrelas em degradê escarlate sobre fundo branco, com F.R.E.Y.A. em preto embaixo"></a>
       <h3>✨ F.R.E.Y.A.</h3>
       Inteligência prospectiva sobre o MCU: análise em texto corrido ao lado do grafo que a sustenta, com notícias novas e estudo dos personagens a cada pergunta.<br>
       <sub>Python · FastAPI · Hybrid RAG · GraphRAG (Neo4j) · React · TypeScript · roda localmente</sub><br><br>
       <a href="Projetos/FREYA"><b>Ver o código ↗</b></a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><img src="docs/capas/iris.webp" alt="Iris: Entenda o presente. Explore os futuros., com futuros em dourado"></a>
       <h3>👁️ Iris</h3>
@@ -45,8 +54,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>React · TypeScript · FastAPI · em desenvolvimento (prévia com dados de exemplo)</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Iris/"><b>Abrir a prévia ↗</b></a> · <a href="Projetos/Iris">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><img src="docs/capas/kfka.webp" alt="KFKA: A escola e a família acompanhando o aluno juntas"></a>
       <h3>🎒 KFKA</h3>
@@ -54,6 +61,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript · protótipo com dados fictícios</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/KFKA/"><b>Abrir o protótipo ↗</b></a> · <a href="Projetos/KFKA">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><img src="docs/capas/karol-samsung.webp" alt="Karol × Samsung: o Galaxy S26 Ultra em 3D com o título A cena na palma da mão"></a>
       <h3>📱 Karol × Samsung</h3>
@@ -61,8 +70,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Vite · Three.js · GSAP · projeto pessoal de fã</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><img src="docs/capas/landing-karol.webp" alt="Landing Karol Sevilla: o nome KAROL com a tinta revelando letras infladas em azul-bebê"></a>
       <h3>💙 Landing page Karol Sevilla</h3>
@@ -70,6 +77,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Vite · GSAP · WebGL · projeto acadêmico fictício</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/"><img src="docs/capas/site-karol.webp" alt="Site Karol Sevilla no estilo de um app de música, com a foto dela e a história em 3 capítulos"></a>
       <h3>🌐 Site Karol Sevilla</h3>
@@ -77,8 +86,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/"><b>Abrir site ↗</b></a> · <a href="https://paulomarcelli.github.io/Projetos/primeira-versao/">1ª versão</a> · <a href="Projetos/Site-Karol-Sevilla">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><img src="docs/capas/geometry-heroes.webp" alt="Tela inicial do Geometry Heroes com seis heróis em quadrinhos e o botão jogar"></a>
       <h3>🎮 Geometry Heroes</h3>
@@ -86,6 +93,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>JavaScript · Phaser 3 · Programação Orientada a Objetos</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><b>Jogar ↗</b></a> · <a href="Projetos/Tarefa-POO-JavaScript">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><img src="docs/capas/cenicienta.webp" alt="Site Cenicienta com o título em rosa neon sobre o clipe"></a>
       <h3>👠 Cenicienta</h3>
@@ -93,8 +102,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><b>Abrir site ↗</b></a> · <a href="Projetos/Cenicienta">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><img src="docs/capas/una-noche-mas.webp" alt="Site Una Noche Más com o título em rosa e a Karol em cena do clipe"></a>
       <h3>🌙 Una Noche Más</h3>
@@ -102,6 +109,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><b>Abrir site ↗</b></a> · <a href="Projetos/Una-Noche-Mas">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
       <h3>🌙 LUNA MIND</h3>
@@ -109,8 +118,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · Flask · OpenAI · Gemini API · Render</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>Abrir a Luna ↗</b></a> · <a href="Projetos/Luna-AI">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="Projetos/Joken-Po-Python"><img src="docs/capas/joken-po.webp" alt="Joken-Po: uma partida de pedra, papel e tesoura no terminal"></a>
       <h3>✊ Joken-Po em Python</h3>
@@ -118,7 +125,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · lógica de programação</sub><br><br>
       <a href="Projetos/Joken-Po-Python"><b>Ver o código ↗</b></a>
     </td>
-    <td width="50%" valign="top"></td>
   </tr>
 </table>
 
@@ -148,6 +154,10 @@ A pasta `Projetos` é a área principal: cada projeto fica separado e documentad
 
 ```text
 Projetos/
+├── Portfolio/
+│   ├── src/                      (seções, túnel em Three.js, animações)
+│   ├── public/trabalhos/         (as telas dos projetos)
+│   └── README.md
 ├── FREYA/
 │   ├── src/freya/                (API FastAPI, Hybrid RAG, GraphRAG, motor prospectivo)
 │   ├── frontend/                 (interface React + Vite)

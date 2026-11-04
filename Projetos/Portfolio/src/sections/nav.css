@@ -1,0 +1,27 @@
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px var(--margem);
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1);
+  pointer-events: none;
+}
+.nav > * { pointer-events: auto; }
+.nav.is-escondida { transform: translateY(-110%); }
+
+/* véu off-white atrás da nav quando ela volta no meio da página */
+.nav__veu {
+  position: absolute; inset: 0 0 -28px 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(to bottom, var(--fundo) 0%, rgb(var(--fundo-rgb) / .92) 55%, rgb(var(--fundo-rgb) / 0) 100%);
+  opacity: 0; transition: opacity .3s ease;
+}
+.nav.com-veu .nav__veu { opacity: 1; }
+
+.nav__marca { width: 104px; color: var(--texto); }
+.nav__links { display: flex; gap: 6px; }
+
+@media (max-width: 720px) {
+  .nav { padding: 14px var(--margem); }
+  .nav__marca { width: 84px; }
+  .nav__links { gap: 4px; }
+  .nav__links .pilula { padding: 0 11px; }
+}

@@ -42,6 +42,11 @@ jobs:
         run: |
           npm ci
           npm run build:previa
+      - name: Gerar o portfólio (Vite + Three.js)
+        working-directory: Projetos/Portfolio
+        run: |
+          npm ci
+          npm run build
       - name: Montar os sites
         run: |
           rm -rf _site
@@ -71,6 +76,9 @@ jobs:
           # KFKA: o protótipo estático (sem testes e documentação)
           mkdir -p _site/Projetos/KFKA
           cp -a Projetos/KFKA/index.html Projetos/KFKA/css Projetos/KFKA/js _site/Projetos/KFKA/
+          # Portfólio: só o resultado do build (dist/)
+          mkdir -p _site/Projetos/Portfolio
+          cp -a Projetos/Portfolio/dist/. _site/Projetos/Portfolio/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

@@ -1,0 +1,42 @@
+/* Design system do portfólio: todas as cores, fontes, tamanhos e margens.
+   Tema escuro, porque as telas dos projetos são escuras (o fundo do site e o do túnel mudam juntos:
+   o túnel lê a mesma cor em src/motion/cena.js, COR_FUNDO). Acento: o vermelho da F.R.E.Y.A. */
+:root {
+  /* cores */
+  --fundo: #0e0e0f;
+  --fundo-rgb: 14 14 15;
+  --texto: #f2f0eb;
+  --secundario: #9b978f;
+  --fio: #2b2a28;
+  --pilula: #1e1e20;
+  --acento: #c8102e;
+  --acento-2: #f2c45a;
+  --grade: #3a3936;
+  --papel: #161617;
+
+  /* tipografia */
+  --fonte: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --peso-normal: 400;
+  --peso-medio: 500;
+  --t-pequeno: 13px;
+  --tracking-nome: -0.045em;
+  --t-frase: clamp(24px, 2.9vw, 52px);
+  --t-cliente: clamp(56px, 8.4vw, 150px);
+  --t-manifesto: clamp(40px, 5.5vw, 92px);
+  --t-titulo-metodo: clamp(32px, 3.3vw, 56px);
+  --t-titulo-indice: clamp(44px, 5.4vw, 92px);
+  --t-linha-indice: clamp(26px, 2.9vw, 46px);
+  --t-depoimento: clamp(28px, 2.7vw, 46px);
+
+  /* assinatura: proporção altura/largura do "paulo marcelli" */
+  --assinatura-razao: 0.168;
+
+  /* espaço */
+  --margem: clamp(18px, 2.4vw, 40px);
+  --nav-altura: 32px;
+  --raio-pilula: 999px;
+}
+
+@media (max-width: 720px) {
+  :root { --nav-altura: 30px; }
+}

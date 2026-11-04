@@ -126,6 +126,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 
 | Projeto | Tecnologias | Status |
 |---|---|---|
+| [Portfólio](Projetos/Portfolio) · [abrir ↗](https://paulomarcelli.github.io/Projetos/Projetos/Portfolio/) | Vite · Three.js · GSAP · JavaScript | 🟢 Publicado |
 | [F.R.E.Y.A.](Projetos/FREYA) | Python · FastAPI · Qdrant · Neo4j · React · TypeScript | 🟡 Em desenvolvimento (roda localmente) |
 | [Iris](Projetos/Iris) | React · TypeScript · Vite · FastAPI · PostgreSQL | 🟡 Em desenvolvimento (prévia publicada) |
 | [KFKA · Acompanhamento Escolar](Projetos/KFKA) | HTML · CSS · JavaScript | 🟢 Publicado (protótipo) |

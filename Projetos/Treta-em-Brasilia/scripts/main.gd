@@ -11,7 +11,27 @@ func _ready() -> void:
 	# O jogo pensa em 1280x720, mas desenha numa tela de 480x270 ampliada sem suavização:
 	# é isso que dá o visual de pixel dos fliperamas de 16 bits.
 	scale = Vector2.ONE * Desenho.ESCALA
+	# aviso para virar o celular quando a tela está em pé
+	var aviso := Camada.new()
+	aviso.z_index = 100
+	aviso.desenhar = func(c: CanvasItem) -> void:
+		var tam := DisplayServer.window_get_size()
+		if tam.y > tam.x:
+			c.draw_rect(Rect2(0, 0, 1280, 720), Color(0.05, 0.03, 0.12, 0.92))
+			Desenho.texto(c, Vector2(640, 330), "VIRE O CELULAR", 64, Color("ffd23f"), Desenho.PRETO, 10)
+			Desenho.texto(c, Vector2(640, 400), "o jogo é na horizontal", 26, Color.WHITE, Desenho.PRETO, 5)
+	_aviso = aviso
+	add_child(aviso)
 	_titulo()
+
+
+var _aviso: Camada
+
+
+func _process(_d: float) -> void:
+	if _aviso != null:
+		_aviso.queue_redraw()
+		move_child(_aviso, get_child_count() - 1)
 
 
 func _trocar(n: Node) -> void:

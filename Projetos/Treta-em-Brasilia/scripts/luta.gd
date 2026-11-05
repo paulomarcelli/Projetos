@@ -75,6 +75,8 @@ func _ready() -> void:
 	_hud = _camada(_desenhar_hud, 10)
 	_som = AudioStreamPlayer.new()
 	add_child(_som)
+	if humano[0]:
+		add_child(Toque.new())  # controles na tela (aparecem no celular ou depois do primeiro toque)
 	_novo_round()
 
 

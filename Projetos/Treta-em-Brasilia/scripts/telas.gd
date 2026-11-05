@@ -33,6 +33,22 @@ static func quebrar(txt: String, n: int) -> Array[String]:
 	return linhas
 
 
+## Posição (coordenadas do jogo) de um toque ou clique, ou null. O toque no celular chega como clique.
+static func toque(n: Node2D, ev: InputEvent) -> Variant:
+	if ev is InputEventScreenTouch:
+		Toque.usado = true
+	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		return Toque.local(n, ev.position)
+	return null
+
+
+static func botao(c: CanvasItem, r: Rect2, txt: String, cor: Color = Color("ffd23f")) -> void:
+	c.draw_rect(r.grow(5), Desenho.PRETO)
+	c.draw_rect(r, Color("2c2450"))
+	c.draw_rect(r, cor, false, 4.0)
+	Desenho.texto(c, r.get_center() + Vector2(0, 10), txt, 26, cor, Desenho.PRETO, 4)
+
+
 static func painel(c: CanvasItem, r: Rect2) -> void:
 	c.draw_rect(r.grow(8), Desenho.PRETO)
 	c.draw_rect(r.grow(4), Color("ffd23f"))
@@ -44,6 +60,19 @@ class Titulo extends Node2D:
 	var opcao := 0
 	var t := 0.0
 	const ITENS := ["1 JOGADOR", "2 JOGADORES", "COMO JOGAR"]
+
+	func _item(i: int) -> Rect2:
+		return Rect2(410, 432 + i * 56 - 42, 460, 54)
+
+	func _unhandled_input(ev: InputEvent) -> void:
+		var p = Telas.toque(self, ev)
+		if p == null:
+			return
+		for i in ITENS.size():
+			if _item(i).has_point(p):
+				opcao = i
+				escolheu.emit(i + 1)
+				return
 
 	func _process(delta: float) -> void:
 		t += delta
@@ -77,12 +106,19 @@ class Titulo extends Node2D:
 			var x := 640.0 + (i - 2.5) * 120.0
 			var ex: String = ["neutro", "feliz", "grito", "piscar"][int(t * 1.5 + i * 1.7) % 4]
 			Desenho.cabeca(self, d, Vector2(x, 612 + sin(t * 3.0 + i) * 4.0), 43.0, {"expr": ex, "cabeca_giro": sin(t * 2.0 + i) * 0.08})
+		if Toque.disponivel():
+			Desenho.texto(self, Vector2(640, 360), "TOQUE PARA ESCOLHER", 22, Color("7ec8ff"), Desenho.PRETO, 5)
 		Desenho.texto(self, Vector2(640, 706), "Paródia e humor. Sem apoio a partido ou candidato.", 22, Color(1, 1, 1, 0.8), Desenho.PRETO, 5)
 
 
 class ComoJogar extends Node2D:
 	signal voltar
 	var t := 0.0
+
+	func _unhandled_input(ev: InputEvent) -> void:
+		if t > 0.3 and Telas.toque(self, ev) != null:
+			voltar.emit()
+			set_process_unhandled_input(false)
 
 	func _process(delta: float) -> void:
 		t += delta
@@ -124,6 +160,7 @@ class ComoJogar extends Node2D:
 			Desenho.texto_esq(self, Vector2(330, y), golpes[i][1], 26, Color.WHITE, 0)
 		Desenho.texto(self, Vector2(640, 644), "Defesa: segure para trás. Agachado defende rasteira,", 26, Color("7ec8ff"), Desenho.PRETO, 0)
 		Desenho.texto(self, Vector2(640, 676), "em pé defende voadora. Soco ou Esc para voltar.", 26, Color("7ec8ff"), Desenho.PRETO, 0)
+		Desenho.texto(self, Vector2(640, 710), "No celular: direcional à esquerda, botões à direita. Toque para voltar.", 22, Color("ffd23f"), Desenho.PRETO, 0)
 
 
 class Selecao extends Node2D:
@@ -177,6 +214,27 @@ class Selecao extends Node2D:
 				elif Telas.apertou("p%d_especial" % (i + 1)):
 					confirmado[i] = false
 		queue_redraw()
+
+	const BT_VOLTAR := Rect2(20, 652, 170, 52)
+	const BT_ALEATORIO := Rect2(1070, 652, 190, 52)
+
+	func _unhandled_input(ev: InputEvent) -> void:
+		var p = Telas.toque(self, ev)
+		if p == null or (confirmado[0] and confirmado[1]):
+			return
+		if BT_VOLTAR.has_point(p):
+			voltar.emit()
+			return
+		var i := 0 if not confirmado[0] else 1
+		if BT_ALEATORIO.has_point(p) and modo == 1 and confirmado[0]:
+			cursor[1] = randi() % Personagens.LISTA.size()
+			_confirmar(1)
+			return
+		for k in Personagens.LISTA.size():
+			if _cartao(k).has_point(p):
+				cursor[i] = k
+				_confirmar(i)
+				return
 
 	func _confirmar(i: int) -> void:
 		confirmado[i] = true
@@ -252,7 +310,10 @@ class Selecao extends Node2D:
 				var nome_g: String = esp[["projetil", "investida", "gancho"][j]]["nome"]
 				Desenho.texto(self, Vector2(tx, 622 + j * 26), nome_g, 22, Color("ff8a5c"), Desenho.PRETO, 4)
 		Desenho.texto(self, Vector2(640, 610), "VS", 64, Color("ff5a4e"), Desenho.PRETO, 12)
-		Desenho.texto(self, Vector2(640, 706), "Esc = voltar", 22, Color(1, 1, 1, 0.6), Desenho.PRETO, 4)
+		Desenho.texto(self, Vector2(640, 706), "toque no lutador para escolher", 22, Color(1, 1, 1, 0.6), Desenho.PRETO, 4)
+		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE)
+		if modo == 1 and confirmado[0] and not confirmado[1]:
+			Telas.botao(self, BT_ALEATORIO, "ALEATÓRIO")
 		if not meme.is_empty():
 			Luta.desenhar_meme(self, meme["dados"], meme["txt"], int(meme["lado"]), int(meme["t"]), int(meme["dur"]))
 
@@ -260,6 +321,19 @@ class Selecao extends Node2D:
 class Resultado extends Node2D:
 	signal revanche
 	signal trocar
+	const BT_REVANCHE := Rect2(290, 636, 320, 58)
+	const BT_TROCAR := Rect2(670, 636, 320, 58)
+
+	func _unhandled_input(ev: InputEvent) -> void:
+		var p = Telas.toque(self, ev)
+		if p == null or t < 0.8:
+			return
+		if BT_REVANCHE.has_point(p):
+			revanche.emit()
+			set_process_unhandled_input(false)
+		elif BT_TROCAR.has_point(p):
+			trocar.emit()
+			set_process_unhandled_input(false)
 	var dados: Dictionary = {}
 	var perdedor: Dictionary = {}
 	var quem := "P1"
@@ -294,4 +368,5 @@ class Resultado extends Node2D:
 		draw_colored_polygon(PackedVector2Array([Vector2(536, balao.end.y - 4), Vector2(592, balao.end.y - 4), Vector2(480, balao.end.y + 58)]), Desenho.BRANCO)
 		for i in linhas.size():
 			Desenho.texto(self, Vector2(balao.get_center().x, balao.position.y + 46 + i * 30), linhas[i], 26, Desenho.PRETO, Desenho.BRANCO, 0)
-		Desenho.texto(self, Vector2(640, 700), "Soco = revanche · Especial = trocar lutador", 26, Color.WHITE, Desenho.PRETO, 5)
+		Telas.botao(self, BT_REVANCHE, "REVANCHE (Soco)")
+		Telas.botao(self, BT_TROCAR, "TROCAR (Especial)", Color.WHITE)

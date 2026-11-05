@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
 
 RAIZ = Path(__file__).resolve().parent.parent
 CONTORNO = (20, 12, 28, 255)
@@ -295,6 +295,15 @@ def folha(id_: str, altura: int, u: int, cores: int) -> Image.Image:
     pontos = json.loads((RAIZ / "ferramentas" / "rostos.json").read_text())[id_]
     caixa = info["caixa"]
     cabeca = sem_fundo(id_).crop(caixa)
+    # No jogo a cabeça olha sempre para a frente do lutador (+x). Se a pessoa está virada para a
+    # esquerda na foto (nariz à esquerda do meio dos olhos), espelha a foto e os pontos do rosto.
+    meio = (pontos["olho_e"][0] + pontos["olho_d"][0]) / 2
+    if (pontos["nariz"][0] - meio) / abs(pontos["olho_d"][0] - pontos["olho_e"][0]) < -0.08:
+        cabeca = ImageOps.mirror(cabeca)
+        x0, x1 = caixa[0], caixa[2]
+        pontos = {k: [x0 + x1 - v[0], v[1]] for k, v in pontos.items()}
+        for a, b in (("olho_e", "olho_d"), ("sobr_e", "sobr_d"), ("canto_e", "canto_d")):
+            pontos[a], pontos[b] = pontos[b], pontos[a]
     w, h = cabeca.size
     oval = Image.new("L", (w, h), 0)
     ImageDraw.Draw(oval).ellipse((-w * 0.04, -h * 0.02, w * 1.04, h * 1.0), fill=255)

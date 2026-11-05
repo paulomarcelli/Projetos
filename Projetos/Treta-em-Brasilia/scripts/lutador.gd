@@ -54,12 +54,14 @@ var flash := 0
 var tem_projetil := false
 var defendeu_agachado := false
 var tempo_vivo := 0  # quadros desde que entrou (respiração, piscadas, gestos)
+var _lado_visual := 1.0  # vai de -1 a 1 quando o lutador se vira (animação de virar)
 
 var _antes: Dictionary = VAZIO.duplicate()
 var _buffer: Array[int] = []
 
 
 func configurar(d: Dictionary, x: float, olhando: int) -> void:
+	_lado_visual = float(olhando)
 	dados = d
 	vida_max = float(d.get("vida", 1000))
 	vida = vida_max
@@ -582,7 +584,10 @@ func _atualizar_visual() -> void:
 	_pose_atual = pose()
 	var giro: float = _pose_atual["giro"]
 	var alt: float = dados.get("corpo", {}).get("alt", 1.0)
-	scale = Vector2(lado, 1) * TAM * alt
+	# virar: o corpo "gira" estreitando até trocar de lado, em poucos quadros (sem pular de uma vez)
+	_lado_visual = move_toward(_lado_visual, float(lado), 0.34)
+	var lx := _lado_visual if absf(_lado_visual) > 0.15 else 0.15 * signf(lado)
+	scale = Vector2(lx, 1) * TAM * alt
 	rotation = giro * lado
 	if giro != 0.0 and no_chao():
 		_pose_atual["quadril"] = -72.0

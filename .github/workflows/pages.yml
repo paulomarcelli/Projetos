@@ -79,6 +79,10 @@ jobs:
           # Portfólio: só o resultado do build (dist/)
           mkdir -p _site/Projetos/Portfolio
           cp -a Projetos/Portfolio/dist/. _site/Projetos/Portfolio/
+          # Treta em Brasília: a versão web exportada do Godot (web-build/)
+          mkdir -p _site/Projetos/Treta-em-Brasilia
+          cp -a Projetos/Treta-em-Brasilia/web-build/. _site/Projetos/Treta-em-Brasilia/
+          rm -f _site/Projetos/Treta-em-Brasilia/.gdignore
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

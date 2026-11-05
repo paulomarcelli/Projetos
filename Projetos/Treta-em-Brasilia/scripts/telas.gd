@@ -1,0 +1,306 @@
+class_name Telas
+## Telas de menu: título, como jogar, seleção de personagens e resultado. Desenhadas em código.
+## A fonte pixelada mede 8 px por letra na tela real: linhas com até ~56 letras no tamanho menor.
+
+
+static func apertou(acao: String) -> bool:
+	return Input.is_action_just_pressed(acao)
+
+
+static func confirmou(jogador: int) -> bool:
+	var p := "p%d_" % jogador
+	return apertou(p + "soco") or apertou(p + "chute") or (jogador == 1 and apertou("ui_accept"))
+
+
+static func voltou() -> bool:
+	return apertou("ui_cancel") or apertou("p1_especial") or apertou("p2_especial")
+
+
+## Quebra o texto em linhas de até n letras.
+static func quebrar(txt: String, n: int) -> Array[String]:
+	var linhas: Array[String] = []
+	var atual := ""
+	for palavra in txt.split(" "):
+		if atual == "":
+			atual = palavra
+		elif (atual + " " + palavra).length() <= n:
+			atual += " " + palavra
+		else:
+			linhas.append(atual)
+			atual = palavra
+	if atual != "":
+		linhas.append(atual)
+	return linhas
+
+
+static func painel(c: CanvasItem, r: Rect2) -> void:
+	c.draw_rect(r.grow(8), Desenho.PRETO)
+	c.draw_rect(r.grow(4), Color("ffd23f"))
+	c.draw_rect(r, Color("1b1238"))
+
+
+class Titulo extends Node2D:
+	signal escolheu(modo: int)  # 1, 2 ou 3 (como jogar)
+	var opcao := 0
+	var t := 0.0
+	const ITENS := ["1 JOGADOR", "2 JOGADORES", "COMO JOGAR"]
+
+	func _process(delta: float) -> void:
+		t += delta
+		for a in ["p1_baixo", "p2_baixo", "ui_down"]:
+			if Telas.apertou(a):
+				opcao = (opcao + 1) % ITENS.size()
+		for a in ["p1_cima", "p2_cima", "ui_up"]:
+			if Telas.apertou(a):
+				opcao = (opcao + ITENS.size() - 1) % ITENS.size()
+		if Telas.confirmou(1) or Telas.confirmou(2):
+			escolheu.emit(opcao + 1)
+		queue_redraw()
+
+	func _draw() -> void:
+		Desenho.cenario(self, t)
+		draw_rect(Rect2(0, 0, 1280, 720), Color(0.06, 0.03, 0.14, 0.62))
+		var y := 170.0 + sin(t * 2.0) * 6.0
+		Desenho.texto(self, Vector2(640, y), "TRETA", 128, Color("ffd23f"), Color("7a1020"), 20)
+		Desenho.texto(self, Vector2(640, y + 92), "EM BRASÍLIA", 64, Color("fbfbf7"), Color("1d3a8a"), 14)
+		Desenho.texto(self, Vector2(640, y + 140), "A BRIGA MAIS POLARIZADA DO PAÍS", 26, Color("ffe7b0"), Desenho.PRETO, 6)
+		Telas.painel(self, Rect2(400, 372, 480, 196))
+		for i in ITENS.size():
+			var sel := i == opcao
+			var cor := Color("ffd23f") if sel else Color(1, 1, 1, 0.7)
+			var txt: String = ITENS[i]
+			if sel:
+				txt = ("> " + txt + " <") if int(t * 3) % 2 == 0 else ("  " + txt + "  ")
+			Desenho.texto(self, Vector2(640, 432 + i * 56), txt, 40, cor, Desenho.PRETO, 6)
+		for i in Personagens.LISTA.size():
+			var d: Dictionary = Personagens.LISTA[i]
+			var x := 640.0 + (i - 2.5) * 120.0
+			Desenho.cabeca(self, d, Vector2(x, 630 + sin(t * 3.0 + i) * 4.0), 34.0, {"boca": "sorriso" if int(t + i) % 3 == 0 else "normal"})
+		Desenho.texto(self, Vector2(640, 706), "Paródia e humor. Sem apoio a partido ou candidato.", 22, Color(1, 1, 1, 0.8), Desenho.PRETO, 5)
+
+
+class ComoJogar extends Node2D:
+	signal voltar
+	var t := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t > 0.3 and (Telas.confirmou(1) or Telas.confirmou(2) or Telas.voltou()):
+			voltar.emit()
+			set_process(false)
+		queue_redraw()
+
+	func _draw() -> void:
+		draw_rect(Rect2(0, 0, 1280, 720), Color("1b1238"))
+		Desenho.texto(self, Vector2(640, 96), "COMO JOGAR", 64, Color("ffd23f"), Desenho.PRETO, 10)
+		var tabela := [
+			["", "JOGADOR 1", "JOGADOR 2"],
+			["Andar", "A  D", "setas"],
+			["Pular", "W", "seta p/ cima"],
+			["Agachar", "S", "seta p/ baixo"],
+			["Soco", "F", "1 (numérico) ou ,"],
+			["Chute", "G", "2 (numérico) ou ."],
+			["Especial", "H", "3 (numérico) ou ;"],
+		]
+		for i in tabela.size():
+			var linha: Array = tabela[i]
+			var y := 140.0 + i * 34.0
+			var cor := Color("ffd23f") if i == 0 else Color.WHITE
+			Desenho.texto_esq(self, Vector2(150, y), linha[0], 26, Color("7ec8ff"), 0)
+			Desenho.texto_esq(self, Vector2(470, y), linha[1], 26, cor, 0)
+			Desenho.texto_esq(self, Vector2(760, y), linha[2], 26, cor, 0)
+		Desenho.texto(self, Vector2(640, 396), "Controle: direcional + X soco, A chute, B especial", 26, Color(1, 1, 1, 0.75), Desenho.PRETO, 0)
+		Desenho.texto(self, Vector2(640, 452), "ESPECIAIS (todos os lutadores)", 26, Color("ffd23f"), Desenho.PRETO, 0)
+		var golpes := [
+			["Projétil", "Especial / baixo, diag, frente + Soco"],
+			["Investida", "frente+Especial / baixo, diag, trás + Chute"],
+			["Gancho", "cima+Especial / frente, baixo, diag + Soco"],
+			["SUPER", "barra cheia: baixo + Especial"],
+		]
+		for i in golpes.size():
+			var y := 492.0 + i * 32.0
+			Desenho.texto_esq(self, Vector2(110, y), golpes[i][0], 26, Color("ff8a5c"), 0)
+			Desenho.texto_esq(self, Vector2(330, y), golpes[i][1], 26, Color.WHITE, 0)
+		Desenho.texto(self, Vector2(640, 644), "Defesa: segure para trás. Agachado defende rasteira,", 26, Color("7ec8ff"), Desenho.PRETO, 0)
+		Desenho.texto(self, Vector2(640, 676), "em pé defende voadora. Soco ou Esc para voltar.", 26, Color("7ec8ff"), Desenho.PRETO, 0)
+
+
+class Selecao extends Node2D:
+	signal pronto(a: int, b: int)
+	signal voltar
+	var modo := 1
+	var cursor := [0, 1]
+	var confirmado := [false, false]
+	var t := 0.0
+	var meme := {}  # meme tocando: lado, txt, dados, t
+	var espera := 0.0
+	var _som: AudioStreamPlayer
+	const COLS := 5
+	const CARTAO := Vector2(196, 150)
+	const ORIGEM := Vector2(130, 132)
+
+	func _ready() -> void:
+		_som = AudioStreamPlayer.new()
+		add_child(_som)
+
+	func _process(delta: float) -> void:
+		t += delta
+		if not meme.is_empty():
+			meme["t"] += 1
+			if meme["t"] >= meme["dur"]:
+				meme = {}
+		if Telas.apertou("ui_cancel"):
+			voltar.emit()
+			return
+		if confirmado[0] and confirmado[1]:
+			espera -= delta
+			if espera <= 0.0 and meme.is_empty():
+				pronto.emit(cursor[0], cursor[1])
+				set_process(false)
+			queue_redraw()
+			return
+		if modo == 1:
+			var i := 0 if not confirmado[0] else 1
+			_mover(i, 1)
+			if Telas.confirmou(1):
+				_confirmar(i)
+			elif Telas.apertou("p1_especial") and confirmado[0]:
+				cursor[1] = randi() % Personagens.LISTA.size()
+				_confirmar(1)
+		else:
+			for i in 2:
+				if not confirmado[i]:
+					_mover(i, i + 1)
+					if Telas.confirmou(i + 1):
+						_confirmar(i)
+				elif Telas.apertou("p%d_especial" % (i + 1)):
+					confirmado[i] = false
+		queue_redraw()
+
+	func _confirmar(i: int) -> void:
+		confirmado[i] = true
+		espera = 0.4
+		var d: Dictionary = Personagens.LISTA[cursor[i]]
+		var memes: Array = d.get("memes", [])
+		if memes.is_empty():
+			return
+		var n := randi() % memes.size()
+		meme = {"lado": i, "txt": memes[n], "dados": d, "t": 0, "dur": 80}
+		var som := Personagens.audio(d["id"], n)
+		if som != null:
+			_som.stream = som
+			_som.play()
+
+	func _mover(i: int, jogador: int) -> void:
+		var pre := "p%d_" % jogador
+		var n := Personagens.LISTA.size()
+		if Telas.apertou(pre + "dir"):
+			cursor[i] = (cursor[i] + 1) % n
+		if Telas.apertou(pre + "esq"):
+			cursor[i] = (cursor[i] - 1 + n) % n
+		if Telas.apertou(pre + "baixo") or Telas.apertou(pre + "cima"):
+			var alvo: int = cursor[i] + COLS if cursor[i] + COLS < n else cursor[i] % COLS
+			cursor[i] = mini(alvo, n - 1)
+
+	func _cartao(i: int) -> Rect2:
+		return Rect2(ORIGEM + Vector2((i % COLS) * (CARTAO.x + 8), (i / COLS) * (CARTAO.y + 10)), CARTAO)
+
+	func _draw() -> void:
+		draw_rect(Rect2(0, 0, 1280, 720), Color("1b1238"))
+		for i in 26:
+			var x := i * 60.0 - fmod(t * 30.0, 60.0)
+			draw_line(Vector2(x, 0), Vector2(x - 200, 720), Color(1, 1, 1, 0.04), 18.0)
+		Desenho.texto(self, Vector2(640, 74), "ESCOLHA SEU LUTADOR", 64, Color("ffd23f"), Desenho.PRETO, 10)
+		var dica := "Escolha o seu e depois o rival (Especial = aleatório)" if modo == 1 else "Cada jogador escolhe com seus comandos"
+		Desenho.texto(self, Vector2(640, 110), dica, 26, Color(1, 1, 1, 0.8), Desenho.PRETO, 5)
+		var n := Personagens.LISTA.size()
+		for i in n + Personagens.EM_BREVE.size():
+			var r := _cartao(i)
+			draw_rect(r.grow(4), Desenho.PRETO)
+			if i < n:
+				var d: Dictionary = Personagens.LISTA[i]
+				draw_rect(r, Color("2c2450"))
+				draw_rect(Rect2(r.position, Vector2(r.size.x, r.size.y * 0.55)), Color("3a3068"))
+				Desenho.cabeca(self, d, r.get_center() + Vector2(0, -26), 43.0, {})
+				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), d["nome"], 26, Color.WHITE, Desenho.PRETO, 5)
+			else:
+				draw_rect(r, Color("201a38"))
+				Desenho.texto(self, r.get_center() + Vector2(0, 8), "?", 96, Color(1, 1, 1, 0.18), Desenho.PRETO, 0)
+				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), Personagens.EM_BREVE[i - n], 26, Color(1, 1, 1, 0.35), Desenho.PRETO, 0)
+		for k in 2:
+			var r := _cartao(cursor[k]).grow(6 + k * 8)
+			var cor := Color("2a9df4") if k == 0 else Color("e63946")
+			if not confirmado[k] or int(t * 6) % 2 == 0:
+				draw_rect(r, cor, false, 6.0)
+			var rotulo := "1P" if k == 0 else ("CPU" if modo == 1 else "2P")
+			Desenho.texto(self, Vector2(r.position.x + 30 if k == 0 else r.end.x - 34, r.position.y + 6), rotulo, 26, cor, Desenho.PRETO, 5)
+		for k in 2:
+			var d: Dictionary = Personagens.LISTA[cursor[k]]
+			var x := 130.0 if k == 0 else 1150.0
+			var pose := Desenho.pose_padrao()
+			if confirmado[k]:
+				pose["mao_f"] = Vector2(34, -222)
+				pose["punho_grande"] = true
+			Desenho.lutador_em(self, d, pose, Vector2(x, 640), Vector2(0.95 * (1 if k == 0 else -1), 0.95))
+			var tx := 390.0 if k == 0 else 890.0
+			Desenho.texto(self, Vector2(tx, 560), d["nome"], 40, Color("ffd23f"), Desenho.PRETO, 8)
+			Desenho.texto(self, Vector2(tx, 590), d["titulo"], 22, Color.WHITE, Desenho.PRETO, 5)
+			var esp: Dictionary = d["especiais"]
+			for j in 3:
+				var nome_g: String = esp[["projetil", "investida", "gancho"][j]]["nome"]
+				Desenho.texto(self, Vector2(tx, 622 + j * 26), nome_g, 22, Color("ff8a5c"), Desenho.PRETO, 4)
+		Desenho.texto(self, Vector2(640, 610), "VS", 64, Color("ff5a4e"), Desenho.PRETO, 12)
+		Desenho.texto(self, Vector2(640, 706), "Esc = voltar", 22, Color(1, 1, 1, 0.6), Desenho.PRETO, 4)
+		if not meme.is_empty():
+			Luta.desenhar_meme(self, meme["dados"], meme["txt"], int(meme["lado"]), int(meme["t"]), int(meme["dur"]))
+
+
+class Resultado extends Node2D:
+	signal revanche
+	signal trocar
+	var dados: Dictionary = {}
+	var perdedor: Dictionary = {}
+	var quem := "P1"
+	var t := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t > 0.8:
+			if Telas.confirmou(1) or Telas.confirmou(2):
+				revanche.emit()
+				set_process(false)
+			elif Telas.voltou():
+				trocar.emit()
+				set_process(false)
+		queue_redraw()
+
+	func _draw() -> void:
+		Desenho.cenario(self, t)
+		draw_rect(Rect2(0, 0, 1280, 720), Color(0.04, 0.02, 0.1, 0.55))
+		Desenho.texto(self, Vector2(640, 92), "%s VENCEU!" % dados["nome"], 64, Color("ffd23f"), Desenho.PRETO, 12)
+		Desenho.texto(self, Vector2(640, 132), quem, 26, Color.WHITE, Desenho.PRETO, 5)
+		var pose := Desenho.pose_padrao()
+		pose["mao_f"] = Vector2(34, -222 + sin(t * 6.0) * 8.0)
+		pose["mao_t"] = Vector2(-30, -214)
+		pose["boca"] = "sorriso"
+		pose["punho_grande"] = true
+		Desenho.lutador_em(self, dados, pose, Vector2(330, 650), Vector2(1.8, 1.8))
+		var caido := Desenho.pose_padrao()
+		caido["olhos"] = "x"
+		caido["boca"] = "dor"
+		caido["agachado"] = true
+		caido["quadril"] = -40.0
+		caido["inclina"] = -0.5
+		caido["pe_f"] = Vector2(30, 0)
+		caido["pe_t"] = Vector2(-30, 0)
+		caido["mao_f"] = Vector2(20, -60)
+		Desenho.lutador_em(self, perdedor, caido, Vector2(980, 650), Vector2(-1.5, 1.5))
+		var linhas := Telas.quebrar("\"%s\"" % dados["vitoria"], 26)
+		var balao := Rect2(510, 190, 600, 40 + linhas.size() * 30)
+		draw_rect(balao.grow(5), Desenho.PRETO)
+		draw_rect(balao, Desenho.BRANCO)
+		draw_colored_polygon(PackedVector2Array([Vector2(530, balao.end.y - 2), Vector2(600, balao.end.y - 2), Vector2(470, balao.end.y + 70)]), Desenho.PRETO)
+		draw_colored_polygon(PackedVector2Array([Vector2(536, balao.end.y - 4), Vector2(592, balao.end.y - 4), Vector2(480, balao.end.y + 58)]), Desenho.BRANCO)
+		for i in linhas.size():
+			Desenho.texto(self, Vector2(balao.get_center().x, balao.position.y + 46 + i * 30), linhas[i], 26, Desenho.PRETO, Desenho.BRANCO, 0)
+		Desenho.texto(self, Vector2(640, 700), "Soco = revanche · Especial = trocar lutador", 26, Color.WHITE, Desenho.PRETO, 5)

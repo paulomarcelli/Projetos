@@ -34,7 +34,7 @@ CAIXAS = {
     "trump": {"caixa": (252, 12, 500, 332), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (196, 150, 90)},
     # caricatura: dentes da frente grandes e cabelo em cuia com franja reta
     "eduarda": {"caixa": (185, 0, 565, 395), "barba": False, "oculos": True, "sobr": 1, "sobr_cor": (70, 46, 36),
-                "dentes": True, "franja": True},
+                "dentes": True, "franja": True, "oculos_cor": (236, 206, 200)},
 }
 
 TRACO = (36, 16, 20, 255)
@@ -77,12 +77,22 @@ def base_pixel(cabeca: Image.Image, altura: int, cores: int) -> Image.Image:
     return pal
 
 
+def versao_nitida(cabeca: Image.Image, tamanho: tuple) -> Image.Image:
+    """A foto reduzida sem borrar, com contraste: é de onde vêm os olhos e as sobrancelhas de verdade."""
+    rgb = despill(cabeca.convert("RGB"))
+    rgb = ImageEnhance.Contrast(rgb).enhance(1.35)
+    rgb = ImageEnhance.Color(rgb).enhance(1.15)
+    rgb = rgb.filter(ImageFilter.UnsharpMask(radius=2, percent=160, threshold=1))
+    return rgb.resize(tamanho, Image.BOX)
+
+
 class Rosto:
     """Pontos do rosto na escala do sprite e um pincel de pixels de arte (u = tamanho do pixel)."""
 
-    def __init__(self, im: Image.Image, pontos: dict, caixa: tuple, escala: float, u: int):
+    def __init__(self, im: Image.Image, pontos: dict, caixa: tuple, escala: float, u: int, nitida: Image.Image = None):
         self.im = im
         self.px = im.load()
+        self.nitida = nitida.load() if nitida is not None else None
         self.u = u
         x0, y0 = caixa[0], caixa[1]
         self.p = {k: (round((v[0] - x0) * escala / u) * u, round((v[1] - y0) * escala / u) * u) for k, v in pontos.items()}
@@ -112,6 +122,29 @@ class Rosto:
         for dx, dy in pts:
             self.ponto(centro, dx, dy, cor)
 
+    def copiar_da_foto(self, centro, rx, ry):
+        """Traz os pixels da foto nítida para a região (olho ou sobrancelha), realçando pupila e branco."""
+        if self.nitida is None:
+            return
+        pts = []
+        for dx in range(-rx, rx + 1):
+            for dy in range(-ry, ry + 1):
+                if (dx / (rx + 0.5)) ** 2 + (dy / (ry + 0.5)) ** 2 <= 1.0:
+                    x, y = centro[0] + dx, centro[1] + dy
+                    if 0 <= x < self.im.width and 0 <= y < self.im.height and self.px[x, y][3] > 0:
+                        pts.append((x, y, self.nitida[x, y]))
+        if not pts:
+            return
+        lum = np.array([0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2] for _, _, c in pts])
+        escuro = min(np.percentile(lum, 20), 115)
+        for (x, y, c), l in zip(pts, lum):
+            sat = (max(c[:3]) - min(c[:3])) / max(1, max(c[:3]))
+            if l <= escuro:
+                c = tuple(int(v * 0.55) for v in c)  # pupila, cílios, sobrancelha
+            elif l > 150 and sat < 0.22:
+                c = tuple(int(v + (245 - v) * 0.45) for v in c)  # branco do olho (pouca cor)
+            self.px[x, y] = tuple(c[:3]) + (255,)
+
     def apagar(self, centro, rx, ry, cor):
         """Pinta uma elipse com a cor da pele (ou da barba), apagando o traço da foto."""
         for dx in range(-rx, rx + 1):
@@ -128,9 +161,20 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
     lb = max(2, r.dist // 3)  # meia largura da boca
     cor_barba = r.cor_media((boca[0], boca[1] + 2 * r.u), 1) if info["barba"] else None
 
-    # 1) limpa os traços da foto
-    for c in (oe, od, se, sd):
-        r.apagar(c, lo + 1, 1, r.pele)
+    # 1) olhos e sobrancelhas: da foto (nítidos) quando abertos; senão, apaga e redesenha
+    olhos_foto = expr in ("neutro", "esforco", "grito")
+    sobr_foto = expr in ("neutro", "piscar", "feliz")
+    u = r.u
+    for c in (oe, od):
+        if olhos_foto:
+            r.copiar_da_foto(c, (lo + 2) * u, 2 * u)
+        else:
+            r.apagar(c, lo + 1, 1, r.pele)
+    for c in (se, sd):
+        if sobr_foto:
+            r.copiar_da_foto(c, (lo + 2) * u, u)
+        else:
+            r.apagar(c, lo + 1, 1, r.pele)
     r.apagar(boca, lb, 1, cor_barba or r.pele)
 
     # 1b) franja reta (cabelo em cuia): do topo até logo acima das sobrancelhas
@@ -147,12 +191,12 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
                 if 0 <= corte + k < r.im.height and r.px[x, corte + k][3] > 0 and (x // r.u) % 2 == 0:
                     r.px[x, corte + k] = escuro
 
-    # 2) sobrancelhas. "miolo" = lado do nariz.
+    # 2) sobrancelhas desenhadas só quando a expressão pede. "miolo" = lado do nariz.
     sob = info["sobr_cor"] + (255,)
     forma = {"esforco": "brava", "grito": "brava", "dor": "triste", "nocaute": "alta", "derrota": "triste"}.get(expr, "normal")
     if info.get("bravo") and forma == "normal":
         forma = "brava"
-    for c, miolo in ((se, 1), (sd, -1)):
+    for c, miolo in (() if sobr_foto else ((se, 1), (sd, -1))):
         pts = []
         for i in range(-lo - 1, lo + 2):
             k = i * miolo  # positivo = perto do nariz
@@ -171,12 +215,8 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
 
     # 3) olhos (pupila virada para a frente do personagem: +x)
     for c in (oe, od):
-        if expr in ("neutro", "esforco", "grito"):
-            r.linha(c, [(i, -1) for i in range(-lo, lo + 1)], TRACO)
-            r.linha(c, [(i, 0) for i in range(-lo, lo + 1)], BRANCO)
-            r.linha(c, [(0, 0)] + ([(1, 0)] if lo > 1 else []), TRACO)
-            if expr == "grito":
-                r.linha(c, [(i, 1) for i in range(-lo + 1, lo)], BRANCO)
+        if olhos_foto:
+            pass  # os olhos da foto já estão no lugar
         elif expr == "piscar":
             r.linha(c, [(i, 0) for i in range(-lo, lo + 1)], TRACO)
         elif expr == "dor":
@@ -192,11 +232,12 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
 
     # 4) óculos
     if info["oculos"]:
+        armacao = info.get("oculos_cor", ARMACAO[:3]) + (255,)
         for c in (oe, od):
             r.linha(c, [(i, -2) for i in range(-lo - 1, lo + 2)] + [(i, 2) for i in range(-lo - 1, lo + 2)]
-                    + [(-lo - 2, y) for y in (-1, 0, 1)] + [(lo + 2, y) for y in (-1, 0, 1)], ARMACAO)
+                    + [(-lo - 2, y) for y in (-1, 0, 1)] + [(lo + 2, y) for y in (-1, 0, 1)], armacao)
         meio = (((oe[0] + od[0]) // 2) // r.u * r.u, oe[1])
-        r.linha(meio, [(0, -1), (-1, -1), (1, -1)], ARMACAO)
+        r.linha(meio, [(0, -1), (-1, -1), (1, -1)], armacao)
 
     # 5) boca
     if expr in ("neutro", "piscar"):
@@ -260,10 +301,11 @@ def folha(id_: str, altura: int, u: int, cores: int) -> Image.Image:
     cabeca.putalpha(Image.composite(cabeca.getchannel("A"), Image.new("L", (w, h), 0), oval))
     base = base_pixel(cabeca, altura, cores)
     escala = base.height / h
+    nitida = versao_nitida(cabeca, base.size)
     quadros = []
     for expr in EXPRESSOES:
         im = base.copy()
-        desenhar(Rosto(im, pontos, caixa, escala, u), expr, info)
+        desenhar(Rosto(im, pontos, caixa, escala, u, nitida), expr, info)
         quadros.append(contorno(im))
     fw, fh = quadros[0].size
     sheet = Image.new("RGBA", (fw * len(quadros), fh), (0, 0, 0, 0))

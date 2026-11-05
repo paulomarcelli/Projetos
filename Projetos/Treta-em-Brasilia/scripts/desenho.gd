@@ -75,7 +75,7 @@ static func pose_idle(d: Dictionary, t: int) -> Dictionary:
 			p["mao_f"] = Vector2(-2, -98)
 			p["mao_t"] = Vector2(-14, -94)
 			if t % 300 < 34:
-				p["mao_f"] = Vector2(26, -168)  # ajusta os óculos
+				p["mao_f"] = Vector2(30, -150)  # mão no queixo, avaliando o réu
 		"celular":
 			p["mao_t"] = Vector2(30, -150)
 			p["prop_t"] = "celular"
@@ -106,7 +106,7 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["inclina"] = f * 0.1
 			p["cabeca_giro"] = -f * 0.12
 		"xandao":
-			p["mao_f"] = Vector2(28, -168)
+			p["mao_f"] = Vector2(30, -150)
 			p["mao_t"] = Vector2(14, -112)
 			p["prop_t"] = "livro"
 			p["expr"] = "neutro"

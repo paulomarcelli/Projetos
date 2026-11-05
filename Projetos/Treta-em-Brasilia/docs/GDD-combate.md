@@ -134,7 +134,7 @@ Regras gerais que valem para todos:
 
 **Estilo:** controle. Não ganha na força bruta: proíbe, trava e pune. **Referências:** o STF, decisões judiciais, ofícios, bloqueios de perfis e de redes sociais, o debate público sobre liberdade de expressão (satirizado como poder institucional exagerado).
 
-**Visual:** careca brilhante, óculos de armação fina, toga preta com cordões vermelhos que balança, sobrancelhas sempre franzidas, postura ereta com as mãos para trás. Corpo alto, silhueta de "capa" pela toga.
+**Visual:** careca brilhante, toga preta com cordões vermelhos que balança, sobrancelhas sempre franzidas, postura ereta com as mãos para trás. Corpo alto, silhueta de "capa" pela toga.
 
 | # | Golpe | Referência | Tipo | Funcionamento |
 |---|---|---|---|---|
@@ -143,7 +143,7 @@ Regras gerais que valem para todos:
 | E2 | **Zona de Bloqueio** | bloqueios de perfis e redes | controle | Carimba no chão uma área com a faixa "CONTA SUSPENSA" por 4 s. Rival dentro dela **não consegue usar especiais nem ultimate** (aparece um ícone de bloqueio sobre a cabeça). Golpes normais continuam. |
 | E3 | **Martelo da Justiça** | o martelo do juiz | ofensivo pesado | Golpe de martelo de cima para baixo que **quebra a defesa** (rival defendendo fica atordoado 30 quadros). |
 | Ultimate | **Decisão Monocrática** | decisões individuais | especial | Tribunal cinematográfico: Xandão lê uma sentença num pergaminho que desenrola até o chão. O rival fica preso numa moldura de "PERFIL SUSPENSO" (paralisado 2,5 s) enquanto o martelo bate 3 vezes. Termina com o carimbo "ARQUIVADO". |
-| Taunt | **Está Sob Investigação** | — | especial | Ajusta os óculos na ponta do nariz e anota algo num caderninho. +30 de barra. |
+| Taunt | **Está Sob Investigação** | — | especial | Põe a mão no queixo, encara o rival e anota algo num caderninho. +30 de barra. |
 | Vitória | **Arquivado** | — | — | Carimba "ARQUIVADO" na testa do rival caído e bate o martelo. |
 | Derrota | **Recorro** | — | — | O martelo quebra em dois; ele olha para o cabo e diz "Recorro.". |
 
@@ -154,7 +154,7 @@ Regras gerais que valem para todos:
 | Zona de Bloqueio | — | 15 s | médio (área de 2 corpos) | 16 + 240 | não se defende: sai da área | faixa amarela "CONTA SUSPENSA", ícone 🚫 | sirene curta |
 | Martelo da Justiça | 14 | 6 s | curto | 14+4+26 | quebra defesa; esquiva pulando para trás | martelo dourado, ondas de choque | "PAM!" de martelo |
 | Decisão Monocrática | 28 + paralisia | barra cheia | tela | 30 + 160 | indefensável; pular nos 20 quadros iniciais esquiva | pergaminho, moldura de perfil, carimbo | martelo ×3 + órgão de tribunal |
-| Está Sob Investigação | — | — | — | 40 | vulnerável | caderninho, brilho nos óculos | caneta riscando |
+| Está Sob Investigação | — | — | — | 40 | vulnerável | caderninho, sobrancelha franzida | caneta riscando |
 
 **Pontos fracos:** o menor dano direto do elenco; lento para andar; a Zona é inútil se o rival só usar golpes normais.
 
@@ -166,7 +166,7 @@ Regras gerais que valem para todos:
 
 **Regra de tom:** a sátira é sobre a **própria postura dela** (a busca de engajamento com polêmica, o debate que nunca acaba, o corte fora de contexto). Mulheres e feministas **nunca** são alvo dos golpes; quando o tema aparece, a piada se volta contra ela (os golpes de polêmica podem "dar ruim" para ela mesma).
 
-**Visual:** óculos de armação transparente, cabelo escuro na altura do ombro, vestido branco com estampa, microfone de lapela e celular sempre na mão (filmando). Corpo menor e ágil.
+**Visual:** óculos de armação clara, cabelo em cuia com franja reta, dentes da frente caricatos, camisa da seleção com jeans, microfone de lapela e celular sempre na mão (filmando). Corpo menor e ágil.
 
 | # | Golpe | Referência | Tipo | Funcionamento |
 |---|---|---|---|---|
@@ -198,14 +198,14 @@ Todos têm o conjunto mínimo de 12 animações. O que muda de um para o outro:
 
 | Animação | Lula | Bolsonaro | Trump | Xandão | Eduarda |
 |---|---|---|---|---|---|
-| Idle | respira fundo, gesticula como em discurso, pisca | postura reta, pequenos ajustes de ombro | mãos em "sanfona", cabelo balança | mãos para trás, olhar fixo, ajusta óculos | balança o celular, olha a tela |
+| Idle | respira fundo, gesticula como em discurso, pisca | postura reta, pequenos ajustes de ombro | mãos em "sanfona", cabelo balança | mãos para trás, olhar fixo, mão no queixo | balança o celular, olha a tela |
 | Andar | passos curtos, barriga balança | marcha | passo largo, ombros abertos | passos lentos, toga ondula | passos rápidos |
 | Pulo | pulo baixo, encolhe | salto de paraquedista | pulo largo, gravata voa | pulo alto, toga abre | pulo leve |
 | Agachar | apoia a mão no joelho | posição de tiro (sem arma) | agacha resmungando | se encolhe na toga | se abaixa filmando |
 | Golpe fraco | tapa de palanque | soco de continência | dedo apontado | tapa com o ofício | tapa com o celular |
 | Golpe forte | chute de churrasco | coturno | chute "de golfe" | chute com a toga | chute com o tripé |
 | Especial | ver seção do personagem | idem | idem | idem | idem |
-| Reação a golpe | cabeça recua, barba balança | rosto franzido, boina cai | cabelo levanta | óculos tortos | óculos tortos, celular quase cai |
+| Reação a golpe | cabeça recua, barba balança | rosto franzido, boina cai | cabelo levanta | careca brilha com o impacto | óculos tortos, celular quase cai |
 | Queda | rola e para sentado | cai em posição de sentido | cai de costas, cabelo abre | cai rígido como uma tábua | cai de lado, celular voa |
 | Vitória | ergue a picanha | joinha na motociata | dancinha | carimba "ARQUIVADO" | posta a selfie |
 | Derrota | olha o espeto vazio | "E daí?" e sai | "RIGGED!" | martelo quebra | bateria acaba |

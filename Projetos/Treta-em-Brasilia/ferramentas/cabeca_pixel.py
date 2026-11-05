@@ -30,7 +30,7 @@ EXPRESSOES = ["neutro", "piscar", "esforco", "grito", "dor", "nocaute", "feliz",
 CAIXAS = {
     "lula": {"caixa": (222, 30, 472, 352), "barba": True, "oculos": False, "sobr": 1, "sobr_cor": (200, 194, 186)},
     "bolsonaro": {"caixa": (70, 18, 268, 262), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (60, 48, 44), "bravo": True},
-    "xandao": {"caixa": (135, 40, 352, 300), "barba": False, "oculos": True, "sobr": 2, "sobr_cor": (52, 34, 30), "bravo": True},
+    "xandao": {"caixa": (135, 40, 352, 300), "barba": False, "oculos": False, "sobr": 2, "sobr_cor": (52, 34, 30), "bravo": True},
     "trump": {"caixa": (252, 12, 500, 332), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (196, 150, 90)},
     # caricatura: dentes da frente grandes e cabelo em cuia com franja reta
     "eduarda": {"caixa": (185, 0, 565, 395), "barba": False, "oculos": True, "sobr": 1, "sobr_cor": (70, 46, 36),

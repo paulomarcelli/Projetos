@@ -16,6 +16,9 @@ const SOMBRA := Color(0, 0, 0, 0.32)
 static var _cont := false
 ## Transformação de quem chamou (posição/escala do boneco na tela); as partes se compõem com ela.
 static var _base := Transform2D.IDENTITY
+## Transformação do tronco (inclinação), onde o pescoço se apoia. A cabeça soma o próprio giro.
+static var _mat_tronco := Transform2D.IDENTITY
+const EXPRESSOES := ["neutro", "piscar", "esforco", "grito", "dor", "nocaute", "feliz", "derrota"]
 static var _fonte: Font
 static var _ceu: ImageTexture
 static var _texturas := {}
@@ -36,6 +39,167 @@ static func pose_padrao() -> Dictionary:
 		"pe_f": Vector2(20, 0), "pe_t": Vector2(-20, 0),
 		"boca": "normal", "olhos": "normal", "punho_grande": false, "martelo": false,
 	}
+
+
+# ---------------------------------------------------------------- poses de personalidade
+# Usadas na luta e nas telas (seleção, resultado). t = quadros desde que o lutador entrou.
+
+static func _id(d: Dictionary) -> String:
+	return d.get("id", "")
+
+
+## Parado: cada um com seu jeito (discurso, postura militar, "sanfona", imponente, celular na mão).
+static func pose_idle(d: Dictionary, t: int) -> Dictionary:
+	var p := pose_padrao()
+	var resp := sin(t * 0.07)
+	p["quadril"] = -72.0 + resp * 1.5
+	p["cabeca_desl"] = Vector2(0, sin(t * 0.07 - 0.6) * 1.5)
+	p["cabeca_giro"] = sin(t * 0.023) * 0.05
+	match d.get("idle", ""):
+		"discurso":
+			p["mao_f"] = Vector2(44 + sin(t * 0.11) * 9, -134 + sin(t * 0.22) * 12)
+			p["cabeca_giro"] = sin(t * 0.11) * 0.07
+		"militar":
+			p["inclina"] = -0.04
+			p["mao_f"] = Vector2(30, -124)
+			p["mao_t"] = Vector2(10, -118)
+			if t % 240 < 40:
+				p["mao_f"] = Vector2(22, -176)  # continência rápida
+		"sanfona":
+			var f := sin(t * 0.09)
+			p["mao_f"] = Vector2(38 + f * 14, -122)
+			p["mao_t"] = Vector2(14 - f * 12, -120)
+			p["cabeca_giro"] = sin(t * 0.045) * 0.09
+		"imponente":
+			p["inclina"] = -0.06
+			p["mao_f"] = Vector2(-2, -98)
+			p["mao_t"] = Vector2(-14, -94)
+			if t % 300 < 34:
+				p["mao_f"] = Vector2(26, -168)  # ajusta os óculos
+		"celular":
+			p["mao_t"] = Vector2(30, -150)
+			p["prop_t"] = "celular"
+			p["cabeca_giro"] = 0.08 + sin(t * 0.05) * 0.04
+	if (t + d.get("nome", "").length() * 37) % 170 < 6:
+		p["expr"] = "piscar"
+	return p
+
+
+## Provocação (taunt): o meme de cada um.
+static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
+	var p := pose_padrao()
+	p["expr"] = "feliz"
+	match _id(d):
+		"lula":
+			p["mao_f"] = Vector2(40, -206)
+			p["cabeca_giro"] = -0.1
+		"bolsonaro":
+			p["mao_f"] = Vector2(24, -178)
+			p["chapeu"] = "boina"
+			p["inclina"] = -0.05
+			p["expr"] = "esforco"
+		"trump":
+			var f := sin(t * 0.3)
+			p["mao_f"] = Vector2(34, -190 + f * 24)
+			p["mao_t"] = Vector2(-18, -160 - f * 24)
+			p["quadril"] = -72.0 + absf(f) * 6.0
+			p["inclina"] = f * 0.1
+			p["cabeca_giro"] = -f * 0.12
+		"xandao":
+			p["mao_f"] = Vector2(28, -168)
+			p["mao_t"] = Vector2(14, -112)
+			p["prop_t"] = "livro"
+			p["expr"] = "neutro"
+		"eduarda":
+			p["mao_f"] = Vector2(72, -204)
+			p["prop"] = "celular"
+			p["inclina"] = -0.1
+			p["cabeca_giro"] = -0.15
+	return p
+
+
+## Vitória: comemoração própria (em loop).
+static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
+	var p := pose_padrao()
+	p["expr"] = "feliz"
+	p["punho_grande"] = true
+	var bob := sin(t * 0.15)
+	match _id(d):
+		"lula":
+			p["mao_f"] = Vector2(36, -214 + bob * 6)
+			p["prop"] = "picanha"
+			p["mao_t"] = Vector2(-26, -200)
+		"bolsonaro":
+			p["mao_f"] = Vector2(44, -176)
+			p["mao_t"] = Vector2(-30, -176)
+			p["prop"] = "joinha"
+			p["prop_t"] = "joinha"
+			p["chapeu"] = "boina"
+		"trump":
+			var f := sin(t * 0.32)
+			p["mao_f"] = Vector2(34, -196 + f * 26)
+			p["mao_t"] = Vector2(-20, -160 - f * 26)
+			p["quadril"] = -72.0 + absf(f) * 7.0
+			p["inclina"] = f * 0.12
+			p["cabeca_giro"] = -f * 0.14
+			p["pe_f"] = Vector2(22 + f * 6, 0)
+		"xandao":
+			var k := absf(sin(t * 0.12))
+			p["mao_f"] = Vector2(54, -132).lerp(Vector2(40, -214), k)
+			p["prop"] = "martelo"
+			p["expr"] = "esforco" if k < 0.2 else "feliz"
+		"eduarda":
+			p["mao_f"] = Vector2(72, -204 + bob * 4)
+			p["prop"] = "celular"
+			p["inclina"] = -0.08
+			p["cabeca_giro"] = -0.12
+		_:
+			p["mao_f"] = Vector2(34, -222 + bob * 6)
+			p["mao_t"] = Vector2(-30, -214)
+	p["cabeca_desl"] = Vector2(0, bob * 2.0)
+	return p
+
+
+## Derrota: frustração própria.
+static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
+	var p := pose_padrao()
+	p["expr"] = "derrota"
+	p["agachado"] = true
+	p["quadril"] = -40.0
+	p["pe_f"] = Vector2(30, 0)
+	p["pe_t"] = Vector2(-28, 0)
+	p["inclina"] = 0.28
+	p["cabeca_giro"] = 0.3 + sin(t * 0.05) * 0.04
+	p["mao_f"] = Vector2(30, -42)
+	p["mao_t"] = Vector2(4, -40)
+	match _id(d):
+		"lula":
+			p["prop"] = "espeto"
+			p["mao_f"] = Vector2(34, -70)
+		"bolsonaro":
+			p["agachado"] = false
+			p["quadril"] = -72.0
+			p["pe_f"] = Vector2(20, 0)
+			p["pe_t"] = Vector2(-20, 0)
+			p["inclina"] = -0.05
+			p["mao_f"] = Vector2(52, -112 - absf(sin(t * 0.08)) * 10)
+			p["mao_t"] = Vector2(-34, -112 - absf(sin(t * 0.08)) * 10)
+			p["cabeca_giro"] = -0.1
+		"trump":
+			p["agachado"] = false
+			p["quadril"] = -72.0
+			p["pe_f"] = Vector2(20, 0)
+			p["pe_t"] = Vector2(-20, 0)
+			p["inclina"] = -0.08
+			p["mao_f"] = Vector2(6, -122)
+			p["mao_t"] = Vector2(18, -114)
+			p["cabeca_giro"] = -0.2
+		"xandao":
+			p["prop"] = "martelo"
+		"eduarda":
+			p["mao_f"] = Vector2(30, -96)
+			p["prop"] = "celular"
+	return p
 
 
 # ---------------------------------------------------------------- primitivas com contorno
@@ -89,6 +253,7 @@ static func lutador(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	_corpo(c, d, p)
 	_cont = false
 	_corpo(c, d, p)
+	_mat_tronco = Transform2D.IDENTITY
 
 
 static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
@@ -100,11 +265,22 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	var roupa: Color = d["roupa"]
 
 	_braco(c, d, ombro_t, p["mao_t"], roupa.darkened(0.3), false)
+	if not _cont:
+		_prop_mao(c, p.get("prop_t", ""), p["mao_t"])
 	_perna(c, d, quadril + Vector2(-9, 0), p["pe_t"], p["agachado"], true)
 	_perna(c, d, quadril + Vector2(9, 0), p["pe_f"], p["agachado"], false)
 
-	c.draw_set_transform_matrix(_base * Transform2D(inclina, quadril))
+	var corpo: Dictionary = d.get("corpo", {})
+	var larg: float = corpo.get("larg", 1.0)
+	_mat_tronco = _base * Transform2D(inclina, quadril)
+	c.draw_set_transform_matrix(_mat_tronco * Transform2D(0.0, Vector2(larg, 1.0), 0.0, Vector2.ZERO))
 	_tronco(c, d)
+	var barriga: float = corpo.get("barriga", 0.0)
+	if barriga > 0.0:
+		_circ(c, Vector2(6 + 6 * barriga, -22), 16 + 10 * barriga, d["roupa"])
+		if not _cont:
+			c.draw_circle(Vector2(10 + 6 * barriga, -26), 8 + 6 * barriga, d["roupa"].lightened(0.1))
+	c.draw_set_transform_matrix(_mat_tronco)
 	if not _cont:
 		# contorno próprio da cabeça por cima do tronco
 		_cont = true
@@ -118,11 +294,7 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 		_braco(c, d, ombro_f, p["mao_f"], roupa, p["punho_grande"])
 		_cont = false
 	_braco(c, d, ombro_f, p["mao_f"], roupa, p["punho_grande"])
-	match p.get("prop", ""):
-		"martelo":
-			_martelo(c, p["mao_f"])
-		"livro":
-			_livro(c, p["mao_f"])
+	_prop_mao(c, p.get("prop", ""), p["mao_f"])
 	if not _cont and pele.a > 0.0:
 		pass
 
@@ -181,7 +353,7 @@ static func _tronco(c: CanvasItem, d: Dictionary) -> void:
 	c.draw_line(Vector2(22, -56), Vector2(20, -4), roupa.lightened(0.22), 3.0)
 	# pescoço
 	c.draw_rect(Rect2(-8, -70, 16, 14), d["pele"].darkened(0.22))
-	if extra not in ["toga", "vestido"]:
+	if extra not in ["toga", "vestido", "militar", "selecao"]:
 		c.draw_colored_polygon(PackedVector2Array([Vector2(-11, -60), Vector2(11, -60), Vector2(0, -30)]), d["camisa"])
 	var gravata: Color = d["gravata"]
 	if gravata.a > 0.0 and extra != "toga":
@@ -201,6 +373,24 @@ static func _tronco(c: CanvasItem, d: Dictionary) -> void:
 			c.draw_circle(Vector2(12, -8), 6.5, Color("ffd23f"))
 			c.draw_circle(Vector2(12, -8), 3.0, Color("c9a227"))
 			_estrela(c, Vector2(-14, -48), 5.0, Color("c9a227"))
+		"selecao":
+			# camisa da seleção: verde com gola amarela em V e o escudo
+			c.draw_colored_polygon(PackedVector2Array([Vector2(-14, -60), Vector2(14, -60), Vector2(0, -38)]), d["camisa"])
+			c.draw_colored_polygon(PackedVector2Array([Vector2(-9, -60), Vector2(9, -60), Vector2(0, -44)]), d["pele"])
+			c.draw_rect(Rect2(-27, -60, 8, 22), d["camisa"])
+			c.draw_rect(Rect2(19, -60, 8, 22), d["camisa"])
+			c.draw_colored_polygon(PackedVector2Array([Vector2(8, -30), Vector2(18, -30), Vector2(18, -20), Vector2(13, -16), Vector2(8, -20)]), d["camisa"])
+			c.draw_circle(Vector2(13, -24), 2.5, Color("2a4f9a"))
+		"militar":
+			c.draw_colored_polygon(PackedVector2Array([Vector2(-12, -60), Vector2(12, -60), Vector2(6, -14), Vector2(-6, -14)]), d["camisa"])
+			c.draw_rect(Rect2(-24, -6, 48, 6), Color("2a2a1a"))
+			c.draw_rect(Rect2(-3, -6, 6, 6), Color("c9a227"))
+			c.draw_rect(Rect2(-22, -40, 10, 9), roupa.darkened(0.25))
+			c.draw_rect(Rect2(12, -40, 10, 9), roupa.darkened(0.25))
+			c.draw_rect(Rect2(-24, -56, 9, 6), Color("1f9d55"))
+			c.draw_rect(Rect2(-22, -55, 4, 4), Color("ffd23f"))
+			for k in 3:
+				c.draw_rect(Rect2(14 + k * 3, -55, 2, 4), Color("ffd23f"))
 		"broche":
 			c.draw_rect(Rect2(-17, -48, 7, 5), Color("1f9d55"))
 			c.draw_rect(Rect2(-15, -47, 3, 3), Color("ffd23f"))
@@ -343,18 +533,40 @@ static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: D
 
 
 ## Cabeça caricata em pixel art feita da foto (ferramentas/cabeca_pixel.py). O queixo fica no pescoço.
+## Cabeça de foto: folha de expressões (ferramentas/cabeca_pixel.py) presa no pescoço.
+## p["expr"] escolhe o quadro; p["cabeca_giro"] e p["cabeca_desl"] mexem a cabeça sem mexer o tronco.
 static func _cabeca_foto(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: Dictionary) -> void:
-	var tex := textura(d["foto"] + ("_retrato" if p.get("retrato", false) else "_cabeca"))
-	var h := r * 2.85
-	var w := h * tex.get_width() / float(tex.get_height())
-	var sobe := -3.0 if p.get("boca", "") == "grito" else 0.0
-	c.draw_texture_rect(tex, Rect2(centro.x - w / 2.0 + r * 0.08, centro.y + r * 1.05 - h + sobe, w, h), false)
-	if p.get("olhos", "") == "x":
-		# tonto: estrelinhas girando em volta da cabeça
+	var retrato: bool = p.get("retrato", false)
+	var tex := textura(d["foto"] + ("_retrato" if retrato else "_rosto"))
+	if tex == null:
+		tex = textura(d["foto"] + "_cabeca")
+		if tex == null:
+			return
+	var n := EXPRESSOES.size() if tex.get_width() > tex.get_height() * 3 else 1
+	var fw := tex.get_width() / float(n)
+	var fh := float(tex.get_height())
+	var quadro := maxi(0, EXPRESSOES.find(p.get("expr", "neutro"))) if n > 1 else 0
+	var h := r * 2.35
+	var w := h * fw / fh
+	var pescoco := centro + Vector2(0, r * 1.0)
+	var giro: float = p.get("cabeca_giro", 0.0)
+	var desl: Vector2 = p.get("cabeca_desl", Vector2.ZERO)
+	c.draw_set_transform_matrix(_mat_tronco * Transform2D(giro, pescoco + desl))
+	c.draw_texture_rect_region(tex, Rect2(-w / 2.0 + r * 0.06, -h, w, h), Rect2(quadro * fw, 0, fw, fh))
+	var topo := Vector2(0, -h)
+	match p.get("chapeu", ""):
+		"boina":
+			_cont = true
+			_poli(c, PackedVector2Array([topo + Vector2(-30, 16), topo + Vector2(26, 6), topo + Vector2(30, 16), topo + Vector2(-26, 26)]), Color("3d4a22"))
+			_cont = false
+			c.draw_colored_polygon(PackedVector2Array([topo + Vector2(-30, 16), topo + Vector2(26, 6), topo + Vector2(30, 16), topo + Vector2(-26, 26)]), Color("4b5a2a"))
+			c.draw_circle(topo + Vector2(-12, 16), 4.0, Color("ffd23f"))
+	if p.get("expr", "") == "nocaute" or p.get("olhos", "") == "x":
 		var t := Time.get_ticks_msec() * 0.004
-		for i in 3:
-			var a := t + i * TAU / 3.0
-			_estrela(c, centro + Vector2(cos(a) * r * 1.2, -r * 1.3 + sin(a) * r * 0.35), 7.0, Color("ffd23f"))
+		for k in 3:
+			var a := t + k * TAU / 3.0
+			_estrela(c, Vector2(cos(a) * r * 1.2, -h - 6 + sin(a) * r * 0.3), 7.0, Color("ffd23f"))
+	c.draw_set_transform_matrix(_mat_tronco)
 
 
 static func _arco_cheio(centro: Vector2, r: float, de: float, ate: float, espessura: float) -> PackedVector2Array:
@@ -375,6 +587,45 @@ static func _estrela(c: CanvasItem, centro: Vector2, r: float, cor: Color) -> vo
 		var rr := r if i % 2 == 0 else r * 0.45
 		pts.append(centro + Vector2(cos(a), sin(a)) * rr)
 	c.draw_colored_polygon(pts, cor)
+
+
+static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
+	match prop:
+		"martelo":
+			_martelo(c, mao)
+		"livro":
+			_livro(c, mao)
+		"picanha":
+			for passada in 2:
+				_cont = passada == 0
+				_lin(c, mao, mao + Vector2(4, -30), Color("8a5a35"), 5.0)
+				_poli(c, PackedVector2Array([mao + Vector2(-14, -34), mao + Vector2(22, -40), mao + Vector2(28, -66), mao + Vector2(-8, -70)]), Color("b8473f"))
+			_cont = false
+			c.draw_colored_polygon(PackedVector2Array([mao + Vector2(-8, -70), mao + Vector2(28, -66), mao + Vector2(27, -60), mao + Vector2(-9, -63)]), Color("f3e3c3"))
+		"celular":
+			for passada in 2:
+				_cont = passada == 0
+				_ret(c, Rect2(mao + Vector2(-6, -26), Vector2(13, 24)), Color("1f1a24"))
+			_cont = false
+			c.draw_rect(Rect2(mao + Vector2(-4, -24), Vector2(9, 17)), Color("7ec8ff"))
+		"microfone":
+			for passada in 2:
+				_cont = passada == 0
+				_lin(c, mao, mao + Vector2(6, -22), Color("2a2230"), 5.0)
+				_circ(c, mao + Vector2(7, -26), 6.5, Color("4a4a55"))
+			_cont = false
+			c.draw_circle(mao + Vector2(6, -28), 2.0, Color("9aa0a6"))
+		"espeto":
+			# o espeto vazio: a picanha acabou
+			for passada in 2:
+				_cont = passada == 0
+				_lin(c, mao, mao + Vector2(10, -46), Color("9aa0a6"), 3.0)
+			_cont = false
+		"joinha":
+			_cont = true
+			_lin(c, mao, mao + Vector2(0, -16), Color("e8a587"), 6.0)
+			_cont = false
+			c.draw_line(mao, mao + Vector2(0, -16), Color("e8a587"), 6.0)
 
 
 static func _livro(c: CanvasItem, mao: Vector2) -> void:

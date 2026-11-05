@@ -58,6 +58,7 @@ func _ready() -> void:
 		l.soltou_projetil.connect(_soltar_projetil)
 		l.falou.connect(_fala)
 		l.super_ativado.connect(_super)
+		l.provocou.connect(_provocou)
 		if humano[i]:
 			l.entrada = EntradaHumana.new(i + 1)
 		else:
@@ -154,6 +155,7 @@ func _physics_process(_delta: float) -> void:
 				var v := vencedor
 				if v >= 0:
 					p[v].comemorar()
+					p[1 - v].lamentar()
 					_fala_texto(p[v], p[v].dados["vitoria"], Color("ffd23f"))
 					_meme(v, true)
 			if fase_t >= 230:
@@ -331,6 +333,11 @@ func _fala_texto(l: Lutador, texto: String, cor: Color) -> void:
 	_texto(l.position + Vector2(0, -330), texto, cor, 28)
 
 
+func _provocou(l: Lutador) -> void:
+	l.barra = minf(l.barra + 10.0, 100.0)
+	_meme(p.find(l), true)
+
+
 func _super(l: Lutador) -> void:
 	congelado = 34
 	efeitos.append({"tipo": "super", "t": 0, "dur": 34, "dono": l})
@@ -424,14 +431,15 @@ static func desenhar_meme(c: CanvasItem, d: Dictionary, txt: String, lado: int, 
 	for j in 14:
 		var x := fposmod(j * 110.0 + t * 14.0 * (1 if lado == 0 else -1), 1540.0) - 130.0
 		c.draw_line(Vector2(x, y0 + 170), Vector2(x + 90, y0), Color(1, 0.82, 0.25, 0.18 * k), 22.0)
-	var tex := Desenho.textura(d.get("foto", "") + "_retrato")
 	var esq := lado == 0
 	var desliza := (1.0 - k) * 500.0
-	var px := (60.0 - desliza) if esq else (1220.0 - 240.0 + desliza)
-	if tex != null:
-		var h := 240.0
-		var w := h * tex.get_width() / float(tex.get_height())
-		c.draw_texture_rect(tex, Rect2(px if esq else px + 240 - w, y0 + 170 - h + 10, w, h), false)
+	var px := (170.0 - desliza) if esq else (1110.0 + desliza)
+	# o retrato "fala": alterna boca aberta e sorriso enquanto o meme está na tela
+	var ex := "grito" if (t / 6) % 2 == 0 else "feliz"
+	Desenho._mat_tronco = Transform2D(0.0, Vector2(1 if esq else -1, 1), 0.0, Vector2(px, y0 + 168))
+	Desenho.cabeca(c, d, Vector2(0, -88), 88.0, {"expr": ex, "retrato": true, "cabeca_giro": sin(t * 0.3) * 0.06})
+	Desenho._mat_tronco = Transform2D.IDENTITY
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	var linhas := Telas.quebrar(txt.to_upper(), 22)
 	var cx := 760.0 if esq else 520.0
 	for j in linhas.size():

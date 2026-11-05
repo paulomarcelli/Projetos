@@ -16,7 +16,8 @@ const LISTA := [
 		"id": "lula", "nome": "LULA", "titulo": "O Companheiro", "foto": "lula",
 		"pele": Color("e8a07a"), "cabelo": Color("dcd6cc"), "estilo_cabelo": "grisalho", "barba": true, "oculos": false,
 		"roupa": Color("23367d"), "camisa": Color("f2f2f2"), "gravata": Color("d04c86"), "calca": Color("1d2c66"),
-		"extra": "faixa_roseta", "velocidade": 0.98, "forca": 1.05, "vida": 1000,
+		"extra": "faixa_roseta", "velocidade": 0.94, "forca": 1.05, "vida": 1050,
+		"corpo": {"alt": 0.95, "larg": 1.12, "barriga": 0.7}, "idle": "discurso",
 		"especiais": {
 			"projetil": {"nome": "Bolsa Família!", "forma": "cartao"},
 			"investida": {"nome": "Faz o L!", "forma": "L"},
@@ -30,8 +31,9 @@ const LISTA := [
 	{
 		"id": "bolsonaro", "nome": "BOLSONARO", "titulo": "O Capitão", "foto": "bolsonaro",
 		"pele": Color("e8a587"), "cabelo": Color("3a3a3a"), "estilo_cabelo": "repartido", "barba": false, "oculos": false,
-		"roupa": Color("1e2230"), "camisa": Color("f2f2f2"), "gravata": Color("2a3f78"), "calca": Color("191c27"),
-		"extra": "broche", "velocidade": 1.05, "forca": 1.0, "vida": 1000,
+		"roupa": Color("4b5a2a"), "camisa": Color("ffd23f"), "gravata": Color(0, 0, 0, 0), "calca": Color("3b4724"),
+		"extra": "militar", "velocidade": 1.06, "forca": 1.0, "vida": 1000,
+		"corpo": {"alt": 1.04, "larg": 0.94, "barriga": 0.0}, "idle": "militar",
 		"especiais": {
 			"projetil": {"nome": "Vai Virar Jacaré!", "forma": "seringa"},
 			"investida": {"nome": "Motociata", "forma": "moto"},
@@ -46,7 +48,8 @@ const LISTA := [
 		"id": "xandao", "nome": "XANDÃO", "titulo": "O Careca da Toga", "foto": "xandao",
 		"pele": Color("d39a7c"), "cabelo": Color("d39a7c"), "estilo_cabelo": "careca", "barba": false, "oculos": false,
 		"roupa": Color("15151c"), "camisa": Color("f5f5f5"), "gravata": Color("2f4f9a"), "calca": Color("15151c"),
-		"extra": "toga", "velocidade": 0.92, "forca": 1.15, "vida": 1050,
+		"extra": "toga", "velocidade": 0.9, "forca": 1.0, "vida": 1000,
+		"corpo": {"alt": 1.05, "larg": 1.04, "barriga": 0.0}, "idle": "imponente",
 		"especiais": {
 			"projetil": {"nome": "Inquérito!", "forma": "inquerito"},
 			"investida": {"nome": "Conta Bloqueada", "forma": "carimbo"},
@@ -62,7 +65,8 @@ const LISTA := [
 		"id": "trump", "nome": "TRUMP", "titulo": "O Tarifador", "foto": "trump",
 		"pele": Color("e8915a"), "cabelo": Color("e8c27a"), "estilo_cabelo": "repartido", "barba": false, "oculos": false,
 		"roupa": Color("1a1c26"), "camisa": Color("f5f5f5"), "gravata": Color("d62828"), "calca": Color("15171f"),
-		"extra": "eua", "velocidade": 0.95, "forca": 1.12, "vida": 1060,
+		"extra": "eua", "velocidade": 0.96, "forca": 1.06, "vida": 1060,
+		"corpo": {"alt": 1.06, "larg": 1.2, "barriga": 0.35}, "idle": "sanfona",
 		"especiais": {
 			"projetil": {"nome": "Boné MAGA!", "forma": "bone"},
 			"investida": {"nome": "Air Force One", "forma": "aviao"},
@@ -75,9 +79,10 @@ const LISTA := [
 	},
 	{
 		"id": "eduarda", "nome": "EDUARDA", "titulo": "A Mais Votada", "foto": "eduarda",
-		"pele": Color("e3b08c"), "cabelo": Color("2a1c18"), "estilo_cabelo": "curto", "barba": false, "oculos": true,
-		"roupa": Color("efe8dc"), "camisa": Color("efe8dc"), "gravata": Color(0, 0, 0, 0), "calca": Color("efe8dc"),
-		"extra": "vestido", "velocidade": 1.1, "forca": 0.92, "vida": 960,
+		"pele": Color("efb894"), "cabelo": Color("4a3226"), "estilo_cabelo": "curto", "barba": false, "oculos": true,
+		"roupa": Color("1f9d55"), "camisa": Color("ffd23f"), "gravata": Color(0, 0, 0, 0), "calca": Color("2c3e66"),
+		"extra": "selecao", "velocidade": 1.12, "forca": 0.92, "vida": 950,
+		"corpo": {"alt": 0.92, "larg": 0.86, "barriga": 0.0}, "idle": "celular",
 		"especiais": {
 			"projetil": {"nome": "Corte Viral!", "forma": "celular"},
 			"investida": {"nome": "1,9 Milhão de Votos", "forma": "votos"},

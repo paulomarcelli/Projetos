@@ -61,8 +61,8 @@ class Titulo extends Node2D:
 		Desenho.cenario(self, t)
 		draw_rect(Rect2(0, 0, 1280, 720), Color(0.06, 0.03, 0.14, 0.62))
 		var y := 170.0 + sin(t * 2.0) * 6.0
-		Desenho.texto(self, Vector2(640, y), "TRETA", 128, Color("ffd23f"), Color("7a1020"), 20)
-		Desenho.texto(self, Vector2(640, y + 92), "EM BRASÍLIA", 64, Color("fbfbf7"), Color("1d3a8a"), 14)
+		Desenho.texto(self, Vector2(640, y), "BRASÍLIA", 128, Color("ffd23f"), Color("7a1020"), 20)
+		Desenho.texto(self, Vector2(640, y + 92), "KOMBAT", 64, Color("fbfbf7"), Color("1d3a8a"), 14)
 		Desenho.texto(self, Vector2(640, y + 140), "A BRIGA MAIS POLARIZADA DO PAÍS", 26, Color("ffe7b0"), Desenho.PRETO, 6)
 		Telas.painel(self, Rect2(400, 372, 480, 196))
 		for i in ITENS.size():
@@ -75,7 +75,8 @@ class Titulo extends Node2D:
 		for i in Personagens.LISTA.size():
 			var d: Dictionary = Personagens.LISTA[i]
 			var x := 640.0 + (i - 2.5) * 120.0
-			Desenho.cabeca(self, d, Vector2(x, 630 + sin(t * 3.0 + i) * 4.0), 34.0, {"boca": "sorriso" if int(t + i) % 3 == 0 else "normal"})
+			var ex: String = ["neutro", "feliz", "grito", "piscar"][int(t * 1.5 + i * 1.7) % 4]
+			Desenho.cabeca(self, d, Vector2(x, 612 + sin(t * 3.0 + i) * 4.0), 43.0, {"expr": ex, "cabeca_giro": sin(t * 2.0 + i) * 0.08})
 		Desenho.texto(self, Vector2(640, 706), "Paródia e humor. Sem apoio a partido ou candidato.", 22, Color(1, 1, 1, 0.8), Desenho.PRETO, 5)
 
 
@@ -221,7 +222,9 @@ class Selecao extends Node2D:
 				var d: Dictionary = Personagens.LISTA[i]
 				draw_rect(r, Color("2c2450"))
 				draw_rect(Rect2(r.position, Vector2(r.size.x, r.size.y * 0.55)), Color("3a3068"))
-				Desenho.cabeca(self, d, r.get_center() + Vector2(0, -26), 43.0, {})
+				var sel: bool = cursor[0] == i or cursor[1] == i
+				var ex := "feliz" if sel else ("piscar" if int(t * 10 + i * 7) % 40 == 0 else "neutro")
+				Desenho.cabeca(self, d, r.get_center() + Vector2(0, -26), 43.0, {"expr": ex})
 				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), d["nome"], 26, Color.WHITE, Desenho.PRETO, 5)
 			else:
 				draw_rect(r, Color("201a38"))
@@ -237,11 +240,10 @@ class Selecao extends Node2D:
 		for k in 2:
 			var d: Dictionary = Personagens.LISTA[cursor[k]]
 			var x := 130.0 if k == 0 else 1150.0
-			var pose := Desenho.pose_padrao()
-			if confirmado[k]:
-				pose["mao_f"] = Vector2(34, -222)
-				pose["punho_grande"] = true
-			Desenho.lutador_em(self, d, pose, Vector2(x, 640), Vector2(0.95 * (1 if k == 0 else -1), 0.95))
+			var tq := int(t * 60.0)
+			var pose := Desenho.pose_vitoria(d, tq) if confirmado[k] else Desenho.pose_idle(d, tq + k * 50)
+			var alt: float = d.get("corpo", {}).get("alt", 1.0)
+			Desenho.lutador_em(self, d, pose, Vector2(x, 640), Vector2(0.95 * (1 if k == 0 else -1), 0.95) * alt)
 			var tx := 390.0 if k == 0 else 890.0
 			Desenho.texto(self, Vector2(tx, 560), d["nome"], 40, Color("ffd23f"), Desenho.PRETO, 8)
 			Desenho.texto(self, Vector2(tx, 590), d["titulo"], 22, Color.WHITE, Desenho.PRETO, 5)
@@ -279,22 +281,11 @@ class Resultado extends Node2D:
 		draw_rect(Rect2(0, 0, 1280, 720), Color(0.04, 0.02, 0.1, 0.55))
 		Desenho.texto(self, Vector2(640, 92), "%s VENCEU!" % dados["nome"], 64, Color("ffd23f"), Desenho.PRETO, 12)
 		Desenho.texto(self, Vector2(640, 132), quem, 26, Color.WHITE, Desenho.PRETO, 5)
-		var pose := Desenho.pose_padrao()
-		pose["mao_f"] = Vector2(34, -222 + sin(t * 6.0) * 8.0)
-		pose["mao_t"] = Vector2(-30, -214)
-		pose["boca"] = "sorriso"
-		pose["punho_grande"] = true
-		Desenho.lutador_em(self, dados, pose, Vector2(330, 650), Vector2(1.8, 1.8))
-		var caido := Desenho.pose_padrao()
-		caido["olhos"] = "x"
-		caido["boca"] = "dor"
-		caido["agachado"] = true
-		caido["quadril"] = -40.0
-		caido["inclina"] = -0.5
-		caido["pe_f"] = Vector2(30, 0)
-		caido["pe_t"] = Vector2(-30, 0)
-		caido["mao_f"] = Vector2(20, -60)
-		Desenho.lutador_em(self, perdedor, caido, Vector2(980, 650), Vector2(-1.5, 1.5))
+		var tq := int(t * 60.0)
+		var alt_v: float = dados.get("corpo", {}).get("alt", 1.0)
+		var alt_d: float = perdedor.get("corpo", {}).get("alt", 1.0)
+		Desenho.lutador_em(self, dados, Desenho.pose_vitoria(dados, tq), Vector2(330, 650), Vector2(1.8, 1.8) * alt_v)
+		Desenho.lutador_em(self, perdedor, Desenho.pose_derrota(perdedor, tq), Vector2(980, 650), Vector2(-1.5, 1.5) * alt_d)
 		var linhas := Telas.quebrar("\"%s\"" % dados["vitoria"], 26)
 		var balao := Rect2(510, 190, 600, 40 + linhas.size() * 30)
 		draw_rect(balao.grow(5), Desenho.PRETO)

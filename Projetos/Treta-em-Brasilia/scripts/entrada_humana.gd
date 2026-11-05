@@ -14,4 +14,5 @@ func ler() -> Dictionary:
 		"soco": Input.is_action_pressed(prefixo + "soco"),
 		"chute": Input.is_action_pressed(prefixo + "chute"),
 		"especial": Input.is_action_pressed(prefixo + "especial"),
+		"provocar": Input.is_action_pressed(prefixo + "provocar"),
 	}

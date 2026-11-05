@@ -19,7 +19,7 @@ func _init(nivel_: float = 0.55) -> void:
 
 
 func ler() -> Dictionary:
-	var d := {"esq": false, "dir": false, "cima": false, "baixo": false, "soco": false, "chute": false, "especial": false}
+	var d := {"esq": false, "dir": false, "cima": false, "baixo": false, "soco": false, "chute": false, "especial": false, "provocar": false}
 	if eu == null or op == null:
 		return d
 	var dist := absf(op.position.x - eu.position.x)
@@ -54,6 +54,11 @@ func ler() -> Dictionary:
 	if eu.estado == Lutador.E.PULANDO and eu.vel.y > 0 and dist < 170.0 and _cd <= 0:
 		d["chute"] = true
 		_cd = 20
+		return d
+
+	# provoca de vez em quando, de longe
+	if dist > 520.0 and eu.pode_agir() and randf() < 0.004:
+		d["provocar"] = true
 		return d
 
 	# 4) plano

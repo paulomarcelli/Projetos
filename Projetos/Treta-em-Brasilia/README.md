@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🥊 Treta em Brasília
+# 🥊 Brasília Kombat
 
 **A briga mais polarizada do país.** Um jogo de luta 2D no estilo fliperama dos anos 90, com caricaturas de políticos brasileiros e memes.
 
@@ -27,10 +27,12 @@
 | Bolsonaro | Vai Virar Jacaré! | Motociata | Talquei? | Imbrochável! | E Daí? |
 | Xandão | Inquérito! | Conta Bloqueada | Martelo da Justiça | Inelegível! | Prisão Preventiva! |
 | Trump | Boné MAGA! | Air Force One | You're Fired! | Tarifaço 50%! | Make Brasília Great Again! |
-| Eduarda Campopiano | Corte Viral! | 1,9 Milhão de Votos | Lacração Reversa | Mais Votada de SP! | Direto de Praia Grande! |
+| Eduarda Campopiano (cuia e dentes caricatos) | Corte Viral! | 1,9 Milhão de Votos | Lacração Reversa | Mais Votada de SP! | Direto de Praia Grande! |
 
 Em breve: Flávio Bolsonaro, Milei, Pavanato e Janones.
 
+- **Rostos animados:** cada personagem tem uma folha com 8 expressões em pixel art (neutro, piscar, esforço, grito, dor, nocaute, feliz, derrota). Os olhos, as sobrancelhas, a boca e os óculos são redesenhados em cada quadro, nos pontos do rosto detectados na foto (`ferramentas/rostos.py`). A cabeça fica presa no pescoço e se mexe sozinha: respira, pisca, recua no golpe e abaixa na derrota.
+- **Personalidade:** corpo, roupa, jeito de ficar parado, provocação (tecla R / 4), vitória e derrota próprios de cada um. Veja `docs/GDD-combate.md`.
 - **Combos:** Soco, Soco, Chute (enquanto acerta) termina no golpe final de cada um; soco e chute que acertam podem ser cancelados num especial.
 - **Memes:** ao escolher o lutador e nos golpes fortes, o retrato entra na tela com uma frase do personagem. Se existir `audio/<id>/<n>.ogg` (ou .mp3/.wav), o áudio toca junto.
 - **1 jogador contra a CPU** ou **2 jogadores** no mesmo teclado ou com dois controles.

@@ -6,15 +6,16 @@ extends Node2D
 signal soltou_projetil(lutador: Lutador, eh_super: bool)
 signal falou(lutador: Lutador, texto: String)
 signal super_ativado(lutador: Lutador)
+signal provocou(lutador: Lutador)
 
-enum E { PARADO, ANDANDO, PULANDO, AGACHADO, ATACANDO, ATINGIDO, DEFENDENDO, CAIDO, LEVANTANDO, NOCAUTE, VITORIA }
+enum E { PARADO, ANDANDO, PULANDO, AGACHADO, ATACANDO, ATINGIDO, DEFENDENDO, CAIDO, LEVANTANDO, NOCAUTE, VITORIA, PROVOCANDO, DERROTA }
 
 const CHAO := 640.0
 const TAM := 1.35  # tamanho do desenho e das caixas de colisão
 const GRAVIDADE := 1.0
 const LIMITE_ESQ := 50.0
 const LIMITE_DIR := 1230.0
-const VAZIO := {"esq": false, "dir": false, "cima": false, "baixo": false, "soco": false, "chute": false, "especial": false}
+const VAZIO := {"esq": false, "dir": false, "cima": false, "baixo": false, "soco": false, "chute": false, "especial": false, "provocar": false}
 
 ## caixa: retângulo do golpe olhando para a direita, relativo aos pés.
 ## nivel: alto/medio (defende em pé ou agachado), baixo (só agachado), aereo (só em pé).
@@ -52,6 +53,7 @@ var invencivel := 0
 var flash := 0
 var tem_projetil := false
 var defendeu_agachado := false
+var tempo_vivo := 0  # quadros desde que entrou (respiração, piscadas, gestos)
 
 var _antes: Dictionary = VAZIO.duplicate()
 var _buffer: Array[int] = []
@@ -126,7 +128,7 @@ func passo() -> void:
 	if entrada != null and not travado:
 		e = entrada.ler()
 	var aperto := {}
-	for k in ["soco", "chute", "especial"]:
+	for k in ["soco", "chute", "especial", "provocar"]:
 		aperto[k] = e.get(k, false) and not _antes.get(k, false)
 	_antes = e
 	var dirn := _direcao(e)
@@ -135,6 +137,7 @@ func passo() -> void:
 		_buffer.pop_front()
 
 	quadro += 1
+	tempo_vivo += 1
 	if flash > 0:
 		flash -= 1
 	if invencivel > 0:
@@ -143,8 +146,14 @@ func passo() -> void:
 	match estado:
 		E.PARADO, E.ANDANDO, E.AGACHADO:
 			_virar()
-			if not _tentar_ataque(e, aperto, dirn):
+			if aperto["provocar"] and estado != E.AGACHADO:
+				_mudar(E.PROVOCANDO)
+				provocou.emit(self)
+			elif not _tentar_ataque(e, aperto, dirn):
 				_movimento_chao(e)
+		E.PROVOCANDO:
+			if quadro > 60:
+				_mudar(E.PARADO)
 		E.PULANDO:
 			if aperto["soco"] or aperto["chute"]:
 				_iniciar("voadora")
@@ -172,7 +181,7 @@ func passo() -> void:
 		E.LEVANTANDO:
 			if quadro > 22:
 				_mudar(E.PARADO)
-		E.VITORIA:
+		E.VITORIA, E.DERROTA:
 			pass
 
 	position.x = clampf(position.x, LIMITE_ESQ, LIMITE_DIR)
@@ -342,7 +351,7 @@ func _fisica_ar() -> void:
 
 ## Recebe um golpe. Devolve "bloqueio", "acerto", "derrubou", "nocaute" ou "" (não pegou).
 func receber(g: Dictionary, atacante_x: float) -> String:
-	if estado in [E.NOCAUTE, E.CAIDO, E.LEVANTANDO, E.VITORIA] or invencivel > 0:
+	if estado in [E.NOCAUTE, E.CAIDO, E.LEVANTANDO, E.VITORIA, E.DERROTA] or invencivel > 0:
 		return ""
 	var tras: bool = _antes.get("esq", false) if atacante_x > position.x else _antes.get("dir", false)
 	var agachado: bool = _antes.get("baixo", false)
@@ -400,44 +409,69 @@ func comemorar() -> void:
 		_mudar(E.VITORIA)
 
 
+## Perdeu sem ser nocauteado (tempo esgotado): fica de pé, frustrado.
+func lamentar() -> void:
+	if estado != E.NOCAUTE:
+		vel = Vector2.ZERO
+		position.y = CHAO
+		_mudar(E.DERROTA)
+
+
 # ---------------------------------------------------------------- desenho
 
+## A pose de cada quadro: corpo, expressão do rosto (folha de expressões) e movimento da cabeça,
+## que acompanha o corpo com atraso e reage sozinha (recua no golpe, abaixa na derrota).
 func pose() -> Dictionary:
-	var p := Desenho.pose_padrao()
+	var p := Desenho.pose_idle(dados, tempo_vivo)
 	var t := quadro
 	match estado:
 		E.PARADO:
-			p["quadril"] = -72.0 + sin(Time.get_ticks_msec() * 0.005) * 2.0
+			pass
 		E.ANDANDO:
-			var s := sin(t * 0.3) * 13.0
-			p["pe_f"] = Vector2(20 + s, -maxf(0.0, sin(t * 0.3)) * 8.0)
-			p["pe_t"] = Vector2(-20 - s, -maxf(0.0, -sin(t * 0.3)) * 8.0)
+			var s := sin(t * 0.3)
+			p["pe_f"] = Vector2(20 + s * 13.0, -maxf(0.0, s) * 8.0)
+			p["pe_t"] = Vector2(-20 - s * 13.0, -maxf(0.0, -s) * 8.0)
+			p["quadril"] = -72.0 - absf(s) * 3.0
+			p["cabeca_desl"] = Vector2(0, -absf(sin(t * 0.3 - 0.5)) * 3.0)
+			p["cabeca_giro"] = s * 0.05
 		E.AGACHADO, E.LEVANTANDO:
 			_pose_agachada(p)
+			if estado == E.LEVANTANDO:
+				p["expr"] = "esforco"
 		E.PULANDO:
 			p["pe_f"] = Vector2(16, -34)
 			p["pe_t"] = Vector2(-14, -26)
 			p["mao_f"] = Vector2(30, -150)
+			p["cabeca_giro"] = clampf(vel.y * 0.01, -0.12, 0.14)
 		E.ATINGIDO:
-			p["inclina"] = -0.35
-			p["boca"] = "dor"
-			p["olhos"] = "fechado"
+			var k := clampf(atordoado / 14.0, 0.0, 1.0)
+			p["inclina"] = -0.32 * k
+			p["expr"] = "dor"
 			p["mao_f"] = Vector2(10, -120)
+			p["mao_t"] = Vector2(-6, -112)
+			p["cabeca_giro"] = -0.42 * k
+			p["cabeca_desl"] = Vector2(-8 * k, 2)
 		E.DEFENDENDO:
 			if defendeu_agachado:
 				_pose_agachada(p)
 			p["mao_f"] = Vector2(28, -150 + (40 if defendeu_agachado else 0))
 			p["mao_t"] = Vector2(32, -126 + (40 if defendeu_agachado else 0))
 			p["inclina"] = -0.08
+			p["expr"] = "esforco"
+			p["cabeca_giro"] = 0.14
+			p["cabeca_desl"] = Vector2(2, 4)
+		E.PROVOCANDO:
+			p = Desenho.pose_provocar(dados, t)
 		E.VITORIA:
-			p["mao_f"] = Vector2(34, -222 + sin(t * 0.15) * 6.0)
-			p["mao_t"] = Vector2(-30, -214)
-			p["boca"] = "sorriso"
-			p["punho_grande"] = true
+			p = Desenho.pose_vitoria(dados, t)
+		E.DERROTA:
+			p = Desenho.pose_derrota(dados, t)
 		E.CAIDO, E.NOCAUTE:
-			p["boca"] = "dor"
-			p["olhos"] = "x" if estado == E.NOCAUTE else "fechado"
+			p["expr"] = "nocaute" if estado == E.NOCAUTE else "dor"
 			p["giro"] = -1.15 if not no_chao() else -PI / 2.0
+			p["cabeca_giro"] = -0.3
+			p["mao_f"] = Vector2(30, -150)
+			p["mao_t"] = Vector2(-20, -150)
 		E.ATACANDO:
 			_pose_ataque(p)
 	return p
@@ -456,6 +490,8 @@ func _pose_ataque(p: Dictionary) -> void:
 	var ini: int = golpe["inicio"]
 	var ativo: int = golpe["ativo"]
 	var t := quadro
+	p["mao_t"] = Vector2(18, -122)
+	p["prop_t"] = ""
 	# 0 = recolhido, 1 = esticado
 	var k := 0.0
 	if t < ini:
@@ -464,6 +500,10 @@ func _pose_ataque(p: Dictionary) -> void:
 		k = 1.0
 	else:
 		k = clampf(1.0 - float(t - ini - ativo) / maxf(1.0, float(golpe["rec"])), 0.0, 1.0)
+	var forte: bool = golpe.get("especial", false) or golpe_nome in ["final", "voadora", "super"]
+	p["expr"] = "grito" if forte else "esforco"
+	p["cabeca_giro"] = (-0.08 if t < ini else 0.14 * maxf(k, 0.0))
+	p["cabeca_desl"] = Vector2(4 * maxf(k, 0.0), 0)
 	match golpe_nome:
 		"soco":
 			p["mao_f"] = Vector2(36, -128).lerp(Vector2(98, -140), maxf(k, 0.0))
@@ -504,8 +544,10 @@ func _pose_ataque(p: Dictionary) -> void:
 			p["mao_t"] = Vector2(56, -108)
 			p["punho_grande"] = true
 			p["boca"] = "grito"
-			if dados.get("id", "") == "molusco" and t >= ini:
+			if dados.get("id", "") == "lula" and t >= ini:
 				p["mao_f"] = Vector2(70, -170)
+			if dados.get("id", "") == "bolsonaro":
+				p["chapeu"] = "boina"
 		"gancho":
 			p["mao_f"] = Vector2(34, -128).lerp(Vector2(46, -238), maxf(k, 0.0))
 			p["punho_grande"] = true
@@ -539,7 +581,8 @@ var _pose_atual: Dictionary = Desenho.pose_padrao()
 func _atualizar_visual() -> void:
 	_pose_atual = pose()
 	var giro: float = _pose_atual["giro"]
-	scale = Vector2(lado, 1) * TAM
+	var alt: float = dados.get("corpo", {}).get("alt", 1.0)
+	scale = Vector2(lado, 1) * TAM * alt
 	rotation = giro * lado
 	if giro != 0.0 and no_chao():
 		_pose_atual["quadril"] = -72.0

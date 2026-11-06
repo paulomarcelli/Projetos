@@ -48,8 +48,20 @@ static func abafar(sim: bool) -> void:
 		_eu._abafar(sim)
 
 
+var _fila_carga: Array[String] = []
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# carrega os sons aos poucos (um por quadro) já no menu, para não engasgar na primeira vez na luta
+	var pastas := ["res://audio/sfx"]
+	for d in DirAccess.get_directories_at("res://audio/vozes"):
+		pastas.append("res://audio/vozes/" + d)
+	for pasta in pastas:
+		for f in DirAccess.get_files_at(pasta):
+			f = f.trim_suffix(".import").trim_suffix(".remap")
+			if f.ends_with(".ogg") and not _fila_carga.has(pasta + "/" + f):
+				_fila_carga.append(pasta + "/" + f)
 	for i in CANAIS:
 		var a := AudioStreamPlayer.new()
 		add_child(a)
@@ -60,6 +72,11 @@ func _ready() -> void:
 		var f := _faixa
 		_faixa = ""
 		_musica_tocar(f)
+
+
+func _process(_d: float) -> void:
+	if not _fila_carga.is_empty():
+		_carregar(_fila_carga.pop_back())
 
 
 func _carregar(caminho: String) -> AudioStream:

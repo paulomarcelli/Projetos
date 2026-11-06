@@ -53,8 +53,7 @@ var _zoom_alvo := 1.0
 var _foco := Vector2(640, 360)
 
 var _mundo: Node2D
-var _cenario_fixo: Camada
-var _cenario_vivo: Camada
+var _cenario_vivo: Cache
 var _rastro_camada: Camada
 var _sombras: Camada
 var _efeitos: Camada
@@ -74,10 +73,11 @@ func configurar(a: Dictionary, b: Dictionary, dois_jogadores: bool, cpu_contra_c
 func _ready() -> void:
 	_mundo = Node2D.new()
 	add_child(_mundo)
-	# fundo e frente são desenhados uma vez só; só a parte viva é redesenhada a cada quadro
-	_cenario_fixo = _camada(func(c): Cenarios.fundo(c, cenario), 0, _mundo)
-	_cenario_vivo = _camada(func(c): Cenarios.vivo(c, cenario, tempo_total, agito), 0, _mundo)
-	_camada(func(c): Cenarios.frente(c, cenario), 0, _mundo)
+	# o cenário vira textura (1 chamada de desenho por camada): fundo e frente são desenhados
+	# uma vez só; a plateia é redesenhada 20 vezes por segundo
+	Cache.criar(self, _mundo, func(c): Cenarios.fundo(c, cenario))
+	_cenario_vivo = Cache.criar(self, _mundo, func(c): Cenarios.vivo(c, cenario, tempo_total, agito))
+	Cache.criar(self, _mundo, func(c): Cenarios.frente(c, cenario))
 	_palco = Node2D.new()
 	_mundo.add_child(_palco)
 	_sombras = _camada(_desenhar_sombras, 1, _palco)
@@ -310,9 +310,9 @@ func _physics_process(_delta: float) -> void:
 
 
 func _redesenhar() -> void:
-	# a plateia e o que anda no fundo mudam devagar: 30 vezes por segundo bastam (alivia celulares)
-	if Engine.get_physics_frames() % 2 == 0:
-		_cenario_vivo.queue_redraw()
+	# a plateia e o que anda no fundo mudam devagar: 20 vezes por segundo bastam
+	if Engine.get_physics_frames() % 3 == 0:
+		_cenario_vivo.atualizar()
 	_sombras.queue_redraw()
 	if not rastros.is_empty() or _rastro_camada.get_meta("tinha", false):
 		_rastro_camada.queue_redraw()

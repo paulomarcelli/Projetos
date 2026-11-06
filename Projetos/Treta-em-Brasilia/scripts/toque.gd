@@ -38,8 +38,18 @@ static func local(n: CanvasItem, pos: Vector2) -> Vector2:
 	return n.get_global_transform_with_canvas().affine_inverse() * pos
 
 
+var _cache: Cache
+
+
 func _ready() -> void:
 	z_index = 20
+	# os botões viram textura: só são redesenhados quando algo muda (1 chamada de desenho por quadro)
+	_cache = Cache.criar(self, self, _desenhar_botoes)
+
+
+func _redesenhar() -> void:
+	if _cache != null:
+		_cache.atualizar()
 
 
 func _exit_tree() -> void:
@@ -60,7 +70,7 @@ func _process(_d: float) -> void:
 		estado = "%d|%d|%d|%d" % [int(luta.p[0].barra), luta.aviso_barra[0], luta.p[0].bloqueado, _botoes_dedo.size()]
 	if estado != _ultimo_estado or (_t % 4 == 0 and luta != null and luta.p.size() > 0 and luta.p[0].barra >= 50.0) or luta == null:
 		_ultimo_estado = estado
-		queue_redraw()
+		_redesenhar()
 
 
 func _input(ev: InputEvent) -> void:
@@ -85,10 +95,10 @@ func _input(ev: InputEvent) -> void:
 			if _botoes_dedo.has(ev.index):
 				Input.action_release(_botoes_dedo[ev.index])
 				_botoes_dedo.erase(ev.index)
-		queue_redraw()
+		_redesenhar()
 	elif ev is InputEventScreenDrag and ev.index == _dedo_dir:
 		_direcao(Toque.local(self, ev.position))
-		queue_redraw()
+		_redesenhar()
 
 
 ## O botão mais perto do dedo (dentro de uma folga de 25% do raio).
@@ -122,24 +132,29 @@ func _direcao(p: Vector2) -> void:
 			Input.action_release(acao)
 
 
-func _draw() -> void:
+func _desenhar_botoes(_c: CanvasItem) -> void:
 	if not disponivel():
 		return
+	_draw2(_c)
+
+
+func _draw2(c: CanvasItem) -> void:
 	# direcional
-	draw_circle(CENTRO_DIR, RAIO_DIR + 6, Color(0, 0, 0, 0.35))
-	draw_arc(CENTRO_DIR, RAIO_DIR, 0, TAU, 40, Color(1, 1, 1, 0.35), 4.0)
+	c.draw_circle(CENTRO_DIR, RAIO_DIR + 6, Color(0, 0, 0, 0.35))
+	c.draw_arc(CENTRO_DIR, RAIO_DIR, 0, TAU, 40, Color(1, 1, 1, 0.35), 4.0)
 	for a in 4:
 		var ang := a * PI / 2.0
 		var ponta := CENTRO_DIR + Vector2(cos(ang), sin(ang)) * (RAIO_DIR - 22)
 		var lado := Vector2(cos(ang + PI / 2), sin(ang + PI / 2)) * 14
 		var base := CENTRO_DIR + Vector2(cos(ang), sin(ang)) * (RAIO_DIR - 52)
-		draw_colored_polygon(PackedVector2Array([ponta, base + lado, base - lado]), Color(1, 1, 1, 0.45))
-	draw_circle(CENTRO_DIR + _vetor, 48, Color(1, 1, 1, 0.55 if _dedo_dir != -1 else 0.3))
-	# botões
+		c.draw_colored_polygon(PackedVector2Array([ponta, base + lado, base - lado]), Color(1, 1, 1, 0.45))
+	c.draw_circle(CENTRO_DIR + _vetor, 48, Color(1, 1, 1, 0.55 if _dedo_dir != -1 else 0.3))
+	# botões: primeiro todas as formas, depois todos os textos (o WebGL junta as chamadas)
 	var apertados := _botoes_dedo.values()
+	var rotulos := []
 	for acao in BOTOES:
 		if acao == "p1_super":
-			_botao_super(acao in apertados)
+			_botao_super(c, acao in apertados, rotulos)
 			continue
 		var b: Dictionary = BOTOES[acao]
 		var r: float = b["raio"]
@@ -147,15 +162,17 @@ func _draw() -> void:
 		var on: bool = acao in apertados
 		var pos: Vector2 = b["pos"]
 		var rr := r * (0.92 if on else 1.0)
-		draw_circle(pos + Vector2(0, 5), rr + 5, Color(0, 0, 0, 0.45))
-		draw_circle(pos, rr, Color(cor, 0.88 if on else 0.55))
-		draw_circle(pos + Vector2(-rr * 0.25, -rr * 0.3), rr * 0.35, Color(1, 1, 1, 0.18))
-		draw_arc(pos, rr, 0, TAU, 32, Color(1, 1, 1, 0.65), 3.0)
-		Desenho.texto(self, pos + Vector2(0, 8), b["rot"], 22 if r > 40 else 16, Color.WHITE, Desenho.PRETO, 4)
+		c.draw_circle(pos + Vector2(0, 5), rr + 5, Color(0, 0, 0, 0.45))
+		c.draw_circle(pos, rr, Color(cor, 0.88 if on else 0.55))
+		c.draw_circle(pos + Vector2(-rr * 0.25, -rr * 0.3), rr * 0.35, Color(1, 1, 1, 0.18))
+		c.draw_arc(pos, rr, 0, TAU, 32, Color(1, 1, 1, 0.65), 3.0)
+		rotulos.append([pos + Vector2(0, 8), b["rot"], 22 if r > 40 else 16, Color.WHITE])
+	for l in rotulos:
+		Desenho.texto(c, l[0], l[1], l[2], l[3], Desenho.PRETO, 4)
 
 
 ## Botão de fliperama: anel com a barra, brilho quando pronto, tremida quando falta energia.
-func _botao_super(on: bool) -> void:
+func _botao_super(c: CanvasItem, on: bool, rotulos: Array) -> void:
 	var b: Dictionary = BOTOES["p1_super"]
 	var r: float = b["raio"]
 	var pos: Vector2 = b["pos"]
@@ -181,19 +198,19 @@ func _botao_super(on: bool) -> void:
 	# brilho em volta quando dá para usar
 	if meia and not bloqueado:
 		for i in 3:
-			draw_circle(pos, r + 12 + i * 8 + pulso * 6, Color(cor, 0.12 - i * 0.03))
+			c.draw_circle(pos, r + 12 + i * 8 + pulso * 6, Color(cor, 0.12 - i * 0.03))
 	var rr := r * (0.9 if on else 1.0)
-	draw_circle(pos + Vector2(0, 7), rr + 8, Color(0, 0, 0, 0.55))
-	draw_circle(pos, rr + 6, Color("1a1430"))
+	c.draw_circle(pos + Vector2(0, 7), rr + 8, Color(0, 0, 0, 0.55))
+	c.draw_circle(pos, rr + 6, Color("1a1430"))
 	# anel da barra (meia volta = Superpower, volta inteira = Ultimate)
-	draw_arc(pos, rr + 2, -PI / 2, -PI / 2 + TAU, 48, Color(1, 1, 1, 0.15), 8.0)
+	c.draw_arc(pos, rr + 2, -PI / 2, -PI / 2 + TAU, 48, Color(1, 1, 1, 0.15), 8.0)
 	if barra > 0.0:
-		draw_arc(pos, rr + 2, -PI / 2, -PI / 2 + TAU * barra / 100.0, 48, cor if barra >= 50.0 else Color("4aa8ff"), 8.0)
-	draw_line(pos + Vector2(0, rr - 6), pos + Vector2(0, rr + 10), Desenho.PRETO, 4.0)
-	draw_circle(pos, rr - 6, Color(cor, 0.95 if (on or meia) else 0.5))
-	draw_circle(pos + Vector2(-rr * 0.25, -rr * 0.3), rr * 0.35, Color(1, 1, 1, 0.25))
+		c.draw_arc(pos, rr + 2, -PI / 2, -PI / 2 + TAU * barra / 100.0, 48, cor if barra >= 50.0 else Color("4aa8ff"), 8.0)
+	c.draw_line(pos + Vector2(0, rr - 6), pos + Vector2(0, rr + 10), Desenho.PRETO, 4.0)
+	c.draw_circle(pos, rr - 6, Color(cor, 0.95 if (on or meia) else 0.5))
+	c.draw_circle(pos + Vector2(-rr * 0.25, -rr * 0.3), rr * 0.35, Color(1, 1, 1, 0.25))
 	var rot := "ULTIMATE" if cheia else "SUPER"
 	if bloqueado:
-		Arte.cadeado(self, pos + Vector2(0, -4), 1.1)
+		Arte.cadeado(c, pos + Vector2(0, -4), 1.1)
 	else:
-		Desenho.texto(self, pos + Vector2(0, 8), rot, 16 if cheia else 22, Color.WHITE if meia else Color(1, 1, 1, 0.6), Desenho.PRETO, 5)
+		rotulos.append([pos + Vector2(0, 8), rot, 16 if cheia else 22, Color.WHITE if meia else Color(1, 1, 1, 0.6)])

@@ -410,13 +410,10 @@ class SelecaoCenario extends Node2D:
 		# miniaturas desenhadas uma vez (cada cenário inteiro, reduzido)
 		for i in Cenarios.LISTA.size():
 			var r := _miniatura(i)
-			var m := Camada.new()
 			var id: String = Cenarios.LISTA[i]["id"]
-			m.position = r.position
-			m.scale = r.size / Vector2(1280, 720)
-			m.desenhar = func(c: CanvasItem) -> void: Cenarios.completo(c, id, 3.0, 0.4)
-			m.z_index = -1
-			add_child(m)
+			var cache := Cache.criar(self, self, func(c: CanvasItem) -> void: Cenarios.completo(c, id, 3.0, 0.4), -1)
+			cache.sprite.position = r.position
+			cache.sprite.scale = r.size / Vector2(cache.vp.size)
 		var fundo := Camada.new()
 		fundo.z_index = -2
 		fundo.desenhar = func(c: CanvasItem) -> void: c.draw_rect(Rect2(0, 0, 1280, 720), Color("120a26"))

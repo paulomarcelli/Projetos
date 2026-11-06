@@ -23,6 +23,10 @@ static var _mat_tronco := Transform2D.IDENTITY
 const EXPRESSOES := ["neutro", "piscar", "esforco", "grito", "dor", "nocaute", "feliz", "derrota"]
 static var _fonte: Font
 static var _prop_ang := 0.0
+## Quando ligado, Desenho.texto guarda os textos numa fila e só desenha em textos_pendentes():
+## assim formas e textos não se intercalam e a placa de vídeo agrupa as chamadas (plateias).
+static var adiar_textos := false
+static var _fila_textos: Array = []
 static var _ceu: ImageTexture
 static var _texturas := {}
 
@@ -1188,7 +1192,17 @@ static func _texto_px(c: CanvasItem, pos: Vector2, txt: String, tamanho: int, co
 
 
 static func texto(c: CanvasItem, centro: Vector2, txt: String, tamanho: int, cor: Color, contorno: Color = PRETO, borda: int = 6) -> void:
+	if adiar_textos:
+		_fila_textos.append([centro, txt, tamanho, cor, contorno, borda])
+		return
 	_texto_px(c, centro, txt, tamanho, cor, contorno, borda, 0)
+
+
+static func textos_pendentes(c: CanvasItem) -> void:
+	adiar_textos = false
+	for t in _fila_textos:
+		_texto_px(c, t[0], t[1], t[2], t[3], t[4], t[5], 0)
+	_fila_textos.clear()
 
 
 static func texto_esq(c: CanvasItem, pos: Vector2, txt: String, tamanho: int, cor: Color, borda: int = 0) -> void:

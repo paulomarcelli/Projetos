@@ -51,6 +51,12 @@ static func fundo(c: CanvasItem, id: String) -> void:
 
 
 static func vivo(c: CanvasItem, id: String, t: float, agito: float) -> void:
+	Desenho.adiar_textos = true
+	_vivo(c, id, t, agito)
+	Desenho.textos_pendentes(c)
+
+
+static func _vivo(c: CanvasItem, id: String, t: float, agito: float) -> void:
 	match id:
 		"usp":
 			_usp_vivo(c, t, agito)

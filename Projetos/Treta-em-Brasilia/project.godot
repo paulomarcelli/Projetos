@@ -26,6 +26,7 @@ window/stretch/scale_mode="fractional"
 [physics]
 
 common/physics_ticks_per_second=60
+common/max_physics_steps_per_frame=3
 
 [rendering]
 

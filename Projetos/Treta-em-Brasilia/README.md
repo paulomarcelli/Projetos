@@ -31,6 +31,7 @@
 
 ## 👊 Combate
 
+- **Movimentação de fliperama:** todos lutam na guarda (de lado, joelhos dobrados, punhos perto do rosto, balançando no ritmo); pulo para a frente ou para trás vira cambalhota; braços e pernas têm cotovelo e joelho de verdade (cinemática inversa), sem esticar; chutes recolhem o joelho antes de esticar; o corpo quica ao cair.
 - **Golpes normais:** soco fraco e **soco forte** (frente + Soco), chute médio, **chute alto** (frente + Chute), **rasteira** (baixo + Chute), soco aéreo, voadora e **pisão** (baixo + Chute no ar).
 - **Combos:** Soco, Soco, Chute termina no golpe final de cada um; Chute, Chute vira chute alto; golpes que conectam cancelam em especial, e qualquer coisa cancela no SUPER.
 - **Agarrão e arremesso:** botão Agarrar (ou Soco + Chute) de perto; com trás, joga para o outro lado. Se os dois agarram juntos, **escapam**.
@@ -46,14 +47,14 @@ A **barra de energia** enche batendo, defendendo, apanhando e provocando. Ela te
 - **Meia barra = SUPERPOWER:** o botão SUPER solta a habilidade especial do personagem.
 - **Barra cheia = ULTIMATE:** a tela congela, a câmera dá zoom e começa uma **cinemática** exclusiva. Dá para escapar pulando ou defendendo na hora certa.
 
-O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a carga num anel, brilha quando dá para usar, fica dourado no Ultimate e treme e faz "bzz" quando não há energia. Cada especial tem **recarga** (os quadradinhos ao lado do nome), e o **Bloqueio Supremo** do Xandão deixa o rival sem especiais por 5 segundos.
+O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a carga num anel, brilha quando dá para usar, fica dourado no Ultimate e treme e faz "bzz" quando não há energia. Cada especial tem **recarga** (os quadradinhos ao lado do nome). Ao soltar o Superpower, o retrato do lutador cruza a tela com o nome do golpe. A **Censura Suprema** do Xandão cala o rival: tarja preta e mosaico no rosto, falas viram ####, o nome no placar vira CENSURADO e ele fica sem especiais por 5 segundos.
 
 | Lutador | Especiais (Especial + direção) | SUPERPOWER | ULTIMATE |
 |---|---|---|---|
-| **Lula** | Discurso do Planalto · Picanha Gigante · Faz o L! · Bolsa Família · Picanha Voadora | Churrasco Presidencial | **Picanha Suprema** |
-| **Bolsonaro** | Fuzil Cartunesco · Motociata · Talquei? · Operação Cloroquina · Vai Virar Jacaré! | Capitão do Caos | **Operação Presidencial** |
-| **Xandão** | Inquérito! · Conta Bloqueada · Martelo da Justiça · Canetada do STF · Suspensão de Conta | Bloqueio Supremo | **Decisão Monocrática** |
-| **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | Caça Presidencial | **YMCA Presidential Show** |
+| **Lula** | Discurso do Planalto · Picanha Gigante · Faz o L! · Bolsa Família · Picanha Voadora | Picanha na Brasa | **Picanha Suprema** |
+| **Bolsonaro** | Fuzil Cartunesco · Motociata · Talquei? · Operação Cloroquina · Vai Virar Jacaré! | Rajada do Capitão | **Operação Presidencial** |
+| **Xandão** | Inquérito! · Conta Bloqueada · Martelo da Justiça · Canetada do STF · Suspensão de Conta | Censura Suprema | **Decisão Monocrática** |
+| **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | Bombardeio Presidencial | **YMCA Presidential Show** |
 | **Eduarda** | Corte Viral! · Microfone Explosivo · Lacração Reversa · Debate Infinito · 1,9 Milhão de Votos | Polêmica nas Redes | **Treta Nacional** |
 
 <table>

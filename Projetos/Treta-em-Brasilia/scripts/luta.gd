@@ -372,6 +372,8 @@ func _projetil_vindo(i: int) -> bool:
 func _passo_projeteis() -> void:
 	for pr in projeteis:
 		pr.passo()
+		if pr.forma == "picanha_fogo" and pr.atraso <= 0 and fase_t % 2 == 0:
+			particulas.fogo(pr.position - pr.vel * 2.0)
 	# projétil contra projétil: se anulam (os que atravessam passam por cima)
 	for a in projeteis:
 		for b in projeteis:
@@ -535,6 +537,10 @@ func _resultado(i: int, r: String, ponto: Vector2, g: Dictionary, estava_tonto: 
 	if g.get("ao_acertar", "") == "bloqueio_supremo":
 		_texto(def.position + Vector2(0, -380), "BLOQUEIO SUPREMO!", Color("ff5a4e"), 32, 70)
 		Som.sfx("carimbo", 0.0)
+	elif g.get("ao_acertar", "") == "censura":
+		_texto(def.position + Vector2(0, -390), "CENSURADO!", Color("ff5a4e"), 48, 90)
+		Som.sfx("carimbo", 0.0)
+		tremor = maxf(tremor, 10.0)
 	# empurrão no canto: quem bate é que recua
 	if def.position.x <= Lutador.LIMITE_ESQ + 1.0 or def.position.x >= Lutador.LIMITE_DIR - 1.0:
 		atk.position.x -= atk.lado * float(g.get("empurra", 6.0)) * 1.5
@@ -614,10 +620,24 @@ func _soltar_tiro(l: Lutador, spec: Dictionary) -> void:
 	_palco.add_child(pr)
 	projeteis.append(pr)
 	if spec.get("forma", "") == "rolha":
-		particulas.impacto(pr.position, float(l.lado), 0.2, Color("ffd23f"))
+		# clarão na boca do cano e o cartucho voando para trás
+		particulas.impacto(pr.position + Vector2(l.lado * 10.0, 0), float(l.lado), 0.35, Color("ffd23f"))
+		particulas.cartucho(l.position + Vector2(l.lado * 40.0, -150), -float(l.lado))
+		tremor = maxf(tremor, 1.5)
 
 
 func _quebrou(pr: Projetil) -> void:
+	if pr.ao_quebrar == "explosao":
+		particulas.explosao(pr.position + Vector2(0, -20), 0.9)
+		tremor = maxf(tremor, 6.0)
+		Som.sfx("explosao", 0.1, -3.0)
+		_texto(pr.position + Vector2(randf_range(-30, 30), -110), "BUM!", Color("ffd23f"), 40, 30)
+		return
+	if pr.ao_quebrar == "brasa":
+		particulas.explosao(pr.position + Vector2(0, -10), 0.45)
+		particulas.fumaca(pr.position, 2, Color(0.4, 0.38, 0.4, 0.6))
+		Som.sfx("churrasco", 0.1, -8.0)
+		return
 	if pr.ao_quebrar == "nuvem":
 		var z := Zona.new()
 		z.iniciar_em(pr.dono, pr.position.x, "nuvem")
@@ -656,6 +676,9 @@ func _fala(l: Lutador, texto: String) -> void:
 
 
 func _fala_texto(l: Lutador, texto: String, cor: Color) -> void:
+	if l.censurado > 0:
+		texto = "#".repeat(mini(texto.length(), 12))
+		cor = Color("9aa0a6")
 	_texto(l.position + Vector2(0, -330), texto, cor, 28)
 
 
@@ -719,6 +742,9 @@ func _poder(l: Lutador, tipo: String) -> void:
 	_zoom_alvo = 1.3 if ult else 1.15
 	_foco = l.position + Vector2(0, -170)
 	efeitos.append({"tipo": "poder", "t": 0, "dur": congelado + 6, "dono": l, "ult": ult})
+	if not ult:
+		congelado = 34
+		efeitos.append({"tipo": "cutin", "t": 0, "dur": 40, "dados": l.dados, "lado": p.find(l), "nome": l.hab.get("nome", "")})
 	Som.sfx("ultimate" if ult else "super", 0.0)
 	if ult:
 		Som.voz(l.dados["id"], "super")
@@ -964,7 +990,7 @@ func _desenhar_hud(c: CanvasItem) -> void:
 			c.draw_rect(Rect2(x0, y, w * fracao, h), amarelo)
 		c.draw_rect(Rect2(x0, y, w, 6), Color(1, 1, 1, 0.35))
 		c.draw_rect(Rect2(x0, y + h - 6, w, 6), Color(0, 0, 0, 0.2))
-		var nome: String = l.dados.get("nome", "")
+		var nome: String = l.dados.get("nome", "") if l.censurado <= 0 else "CENSURADO"
 		var quem := ("P%d" % (i + 1)) if humano[i] else ("BONECO" if treino else "CPU")
 		if esq:
 			Desenho.texto_esq(c, Vector2(x0, y + h + 42), nome, 24, Color("ffd23f"), 6)
@@ -1003,6 +1029,8 @@ func _desenhar_hud(c: CanvasItem) -> void:
 	for ef in efeitos:
 		if ef["tipo"] == "meme":
 			Luta.desenhar_meme(c, ef["dados"], ef["txt"], int(ef["lado"]), int(ef["t"]), int(ef["dur"]))
+		elif ef["tipo"] == "cutin":
+			_desenhar_cutin(c, ef)
 	if not cinema.is_empty():
 		Cinematica.desenhar_tela(c, cinema, p[cinema["atk"]])
 	# mensagem central
@@ -1015,6 +1043,34 @@ func _desenhar_hud(c: CanvasItem) -> void:
 		Desenho.texto(c, Vector2(640, 380), msg, int(96 * escala), cor, borda, 14)
 	if pausado:
 		_desenhar_pausa(c)
+
+
+## Retrato do lutador cruzando a tela com o nome do Superpower (como nos fliperamas).
+func _desenhar_cutin(c: CanvasItem, ef: Dictionary) -> void:
+	var t: int = ef["t"]
+	var dur: int = ef["dur"]
+	var k := minf(clampf(t / 6.0, 0.0, 1.0), clampf((dur - t) / 6.0, 0.0, 1.0))
+	var esq: bool = int(ef["lado"]) == 0
+	var d: Dictionary = ef["dados"]
+	var cor: Color = d.get("cor", Color("ffd23f"))
+	var y0 := 210.0
+	var h := 190.0 * k
+	c.draw_rect(Rect2(0, y0 + 95 - h / 2.0 - 6, 1280, h + 12), Desenho.PRETO)
+	c.draw_rect(Rect2(0, y0 + 95 - h / 2.0, 1280, h), cor.darkened(0.55))
+	for j in 10:
+		var x := fposmod(j * 150.0 + t * 40.0 * (1 if esq else -1), 1500.0) - 110.0
+		c.draw_line(Vector2(x, y0 + 95 + h / 2.0), Vector2(x + 110, y0 + 95 - h / 2.0), Color(cor, 0.35 * k), 26.0)
+	if k < 0.5:
+		return
+	var desliza := clampf(t / 10.0, 0.0, 1.0)
+	var px := lerpf(-200.0, 260.0, desliza) if esq else lerpf(1480.0, 1020.0, desliza)
+	Desenho._mat_tronco = Transform2D(0.0, Vector2(1 if esq else -1, 1), 0.0, Vector2(px, y0 + 190))
+	Desenho.cabeca(c, d, Vector2(0, -92), 92.0, {"expr": "grito", "retrato": true})
+	Desenho._mat_tronco = Transform2D.IDENTITY
+	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var tx := lerpf(1400.0, 760.0, desliza) if esq else lerpf(-120.0, 520.0, desliza)
+	Desenho.texto(c, Vector2(tx, y0 + 110), String(ef["nome"]).to_upper(), 40, Color("ffd23f"), Desenho.PRETO, 10)
+	Desenho.texto(c, Vector2(tx, y0 + 150), "SUPERPOWER", 20, Color.WHITE, Desenho.PRETO, 5)
 
 
 func _desenhar_recargas(c: CanvasItem, l: Lutador, pos: Vector2) -> void:

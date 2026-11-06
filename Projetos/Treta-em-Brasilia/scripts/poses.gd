@@ -80,6 +80,19 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 			p["inclina"] = 0.12
 			p["expr"] = "feliz" if (t / 12) % 2 == 0 else "grito"
 			p["cabeca_giro"] = 0.1 + vira * 0.05
+		"metralhadora":
+			# segura a metralhadora na altura do peito; o corpo treme com o recuo de cada tiro
+			p["prop"] = "metralhadora"
+			var recuo := 0.0 if prep or (t - ini) % 3 != 0 else 1.0
+			p["mao_f"] = Vector2(58 - recuo * 6.0, -128)
+			p["mao_t"] = Vector2(30 - recuo * 6.0, -120)
+			p["inclina"] = -0.06 - recuo * 0.05
+			p["pe_f"] = Vector2(36, 0)
+			p["pe_t"] = Vector2(-34, 0)
+			p["quadril"] = -62.0
+			p["cabeca_desl"] = Vector2(-recuo * 3.0, 0)
+			p["expr"] = "esforco" if prep else "grito"
+			p["chapeu"] = "boina"
 		"fuzil":
 			p["prop"] = "fuzil"
 			p["mao_f"] = Vector2(64, -138)

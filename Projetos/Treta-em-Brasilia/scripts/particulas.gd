@@ -61,6 +61,16 @@ func explosao(pos: Vector2, forca: float = 1.0) -> void:
 	_add({"tipo": "anel", "pos": pos, "vel": Vector2.ZERO, "t": 0, "dur": 16, "cor": Color("ffd23f"), "tam": 110.0 * forca, "g": 0.0})
 
 
+## Cartucho dourado voando para trás (metralhadora).
+func cartucho(pos: Vector2, dir: float) -> void:
+	_add({"tipo": "faisca", "pos": pos, "vel": Vector2(dir * randf_range(3.0, 6.0), randf_range(-7.0, -4.0)), "t": 0, "dur": 26, "cor": Color("e0b040"), "tam": 6.0, "g": 0.5})
+
+
+## Fogo atrás da picanha flamejante.
+func fogo(pos: Vector2) -> void:
+	_add({"tipo": "poeira", "pos": pos + Vector2(randf_range(-6, 6), randf_range(-6, 6)), "vel": Vector2(randf_range(-0.6, 0.6), randf_range(-2.0, -0.8)), "t": 0, "dur": randi_range(12, 20), "cor": [Color("ffd23f"), Color("ff7a2f"), Color("e63946")][randi() % 3], "tam": randf_range(10.0, 16.0), "g": -0.02})
+
+
 ## Linhas de velocidade atrás de quem corre (dash, investida).
 func velocidade(pos: Vector2, dir: float) -> void:
 	_add({"tipo": "linha", "pos": pos + Vector2(-dir * randf_range(20, 60), randf_range(-220, -20)), "vel": Vector2(-dir * 14.0, 0), "t": 0, "dur": 8, "cor": Color(1, 1, 1, 0.7), "tam": randf_range(40.0, 90.0), "g": 0.0})

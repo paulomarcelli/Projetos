@@ -84,6 +84,7 @@ var reacao_forte := false
 var ultimo_contra := false       # o último golpe recebido foi contra-ataque
 var recargas := {}               # slot -> quadros
 var bloqueado := 0               # sem especiais (Bloqueio Supremo)
+var censurado := 0               # tarja preta e mosaico no rosto (Censura Suprema)
 var lento := 0                   # dentro de zona que atrasa
 var tempo_vivo := 0
 var _lado_visual := 1.0
@@ -131,6 +132,7 @@ func resetar_estado() -> void:
 	invencivel = 0
 	flash = 0
 	bloqueado = 0
+	censurado = 0
 	lento = 0
 	recargas.clear()
 	agarrado_por = null
@@ -238,6 +240,8 @@ func passo() -> void:
 		invencivel -= 1
 	if bloqueado > 0:
 		bloqueado -= 1
+	if censurado > 0:
+		censurado -= 1
 	if lento > 0:
 		lento -= 1
 	if treino:
@@ -298,11 +302,17 @@ func passo() -> void:
 				_mudar(E.AGACHADO if e.get("baixo", false) else E.PARADO)
 		E.CAIDO, E.NOCAUTE:
 			if not no_chao() or vel.y < 0:
+				var caindo := vel.y
 				_fisica_ar()
-				position.x += vel.x * 0.0
 				if no_chao():
-					vel = Vector2.ZERO
-					quadro = 0
+					if caindo > 7.0 and not _quicou:
+						# o corpo quica uma vez no chão
+						_quicou = true
+						vel = Vector2(vel.x * 0.5, -caindo * 0.35)
+						position.y = CHAO - 1.0
+					else:
+						vel = Vector2.ZERO
+						quadro = 0
 					evento.emit(self, "queda")
 			elif estado == E.CAIDO and quadro > 34:
 				_mudar(E.LEVANTANDO)
@@ -766,6 +776,9 @@ func receber(g: Dictionary, atacante_x: float, atacante: Lutador = null) -> Stri
 	reacao_forte = g.get("forca", "") == "forte" or g.get("especial", false)
 	if g.get("ao_acertar", "") == "bloqueio_supremo":
 		bloqueado = 300
+	elif g.get("ao_acertar", "") == "censura":
+		bloqueado = 300
+		censurado = 300
 	if vida <= 0.0:
 		_cair(empurrao, true)
 		return "nocaute"
@@ -790,7 +803,11 @@ func desequilibrar(n: int) -> void:
 	vel.x = -lado * 3.0
 
 
+var _quicou := false
+
+
 func _cair(empurrao: float, nocaute: bool) -> void:
+	_quicou = false
 	agarrado_por = null
 	estado = E.NOCAUTE if nocaute else E.CAIDO
 	quadro = 0
@@ -832,20 +849,18 @@ func lamentar() -> void:
 
 ## A pose de cada quadro: corpo, expressão do rosto e movimento da cabeça (que atrasa em relação ao corpo).
 func pose() -> Dictionary:
-	var p := Desenho.pose_idle(dados, tempo_vivo)
+	var p := Desenho.pose_guarda(dados, tempo_vivo)
 	var t := quadro
 	match estado:
 		E.PARADO:
 			pass
 		E.ANDANDO:
-			var s := sin(tempo_vivo * 0.3 * (0.6 if lento > 0 else 1.0))
-			p["pe_f"] = Vector2(20 + s * 13.0, -maxf(0.0, s) * 8.0)
-			p["pe_t"] = Vector2(-20 - s * 13.0, -maxf(0.0, -s) * 8.0)
-			p["quadril"] = -72.0 - absf(s) * 3.0
-			p["mao_f"] = p["mao_f"] + Vector2(-s * 6.0, 0)
-			p["mao_t"] = p["mao_t"] + Vector2(s * 6.0, 0)
-			p["cabeca_desl"] = Vector2(0, -absf(sin(tempo_vivo * 0.3 - 0.5)) * 3.0)
-			p["cabeca_giro"] = s * 0.05
+			# anda na guarda: passos curtos arrastando os pés, o corpo sobe e desce
+			var s := sin(tempo_vivo * 0.26 * (0.6 if lento > 0 else 1.0))
+			p["pe_f"] = Vector2(34 + s * 12.0, -maxf(0.0, s) * 7.0)
+			p["pe_t"] = Vector2(-32 - s * 12.0, -maxf(0.0, -s) * 7.0)
+			p["quadril"] = -62.0 + absf(s) * 3.0
+			p["cabeca_desl"] = Vector2(1, absf(s) * 2.0)
 		E.AGACHADO, E.LEVANTANDO:
 			_pose_agachada(p)
 			if estado == E.LEVANTANDO:
@@ -871,14 +886,17 @@ func pose() -> Dictionary:
 			p["expr"] = "esforco"
 			p["cabeca_giro"] = 0.1 if frente else -0.12
 		E.PULANDO:
-			var subindo := vel.y < 0
-			p["pe_f"] = Vector2(16, -34 if subindo else -22)
-			p["pe_t"] = Vector2(-14, -26 if subindo else -10)
-			p["mao_f"] = Vector2(30, -150 if subindo else -132)
-			p["mao_t"] = Vector2(-20, -140 if subindo else -120)
+			# pernas encolhidas no alto do pulo; pulo para a frente ou para trás vira cambalhota
+			var progresso := clampf((vel.y + 21.5) / 43.0, 0.0, 1.0)
+			var encolhe := sin(progresso * PI)
+			p["quadril"] = -72.0 + encolhe * 18.0
+			p["pe_f"] = Vector2(16, 0).lerp(Vector2(30, -58), encolhe)
+			p["pe_t"] = Vector2(-14, 0).lerp(Vector2(-4, -50), encolhe)
+			p["mao_f"] = Vector2(36, -140).lerp(Vector2(34, -112), encolhe)
+			p["mao_t"] = Vector2(20, -130).lerp(Vector2(22, -104), encolhe)
 			p["cabeca_giro"] = clampf(vel.y * 0.01, -0.12, 0.14)
-			if absf(_pulo_dir) > 0.0 and subindo:
-				p["giro"] = 0.0
+			if absf(_pulo_dir) > 0.0:
+				p["cambalhota"] = progresso * TAU * _pulo_dir
 		E.ATINGIDO:
 			var k := clampf(atordoado / 14.0, 0.0, 1.0)
 			p["expr"] = "dor"
@@ -907,9 +925,9 @@ func pose() -> Dictionary:
 		E.DEFENDENDO:
 			if defendeu_agachado:
 				_pose_agachada(p)
-			p["mao_f"] = Vector2(28, -150 + (40 if defendeu_agachado else 0))
-			p["mao_t"] = Vector2(32, -126 + (40 if defendeu_agachado else 0))
-			p["inclina"] = -0.08
+			p["mao_f"] = Vector2(30, -150 + (44 if defendeu_agachado else 0))
+			p["mao_t"] = Vector2(36, -132 + (44 if defendeu_agachado else 0))
+			p["inclina"] = -0.1
 			p["expr"] = "esforco"
 			p["cabeca_giro"] = 0.14
 			p["cabeca_desl"] = Vector2(2, 4)
@@ -958,16 +976,29 @@ func pose() -> Dictionary:
 			_pose_ataque(p)
 	if bloqueado > 0:
 		p["cadeado"] = true
+	if censurado > 0:
+		p["censura"] = true
 	return p
+
+
+## Caminho do pé no chute: do chão recolhe o joelho (preparação), estica no impacto e volta pelo joelho.
+func _chute(chao: Vector2, recolhido: Vector2, esticado: Vector2, k: float) -> Vector2:
+	if quadro < int(golpe["inicio"]):
+		return chao.lerp(recolhido, clampf(quadro / maxf(1.0, float(golpe["inicio"])), 0.0, 1.0))
+	if k >= 1.0:
+		return esticado
+	# recuperação: k vai de 1 a 0 passando pelo joelho recolhido
+	return recolhido.lerp(esticado, k) if k > 0.4 else chao.lerp(recolhido, k / 0.4)
 
 
 func _pose_agachada(p: Dictionary) -> void:
 	p["agachado"] = true
-	p["quadril"] = -42.0
-	p["pe_f"] = Vector2(28, 0)
-	p["pe_t"] = Vector2(-26, 0)
-	p["mao_f"] = Vector2(32, -98)
-	p["mao_t"] = Vector2(14, -92)
+	p["quadril"] = -38.0
+	p["pe_f"] = Vector2(34, 0)
+	p["pe_t"] = Vector2(-30, 0)
+	p["inclina"] = 0.16
+	p["mao_f"] = Vector2(44, -104)
+	p["mao_t"] = Vector2(30, -94)
 
 
 ## 0 = recolhido (antecipação puxa para trás), 1 = esticado (impacto), depois volta (recuperação).
@@ -985,7 +1016,7 @@ func _fase() -> float:
 func _pose_ataque(p: Dictionary) -> void:
 	var ini: int = golpe["inicio"]
 	var t := quadro
-	p["mao_t"] = Vector2(18, -122)
+	p["mao_t"] = Vector2(24, -126)
 	p["prop_t"] = ""
 	var k := _fase()
 	var kp := maxf(k, 0.0)
@@ -1001,9 +1032,10 @@ func _pose_ataque(p: Dictionary) -> void:
 	match golpe_nome:
 		"soco", "soco2":
 			var mao := "mao_f" if golpe_nome == "soco" else "mao_t"
-			p[mao] = Vector2(36, -128).lerp(Vector2(98, -142 if golpe_nome == "soco" else -130), kp) + Vector2(antecipa * 30.0, 0)
+			p[mao] = Vector2(40, -138).lerp(Vector2(102, -142 if golpe_nome == "soco" else -132), kp) + Vector2(antecipa * 30.0, 0)
 			if golpe_nome == "soco2":
-				p["mao_f"] = Vector2(20, -112)
+				p["mao_f"] = Vector2(30, -136)
+			p["pe_f"] = Vector2(34 + 8 * kp, 0)
 			p["punho_grande"] = k > 0.5
 			p["inclina"] = 0.12 * k
 			p["rastro"] = [p[mao], Vector2(40, -128)] if k >= 1.0 else []
@@ -1024,13 +1056,15 @@ func _pose_ataque(p: Dictionary) -> void:
 			p["prop"] = dados.get("habilidades", {}).get("final", {}).get("prop", "")
 			p["rastro"] = [p["mao_f"], Vector2(40, -96)] if k >= 1.0 else []
 		"chute":
-			p["pe_f"] = Vector2(20, 0).lerp(Vector2(112, -96), kp) + Vector2(antecipa * 20.0, antecipa * 30.0)
-			p["inclina"] = -0.18 * kp + antecipa * -0.2
-			p["mao_f"] = Vector2(10, -128)
+			p["pe_f"] = _chute(Vector2(34, 0), Vector2(44, -62), Vector2(112, -96), k)
+			p["pe_t"] = Vector2(-20, 0)
+			p["inclina"] = -0.22 * maxf(k, 0.4 if quadro < int(golpe["inicio"]) else 0.0)
+			p["mao_f"] = Vector2(26, -134)
+			p["mao_t"] = Vector2(4, -124)
 			p["rastro"] = [p["pe_f"], Vector2(30, -20)] if k >= 1.0 else []
 		"chute_alto":
-			p["pe_f"] = Vector2(20, 0).lerp(Vector2(116, -200), kp) + Vector2(antecipa * 30.0, antecipa * 40.0)
-			p["inclina"] = -0.36 * kp + antecipa * -0.25
+			p["pe_f"] = _chute(Vector2(34, 0), Vector2(40, -78), Vector2(116, -196), k)
+			p["inclina"] = -0.4 * maxf(k, 0.5 if quadro < int(golpe["inicio"]) else 0.0)
 			p["pe_t"] = Vector2(-16, 0)
 			p["mao_f"] = Vector2(-6, -118)
 			p["mao_t"] = Vector2(-30, -110)
@@ -1076,6 +1110,15 @@ var _pose_atual: Dictionary = Desenho.pose_padrao()
 
 func _draw() -> void:
 	if dados.is_empty():
+		return
+	var giro: float = _pose_atual.get("cambalhota", 0.0)
+	if giro != 0.0:
+		# a cambalhota gira em volta do meio do corpo, não dos pés
+		Desenho._base = Transform2D(0.0, Vector2(0, -90)) * Transform2D(giro, Vector2.ZERO) * Transform2D(0.0, Vector2(0, 90))
+		draw_set_transform_matrix(Desenho._base)
+		Desenho.lutador(self, dados, _pose_atual)
+		Desenho._base = Transform2D.IDENTITY
+		draw_set_transform_matrix(Desenho._base)
 		return
 	Desenho.lutador(self, dados, _pose_atual)
 

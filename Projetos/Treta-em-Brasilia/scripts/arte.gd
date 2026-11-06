@@ -7,6 +7,31 @@ const PRETO := Color("140c1c")
 const BRANCO := Color("fbfbf7")
 
 
+# ---------------------------------------------------------------- picanha
+
+## Picanha de verdade: peça de carne em forma de cunha, capa de gordura branca no alto,
+## marcas de grelha e brilho. Centro em 0,0, comprimento ~ 2*tam*28. Duas passadas (contorno e cor).
+static func picanha(c: CanvasItem, centro: Vector2, ang: float, tam: float, cont: bool, assada := true) -> void:
+	var carne := [Vector2(-28, -6), Vector2(-18, -16), Vector2(6, -18), Vector2(26, -12), Vector2(30, 0), Vector2(24, 12), Vector2(-4, 15), Vector2(-26, 9)]
+	var gordura := [Vector2(-18, -16), Vector2(6, -18), Vector2(26, -12), Vector2(29, -5), Vector2(24, -6), Vector2(4, -11), Vector2(-17, -9), Vector2(-26, -2), Vector2(-28, -6)]
+	var tr := func(pts: Array) -> PackedVector2Array:
+		var out := PackedVector2Array()
+		for q in pts:
+			out.append(centro + ((q as Vector2) * tam).rotated(ang))
+		return out
+	Desenho._poli(c, tr.call(carne), Color("8c2f22") if assada else Color("b8473f"))
+	if cont:
+		return
+	c.draw_colored_polygon(tr.call(carne.slice(3, 8)), Color("a8402c") if assada else Color("c85a4e"))
+	c.draw_colored_polygon(tr.call(gordura), Color("f3e3c3"))
+	c.draw_colored_polygon(tr.call([Vector2(-14, -13), Vector2(4, -15), Vector2(20, -10), Vector2(4, -12)]), Color("fff7e6"))
+	if assada:
+		for k in 3:
+			var a := centro + (Vector2(-14 + k * 12, -4) * tam).rotated(ang)
+			c.draw_line(a, a + (Vector2(8, 10) * tam).rotated(ang), Color("3e140e"), maxf(2.0, 2.5 * tam))
+	c.draw_line(centro + (Vector2(-20, 6) * tam).rotated(ang), centro + (Vector2(16, 8) * tam).rotated(ang), Color(1, 0.8, 0.7, 0.35), 2.0)
+
+
 # ---------------------------------------------------------------- objetos na mão
 
 ## Desenha o objeto em duas passadas (contorno e cor). ang gira em volta da mão.
@@ -28,12 +53,20 @@ static func _rot(mao: Vector2, ang: float, pts: Array) -> PackedVector2Array:
 static func _prop(c: CanvasItem, nome: String, mao: Vector2, ang: float) -> void:
 	match nome:
 		"picanha_gigante":
-			Desenho._lin(c, mao, mao + Vector2(0, -26).rotated(ang), Color("8a5a35"), 7.0)
-			Desenho._poli(c, _rot(mao, ang, [Vector2(-26, -24), Vector2(30, -34), Vector2(44, -120), Vector2(0, -150), Vector2(-36, -110)]), Color("b8473f"))
+			# espeto grosso com uma picanha enorme na ponta
+			Desenho._lin(c, mao + Vector2(0, 10).rotated(ang), mao + Vector2(0, -40).rotated(ang), Color("9aa0a6"), 6.0)
+			picanha(c, mao + Vector2(0, -82).rotated(ang), ang - PI / 2.0, 1.9, Desenho._cont)
 		"espeto_cheio":
 			Desenho._lin(c, mao + Vector2(-6, 10), mao + Vector2(30, -60), Color("9aa0a6"), 3.0)
 			for k in 3:
 				Desenho._circ(c, mao + Vector2(6 + k * 9, -14 - k * 15), 8.0, Color("a8432f"))
+		"metralhadora":
+			# metralhadora de brinquedo: corpo verde, tambor amarelo, cano gordo e ponta laranja
+			Desenho._ret(c, Rect2(mao + Vector2(-40, -14), Vector2(84, 20)), Color("2f9e4e"))
+			Desenho._ret(c, Rect2(mao + Vector2(44, -11), Vector2(34, 13)), Color("4a5060"))
+			Desenho._ret(c, Rect2(mao + Vector2(78, -13), Vector2(12, 17)), Color("ff8a1e"))
+			Desenho._circ(c, mao + Vector2(-6, 14), 13.0, Color("ffd23f"))
+			Desenho._ret(c, Rect2(mao + Vector2(-56, -12), Vector2(16, 24)), Color("2f9e4e"))
 		"fuzil":
 			# fuzil de brinquedo: corpo verde, pente amarelo, cano gordo e ponta laranja
 			Desenho._ret(c, Rect2(mao + Vector2(-34, -12), Vector2(70, 16)), Color("2f9e4e"))
@@ -58,10 +91,13 @@ static func _prop(c: CanvasItem, nome: String, mao: Vector2, ang: float) -> void
 static func _prop_detalhe(c: CanvasItem, nome: String, mao: Vector2, ang: float) -> void:
 	match nome:
 		"picanha_gigante":
-			c.draw_colored_polygon(_rot(mao, ang, [Vector2(0, -150), Vector2(44, -120), Vector2(38, -104), Vector2(-4, -132)]), Color("f3e3c3"))
-			for k in 3:
-				var a := mao + Vector2(-10 + k * 12, -60 - k * 18).rotated(ang)
-				c.draw_line(a, a + Vector2(14, 10).rotated(ang), Color("6b241f"), 4.0)
+			picanha(c, mao + Vector2(0, -82).rotated(ang), ang - PI / 2.0, 1.9, false)
+		"metralhadora":
+			c.draw_rect(Rect2(mao + Vector2(-36, -12), Vector2(76, 5)), Color("6fd36f"))
+			c.draw_circle(mao + Vector2(-6, 14), 6.0, Color("c9a227"))
+			for k in 4:
+				c.draw_rect(Rect2(mao + Vector2(48 + k * 7, -10), Vector2(3, 11)), Color("2a2e38"))
+			Desenho._estrela(c, mao + Vector2(4, -4), 5.0, Color("ffd23f"))
 		"espeto_cheio":
 			for k in 3:
 				c.draw_circle(mao + Vector2(8 + k * 9, -16 - k * 15), 3.0, Color("f3c3a3"))
@@ -82,6 +118,23 @@ static func _prop_detalhe(c: CanvasItem, nome: String, mao: Vector2, ang: float)
 
 static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 	match forma:
+		"picanha_fogo":
+			if not cont:
+				# chamas atrás (o projétil vai para +x)
+				for j in 5:
+					var fx := -26.0 - j * 9.0
+					var fy := sin(t * 0.8 + j) * 5.0
+					c.draw_circle(Vector2(fx, fy), 12.0 - j * 1.8, Color("ffd23f") if j % 2 == 0 else Color("ff7a2f"))
+			picanha(c, Vector2.ZERO, t * 0.25, 1.0, cont)
+		"carimbo_gigante":
+			# carimbo de borracha gigante caindo: cabo de madeira e base vermelha com a tarja
+			Desenho._lin(c, Vector2(0, -60), Vector2(0, -30), Color("8a5a35"), 14.0)
+			Desenho._circ(c, Vector2(0, -64), 13.0, Color("8a5a35"))
+			Desenho._ret(c, Rect2(-44, -30, 88, 22), Color("6b4226"))
+			Desenho._ret(c, Rect2(-48, -8, 96, 16), Color("d62828"))
+			if not cont:
+				c.draw_rect(Rect2(-40, -26, 80, 4), Color("8a5a35"))
+				c.draw_rect(Rect2(-40, -4, 80, 8), Color("140c1c"))
 		"discurso":
 			# balão de fala gigante com ondas de som na frente
 			Desenho._poli(c, PackedVector2Array([Vector2(-30, -22), Vector2(26, -22), Vector2(30, 18), Vector2(-4, 18), Vector2(-20, 32), Vector2(-16, 18), Vector2(-30, 18)]), BRANCO)
@@ -211,6 +264,13 @@ static func veiculo_ceu(c: CanvasItem, forma: String, t: int, dur: int, dir: int
 	var y := 120.0 + sin(k * PI) * 30.0
 	var base := Transform2D(0.0, Vector2(dir * 1.3, 1.3), 0.0, Vector2(x, y))
 	c.draw_set_transform_matrix(base)
+	if forma == "esquadrilha":
+		# três caças em formação (o do meio na frente)
+		c.draw_set_transform_matrix(Transform2D.IDENTITY)
+		for j in [1, 2, 0]:
+			var off := Vector2(-dir * 150.0 * (1 if j > 0 else 0), (-46.0 if j == 1 else (46.0 if j == 2 else 0.0)))
+			_caca(c, Transform2D(0.0, Vector2(dir * 1.2, 1.2), 0.0, Vector2(x, y) + off), t)
+		return
 	if forma == "caca":
 		for passada in 2:
 			Desenho._cont = passada == 0
@@ -228,6 +288,34 @@ static func veiculo_ceu(c: CanvasItem, forma: String, t: int, dur: int, dir: int
 		for j in 3:
 			c.draw_line(Vector2(-150 - j * 40, -20 + j * 16), Vector2(-260 - j * 40, -20 + j * 16), Color(1, 1, 1, 0.5), 3.0)
 	c.draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+static func _caca(c: CanvasItem, base: Transform2D, t: int) -> void:
+	c.draw_set_transform_matrix(base)
+	for passada in 2:
+		Desenho._cont = passada == 0
+		Desenho._poli(c, PackedVector2Array([Vector2(-110, -6), Vector2(70, -10), Vector2(110, 0), Vector2(70, 10), Vector2(-110, 8)]), Color("8a94a6"))
+		Desenho._poli(c, PackedVector2Array([Vector2(-20, 0), Vector2(30, 0), Vector2(-50, 50), Vector2(-80, 50)]), Color("6f7a8c"))
+		Desenho._poli(c, PackedVector2Array([Vector2(-20, 0), Vector2(30, 0), Vector2(-50, -40), Vector2(-80, -40)]), Color("7a8496"))
+		Desenho._poli(c, PackedVector2Array([Vector2(-110, -6), Vector2(-86, -6), Vector2(-104, -44), Vector2(-122, -44)]), Color("6f7a8c"))
+	Desenho._cont = false
+	c.draw_colored_polygon(PackedVector2Array([Vector2(40, -9), Vector2(76, -8), Vector2(66, -2), Vector2(40, -3)]), Color("7ec8ff"))
+	c.draw_rect(Rect2(-100, -2, 160, 4), Color("d62828"))
+	var f := 30.0 + sin(t * 1.3) * 10.0
+	c.draw_colored_polygon(PackedVector2Array([Vector2(-110, -6), Vector2(-110 - f, 0), Vector2(-110, 8)]), Color("ffb03a"))
+	c.draw_colored_polygon(PackedVector2Array([Vector2(-110, -3), Vector2(-110 - f * 0.5, 1), Vector2(-110, 5)]), Color("fff3b0"))
+	c.draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+## Tarja de censura: mosaico de pixels sobre o rosto e a barra preta nos olhos (coordenadas do boneco).
+static func censura(c: CanvasItem, topo: Vector2, t: int) -> void:
+	var lado := 13.0
+	for i in 5:
+		for j in 5:
+			var h := int(i * 7 + j * 13 + t / 6) % 5
+			var cor: Color = [Color("c88a6a"), Color("a86a50"), Color("e0a888"), Color("8a5040"), Color("6a4a3a")][h]
+			c.draw_rect(Rect2(topo + Vector2(-34 + i * lado, j * lado), Vector2(lado, lado)), cor)
+	c.draw_rect(Rect2(topo + Vector2(-44, 16), Vector2(88, 18)), Color("0a0a0a"))
 
 
 ## Churrasqueira no chão, na frente do Lula (coordenadas do boneco, pés em 0,0).

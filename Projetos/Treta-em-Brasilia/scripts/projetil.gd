@@ -35,7 +35,7 @@ func iniciar(de: Lutador, spec: Dictionary) -> void:
 	tamanho = spec.get("tam", 1.0)
 	var forca: float = de.dados.get("forca", 1.0)
 	golpe = {
-		"dano": float(spec.get("dano", 70.0)) * forca, "atord": 18, "bloq": 14, "empurra": 8.0,
+		"dano": float(spec.get("dano", 70.0)) * forca, "atord": 18, "bloq": 14, "empurra": float(spec.get("empurra", 8.0)),
 		"nivel": spec.get("nivel", "medio"), "especial": true, "derruba": spec.get("derruba", false),
 		"super": spec.get("atravessa", false), "forca": "forte" if spec.get("derruba", false) else "medio",
 	}

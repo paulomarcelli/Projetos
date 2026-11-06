@@ -4,9 +4,9 @@ extends SceneTree
 ## Rodar com tela: godot --path . --script res://tests/galeria.gd -- saida.png [quadro]
 
 const ESTADOS := [
-	["parado", Lutador.E.PARADO, ""], ["piscar", Lutador.E.PARADO, "piscar"], ["andar", Lutador.E.ANDANDO, ""],
-	["pular", Lutador.E.PULANDO, ""], ["agachar", Lutador.E.AGACHADO, ""], ["soco", Lutador.E.ATACANDO, "soco"],
-	["chute", Lutador.E.ATACANDO, "chute"], ["especial", Lutador.E.ATACANDO, "projetil"], ["gancho", Lutador.E.ATACANDO, "gancho"],
+	["parado", Lutador.E.PARADO, ""], ["andar", Lutador.E.ANDANDO, ""], ["pular", Lutador.E.PULANDO, ""],
+	["agachar", Lutador.E.AGACHADO, ""], ["soco", Lutador.E.ATACANDO, "soco"], ["direto", Lutador.E.ATACANDO, "direto"],
+	["chute", Lutador.E.ATACANDO, "chute"], ["chute alto", Lutador.E.ATACANDO, "chute_alto"], ["rasteira", Lutador.E.ATACANDO, "rasteira"],
 	["defesa", Lutador.E.DEFENDENDO, ""], ["dor", Lutador.E.ATINGIDO, ""], ["nocaute", Lutador.E.NOCAUTE, ""],
 	["provocar", Lutador.E.PROVOCANDO, ""], ["vitoria", Lutador.E.VITORIA, ""], ["derrota", Lutador.E.DERROTA, ""],
 ]
@@ -55,7 +55,7 @@ func _initialize() -> void:
 			if est == Lutador.E.ATACANDO:
 				l.golpe_nome = extra
 				l.golpe = Lutador.GOLPES[extra].duplicate()
-				l.quadro = int(l.golpe["inicio"]) + 1
+				l.quadro = int(l.golpe["inicio"]) + quadro_base % 3
 			elif est == Lutador.E.ATINGIDO:
 				l.atordoado = 12
 			elif est == Lutador.E.NOCAUTE:
@@ -75,7 +75,7 @@ func _process(_d: float) -> bool:
 	esperar -= 1
 	if esperar <= 0:
 		var img := vp.get_texture().get_image()
-		img.resize(img.get_width() * 2, img.get_height() * 2, Image.INTERPOLATE_NEAREST)
+		img.resize(img.get_width() * 3, img.get_height() * 3, Image.INTERPOLATE_NEAREST)
 		img.save_png(saida)
 		print("galeria salva: ", saida, " ", img.get_size())
 		quit()

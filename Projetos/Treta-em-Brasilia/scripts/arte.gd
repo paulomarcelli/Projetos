@@ -1,0 +1,256 @@
+class_name Arte
+## Arte das habilidades, desenhada em código no estilo do resto (contorno escuro + cor):
+## objetos na mão, projéteis novos, zonas, o caça que cruza o céu, a churrasqueira e o cadeado.
+## As armas são brinquedos de videogame: cores fortes, formas gordas e ponta laranja.
+
+const PRETO := Color("140c1c")
+const BRANCO := Color("fbfbf7")
+
+
+# ---------------------------------------------------------------- objetos na mão
+
+## Desenha o objeto em duas passadas (contorno e cor). ang gira em volta da mão.
+static func prop(c: CanvasItem, nome: String, mao: Vector2, ang: float) -> void:
+	for passada in 2:
+		Desenho._cont = passada == 0
+		_prop(c, nome, mao, ang)
+	Desenho._cont = false
+	_prop_detalhe(c, nome, mao, ang)
+
+
+static func _rot(mao: Vector2, ang: float, pts: Array) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for q in pts:
+		out.append(mao + (q as Vector2).rotated(ang))
+	return out
+
+
+static func _prop(c: CanvasItem, nome: String, mao: Vector2, ang: float) -> void:
+	match nome:
+		"picanha_gigante":
+			Desenho._lin(c, mao, mao + Vector2(0, -26).rotated(ang), Color("8a5a35"), 7.0)
+			Desenho._poli(c, _rot(mao, ang, [Vector2(-26, -24), Vector2(30, -34), Vector2(44, -120), Vector2(0, -150), Vector2(-36, -110)]), Color("b8473f"))
+		"espeto_cheio":
+			Desenho._lin(c, mao + Vector2(-6, 10), mao + Vector2(30, -60), Color("9aa0a6"), 3.0)
+			for k in 3:
+				Desenho._circ(c, mao + Vector2(6 + k * 9, -14 - k * 15), 8.0, Color("a8432f"))
+		"fuzil":
+			# fuzil de brinquedo: corpo verde, pente amarelo, cano gordo e ponta laranja
+			Desenho._ret(c, Rect2(mao + Vector2(-34, -12), Vector2(70, 16)), Color("2f9e4e"))
+			Desenho._ret(c, Rect2(mao + Vector2(36, -9), Vector2(26, 10)), Color("4a5060"))
+			Desenho._ret(c, Rect2(mao + Vector2(62, -11), Vector2(10, 14)), Color("ff8a1e"))
+			Desenho._ret(c, Rect2(mao + Vector2(-6, 4), Vector2(12, 18)), Color("ffd23f"))
+			Desenho._ret(c, Rect2(mao + Vector2(-44, -10), Vector2(12, 20)), Color("2f9e4e"))
+		"frasco":
+			Desenho._ret(c, Rect2(mao + Vector2(-10, -40), Vector2(20, 30)), BRANCO)
+			Desenho._ret(c, Rect2(mao + Vector2(-7, -48), Vector2(14, 8)), Color("2f6fdb"))
+		"caneta":
+			Desenho._poli(c, _rot(mao, -0.5, [Vector2(-6, 20), Vector2(6, 20), Vector2(6, -70), Vector2(0, -84), Vector2(-6, -70)]), Color("1f3f9a"))
+		"carimbo":
+			Desenho._lin(c, mao, mao + Vector2(14, 0), Color("8a5a35"), 10.0)
+			Desenho._ret(c, Rect2(mao + Vector2(14, -16), Vector2(16, 32)), Color("d62828"))
+		"L":
+			# o "L" com a mão: polegar para cima e indicador para a frente
+			Desenho._lin(c, mao, mao + Vector2(0, -34), Color("e8a07a"), 9.0)
+			Desenho._lin(c, mao, mao + Vector2(24, 0), Color("e8a07a"), 9.0)
+
+
+static func _prop_detalhe(c: CanvasItem, nome: String, mao: Vector2, ang: float) -> void:
+	match nome:
+		"picanha_gigante":
+			c.draw_colored_polygon(_rot(mao, ang, [Vector2(0, -150), Vector2(44, -120), Vector2(38, -104), Vector2(-4, -132)]), Color("f3e3c3"))
+			for k in 3:
+				var a := mao + Vector2(-10 + k * 12, -60 - k * 18).rotated(ang)
+				c.draw_line(a, a + Vector2(14, 10).rotated(ang), Color("6b241f"), 4.0)
+		"espeto_cheio":
+			for k in 3:
+				c.draw_circle(mao + Vector2(8 + k * 9, -16 - k * 15), 3.0, Color("f3c3a3"))
+		"fuzil":
+			c.draw_rect(Rect2(mao + Vector2(-30, -10), Vector2(62, 4)), Color("6fd36f"))
+			Desenho._estrela(c, mao + Vector2(4, -4), 5.0, Color("ffd23f"))
+		"frasco":
+			c.draw_rect(Rect2(mao + Vector2(-8, -32), Vector2(16, 12)), Color("7ec8ff"))
+			c.draw_rect(Rect2(mao + Vector2(-2, -30), Vector2(4, 8)), Color("2f6fdb"))
+		"caneta":
+			c.draw_colored_polygon(_rot(mao, -0.5, [Vector2(6, -70), Vector2(0, -84), Vector2(-6, -70)]), Color("c9a227"))
+			c.draw_line(mao + Vector2(4, 14).rotated(-0.5), mao + Vector2(4, -60).rotated(-0.5), Color("5a7fe0"), 2.0)
+		"carimbo":
+			c.draw_rect(Rect2(mao + Vector2(28, -16), Vector2(4, 32)), Color("ff8a8a"))
+
+
+# ---------------------------------------------------------------- projéteis novos (centro 0,0, indo para +x)
+
+static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
+	match forma:
+		"discurso":
+			# balão de fala gigante com ondas de som na frente
+			Desenho._poli(c, PackedVector2Array([Vector2(-30, -22), Vector2(26, -22), Vector2(30, 18), Vector2(-4, 18), Vector2(-20, 32), Vector2(-16, 18), Vector2(-30, 18)]), BRANCO)
+			if not cont:
+				for j in 3:
+					c.draw_rect(Rect2(Vector2(-18 + j * 14, -4), Vector2(8, 8)), Color("d62828"))
+				for j in 3:
+					var r := 34.0 + j * 10.0 + fmod(t * 1.5, 10.0)
+					c.draw_arc(Vector2(10, 0), r, -0.7, 0.7, 10, Color(1, 0.9, 0.4, 0.8 - j * 0.25), 4.0)
+		"comida":
+			# linguiça e pão de alho alternando
+			if (t / 20) % 2 == 0:
+				Desenho._poli(c, PackedVector2Array([Vector2(-22, -6), Vector2(18, -10), Vector2(24, 0), Vector2(18, 10), Vector2(-22, 6), Vector2(-26, 0)]), Color("a8432f"))
+				if not cont:
+					c.draw_line(Vector2(-16, -2), Vector2(14, -5), Color("d9765f"), 3.0)
+			else:
+				Desenho._ret(c, Rect2(-20, -9, 40, 18), Color("e8c06a"))
+				if not cont:
+					for j in 3:
+						c.draw_line(Vector2(-12 + j * 12, -8), Vector2(-8 + j * 12, 8), Color("b07a2a"), 3.0)
+		"rolha":
+			# dardo de espuma: corpo azul e ponta laranja (brinquedo)
+			Desenho._ret(c, Rect2(-16, -6, 22, 12), Color("2a9df4"))
+			Desenho._circ(c, Vector2(10, 0), 8.0, Color("ff8a1e"))
+			if not cont:
+				c.draw_line(Vector2(-30, 0), Vector2(-18, 0), Color(1, 1, 1, 0.7), 3.0)
+		"frasco":
+			var g := t * 0.35
+			var pts := [Vector2(-10, -18), Vector2(10, -18), Vector2(10, 18), Vector2(-10, 18)]
+			Desenho._poli(c, _rot(Vector2.ZERO, g, pts), BRANCO)
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-7, -26), Vector2(7, -26), Vector2(7, -18), Vector2(-7, -18)]), Color("2f6fdb"))
+			if not cont:
+				c.draw_colored_polygon(_rot(Vector2.ZERO, g, [Vector2(-8, -6), Vector2(8, -6), Vector2(8, 8), Vector2(-8, 8)]), Color("7ec8ff"))
+		"onda":
+			if not cont:
+				for j in 4:
+					var r := 14.0 + j * 9.0
+					c.draw_arc(Vector2(-j * 6.0, 0), r, -1.0, 1.0, 12, Color(1, 0.95, 0.6, 0.95 - j * 0.2), 6.0 - j)
+				c.draw_circle(Vector2(-6, 0), 8.0, Color(1, 1, 1, 0.8))
+		"selo":
+			Desenho._circ(c, Vector2.ZERO, 30.0, Color("d62828"))
+			if not cont:
+				c.draw_arc(Vector2.ZERO, 24.0, 0, TAU, 24, BRANCO, 3.0)
+				cadeado(c, Vector2(0, 2), 0.9)
+		"documento":
+			var g2 := sin(t * 0.25) * 0.25
+			Desenho._poli(c, _rot(Vector2.ZERO, g2, [Vector2(-28, -36), Vector2(28, -36), Vector2(28, 36), Vector2(-28, 36)]), BRANCO)
+			if not cont:
+				for j in 6:
+					c.draw_line(Vector2(-20, -26 + j * 9).rotated(g2), Vector2(20, -26 + j * 9).rotated(g2), Color("9aa0a6"), 2.0)
+				c.draw_arc(Vector2(10, 18).rotated(g2), 12.0, 0, TAU, 16, Color("d62828"), 4.0)
+				c.draw_line(Vector2(-18, 26).rotated(g2), Vector2(-2, 22).rotated(g2), Color("1f3f9a"), 3.0)
+		"bomba":
+			Desenho._circ(c, Vector2.ZERO, 20.0, Color("2a2230"))
+			Desenho._lin(c, Vector2(8, -16), Vector2(14, -28), Color("8a5a35"), 3.0)
+			if not cont:
+				c.draw_rect(Rect2(-20, -4, 40, 8), Color("d62828"))
+				c.draw_rect(Rect2(-20, -1, 40, 2), BRANCO)
+				c.draw_circle(Vector2(-7, -8), 5.0, Color(1, 1, 1, 0.4))
+				var faisca := Vector2(14, -30)
+				for j in 4:
+					var a := j * PI / 2.0 + t * 0.6
+					c.draw_line(faisca, faisca + Vector2(cos(a), sin(a)) * 7.0, Color("ffd23f"), 2.0)
+		"notificacao":
+			Desenho._poli(c, PackedVector2Array([Vector2(-22, -16), Vector2(22, -16), Vector2(22, 12), Vector2(-4, 12), Vector2(-14, 22), Vector2(-12, 12), Vector2(-22, 12)]), BRANCO)
+			Desenho._circ(c, Vector2(20, -16), 9.0, Color("ff3b6b"))
+			if not cont:
+				c.draw_circle(Vector2(-8, -2), 5.0, Color("ff3b6b"))
+				c.draw_circle(Vector2(0, -2), 5.0, Color("ff3b6b"))
+				c.draw_colored_polygon(PackedVector2Array([Vector2(-13, 0), Vector2(5, 0), Vector2(-4, 9)]), Color("ff3b6b"))
+				c.draw_rect(Rect2(18, -21, 4, 6), BRANCO)
+				c.draw_rect(Rect2(18, -13, 4, 3), BRANCO)
+
+
+# ---------------------------------------------------------------- zonas (base no chão em 0,0)
+
+static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, k: float) -> void:
+	var meia := larg / 2.0
+	match forma:
+		"fumaca":
+			for i in 9:
+				var x := -meia + fposmod(i * larg / 9.0 + t * 0.6, larg)
+				var y := -40.0 - fposmod(i * 37.0 + t * 1.2, alt - 40.0)
+				var r := 26.0 + 10.0 * sin(t * 0.05 + i)
+				c.draw_circle(Vector2(x, y), r, Color(0.55, 0.55, 0.6, 0.45 * k))
+				c.draw_circle(Vector2(x - 8, y - 6), r * 0.6, Color(0.75, 0.75, 0.8, 0.35 * k))
+		"nuvem":
+			for i in 10:
+				var x := -meia + fposmod(i * larg / 10.0 + sin(t * 0.03 + i) * 20.0, larg)
+				var y := -20.0 - fposmod(i * 23.0 + t * 0.5, 160.0)
+				c.draw_circle(Vector2(x, y), 22.0 + 6.0 * sin(t * 0.07 + i), Color(0.45, 0.85, 0.35, 0.4 * k))
+			for i in 4:
+				var x2 := -meia * 0.6 + i * meia * 0.4
+				var y2 := -50.0 - fposmod(t * 1.5 + i * 40.0, 140.0)
+				c.draw_circle(Vector2(x2, y2), 5.0, Color(0.8, 1.0, 0.7, 0.8 * k))
+		"suspensao":
+			c.draw_rect(Rect2(-meia, -alt, larg, alt), Color(0.85, 0.1, 0.15, 0.18 * k))
+			# fitas de interdição listradas no alto e no chão
+			for y in [-alt, -24.0]:
+				c.draw_rect(Rect2(-meia, y, larg, 18), Color(0.1, 0.05, 0.05, 0.7 * k))
+				for j in int(larg / 24.0) + 1:
+					var x := -meia + j * 24.0 + fmod(t * 0.8, 24.0)
+					if x < meia - 12:
+						c.draw_colored_polygon(PackedVector2Array([Vector2(x, y), Vector2(x + 12, y), Vector2(x + 4, y + 18), Vector2(x - 8, y + 18)]), Color(1, 0.82, 0.25, 0.9 * k))
+			c.draw_rect(Rect2(-meia, -alt, 6, alt), Color(1, 0.3, 0.3, 0.7 * k))
+			c.draw_rect(Rect2(meia - 6, -alt, 6, alt), Color(1, 0.3, 0.3, 0.7 * k))
+			cadeado(c, Vector2(0, -alt * 0.55 + sin(t * 0.1) * 6.0), 1.6 * k)
+			var cor := Color("ff5a4e")
+			cor.a = k
+			Desenho.texto(c, Vector2(0, -alt * 0.25), "SUSPENSO", 26, cor, Color(0, 0, 0, k), 6)
+		"votos":
+			for i in 10:
+				var a := t * 0.12 + i * TAU / 10.0
+				var pos := Vector2(cos(a) * meia, -120.0 + sin(a) * 60.0)
+				c.draw_rect(Rect2(pos - Vector2(13, 9), Vector2(26, 18)), Color(0.08, 0.05, 0.12, k))
+				c.draw_rect(Rect2(pos - Vector2(11, 7), Vector2(22, 14)), Color(1, 1, 1, k))
+				c.draw_line(pos + Vector2(-6, 0), pos + Vector2(-2, 4), Color("1f9d55"), 2.0)
+				c.draw_line(pos + Vector2(-2, 4), pos + Vector2(6, -4), Color("1f9d55"), 2.0)
+
+
+# ---------------------------------------------------------------- outros
+
+## O caça estilizado cruza o céu soltando o ataque (coordenadas da tela).
+static func veiculo_ceu(c: CanvasItem, forma: String, t: int, dur: int, dir: int) -> void:
+	var k := float(t) / float(dur)
+	var x := lerpf(-320.0, 1600.0, k) if dir > 0 else lerpf(1600.0, -320.0, k)
+	var y := 120.0 + sin(k * PI) * 30.0
+	var base := Transform2D(0.0, Vector2(dir * 1.3, 1.3), 0.0, Vector2(x, y))
+	c.draw_set_transform_matrix(base)
+	if forma == "caca":
+		for passada in 2:
+			Desenho._cont = passada == 0
+			Desenho._poli(c, PackedVector2Array([Vector2(-110, -6), Vector2(70, -10), Vector2(110, 0), Vector2(70, 10), Vector2(-110, 8)]), Color("8a94a6"))
+			Desenho._poli(c, PackedVector2Array([Vector2(-20, 0), Vector2(30, 0), Vector2(-50, 50), Vector2(-80, 50)]), Color("6f7a8c"))
+			Desenho._poli(c, PackedVector2Array([Vector2(-20, 0), Vector2(30, 0), Vector2(-50, -40), Vector2(-80, -40)]), Color("7a8496"))
+			Desenho._poli(c, PackedVector2Array([Vector2(-110, -6), Vector2(-86, -6), Vector2(-104, -44), Vector2(-122, -44)]), Color("6f7a8c"))
+		Desenho._cont = false
+		c.draw_colored_polygon(PackedVector2Array([Vector2(40, -9), Vector2(76, -8), Vector2(66, -2), Vector2(40, -3)]), Color("7ec8ff"))
+		c.draw_rect(Rect2(-100, -2, 160, 4), Color("d62828"))
+		# chama do motor
+		var f := 30.0 + sin(t * 1.3) * 10.0
+		c.draw_colored_polygon(PackedVector2Array([Vector2(-110, -6), Vector2(-110 - f, 0), Vector2(-110, 8)]), Color("ffb03a"))
+		c.draw_colored_polygon(PackedVector2Array([Vector2(-110, -3), Vector2(-110 - f * 0.5, 1), Vector2(-110, 5)]), Color("fff3b0"))
+		for j in 3:
+			c.draw_line(Vector2(-150 - j * 40, -20 + j * 16), Vector2(-260 - j * 40, -20 + j * 16), Color(1, 1, 1, 0.5), 3.0)
+	c.draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+## Churrasqueira no chão, na frente do Lula (coordenadas do boneco, pés em 0,0).
+static func churrasqueira(c: CanvasItem, pos: Vector2, t: int) -> void:
+	for passada in 2:
+		Desenho._cont = passada == 0
+		Desenho._lin(c, pos + Vector2(-30, 0), pos + Vector2(-20, -50), Color("4a4a55"), 5.0)
+		Desenho._lin(c, pos + Vector2(30, 0), pos + Vector2(20, -50), Color("4a4a55"), 5.0)
+		Desenho._ret(c, Rect2(pos + Vector2(-42, -70), Vector2(84, 22)), Color("2a2230"))
+	Desenho._cont = false
+	c.draw_rect(Rect2(pos + Vector2(-38, -74), Vector2(76, 6)), Color("9aa0a6"))
+	for j in 6:
+		var x := -34.0 + j * 13.0
+		var h := 10.0 + 8.0 * absf(sin(t * 0.3 + j))
+		c.draw_colored_polygon(PackedVector2Array([pos + Vector2(x, -74), pos + Vector2(x + 6, -74 - h), pos + Vector2(x + 12, -74)]), Color("ff7a2f") if j % 2 else Color("ffd23f"))
+	c.draw_rect(Rect2(pos + Vector2(-36, -66), Vector2(72, 8)), Color("e8582a"))
+
+
+static func cadeado(c: CanvasItem, pos: Vector2, s: float) -> void:
+	if s <= 0.01:
+		return
+	c.draw_arc(pos + Vector2(0, -10) * s, 9.0 * s, PI, TAU, 10, PRETO, 7.0 * s)
+	c.draw_arc(pos + Vector2(0, -10) * s, 9.0 * s, PI, TAU, 10, Color("c9ced6"), 4.0 * s)
+	c.draw_rect(Rect2(pos + Vector2(-14, -10) * s, Vector2(28, 22) * s), PRETO)
+	c.draw_rect(Rect2(pos + Vector2(-12, -8) * s, Vector2(24, 18) * s), Color("ffd23f"))
+	c.draw_rect(Rect2(pos + Vector2(-2, -4) * s, Vector2(4, 8) * s), PRETO)

@@ -2,75 +2,134 @@
 
 # 🥊 Brasília Kombat
 
-**A briga mais polarizada do país.** Um jogo de luta 2D no estilo fliperama dos anos 90, com caricaturas de políticos brasileiros e memes.
+**A briga mais polarizada do país.** Um jogo de luta 2D no estilo fliperama dos anos 90, com caricaturas de políticos e memes, golpes absurdos, Superpowers, Ultimates com cinemática e arenas cheias de manifestação.
 
 ![Godot 4.3](https://img.shields.io/badge/Godot-4.3-478cbf?style=flat-square&logo=godotengine&logoColor=white)
 ![GDScript](https://img.shields.io/badge/GDScript-478cbf?style=flat-square)
 ![Pixel art](https://img.shields.io/badge/16_bits-ffd23f?style=flat-square)
+![Navegador e celular](https://img.shields.io/badge/navegador_·_celular_·_tablet-1f9d55?style=flat-square)
 
 [![Jogar no navegador](https://img.shields.io/badge/JOGAR_NO_NAVEGADOR-c81e2a?style=for-the-badge&logo=godotengine&logoColor=ffd23f)](https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/)
 
-<img src="docs/luta.png" alt="Trump contra Lula na Praça dos Três Poderes: barras de energia no alto, plateia com cartazes de meme e o pato amarelo inflável ao fundo" width="860">
+<img src="docs/luta.png" alt="Bolsonaro contra Lula na Avenida Paulista, com o MASP, o trânsito e os dois lados da manifestação ao fundo" width="860">
 
 </div>
 
 > [!NOTE]
-> **Paródia e humor.** Os lutadores são caricaturas com apelidos e memes conhecidos, sem apoio a partido ou candidato. O elenco mistura todos os lados de propósito.
+> **Paródia e humor.** Os lutadores são caricaturas com apelidos, memes e referências públicas conhecidas, sem apoio a partido ou candidato. O elenco e as manifestações mostram todos os lados de propósito, e a violência é de desenho animado: armas de brinquedo, explosões de confete, ninguém se machuca.
 
-## 🎮 O jogo
+## 🎮 Modos
 
-- **Elenco com rosto de verdade em pixel art:** cada foto vira uma cabeça caricata de 16 bits (`ferramentas/cabeca_pixel.py`) num corpo animado em código.
+| Modo | O que é |
+|---|---|
+| **PLAY** | 1 jogador contra a CPU: escolhe os lutadores e a arena |
+| **MULTIPLAYER** | 2 jogadores no mesmo aparelho (teclado ou dois controles) |
+| **ARCADE MODE** | enfrente todo o elenco em sequência, uma arena por luta, cada CPU mais difícil |
+| **TRAINING** | contra um boneco parado, com barra infinita, vida que volta e contador de combo |
+| **CHARACTER SELECT** | ficha de cada lutador: biografia, atributos, golpes com os comandos e demonstração animada |
+| **SETTINGS** | volume de música e efeitos, dificuldade, tremor de tela, controles de toque e tempo do round |
 
-| Lutador | Projétil | Investida | Gancho | Super | Golpe final do combo |
-|---|---|---|---|---|---|
-| Lula | Bolsa Família! | Faz o L! | Constituição na Mão | Picanha e Cervejinha | Nunca Antes Neste País! |
-| Bolsonaro | Vai Virar Jacaré! | Motociata | Talquei? | Imbrochável! | E Daí? |
-| Xandão | Inquérito! | Conta Bloqueada | Martelo da Justiça | Inelegível! | Prisão Preventiva! |
-| Trump | Boné MAGA! | Air Force One | You're Fired! | Tarifaço 50%! | Make Brasília Great Again! |
-| Eduarda Campopiano (cuia e dentes caricatos) | Corte Viral! | 1,9 Milhão de Votos | Lacração Reversa | Mais Votada de SP! | Direto de Praia Grande! |
+## 👊 Combate
+
+- **Golpes normais:** soco fraco e **soco forte** (frente + Soco), chute médio, **chute alto** (frente + Chute), **rasteira** (baixo + Chute), soco aéreo, voadora e **pisão** (baixo + Chute no ar).
+- **Combos:** Soco, Soco, Chute termina no golpe final de cada um; Chute, Chute vira chute alto; golpes que conectam cancelam em especial, e qualquer coisa cancela no SUPER.
+- **Agarrão e arremesso:** botão Agarrar (ou Soco + Chute) de perto; com trás, joga para o outro lado. Se os dois agarram juntos, **escapam**.
+- **Dash e esquiva:** dois toques para a frente ou para trás. A esquiva para trás é invencível no começo.
+- **Defesa e contra-ataque:** segure para trás (agachado defende rasteira). Começar a defender bem na hora do golpe é **DEFESA PERFEITA**: não perde vida e o rival fica desequilibrado. Acertar quem está preparando um golpe é **CONTRA-ATAQUE** (mais dano).
+- **Peso nos golpes:** antecipação antes de cada ataque, pausa de impacto proporcional à força, empurrão (knockback), reação diferente se pega na cabeça, no corpo ou nas pernas, recuperação no fim, preparação do pulo e aterrissagem.
+- **Efeitos:** faíscas, anel de impacto, poeira, fumaça, estrelas, confete, linhas de velocidade, rastro de silhueta nos dashes e investidas, tremor de tela moderado, zoom e câmera lenta no nocaute.
+
+## ⚡ SUPER e Ultimate
+
+A **barra de energia** enche batendo, defendendo, apanhando e provocando. Ela tem dois níveis:
+
+- **Meia barra = SUPERPOWER:** o botão SUPER solta a habilidade especial do personagem.
+- **Barra cheia = ULTIMATE:** a tela congela, a câmera dá zoom e começa uma **cinemática** exclusiva. Dá para escapar pulando ou defendendo na hora certa.
+
+O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a carga num anel, brilha quando dá para usar, fica dourado no Ultimate e treme e faz "bzz" quando não há energia. Cada especial tem **recarga** (os quadradinhos ao lado do nome), e o **Bloqueio Supremo** do Xandão deixa o rival sem especiais por 5 segundos.
+
+| Lutador | Especiais (Especial + direção) | SUPERPOWER | ULTIMATE |
+|---|---|---|---|
+| **Lula** | Discurso do Planalto · Picanha Gigante · Faz o L! · Bolsa Família · Picanha Voadora | Churrasco Presidencial | **Picanha Suprema** |
+| **Bolsonaro** | Fuzil Cartunesco · Motociata · Talquei? · Operação Cloroquina · Vai Virar Jacaré! | Capitão do Caos | **Operação Presidencial** |
+| **Xandão** | Inquérito! · Conta Bloqueada · Martelo da Justiça · Canetada do STF · Suspensão de Conta | Bloqueio Supremo | **Decisão Monocrática** |
+| **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | Caça Presidencial | **YMCA Presidential Show** |
+| **Eduarda** | Corte Viral! · Microfone Explosivo · Lacração Reversa · Debate Infinito · 1,9 Milhão de Votos | Polêmica nas Redes | **Treta Nacional** |
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/ultimate_trump.png" alt="Ultimate do Trump: palco com holofotes, as letras Y M C A em neon e Trump dançando"></td>
+    <td width="50%"><img src="docs/ultimate_lula.png" alt="Ultimate do Lula: churrasqueira gigante e uma picanha enorme caindo do céu em cima do rival"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/danca.png" alt="Make America Dance Again: Trump faz as letras com os braços, o tronco e as pernas"></td>
+    <td><img src="docs/cabelo.png" alt="Hair Attack: o topete do Trump vira um chicote loiro"></td>
+  </tr>
+</table>
+
+## 🧑‍🎤 Lutadores
+
+- **Rosto da foto em pixel art** (`ferramentas/cabeca_pixel.py`) com 8 expressões redesenhadas em cada quadro: neutro, piscar, esforço, grito, dor, nocaute, feliz e derrota. A Eduarda segue a caricatura do boneco abridor de garrafas: cabelo escuro liso, óculos transparentes e a risada escancarada.
+- **Cabeça independente:** atrasa em relação ao corpo, recua no golpe, balança andando, pisca sozinha.
+- **Roupa com movimento:** gravata, toga e aba do paletó balançam; o topete do Trump mexe com o vento.
+- **Proporções e silhueta próprias**, jeito de ficar parado, provocação, vitória e derrota de cada um (a vitória do Trump é a dança).
 
 Em breve: Flávio Bolsonaro, Milei, Pavanato e Janones.
 
-- **Rostos animados:** cada personagem tem uma folha com 8 expressões em pixel art (neutro, piscar, esforço, grito, dor, nocaute, feliz, derrota). Os olhos, as sobrancelhas, a boca e os óculos são redesenhados em cada quadro, nos pontos do rosto detectados na foto (`ferramentas/rostos.py`). A cabeça fica presa no pescoço e se mexe sozinha: respira, pisca, recua no golpe e abaixa na derrota.
-- **Personalidade:** corpo, roupa, jeito de ficar parado, provocação (tecla R / 4), vitória e derrota próprios de cada um. Veja `docs/GDD-combate.md`.
-- **Combos:** Soco, Soco, Chute (enquanto acerta) termina no golpe final de cada um; soco e chute que acertam podem ser cancelados num especial.
-- **Memes:** ao escolher o lutador e nos golpes fortes, o retrato entra na tela com uma frase do personagem. Se existir `audio/<id>/<n>.ogg` (ou .mp3/.wav), o áudio toca junto.
-- **1 jogador contra a CPU** ou **2 jogadores** no mesmo teclado ou com dois controles.
-- Melhor de 3 rounds, 99 segundos, combos, defesa alta e baixa, barra de super, pausa de impacto e tremor de tela.
-- Cenário: a **Praça dos Três Poderes** no fim de tarde, com o Congresso, o pato amarelo inflável, a van da TV Treta e uma plateia pulando com cartazes ("FAZ O L", "TÁ OK?", "INELEGÍVEL", "CADÊ O PIX?").
+## 🏟️ Arenas
+
+| Arena | O que tem |
+|---|---|
+| **Praça dos Três Poderes** | Congresso no pôr do sol, o pato amarelo inflável, a van da TV Treta e a plateia com cartazes |
+| **USP** | Torre do Relógio, prédio brutalista com faixa de greve, estudantes passando, manifestação de camiseta vermelha com estrela, bandeiras LGBT e da Palestina, cartaz "RECUA, FASCISTA, RECUA!" e sinalizador de fumaça |
+| **Avenida Paulista** | MASP, antenas, prédios acesos, trânsito, manifestantes dos dois lados (vermelho e verde-amarelo), polícia no meio, imprensa com flash e um empurra-empurra de desenho animado |
+| **Casa Branca** | fachada com o pórtico, bandeiras, agentes de terno e óculos escuros, limusine, holofotes e helicóptero passando |
+
+A plateia pula mais quando a luta esquenta.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/usp.png" alt="Luta na USP com a Torre do Relógio e a manifestação de estudantes"></td>
+    <td width="50%"><img src="docs/casa_branca.png" alt="Luta na Casa Branca com os agentes de segurança e a limusine"></td>
+  </tr>
+</table>
+
+## 🔊 Áudio
+
+Tudo **original e sintetizado** (`ferramentas/sons.py`): 45 efeitos (socos, chutes, impactos, defesa, poderes, churrasqueira, moto, caça, martelo, notificação, menus), **vozes caricatas** curtas de cada lutador (grunhidos sintéticos, sem imitar a voz de ninguém) e 6 músicas chiptune em loop, uma por arena. Nenhuma gravação ou música protegida.
 
 ## 🕹️ Controles
 
 | | Jogador 1 | Jogador 2 |
 |---|---|---|
-| Andar | A / D | setas |
-| Pular / agachar | W / S | seta para cima / para baixo |
-| Soco | F | 1 do teclado numérico ou `,` |
-| Chute | G | 2 do teclado numérico ou `.` |
-| Especial | H | 3 do teclado numérico ou `;` |
+| Andar / pular / agachar | A D / W / S | setas |
+| Soco · Chute | F · G | `,` · `.` (ou 1 · 2 do numérico) |
+| Especial | H | `/` (ou 3) |
+| **SUPER** | **J** | **K** (ou 5) |
+| Agarrar | T | L (ou 6) |
+| Provocar | R | `;` (ou 4) |
+| Pausa | Esc ou P | |
 
-Controle: direcional, X soco, A chute, B especial.
+Controle: direcional, X soco, A chute, B especial, Y provocar, **RB super**, LB agarrar.
 
-**Especiais:**
-- **Projétil:** Especial, ou ↓↘→ + Soco.
-- **Investida:** frente + Especial, ou ↓↙← + Chute.
-- **Gancho:** cima + Especial, ou →↓↘ + Soco.
-- **Super:** com a barra cheia, ↓ + Especial.
-
-**Defesa:** segure para trás. Agachado defende a rasteira; em pé defende a voadora.
+**Celular e tablet:** direcional à esquerda; SOCO, CHUTE, ESPECIAL, AGARRA e o botão **SUPER** grande à direita; pausa no meio da tela. Aceita vários dedos ao mesmo tempo.
 
 ## 🖼️ Telas
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/titulo.png" alt="Tela de título TRETA EM BRASÍLIA com o menu e os rostos dos seis lutadores"></td>
-    <td width="50%"><img src="docs/meme.png" alt="Na seleção, o retrato do Trump entra na tela com o meme TARIFAÇO!"></td>
+    <td width="50%"><img src="docs/titulo.png" alt="Menu inicial com o logo, os botões PLAY, MULTIPLAYER, ARCADE MODE, TRAINING, CHARACTER SELECT e SETTINGS e dois lutadores em pose de luta"></td>
+    <td width="50%"><img src="docs/selecao.png" alt="Seleção de lutadores com retratos, atributos e o Superpower e o Ultimate de cada lado"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/arenas.png" alt="Escolha da arena com as quatro miniaturas"></td>
+    <td><img src="docs/lutadores.png" alt="Ficha do Trump com biografia e a lista de golpes"></td>
   </tr>
 </table>
 
 ## 🎨 Visual 16 bits
 
-Não há nenhuma imagem pronta: tudo é desenhado em código (`scripts/desenho.gd`). O jogo pensa em 1280×720, mas desenha numa tela de **480×270**, ampliada sem suavização. Os personagens têm contorno escuro e sombreado, o céu usa pontilhado (dithering) e os textos usam a fonte pixelada **Press Start 2P** (licença OFL, em `fontes/`).
+Não há imagens prontas além das cabeças: tudo é desenhado em código. O jogo pensa em 1280×720 e desenha numa tela de **480×270** ampliada sem suavização, com contorno escuro, sombreado, céu pontilhado (dithering) e a fonte pixelada **Press Start 2P** (OFL, em `fontes/`). Para rodar bem em aparelhos modestos, o fundo e o chão das arenas são desenhados uma vez só e a plateia é atualizada 30 vezes por segundo.
 
 ## ▶️ Como rodar
 
@@ -85,40 +144,37 @@ godot --headless --path . --script res://tests/mecanica.gd
 godot --headless --fixed-fps 60 --path . --script res://tests/simular.gd
 ```
 
-- `mecanica.gd`: defesa alta e baixa, comandos ↓↘→ e →↓↘, super só com a barra cheia, nocaute.
-- `simular.gd`: 12 partidas CPU x CPU com todos os lutadores até o fim.
-- `capturas.gd`: tira as capturas das telas (precisa de tela, por exemplo com `xvfb-run`).
+- `mecanica.gd` (50 verificações): golpes fortes, defesa alta e baixa, defesa perfeita, contra-ataque, dash, comandos, recarga, SUPER sem energia, Superpower, Ultimate, agarrão, Bloqueio Supremo e todas as habilidades de todos os lutadores.
+- `simular.gd`: 10 partidas CPU x CPU com todos os lutadores até o fim.
+- `capturas.gd`: capturas de todas as telas, golpes e ultimates (precisa de tela, por exemplo com `xvfb-run`).
+- `cpu.gd`: custo de CPU por quadro de uma luta.
 
 ## 📁 Estrutura
 
 ```text
 treta-em-brasilia/
-├── project.godot
-├── cenas/main.tscn
 ├── scripts/
-│   ├── main.gd            # troca de telas
-│   ├── telas.gd           # título, como jogar, seleção e resultado
-│   ├── luta.gd            # rounds, colisões, combos, HUD e efeitos
-│   ├── lutador.gd         # movimento, golpes quadro a quadro, defesa e comandos
-│   ├── ia.gd              # CPU
-│   ├── projetil.gd
-│   ├── personagens.gd     # elenco, golpes e falas
-│   ├── desenho.gd         # todos os desenhos e o texto pixelado
-│   ├── controles.gd       # teclas e controles dos dois jogadores
-│   ├── entrada_humana.gd
-│   └── camada.gd
-├── sprites/               # cabeças e retratos em pixel art (gerados das fotos)
-├── ferramentas/           # cabeca_pixel.py: foto -> pixel art
-├── web-build/             # versão exportada para o navegador (só na pasta Projetos)
-├── fontes/                # Press Start 2P (OFL)
-├── tests/
-└── docs/                  # capturas
+│   ├── main.gd          # modos de jogo e transições entre telas
+│   ├── telas.gd         # título, seleção, arena, lutadores, configurações, VS, resultado
+│   ├── luta.gd          # rounds, colisões, câmera, HUD, cinemática, treino, pausa
+│   ├── lutador.gd       # movimento, golpes quadro a quadro, defesa, agarrão, habilidades
+│   ├── personagens.gd   # elenco e habilidades (dados)
+│   ├── poses.gd         # poses das habilidades e a dança
+│   ├── desenho.gd       # corpo, rosto, roupas, texto pixelado, Praça dos Três Poderes
+│   ├── arte.gd          # objetos, projéteis, zonas, caça, churrasqueira
+│   ├── cenarios.gd      # USP, Avenida Paulista, Casa Branca
+│   ├── cinematica.gd    # ultimates
+│   ├── particulas.gd · projetil.gd · zona.gd
+│   ├── ia.gd            # CPU
+│   ├── toque.gd         # controles de toque
+│   ├── som.gd · config.gd · controles.gd · entrada_humana.gd · camada.gd
+├── audio/               # sfx, vozes e músicas (gerados por ferramentas/sons.py)
+├── sprites/             # cabeças e retratos em pixel art (gerados das fotos)
+├── ferramentas/         # cabeca_pixel.py, rostos.py, sons.py
+├── fontes/ · tests/ · docs/
 ```
 
 ## 🛣️ Próximos passos
 
-- Sons e música chiptune.
-- Mais cenários (Planalto, Esplanada em dia de manifestação, sessão da Câmara).
-- Agarrão, finalizações cômicas e modo arcade com chefe final.
-- Multiplayer online com código de sala.
-- Áudios dos memes.
+- Multiplayer online com código de sala (hoje o multiplayer é no mesmo aparelho).
+- Os próximos lutadores: Flávio, Milei, Pavanato e Janones.

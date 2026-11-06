@@ -1,5 +1,8 @@
 # BRASÍLIA KOMBAT · GDD do Sistema de Combate
 
+> [!NOTE]
+> Este é o documento de planejamento da versão 1. A versão 2 (a que está no jogo) refez o combate e as habilidades a partir dele: veja o README e `scripts/personagens.gd`, que guarda os golpes como dados (tempos, dano, recarga, custo de barra).
+
 > Documento de design (sem código). Sátira política claramente fictícia: os golpes exageram referências públicas, declarações conhecidas e memes. Nenhuma característica pessoal ou acusação é inventada.
 
 **Versão:** 1.0 · **Personagens:** Lula, Bolsonaro, Trump, Xandão (Alexandre de Moraes), Eduarda Campopiano · **Plataforma:** navegador (computador, tablet e celular), contra a CPU ou online.

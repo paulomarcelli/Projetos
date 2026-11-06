@@ -14,12 +14,15 @@ const BRANCO := Color("fbfbf7")
 const SOMBRA := Color(0, 0, 0, 0.32)
 
 static var _cont := false
+## Cor única (rastro de velocidade): quando a.a > 0, tudo sai nessa cor, só a silhueta.
+static var _silhueta := Color(0, 0, 0, 0)
 ## Transformação de quem chamou (posição/escala do boneco na tela); as partes se compõem com ela.
 static var _base := Transform2D.IDENTITY
 ## Transformação do tronco (inclinação), onde o pescoço se apoia. A cabeça soma o próprio giro.
 static var _mat_tronco := Transform2D.IDENTITY
 const EXPRESSOES := ["neutro", "piscar", "esforco", "grito", "dor", "nocaute", "feliz", "derrota"]
 static var _fonte: Font
+static var _prop_ang := 0.0
 static var _ceu: ImageTexture
 static var _texturas := {}
 
@@ -99,12 +102,7 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["inclina"] = -0.05
 			p["expr"] = "esforco"
 		"trump":
-			var f := sin(t * 0.3)
-			p["mao_f"] = Vector2(34, -190 + f * 24)
-			p["mao_t"] = Vector2(-18, -160 - f * 24)
-			p["quadril"] = -72.0 + absf(f) * 6.0
-			p["inclina"] = f * 0.1
-			p["cabeca_giro"] = -f * 0.12
+			Poses.danca(p, t, 1.0)
 		"xandao":
 			p["mao_f"] = Vector2(30, -150)
 			p["mao_t"] = Vector2(14, -112)
@@ -136,13 +134,8 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 			p["prop_t"] = "joinha"
 			p["chapeu"] = "boina"
 		"trump":
-			var f := sin(t * 0.32)
-			p["mao_f"] = Vector2(34, -196 + f * 26)
-			p["mao_t"] = Vector2(-20, -160 - f * 26)
-			p["quadril"] = -72.0 + absf(f) * 7.0
-			p["inclina"] = f * 0.12
-			p["cabeca_giro"] = -f * 0.14
-			p["pe_f"] = Vector2(22 + f * 6, 0)
+			Poses.danca(p, t, 1.2)
+			p["punho_grande"] = false
 		"xandao":
 			var k := absf(sin(t * 0.12))
 			p["mao_f"] = Vector2(54, -132).lerp(Vector2(40, -214), k)
@@ -156,7 +149,8 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 		_:
 			p["mao_f"] = Vector2(34, -222 + bob * 6)
 			p["mao_t"] = Vector2(-30, -214)
-	p["cabeca_desl"] = Vector2(0, bob * 2.0)
+	if _id(d) != "trump":
+		p["cabeca_desl"] = Vector2(0, bob * 2.0)
 	return p
 
 
@@ -207,6 +201,8 @@ static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
 # depois a cor. É o que dá o traço preto dos sprites de 16 bits.
 
 static func _cor(cor: Color) -> Color:
+	if _silhueta.a > 0.0:
+		return _silhueta
 	return CONTORNO if _cont else cor
 
 
@@ -224,7 +220,7 @@ static func _poli(c: CanvasItem, pts: PackedVector2Array, cor: Color) -> void:
 			var m := PackedVector2Array()
 			for q in pts:
 				m.append(q + o)
-			c.draw_colored_polygon(m, CONTORNO)
+			c.draw_colored_polygon(m, _cor(cor))
 	else:
 		c.draw_colored_polygon(pts, cor)
 
@@ -249,11 +245,59 @@ static func lutador_em(c: CanvasItem, d: Dictionary, p: Dictionary, pos: Vector2
 
 
 static func lutador(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
+	if p.has("veiculo"):
+		veiculo(c, p["veiculo"], int(p.get("t", 0)))
+	if p.get("churrasqueira", false):
+		Arte.churrasqueira(c, Vector2(120, 0), int(p.get("t", 0)))
+	if p.get("aura", false):
+		var t := int(p.get("t", 0))
+		for i in 3:
+			var r := 110.0 + i * 26.0 + sin(t * 0.3 + i) * 8.0
+			c.draw_arc(Vector2(0, -110), r, 0, TAU, 28, Color(1, 0.85, 0.3, 0.25 - i * 0.06), 8.0)
 	_cont = true
 	_corpo(c, d, p)
 	_cont = false
 	_corpo(c, d, p)
 	_mat_tronco = Transform2D.IDENTITY
+	if p.get("tonto", false) or p.get("cadeado", false) or p.get("baloes", false) or p.has("letra"):
+		_extras_cabeca(c, d, p)
+
+
+## Rastro de velocidade: só a silhueta do boneco, numa cor translúcida.
+static func silhueta(c: CanvasItem, d: Dictionary, p: Dictionary, pos: Vector2, escala: Vector2, rot: float, cor: Color) -> void:
+	_base = Transform2D(rot, escala, 0.0, pos)
+	c.draw_set_transform_matrix(_base)
+	_silhueta = cor
+	_cont = true
+	_corpo(c, d, p)
+	_cont = false
+	_silhueta = Color(0, 0, 0, 0)
+	_mat_tronco = Transform2D.IDENTITY
+	_base = Transform2D.IDENTITY
+	c.draw_set_transform_matrix(_base)
+
+
+## Estrelas de tontura, cadeado do bloqueio, balões de fala e a letra da dança, acima da cabeça.
+static func _extras_cabeca(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
+	var t := int(p.get("t", 0))
+	var topo := Vector2(0, p["quadril"] - 190.0)
+	if p.get("tonto", false):
+		for k in 3:
+			var a := t * 0.15 + k * TAU / 3.0
+			_estrela(c, topo + Vector2(cos(a) * 34.0, sin(a) * 10.0), 8.0, Color("ffd23f"))
+	if p.get("cadeado", false):
+		Arte.cadeado(c, topo + Vector2(-40, -10), 0.8)
+	if p.get("baloes", false):
+		for k in 3:
+			var fase := fposmod(t * 0.04 + k / 3.0, 1.0)
+			var pos := topo + Vector2(60 + fase * 120.0, 40 - fase * 60.0 + k * 20)
+			var cor := Color(1, 1, 1, 1.0 - fase)
+			c.draw_rect(Rect2(pos - Vector2(26, 14), Vector2(52, 28)), Color(0.08, 0.05, 0.12, cor.a))
+			c.draw_rect(Rect2(pos - Vector2(23, 11), Vector2(46, 22)), cor)
+			for j in 3:
+				c.draw_circle(pos + Vector2(-12 + j * 12, 0), 3.0, Color(0.1, 0.1, 0.1, cor.a))
+	if p.has("letra"):
+		texto(c, topo + Vector2(0, -40), p["letra"], 40, Color("ffd23f"), PRETO, 8)
 
 
 static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
@@ -264,6 +308,10 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	var pele: Color = d["pele"]
 	var roupa: Color = d["roupa"]
 
+	if not _cont and _silhueta.a == 0.0 and p.has("rastro") and (p["rastro"] as Array).size() == 2:
+		_rastro(c, p["rastro"][0], p["rastro"][1])
+	if d["extra"] == "toga" or d["id"] == "trump":
+		_cauda(c, d, quadril, inclina, float(p.get("vento", 0.0)))
 	_braco(c, d, ombro_t, p["mao_t"], roupa.darkened(0.3), false)
 	if not _cont:
 		_prop_mao(c, p.get("prop_t", ""), p["mao_t"])
@@ -274,7 +322,7 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	var larg: float = corpo.get("larg", 1.0)
 	_mat_tronco = _base * Transform2D(inclina, quadril)
 	c.draw_set_transform_matrix(_mat_tronco * Transform2D(0.0, Vector2(larg, 1.0), 0.0, Vector2.ZERO))
-	_tronco(c, d)
+	_tronco(c, d, float(p.get("vento", 0.0)))
 	var barriga: float = corpo.get("barriga", 0.0)
 	if barriga > 0.0:
 		_circ(c, Vector2(6 + 6 * barriga, -22), 16 + 10 * barriga, d["roupa"])
@@ -294,7 +342,9 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 		_braco(c, d, ombro_f, p["mao_f"], roupa, p["punho_grande"])
 		_cont = false
 	_braco(c, d, ombro_f, p["mao_f"], roupa, p["punho_grande"])
+	_prop_ang = p.get("prop_ang", 0.0)
 	_prop_mao(c, p.get("prop", ""), p["mao_f"])
+	_prop_ang = 0.0
 	if not _cont and pele.a > 0.0:
 		pass
 
@@ -337,7 +387,31 @@ static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, mao: Vector2, c
 		c.draw_circle(mao + Vector2(1.5, -1.5), r - 2.5, pele)
 
 
-static func _tronco(c: CanvasItem, d: Dictionary) -> void:
+## Arco de movimento (smear) entre onde o golpe saiu e onde chegou.
+static func _rastro(c: CanvasItem, ate: Vector2, de: Vector2) -> void:
+	var meio := (ate + de) / 2.0 + (ate - de).orthogonal().normalized() * -22.0
+	var pts := PackedVector2Array()
+	for i in 9:
+		var k := i / 8.0
+		pts.append(de.lerp(meio, k).lerp(meio.lerp(ate, k), k))
+	for i in pts.size() - 1:
+		var k := float(i) / (pts.size() - 1)
+		c.draw_line(pts[i], pts[i + 1], Color(1, 1, 1, 0.15 + 0.55 * k), 4.0 + 14.0 * k)
+
+
+## Barra da toga (Xandão) ou aba do paletó (Trump) balançando atrás do corpo.
+static func _cauda(c: CanvasItem, d: Dictionary, quadril: Vector2, inclina: float, vento: float) -> void:
+	var toga: bool = d["extra"] == "toga"
+	var cor: Color = (d["roupa"] as Color).darkened(0.35)
+	var topo := quadril + Vector2(-20, -40).rotated(inclina)
+	var balanco := clampf(-vento * 8.0, -10.0, 10.0) + sin(Time.get_ticks_msec() * 0.004) * 3.0
+	var baixo := 34.0 if toga else 6.0
+	# quadrilátero simples: cola nas costas e a ponta de baixo balança para trás
+	var pts := PackedVector2Array([topo, topo + Vector2(14, 0), quadril + Vector2(-6, baixo), quadril + Vector2(-38 + balanco, baixo + 4)])
+	_poli(c, pts, cor)
+
+
+static func _tronco(c: CanvasItem, d: Dictionary, vento: float = 0.0) -> void:
 	var roupa: Color = d["roupa"]
 	var extra: String = d["extra"]
 	var paleto := PackedVector2Array([Vector2(-27, -60), Vector2(27, -60), Vector2(24, 2), Vector2(-24, 2)])
@@ -358,7 +432,8 @@ static func _tronco(c: CanvasItem, d: Dictionary) -> void:
 	var gravata: Color = d["gravata"]
 	if gravata.a > 0.0 and extra != "toga":
 		var ponta := 6.0 if extra == "eua" else -15.0  # a gravata comprida do Trump
-		c.draw_colored_polygon(PackedVector2Array([Vector2(-4, -57), Vector2(4, -57), Vector2(7, ponta - 9), Vector2(0, ponta), Vector2(-7, ponta - 9)]), gravata)
+		var bal := clampf(-vento * 5.0, -8.0, 8.0)  # a ponta da gravata balança
+		c.draw_colored_polygon(PackedVector2Array([Vector2(-4, -57), Vector2(4, -57), Vector2(7 + bal, ponta - 9), Vector2(bal, ponta), Vector2(-7 + bal, ponta - 9)]), gravata)
 		c.draw_line(Vector2(2, -54), Vector2(4, -26), gravata.lightened(0.3), 2.0)
 	match extra:
 		"faixa":
@@ -379,8 +454,10 @@ static func _tronco(c: CanvasItem, d: Dictionary) -> void:
 			c.draw_colored_polygon(PackedVector2Array([Vector2(-9, -60), Vector2(9, -60), Vector2(0, -44)]), d["pele"])
 			c.draw_rect(Rect2(-27, -60, 8, 22), d["camisa"])
 			c.draw_rect(Rect2(19, -60, 8, 22), d["camisa"])
-			c.draw_colored_polygon(PackedVector2Array([Vector2(8, -30), Vector2(18, -30), Vector2(18, -20), Vector2(13, -16), Vector2(8, -20)]), d["camisa"])
-			c.draw_circle(Vector2(13, -24), 2.5, Color("2a4f9a"))
+			# escudo azul com estrelas e a barra verde na barra da camisa
+			c.draw_colored_polygon(PackedVector2Array([Vector2(8, -30), Vector2(18, -30), Vector2(18, -20), Vector2(13, -16), Vector2(8, -20)]), Color("2a4f9a"))
+			c.draw_circle(Vector2(13, -25), 2.0, Color("ffd23f"))
+			c.draw_rect(Rect2(-27, -4, 54, 5), d["camisa"])
 		"militar":
 			c.draw_colored_polygon(PackedVector2Array([Vector2(-12, -60), Vector2(12, -60), Vector2(6, -14), Vector2(-6, -14)]), d["camisa"])
 			c.draw_rect(Rect2(-24, -6, 48, 6), Color("2a2a1a"))
@@ -427,6 +504,12 @@ static func _tronco(c: CanvasItem, d: Dictionary) -> void:
 
 
 static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: Dictionary) -> void:
+	if _silhueta.a > 0.0:
+		var giro: float = p.get("cabeca_giro", 0.0)
+		c.draw_set_transform_matrix(_mat_tronco * Transform2D(giro, centro + Vector2(0, r * 1.0)))
+		c.draw_circle(Vector2(0, -r * 1.1), r * 1.05, _silhueta)
+		c.draw_set_transform_matrix(_mat_tronco)
+		return
 	if d.has("foto") and textura(d["foto"] + "_cabeca") != null:
 		if not _cont:
 			_cabeca_foto(c, d, centro, r, p)
@@ -554,7 +637,15 @@ static func _cabeca_foto(c: CanvasItem, d: Dictionary, centro: Vector2, r: float
 	c.draw_set_transform_matrix(_mat_tronco * Transform2D(giro, pescoco + desl))
 	c.draw_texture_rect_region(tex, Rect2(-w / 2.0 + r * 0.06, -h, w, h), Rect2(quadro * fw, 0, fw, fh))
 	var topo := Vector2(0, -h)
+	if d.get("id", "") == "trump" and not retrato:
+		_topete(c, topo, h, float(p.get("vento", 0.0)), float(p.get("cabelo_estica", 0.0)), int(p.get("t", 0)))
 	match p.get("chapeu", ""):
+		"capacete":
+			_cont = true
+			_poli(c, _arco_cheio(topo + Vector2(0, h * 0.32), h * 0.36, PI, TAU, h * 0.2), Color("2a2230"))
+			_cont = false
+			c.draw_colored_polygon(_arco_cheio(topo + Vector2(0, h * 0.32), h * 0.36, PI, TAU, h * 0.2), Color("1f9d55"))
+			c.draw_rect(Rect2(topo + Vector2(-h * 0.36, h * 0.3), Vector2(h * 0.72, 5)), Color("ffd23f"))
 		"boina":
 			_cont = true
 			_poli(c, PackedVector2Array([topo + Vector2(-30, 16), topo + Vector2(26, 6), topo + Vector2(30, 16), topo + Vector2(-26, 26)]), Color("3d4a22"))
@@ -567,6 +658,36 @@ static func _cabeca_foto(c: CanvasItem, d: Dictionary, centro: Vector2, r: float
 			var a := t + k * TAU / 3.0
 			_estrela(c, Vector2(cos(a) * r * 1.2, -h - 6 + sin(a) * r * 0.3), 7.0, Color("ffd23f"))
 	c.draw_set_transform_matrix(_mat_tronco)
+
+
+## Topete loiro do Trump: balança com o vento e vira chicote no Hair Attack.
+static func _topete(c: CanvasItem, topo: Vector2, h: float, vento: float, estica: float, t: int) -> void:
+	var cor := Color("f0cf80")
+	var escuro := Color("c9a050")
+	var bal := -vento * 6.0 + sin(t * 0.12) * 2.0
+	var base := topo + Vector2(-h * 0.05, h * 0.16)
+	var ponta := base + Vector2(h * 0.42 + bal, -h * 0.06 - absf(bal) * 0.3)
+	if estica > 0.0:
+		# o cabelo cresce em ondas até onde está a caixa do golpe
+		var pts := PackedVector2Array()
+		var n := 12
+		var comp := h * (0.5 + estica * 3.6)
+		for i in n + 1:
+			var k := float(i) / n
+			pts.append(base + Vector2(comp * k, -sin(k * PI * 2.0 + t * 0.6) * 10.0 * k - 6.0 * k))
+		for i in n + 1:
+			var k := 1.0 - float(i) / n
+			pts.append(base + Vector2(comp * k, -sin(k * PI * 2.0 + t * 0.6) * 10.0 * k + 12.0 - 8.0 * k))
+		for o in [Vector2(2, 2), Vector2(-2, -2)]:
+			var m := PackedVector2Array()
+			for q in pts:
+				m.append(q + o)
+			c.draw_colored_polygon(m, CONTORNO)
+		c.draw_colored_polygon(pts, cor)
+		return
+	var tufo := PackedVector2Array([base + Vector2(-h * 0.1, 4), base + Vector2(h * 0.12, -h * 0.1), ponta, base + Vector2(h * 0.3, h * 0.05)])
+	c.draw_colored_polygon(tufo, cor)
+	c.draw_line(base + Vector2(0, -2), ponta + Vector2(-8, 2), escuro, 2.0)
 
 
 static func _arco_cheio(centro: Vector2, r: float, de: float, ate: float, espessura: float) -> PackedVector2Array:
@@ -590,6 +711,11 @@ static func _estrela(c: CanvasItem, centro: Vector2, r: float, cor: Color) -> vo
 
 
 static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
+	if prop == "" or _silhueta.a > 0.0:
+		return
+	if prop in ["picanha_gigante", "fuzil", "frasco", "caneta", "carimbo", "L", "espeto_cheio"]:
+		Arte.prop(c, prop, mao, _prop_ang)
+		return
 	match prop:
 		"martelo":
 			_martelo(c, mao)
@@ -788,6 +914,8 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 			if not _cont:
 				for i in 4:
 					c.draw_arc(Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
+		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao":
+			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))
 			if not _cont:
@@ -820,6 +948,12 @@ static func _textura_ceu() -> ImageTexture:
 
 
 static func cenario(c: CanvasItem, t: float) -> void:
+	cenario_fundo(c)
+	cenario_vivo(c, t, 0.3)
+	cenario_frente(c)
+
+
+static func cenario_fundo(c: CanvasItem) -> void:
 	c.draw_texture_rect(_textura_ceu(), Rect2(0, 0, 1280, 720), false)
 	# sol retrô com faixas
 	var sol := Vector2(1010, 395)
@@ -827,18 +961,23 @@ static func cenario(c: CanvasItem, t: float) -> void:
 	c.draw_circle(sol, 80, Color("fff1c2"))
 	for i in 5:
 		c.draw_rect(Rect2(sol.x - 100, sol.y + 8 + i * 16, 200, 4 + i), Color("f08c48"))
-	# nuvens
+	_cidade(c)
+	_van(c, Vector2(1080, 498))
+
+
+static func cenario_vivo(c: CanvasItem, t: float, agito: float) -> void:
 	for i in 3:
 		var x := fposmod(t * (6.0 + i * 3.0) + i * 470.0, 1600.0) - 160.0
 		var y := 80.0 + i * 60.0
 		for j in 4:
 			c.draw_circle(Vector2(x + j * 30, y - (14 if j in [1, 2] else 0)), 24, Color("f7c7b0") if i < 2 else Color("ffe0c0"))
 		c.draw_rect(Rect2(x - 20, y, 130, 16), Color("f7c7b0") if i < 2 else Color("ffe0c0"))
-	_cidade(c)
 	_pato(c, Vector2(170, 470), t)
-	_van(c, Vector2(1080, 498))
 	_bandeiras(c, t)
-	_plateia(c, t)
+	_plateia(c, t, agito)
+
+
+static func cenario_frente(c: CanvasItem) -> void:
 	_grade(c)
 	_chao(c)
 
@@ -935,13 +1074,13 @@ static func _bandeiras(c: CanvasItem, t: float) -> void:
 const CARTAZES := ["FAZ O L", "TÁ OK?", "MITO!", "INELEGÍVEL", "PICANHA JÁ", "CADÊ O PIX?", "DOBRA A META", "ABESTADO", "#FORA TODOS", "EU AVISEI"]
 
 
-static func _plateia(c: CanvasItem, t: float) -> void:
+static func _plateia(c: CanvasItem, t: float, agito := 0.3) -> void:
 	var camisas := [Color("ffd23f"), Color("1f9d55"), Color("d62828"), Color("f2f2f2"), Color("2a4fa8"), Color("ff7a2f")]
 	var peles := [Color("f0c8a0"), Color("c88a5c"), Color("8a5a3a"), Color("e3a983"), Color("5c3a24")]
 	var cabelos := [Color("2a1c14"), Color("6b3f22"), Color("c9c9c9"), Color("1a1a1a"), Color("a0522d")]
 	for i in 13:
 		var x := 60.0 + i * 96.0 + (i % 2) * 14.0
-		var pulo := absf(sin(t * (4.0 + (i % 3)) + i * 1.7)) * 10.0
+		var pulo := absf(sin(t * (4.0 + (i % 3)) + i * 1.7)) * (6.0 + 16.0 * agito)
 		var base := Vector2(x, 548 - pulo)
 		var camisa: Color = camisas[(i * 7) % camisas.size()]
 		var pele: Color = peles[(i * 3) % peles.size()]

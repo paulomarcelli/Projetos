@@ -32,9 +32,10 @@ CAIXAS = {
     "bolsonaro": {"caixa": (70, 18, 268, 262), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (60, 48, 44), "bravo": True},
     "xandao": {"caixa": (135, 40, 352, 300), "barba": False, "oculos": False, "sobr": 2, "sobr_cor": (52, 34, 30), "bravo": True},
     "trump": {"caixa": (252, 12, 500, 332), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (196, 150, 90)},
-    # caricatura: dentes da frente grandes e cabelo em cuia com franja reta
-    "eduarda": {"caixa": (185, 0, 565, 395), "barba": False, "oculos": True, "sobr": 1, "sobr_cor": (70, 46, 36),
-                "dentes": True, "franja": True, "oculos_cor": (236, 206, 200)},
+    # caricatura (referência do boneco abridor de garrafas): cabelo escuro liso até o ombro,
+    # óculos de armação transparente e a risada escancarada com uma fileira de dentes grandes
+    "eduarda": {"caixa": (185, 0, 565, 410), "barba": False, "oculos": True, "sobr": 1, "sobr_cor": (40, 28, 26),
+                "risada": True, "cabelo_escuro": (34, 24, 24), "oculos_cor": (226, 228, 234)},
 }
 
 TRACO = (36, 16, 20, 255)
@@ -162,7 +163,7 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
     cor_barba = r.cor_media((boca[0], boca[1] + 2 * r.u), 1) if info["barba"] else None
 
     # 1) olhos e sobrancelhas: da foto (nítidos) quando abertos; senão, apaga e redesenha
-    olhos_foto = expr in ("neutro", "esforco", "grito")
+    olhos_foto = expr in ("neutro", "esforco", "grito") and not info.get("risada")
     sobr_foto = expr in ("neutro", "piscar", "feliz")
     u = r.u
     for c in (oe, od):
@@ -176,6 +177,33 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
         else:
             r.apagar(c, lo + 1, 1, r.pele)
     r.apagar(boca, lb, 1, cor_barba or r.pele)
+
+    # 1a) cabelo liso escuro em formato de chanel: repartido no meio, testa aparecendo,
+    # e duas cortinas dos lados do rosto até embaixo (desenhado por cima da foto)
+    if info.get("cabelo_escuro"):
+        escuro = info["cabelo_escuro"] + (255,)
+        brilho = tuple(min(255, v + 30) for v in info["cabelo_escuro"]) + (255,)
+        cx = (oe[0] + od[0]) / 2.0
+        testa = r.dist * r.u * 0.55      # meia largura da testa que aparece
+        lado = r.dist * r.u * 0.98       # a partir daqui é só cabelo (cortinas)
+        sob_y = min(se[1], sd[1])
+        for y in range(r.im.height):
+            for x in range(r.im.width):
+                c = r.px[x, y]
+                if c[3] == 0:
+                    continue
+                dx = abs(x - cx)
+                k = min(1.0, dx / testa)
+                linha_cabelo = sob_y - 4 * r.u + k * k * 3 * r.u  # mais alta no meio (risca)
+                cabelo = dx > lado or (dx > testa and y < sob_y + 2 * r.u) or y < linha_cabelo
+                if cabelo:
+                    fio = (x // r.u) % 5 == 0 and y < sob_y
+                    r.px[x, y] = brilho if fio else escuro
+        # a risca no meio
+        for y in range(0, int(sob_y - 4 * r.u)):
+            x = int(cx)
+            if 0 <= x < r.im.width and r.px[x, y][3] > 0:
+                r.px[x, y] = r.pele
 
     # 1b) franja reta (cabelo em cuia): do topo até logo acima das sobrancelhas
     if info.get("franja"):
@@ -223,8 +251,11 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
             r.linha(c, [(-lo, -1), (0, 0), (lo, -1)] + [(i, 0) for i in range(-lo + 1, lo)], TRACO)
         elif expr == "nocaute":
             r.linha(c, [(-1, -1), (1, 1), (0, 0), (-1, 1), (1, -1)], TRACO)
-        elif expr == "feliz":
+        elif expr == "feliz" or (info.get("risada") and expr in ("neutro", "grito")):
+            # olhos fechados de tanto rir (arco para cima)
             r.linha(c, [(-lo, 0), (lo, 0)] + [(i, -1) for i in range(-lo + 1, lo)], TRACO)
+        elif expr == "esforco" and info.get("risada"):
+            r.linha(c, [(i, 0) for i in range(-lo, lo + 1)], TRACO)
         elif expr == "derrota":
             r.linha(c, [(i, 0) for i in range(-lo, lo + 1)], TRACO)
     if expr == "derrota":
@@ -240,7 +271,19 @@ def desenhar(r: Rosto, expr: str, info: dict) -> None:
         r.linha(meio, [(0, -1), (-1, -1), (1, -1)], armacao)
 
     # 5) boca
-    if expr in ("neutro", "piscar"):
+    if info.get("risada") and expr in ("neutro", "piscar", "feliz", "grito"):
+        # a risada escancarada: boca aberta, fileira de dentes de cima grandes e língua
+        lr = lb + 1
+        alto = 5 if expr == "grito" else 4
+        for i in range(-lr + 1, lr):
+            for j in range(-1, alto):
+                r.ponto(boca, i, j, BOCA)
+        r.linha(boca, [(i, -1) for i in range(-lr + 1, lr)] + [(i, 0) for i in range(-lr + 2, lr - 1)], BRANCO)
+        r.linha(boca, [(i, 0) for i in range(-lr + 2, lr - 1, 2)], (214, 206, 196, 255))
+        r.linha(boca, [(i, alto - 1) for i in range(-1, 2)], LINGUA)
+        r.linha(boca, [(i, -2) for i in range(-lr + 1, lr)] + [(i, alto) for i in range(-lr + 2, lr - 1)]
+                + [(-lr, j) for j in range(-1, alto)] + [(lr, j) for j in range(-1, alto)], TRACO)
+    elif expr in ("neutro", "piscar"):
         r.linha(boca, [(i, 0) for i in range(-lb + 1, lb)], TRACO)
     elif expr == "esforco":  # dentes cerrados
         r.linha(boca, [(i, -1) for i in range(-lb, lb + 1)] + [(i, 1) for i in range(-lb, lb + 1)], TRACO)

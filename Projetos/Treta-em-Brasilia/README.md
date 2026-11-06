@@ -27,7 +27,7 @@
 | **ARCADE MODE** | enfrente todo o elenco em sequência, uma arena por luta, cada CPU mais difícil |
 | **TRAINING** | contra um boneco parado, com barra infinita, vida que volta e contador de combo |
 | **CHARACTER SELECT** | ficha de cada lutador: biografia, atributos, golpes com os comandos e demonstração animada |
-| **SETTINGS** | volume de música e efeitos, dificuldade, tremor de tela, controles de toque e tempo do round |
+| **SETTINGS** | volume de música e efeitos, dificuldade, tremor de tela, controles de toque, tempo do round e tela cheia |
 
 ## 👊 Combate
 
@@ -113,7 +113,7 @@ Tudo **original e sintetizado** (`ferramentas/sons.py`): 45 efeitos (socos, chut
 
 Controle: direcional, X soco, A chute, B especial, Y provocar, **RB super**, LB agarrar.
 
-**Celular e tablet:** direcional à esquerda; SOCO, CHUTE, ESPECIAL, AGARRA e o botão **SUPER** grande à direita; pausa no meio da tela. Aceita vários dedos ao mesmo tempo.
+**Celular e tablet:** direcional à esquerda; SOCO, CHUTE, ESPECIAL, AGARRA e o botão **SUPER** grande à direita; pausa no meio da tela. Aceita vários dedos ao mesmo tempo. No primeiro toque o jogo entra em **tela cheia** e trava na horizontal (no iPhone o Safari não permite tela cheia; use "Adicionar à Tela de Início").
 
 ## 🖼️ Telas
 
@@ -130,7 +130,7 @@ Controle: direcional, X soco, A chute, B especial, Y provocar, **RB super**, LB 
 
 ## 🎨 Visual 16 bits
 
-Não há imagens prontas além das cabeças: tudo é desenhado em código. O jogo pensa em 1280×720 e desenha numa tela de **480×270** ampliada sem suavização, com contorno escuro, sombreado, céu pontilhado (dithering) e a fonte pixelada **Press Start 2P** (OFL, em `fontes/`). Para rodar bem em aparelhos modestos, o fundo e o chão das arenas são desenhados uma vez só e a plateia é atualizada 30 vezes por segundo.
+Não há imagens prontas além das cabeças: tudo é desenhado em código. O jogo pensa em 1280×720 e desenha numa tela de **480×270** ampliada sem suavização, com contorno escuro, sombreado, céu pontilhado (dithering) e a fonte pixelada **Press Start 2P** (OFL, em `fontes/`). Para rodar bem em aparelhos modestos, cenário, plateia e controles de toque viram textura (atualizada só quando muda) e cada lutador é enviado à placa de vídeo num único lote de triângulos (`scripts/lote.gd`): a luta inteira cabe em ~35–55 chamadas de desenho por quadro.
 
 ## ▶️ Como rodar
 

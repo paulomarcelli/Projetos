@@ -15,6 +15,7 @@ var _cd := 0
 var _defende := 0
 var _avaliou_ameaca := false
 var _defesas_seguidas := 0
+var _reacao := 0  # quadros até reagir a uma ameaça (tempo de reação humano)
 
 
 func _init(nivel_: float = 0.55) -> void:
@@ -56,7 +57,7 @@ func ler() -> Dictionary:
 	var dist := absf(op.position.x - eu.position.x)
 
 	# combo: se o golpe conectou, continua (mais provável em níveis altos)
-	if eu.estado == Lutador.E.ATACANDO and eu.conectou and randf() < nivel * 0.5:
+	if eu.estado == Lutador.E.ATACANDO and eu.conectou and randf() < nivel * 0.3:
 		match eu.golpe_nome:
 			"soco":
 				_empilhar([{}, {"soco": true}])
@@ -74,7 +75,7 @@ func ler() -> Dictionary:
 			return _traduzir(_fila.pop_front())
 
 	# rival desequilibrado (defesa perfeita): pune
-	if op.estado == Lutador.E.DESEQUILIBRADO and dist < 200.0 and eu.pode_agir():
+	if op.estado == Lutador.E.DESEQUILIBRADO and dist < 200.0 and eu.pode_agir() and randf() < nivel:
 		_empilhar([{"frente": true, "soco": true}, {}, {}, {}, {}, {}, {}, {}, {}, {"chute": true}])
 		return _traduzir(_fila.pop_front())
 
@@ -82,17 +83,22 @@ func ler() -> Dictionary:
 	var ameaca := (op.esta_atacando() and dist < 300.0) or perigo
 	if ameaca and not _avaliou_ameaca:
 		_avaliou_ameaca = true
-		if randf() < nivel * 0.85:
-			_defende = 20
+		# tempo de reação: de ~0,35 s (fácil) a ~0,13 s (difícil); golpes rápidos passam
+		_reacao = int(lerpf(21.0, 8.0, nivel)) + randi_range(0, 4)
+		if randf() < nivel * 0.7:
+			_defende = 18
 			_defesas_seguidas += 1
-			# defesa perfeita: espera o golpe chegar e só então segura para trás
-			if randf() < nivel * 0.35 and op.esta_atacando() and op.quadro < int(op.golpe.get("inicio", 0)) - 2:
-				var espera := int(op.golpe.get("inicio", 0)) - op.quadro - 3
-				for i in maxi(espera, 0):
-					_fila.append({})
-				_defende = 16
+			# defesa perfeita só no difícil, e raramente
+			if nivel > 0.5 and randf() < (nivel - 0.5) * 0.4 and op.esta_atacando() and op.quadro < int(op.golpe.get("inicio", 0)) - 2:
+				_reacao = maxi(int(op.golpe.get("inicio", 0)) - op.quadro - 3, 0)
+		else:
+			_defende = 0
 	if not ameaca:
 		_avaliou_ameaca = false
+	if _reacao > 0:
+		_reacao -= 1
+		if _defende > 0:
+			return _vazio() if _fila.is_empty() else _traduzir(_fila.pop_front())
 	if _defende > 0 and (eu.pode_agir() or eu.estado == Lutador.E.DEFENDENDO):
 		_defende -= 1
 		var d := _vazio()
@@ -102,7 +108,7 @@ func ler() -> Dictionary:
 
 	# 2) antiaéreo
 	if op.estado == Lutador.E.PULANDO and dist < 200.0 and op.vel.y > -4.0 and eu.pode_agir() and _cd <= 0:
-		if randf() < nivel * 0.6 and not eu.recargas.has("cima"):
+		if randf() < nivel * 0.35 and not eu.recargas.has("cima"):
 			_cd = 30
 			return _traduzir({"cima": true, "especial": true})
 
@@ -115,9 +121,9 @@ func ler() -> Dictionary:
 		return _vazio()
 
 	# Ultimate e Super
-	if eu.barra >= 100.0 and op.no_chao() and op.estado not in [Lutador.E.CAIDO, Lutador.E.LEVANTANDO] and randf() < 0.02 + nivel * 0.03:
+	if eu.barra >= 100.0 and op.no_chao() and op.estado not in [Lutador.E.CAIDO, Lutador.E.LEVANTANDO] and randf() < 0.004 + nivel * 0.012:
 		return _traduzir({"super": true})
-	if eu.barra >= 50.0 and eu.barra < 100.0 and randf() < 0.008 + nivel * 0.01:
+	if eu.barra >= 50.0 and eu.barra < 100.0 and randf() < 0.002 + nivel * 0.006:
 		return _traduzir({"super": true, "tras": eu.barra >= 100.0})
 
 	# provoca de vez em quando, de longe
@@ -148,7 +154,11 @@ func _pode(slot: String) -> bool:
 
 
 func _escolher_plano(dist: float) -> void:
-	_t = randi_range(12, 30) - int(nivel * 8)
+	# quanto mais fácil, mais tempo parada pensando e menos agressiva
+	_t = randi_range(18, 40) - int(nivel * 12)
+	if randf() > 0.35 + nivel * 0.6:
+		_t += randi_range(10, 30)
+		return
 	var opcoes: Dictionary
 	if dist > 450.0:
 		opcoes = {"projetil": 0.3, "dash": 0.22, "andar": 0.25, "baixo": 0.1, "pular": 0.05, "esperar": 0.08}

@@ -14,6 +14,59 @@ const BRANCO := Color("fbfbf7")
 const SOMBRA := Color(0, 0, 0, 0.32)
 
 static var _cont := false
+## Lote de triângulos do boneco (lote.gd): enquanto existe, as formas vão para ele em vez de virar
+## uma chamada de desenho cada. usar_lote = false volta ao desenho direto.
+static var usar_lote := true
+static var _lote: Lote = null
+
+
+static func _dl(c: CanvasItem, a: Vector2, b: Vector2, cor: Color, w: float = -1.0) -> void:
+	if _lote != null:
+		_lote.linha(a, b, cor, w if w > 0.0 else 1.0)
+	else:
+		c.draw_line(a, b, cor, w)
+
+
+static func _dc(c: CanvasItem, pos: Vector2, r: float, cor: Color) -> void:
+	if _lote != null:
+		_lote.circulo(pos, r, cor)
+	else:
+		c.draw_circle(pos, r, cor)
+
+
+static func _dp(c: CanvasItem, pts: PackedVector2Array, cor: Color) -> void:
+	if _lote != null:
+		_lote.poligono(pts, cor)
+	else:
+		c.draw_colored_polygon(pts, cor)
+
+
+static func _dr(c: CanvasItem, r: Rect2, cor: Color, cheio: bool = true, w: float = -1.0) -> void:
+	if _lote != null:
+		if cheio:
+			_lote.retangulo(r, cor)
+		else:
+			var e := maxf(w, 1.0)
+			_lote.retangulo(Rect2(r.position, Vector2(r.size.x, e)), cor)
+			_lote.retangulo(Rect2(r.position + Vector2(0, r.size.y - e), Vector2(r.size.x, e)), cor)
+			_lote.retangulo(Rect2(r.position, Vector2(e, r.size.y)), cor)
+			_lote.retangulo(Rect2(r.position + Vector2(r.size.x - e, 0), Vector2(e, r.size.y)), cor)
+	else:
+		c.draw_rect(r, cor, cheio, w)
+
+
+static func _da(c: CanvasItem, centro: Vector2, r: float, de: float, ate: float, n: int, cor: Color, w: float = -1.0) -> void:
+	if _lote != null:
+		_lote.arco(centro, r, de, ate, n, cor, w if w > 0.0 else 1.0)
+	else:
+		c.draw_arc(centro, r, de, ate, n, cor, w)
+
+
+static func _dm(c: CanvasItem, m: Transform2D) -> void:
+	if _lote != null:
+		_lote.xf = m
+	else:
+		c.draw_set_transform_matrix(m)
 ## Cor única (rastro de velocidade): quando a.a > 0, tudo sai nessa cor, só a silhueta.
 static var _silhueta := Color(0, 0, 0, 0)
 ## Transformação de quem chamou (posição/escala do boneco na tela); as partes se compõem com ela.
@@ -231,11 +284,11 @@ static func _cor(cor: Color) -> Color:
 
 
 static func _lin(c: CanvasItem, a: Vector2, b: Vector2, cor: Color, w: float) -> void:
-	c.draw_line(a, b, _cor(cor), w + (6.0 if _cont else 0.0))
+	_dl(c, a, b, _cor(cor), w + (6.0 if _cont else 0.0))
 
 
 static func _circ(c: CanvasItem, pos: Vector2, r: float, cor: Color) -> void:
-	c.draw_circle(pos, r + (3.0 if _cont else 0.0), _cor(cor))
+	_dc(c, pos, r + (3.0 if _cont else 0.0), _cor(cor))
 
 
 static func _poli(c: CanvasItem, pts: PackedVector2Array, cor: Color) -> void:
@@ -244,17 +297,17 @@ static func _poli(c: CanvasItem, pts: PackedVector2Array, cor: Color) -> void:
 			var m := PackedVector2Array()
 			for q in pts:
 				m.append(q + o)
-			c.draw_colored_polygon(m, _cor(cor))
+			_dp(c, m, _cor(cor))
 	else:
-		c.draw_colored_polygon(pts, cor)
+		_dp(c, pts, cor)
 
 
 static func _ret(c: CanvasItem, r: Rect2, cor: Color) -> void:
-	c.draw_rect(r.grow(3.0 if _cont else 0.0), _cor(cor))
+	_dr(c, r.grow(3.0 if _cont else 0.0), _cor(cor))
 
 
 static func _arco(c: CanvasItem, centro: Vector2, r: float, de: float, ate: float, cor: Color, w: float) -> void:
-	c.draw_arc(centro, r, de, ate, 20, _cor(cor), w + (6.0 if _cont else 0.0))
+	_da(c, centro, r, de, ate, 20, _cor(cor), w + (6.0 if _cont else 0.0))
 
 
 # ---------------------------------------------------------------- lutador
@@ -262,13 +315,25 @@ static func _arco(c: CanvasItem, centro: Vector2, r: float, de: float, ate: floa
 ## Desenha o lutador em pos, com escala (negativa em x = olhando para a esquerda).
 static func lutador_em(c: CanvasItem, d: Dictionary, p: Dictionary, pos: Vector2, escala: Vector2) -> void:
 	_base = Transform2D(0.0, escala, 0.0, pos)
-	c.draw_set_transform_matrix(_base)
+	_dm(c, _base)
 	lutador(c, d, p)
 	_base = Transform2D.IDENTITY
-	c.draw_set_transform_matrix(_base)
+	_dm(c, _base)
 
 
 static func lutador(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
+	if usar_lote and _lote == null:
+		_lote = Lote.new()
+		_lote.xf = _base
+		_lutador(c, d, p)
+		_lote.despejar(c)
+		_lote = null
+		c.draw_set_transform_matrix(_base)
+		return
+	_lutador(c, d, p)
+
+
+static func _lutador(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	if p.has("veiculo"):
 		veiculo(c, p["veiculo"], int(p.get("t", 0)))
 	if p.get("churrasqueira", false):
@@ -277,7 +342,7 @@ static func lutador(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 		var t := int(p.get("t", 0))
 		for i in 3:
 			var r := 110.0 + i * 26.0 + sin(t * 0.3 + i) * 8.0
-			c.draw_arc(Vector2(0, -110), r, 0, TAU, 28, Color(1, 0.85, 0.3, 0.25 - i * 0.06), 8.0)
+			_da(c, Vector2(0, -110), r, 0, TAU, 28, Color(1, 0.85, 0.3, 0.25 - i * 0.06), 8.0)
 	_cont = true
 	_corpo(c, d, p)
 	_cont = false
@@ -286,23 +351,29 @@ static func lutador(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	if p.get("tonto", false) or p.get("cadeado", false) or p.get("baloes", false) or p.has("letra"):
 		_extras_cabeca(c, d, p)
 	if p.get("censura", false) and _silhueta.a == 0.0:
-		c.draw_set_transform_matrix(_base * Transform2D(p["inclina"], Vector2(0, p["quadril"])))
+		_dm(c, _base * Transform2D(p["inclina"], Vector2(0, p["quadril"])))
 		Arte.censura(c, Vector2(4, -140) + p.get("cabeca_desl", Vector2.ZERO), int(p.get("t", 0)))
-		c.draw_set_transform_matrix(_base)
+		_dm(c, _base)
 
 
 ## Rastro de velocidade: só a silhueta do boneco, numa cor translúcida.
 static func silhueta(c: CanvasItem, d: Dictionary, p: Dictionary, pos: Vector2, escala: Vector2, rot: float, cor: Color) -> void:
 	_base = Transform2D(rot, escala, 0.0, pos)
-	c.draw_set_transform_matrix(_base)
+	_dm(c, _base)
 	_silhueta = cor
 	_cont = true
+	if usar_lote:
+		_lote = Lote.new()
+		_lote.xf = _base
 	_corpo(c, d, p)
+	if _lote != null:
+		_lote.despejar(c)
+		_lote = null
 	_cont = false
 	_silhueta = Color(0, 0, 0, 0)
 	_mat_tronco = Transform2D.IDENTITY
 	_base = Transform2D.IDENTITY
-	c.draw_set_transform_matrix(_base)
+	_dm(c, _base)
 
 
 ## Estrelas de tontura, cadeado do bloqueio, balões de fala e a letra da dança, acima da cabeça.
@@ -320,10 +391,10 @@ static func _extras_cabeca(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 			var fase := fposmod(t * 0.04 + k / 3.0, 1.0)
 			var pos := topo + Vector2(60 + fase * 120.0, 40 - fase * 60.0 + k * 20)
 			var cor := Color(1, 1, 1, 1.0 - fase)
-			c.draw_rect(Rect2(pos - Vector2(26, 14), Vector2(52, 28)), Color(0.08, 0.05, 0.12, cor.a))
-			c.draw_rect(Rect2(pos - Vector2(23, 11), Vector2(46, 22)), cor)
+			_dr(c, Rect2(pos - Vector2(26, 14), Vector2(52, 28)), Color(0.08, 0.05, 0.12, cor.a))
+			_dr(c, Rect2(pos - Vector2(23, 11), Vector2(46, 22)), cor)
 			for j in 3:
-				c.draw_circle(pos + Vector2(-12 + j * 12, 0), 3.0, Color(0.1, 0.1, 0.1, cor.a))
+				_dc(c, pos + Vector2(-12 + j * 12, 0), 3.0, Color(0.1, 0.1, 0.1, cor.a))
 	if p.has("letra"):
 		texto(c, topo + Vector2(0, -40), p["letra"], 40, Color("ffd23f"), PRETO, 8)
 
@@ -376,16 +447,16 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	_perna(c, d, quadril + Vector2(8, 0), perna_f[0], perna_f[1], false)
 
 	_mat_tronco = _base * Transform2D(inclina, quadril)
-	c.draw_set_transform_matrix(_mat_tronco * Transform2D(0.0, Vector2(larg, 1.0), 0.0, Vector2.ZERO))
+	_dm(c, _mat_tronco * Transform2D(0.0, Vector2(larg, 1.0), 0.0, Vector2.ZERO))
 	_tronco(c, d, float(corpo.get("barriga", 0.0)), float(p.get("vento", 0.0)))
-	c.draw_set_transform_matrix(_mat_tronco)
+	_dm(c, _mat_tronco)
 	if not _cont:
 		# contorno próprio da cabeça por cima do tronco
 		_cont = true
 		cabeca(c, d, Vector2(0, -96), 32.0, p)
 		_cont = false
 	cabeca(c, d, Vector2(0, -96), 32.0, p)
-	c.draw_set_transform_matrix(_base)
+	_dm(c, _base)
 
 	if not _cont:
 		_cont = true
@@ -408,8 +479,8 @@ static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vecto
 	_lin(c, joelho, pe + Vector2(0, -6), cor, 16.0)
 	if not _cont:
 		# vinco da calça e brilho na canela
-		c.draw_line(quadril.lerp(joelho, 0.15) + Vector2(3, 0), joelho + Vector2(3, 1), cor.lightened(0.14), 3.0)
-		c.draw_line(joelho + Vector2(3, 3), pe + Vector2(3, -12), cor.lightened(0.18), 3.0)
+		_dl(c, quadril.lerp(joelho, 0.15) + Vector2(3, 0), joelho + Vector2(3, 1), cor.lightened(0.14), 3.0)
+		_dl(c, joelho + Vector2(3, 3), pe + Vector2(3, -12), cor.lightened(0.18), 3.0)
 	# sapato apoiado no chão (ou acompanhando a canela quando o pé sobe)
 	var dir_canela := (pe - joelho).normalized()
 	var frente := Vector2(1, 0)
@@ -424,9 +495,9 @@ static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vecto
 	var cor_sapato := Color("2a2230") if d["id"] != "eduarda" else Color("e8e8e8")
 	_poli(c, sapato, cor_sapato)
 	if not _cont:
-		c.draw_line(pe + cima * 7 - frente * 6, pe + cima * 7 + frente * 10, cor_sapato.lightened(0.25), 2.0)
+		_dl(c, pe + cima * 7 - frente * 6, pe + cima * 7 + frente * 10, cor_sapato.lightened(0.25), 2.0)
 		if d["id"] == "eduarda":
-			c.draw_line(pe + cima * 2 - frente * 8, pe + cima * 2 + frente * 16, Color("1f9d55"), 3.0)
+			_dl(c, pe + cima * 2 - frente * 8, pe + cima * 2 + frente * 16, Color("1f9d55"), 3.0)
 
 
 static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vector2, mao: Vector2, de_tras: bool, grande: bool) -> void:
@@ -443,23 +514,23 @@ static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vecto
 	var ante := pele.darkened(0.25 if de_tras else 0.0) if curta else manga
 	_lin(c, cotovelo, mao, ante, 13.0 if curta else (15.0 if not toga else 18.0))
 	if not _cont:
-		c.draw_line(ombro + Vector2(0, -4), cotovelo + Vector2(0, -4), manga.lightened(0.2), 3.0)
+		_dl(c, ombro + Vector2(0, -4), cotovelo + Vector2(0, -4), manga.lightened(0.2), 3.0)
 		if curta:
 			# barra verde da manga
-			c.draw_line(ombro.lerp(cotovelo, 0.72) + (cotovelo - ombro).orthogonal().normalized() * 9, ombro.lerp(cotovelo, 0.72) - (cotovelo - ombro).orthogonal().normalized() * 9, d["camisa"], 5.0)
+			_dl(c, ombro.lerp(cotovelo, 0.72) + (cotovelo - ombro).orthogonal().normalized() * 9, ombro.lerp(cotovelo, 0.72) - (cotovelo - ombro).orthogonal().normalized() * 9, d["camisa"], 5.0)
 		elif toga:
 			# boca larga da manga da toga
 			var dir := (mao - cotovelo).normalized()
-			c.draw_line(mao - dir * 12 + dir.orthogonal() * 12, mao - dir * 12 - dir.orthogonal() * 12, Color("26262e"), 6.0)
+			_dl(c, mao - dir * 12 + dir.orthogonal() * 12, mao - dir * 12 - dir.orthogonal() * 12, Color("26262e"), 6.0)
 		elif extra in ["eua", "faixa_roseta", "faixa", "", "broche", "estrela"]:
 			# punho da camisa aparecendo
 			var dir2 := (mao - cotovelo).normalized()
-			c.draw_line(mao - dir2 * 11 + dir2.orthogonal() * 6, mao - dir2 * 11 - dir2.orthogonal() * 6, d["camisa"], 5.0)
+			_dl(c, mao - dir2 * 11 + dir2.orthogonal() * 6, mao - dir2 * 11 - dir2.orthogonal() * 6, d["camisa"], 5.0)
 	var r := 11.5 if grande else 9.0
 	_circ(c, mao, r, pele.darkened(0.2))
 	if not _cont:
-		c.draw_circle(mao + Vector2(1.5, -1.5), r - 2.5, pele)
-		c.draw_line(mao + Vector2(-r * 0.4, -r * 0.2), mao + Vector2(r * 0.5, -r * 0.2), pele.darkened(0.25), 2.0)
+		_dc(c, mao + Vector2(1.5, -1.5), r - 2.5, pele)
+		_dl(c, mao + Vector2(-r * 0.4, -r * 0.2), mao + Vector2(r * 0.5, -r * 0.2), pele.darkened(0.25), 2.0)
 
 
 ## Arco de movimento (smear) entre onde o golpe saiu e onde chegou: uma faixa curva preenchida
@@ -480,7 +551,7 @@ static func _rastro(c: CanvasItem, ate: Vector2, de: Vector2) -> void:
 	var pts := fora + dentro
 	if Geometry2D.triangulate_polygon(pts).is_empty():
 		return
-	c.draw_colored_polygon(pts, Color(1, 1, 1, 0.38))
+	_dp(c, pts, Color(1, 1, 1, 0.38))
 
 
 ## Tronco no espaço do quadril (y de 0 a -62). barriga 0 a 1 empurra a frente do paletó.
@@ -508,84 +579,84 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 	if _cont:
 		return
 	# sombra das costas e brilho da frente
-	c.draw_colored_polygon(PackedVector2Array([Vector2(-21, -63), Vector2(-11, -63), Vector2(-12, barra), Vector2(-largura_barra + bal, barra + (2.0 if extra == "toga" else 0.0)), Vector2(-23, -12), Vector2(-25, -40), Vector2(-27, -56)]), roupa.darkened(0.28))
-	c.draw_line(Vector2(23 + 3 * b, -52), Vector2(21 + 11 * b, -18), roupa.lightened(0.22), 3.0)
+	_dp(c, PackedVector2Array([Vector2(-21, -63), Vector2(-11, -63), Vector2(-12, barra), Vector2(-largura_barra + bal, barra + (2.0 if extra == "toga" else 0.0)), Vector2(-23, -12), Vector2(-25, -40), Vector2(-27, -56)]), roupa.darkened(0.28))
+	_dl(c, Vector2(23 + 3 * b, -52), Vector2(21 + 11 * b, -18), roupa.lightened(0.22), 3.0)
 	if b > 0.0:
-		c.draw_arc(Vector2(8 + 6 * b, -18), 12 + 6 * b, -0.9, 0.9, 8, roupa.lightened(0.12), 3.0)
+		_da(c, Vector2(8 + 6 * b, -18), 12 + 6 * b, -0.9, 0.9, 8, roupa.lightened(0.12), 3.0)
 	var camisa: Color = d["camisa"]
 	match extra:
 		"toga":
 			# gola branca, cordões vermelhos e a barra balançando
-			c.draw_colored_polygon(PackedVector2Array([Vector2(-12, -63), Vector2(12, -63), Vector2(7, -44), Vector2(0, -40), Vector2(-7, -44)]), BRANCO)
-			c.draw_line(Vector2(0, -40), Vector2(0, barra - 4), Color("34343e"), 2.0)
-			c.draw_line(Vector2(-13, -62), Vector2(-9, barra - 6), Color("c8102e"), 2.5)
-			c.draw_line(Vector2(13, -62), Vector2(9, barra - 6), Color("c8102e"), 2.5)
+			_dp(c, PackedVector2Array([Vector2(-12, -63), Vector2(12, -63), Vector2(7, -44), Vector2(0, -40), Vector2(-7, -44)]), BRANCO)
+			_dl(c, Vector2(0, -40), Vector2(0, barra - 4), Color("34343e"), 2.0)
+			_dl(c, Vector2(-13, -62), Vector2(-9, barra - 6), Color("c8102e"), 2.5)
+			_dl(c, Vector2(13, -62), Vector2(9, barra - 6), Color("c8102e"), 2.5)
 			for k in 3:
 				var x := -24.0 + k * 16.0
-				c.draw_line(Vector2(x, 0), Vector2(x + bal * 0.5, barra - 2), roupa.lightened(0.08), 2.0)
+				_dl(c, Vector2(x, 0), Vector2(x + bal * 0.5, barra - 2), roupa.lightened(0.08), 2.0)
 		"militar":
 			# farda: camisa amarela por dentro, cinto, bolsos, bandeira e divisas
-			c.draw_colored_polygon(PackedVector2Array([Vector2(-11, -63), Vector2(11, -63), Vector2(5, -18), Vector2(-5, -18)]), camisa)
-			c.draw_line(Vector2(-11, -63), Vector2(-4, -20), roupa.darkened(0.4), 2.0)
-			c.draw_line(Vector2(11, -63), Vector2(4, -20), roupa.darkened(0.4), 2.0)
-			c.draw_rect(Rect2(-23, -6, 46 + 8 * b, 7), Color("2a2a1a"))
-			c.draw_rect(Rect2(-3, -6, 7, 7), Color("c9a227"))
-			c.draw_rect(Rect2(-21, -42, 11, 10), roupa.darkened(0.2))
-			c.draw_rect(Rect2(11, -42, 11, 10), roupa.darkened(0.2))
-			c.draw_rect(Rect2(-21, -42, 11, 3), roupa.darkened(0.35))
-			c.draw_rect(Rect2(11, -42, 11, 3), roupa.darkened(0.35))
-			c.draw_rect(Rect2(-24, -57, 10, 7), Color("1f9d55"))
-			c.draw_rect(Rect2(-22, -56, 5, 5), Color("ffd23f"))
+			_dp(c, PackedVector2Array([Vector2(-11, -63), Vector2(11, -63), Vector2(5, -18), Vector2(-5, -18)]), camisa)
+			_dl(c, Vector2(-11, -63), Vector2(-4, -20), roupa.darkened(0.4), 2.0)
+			_dl(c, Vector2(11, -63), Vector2(4, -20), roupa.darkened(0.4), 2.0)
+			_dr(c, Rect2(-23, -6, 46 + 8 * b, 7), Color("2a2a1a"))
+			_dr(c, Rect2(-3, -6, 7, 7), Color("c9a227"))
+			_dr(c, Rect2(-21, -42, 11, 10), roupa.darkened(0.2))
+			_dr(c, Rect2(11, -42, 11, 10), roupa.darkened(0.2))
+			_dr(c, Rect2(-21, -42, 11, 3), roupa.darkened(0.35))
+			_dr(c, Rect2(11, -42, 11, 3), roupa.darkened(0.35))
+			_dr(c, Rect2(-24, -57, 10, 7), Color("1f9d55"))
+			_dr(c, Rect2(-22, -56, 5, 5), Color("ffd23f"))
 			for k in 3:
-				c.draw_rect(Rect2(14 + k * 3, -57, 2, 5), Color("ffd23f"))
+				_dr(c, Rect2(14 + k * 3, -57, 2, 5), Color("ffd23f"))
 		"selecao":
 			# camisa amarela com gola verde em V, escudo e barra verde
-			c.draw_colored_polygon(PackedVector2Array([Vector2(-14, -63), Vector2(14, -63), Vector2(0, -40)]), camisa)
-			c.draw_colored_polygon(PackedVector2Array([Vector2(-9, -63), Vector2(9, -63), Vector2(0, -47)]), d["pele"])
-			c.draw_line(Vector2(-27, -56), Vector2(-21, -63), camisa, 4.0)
-			c.draw_line(Vector2(27, -56), Vector2(21, -63), camisa, 4.0)
-			c.draw_colored_polygon(PackedVector2Array([Vector2(8, -33), Vector2(18, -33), Vector2(18, -23), Vector2(13, -19), Vector2(8, -23)]), Color("2a4f9a"))
-			c.draw_circle(Vector2(13, -28), 2.0, Color("ffd23f"))
-			c.draw_rect(Rect2(-21, -3, 42, 5), camisa)
+			_dp(c, PackedVector2Array([Vector2(-14, -63), Vector2(14, -63), Vector2(0, -40)]), camisa)
+			_dp(c, PackedVector2Array([Vector2(-9, -63), Vector2(9, -63), Vector2(0, -47)]), d["pele"])
+			_dl(c, Vector2(-27, -56), Vector2(-21, -63), camisa, 4.0)
+			_dl(c, Vector2(27, -56), Vector2(21, -63), camisa, 4.0)
+			_dp(c, PackedVector2Array([Vector2(8, -33), Vector2(18, -33), Vector2(18, -23), Vector2(13, -19), Vector2(8, -23)]), Color("2a4f9a"))
+			_dc(c, Vector2(13, -28), 2.0, Color("ffd23f"))
+			_dr(c, Rect2(-21, -3, 42, 5), camisa)
 		_:
 			# paletó: camisa e gravata no V, lapelas, botões e bolso
-			c.draw_colored_polygon(PackedVector2Array([Vector2(-11, -63), Vector2(11, -63), Vector2(0, -26)]), camisa)
+			_dp(c, PackedVector2Array([Vector2(-11, -63), Vector2(11, -63), Vector2(0, -26)]), camisa)
 			var gravata: Color = d["gravata"]
 			if gravata.a > 0.0:
 				var ponta := -6.0 if extra == "eua" else -18.0  # a gravata comprida do Trump, dentro do paletó
 				var balg := clampf(-vento * 4.0, -5.0, 5.0)
-				c.draw_colored_polygon(PackedVector2Array([Vector2(-3, -61), Vector2(3, -61), Vector2(5, -55), Vector2(6 + balg, ponta - 8), Vector2(balg, ponta), Vector2(-6 + balg, ponta - 8), Vector2(-5, -55)]), gravata)
-				c.draw_rect(Rect2(-4, -62, 8, 6), gravata.darkened(0.15))
-				c.draw_line(Vector2(2, -52), Vector2(3 + balg, ponta - 10), gravata.lightened(0.3), 2.0)
-			c.draw_colored_polygon(PackedVector2Array([Vector2(-11, -63), Vector2(-16, -63), Vector2(-3, -24), Vector2(-1, -26)]), roupa.darkened(0.35))
-			c.draw_colored_polygon(PackedVector2Array([Vector2(11, -63), Vector2(16, -63), Vector2(3, -24), Vector2(1, -26)]), roupa.lightened(0.1))
-			c.draw_circle(Vector2(3 + 2 * b, -17), 1.8, roupa.darkened(0.5))
-			c.draw_circle(Vector2(3 + 3 * b, -8), 1.8, roupa.darkened(0.5))
-			c.draw_line(Vector2(10, -30), Vector2(19 + 4 * b, -30), roupa.darkened(0.3), 2.0)
+				_dp(c, PackedVector2Array([Vector2(-3, -61), Vector2(3, -61), Vector2(5, -55), Vector2(6 + balg, ponta - 8), Vector2(balg, ponta), Vector2(-6 + balg, ponta - 8), Vector2(-5, -55)]), gravata)
+				_dr(c, Rect2(-4, -62, 8, 6), gravata.darkened(0.15))
+				_dl(c, Vector2(2, -52), Vector2(3 + balg, ponta - 10), gravata.lightened(0.3), 2.0)
+			_dp(c, PackedVector2Array([Vector2(-11, -63), Vector2(-16, -63), Vector2(-3, -24), Vector2(-1, -26)]), roupa.darkened(0.35))
+			_dp(c, PackedVector2Array([Vector2(11, -63), Vector2(16, -63), Vector2(3, -24), Vector2(1, -26)]), roupa.lightened(0.1))
+			_dc(c, Vector2(3 + 2 * b, -17), 1.8, roupa.darkened(0.5))
+			_dc(c, Vector2(3 + 3 * b, -8), 1.8, roupa.darkened(0.5))
+			_dl(c, Vector2(10, -30), Vector2(19 + 4 * b, -30), roupa.darkened(0.3), 2.0)
 			match extra:
 				"faixa_roseta", "faixa":
 					# faixa presidencial verde e amarela atravessada, com a roseta
-					c.draw_colored_polygon(PackedVector2Array([Vector2(-25, -58), Vector2(-15, -62), Vector2(24 + 10 * b, -6), Vector2(20 + 10 * b, 2), Vector2(14 + 8 * b, 2)]), Color("1f9d55"))
-					c.draw_colored_polygon(PackedVector2Array([Vector2(-21, -60), Vector2(-17, -61), Vector2(22 + 10 * b, -4), Vector2(18 + 10 * b, 0)]), Color("ffd23f"))
-					c.draw_circle(Vector2(14 + 8 * b, -8), 9.0, Color("1f9d55"))
-					c.draw_circle(Vector2(14 + 8 * b, -8), 6.0, Color("ffd23f"))
-					c.draw_circle(Vector2(14 + 8 * b, -8), 2.5, Color("c9a227"))
+					_dp(c, PackedVector2Array([Vector2(-25, -58), Vector2(-15, -62), Vector2(24 + 10 * b, -6), Vector2(20 + 10 * b, 2), Vector2(14 + 8 * b, 2)]), Color("1f9d55"))
+					_dp(c, PackedVector2Array([Vector2(-21, -60), Vector2(-17, -61), Vector2(22 + 10 * b, -4), Vector2(18 + 10 * b, 0)]), Color("ffd23f"))
+					_dc(c, Vector2(14 + 8 * b, -8), 9.0, Color("1f9d55"))
+					_dc(c, Vector2(14 + 8 * b, -8), 6.0, Color("ffd23f"))
+					_dc(c, Vector2(14 + 8 * b, -8), 2.5, Color("c9a227"))
 				"eua":
-					c.draw_rect(Rect2(-19, -50, 8, 6), BRANCO)
-					c.draw_rect(Rect2(-19, -50, 8, 2), Color("c8102e"))
-					c.draw_rect(Rect2(-19, -50, 3, 3), Color("2a3f8f"))
+					_dr(c, Rect2(-19, -50, 8, 6), BRANCO)
+					_dr(c, Rect2(-19, -50, 8, 2), Color("c8102e"))
+					_dr(c, Rect2(-19, -50, 3, 3), Color("2a3f8f"))
 				"estrela":
 					_estrela(c, Vector2(-15, -46), 5.5, Color("e3262f"))
 				"broche":
-					c.draw_rect(Rect2(-17, -50, 7, 5), Color("1f9d55"))
+					_dr(c, Rect2(-17, -50, 7, 5), Color("1f9d55"))
 
 
 static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: Dictionary) -> void:
 	if _silhueta.a > 0.0:
 		var giro: float = p.get("cabeca_giro", 0.0)
-		c.draw_set_transform_matrix(_mat_tronco * Transform2D(giro, centro + Vector2(0, r * 1.0)))
-		c.draw_circle(Vector2(0, -r * 1.1), r * 1.05, _silhueta)
-		c.draw_set_transform_matrix(_mat_tronco)
+		_dm(c, _mat_tronco * Transform2D(giro, centro + Vector2(0, r * 1.0)))
+		_dc(c, Vector2(0, -r * 1.1), r * 1.05, _silhueta)
+		_dm(c, _mat_tronco)
 		return
 	if d.has("foto") and textura(d["foto"] + "_cabeca") != null:
 		if not _cont:
@@ -602,9 +673,9 @@ static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: D
 	_circ(c, centro + Vector2(r * 0.12, r * 0.38), r * 0.72, pele.darkened(0.2))
 	if not _cont:
 		# rosto com sombra do lado de trás (luz vindo da frente)
-		c.draw_circle(centro + Vector2(3, -2), r - 3.0, pele)
-		c.draw_circle(centro + Vector2(r * 0.12 + 3, r * 0.36), r * 0.72 - 3.0, pele)
-		c.draw_circle(centro + Vector2(r * 0.35, -r * 0.55), r * 0.16, pele.lightened(0.2))
+		_dc(c, centro + Vector2(3, -2), r - 3.0, pele)
+		_dc(c, centro + Vector2(r * 0.12 + 3, r * 0.36), r * 0.72 - 3.0, pele)
+		_dc(c, centro + Vector2(r * 0.35, -r * 0.55), r * 0.16, pele.lightened(0.2))
 
 	match estilo:
 		"grisalho":
@@ -613,11 +684,11 @@ static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: D
 		"repartido":
 			_poli(c, _arco_cheio(centro, r * 1.04, PI * 1.02, PI * 2.02, r * 0.62), cabelo)
 			if not _cont:
-				c.draw_line(centro + Vector2(-r * 0.2, -r * 0.98), centro + Vector2(r * 0.05, -r * 0.55), cabelo.lightened(0.3), 2.0)
+				_dl(c, centro + Vector2(-r * 0.2, -r * 0.98), centro + Vector2(r * 0.05, -r * 0.55), cabelo.lightened(0.3), 2.0)
 		"careca":
 			if not _cont:
-				c.draw_arc(centro + Vector2(r * 0.1, -r * 0.1), r * 0.72, PI * 1.25, PI * 1.6, 10, Color(1, 1, 1, 0.5), 4.0)
-				c.draw_circle(centro + Vector2(-r * 0.85, -r * 0.05), r * 0.18, Color("5a4a40"))
+				_da(c, centro + Vector2(r * 0.1, -r * 0.1), r * 0.72, PI * 1.25, PI * 1.6, 10, Color(1, 1, 1, 0.5), 4.0)
+				_dc(c, centro + Vector2(-r * 0.85, -r * 0.05), r * 0.18, Color("5a4a40"))
 		"grisalho_liso":
 			_poli(c, _arco_cheio(centro, r * 1.03, PI * 1.0, PI * 1.98, r * 0.5), cabelo)
 		"curto":
@@ -629,7 +700,7 @@ static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: D
 			var ponta := centro + Vector2(-r * 0.6, -r * 2.1)
 			_poli(c, PackedVector2Array([base_e, base_d, ponta]), Color("2a9df4"))
 			if not _cont:
-				c.draw_colored_polygon(PackedVector2Array([base_e.lerp(ponta, 0.33), base_d.lerp(ponta, 0.33), base_d.lerp(ponta, 0.66), base_e.lerp(ponta, 0.66)]), Color("f2c230"))
+				_dp(c, PackedVector2Array([base_e.lerp(ponta, 0.33), base_d.lerp(ponta, 0.33), base_d.lerp(ponta, 0.66), base_e.lerp(ponta, 0.66)]), Color("f2c230"))
 			_ret(c, Rect2(base_e + Vector2(-2, -4), Vector2(base_d.x - base_e.x + 4, 9)), Color("e63946"))
 			_circ(c, ponta, r * 0.2, Color("e63946"))
 	if d["barba"]:
@@ -644,52 +715,52 @@ static func cabeca(c: CanvasItem, d: Dictionary, centro: Vector2, r: float, p: D
 		return
 
 	if d["barba"]:
-		c.draw_line(centro + Vector2(r * 0.2, r * 0.36), centro + Vector2(r * 0.86, r * 0.36), cabelo.darkened(0.25), 6.0)
+		_dl(c, centro + Vector2(r * 0.2, r * 0.36), centro + Vector2(r * 0.86, r * 0.36), cabelo.darkened(0.25), 6.0)
 		for i in 4:
-			c.draw_line(centro + Vector2(r * (0.0 + i * 0.25), r * 0.6), centro + Vector2(r * (0.05 + i * 0.25), r * 0.85), cabelo.darkened(0.2), 2.0)
+			_dl(c, centro + Vector2(r * (0.0 + i * 0.25), r * 0.6), centro + Vector2(r * (0.05 + i * 0.25), r * 0.85), cabelo.darkened(0.2), 2.0)
 	var olho1 := centro + Vector2(r * 0.12, -r * 0.08)
 	var olho2 := centro + Vector2(r * 0.62, -r * 0.08)
 	match p.get("olhos", "normal"):
 		"x":
 			for o in [olho1, olho2]:
-				c.draw_line(o + Vector2(-5, -5), o + Vector2(5, 5), PRETO, 3.0)
-				c.draw_line(o + Vector2(-5, 5), o + Vector2(5, -5), PRETO, 3.0)
+				_dl(c, o + Vector2(-5, -5), o + Vector2(5, 5), PRETO, 3.0)
+				_dl(c, o + Vector2(-5, 5), o + Vector2(5, -5), PRETO, 3.0)
 		"fechado":
 			for o in [olho1, olho2]:
-				c.draw_line(o + Vector2(-6, 0), o + Vector2(6, 2), PRETO, 3.0)
+				_dl(c, o + Vector2(-6, 0), o + Vector2(6, 2), PRETO, 3.0)
 		_:
 			for o in [olho1, olho2]:
-				c.draw_circle(o, r * 0.17, BRANCO)
-				c.draw_circle(o + Vector2(2.2, 0.5), r * 0.1, PRETO)
+				_dc(c, o, r * 0.17, BRANCO)
+				_dc(c, o + Vector2(2.2, 0.5), r * 0.1, PRETO)
 	var brava: bool = d["id"] == "xandao"
 	var cor_sob: Color = cabelo.darkened(0.35) if estilo != "careca" else Color("3a2c25")
 	var g := 5.5 if brava else 3.5
-	c.draw_line(olho1 + Vector2(-7, -12 if brava else -10), olho1 + Vector2(7, -7 if brava else -11), cor_sob, g)
-	c.draw_line(olho2 + Vector2(-7, -7 if brava else -11), olho2 + Vector2(7, -12 if brava else -10), cor_sob, g)
+	_dl(c, olho1 + Vector2(-7, -12 if brava else -10), olho1 + Vector2(7, -7 if brava else -11), cor_sob, g)
+	_dl(c, olho2 + Vector2(-7, -7 if brava else -11), olho2 + Vector2(7, -12 if brava else -10), cor_sob, g)
 	if d["oculos"]:
 		for o in [olho1, olho2]:
-			c.draw_arc(o, r * 0.27, 0, TAU, 18, PRETO, 3.0)
-			c.draw_arc(o + Vector2(-2, -2), r * 0.18, PI * 1.1, PI * 1.5, 6, Color(1, 1, 1, 0.7), 2.0)
-		c.draw_line(olho1 + Vector2(r * 0.27, 0), olho2 - Vector2(r * 0.27, 0), PRETO, 2.5)
+			_da(c, o, r * 0.27, 0, TAU, 18, PRETO, 3.0)
+			_da(c, o + Vector2(-2, -2), r * 0.18, PI * 1.1, PI * 1.5, 6, Color(1, 1, 1, 0.7), 2.0)
+		_dl(c, olho1 + Vector2(r * 0.27, 0), olho2 - Vector2(r * 0.27, 0), PRETO, 2.5)
 	var nariz := centro + Vector2(r * 0.88, r * 0.12)
-	c.draw_colored_polygon(PackedVector2Array([nariz + Vector2(-8, -10), nariz + Vector2(7, 4), nariz + Vector2(-6, 7)]), pele.darkened(0.2))
-	c.draw_line(nariz + Vector2(-7, -9), nariz + Vector2(5, 3), pele.lightened(0.15), 2.0)
+	_dp(c, PackedVector2Array([nariz + Vector2(-8, -10), nariz + Vector2(7, 4), nariz + Vector2(-6, 7)]), pele.darkened(0.2))
+	_dl(c, nariz + Vector2(-7, -9), nariz + Vector2(5, 3), pele.lightened(0.15), 2.0)
 	if estilo == "palhaco":
-		c.draw_circle(centro + Vector2(r * 0.05, r * 0.32), r * 0.16, Color(1, 0.35, 0.4, 0.6))
+		_dc(c, centro + Vector2(r * 0.05, r * 0.32), r * 0.16, Color(1, 0.35, 0.4, 0.6))
 	var boca := centro + Vector2(r * 0.5, r * 0.5)
 	match p.get("boca", "normal"):
 		"grito":
-			c.draw_circle(boca, r * 0.22, Color("4a0c14"))
-			c.draw_circle(boca + Vector2(0, 3), r * 0.11, Color("e05a6a"))
-			c.draw_rect(Rect2(boca + Vector2(-5, -7), Vector2(10, 3)), BRANCO)
+			_dc(c, boca, r * 0.22, Color("4a0c14"))
+			_dc(c, boca + Vector2(0, 3), r * 0.11, Color("e05a6a"))
+			_dr(c, Rect2(boca + Vector2(-5, -7), Vector2(10, 3)), BRANCO)
 		"dor":
-			c.draw_line(boca + Vector2(-8, 2), boca + Vector2(-2, -2), PRETO, 3.0)
-			c.draw_line(boca + Vector2(-2, -2), boca + Vector2(4, 2), PRETO, 3.0)
-			c.draw_line(boca + Vector2(4, 2), boca + Vector2(9, -2), PRETO, 3.0)
+			_dl(c, boca + Vector2(-8, 2), boca + Vector2(-2, -2), PRETO, 3.0)
+			_dl(c, boca + Vector2(-2, -2), boca + Vector2(4, 2), PRETO, 3.0)
+			_dl(c, boca + Vector2(4, 2), boca + Vector2(9, -2), PRETO, 3.0)
 		"sorriso":
-			c.draw_arc(boca + Vector2(0, -5), 9.0, PI * 0.15, PI * 0.85, 10, PRETO, 3.0)
+			_da(c, boca + Vector2(0, -5), 9.0, PI * 0.15, PI * 0.85, 10, PRETO, 3.0)
 		_:
-			c.draw_line(boca + Vector2(-7, 0), boca + Vector2(8, -1), PRETO, 3.0)
+			_dl(c, boca + Vector2(-7, 0), boca + Vector2(8, -1), PRETO, 3.0)
 
 
 ## Cabeça caricata em pixel art feita da foto (ferramentas/cabeca_pixel.py). O queixo fica no pescoço.
@@ -711,7 +782,10 @@ static func _cabeca_foto(c: CanvasItem, d: Dictionary, centro: Vector2, r: float
 	var pescoco := centro + Vector2(0, r * 1.0)
 	var giro: float = p.get("cabeca_giro", 0.0)
 	var desl: Vector2 = p.get("cabeca_desl", Vector2.ZERO)
-	c.draw_set_transform_matrix(_mat_tronco * Transform2D(giro, pescoco + desl))
+	_dm(c, _mat_tronco * Transform2D(giro, pescoco + desl))
+	if _lote != null:
+		_lote.despejar(c)
+		c.draw_set_transform_matrix(_lote.xf)
 	c.draw_texture_rect_region(tex, Rect2(-w / 2.0 + r * 0.06, -h, w, h), Rect2(quadro * fw, 0, fw, fh))
 	var topo := Vector2(0, -h)
 	if d.get("id", "") == "trump" and not retrato:
@@ -721,20 +795,20 @@ static func _cabeca_foto(c: CanvasItem, d: Dictionary, centro: Vector2, r: float
 			_cont = true
 			_poli(c, _arco_cheio(topo + Vector2(0, h * 0.32), h * 0.36, PI, TAU, h * 0.2), Color("2a2230"))
 			_cont = false
-			c.draw_colored_polygon(_arco_cheio(topo + Vector2(0, h * 0.32), h * 0.36, PI, TAU, h * 0.2), Color("1f9d55"))
-			c.draw_rect(Rect2(topo + Vector2(-h * 0.36, h * 0.3), Vector2(h * 0.72, 5)), Color("ffd23f"))
+			_dp(c, _arco_cheio(topo + Vector2(0, h * 0.32), h * 0.36, PI, TAU, h * 0.2), Color("1f9d55"))
+			_dr(c, Rect2(topo + Vector2(-h * 0.36, h * 0.3), Vector2(h * 0.72, 5)), Color("ffd23f"))
 		"boina":
 			_cont = true
 			_poli(c, PackedVector2Array([topo + Vector2(-30, 16), topo + Vector2(26, 6), topo + Vector2(30, 16), topo + Vector2(-26, 26)]), Color("3d4a22"))
 			_cont = false
-			c.draw_colored_polygon(PackedVector2Array([topo + Vector2(-30, 16), topo + Vector2(26, 6), topo + Vector2(30, 16), topo + Vector2(-26, 26)]), Color("4b5a2a"))
-			c.draw_circle(topo + Vector2(-12, 16), 4.0, Color("ffd23f"))
+			_dp(c, PackedVector2Array([topo + Vector2(-30, 16), topo + Vector2(26, 6), topo + Vector2(30, 16), topo + Vector2(-26, 26)]), Color("4b5a2a"))
+			_dc(c, topo + Vector2(-12, 16), 4.0, Color("ffd23f"))
 	if p.get("expr", "") == "nocaute" or p.get("olhos", "") == "x":
 		var t := Time.get_ticks_msec() * 0.004
 		for k in 3:
 			var a := t + k * TAU / 3.0
 			_estrela(c, Vector2(cos(a) * r * 1.2, -h - 6 + sin(a) * r * 0.3), 7.0, Color("ffd23f"))
-	c.draw_set_transform_matrix(_mat_tronco)
+	_dm(c, _mat_tronco)
 
 
 ## Topete loiro do Trump: balança com o vento e vira chicote no Hair Attack.
@@ -759,12 +833,12 @@ static func _topete(c: CanvasItem, topo: Vector2, h: float, vento: float, estica
 			var m := PackedVector2Array()
 			for q in pts:
 				m.append(q + o)
-			c.draw_colored_polygon(m, CONTORNO)
-		c.draw_colored_polygon(pts, cor)
+			_dp(c, m, CONTORNO)
+		_dp(c, pts, cor)
 		return
 	var tufo := PackedVector2Array([base + Vector2(-h * 0.1, 4), base + Vector2(h * 0.12, -h * 0.1), ponta, base + Vector2(h * 0.3, h * 0.05)])
-	c.draw_colored_polygon(tufo, cor)
-	c.draw_line(base + Vector2(0, -2), ponta + Vector2(-8, 2), escuro, 2.0)
+	_dp(c, tufo, cor)
+	_dl(c, base + Vector2(0, -2), ponta + Vector2(-8, 2), escuro, 2.0)
 
 
 static func _arco_cheio(centro: Vector2, r: float, de: float, ate: float, espessura: float) -> PackedVector2Array:
@@ -784,7 +858,7 @@ static func _estrela(c: CanvasItem, centro: Vector2, r: float, cor: Color) -> vo
 		var a := -PI / 2.0 + i * PI / 5.0
 		var rr := r if i % 2 == 0 else r * 0.45
 		pts.append(centro + Vector2(cos(a), sin(a)) * rr)
-	c.draw_colored_polygon(pts, cor)
+	_dp(c, pts, cor)
 
 
 static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
@@ -809,14 +883,14 @@ static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
 				_cont = passada == 0
 				_ret(c, Rect2(mao + Vector2(-6, -26), Vector2(13, 24)), Color("1f1a24"))
 			_cont = false
-			c.draw_rect(Rect2(mao + Vector2(-4, -24), Vector2(9, 17)), Color("7ec8ff"))
+			_dr(c, Rect2(mao + Vector2(-4, -24), Vector2(9, 17)), Color("7ec8ff"))
 		"microfone":
 			for passada in 2:
 				_cont = passada == 0
 				_lin(c, mao, mao + Vector2(6, -22), Color("2a2230"), 5.0)
 				_circ(c, mao + Vector2(7, -26), 6.5, Color("4a4a55"))
 			_cont = false
-			c.draw_circle(mao + Vector2(6, -28), 2.0, Color("9aa0a6"))
+			_dc(c, mao + Vector2(6, -28), 2.0, Color("9aa0a6"))
 		"espeto":
 			# o espeto vazio: a picanha acabou
 			for passada in 2:
@@ -827,7 +901,7 @@ static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
 			_cont = true
 			_lin(c, mao, mao + Vector2(0, -16), Color("e8a587"), 6.0)
 			_cont = false
-			c.draw_line(mao, mao + Vector2(0, -16), Color("e8a587"), 6.0)
+			_dl(c, mao, mao + Vector2(0, -16), Color("e8a587"), 6.0)
 
 
 static func _livro(c: CanvasItem, mao: Vector2) -> void:
@@ -836,10 +910,10 @@ static func _livro(c: CanvasItem, mao: Vector2) -> void:
 		_cont = passada == 0
 		_ret(c, Rect2(mao + Vector2(-16, -48), Vector2(32, 42)), Color("1f6f3a"))
 	_cont = false
-	c.draw_rect(Rect2(mao + Vector2(-12, -44), Vector2(24, 4)), Color("c9a227"))
-	c.draw_rect(Rect2(mao + Vector2(-12, -14), Vector2(24, 4)), Color("c9a227"))
+	_dr(c, Rect2(mao + Vector2(-12, -44), Vector2(24, 4)), Color("c9a227"))
+	_dr(c, Rect2(mao + Vector2(-12, -14), Vector2(24, 4)), Color("c9a227"))
 	_estrela(c, mao + Vector2(0, -27), 6.0, Color("c9a227"))
-	c.draw_rect(Rect2(mao + Vector2(13, -46), Vector2(3, 38)), BRANCO)
+	_dr(c, Rect2(mao + Vector2(13, -46), Vector2(3, 38)), BRANCO)
 
 
 static func _martelo(c: CanvasItem, mao: Vector2) -> void:
@@ -866,7 +940,7 @@ static func veiculo(c: CanvasItem, forma: String, t: int) -> void:
 				_lin(c, Vector2(36, -36), Vector2(48, -66), Color("2a2230"), 4.0)
 			_cont = false
 			for x in [-38.0, 42.0]:
-				c.draw_circle(Vector2(x, -18), 7, Color("9aa0a6"))
+				_dc(c, Vector2(x, -18), 7, Color("9aa0a6"))
 		"aviao":
 			for passada in 2:
 				_cont = passada == 0
@@ -874,25 +948,25 @@ static func veiculo(c: CanvasItem, forma: String, t: int) -> void:
 				_poli(c, PackedVector2Array([Vector2(-30, -36), Vector2(10, -36), Vector2(-50, 10), Vector2(-74, 10)]), Color("d9dee8"))
 				_poli(c, PackedVector2Array([Vector2(-150, -40), Vector2(-128, -40), Vector2(-150, -80), Vector2(-168, -80)]), Color("2a4f9a"))
 			_cont = false
-			c.draw_rect(Rect2(-150, -36, 210, 5), Color("2a4f9a"))
+			_dr(c, Rect2(-150, -36, 210, 5), Color("2a4f9a"))
 			for i in 8:
-				c.draw_rect(Rect2(-110 + i * 20, -46, 7, 5), Color("7ec8ff"))
+				_dr(c, Rect2(-110 + i * 20, -46, 7, 5), Color("7ec8ff"))
 			for i in 4:
-				c.draw_line(Vector2(-170 - i * 14, -50 + i * 10), Vector2(-240 - i * 20, -50 + i * 10), Color(1, 1, 1, 0.6), 4.0)
+				_dl(c, Vector2(-170 - i * 14, -50 + i * 10), Vector2(-240 - i * 20, -50 + i * 10), Color(1, 1, 1, 0.6), 4.0)
 		"bike":
 			for x in [-34.0, 36.0]:
-				c.draw_arc(Vector2(x, -20), 18, 0, TAU, 20, PRETO, 4.0)
-			c.draw_line(Vector2(-34, -20), Vector2(0, -44), Color("b3122e"), 5.0)
-			c.draw_line(Vector2(0, -44), Vector2(36, -20), Color("b3122e"), 5.0)
-			c.draw_line(Vector2(-34, -20), Vector2(4, -20), Color("b3122e"), 5.0)
+				_da(c, Vector2(x, -20), 18, 0, TAU, 20, PRETO, 4.0)
+			_dl(c, Vector2(-34, -20), Vector2(0, -44), Color("b3122e"), 5.0)
+			_dl(c, Vector2(0, -44), Vector2(36, -20), Color("b3122e"), 5.0)
+			_dl(c, Vector2(-34, -20), Vector2(4, -20), Color("b3122e"), 5.0)
 		"votos":
 			for i in 6:
 				var x := -60.0 - i * 26.0
 				var y := -30.0 - (i % 3) * 40.0 + sin(t * 0.5 + i) * 6.0
-				c.draw_rect(Rect2(x - 2, y - 2, 26, 18), PRETO)
-				c.draw_rect(Rect2(x, y, 22, 14), BRANCO)
-				c.draw_line(Vector2(x + 4, y + 8), Vector2(x + 9, y + 12), Color("1f9d55"), 2.0)
-				c.draw_line(Vector2(x + 9, y + 12), Vector2(x + 18, y + 2), Color("1f9d55"), 2.0)
+				_dr(c, Rect2(x - 2, y - 2, 26, 18), PRETO)
+				_dr(c, Rect2(x, y, 22, 14), BRANCO)
+				_dl(c, Vector2(x + 4, y + 8), Vector2(x + 9, y + 12), Color("1f9d55"), 2.0)
+				_dl(c, Vector2(x + 9, y + 12), Vector2(x + 18, y + 2), Color("1f9d55"), 2.0)
 		"danca":
 			for i in 3:
 				var a := t * 0.4 + i * 2.1
@@ -900,14 +974,14 @@ static func veiculo(c: CanvasItem, forma: String, t: int) -> void:
 		_:
 			for i in 4:
 				var y := -40.0 - i * 32.0
-				c.draw_line(Vector2(-60 - i * 10, y), Vector2(-120 - i * 18, y), Color(1, 1, 1, 0.6), 4.0)
+				_dl(c, Vector2(-60 - i * 10, y), Vector2(-120 - i * 18, y), Color(1, 1, 1, 0.6), 4.0)
 
 
 static func _nota(c: CanvasItem, pos: Vector2, cor: Color) -> void:
-	c.draw_circle(pos, 9, PRETO)
-	c.draw_circle(pos, 7, cor)
-	c.draw_line(pos + Vector2(6, 0), pos + Vector2(6, -22), cor, 3.0)
-	c.draw_line(pos + Vector2(6, -22), pos + Vector2(16, -16), cor, 3.0)
+	_dc(c, pos, 9, PRETO)
+	_dc(c, pos, 7, cor)
+	_dl(c, pos + Vector2(6, 0), pos + Vector2(6, -22), cor, 3.0)
+	_dl(c, pos + Vector2(6, -22), pos + Vector2(16, -16), cor, 3.0)
 
 
 # ---------------------------------------------------------------- projéteis (centro em 0,0, indo para +x)
@@ -929,53 +1003,53 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 		"cartao":
 			_ret(c, Rect2(-26, -16, 52, 32), Color("1f6fc8"))
 			if not _cont:
-				c.draw_rect(Rect2(-26, -16, 52, 9), Color("ffd23f"))
-				c.draw_rect(Rect2(-20, 2, 10, 8), Color("c9a227"))
-				c.draw_rect(Rect2(-4, 6, 24, 3), BRANCO)
+				_dr(c, Rect2(-26, -16, 52, 9), Color("ffd23f"))
+				_dr(c, Rect2(-20, 2, 10, 8), Color("c9a227"))
+				_dr(c, Rect2(-4, 6, 24, 3), BRANCO)
 			_circ(c, Vector2(30, -14), 8, Color("ffd23f"))
 		"seringa":
 			_ret(c, Rect2(-24, -8, 36, 16), Color("e8f4ff"))
 			_ret(c, Rect2(-34, -12, 8, 24), Color("9aa0a6"))
 			_lin(c, Vector2(12, 0), Vector2(34, 0), Color("c9ced6"), 3.0)
 			if not _cont:
-				c.draw_rect(Rect2(-20, -5, 26, 10), Color("6fd36f"))
+				_dr(c, Rect2(-20, -5, 26, 10), Color("6fd36f"))
 				for i in 4:
-					c.draw_line(Vector2(-18 + i * 7, -8), Vector2(-18 + i * 7, -3), Color("4a5060"), 2.0)
+					_dl(c, Vector2(-18 + i * 7, -8), Vector2(-18 + i * 7, -3), Color("4a5060"), 2.0)
 		"celular":
 			_ret(c, Rect2(-14, -26, 28, 52), Color("1f1a24"))
 			if not _cont:
-				c.draw_rect(Rect2(-10, -21, 20, 40), Color("ff3b6b"))
-				c.draw_colored_polygon(PackedVector2Array([Vector2(-4, -8), Vector2(6, 0), Vector2(-4, 8)]), BRANCO)
-				c.draw_circle(Vector2(0, 22), 2.5, Color("4a4a55"))
+				_dr(c, Rect2(-10, -21, 20, 40), Color("ff3b6b"))
+				_dp(c, PackedVector2Array([Vector2(-4, -8), Vector2(6, 0), Vector2(-4, 8)]), BRANCO)
+				_dc(c, Vector2(0, 22), 2.5, Color("4a4a55"))
 		"bone":
 			_poli(c, PackedVector2Array([Vector2(-22, 4), Vector2(-20, -10), Vector2(-8, -18), Vector2(10, -18), Vector2(20, -8), Vector2(22, 4)]), Color("d62828"))
 			_ret(c, Rect2(10, 0, 28, 7), Color("b51f1f"))
 			if not _cont:
-				c.draw_rect(Rect2(-14, -8, 26, 4), BRANCO)
+				_dr(c, Rect2(-14, -8, 26, 4), BRANCO)
 		"pilula":
 			_circ(c, Vector2(-12, 0), 12, BRANCO)
 			_circ(c, Vector2(12, 0), 12, Color("2f6fdb"))
 			_ret(c, Rect2(-12, -12, 24, 24), BRANCO)
 			if not _cont:
-				c.draw_rect(Rect2(0, -12, 12, 24), Color("2f6fdb"))
-				c.draw_line(Vector2(-14, -6), Vector2(-4, -6), Color(1, 1, 1, 0.9), 3.0)
+				_dr(c, Rect2(0, -12, 12, 24), Color("2f6fdb"))
+				_dl(c, Vector2(-14, -6), Vector2(-4, -6), Color(1, 1, 1, 0.9), 3.0)
 		"inquerito":
 			_ret(c, Rect2(-22, -26, 44, 52), BRANCO)
 			if not _cont:
 				for i in 5:
-					c.draw_line(Vector2(-15, -16 + i * 8), Vector2(15, -16 + i * 8), Color("9aa0a6"), 2.0)
-				c.draw_arc(Vector2(8, 12), 11, 0, TAU, 18, Color("d62828"), 3.0)
+					_dl(c, Vector2(-15, -16 + i * 8), Vector2(15, -16 + i * 8), Color("9aa0a6"), 2.0)
+				_da(c, Vector2(8, 12), 11, 0, TAU, 18, Color("d62828"), 3.0)
 		"grafico":
 			_ret(c, Rect2(-28, -22, 56, 44), BRANCO)
 			if not _cont:
 				var alturas := [10.0, 18.0, 14.0, 28.0]
 				for i in 4:
-					c.draw_rect(Rect2(-20 + i * 11, 16 - alturas[i], 8, alturas[i]), [Color("2a9df4"), Color("f2c230"), Color("e63946"), Color("1f9d55")][i])
+					_dr(c, Rect2(-20 + i * 11, 16 - alturas[i], 8, alturas[i]), [Color("2a9df4"), Color("f2c230"), Color("e63946"), Color("1f9d55")][i])
 		"mandioca":
 			_poli(c, PackedVector2Array([Vector2(-30, -6), Vector2(10, -11), Vector2(30, 0), Vector2(10, 11), Vector2(-30, 6)]), Color("8a5a35"))
 			_circ(c, Vector2(-30, 0), 6, Color("f3e9d2"))
 			if not _cont:
-				c.draw_line(Vector2(-20, -3), Vector2(16, -6), Color("a87448"), 3.0)
+				_dl(c, Vector2(-20, -3), Vector2(16, -6), Color("a87448"), 3.0)
 		"torta":
 			_circ(c, Vector2(0, 6), 26, Color("c9c9c9"))
 			_circ(c, Vector2(0, -6), 18, BRANCO)
@@ -985,13 +1059,13 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 		"vento":
 			if not _cont:
 				for i in 4:
-					c.draw_arc(Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
+					_da(c, Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
 		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante":
 			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))
 			if not _cont:
-				c.draw_circle(Vector2.ZERO, 11, BRANCO)
+				_dc(c, Vector2.ZERO, 11, BRANCO)
 
 
 # ---------------------------------------------------------------- cenário: Praça dos Três Poderes
@@ -1029,10 +1103,10 @@ static func cenario_fundo(c: CanvasItem) -> void:
 	c.draw_texture_rect(_textura_ceu(), Rect2(0, 0, 1280, 720), false)
 	# sol retrô com faixas
 	var sol := Vector2(1010, 395)
-	c.draw_circle(sol, 96, Color("ffe08a"))
-	c.draw_circle(sol, 80, Color("fff1c2"))
+	_dc(c, sol, 96, Color("ffe08a"))
+	_dc(c, sol, 80, Color("fff1c2"))
 	for i in 5:
-		c.draw_rect(Rect2(sol.x - 100, sol.y + 8 + i * 16, 200, 4 + i), Color("f08c48"))
+		_dr(c, Rect2(sol.x - 100, sol.y + 8 + i * 16, 200, 4 + i), Color("f08c48"))
 	_cidade(c)
 	_van(c, Vector2(1080, 498))
 
@@ -1042,8 +1116,8 @@ static func cenario_vivo(c: CanvasItem, t: float, agito: float) -> void:
 		var x := fposmod(t * (6.0 + i * 3.0) + i * 470.0, 1600.0) - 160.0
 		var y := 80.0 + i * 60.0
 		for j in 4:
-			c.draw_circle(Vector2(x + j * 30, y - (14 if j in [1, 2] else 0)), 24, Color("f7c7b0") if i < 2 else Color("ffe0c0"))
-		c.draw_rect(Rect2(x - 20, y, 130, 16), Color("f7c7b0") if i < 2 else Color("ffe0c0"))
+			_dc(c, Vector2(x + j * 30, y - (14 if j in [1, 2] else 0)), 24, Color("f7c7b0") if i < 2 else Color("ffe0c0"))
+		_dr(c, Rect2(x - 20, y, 130, 16), Color("f7c7b0") if i < 2 else Color("ffe0c0"))
 	_pato(c, Vector2(170, 470), t)
 	_bandeiras(c, t)
 	_plateia(c, t, agito)
@@ -1059,36 +1133,36 @@ static func _cidade(c: CanvasItem) -> void:
 	var perto := Color("2a1a40")
 	for i in 7:
 		var x := 20.0 + i * 64.0
-		c.draw_rect(Rect2(x, 400 - i * 6, 48, 120 + i * 6), longe)
-		c.draw_rect(Rect2(1212 - x, 400 - i * 6, 48, 120 + i * 6), longe)
+		_dr(c, Rect2(x, 400 - i * 6, 48, 120 + i * 6), longe)
+		_dr(c, Rect2(1212 - x, 400 - i * 6, 48, 120 + i * 6), longe)
 		for j in 6:
 			if (i + j) % 3 != 0:
-				c.draw_rect(Rect2(x + 8, 412 - i * 6 + j * 16, 32, 5), Color("ffcf7a", 0.55))
-				c.draw_rect(Rect2(1220 - x, 412 - i * 6 + j * 16, 32, 5), Color("ffcf7a", 0.55))
+				_dr(c, Rect2(x + 8, 412 - i * 6 + j * 16, 32, 5), Color("ffcf7a", 0.55))
+				_dr(c, Rect2(1220 - x, 412 - i * 6 + j * 16, 32, 5), Color("ffcf7a", 0.55))
 	# Congresso Nacional
-	c.draw_rect(Rect2(598, 230, 36, 270), perto)
-	c.draw_rect(Rect2(646, 230, 36, 270), perto)
-	c.draw_rect(Rect2(598, 300, 84, 10), perto)
+	_dr(c, Rect2(598, 230, 36, 270), perto)
+	_dr(c, Rect2(646, 230, 36, 270), perto)
+	_dr(c, Rect2(598, 300, 84, 10), perto)
 	for j in 14:
-		c.draw_rect(Rect2(604, 240 + j * 18, 24, 5), Color("ffcf7a", 0.7 if j % 3 else 0.25))
-		c.draw_rect(Rect2(652, 240 + j * 18, 24, 5), Color("ffcf7a", 0.7 if (j + 1) % 3 else 0.25))
-	c.draw_rect(Rect2(400, 470, 480, 28), perto)
+		_dr(c, Rect2(604, 240 + j * 18, 24, 5), Color("ffcf7a", 0.7 if j % 3 else 0.25))
+		_dr(c, Rect2(652, 240 + j * 18, 24, 5), Color("ffcf7a", 0.7 if (j + 1) % 3 else 0.25))
+	_dr(c, Rect2(400, 470, 480, 28), perto)
 	var cupula := PackedVector2Array()
 	for i in 17:
 		var a := lerpf(PI, TAU, i / 16.0)
 		cupula.append(Vector2(500, 470) + Vector2(cos(a) * 66, sin(a) * 52))
-	c.draw_colored_polygon(cupula, perto)
-	c.draw_arc(Vector2(500, 470), 60, PI * 1.15, PI * 1.45, 8, Color("f08c48", 0.6), 4.0)
+	_dp(c, cupula, perto)
+	_da(c, Vector2(500, 470), 60, PI * 1.15, PI * 1.45, 8, Color("f08c48", 0.6), 4.0)
 	var cuia := PackedVector2Array([Vector2(696, 430), Vector2(846, 430)])
 	for i in 17:
 		var a := lerpf(0.0, PI, i / 16.0)
 		cuia.append(Vector2(771, 432) + Vector2(cos(a) * 75, sin(a) * 40))
-	c.draw_colored_polygon(cuia, perto)
-	c.draw_line(Vector2(700, 431), Vector2(842, 431), Color("f08c48", 0.8), 3.0)
+	_dp(c, cuia, perto)
+	_dl(c, Vector2(700, 431), Vector2(842, 431), Color("f08c48", 0.8), 3.0)
 	# gramado
-	c.draw_rect(Rect2(0, 496, 1280, 40), Color("2f5a2e"))
+	_dr(c, Rect2(0, 496, 1280, 40), Color("2f5a2e"))
 	for i in 40:
-		c.draw_rect(Rect2(i * 32 + (i % 3) * 5, 498 + (i % 2) * 6, 6, 4), Color("4a7d3a"))
+		_dr(c, Rect2(i * 32 + (i % 3) * 5, 498 + (i % 2) * 6, 6, 4), Color("4a7d3a"))
 
 
 static func _pato(c: CanvasItem, base: Vector2, t: float) -> void:
@@ -1101,12 +1175,12 @@ static func _pato(c: CanvasItem, base: Vector2, t: float) -> void:
 		_circ(c, b + Vector2(40, -150), 48, Color("ffd23f"))
 		_poli(c, PackedVector2Array([b + Vector2(78, -158), b + Vector2(132, -148), b + Vector2(80, -134)]), Color("f28c28"))
 	_cont = false
-	c.draw_circle(b + Vector2(-10, -40), 46, Color("f2b81f"))
-	c.draw_circle(b + Vector2(8, -76), 40, Color("ffd23f"))
-	c.draw_circle(b + Vector2(56, -160), 9, BRANCO)
-	c.draw_circle(b + Vector2(59, -160), 5, PRETO)
-	c.draw_circle(b + Vector2(28, -170), 12, Color("fff3b0"))
-	c.draw_line(b + Vector2(80, -146), b + Vector2(128, -148), Color("c96a18"), 3.0)
+	_dc(c, b + Vector2(-10, -40), 46, Color("f2b81f"))
+	_dc(c, b + Vector2(8, -76), 40, Color("ffd23f"))
+	_dc(c, b + Vector2(56, -160), 9, BRANCO)
+	_dc(c, b + Vector2(59, -160), 5, PRETO)
+	_dc(c, b + Vector2(28, -170), 12, Color("fff3b0"))
+	_dl(c, b + Vector2(80, -146), b + Vector2(128, -148), Color("c96a18"), 3.0)
 
 
 static func _van(c: CanvasItem, base: Vector2) -> void:
@@ -1118,16 +1192,16 @@ static func _van(c: CanvasItem, base: Vector2) -> void:
 		_circ(c, base + Vector2(60, -12), 18, Color("1f1a24"))
 		_lin(c, base + Vector2(-40, -96), base + Vector2(-40, -130), Color("9aa0a6"), 5.0)
 	_cont = false
-	c.draw_rect(Rect2(base + Vector2(-110, -60), Vector2(218, 12)), Color("d62828"))
-	c.draw_rect(Rect2(base + Vector2(72, -72), Vector2(30, 24)), Color("7ec8ff"))
-	c.draw_arc(base + Vector2(-40, -140), 26, PI * 0.1, PI * 0.9, 12, Color("c9ced6"), 8.0)
+	_dr(c, Rect2(base + Vector2(-110, -60), Vector2(218, 12)), Color("d62828"))
+	_dr(c, Rect2(base + Vector2(72, -72), Vector2(30, 24)), Color("7ec8ff"))
+	_da(c, base + Vector2(-40, -140), 26, PI * 0.1, PI * 0.9, 12, Color("c9ced6"), 8.0)
 	texto(c, base + Vector2(-12, -70), "TV TRETA", 30, Color("d62828"), BRANCO, 0)
 
 
 static func _bandeiras(c: CanvasItem, t: float) -> void:
 	for x in [330.0, 950.0]:
-		c.draw_line(Vector2(x, 520), Vector2(x, 330), PRETO, 6.0)
-		c.draw_line(Vector2(x, 520), Vector2(x, 330), Color("c9ced6"), 3.0)
+		_dl(c, Vector2(x, 520), Vector2(x, 330), PRETO, 6.0)
+		_dl(c, Vector2(x, 520), Vector2(x, 330), Color("c9ced6"), 3.0)
 		var pts := PackedVector2Array()
 		var pts2 := PackedVector2Array()
 		for i in 9:
@@ -1137,10 +1211,10 @@ static func _bandeiras(c: CanvasItem, t: float) -> void:
 			pts2.append(Vector2(px, 392 + onda))
 		pts2.reverse()
 		var bandeira := pts + pts2
-		c.draw_colored_polygon(bandeira, Color("1f9d55"))
+		_dp(c, bandeira, Color("1f9d55"))
 		var losango := PackedVector2Array([Vector2(x + 48, 342 + sin(t * 5.0 - 3.0) * 3.0), Vector2(x + 90, 364), Vector2(x + 48, 386 + sin(t * 5.0 - 3.0) * 3.0), Vector2(x + 8, 364)])
-		c.draw_colored_polygon(losango, Color("ffd23f"))
-		c.draw_circle(Vector2(x + 48, 364 + sin(t * 5.0 - 3.0) * 3.0), 12, Color("2a4fa8"))
+		_dp(c, losango, Color("ffd23f"))
+		_dc(c, Vector2(x + 48, 364 + sin(t * 5.0 - 3.0) * 3.0), 12, Color("2a4fa8"))
 
 
 const CARTAZES := ["FAZ O L", "TÁ OK?", "MITO!", "INELEGÍVEL", "PICANHA JÁ", "CADÊ O PIX?", "DOBRA A META", "ABESTADO", "#FORA TODOS", "EU AVISEI"]
@@ -1173,46 +1247,46 @@ static func _plateia(c: CanvasItem, t: float, agito := 0.3) -> void:
 				_lin(c, base + Vector2(-20, -60), base + Vector2(-30, -26), pele, 9.0)
 				_lin(c, base + Vector2(20, -60), base + Vector2(30, -26), pele, 9.0)
 		_cont = false
-		c.draw_arc(base + Vector2(0, -90), 19, PI * 1.05, PI * 1.95, 12, cabelo, 12.0)
-		c.draw_circle(base + Vector2(-6, -88), 3, PRETO)
-		c.draw_circle(base + Vector2(8, -88), 3, PRETO)
-		c.draw_arc(base + Vector2(1, -80), 6, PI * 0.1, PI * 0.9, 6, PRETO, 2.5)
-		c.draw_rect(Rect2(base + Vector2(-22, -66), Vector2(10, 70)), camisa.darkened(0.25))
+		_da(c, base + Vector2(0, -90), 19, PI * 1.05, PI * 1.95, 12, cabelo, 12.0)
+		_dc(c, base + Vector2(-6, -88), 3, PRETO)
+		_dc(c, base + Vector2(8, -88), 3, PRETO)
+		_da(c, base + Vector2(1, -80), 6, PI * 0.1, PI * 0.9, 6, PRETO, 2.5)
+		_dr(c, Rect2(base + Vector2(-22, -66), Vector2(10, 70)), camisa.darkened(0.25))
 		if tem_cartaz:
 			var txt: String = CARTAZES[(i / 3 + int(t / 6.0)) % CARTAZES.size()]
 			var largura := maxf(110.0, txt.length() * 22.0 + 20.0)
 			var r := Rect2(base + Vector2(-largura / 2.0, -178), Vector2(largura, 52))
-			c.draw_rect(r.grow(3), PRETO)
-			c.draw_rect(r, BRANCO)
+			_dr(c, r.grow(3), PRETO)
+			_dr(c, r, BRANCO)
 			texto(c, r.get_center() + Vector2(0, 11), txt, 22, Color("d62828") if i % 2 else Color("1f6f3a"), BRANCO, 0)
 
 
 static func _grade(c: CanvasItem) -> void:
 	# grade de contenção na frente da plateia
 	var cor := Color("8a90a0")
-	c.draw_rect(Rect2(0, 508, 1280, 7), PRETO)
-	c.draw_rect(Rect2(0, 509, 1280, 4), cor)
-	c.draw_rect(Rect2(0, 552, 1280, 7), PRETO)
-	c.draw_rect(Rect2(0, 553, 1280, 4), cor.darkened(0.2))
+	_dr(c, Rect2(0, 508, 1280, 7), PRETO)
+	_dr(c, Rect2(0, 509, 1280, 4), cor)
+	_dr(c, Rect2(0, 552, 1280, 7), PRETO)
+	_dr(c, Rect2(0, 553, 1280, 4), cor.darkened(0.2))
 	for i in 54:
 		var x := i * 24.0
-		c.draw_rect(Rect2(x, 511, 5, 46), PRETO)
-		c.draw_rect(Rect2(x + 1, 512, 3, 44), cor)
+		_dr(c, Rect2(x, 511, 5, 46), PRETO)
+		_dr(c, Rect2(x + 1, 512, 3, 44), cor)
 
 
 static func _chao(c: CanvasItem) -> void:
-	c.draw_rect(Rect2(0, 560, 1280, 160), Color("c2ad8a"))
-	c.draw_rect(Rect2(0, 560, 1280, 10), Color("8a775e"))
+	_dr(c, Rect2(0, 560, 1280, 160), Color("c2ad8a"))
+	_dr(c, Rect2(0, 560, 1280, 10), Color("8a775e"))
 	for i in 12:
 		var y := 570.0 + pow(i / 11.0, 1.6) * 150.0
-		c.draw_line(Vector2(0, y), Vector2(1280, y), Color("ad9878"), 3.0)
+		_dl(c, Vector2(0, y), Vector2(1280, y), Color("ad9878"), 3.0)
 	for i in 21:
-		c.draw_line(Vector2(640 + (i - 10) * 70, 570), Vector2(640 + (i - 10) * 160, 720), Color("ad9878"), 3.0)
+		_dl(c, Vector2(640 + (i - 10) * 70, 570), Vector2(640 + (i - 10) * 160, 720), Color("ad9878"), 3.0)
 	# rachaduras e manchas
 	for i in 9:
 		var x := 70.0 + i * 140.0
-		c.draw_line(Vector2(x, 640 + (i % 3) * 20), Vector2(x + 26, 652 + (i % 3) * 20), Color("8a775e"), 3.0)
-		c.draw_line(Vector2(x + 26, 652 + (i % 3) * 20), Vector2(x + 40, 646 + (i % 3) * 20), Color("8a775e"), 3.0)
+		_dl(c, Vector2(x, 640 + (i % 3) * 20), Vector2(x + 26, 652 + (i % 3) * 20), Color("8a775e"), 3.0)
+		_dl(c, Vector2(x + 26, 652 + (i % 3) * 20), Vector2(x + 40, 646 + (i % 3) * 20), Color("8a775e"), 3.0)
 
 
 # ---------------------------------------------------------------- texto pixelado
@@ -1237,6 +1311,8 @@ static func tamanho_real(t: int) -> int:
 
 ## alinhamento: 0 = centro, 1 = esquerda, 2 = direita. pos em coordenadas do jogo (1280x720).
 static func _texto_px(c: CanvasItem, pos: Vector2, txt: String, tamanho: int, cor: Color, contorno: Color, borda: int, alinhamento: int) -> void:
+	if _lote != null:
+		_lote.despejar(c)
 	var f := fonte()
 	var tam := tamanho_real(tamanho)
 	# a fonte não tem o Í maiúsculo (sai minúsculo): no estilo fliperama, fica sem acento

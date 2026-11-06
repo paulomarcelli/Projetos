@@ -12,7 +12,17 @@ static var toque := 0          # 0 automático, 1 sempre, 2 nunca
 static var tempo_round := 99   # 60, 99 ou 0 (sem tempo)
 
 const DIFICULDADES := ["FÁCIL", "NORMAL", "DIFÍCIL"]
-const NIVEL_CPU := [0.32, 0.58, 0.85]
+const NIVEL_CPU := [0.15, 0.35, 0.6]
+
+
+## Entra ou sai da tela cheia (no navegador, o próprio jogo pede ao navegador).
+static func alternar_tela_cheia() -> void:
+	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		if OS.has_feature("web"):
+			JavaScriptBridge.eval("window.brasiliaTelaCheia && window.brasiliaTelaCheia()")
 
 
 static func nivel_cpu() -> float:

@@ -601,10 +601,10 @@ class Configuracoes extends Node2D:
 	signal como_jogar
 	var opcao := 0
 	var t := 0.0
-	const ITENS := ["MÚSICA", "EFEITOS", "DIFICULDADE", "TREMOR DE TELA", "CONTROLES DE TOQUE", "TEMPO DO ROUND", "COMO JOGAR", "VOLTAR"]
+	const ITENS := ["MÚSICA", "EFEITOS", "DIFICULDADE", "TREMOR DE TELA", "CONTROLES DE TOQUE", "TEMPO DO ROUND", "TELA CHEIA", "COMO JOGAR", "VOLTAR"]
 
 	func _linha(i: int) -> Rect2:
-		return Rect2(240, 150 + i * 62, 800, 52)
+		return Rect2(240, 140 + i * 58, 800, 48)
 
 	func _valor(i: int) -> String:
 		match i:
@@ -639,9 +639,13 @@ class Configuracoes extends Node2D:
 				var tempos := [60, 99, 0]
 				Config.tempo_round = tempos[wrapi(tempos.find(Config.tempo_round) + d, 0, 3)]
 			6:
-				como_jogar.emit()
+				Config.alternar_tela_cheia()
+				Som.sfx("menu_ok", 0.0)
 				return
 			7:
+				como_jogar.emit()
+				return
+			8:
 				Config.salvar()
 				voltar.emit()
 				return

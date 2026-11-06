@@ -78,7 +78,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-
+<meta name='apple-mobile-web-app-capable' content='yes'><meta name='mobile-web-app-capable' content='yes'><style>html,body{background:#000;}</style><script>(function(){var feito=false;function cheia(){if(feito)return;var el=document.documentElement;var pedir=el.requestFullscreen||el.webkitRequestFullscreen;if(!pedir)return;try{var r=pedir.call(el,{navigationUI:'hide'});feito=true;var travar=function(){if(screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(function(){});}};if(r&&r.then){r.then(travar).catch(function(){feito=false;});}else{travar();}}catch(e){feito=false;}}if(('ontouchstart' in window)||navigator.maxTouchPoints>0){document.addEventListener('touchend',cheia,{passive:true});}window.brasiliaTelaCheia=function(){feito=false;cheia();};})();</script>
 	</head>
 	<body>
 		<canvas id="canvas">
@@ -97,7 +97,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":1789264,"index.wasm":35376909},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":1794448,"index.wasm":35376909},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 

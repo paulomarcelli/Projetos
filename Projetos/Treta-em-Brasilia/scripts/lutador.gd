@@ -26,6 +26,8 @@ enum E { PARADO, ANDANDO, PULANDO, AGACHADO, ATACANDO, ATINGIDO, DEFENDENDO, CAI
 const CHAO := 640.0
 const TAM := 1.35  # tamanho do desenho e das caixas de colisão
 const GRAVIDADE := 1.0
+const ACELERACAO_CHAO := 1.9
+const FRENAGEM_CHAO := 3.4
 const LIMITE_ESQ := 50.0
 const LIMITE_DIR := 1230.0
 const VAZIO := {"esq": false, "dir": false, "cima": false, "baixo": false, "soco": false, "chute": false,
@@ -423,16 +425,27 @@ func _movimento_chao(e: Dictionary) -> void:
 		_mudar(E.PRE_PULO)
 		return
 	if e.get("baixo", false):
+		vel.x = move_toward(vel.x, 0.0, FRENAGEM_CHAO * vm)
 		_mudar(E.AGACHADO)
 		return
+	var alvo_x := 0.0
 	if frente:
-		position.x += lado * 4.6 * vm
+		alvo_x = lado * 4.6 * vm
 		_mudar(E.ANDANDO)
 	elif tras:
-		position.x -= lado * 3.8 * vm
+		alvo_x = -lado * 3.8 * vm
 		_mudar(E.ANDANDO)
 	else:
-		_mudar(E.PARADO)
+		if absf(vel.x) < 0.15:
+			vel.x = 0.0
+			_mudar(E.PARADO)
+		else:
+			_mudar(E.ANDANDO)
+	var taxa := ACELERACAO_CHAO if absf(alvo_x) > 0.0 else FRENAGEM_CHAO
+	if signf(vel.x) != signf(alvo_x) and absf(alvo_x) > 0.0:
+		taxa = FRENAGEM_CHAO
+	vel.x = move_toward(vel.x, alvo_x, taxa * vm)
+	position.x += vel.x
 
 
 ## Escolhe o golpe pelo botão e pela direção. Devolve true se algo começou.
@@ -855,12 +868,17 @@ func pose() -> Dictionary:
 		E.PARADO:
 			pass
 		E.ANDANDO:
-			# anda na guarda: passos curtos arrastando os pés, o corpo sobe e desce
+			# passos em guarda com braços em contrapeso e tronco acompanhando a direção
 			var s := sin(tempo_vivo * 0.26 * (0.6 if lento > 0 else 1.0))
+			var ritmo := clampf(absf(vel.x) / 4.6, 0.0, 1.0)
 			p["pe_f"] = Vector2(34 + s * 12.0, -maxf(0.0, s) * 7.0)
 			p["pe_t"] = Vector2(-32 - s * 12.0, -maxf(0.0, -s) * 7.0)
+			p["mao_f"] = Vector2(40 - s * 5.0, -138 + absf(s) * 3.0)
+			p["mao_t"] = Vector2(24 + s * 5.0, -126 - absf(s) * 2.0)
 			p["quadril"] = -62.0 + absf(s) * 3.0
+			p["inclina"] = 0.08 + signf(vel.x * lado) * 0.10 * ritmo
 			p["cabeca_desl"] = Vector2(1, absf(s) * 2.0)
+			p["cabeca_giro"] = -signf(vel.x * lado) * 0.035 * ritmo
 		E.AGACHADO, E.LEVANTANDO:
 			_pose_agachada(p)
 			if estado == E.LEVANTANDO:
@@ -878,13 +896,14 @@ func pose() -> Dictionary:
 			p["quadril"] = lerpf(-44.0, -60.0, clampf(t / 6.0, 0.0, 1.0))
 		E.DASH:
 			var frente := vel.x * lado > 0
-			p["inclina"] = 0.32 if frente else -0.22
-			p["pe_f"] = Vector2(34 if frente else 10, -10)
-			p["pe_t"] = Vector2(-40 if frente else -22, -4)
-			p["mao_f"] = Vector2(40, -116)
-			p["mao_t"] = Vector2(-30, -110)
+			var corrida := sin(t * 0.72)
+			p["inclina"] = (0.32 if frente else -0.22) + corrida * 0.025
+			p["pe_f"] = Vector2(34 + corrida * 12.0 if frente else 10 + corrida * 8.0, -10 - maxf(0.0, corrida) * 8.0)
+			p["pe_t"] = Vector2(-40 - corrida * 10.0 if frente else -22 - corrida * 8.0, -4 - maxf(0.0, -corrida) * 7.0)
+			p["mao_f"] = Vector2(40 - corrida * 7.0, -116 - maxf(0.0, -corrida) * 5.0)
+			p["mao_t"] = Vector2(-30 + corrida * 7.0, -110 - maxf(0.0, corrida) * 5.0)
 			p["expr"] = "esforco"
-			p["cabeca_giro"] = 0.1 if frente else -0.12
+			p["cabeca_giro"] = (0.1 if frente else -0.12) - corrida * 0.035
 		E.PULANDO:
 			# pernas encolhidas no alto do pulo; pulo para a frente ou para trás vira cambalhota
 			var progresso := clampf((vel.y + 21.5) / 43.0, 0.0, 1.0)
@@ -1143,6 +1162,12 @@ func _atualizar_visual() -> void:
 	match estado:
 		E.PRE_PULO:
 			estica = Vector2(1.08, 0.92)
+		E.ANDANDO:
+			var ritmo_andar := clampf(absf(vel.x) / 4.6, 0.0, 1.0)
+			estica = Vector2(1.0 + 0.025 * ritmo_andar, 1.0 - 0.025 * ritmo_andar)
+		E.DASH:
+			var impulso := clampf(absf(vel.x) / 13.0, 0.0, 1.0)
+			estica = Vector2(1.0 + 0.10 * impulso, 1.0 - 0.07 * impulso)
 		E.ATERRISSANDO:
 			estica = Vector2(1.06, 0.94).lerp(Vector2.ONE, clampf(quadro / 5.0, 0.0, 1.0))
 		E.PULANDO:
@@ -1155,7 +1180,9 @@ func _atualizar_visual() -> void:
 	rotation = giro * lado
 	if giro != 0.0 and no_chao():
 		_pose_atual["quadril"] = -72.0
-	if flash > 0 and flash % 2 == 0:
+	if flash >= 7:
+		modulate = Color(2.4, 2.4, 2.4)  # clarão branco no instante do impacto
+	elif flash > 0 and flash % 2 == 0:
 		modulate = Color(1.0, 0.55, 0.55)
 	elif bloqueado > 0 and (tempo_vivo / 8) % 2 == 0:
 		modulate = Color(0.85, 0.85, 1.1)

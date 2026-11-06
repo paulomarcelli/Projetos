@@ -56,6 +56,7 @@ var _mundo: Node2D
 var _cenario_vivo: Cache
 var _rastro_camada: Camada
 var _sombras: Camada
+var _vx_ant := [0.0, 0.0]
 var _efeitos: Camada
 var _cinema_camada: Camada
 var _cinema_fundo: Camada
@@ -358,6 +359,14 @@ func _passo_lutadores() -> void:
 		if l.estado == Lutador.E.DASH or (l.estado == Lutador.E.ATACANDO and float(l.golpe.get("avanco", 0.0)) > 0.0 and l.quadro >= int(l.golpe["inicio"])):
 			if fase_t % 2 == 0:
 				particulas.velocidade(l.position, float(l.lado) * signf(l.vel.x if l.estado == Lutador.E.DASH else 1.0))
+		# passos levantam um pouco de poeira; frear forte arrasta os pés no chão
+		if l.no_chao():
+			var vx := absf(l.vel.x)
+			if l.estado == Lutador.E.ANDANDO and vx > 2.5 and l.tempo_vivo % 16 == 0:
+				particulas.poeira(l.position + Vector2(-l.vel.x * 3.0, 0), 2)
+			if vx > 1.2 and vx < _vx_ant[i] - 0.4 and fase_t % 3 == 0:
+				particulas.arrasto(l.position + Vector2(signf(l.vel.x) * 18.0, 0), signf(l.vel.x))
+			_vx_ant[i] = vx
 		if l.estado == Lutador.E.ATACANDO and l.hab_slot != "" and l.hab.get("pose", "") == "churrasco" and fase_t % 5 == 0:
 			particulas.fumaca(l.position + Vector2(l.lado * 120, -60), 1)
 
@@ -621,7 +630,7 @@ func _soltar_tiro(l: Lutador, spec: Dictionary) -> void:
 	projeteis.append(pr)
 	if spec.get("forma", "") == "rolha":
 		# clarão na boca do cano e o cartucho voando para trás
-		particulas.impacto(pr.position + Vector2(l.lado * 10.0, 0), float(l.lado), 0.35, Color("ffd23f"))
+		particulas.clarao(pr.position + Vector2(l.lado * 6.0, 0), float(l.lado))
 		particulas.cartucho(l.position + Vector2(l.lado * 40.0, -150), -float(l.lado))
 		tremor = maxf(tremor, 1.5)
 
@@ -629,6 +638,7 @@ func _soltar_tiro(l: Lutador, spec: Dictionary) -> void:
 func _quebrou(pr: Projetil) -> void:
 	if pr.ao_quebrar == "explosao":
 		particulas.explosao(pr.position + Vector2(0, -20), 0.9)
+		particulas.onda(Vector2(pr.position.x, Lutador.CHAO), 1.0)
 		tremor = maxf(tremor, 6.0)
 		Som.sfx("explosao", 0.1, -3.0)
 		_texto(pr.position + Vector2(randf_range(-30, 30), -110), "BUM!", Color("ffd23f"), 40, 30)
@@ -706,6 +716,7 @@ func _evento(l: Lutador, nome: String) -> void:
 		"queda":
 			Som.sfx("queda")
 			particulas.poeira(l.position, 10, true)
+			particulas.onda(l.position, 0.7)
 			tremor = maxf(tremor, 4.0)
 		"golpe":
 			var forte: bool = l.golpe.get("forca", "") == "forte"
@@ -969,47 +980,91 @@ static func desenhar_meme(c: CanvasItem, d: Dictionary, txt: String, lado: int, 
 func _desenhar_hud(c: CanvasItem) -> void:
 	var y := 34.0
 	var h := 30.0
+	var w := 452.0
+	# 1ª passada: todas as formas num lote só (uma chamada de desenho)
+	var lote := Lote.new()
+	Desenho._lote = lote
 	for i in 2:
 		var l := p[i]
 		var esq := i == 0
-		var x0 := 64.0 if esq else 704.0
-		var w := 512.0
-		var fracao := l.vida / l.vida_max
-		var vis: float = vida_vis[i] / l.vida_max
-		c.draw_rect(Rect2(x0 - 6, y - 6, w + 12, h + 12), Desenho.PRETO)
-		c.draw_rect(Rect2(x0 - 3, y - 3, w + 6, h + 6), Color("fbfbf7"))
-		c.draw_rect(Rect2(x0, y, w, h), Color("c81e2a"))
+		var x0 := 122.0 if esq else 706.0
+		var fracao := clampf(l.vida / l.vida_max, 0.0, 1.0)
+		var vis: float = clampf(vida_vis[i] / l.vida_max, 0.0, 1.0)
+		# moldura inclinada (paralelogramo) com bisel
+		var inc := 14.0 if esq else -14.0
+		_paralelo(c, Rect2(x0 - 7, y - 7, w + 14, h + 14), inc, Desenho.PRETO)
+		_paralelo(c, Rect2(x0 - 3, y - 3, w + 6, h + 6), inc, Color("fbfbf7"))
+		_paralelo(c, Rect2(x0, y, w, h), inc, Color("5a0f1a"))
 		var amarelo := Color("ffd23f")
+		var claro := Color("fff3b0")
 		if fracao < 0.25 and int(tempo_total * 6) % 2 == 0:
-			amarelo = Color("fff3b0")
+			amarelo = Color("ff7a3c")
+			claro = Color("ffc08a")
+		# rastro do dano (vermelho-claro) que esvazia depois da vida de verdade
+		var rastro := Color("ff5a4e") if vida_vis[i] - l.vida > 1.0 else Color("ff9a3c")
 		if esq:
-			c.draw_rect(Rect2(x0 + w * (1.0 - vis), y, w * vis, h), Color("ff9a3c"))
-			c.draw_rect(Rect2(x0 + w * (1.0 - fracao), y, w * fracao, h), amarelo)
+			_paralelo(c, Rect2(x0 + w * (1.0 - vis), y, w * vis, h), inc, rastro)
+			_paralelo(c, Rect2(x0 + w * (1.0 - fracao), y, w * fracao, h), inc, amarelo)
+			_paralelo(c, Rect2(x0 + w * (1.0 - fracao), y, w * fracao, h * 0.4), inc * 0.4, claro)
 		else:
-			c.draw_rect(Rect2(x0, y, w * vis, h), Color("ff9a3c"))
-			c.draw_rect(Rect2(x0, y, w * fracao, h), amarelo)
-		c.draw_rect(Rect2(x0, y, w, 6), Color(1, 1, 1, 0.35))
-		c.draw_rect(Rect2(x0, y + h - 6, w, 6), Color(0, 0, 0, 0.2))
+			_paralelo(c, Rect2(x0, y, w * vis, h), inc, rastro)
+			_paralelo(c, Rect2(x0, y, w * fracao, h), inc, amarelo)
+			_paralelo(c, Rect2(x0, y, w * fracao, h * 0.4), inc * 0.4, claro)
+		# marcas a cada 10% e sombra embaixo
+		for k in range(1, 10):
+			var mx := x0 + w * k / 10.0 + inc * 0.5
+			Desenho._dl(c, Vector2(mx, y + h * 0.55), Vector2(mx - inc * 0.2, y + h), Color(0, 0, 0, 0.22), 2.0)
+		Desenho._dr(c, Rect2(x0 + (inc if esq else 0.0), y + h - 5, w - absf(inc), 5), Color(0, 0, 0, 0.18))
+		# moldura do retrato
+		var rx := 58.0 if esq else 1222.0
+		var cor_l: Color = l.dados.get("cor", Color("ffd23f"))
+		Desenho._dr(c, Rect2(rx - 46, y - 12, 92, 92), Desenho.PRETO)
+		Desenho._dr(c, Rect2(rx - 42, y - 8, 84, 84), cor_l.darkened(0.15))
+		Desenho._dr(c, Rect2(rx - 38, y - 4, 76, 76), Color("2a1446"))
+		if l.censurado > 0:
+			Desenho._dr(c, Rect2(rx - 38, y + 22, 76, 20), Desenho.PRETO)
+		# vitórias: medalhas douradas
+		for v in vitorias[i]:
+			var vx: float = (x0 + w - 18 - v * 34) if esq else (x0 + 18 + v * 34)
+			var vy := y + h + 30.0
+			Desenho._dc(c, Vector2(vx, vy), 13.0, Desenho.PRETO)
+			Desenho._dc(c, Vector2(vx, vy), 10.0, Color("c9a227"))
+			Desenho._dc(c, Vector2(vx - 2, vy - 2), 6.0, Color("ffd23f"))
+			Desenho._estrela(c, Vector2(vx, vy), 5.0, Color("fff3b0"))
+		_desenhar_recargas(c, l, Vector2(x0 + (200.0 if esq else w - 200.0 - 5 * 26.0), y + h + 22))
+		if l.bloqueado > 0:
+			Arte.cadeado(c, Vector2(x0 + (180.0 if esq else w - 180.0), y + h + 64), 1.0)
+		_desenhar_barra(c, i, l, esq)
+	# selo KO e placa do relógio
+	Desenho._dr(c, Rect2(586, y - 10, 108, h + 20), Desenho.PRETO)
+	Desenho._dr(c, Rect2(592, y - 4, 96, h + 8), Color("fbfbf7"))
+	Desenho._dr(c, Rect2(582, 82, 116, 72), Desenho.PRETO)
+	Desenho._dr(c, Rect2(587, 87, 106, 62), Color("2a1446"))
+	Desenho._dr(c, Rect2(587, 87, 106, 6), Color(1, 1, 1, 0.12))
+	Desenho._lote = null
+	lote.despejar(c)
+	# 2ª passada: retratos e textos por cima
+	for i in 2:
+		var l := p[i]
+		var esq := i == 0
+		var x0 := 122.0 if esq else 706.0
+		var rx := 58.0 if esq else 1222.0
+		if l.censurado <= 0:
+			var ex := "dor" if l.estado in [Lutador.E.ATINGIDO, Lutador.E.CAIDO] else ("nocaute" if l.estado == Lutador.E.NOCAUTE else ("grito" if l.estado == Lutador.E.ATACANDO else "neutro"))
+			Desenho._mat_tronco = Transform2D(0.0, Vector2(1 if esq else -1, 1), 0.0, Vector2(rx, y + 74))
+			Desenho.cabeca(c, l.dados, Vector2(0, -36), 33.0, {"expr": ex, "retrato": true})
+			Desenho._mat_tronco = Transform2D.IDENTITY
+			c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		var nome: String = l.dados.get("nome", "") if l.censurado <= 0 else "CENSURADO"
 		var quem := ("P%d" % (i + 1)) if humano[i] else ("BONECO" if treino else "CPU")
 		if esq:
 			Desenho.texto_esq(c, Vector2(x0, y + h + 42), nome, 24, Color("ffd23f"), 6)
-			Desenho.texto_esq(c, Vector2(x0, y + h + 74), quem, 22, Color("7ec8ff"), 6)
+			Desenho.texto_esq(c, Vector2(rx - 40, y + 116), quem, 22, Color("7ec8ff"), 6)
 		else:
 			Desenho.texto_dir(c, Vector2(x0 + w, y + h + 42), nome, 24, Color("ffd23f"), 6)
-			Desenho.texto_dir(c, Vector2(x0 + w, y + h + 74), quem, 22, Color("ff8a8a"), 6)
-		for v in vitorias[i]:
-			var vx: float = (x0 + w - 24 - v * 34) if esq else (x0 + 24 + v * 34)
-			Desenho.texto(c, Vector2(vx, y + h + 42), "V", 24, Color("fff3b0"), Desenho.PRETO, 6)
-		_desenhar_recargas(c, l, Vector2(x0 + (220.0 if esq else w - 220.0 - 5 * 26.0), y + h + 22))
-		if l.bloqueado > 0:
-			Arte.cadeado(c, Vector2(x0 + (200.0 if esq else w - 200.0), y + h + 64), 1.0)
-		_desenhar_barra(c, i, l, esq)
-	# selo KO
-	c.draw_rect(Rect2(586, y - 10, 108, h + 20), Desenho.PRETO)
-	c.draw_rect(Rect2(592, y - 4, 96, h + 8), Color("fbfbf7"))
+			Desenho.texto_dir(c, Vector2(rx + 40, y + 116), quem, 22, Color("ff8a8a"), 6)
+		_rotulo_barra(c, i, l, esq)
 	Desenho.texto(c, Vector2(640, y + h + 2), "KO", 34, Color("c81e2a"), Desenho.PRETO, 0)
-	# relógio
 	if tempo < 900.0:
 		var cor_t := Color("ffd23f") if tempo > 10 else Color("ff5a4e")
 		Desenho.texto(c, Vector2(640, 142), "%02d" % int(ceil(tempo)), 64, cor_t, Desenho.PRETO, 10)
@@ -1045,6 +1100,22 @@ func _desenhar_hud(c: CanvasItem) -> void:
 		_desenhar_pausa(c)
 
 
+## Retângulo inclinado (as barras do HUD têm as pontas cortadas em diagonal).
+func _paralelo(c: CanvasItem, r: Rect2, inc: float, cor: Color) -> void:
+	if r.size.x <= 0.5 or r.size.y <= 0.5:
+		return
+	var k := minf(absf(inc), r.size.x)
+	var x0 := r.position.x
+	var x1 := r.end.x
+	var pts: PackedVector2Array
+	if inc > 0:
+		# ponta de fora (esquerda) cortada embaixo
+		pts = PackedVector2Array([Vector2(x0 + k, r.position.y), Vector2(x1, r.position.y), Vector2(x1 - k, r.end.y), Vector2(x0, r.end.y)])
+	else:
+		pts = PackedVector2Array([Vector2(x0, r.position.y), Vector2(x1 - k, r.position.y), Vector2(x1, r.end.y), Vector2(x0 + k, r.end.y)])
+	Desenho._dp(c, pts, cor)
+
+
 ## Retrato do lutador cruzando a tela com o nome do Superpower (como nos fliperamas).
 func _desenhar_cutin(c: CanvasItem, ef: Dictionary) -> void:
 	var t: int = ef["t"]
@@ -1064,6 +1135,14 @@ func _desenhar_cutin(c: CanvasItem, ef: Dictionary) -> void:
 		return
 	var desliza := clampf(t / 10.0, 0.0, 1.0)
 	var px := lerpf(-200.0, 260.0, desliza) if esq else lerpf(1480.0, 1020.0, desliza)
+	# explosão de raios atrás do retrato e faixas finas em cima e embaixo
+	var cen := Vector2(px, y0 + 100)
+	for j in 16:
+		var a := j * TAU / 16.0 + t * 0.03
+		var a2 := a + TAU / 40.0
+		c.draw_colored_polygon(PackedVector2Array([cen, cen + Vector2(cos(a), sin(a)) * 260.0, cen + Vector2(cos(a2), sin(a2)) * 260.0]), Color(1, 0.9, 0.5, 0.16 if j % 2 == 0 else 0.07))
+	c.draw_rect(Rect2(0, y0 + 95 - h / 2.0 + 8, 1280, 4), Color(cor.lightened(0.4), 0.8))
+	c.draw_rect(Rect2(0, y0 + 95 + h / 2.0 - 12, 1280, 4), Color(cor.lightened(0.4), 0.8))
 	Desenho._mat_tronco = Transform2D(0.0, Vector2(1 if esq else -1, 1), 0.0, Vector2(px, y0 + 190))
 	Desenho.cabeca(c, d, Vector2(0, -92), 92.0, {"expr": "grito", "retrato": true})
 	Desenho._mat_tronco = Transform2D.IDENTITY
@@ -1078,12 +1157,12 @@ func _desenhar_recargas(c: CanvasItem, l: Lutador, pos: Vector2) -> void:
 	for j in slots.size():
 		var r := Rect2(pos + Vector2(j * 26.0, 0), Vector2(20, 20))
 		var h := l.habilidade(slots[j])
-		c.draw_rect(r.grow(2), Desenho.PRETO)
+		Desenho._dr(c, r.grow(2), Desenho.PRETO)
 		var pronto := not l.recargas.has(slots[j]) and l.bloqueado <= 0
-		c.draw_rect(r, Color("ff8a5c") if pronto else Color("3a3050"))
+		Desenho._dr(c, r, Color("ff8a5c") if pronto else Color("3a3050"))
 		if not pronto and h.has("recarga") and l.recargas.has(slots[j]):
 			var frac: float = 1.0 - float(l.recargas[slots[j]]) / float(h["recarga"])
-			c.draw_rect(Rect2(r.position + Vector2(0, r.size.y * (1.0 - frac)), Vector2(r.size.x, r.size.y * frac)), Color("ff8a5c", 0.55))
+			Desenho._dr(c, Rect2(r.position + Vector2(0, r.size.y * (1.0 - frac)), Vector2(r.size.x, r.size.y * frac)), Color("ff8a5c", 0.55))
 
 
 ## Barra de energia em 2 níveis: meia = SUPERPOWER, cheia = ULTIMATE.
@@ -1094,8 +1173,8 @@ func _desenhar_barra(c: CanvasItem, i: int, l: Lutador, esq: bool) -> void:
 	var bh := 22.0
 	var tremer := Vector2(randf_range(-4, 4), 0) if aviso_barra[i] > 0 else Vector2.ZERO
 	var base := Vector2(bx, by) + tremer
-	c.draw_rect(Rect2(base - Vector2(6, 6), Vector2(bw + 12, bh + 12)), Desenho.PRETO)
-	c.draw_rect(Rect2(base, Vector2(bw, bh)), Color("2a2050") if aviso_barra[i] == 0 else Color("5a1020"))
+	Desenho._dr(c, Rect2(base - Vector2(6, 6), Vector2(bw + 12, bh + 12)), Desenho.PRETO)
+	Desenho._dr(c, Rect2(base, Vector2(bw, bh)), Color("2a2050") if aviso_barra[i] == 0 else Color("5a1020"))
 	var cheia := l.barra >= 100.0
 	var meia := l.barra >= 50.0
 	var pisca := int(tempo_total * 8) % 2 == 0
@@ -1105,9 +1184,41 @@ func _desenhar_barra(c: CanvasItem, i: int, l: Lutador, esq: bool) -> void:
 	elif meia:
 		cor = Color("7ef0ff")
 	var largura := bw * l.barra / 100.0
-	c.draw_rect(Rect2(base + Vector2(0 if esq else bw - largura, 0), Vector2(largura, bh)), cor)
-	c.draw_rect(Rect2(base, Vector2(bw, 5)), Color(1, 1, 1, 0.3))
-	c.draw_rect(Rect2(base + Vector2(bw / 2.0 - 2, -4), Vector2(4, bh + 8)), Desenho.PRETO)
+	var x_cheio := base + Vector2(0 if esq else bw - largura, 0)
+	Desenho._dr(c, Rect2(x_cheio, Vector2(largura, bh)), cor)
+	Desenho._dr(c, Rect2(x_cheio, Vector2(largura, 7)), cor.lightened(0.45))
+	Desenho._dr(c, Rect2(x_cheio + Vector2(0, bh - 5), Vector2(largura, 5)), cor.darkened(0.3))
+	# faíscas correndo dentro da barra quando há Super disponível
+	if meia:
+		var brilho := fposmod(tempo_total * (520.0 if cheia else 300.0), largura + 60.0) - 30.0
+		var bxp := x_cheio.x + (brilho if esq else largura - brilho)
+		Desenho._dr(c, Rect2(Vector2(clampf(bxp - 10, x_cheio.x, x_cheio.x + largura), base.y), Vector2(clampf(20.0, 0.0, largura), bh)), Color(1, 1, 1, 0.55))
+	if cheia:
+		Desenho._dr(c, Rect2(base - Vector2(10, 10), Vector2(bw + 20, bh + 20)), Color(1, 0.85, 0.3, 0.18 + 0.12 * sin(tempo_total * 10.0)), false, 4.0)
+	Desenho._dr(c, Rect2(base + Vector2(bw / 2.0 - 2, -4), Vector2(4, bh + 8)), Desenho.PRETO)
+	# dois losangos: cada um acende com meia barra
+	for n in 2:
+		var lx := (base.x + bw + 26 + n * 26) if esq else (base.x - 26 - n * 26)
+		var aceso := l.barra >= 50.0 * (n + 1)
+		var cl := Color("ffd23f") if aceso else Color("3a3050")
+		var cen := Vector2(lx, base.y + bh / 2.0)
+		Desenho._dp(c, PackedVector2Array([cen + Vector2(0, -15), cen + Vector2(13, 0), cen + Vector2(0, 15), cen + Vector2(-13, 0)]), Desenho.PRETO)
+		Desenho._dp(c, PackedVector2Array([cen + Vector2(0, -10), cen + Vector2(9, 0), cen + Vector2(0, 10), cen + Vector2(-9, 0)]), cl)
+
+
+## Rótulo da barra de energia (desenhado depois do lote de formas).
+func _rotulo_barra(c: CanvasItem, i: int, l: Lutador, esq: bool) -> void:
+	var bx := 40.0 if esq else 900.0
+	var bw := 340.0
+	var tremer := Vector2(randf_range(-4, 4), 0) if aviso_barra[i] > 0 else Vector2.ZERO
+	var base := Vector2(bx, 680.0) + tremer
+	var cheia := l.barra >= 100.0
+	var meia := l.barra >= 50.0
+	var cor := Color("4aa8ff")
+	if cheia:
+		cor = Color("ffd23f") if int(tempo_total * 8) % 2 == 0 else Color("fff3b0")
+	elif meia:
+		cor = Color("7ef0ff")
 	var rotulo := "ULTIMATE!" if cheia else ("SUPER x1" if meia else "ENERGIA")
 	var cor_r := cor if meia else Color(1, 1, 1, 0.8)
 	if esq:

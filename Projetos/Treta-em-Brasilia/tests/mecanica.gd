@@ -47,6 +47,21 @@ func _initialize() -> void:
 	var eventos := []
 	A.evento.connect(func(_l, nome): eventos.append(nome))
 
+	# caminhada: acelera ao iniciar e freia ao soltar a direção
+	var x_inicio := A.position.x
+	fa.e["dir"] = true
+	A.passo()
+	ok(A.position.x - x_inicio < 4.6 and A.position.x > x_inicio, "caminhada acelera em vez de atingir velocidade máxima de imediato")
+	A.passo()
+	var x_antes_frear := A.position.x
+	fa.soltar()
+	A.passo()
+	var x_apos_frear := A.position.x
+	A.passo()
+	ok(x_apos_frear > x_antes_frear and A.position.x - x_apos_frear < x_apos_frear - x_antes_frear, "caminhada freia rapidamente ao soltar a direção")
+	A.position.x = 500.0
+	A.resetar_estado()
+
 	# soco acerta quem está parado
 	fa.e["soco"] = true
 	var acertou := false

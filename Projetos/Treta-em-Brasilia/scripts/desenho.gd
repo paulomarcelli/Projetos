@@ -155,10 +155,14 @@ static func pose_guarda(d: Dictionary, t: int) -> Dictionary:
 	p["pe_f"] = Vector2(34, 0)
 	p["pe_t"] = Vector2(-32, 0)
 	p["inclina"] = 0.08 + ritmo * 0.015
-	p["mao_f"] = Vector2(40, -138 + sobe * 4.0)
-	p["mao_t"] = Vector2(24, -126 + sobe * 4.0)
+	# os punhos vêm um pouco atrasados em relação ao corpo (peso), e giram de leve
+	var atraso := absf(sin(t * 0.18 - 0.7))
+	var giro := sin(t * 0.09)
+	p["mao_f"] = Vector2(40 + giro * 2.5, -138 + atraso * 5.0)
+	p["mao_t"] = Vector2(24 - giro * 2.0, -126 + atraso * 4.0)
+	p["pe_f"] = Vector2(34 + giro * 1.5, 0)
 	p["punho_grande"] = false
-	p["cabeca_desl"] = Vector2(1, sobe * 2.5)
+	p["cabeca_desl"] = Vector2(1 + giro, sobe * 2.5)
 	p["cabeca_giro"] = 0.05
 	if (t + d.get("nome", "").length() * 37) % 170 < 6:
 		p["expr"] = "piscar"
@@ -481,6 +485,13 @@ static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vecto
 		# vinco da calça e brilho na canela
 		_dl(c, quadril.lerp(joelho, 0.15) + Vector2(3, 0), joelho + Vector2(3, 1), cor.lightened(0.14), 3.0)
 		_dl(c, joelho + Vector2(3, 3), pe + Vector2(3, -12), cor.lightened(0.18), 3.0)
+		# lado de trás da perna na sombra e dobra atrás do joelho
+		_dl(c, quadril.lerp(joelho, 0.2) + Vector2(-6, 0), joelho + Vector2(-5, 0), cor.darkened(0.3), 3.0)
+		_dl(c, joelho + Vector2(-4, 4), pe + Vector2(-4, -12), cor.darkened(0.25), 2.5)
+		_dl(c, joelho + Vector2(-6, -3), joelho + Vector2(2, 2), cor.darkened(0.35), 2.0)
+		# barra da calça caindo sobre o sapato
+		var dcan := (pe - joelho).normalized()
+		_dl(c, pe - dcan * 9.0 + dcan.orthogonal() * 8.0, pe - dcan * 9.0 - dcan.orthogonal() * 8.0, cor.darkened(0.2), 3.0)
 	# sapato apoiado no chão (ou acompanhando a canela quando o pé sobe)
 	var dir_canela := (pe - joelho).normalized()
 	var frente := Vector2(1, 0)
@@ -495,9 +506,17 @@ static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vecto
 	var cor_sapato := Color("2a2230") if d["id"] != "eduarda" else Color("e8e8e8")
 	_poli(c, sapato, cor_sapato)
 	if not _cont:
+		# sola, salto e brilho do bico
+		var sola := Color("120c16") if d["id"] != "eduarda" else Color("b8b8b8")
+		_dp(c, PackedVector2Array([pe - frente * 9 + cima * 2.5, pe + frente * 19 + cima * 2.5, pe + frente * 20, pe - frente * 9]), sola)
+		_dp(c, PackedVector2Array([pe - frente * 9 + cima * 5, pe - frente * 2 + cima * 5, pe - frente * 2, pe - frente * 9]), sola)
 		_dl(c, pe + cima * 7 - frente * 6, pe + cima * 7 + frente * 10, cor_sapato.lightened(0.25), 2.0)
+		_dc(c, pe + cima * 6 + frente * 13, 2.2, cor_sapato.lightened(0.45))
 		if d["id"] == "eduarda":
-			_dl(c, pe + cima * 2 - frente * 8, pe + cima * 2 + frente * 16, Color("1f9d55"), 3.0)
+			# tênis: faixa verde, cadarço e sola branca
+			_dl(c, pe + cima * 4 - frente * 8, pe + cima * 4 + frente * 16, Color("1f9d55"), 3.0)
+			for k in 3:
+				_dl(c, pe + cima * 8.5 + frente * (k * 4.0 - 2.0), pe + cima * 8.5 + frente * (k * 4.0 + 1.0), Color("2a2230"), 1.5)
 
 
 static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vector2, mao: Vector2, de_tras: bool, grande: bool) -> void:
@@ -526,11 +545,31 @@ static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vecto
 			# punho da camisa aparecendo
 			var dir2 := (mao - cotovelo).normalized()
 			_dl(c, mao - dir2 * 11 + dir2.orthogonal() * 6, mao - dir2 * 11 - dir2.orthogonal() * 6, d["camisa"], 5.0)
+	if not _cont and not curta:
+		# sombra embaixo da manga (luz vem de cima e da frente)
+		var n := (cotovelo - ombro).orthogonal().normalized()
+		if n.y < 0:
+			n = -n
+		_dl(c, ombro + n * 6.0, cotovelo + n * 5.0, manga.darkened(0.3), 3.0)
 	var r := 11.5 if grande else 9.0
+	# punho fechado: a mão olha para onde o antebraço aponta, com nós dos dedos e polegar
+	var fd := (mao - cotovelo).normalized() if mao.distance_to(cotovelo) > 0.1 else Vector2(1, 0)
+	var fn := fd.orthogonal()
+	if fn.y > 0:
+		fn = -fn
 	_circ(c, mao, r, pele.darkened(0.2))
+	_circ(c, mao + fd * r * 0.45, r * 0.78, pele.darkened(0.2))
 	if not _cont:
-		_dc(c, mao + Vector2(1.5, -1.5), r - 2.5, pele)
-		_dl(c, mao + Vector2(-r * 0.4, -r * 0.2), mao + Vector2(r * 0.5, -r * 0.2), pele.darkened(0.25), 2.0)
+		_dc(c, mao + Vector2(1.0, -1.5), r - 2.5, pele)
+		_dc(c, mao + fd * r * 0.45 + Vector2(0.5, -1.0), r * 0.78 - 2.0, pele)
+		# nós dos dedos: três calombos na frente do punho
+		for k in 3:
+			var nk := mao + fd * r * 0.95 + fn * (r * 0.5 - k * r * 0.5)
+			_dc(c, nk, 2.4 if grande else 2.0, pele.lightened(0.12))
+		_dl(c, mao + fd * r * 0.75 + fn * r * 0.7, mao + fd * r * 0.75 - fn * r * 0.7, pele.darkened(0.3), 1.6)
+		# polegar dobrado por cima
+		_dl(c, mao - fd * r * 0.2 + fn * r * 0.55, mao + fd * r * 0.5 + fn * r * 0.15, pele.darkened(0.15), 3.0)
+		_dl(c, mao - fd * r * 0.5 - fn * r * 0.5, mao + fd * r * 0.2 - fn * r * 0.75, pele.darkened(0.32), 2.0)
 
 
 ## Arco de movimento (smear) entre onde o golpe saiu e onde chegou: uma faixa curva preenchida
@@ -583,6 +622,10 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 	_dl(c, Vector2(23 + 3 * b, -52), Vector2(21 + 11 * b, -18), roupa.lightened(0.22), 3.0)
 	if b > 0.0:
 		_da(c, Vector2(8 + 6 * b, -18), 12 + 6 * b, -0.9, 0.9, 8, roupa.lightened(0.12), 3.0)
+	# dobras do tecido na cintura e cava do braço
+	_dl(c, Vector2(-18, -10), Vector2(-8, -14), roupa.darkened(0.2), 2.0)
+	_dl(c, Vector2(16 + 6 * b, -12), Vector2(6 + 4 * b, -16), roupa.darkened(0.15), 2.0)
+	_da(c, Vector2(18, -50), 9.0, 1.2, 2.6, 6, roupa.darkened(0.25), 2.0)
 	var camisa: Color = d["camisa"]
 	match extra:
 		"toga":
@@ -609,6 +652,16 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 			_dr(c, Rect2(-22, -56, 5, 5), Color("ffd23f"))
 			for k in 3:
 				_dr(c, Rect2(14 + k * 3, -57, 2, 5), Color("ffd23f"))
+			# dragonas nos ombros, barra de condecorações e botões dos bolsos
+			_dr(c, Rect2(-28, -63, 13, 5), roupa.darkened(0.35))
+			_dr(c, Rect2(15, -63, 13, 5), roupa.darkened(0.35))
+			_dc(c, Vector2(-17, -61), 1.6, Color("c9a227"))
+			_dc(c, Vector2(17, -61), 1.6, Color("c9a227"))
+			var fitas := [Color("1f9d55"), Color("ffd23f"), Color("2a4f9a"), Color("c8102e")]
+			for k in 4:
+				_dr(c, Rect2(10 + k * 4, -49, 4, 5), fitas[k])
+			_dc(c, Vector2(-15.5, -37), 1.4, Color("c9a227"))
+			_dc(c, Vector2(16.5, -37), 1.4, Color("c9a227"))
 		"selecao":
 			# camisa amarela com gola verde em V, escudo e barra verde
 			_dp(c, PackedVector2Array([Vector2(-14, -63), Vector2(14, -63), Vector2(0, -40)]), camisa)
@@ -618,6 +671,11 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 			_dp(c, PackedVector2Array([Vector2(8, -33), Vector2(18, -33), Vector2(18, -23), Vector2(13, -19), Vector2(8, -23)]), Color("2a4f9a"))
 			_dc(c, Vector2(13, -28), 2.0, Color("ffd23f"))
 			_dr(c, Rect2(-21, -3, 42, 5), camisa)
+			# cinco estrelas sobre o escudo e faixa verde lateral da camisa
+			for k in 5:
+				_dc(c, Vector2(9 + k * 2.2, -36), 0.9, Color("1f9d55"))
+			_dl(c, Vector2(25, -54), Vector2(23, -6), camisa.darkened(0.12), 3.0)
+			_dl(c, Vector2(24, -54), Vector2(22, -6), Color("1f9d55"), 1.5)
 		_:
 			# paletó: camisa e gravata no V, lapelas, botões e bolso
 			_dp(c, PackedVector2Array([Vector2(-11, -63), Vector2(11, -63), Vector2(0, -26)]), camisa)
@@ -633,6 +691,11 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 			_dc(c, Vector2(3 + 2 * b, -17), 1.8, roupa.darkened(0.5))
 			_dc(c, Vector2(3 + 3 * b, -8), 1.8, roupa.darkened(0.5))
 			_dl(c, Vector2(10, -30), Vector2(19 + 4 * b, -30), roupa.darkened(0.3), 2.0)
+			# lenço no bolso do peito e costura das lapelas
+			if extra in ["eua", "faixa_roseta", "faixa"]:
+				var lenco := BRANCO if extra == "eua" else Color("e7e3d4")
+				_dp(c, PackedVector2Array([Vector2(-20, -47), Vector2(-14, -49), Vector2(-12, -45), Vector2(-20, -44)]), lenco)
+			_dl(c, Vector2(14, -60), Vector2(3, -27), roupa.lightened(0.25), 1.2)
 			match extra:
 				"faixa_roseta", "faixa":
 					# faixa presidencial verde e amarela atravessada, com a roseta

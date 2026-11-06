@@ -11,7 +11,7 @@
 
 [![Jogar no navegador](https://img.shields.io/badge/JOGAR_NO_NAVEGADOR-c81e2a?style=for-the-badge&logo=godotengine&logoColor=ffd23f)](https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/)
 
-<img src="docs/luta.png" alt="Bolsonaro contra Lula na Avenida Paulista, com o MASP, o trânsito e os dois lados da manifestação ao fundo" width="860">
+<img src="docs/luta.png" alt="Bolsonaro acerta Lula com a metralhadora de brinquedo na Avenida Paulista: estalo de impacto, retratos ao lado das barras de vida e a plateia dos dois lados" width="860">
 
 </div>
 
@@ -119,7 +119,7 @@ Controle: direcional, X soco, A chute, B especial, Y provocar, **RB super**, LB 
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/titulo.png" alt="Menu inicial com o logo, os botões PLAY, MULTIPLAYER, ARCADE MODE, TRAINING, CHARACTER SELECT e SETTINGS e dois lutadores em pose de luta"></td>
+    <td width="50%"><img src="docs/titulo.png" alt="Menu inicial com o logo, os botões PLAY, MULTIPLAYER, ARCADE MODE, TRAINING, CHARACTERS e SETTINGS e dois lutadores em pose de luta"></td>
     <td width="50%"><img src="docs/selecao.png" alt="Seleção de lutadores com retratos, atributos e o Superpower e o Ultimate de cada lado"></td>
   </tr>
   <tr>
@@ -131,6 +131,8 @@ Controle: direcional, X soco, A chute, B especial, Y provocar, **RB super**, LB 
 ## 🎨 Visual 16 bits
 
 Não há imagens prontas além das cabeças: tudo é desenhado em código. O jogo pensa em 1280×720 e desenha numa tela de **480×270** ampliada sem suavização, com contorno escuro, sombreado, céu pontilhado (dithering) e a fonte pixelada **Press Start 2P** (OFL, em `fontes/`). Para rodar bem em aparelhos modestos, cenário, plateia e controles de toque viram textura (atualizada só quando muda) e cada lutador é enviado à placa de vídeo num único lote de triângulos (`scripts/lote.gd`): a luta inteira cabe em ~35–55 chamadas de desenho por quadro.
+
+Detalhes de acabamento: punhos fechados com nós dos dedos e polegar, sombra embaixo das mangas e atrás das pernas, sapatos com sola e salto, dobras do tecido, dragonas e condecorações na farda, lenço no bolso dos paletós e as estrelas na camisa da seleção. Na movimentação, a caminhada acelera e freia (patch da Manus), os punhos acompanham o corpo com atraso, os passos e as freadas levantam poeira e o golpe acerta com um clarão branco. Nos efeitos, cada impacto tem um estalo de quadrinho com riscos, os tiros têm clarão no cano e as explosões viram bola de fogo com estilhaços e onda de choque no chão. No HUD, as barras de vida são inclinadas, com rastro vermelho do dano, marcas a cada 10%, retrato do lutador (que muda de expressão quando apanha), medalhas de round, placa do relógio e a barra de energia com brilho correndo e dois losangos de Super. HUD e partículas também saem em lote.
 
 ## ▶️ Como rodar
 

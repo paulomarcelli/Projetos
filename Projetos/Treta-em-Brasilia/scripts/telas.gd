@@ -132,7 +132,7 @@ class Titulo extends Node2D:
 	var t := 0.0
 	var _par := 0
 	const ITENS := [["PLAY", "1 jogador contra a CPU"], ["MULTIPLAYER", "2 jogadores no mesmo aparelho"], ["ARCADE MODE", "enfrente todos em sequência"],
-		["TRAINING", "treino livre, barra infinita"], ["CHARACTER SELECT", "fichas e golpes dos lutadores"], ["SETTINGS", "som, dificuldade e controles"]]
+		["TRAINING", "treino livre, barra infinita"], ["CHARACTERS", "fichas e golpes dos lutadores"], ["SETTINGS", "som, dificuldade e controles"]]
 	const CHAVES := ["play", "multiplayer", "arcade", "treino", "lutadores", "config"]
 
 	func _item(i: int) -> Rect2:
@@ -193,6 +193,12 @@ class Titulo extends Node2D:
 		pb["cabeca_giro"] = 0.05
 		var alt_a: float = a.get("corpo", {}).get("alt", 1.0)
 		var alt_b: float = b.get("corpo", {}).get("alt", 1.0)
+		# holofotes no chão embaixo de cada lutador
+		for xh in [lerpf(-200, 150, entra), lerpf(1480, 1130, entra)]:
+			draw_set_transform(Vector2(xh, 690), 0.0, Vector2(1.0, 0.18))
+			draw_circle(Vector2.ZERO, 150.0, Color(1, 0.85, 0.4, 0.16))
+			draw_circle(Vector2.ZERO, 95.0, Color(0, 0, 0, 0.35))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		Desenho.lutador_em(self, a, pa, Vector2(lerpf(-200, 150, entra), 690), Vector2(1.55, 1.55) * alt_a)
 		Desenho.lutador_em(self, b, pb, Vector2(lerpf(1480, 1130, entra), 690), Vector2(-1.55, 1.55) * alt_b)
 		if entra < 1.0:
@@ -203,7 +209,7 @@ class Titulo extends Node2D:
 			var sel := i == opcao
 			var r := _item(i)
 			var rot: String = ITENS[i][0]
-			Telas.botao(self, r, rot, Color("ffd23f") if sel else Color.WHITE, sel, 24 if rot.length() <= 12 else 18)
+			Telas.botao(self, r, rot, Color("ffd23f") if sel else Color.WHITE, sel, 24 if rot.length() <= 12 else (18 if rot.length() <= 14 else 15))
 		var dica: String = ITENS[opcao][1]
 		Desenho.texto(self, Vector2(640, 646), dica, 22, Color("7ec8ff"), Desenho.PRETO, 5)
 		Desenho.texto(self, Vector2(640, 706), "Paródia e humor. Sem apoio a partido ou candidato.", 18, Color(1, 1, 1, 0.75), Desenho.PRETO, 4)
@@ -325,7 +331,7 @@ class Selecao extends Node2D:
 
 	func _draw() -> void:
 		Telas.fundo_energia(self, t, Color("3a5aff"))
-		Desenho.texto(self, Vector2(640, 70), "ESCOLHA SEU LUTADOR", 56, Color("ffd23f"), Desenho.PRETO, 10)
+		Desenho.texto(self, Vector2(640, 76), "ESCOLHA SEU LUTADOR", 50, Color("ffd23f"), Desenho.PRETO, 10)
 		var dica := "Escolha o seu e depois o rival (Especial = aleatório)" if modo == 1 else ("Cada jogador escolhe com seus comandos" if modo == 2 else "Escolha o seu lutador")
 		Desenho.texto(self, Vector2(640, 108), dica, 20, Color(1, 1, 1, 0.8), Desenho.PRETO, 5)
 		var n := Personagens.LISTA.size()
@@ -340,7 +346,8 @@ class Selecao extends Node2D:
 				draw_rect(Rect2(r.position, Vector2(r.size.x, 8)), cor_p)
 				var ex := "feliz" if sel else ("piscar" if int(t * 10 + i * 7) % 40 == 0 else "neutro")
 				Desenho.cabeca(self, d, r.get_center() + Vector2(0, -18 + (sin(t * 6.0) * 2.0 if sel else 0.0)), 40.0 * (1.08 if sel else 1.0), {"expr": ex, "cabeca_giro": sin(t * 3.0 + i) * 0.05 if sel else 0.0})
-				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), d["nome"], 22, Color.WHITE, Desenho.PRETO, 5)
+				var nome_c: String = d["nome"]
+				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), nome_c, 22 if nome_c.length() <= 7 else 16, Color.WHITE, Desenho.PRETO, 5)
 			else:
 				draw_rect(r, Color("201a38"))
 				Desenho.texto(self, r.get_center() + Vector2(0, 8), "?", 80, Color(1, 1, 1, 0.18), Desenho.PRETO, 0)
@@ -351,7 +358,10 @@ class Selecao extends Node2D:
 			if not confirmado[k] or int(t * 6) % 2 == 0:
 				draw_rect(r, cor, false, 6.0)
 			var rotulo := "1P" if k == 0 else ("CPU" if modo == 1 else "2P")
-			Desenho.texto(self, Vector2(r.position.x + 30 if k == 0 else r.end.x - 34, r.position.y + 6), rotulo, 22, cor, Desenho.PRETO, 5)
+			# etiqueta colada na quina de fora da moldura
+			var ep := Vector2(r.position.x + 4, r.position.y - 22) if k == 0 else Vector2(r.end.x - 60, r.end.y + 2)
+			draw_rect(Rect2(ep, Vector2(56, 24)), cor)
+			Desenho.texto(self, ep + Vector2(28, 21), rotulo, 18, Color.WHITE, Desenho.PRETO, 4)
 		for k in (1 if modo == 3 else 2):
 			_ficha(k)
 		if modo != 3:
@@ -374,7 +384,8 @@ class Selecao extends Node2D:
 		var cor_p: Color = d.get("cor", Color.WHITE)
 		draw_circle(Vector2(x, 380), 140, Color(cor_p, 0.12))
 		Desenho.lutador_em(self, d, pose, Vector2(x, 480), Vector2(1.1 * (1 if esq else -1), 1.1) * alt)
-		Desenho.texto(self, Vector2(x, 160), d["nome"], 32, Color("ffd23f"), Desenho.PRETO, 8)
+		var nome_f: String = d["nome"]
+		Desenho.texto(self, Vector2(x, 160), nome_f, 32 if nome_f.length() <= 7 else 25, Color("ffd23f"), Desenho.PRETO, 8)
 		Desenho.texto(self, Vector2(x, 190), d["titulo"], 18, Color.WHITE, Desenho.PRETO, 4)
 		var atributos := [["VIDA", (float(d["vida"]) - 900.0) / 200.0], ["FORÇA", (float(d["forca"]) - 0.85) / 0.25], ["VELOC.", (float(d["velocidade"]) - 0.85) / 0.3]]
 		for j in 3:
@@ -806,6 +817,16 @@ class Versus extends Node2D:
 		Desenho.texto(self, Vector2(lerpf(1580, 950, e), 640), b["nome"], 48, Color("ffd23f"), Desenho.PRETO, 10)
 		var vs := 1.0 + maxf(0.0, 0.6 - (t - 0.3)) * 2.0 if t > 0.3 else 0.0
 		if vs > 0.0:
+			# raio do choque entre os dois e estrela atrás do VS
+			var cen := Vector2(640, 360)
+			for j in 14:
+				var a := j * TAU / 14.0 + t * 0.8
+				var a2 := a + TAU / 34.0
+				draw_colored_polygon(PackedVector2Array([cen, cen + Vector2(cos(a), sin(a)) * 420.0 * minf(vs, 1.3), cen + Vector2(cos(a2), sin(a2)) * 420.0 * minf(vs, 1.3)]), Color(1, 0.85, 0.3, 0.12))
+			var zig := PackedVector2Array()
+			for j in 9:
+				zig.append(Vector2(640 + (14.0 if j % 2 == 0 else -14.0) * vs, 120 + j * 62.0))
+			draw_polyline(zig, Color(1, 1, 1, 0.85), 6.0)
 			Desenho.texto(self, Vector2(640, 400), "VS", int(120 * vs), Color("ff5a4e"), Desenho.PRETO, 16)
 		var nome_c: String = Cenarios.LISTA[Cenarios.indice(cenario)]["nome"]
 		Desenho.texto(self, Vector2(640, 700), "ARENA: " + nome_c, 20, Color.WHITE, Desenho.PRETO, 5)

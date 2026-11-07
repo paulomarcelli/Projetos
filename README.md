@@ -16,6 +16,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 ![GSAP](https://img.shields.io/badge/GSAP-0AE448?style=flat-square&logo=greensock&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Phaser](https://img.shields.io/badge/Phaser_3-8B5CF6?style=flat-square&logoColor=white)
+![Godot](https://img.shields.io/badge/Godot-478CBF?style=flat-square&logo=godotengine&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
@@ -96,12 +97,21 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
   </tr>
   <tr>
     <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/"><img src="docs/capas/treta-em-brasilia.webp" alt="Treta em Brasília: Bolsonaro e Lula lutando na Avenida Paulista, com o balão IMBROCHÁVEL!, o telão PLANTÃO e o vira-lata caramelo"></a>
+      <h3>🥊 Treta em Brasília</h3>
+      Jogo de luta satírico 16 bits com políticos brasileiros (Lula, Bolsonaro, Xandão, Trump, Erika, Nikolas, Flávio, Renan…): especiais, SUPER, Ultimate com cinemática, memes nas arenas e controles de toque no celular.<br>
+      <sub>Godot 4.3 · GDScript · pixel art gerada das fotos · exportação Web</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/"><b>Jogar ↗</b></a> · <a href="Projetos/Treta-em-Brasilia">Código</a>
+    </td>
+    <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><img src="docs/capas/cenicienta.webp" alt="Site Cenicienta com o título em rosa neon sobre o clipe"></a>
       <h3>👠 Cenicienta</h3>
       Site do single de 2024 da Karol Sevilla: a música, o significado e o clipe.<br>
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><b>Abrir site ↗</b></a> · <a href="Projetos/Cenicienta">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><img src="docs/capas/una-noche-mas.webp" alt="Site Una Noche Más com o título em rosa e a Karol em cena do clipe"></a>
       <h3>🌙 Una Noche Más</h3>
@@ -109,8 +119,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><b>Abrir site ↗</b></a> · <a href="Projetos/Una-Noche-Mas">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
       <h3>🌙 LUNA MIND</h3>
@@ -118,6 +126,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · Flask · OpenAI · Gemini API · Render</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>Abrir a Luna ↗</b></a> · <a href="Projetos/Luna-AI">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="Projetos/Joken-Po-Python"><img src="docs/capas/joken-po.webp" alt="Joken-Po: uma partida de pedra, papel e tesoura no terminal"></a>
       <h3>✊ Joken-Po em Python</h3>
@@ -140,6 +150,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 | [Landing page Karol Sevilla](Projetos/landing%20page%20Karol%20Sevilla) | Vite · JavaScript · GSAP · WebGL | 🟢 Publicado |
 | [Site Karol Sevilla](Projetos/Site-Karol-Sevilla) | HTML · CSS · JavaScript | 🟢 Publicado |
 | [Geometry Heroes (Tarefa de POO)](Projetos/Tarefa-POO-JavaScript) | JavaScript · Phaser 3 · POO | 🟢 Publicado |
+| [Treta em Brasília](Projetos/Treta-em-Brasilia) · [jogar ↗](https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/) | Godot 4.3 · GDScript | 🟢 Publicado |
 | [Cenicienta](Projetos/Cenicienta) | HTML · CSS · JavaScript | 🟢 Publicado |
 | [Una Noche Más](Projetos/Una-Noche-Mas) | HTML · CSS · JavaScript | 🟢 Publicado |
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | 🟢 Concluído |

@@ -37,6 +37,8 @@ CAIXAS = {
     "eduarda": {"caixa": (185, 0, 565, 410), "barba": False, "oculos": True, "sobr": 1, "sobr_cor": (40, 28, 26),
                 "risada": True, "cabelo_escuro": (34, 24, 24), "oculos_cor": (226, 228, 234)},
     # cabelo loiro ondulado e volumoso, olhar firme e batom nude
+    # sorriso largo de dentes à mostra e topete castanho curto
+    "pavanato": {"caixa": (240, 12, 575, 420), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (88, 56, 38), "dentes": True},
     "erika": {"caixa": (205, 40, 585, 440), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (92, 62, 44)},
 }
 

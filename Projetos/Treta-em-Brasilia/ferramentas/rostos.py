@@ -4,7 +4,7 @@ from mediapipe.tasks.python import vision
 opt = vision.FaceLandmarkerOptions(base_options=mpt.BaseOptions(model_asset_path=str(__import__('pathlib').Path(__file__).with_name('face_landmarker.task'))), num_faces=1)
 det = vision.FaceLandmarker.create_from_options(opt)
 res={}
-for n in ['lula','bolsonaro','xandao','trump','eduarda','erika']:
+for n in ['lula','bolsonaro','xandao','trump','eduarda','erika','pavanato']:
     img = mp.Image.create_from_file(str(__import__('pathlib').Path(__file__).resolve().parent.parent / 'fotos' / f'{n}.jpg'))
     r = det.detect(img)
     if not r.face_landmarks: print(n,'sem rosto'); continue

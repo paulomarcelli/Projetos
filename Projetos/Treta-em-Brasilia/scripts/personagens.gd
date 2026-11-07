@@ -188,10 +188,39 @@ const LISTA := [
 		"memes": ["Fim da escala 6x1!", "Vida além do trabalho!", "Não me calarão!", "36 horas semanais!", "Assina a PEC!", "Vou representar!"],
 		"vitoria": "Mais uma vitória pra classe trabalhadora!",
 	},
+	{
+		# vereador mais votado da história de SP (2024) e deputado federal com ~3 milhões de votos (PL-SP);
+		# ficou conhecido pelos vídeos abordando estudantes na USP e pela Frente Parlamentar Antiwoke
+		"id": "pavanato", "nome": "PAVANATO", "titulo": "O Mais Votado", "foto": "pavanato",
+		"bio": "Influencer de microfone na mão. Chega de surpresa, grava tudo, ergue a Frente Antiwoke contra projéteis e soterra o rival em 3 milhões de votos.",
+		"pele": Color("e8a882"), "cabelo": Color("6a4026"), "estilo_cabelo": "curto", "barba": false, "oculos": false,
+		"roupa": Color("1d2a4e"), "camisa": Color("15131a"), "gravata": Color(0, 0, 0, 0), "calca": Color("2c3a5c"),
+		"extra": "antiwoke", "velocidade": 1.1, "forca": 0.97, "vida": 980,
+		"corpo": {"alt": 1.04, "larg": 0.9, "barriga": 0.0}, "idle": "selfie", "cor": Color("1f6fd1"),
+		"musica": "usp",
+		"habilidades": {
+			"projetil": {"nome": "Tá Gravando?", "pose": "filmar", "inicio": 11, "ativo": 1, "rec": 20, "recarga": 60, "som": "notificacao",
+				"tiro": {"forma": "rec", "dano": 64.0, "vel": 10.5, "tam": 1.1}},
+			"frente": {"nome": "Visita Surpresa na USP", "pose": "microfone_avanco", "inicio": 9, "ativo": 18, "rec": 18, "recarga": 85, "som": "microfone",
+				"corpo": {"caixa": Rect2(0, -175, 115, 155), "dano": 48.0, "avanco": 12.5, "hits": 2, "intervalo": 9, "derruba": true}},
+			"cima": {"nome": "Mais Votado da História!", "pose": "gancho", "inicio": 3, "ativo": 12, "rec": 22, "recarga": 46, "invencivel": 9, "som": "whoosh_forte",
+				"salto": Vector2(3.0, -17.0), "corpo": {"caixa": Rect2(5, -238, 74, 208), "dano": 94.0, "derruba": true, "nivel": "alto"}, "prop": "joinha"},
+			"baixo": {"nome": "Frente Antiwoke", "pose": "carimbo_chao", "inicio": 12, "ativo": 1, "rec": 20, "recarga": 150, "som": "carimbo",
+				"zona": {"forma": "antiwoke", "dist": 115.0, "larg": 130.0, "dur": 170, "dano": 10.0, "intervalo": 28, "efeito": "apaga"}},
+			"tras": {"nome": "Treta no Aeroporto", "pose": "arremesso", "inicio": 12, "ativo": 1, "rec": 22, "recarga": 85, "som": "projetil",
+				"tiro": {"forma": "mala", "dano": 72.0, "vel": 7.0, "arco": -14.0, "quica": 1, "tam": 1.15}},
+			"super": {"nome": "3 Milhões de Votos", "pose": "votos", "inicio": 14, "ativo": 1, "rec": 22, "custo": 50.0, "som": "papel", "voz": "super",
+				"chuva": {"forma": "voto", "qtd": 10, "intervalo": 5, "dano": 21.0, "atraso": 24, "tam": 1.25, "espalha": 210.0}},
+			"ultimate": {"nome": "PRESIDENTE?!", "cinema": "pavanato", "dano": 320.0, "hits": 8},
+			"final": {"nome": "Corta Pro Insta!", "prop": "celular"},
+		},
+		"memes": ["Tá gravando?", "Mais votado da história!", "3 milhões de votos!", "Frente Antiwoke!", "Corta pro Insta!", "Vem debater!"],
+		"vitoria": "Corta essa parte e posta!",
+	},
 ]
 
 ## Quem ainda vai entrar (aparece com "?" na seleção até chegar a foto).
-const EM_BREVE := ["FLÁVIO", "MILEI", "PAVANATO", "JANONES"]
+const EM_BREVE := ["FLÁVIO", "MILEI", "JANONES"]
 
 ## Ordem e rótulo dos comandos, para a tela de lutadores e o "como jogar".
 const COMANDOS := [

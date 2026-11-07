@@ -210,6 +210,20 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 			p["inclina"] = -0.1
 			p["expr"] = "feliz"
 			p["cabeca_giro"] = -0.25
+		"filmar":
+			# aponta o celular para o rival e o "REC" sai voando
+			p["prop"] = "celular"
+			if prep:
+				p["mao_f"] = Vector2(40, -190)
+				p["mao_t"] = Vector2(10, -140)
+				p["cabeca_giro"] = -0.1
+			else:
+				p["mao_f"] = Vector2(100, -170)
+				p["mao_t"] = Vector2(30, -140)
+				p["inclina"] = 0.12 * kp
+				p["pe_f"] = Vector2(38, 0)
+				p["pe_t"] = Vector2(-30, 0)
+				p["expr"] = "feliz"
 		"protocolar":
 			# ergue a pasta da PEC e lança com o braço todo, girando o tronco
 			if prep:
@@ -287,6 +301,15 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if sin(t * 0.18) > 0 else "neutro"
+		"pavanato":
+			# na posse: acena com as duas mãos, joinha e celular filmando a multidão
+			p["prop"] = "celular"
+			p["prop_t"] = "joinha"
+			p["mao_f"] = Vector2(60, -220 + sin(t * 0.2) * 10)
+			p["mao_t"] = Vector2(-40, -210 - absf(sin(t * 0.2)) * 10)
+			p["inclina"] = -0.06
+			p["cabeca_giro"] = -0.12
+			p["expr"] = "feliz"
 		"erika":
 			# na tribuna: ergue a PEC e comemora cada voto
 			p["prop"] = "pec"

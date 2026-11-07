@@ -136,6 +136,13 @@ static func pose_idle(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-14, -94)
 			if t % 300 < 34:
 				p["mao_f"] = Vector2(30, -150)  # mão no queixo, avaliando o réu
+		"selfie":
+			# celular erguido filmando a si mesmo, falando com a câmera
+			p["mao_f"] = Vector2(58, -214 + sin(t * 0.08) * 4)
+			p["prop"] = "celular"
+			p["mao_t"] = Vector2(14 + sin(t * 0.16) * 10, -132)
+			p["cabeca_giro"] = -0.1 + sin(t * 0.16) * 0.05
+			p["boca"] = "grito" if (t / 9) % 3 == 0 else "normal"
 		"cabelo":
 			# ajeita o cabelo de tempos em tempos, mão na cintura
 			p["mao_t"] = Vector2(-4, -82)
@@ -203,6 +210,13 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(10, -212 + absf(sin(t * 0.2)) * 10)
 			p["cabeca_giro"] = -0.2 + sin(t * 0.2) * 0.08
 			p["inclina"] = -0.08
+		"pavanato":
+			# aponta o celular para o rival: "tá gravando?"
+			p["mao_f"] = Vector2(84, -170)
+			p["prop"] = "celular"
+			p["mao_t"] = Vector2(30, -200 + absf(sin(t * 0.25)) * 12)
+			p["cabeca_giro"] = -0.12
+			p["inclina"] = 0.06
 		"eduarda":
 			p["mao_f"] = Vector2(72, -204)
 			p["prop"] = "celular"
@@ -242,6 +256,12 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-6, -84)
 			p["cabeca_giro"] = -0.12
 			p["inclina"] = -0.06
+		"pavanato":
+			p["mao_f"] = Vector2(56, -220 + bob * 4)
+			p["prop"] = "celular"
+			p["mao_t"] = Vector2(-30, -200)
+			p["prop_t"] = "joinha"
+			p["cabeca_giro"] = -0.15
 		"eduarda":
 			p["mao_f"] = Vector2(72, -204 + bob * 4)
 			p["prop"] = "celular"
@@ -294,6 +314,9 @@ static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
 		"erika":
 			p["mao_f"] = Vector2(22, -100)
 			p["mao_t"] = Vector2(8, -96)
+		"pavanato":
+			p["mao_f"] = Vector2(30, -96)
+			p["prop"] = "celular"
 		"eduarda":
 			p["mao_f"] = Vector2(30, -96)
 			p["prop"] = "celular"
@@ -529,18 +552,19 @@ static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vecto
 			frente = -frente
 		cima = -dir_canela
 	var sapato := PackedVector2Array([pe + cima * 9 - frente * 9, pe + cima * 9 + frente * 12, pe + frente * 20, pe - frente * 9])
-	var cor_sapato := Color("2a2230") if d["id"] != "eduarda" else Color("e8e8e8")
+	var tenis: bool = d["id"] in ["eduarda", "pavanato"]
+	var cor_sapato := Color("2a2230") if not tenis else Color("e8e8e8")
 	_poli(c, sapato, cor_sapato)
 	if not _cont:
 		# sola, salto e brilho do bico
-		var sola := Color("120c16") if d["id"] != "eduarda" else Color("b8b8b8")
+		var sola := Color("120c16") if not tenis else Color("b8b8b8")
 		_dp(c, PackedVector2Array([pe - frente * 9 + cima * 2.5, pe + frente * 19 + cima * 2.5, pe + frente * 20, pe - frente * 9]), sola)
 		_dp(c, PackedVector2Array([pe - frente * 9 + cima * 5, pe - frente * 2 + cima * 5, pe - frente * 2, pe - frente * 9]), sola)
 		_dl(c, pe + cima * 7 - frente * 6, pe + cima * 7 + frente * 10, cor_sapato.lightened(0.25), 2.0)
 		_dc(c, pe + cima * 6 + frente * 13, 2.2, cor_sapato.lightened(0.45))
-		if d["id"] == "eduarda":
-			# tênis: faixa verde, cadarço e sola branca
-			_dl(c, pe + cima * 4 - frente * 8, pe + cima * 4 + frente * 16, Color("1f9d55"), 3.0)
+		if tenis:
+			# tênis: faixa colorida, cadarço e sola branca
+			_dl(c, pe + cima * 4 - frente * 8, pe + cima * 4 + frente * 16, Color("1f9d55") if d["id"] == "eduarda" else Color("1f6fd1"), 3.0)
 			for k in 3:
 				_dl(c, pe + cima * 8.5 + frente * (k * 4.0 - 2.0), pe + cima * 8.5 + frente * (k * 4.0 + 1.0), Color("2a2230"), 1.5)
 
@@ -635,6 +659,23 @@ static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vecto
 		_dl(c, mao - fd * r * 0.5 - fn * r * 0.5, mao + fd * r * 0.2 - fn * r * 0.75, pele.darkened(0.32), 2.0)
 
 
+## Letras de pixel 3x5 para estampas (dentro do corpo, que está transformado, a fonte não serve).
+const _FONTE_PX := {
+	"A": ["010", "101", "111", "101", "101"], "N": ["101", "111", "111", "111", "101"], "T": ["111", "010", "010", "010", "010"],
+	"I": ["111", "010", "010", "010", "111"], "W": ["101", "101", "111", "111", "101"], "O": ["111", "101", "101", "101", "111"],
+	"K": ["101", "110", "100", "110", "101"], "E": ["111", "100", "110", "100", "111"],
+}
+
+
+static func letras_px(c: CanvasItem, origem: Vector2, txt: String, px: float, cor: Color) -> void:
+	for n in txt.length():
+		var g: Array = _FONTE_PX.get(txt[n], [])
+		for y in g.size():
+			for x in 3:
+				if String(g[y])[x] == "1":
+					_dr(c, Rect2(origem + Vector2((n * 4 + x) * px, y * px), Vector2(px, px)), cor)
+
+
 ## Arco de movimento (smear) entre onde o golpe saiu e onde chegou: uma faixa curva preenchida
 ## que afina na saída, branca e translúcida, como nos fliperamas.
 static func _rastro(c: CanvasItem, ate: Vector2, de: Vector2) -> void:
@@ -694,6 +735,19 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 	_da(c, Vector2(18, -50), 9.0, 1.2, 2.6, 6, roupa.darkened(0.25), 2.0)
 	var camisa: Color = d["camisa"]
 	match extra:
+		"antiwoke":
+			# blazer azul-marinho aberto sobre a camiseta preta com "ANTI WOKE" em letras brancas
+			_dp(c, PackedVector2Array([Vector2(-16, -63), Vector2(16, -63), Vector2(15, 2), Vector2(-15, 2)]), camisa)
+			_da(c, Vector2(0, -63), 7.0, 0.1, PI - 0.1, 8, camisa.lightened(0.25), 2.0)  # gola careca
+			letras_px(c, Vector2(-12, -55), "ANTI", 1.6, BRANCO)
+			letras_px(c, Vector2(-12, -44), "WOKE", 1.6, BRANCO)
+			_dl(c, Vector2(-12, -33), Vector2(12, -33), Color("e5243b"), 2.5)  # risco embaixo
+			# lapelas do blazer aberto (bem abertas, para a estampa aparecer) e botão
+			_dp(c, PackedVector2Array([Vector2(-16, -63), Vector2(-22, -62), Vector2(-17, -10), Vector2(-14, -12)]), roupa.lightened(0.12))
+			_dp(c, PackedVector2Array([Vector2(16, -63), Vector2(22, -62), Vector2(17, -10), Vector2(14, -12)]), roupa.lightened(0.2))
+			_dc(c, Vector2(19, -16), 1.8, roupa.darkened(0.4))
+			# broche na lapela (como na foto)
+			_dr(c, Rect2(-21, -52, 4, 4), Color("c9a227"))
 		"blazer_vestido":
 			# vestido-blazer preto sem manga: decote em V, lapelas acetinadas, cinto fino e botões dourados
 			_dp(c, PackedVector2Array([Vector2(-10, -63), Vector2(10, -63), Vector2(0, -36)]), d["pele"])
@@ -1212,7 +1266,7 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 			if not _cont:
 				for i in 4:
 					_da(c, Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
-		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario":
+		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto":
 			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))

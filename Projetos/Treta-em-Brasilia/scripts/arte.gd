@@ -118,6 +118,37 @@ static func _prop_detalhe(c: CanvasItem, nome: String, mao: Vector2, ang: float)
 
 static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 	match forma:
+		"rec":
+			# celular gravando: tela com o ponto vermelho piscando e o flash estourando na frente
+			if not cont:
+				var f := 0.6 + 0.4 * sin(t * 0.9)
+				Desenho._dp(c, PackedVector2Array([Vector2(14, -6), Vector2(70, -30), Vector2(70, 30), Vector2(14, 6)]), Color(1, 1, 0.85, 0.28 * f))
+			Desenho._poli(c, PackedVector2Array([Vector2(-16, -26), Vector2(16, -26), Vector2(16, 26), Vector2(-16, 26)]), Color("1f1a24"))
+			if not cont:
+				Desenho._dr(c, Rect2(-12, -21, 24, 40), Color("2a2f45"))
+				if (t / 8) % 2 == 0:
+					Desenho._dc(c, Vector2(-5, -14), 4.0, Color("ff2d3d"))
+				Desenho._dr(c, Rect2(1, -16, 9, 3), BRANCO)
+				Desenho._dc(c, Vector2(10, 18), 3.0, Color("fff3b0"))
+		"mala":
+			# mala de bordo com etiqueta, girando no ar
+			var g := t * 0.22
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-26, -18), Vector2(26, -18), Vector2(26, 22), Vector2(-26, 22)]), Color("2f3b5c"))
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-8, -30), Vector2(8, -30), Vector2(8, -18), Vector2(-8, -18)]), Color("1a1f30"))
+			if not cont:
+				for j in 3:
+					Desenho._dl(c, Vector2(-16 + j * 16, -16).rotated(g), Vector2(-16 + j * 16, 20).rotated(g), Color("44527a"), 2.0)
+				Desenho._dr(c, Rect2(Vector2(10, 2).rotated(g), Vector2(10, 8)), Color("ffd23f"))
+		"voto":
+			# cédula com o X marcado, balançando ao cair
+			var g2 := sin(t * 0.25) * 0.3
+			Desenho._poli(c, _rot(Vector2.ZERO, g2, [Vector2(-22, -14), Vector2(22, -14), Vector2(22, 14), Vector2(-22, 14)]), BRANCO)
+			if not cont:
+				Desenho._dr(c, Rect2(Vector2(-18, -10).rotated(g2), Vector2(10, 10)), Color("1f6fd1"))
+				Desenho._dl(c, Vector2(-16, -8).rotated(g2), Vector2(-10, -2).rotated(g2), BRANCO, 2.0)
+				Desenho._dl(c, Vector2(-10, -8).rotated(g2), Vector2(-16, -2).rotated(g2), BRANCO, 2.0)
+				for j in 3:
+					Desenho._dl(c, Vector2(-2, -8 + j * 7).rotated(g2), Vector2(18, -8 + j * 7).rotated(g2), Color("9aa0a6"), 2.0)
 		"pec":
 			# a PEC: pasta dourada com o documento saindo, carimbo vermelho "6x1" riscado e brilho
 			var g := sin(t * 0.3) * 0.18
@@ -300,6 +331,22 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 			var cor := Color("ff5a4e")
 			cor.a = k
 			Desenho.texto(c, Vector2(0, -alt * 0.25), "SUSPENSO", 26, cor, Color(0, 0, 0, k), 6)
+		"antiwoke":
+			# muro de escudos azuis com faixa ANTIWOKE: apaga projéteis que entram
+			var sobe := clampf(t / 10.0, 0.0, 1.0)
+			var h := 190.0 * sobe
+			Desenho._dr(c, Rect2(-meia - 4, -h - 4, larg + 8, h + 4), Color(0.05, 0.04, 0.1, 0.9 * k))
+			Desenho._dr(c, Rect2(-meia, -h, larg, h), Color(0.12, 0.43, 0.82, 0.75 * k))
+			for j in 4:
+				var y := -h + 12.0 + j * 46.0
+				if y < -20.0:
+					Desenho._dr(c, Rect2(-meia + 6, y, larg - 12, 3), Color(1, 1, 1, 0.35 * k))
+			Desenho._dc(c, Vector2(0, -h * 0.55), 26.0 * sobe, Color(1, 0.84, 0.25, k))
+			Desenho._dc(c, Vector2(0, -h * 0.55), 19.0 * sobe, Color(0.12, 0.43, 0.82, k))
+			Desenho._dl(c, Vector2(-12, -h * 0.55 - 12), Vector2(12, -h * 0.55 + 12), Color(1, 0.84, 0.25, k), 5.0)
+			var cor2 := Color.WHITE
+			cor2.a = k
+			Desenho.texto(c, Vector2(0, -h - 14), "ANTIWOKE", 22, cor2, Color(0.1, 0.1, 0.3, k), 5)
 		"assinaturas":
 			# o rolo do abaixo-assinado se desenrola pelo chão: folha comprida com linhas de assinatura
 			var abre := clampf(t / 18.0, 0.0, 1.0)

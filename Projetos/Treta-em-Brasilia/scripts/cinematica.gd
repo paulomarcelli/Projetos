@@ -24,6 +24,13 @@ static func passo(cin: Dictionary, atk: Lutador, def: Lutador, part: Particulas)
 		"xandao":
 			if t == 192:
 				part.explosao(alvo, 1.2)
+		"pavanato":
+			if t > 50 and t < 175 and t % 7 == 0:
+				part.estrelas(alvo + Vector2(randf_range(-70, 70), randf_range(-50, 50)), 2)
+			if t == 180:
+				part.explosao(alvo, 1.1)
+			if t > 180 and t % 4 == 0:
+				part.confete(Vector2(640, 0), 8)
 		"erika":
 			if t > 60 and t < 170 and t % 9 == 0:
 				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
@@ -145,6 +152,55 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				cor4.a = k
 				c.draw_rect(Rect2(dx - 230, chao - 260, 460, 110).grow(-(1.0 - q2) * 10.0), Color(0.1, 0.0, 0.0, 0.6 * k))
 				Desenho.texto(c, Vector2(dx, chao - 180), "BLOQUEADO", int(tam * 0.5), cor4, Color.WHITE, 8)
+		"pavanato":
+			# posse de mentira: bandeira ao fundo, contador de votos disparando, flashes de câmera e cédulas
+			if not fundo:
+				for j in 9:
+					var tt := 46 + j * 12
+					if t >= tt and t < tt + 34:
+						var q := clampf((t - tt) / 20.0, 0.0, 1.0)
+						var pos := Vector2(dx + (j % 3 - 1) * 60.0 + (j / 3) * 14.0, lerpf(-60.0, chao - 140.0 - (j % 2) * 50.0, q * q))
+						c.draw_set_transform(pos, sin(t * 0.3 + j) * 0.4, Vector2(1.6, 1.6))
+						for passada in 2:
+							Desenho._cont = passada == 0
+							Arte.projetil(c, "voto", t + j * 5, Desenho._cont)
+						Desenho._cont = false
+						c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				# flashes de câmera em volta do rival
+				if t > 40 and t < 180 and (t / 5) % 3 == 0:
+					var fx := dx + sin(t * 1.7) * 120.0
+					var fy := chao - 160.0 + cos(t * 1.3) * 90.0
+					c.draw_circle(Vector2(fx, fy), 26.0, Color(1, 1, 0.9, 0.85 * k))
+					c.draw_circle(Vector2(fx, fy), 48.0, Color(1, 1, 0.9, 0.25 * k))
+				if t > 172:
+					var q4 := clampf((t - 172) / 10.0, 0.0, 1.0)
+					var tam := lerpf(150.0, 84.0, q4)
+					var cor := Color("ffd23f")
+					cor.a = k
+					c.draw_rect(Rect2(dx - 260, chao - 250, 520, 110), Color(0.0, 0.05, 0.15, 0.7 * k))
+					Desenho.texto(c, Vector2(dx, chao - 172), "MAIS VOTADO!", int(tam * 0.5), cor, Color("1f6fd1"), 8)
+				return
+			# bandeira gigante ondulando atrás de tudo
+			var cx := clampf((ax + dx) / 2.0, 320.0, 960.0)
+			var base := Rect2(cx - 300, chao - 470, 600, 300)
+			for i in 30:
+				var x0 := base.position.x + i * 20.0
+				var ond := sin(t * 0.12 + i * 0.4) * 8.0
+				c.draw_rect(Rect2(x0, base.position.y + ond, 21, base.size.y), Color(0.0, 0.6, 0.25, 0.9 * k))
+			var centro := base.get_center()
+			var losango := PackedVector2Array([centro + Vector2(0, -120), centro + Vector2(260, 0), centro + Vector2(0, 120), centro + Vector2(-260, 0)])
+			c.draw_colored_polygon(losango, Color(1.0, 0.84, 0.15, 0.95 * k))
+			c.draw_circle(centro, 84.0, Color(0.1, 0.2, 0.55, k))
+			c.draw_line(centro + Vector2(-82, -14), centro + Vector2(82, 14), Color(1, 1, 1, k), 10.0)
+			var votos := int(clampf((t - 30) / 140.0, 0.0, 1.0) * 3038438.0)
+			var txt := str(votos)
+			var fmt := ""
+			for i in txt.length():
+				if i > 0 and (txt.length() - i) % 3 == 0:
+					fmt += "."
+				fmt += txt[i]
+			c.draw_rect(Rect2(centro.x - 230, base.end.y + 6, 460, 56), Color(0.04, 0.04, 0.1, 0.85 * k))
+			Desenho.texto(c, Vector2(centro.x, base.end.y + 46), fmt + " VOTOS", 32, Color(1, 1, 1, k), Color("1f6fd1"), 6)
 		"erika":
 			# plenário: painel de votação enchendo de SIM, calendários 6x1 caindo no rival e o carimbo APROVADA
 			if not fundo:

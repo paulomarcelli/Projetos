@@ -74,6 +74,12 @@ func _initialize() -> void:
 		["erika_representa", _poder.bind("praca", 5, 1, "tras"), [118, 140]],
 		["super_erika", _poder.bind("praca", 5, 1, "super"), [112, 150, 170, 190, 215]],
 		["ult_erika", _poder.bind("praca", 5, 1, "ult"), [140, 200, 260, 300]],
+		["pav_rec", _poder.bind("usp", 6, 4, "projetil"), [246, 258]],
+		["pav_usp", _poder.bind("usp", 6, 4, "frente"), [244, 256]],
+		["pav_antiwoke", _poder.bind("usp", 6, 4, "baixo"), [262, 300]],
+		["pav_mala", _poder.bind("usp", 6, 4, "tras"), [252, 270]],
+		["super_pavanato", _poder.bind("usp", 6, 4, "super"), [252, 285, 305]],
+		["ult_pavanato", _poder.bind("usp", 6, 4, "ult"), [300, 360, 420, 455]],
 		["treino", _treino, [120]],
 	]
 	if filtro != "":
@@ -189,7 +195,7 @@ func _process(_d: float) -> bool:
 		for l in luta.p:
 			l.entrada = null
 		luta.ias = [null, null]
-	if _forcar != "" and luta != null and luta.p.size() == 2 and quadro >= 96 and luta.p[0].pode_agir():
+	if _forcar != "" and luta != null and luta.p.size() == 2 and quadro >= (232 if String(roteiro[etapa][0]).contains("pav") else 96) and luta.p[0].pode_agir():
 		luta.p[0].position.x = 520.0
 		luta.p[1].position.x = 760.0 if _forcar not in ["tras", "frente"] else 900.0
 		var l := luta.p[0]

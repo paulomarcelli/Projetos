@@ -226,9 +226,10 @@ class Selecao extends Node2D:
 	var t := 0.0
 	var meme := {}
 	var espera := 0.0
-	const COLS := 3
-	const CARTAO := Vector2(180, 126)
-	const ORIGEM := Vector2(355, 140)
+	const COLS := 4
+	const CARTAO := Vector2(132, 112)
+	const VAO := Vector2(10, 10)
+	const TOPO := 146.0
 	const BT_VOLTAR := Rect2(380, 650, 220, 50)
 	const BT_ALEATORIO := Rect2(680, 650, 220, 50)
 
@@ -326,8 +327,14 @@ class Selecao extends Node2D:
 		if cursor[i] != antes:
 			Som.sfx("menu_mover", 0.0)
 
+	## Grade centralizada; a última linha (incompleta) também fica no meio.
 	func _cartao(i: int) -> Rect2:
-		return Rect2(ORIGEM + Vector2((i % COLS) * (CARTAO.x + 10), (i / COLS) * (CARTAO.y + 12)), CARTAO)
+		var total := Personagens.LISTA.size() + Personagens.EM_BREVE.size()
+		var linha := i / COLS
+		var na_linha := mini(COLS, total - linha * COLS)
+		var largura := na_linha * CARTAO.x + (na_linha - 1) * VAO.x
+		var x0 := 640.0 - largura / 2.0
+		return Rect2(Vector2(x0 + (i % COLS) * (CARTAO.x + VAO.x), TOPO + linha * (CARTAO.y + VAO.y)), CARTAO)
 
 	func _draw() -> void:
 		Telas.fundo_energia(self, t, Color("3a5aff"))
@@ -337,23 +344,25 @@ class Selecao extends Node2D:
 		var n := Personagens.LISTA.size()
 		for i in n + Personagens.EM_BREVE.size():
 			var r := _cartao(i)
-			draw_rect(r.grow(4), Desenho.PRETO)
+			draw_rect(r.grow(3), Desenho.PRETO)
 			if i < n:
 				var d: Dictionary = Personagens.LISTA[i]
 				var sel: bool = cursor[0] == i or (cursor[1] == i and modo != 3)
-				draw_rect(r, Color("2c2450") if not sel else Color("3d3270"))
 				var cor_p: Color = d.get("cor", Color.WHITE)
-				draw_rect(Rect2(r.position, Vector2(r.size.x, 8)), cor_p)
+				# fundo com a cor do lutador bem suave e luz atrás da cabeça
+				draw_rect(r, Color("231c42").lerp(cor_p, 0.12 if not sel else 0.3))
+				draw_circle(r.get_center() + Vector2(0, -2), 46.0, Color(cor_p, 0.18 if not sel else 0.35))
+				draw_rect(Rect2(r.position, Vector2(r.size.x, 5)), cor_p)
 				var ex := "feliz" if sel else ("piscar" if int(t * 10 + i * 7) % 40 == 0 else "neutro")
-				Desenho.cabeca(self, d, r.get_center() + Vector2(0, -18 + (sin(t * 6.0) * 2.0 if sel else 0.0)), 40.0 * (1.08 if sel else 1.0), {"expr": ex, "cabeca_giro": sin(t * 3.0 + i) * 0.05 if sel else 0.0})
-				var nome_c: String = d["nome"]
-				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), nome_c, 22 if nome_c.length() <= 7 else 16, Color.WHITE, Desenho.PRETO, 5)
+				Desenho.cabeca(self, d, r.get_center() + Vector2(0, -2 + (sin(t * 6.0) * 2.0 if sel else 0.0)), 42.0 * (1.1 if sel else 1.0), {"expr": ex, "cabeca_giro": sin(t * 3.0 + i) * 0.05 if sel else 0.0})
+				# faixa na cor do lutador embaixo (o nome aparece grande na ficha do lado)
+				draw_rect(Rect2(r.position + Vector2(0, r.size.y - 9), Vector2(r.size.x, 9)), cor_p.darkened(0.45 if not sel else 0.1))
 			else:
-				draw_rect(r, Color("201a38"))
-				Desenho.texto(self, r.get_center() + Vector2(0, 8), "?", 80, Color(1, 1, 1, 0.18), Desenho.PRETO, 0)
-				Desenho.texto(self, Vector2(r.get_center().x, r.end.y - 8), Personagens.EM_BREVE[i - n], 20, Color(1, 1, 1, 0.35), Desenho.PRETO, 0)
+				draw_rect(r, Color("1a1530"))
+				Desenho.texto(self, r.get_center() + Vector2(0, 14), "?", 64, Color(1, 1, 1, 0.16), Desenho.PRETO, 0)
+				draw_rect(Rect2(r.position + Vector2(0, r.size.y - 9), Vector2(r.size.x, 9)), Color("120e22"))
 		for k in (1 if modo == 3 else 2):
-			var r := _cartao(cursor[k]).grow(6 + k * 8)
+			var r := _cartao(cursor[k]).grow(5 + k * 6)
 			var cor := Color("2a9df4") if k == 0 else Color("e63946")
 			if not confirmado[k] or int(t * 6) % 2 == 0:
 				draw_rect(r, cor, false, 6.0)
@@ -365,7 +374,11 @@ class Selecao extends Node2D:
 		for k in (1 if modo == 3 else 2):
 			_ficha(k)
 		if modo != 3:
-			Desenho.texto(self, Vector2(640, 612), "VS", 48, Color("ff5a4e"), Desenho.PRETO, 12)
+			Desenho.texto(self, Vector2(640, 560), "VS", 56, Color("ff5a4e"), Desenho.PRETO, 12)
+			# nomes dos dois escolhidos embaixo do VS
+			var a: String = Personagens.LISTA[cursor[0]]["nome"]
+			var b: String = Personagens.LISTA[cursor[1]]["nome"]
+			Desenho.texto(self, Vector2(640, 602), "%s  x  %s" % [a, b], 18, Color(1, 1, 1, 0.75), Desenho.PRETO, 4)
 		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE, false, 20)
 		Telas.botao(self, BT_ALEATORIO, "ALEATÓRIO", Color("ffd23f"), false, 20)
 		if not meme.is_empty():

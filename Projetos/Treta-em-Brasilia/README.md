@@ -58,6 +58,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 | **Eduarda** | Corte Viral! · Microfone Explosivo · Lacração Reversa · Debate Infinito · 1,9 Milhão de Votos | Polêmica nas Redes | **Treta Nacional** |
 | **Erika** | PEC 6x1 · Vida Além do Trabalho · Não Me Calarão! · Abaixo-Assinado · Representação! | Fim da Escala 6x1 | **PEC Aprovada** |
 | **Pavanato** | Tá Gravando? · Visita Surpresa na USP · Mais Votado da História! · Frente Antiwoke · Treta no Aeroporto | 3 Milhões de Votos | **Presidente?!** |
+| **Nikolas** | O Vídeo do Pix · Caminhada até Brasília · Mais Votado do Brasil! · Revoga! · Story de 1 Minuto | 300 Milhões de Views | **Caminhada!** |
 
 <table>
   <tr>
@@ -75,6 +76,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 - **Rosto da foto em pixel art** (`ferramentas/cabeca_pixel.py`) com 8 expressões redesenhadas em cada quadro: neutro, piscar, esforço, grito, dor, nocaute, feliz e derrota. A Eduarda segue a caricatura do boneco abridor de garrafas: cabelo escuro liso, óculos transparentes e a risada escancarada.
 - **Erika Hilton** (deputada federal, PSOL-SP): sátira do papel público dela, a PEC pelo fim da escala 6x1 (44 h para 36 h, movimento Vida Além do Trabalho), os abaixo-assinados e as representações. Vestido-blazer preto sem manga, escarpim e pulseira dourada; a Ultimate é a votação no plenário com o painel enchendo de SIM.
 - **Lucas Pavanato** (PL-SP, vereador mais votado da história de SP e deputado federal com ~3 milhões de votos): blazer azul-marinho aberto sobre a camiseta preta "ANTI WOKE", tênis e celular sempre gravando. A Frente Antiwoke é um muro de escudos que apaga projéteis; a Ultimate é a "posse" com a bandeira, flashes e o contador de votos disparando.
+- **Nikolas Ferreira** (PL-MG, deputado federal mais votado do Brasil em 2022): terno azul-marinho e gravata, bandeira do Brasil no mastro. O vídeo do Pix vira um losango girando, a Caminhada até Brasília é uma marcha com armadura e 4 acertos, e o "Revoga!" derruba um carimbo gigante. Na Ultimate, a estrada BR-040 na chuva com a placa contando de 240 km até "CHEGAMOS!".
 - **Tela de seleção nova:** grade 4 colunas só com retratos (fundo e faixa na cor de cada lutador), última linha centralizada, "?" para quem ainda vai entrar, e o confronto escrito embaixo do VS.
 - **Efeitos de poder na cor de cada lutador:** brilho e faíscas no início de cada especial, rastro nos projéteis, faíscas dos especiais puxando para a cor de quem bate e borda pulsando no chão das zonas.
 - **Cabeça independente:** atrasa em relação ao corpo, recua no golpe, balança andando, pisca sozinha.

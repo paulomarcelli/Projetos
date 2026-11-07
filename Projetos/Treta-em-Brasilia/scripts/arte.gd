@@ -118,6 +118,35 @@ static func _prop_detalhe(c: CanvasItem, nome: String, mao: Vector2, ang: float)
 
 static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 	match forma:
+		"pix":
+			# losango verde-água girando com "PIX" e o contador de views pulsando
+			var g := t * 0.18
+			var r := 30.0 + sin(t * 0.5) * 2.0
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(0, -r), Vector2(r, 0), Vector2(0, r), Vector2(-r, 0)]), Color("32bcad"))
+			if not cont:
+				Desenho._dp(c, _rot(Vector2.ZERO, g, [Vector2(0, -r * 0.62), Vector2(r * 0.62, 0), Vector2(0, r * 0.62), Vector2(-r * 0.62, 0)]), Color("1f8f84"))
+				Desenho.letras_px(c, Vector2(-10.5, -6), "PIX", 2.0, BRANCO)
+				Desenho._da(c, Vector2.ZERO, r + 8.0, -t * 0.2, -t * 0.2 + 2.0, 10, Color(0.6, 1, 0.95, 0.6), 3.0)
+		"curtida":
+			# coração de curtida
+			Desenho._circ(c, Vector2(-8, -6), 11.0, Color("ff3b6b"))
+			Desenho._circ(c, Vector2(8, -6), 11.0, Color("ff3b6b"))
+			Desenho._poli(c, PackedVector2Array([Vector2(-18, -2), Vector2(18, -2), Vector2(0, 20)]), Color("ff3b6b"))
+			if not cont:
+				Desenho._dc(c, Vector2(-10, -10), 3.5, Color(1, 1, 1, 0.7))
+		"play":
+			# botão de play vermelho de vídeo
+			Desenho._poli(c, PackedVector2Array([Vector2(-26, -18), Vector2(26, -18), Vector2(28, -12), Vector2(28, 12), Vector2(26, 18), Vector2(-26, 18), Vector2(-28, 12), Vector2(-28, -12)]), Color("e5243b"))
+			if not cont:
+				Desenho._dp(c, PackedVector2Array([Vector2(-7, -10), Vector2(11, 0), Vector2(-7, 10)]), BRANCO)
+		"revogado":
+			# carimbo gigante caindo com REVOGADO
+			Desenho._lin(c, Vector2(0, -70), Vector2(0, -36), Color("8a5a35"), 14.0)
+			Desenho._circ(c, Vector2(0, -74), 13.0, Color("8a5a35"))
+			Desenho._poli(c, PackedVector2Array([Vector2(-58, -36), Vector2(58, -36), Vector2(58, 10), Vector2(-58, 10)]), Color("e5243b"))
+			if not cont:
+				Desenho._dr(c, Rect2(-54, -32, 108, 38), Color("ff6b6b"))
+				Desenho.letras_px(c, Vector2(-50, -24), "REVOGADO", 3.0, BRANCO)
 		"rec":
 			# celular gravando: tela com o ponto vermelho piscando e o flash estourando na frente
 			if not cont:

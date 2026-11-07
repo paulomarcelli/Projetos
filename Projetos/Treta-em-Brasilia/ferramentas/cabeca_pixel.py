@@ -39,6 +39,8 @@ CAIXAS = {
     # cabelo loiro ondulado e volumoso, olhar firme e batom nude
     # sorriso largo de dentes à mostra e topete castanho curto
     "pavanato": {"caixa": (240, 12, 575, 420), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (88, 56, 38), "dentes": True},
+    # cabelo castanho escuro volumoso, sorriso aberto
+    "nikolas": {"caixa": (198, 10, 540, 450), "barba": False, "oculos": False, "sobr": 2, "sobr_cor": (48, 32, 24), "dentes": True},
     "erika": {"caixa": (205, 40, 585, 440), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (92, 62, 44)},
 }
 

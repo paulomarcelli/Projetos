@@ -210,6 +210,17 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 			p["inclina"] = -0.1
 			p["expr"] = "feliz"
 			p["cabeca_giro"] = -0.25
+		"caminhada":
+			# marcha decidida com a bandeira: passos largos, braço livre balançando
+			p["prop"] = "bandeira"
+			var passo := sin(t * 0.32)
+			p["pe_f"] = Vector2(26 + passo * 22, -maxf(0.0, passo) * 14.0)
+			p["pe_t"] = Vector2(-22 - passo * 22, -maxf(0.0, -passo) * 14.0)
+			p["quadril"] = -72.0 + absf(passo) * 4.0
+			p["mao_f"] = Vector2(44, -150)
+			p["mao_t"] = Vector2(-10 - passo * 26, -112)
+			p["inclina"] = 0.1
+			p["expr"] = "esforco" if prep else ("grito" if (t / 10) % 3 == 0 else "feliz")
 		"filmar":
 			# aponta o celular para o rival e o "REC" sai voando
 			p["prop"] = "celular"
@@ -301,6 +312,15 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if sin(t * 0.18) > 0 else "neutro"
+		"nikolas":
+			# marchando no lugar com a bandeira erguida
+			p["prop"] = "bandeira"
+			var passo2 := sin(t * 0.3)
+			p["pe_f"] = Vector2(26, -maxf(0.0, passo2) * 12.0)
+			p["pe_t"] = Vector2(-22, -maxf(0.0, -passo2) * 12.0)
+			p["mao_f"] = Vector2(40, -190)
+			p["mao_t"] = Vector2(-20 - passo2 * 20, -120)
+			p["expr"] = "feliz" if t > 160 else "grito"
 		"pavanato":
 			# na posse: acena com as duas mãos, joinha e celular filmando a multidão
 			p["prop"] = "celular"

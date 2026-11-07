@@ -24,6 +24,13 @@ static func passo(cin: Dictionary, atk: Lutador, def: Lutador, part: Particulas)
 		"xandao":
 			if t == 192:
 				part.explosao(alvo, 1.2)
+		"nikolas":
+			if t > 60 and t < 176 and t % 8 == 0:
+				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
+			if t == 182:
+				part.explosao(alvo, 1.1)
+			if t > 182 and t % 4 == 0:
+				part.confete(Vector2(640, 0), 8)
 		"pavanato":
 			if t > 50 and t < 175 and t % 7 == 0:
 				part.estrelas(alvo + Vector2(randf_range(-70, 70), randf_range(-50, 50)), 2)
@@ -152,6 +159,51 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				cor4.a = k
 				c.draw_rect(Rect2(dx - 230, chao - 260, 460, 110).grow(-(1.0 - q2) * 10.0), Color(0.1, 0.0, 0.0, 0.6 * k))
 				Desenho.texto(c, Vector2(dx, chao - 180), "BLOQUEADO", int(tam * 0.5), cor4, Color.WHITE, 8)
+		"nikolas":
+			# a caminhada: estrada BR-040, chuva, placa de km contando até Brasília e a multidão marchando
+			if not fundo:
+				# chuva
+				for j in 40:
+					var x := fposmod(j * 97.0 + t * 3.0, 1400.0) - 60.0
+					var y := fposmod(j * 53.0 + t * 18.0, 760.0) - 40.0
+					c.draw_line(Vector2(x, y), Vector2(x - 6, y + 22), Color(0.7, 0.85, 1.0, 0.45 * k), 2.0)
+				# multidão passando na frente, de bandeirinha
+				for j in 10:
+					var px := fposmod(j * 140.0 + t * 2.2, 1500.0) - 110.0
+					var bob := absf(sin(t * 0.3 + j)) * 6.0
+					var base_y := chao + 40.0 - bob
+					c.draw_circle(Vector2(px, base_y - 70), 13.0, Color(0.08, 0.06, 0.14, 0.9 * k))
+					c.draw_rect(Rect2(px - 13, base_y - 58, 26, 58), Color(0.08, 0.06, 0.14, 0.9 * k))
+					if j % 3 == 0:
+						c.draw_line(Vector2(px + 10, base_y - 50), Vector2(px + 10, base_y - 110), Color(0.3, 0.2, 0.1, k), 3.0)
+						c.draw_rect(Rect2(px + 11, base_y - 110, 30, 20), Color(0.12, 0.62, 0.33, k))
+						c.draw_circle(Vector2(px + 26, base_y - 100), 5.0, Color(1, 0.84, 0.25, k))
+				if t > 170:
+					var q4 := clampf((t - 170) / 10.0, 0.0, 1.0)
+					var tam := lerpf(150.0, 84.0, q4)
+					var cor := Color("ffd23f")
+					cor.a = k
+					c.draw_rect(Rect2(dx - 250, chao - 250, 500, 110), Color(0.0, 0.1, 0.05, 0.7 * k))
+					Desenho.texto(c, Vector2(dx, chao - 172), "CHEGAMOS!", int(tam * 0.55), cor, Color("1f9d55"), 8)
+				return
+			# estrada em perspectiva com a faixa andando
+			var cxr := clampf((ax + dx) / 2.0, 320.0, 960.0)
+			c.draw_rect(Rect2(-300, chao - 520, 1880, 520), Color(0.25, 0.3, 0.4, 0.8 * k))
+			var estrada := PackedVector2Array([Vector2(cxr - 60, chao - 300), Vector2(cxr + 60, chao - 300), Vector2(cxr + 700, chao), Vector2(cxr - 700, chao)])
+			c.draw_colored_polygon(estrada, Color(0.22, 0.22, 0.26, k))
+			for j in 6:
+				var q := fposmod(j / 6.0 + t * 0.012, 1.0)
+				var y0 := lerpf(chao - 300, chao, q * q)
+				var w := lerpf(4.0, 22.0, q * q)
+				c.draw_rect(Rect2(cxr - w / 2.0, y0, w, lerpf(8.0, 40.0, q * q)), Color(1, 0.85, 0.2, k))
+			# placa verde da rodovia
+			var km := int(lerpf(240.0, 0.0, clampf((t - 30) / 140.0, 0.0, 1.0)))
+			var placa := Rect2(cxr + 120, chao - 470, 300, 120)
+			c.draw_rect(placa.grow(6), Color(0.9, 0.9, 0.9, k))
+			c.draw_rect(placa, Color(0.05, 0.42, 0.22, k))
+			Desenho.texto(c, placa.position + Vector2(150, 50), "BRASÍLIA", 30, Color(1, 1, 1, k), Color(0, 0, 0, 0), 0)
+			Desenho.texto(c, placa.position + Vector2(150, 100), "%d km" % km, 32, Color(1, 1, 1, k), Color(0, 0, 0, 0), 0)
+			c.draw_line(placa.position + Vector2(150, placa.size.y + 6), placa.position + Vector2(150, 470), Color(0.6, 0.6, 0.6, k), 8.0)
 		"pavanato":
 			# posse de mentira: bandeira ao fundo, contador de votos disparando, flashes de câmera e cédulas
 			if not fundo:

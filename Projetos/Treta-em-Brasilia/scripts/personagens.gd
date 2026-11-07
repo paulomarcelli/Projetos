@@ -217,6 +217,35 @@ const LISTA := [
 		"memes": ["Tá gravando?", "Mais votado da história!", "3 milhões de votos!", "Frente Antiwoke!", "Corta pro Insta!", "Vem debater!"],
 		"vitoria": "Corta essa parte e posta!",
 	},
+	{
+		# deputado federal mais votado do Brasil em 2022 (PL-MG); o vídeo sobre o Pix passou de 300 milhões
+		# de views e o governo revogou a medida; em 2026 caminhou ~240 km de Paracatu até Brasília
+		"id": "nikolas", "nome": "NIKOLAS", "titulo": "O Viral do Pix", "foto": "nikolas",
+		"bio": "Rei do viral. Viraliza o Pix na cara do rival, marcha 240 km sem parar de bater e faz a canetada do governo cair na cabeça de quem estiver embaixo.",
+		"pele": Color("e3a57e"), "cabelo": Color("2e1f18"), "estilo_cabelo": "curto", "barba": false, "oculos": false,
+		"roupa": Color("1b2440"), "camisa": Color("f2f2f2"), "gravata": Color("1e3a8a"), "calca": Color("1b2440"),
+		"extra": "", "velocidade": 1.06, "forca": 1.05, "vida": 1050,
+		"corpo": {"alt": 1.0, "larg": 0.92, "barriga": 0.0}, "idle": "dedo", "cor": Color("00a3ff"),
+		"musica": "paulista",
+		"habilidades": {
+			"projetil": {"nome": "O Vídeo do Pix", "pose": "arremesso", "inicio": 11, "ativo": 1, "rec": 18, "recarga": 55, "som": "notificacao",
+				"tiro": {"forma": "pix", "dano": 74.0, "vel": 9.5, "tam": 1.2, "hits": 2, "intervalo": 12}},
+			"frente": {"nome": "Caminhada até Brasília", "pose": "caminhada", "inicio": 8, "ativo": 40, "rec": 14, "recarga": 90, "som": "whoosh_forte",
+				"corpo": {"caixa": Rect2(-10, -220, 130, 210), "dano": 30.0, "avanco": 6.5, "hits": 4, "intervalo": 10, "armadura": 1, "empurra": 4.0}},
+			"cima": {"nome": "Mais Votado do Brasil!", "pose": "gancho", "inicio": 3, "ativo": 12, "rec": 24, "recarga": 50, "invencivel": 9, "som": "whoosh_forte",
+				"salto": Vector2(2.6, -16.5), "corpo": {"caixa": Rect2(5, -235, 72, 205), "dano": 100.0, "derruba": true, "nivel": "alto"}},
+			"baixo": {"nome": "Revoga!", "pose": "chamar", "inicio": 14, "ativo": 1, "rec": 24, "recarga": 125, "som": "carimbo",
+				"chuva": {"forma": "revogado", "qtd": 1, "dano": 92.0, "atraso": 32, "tam": 2.0, "derruba": true}},
+			"tras": {"nome": "Story de 1 Minuto", "pose": "arremesso", "inicio": 10, "ativo": 18, "rec": 18, "recarga": 80, "som": "notificacao",
+				"tiro": {"forma": "curtida", "dano": 26.0, "vel": 8.0, "arco": -11.0, "qtd": 3, "intervalo": 7, "tam": 1.0}},
+			"super": {"nome": "300 Milhões de Views", "pose": "celular_alto", "inicio": 14, "ativo": 1, "rec": 22, "custo": 50.0, "som": "notificacao", "voz": "super",
+				"chuva": {"forma": "play", "qtd": 10, "intervalo": 5, "dano": 21.0, "atraso": 22, "tam": 1.3, "espalha": 210.0}},
+			"ultimate": {"nome": "CAMINHADA!", "cinema": "nikolas", "dano": 330.0, "hits": 8},
+			"final": {"nome": "Chegamos a Brasília!", "prop": "bandeira"},
+		},
+		"memes": ["O Pix é do povo!", "Mais votado do Brasil!", "240 km a pé!", "Viralizou!", "Revoga!", "Chegamos a Brasília!"],
+		"vitoria": "Postei, viralizou e revogaram!",
+	},
 ]
 
 ## Quem ainda vai entrar (aparece com "?" na seleção até chegar a foto).

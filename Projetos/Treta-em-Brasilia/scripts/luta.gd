@@ -27,6 +27,22 @@ var tempo := 99.0
 var fase := "intro"
 var fase_t := 0
 var hitstop := 0
+var _treme := -1  # quem treme durante a pausa de impacto
+
+## Onomatopeias de quadrinho nos golpes fortes, e a palavra de cada um nos especiais e no SUPER.
+const POW := ["POW!", "PÁ!", "TUM!", "BAM!", "CRÁS!", "TOMA!"]
+const IMPACTOS := {
+	"lula": ["PICANHA!", "FAZ O L!", "COMPANHEIRO!"],
+	"bolsonaro": ["TALKEY?", "TÁ OK?", "IMBROCHÁVEL!"],
+	"xandao": ["INQUÉRITO!", "MULTA DIÁRIA!", "SUSPENSO!"],
+	"trump": ["YOU'RE FIRED!", "TARIFF!", "TREMENDOUS!"],
+	"eduarda": ["MAIS VOTADA!", "CORTE VIRAL!", "ME SEGUE!"],
+	"erika": ["6x1 NÃO!", "ASSINA A PEC!", "REPRESENTEI!"],
+	"pavanato": ["TÁ GRAVANDO?", "ANTIWOKE!", "VEM DEBATER!"],
+	"nikolas": ["VIRALIZOU!", "REVOGA!", "O PIX É NOSSO!"],
+	"flavio": ["É SÓ CHOCOLATE!", "VERSÃO 3!", "TARIFLÁVIO!"],
+	"renan": ["NEM-NEM!", "VOTA 14!", "CORTA ESSA!"],
+}
 var congelado := 0
 var tremor := 0.0
 var combo := [0, 0]
@@ -275,6 +291,9 @@ func _physics_process(_delta: float) -> void:
 					_zoom_alvo = 1.0
 			elif hitstop > 0:
 				hitstop -= 1
+				if _treme >= 0:
+					p[_treme].tremido = (5.0 if hitstop % 2 == 0 else -5.0) if hitstop > 0 else 0.0
+					p[_treme].queue_redraw()
 			else:
 				_passo_lutadores()
 				_passo_projeteis()
@@ -530,6 +549,14 @@ func _resultado(i: int, r: String, ponto: Vector2, g: Dictionary, estava_tonto: 
 	particulas.impacto(ponto, dir, peso, cor)
 	if peso >= 0.9:
 		particulas.estrelas(ponto, 3)
+	_treme = 1 - i
+	# balão de quadrinho: a palavra do lutador nos especiais, onomatopeia nos golpes fortes
+	var especial: bool = g.get("especial", false) or g.get("super", false)
+	if especial or peso >= 0.9 or r in ["derrubou", "nocaute"]:
+		var palavras: Array = IMPACTOS.get(atk.dados.get("id", ""), POW) if especial else POW
+		var cor_b: Color = atk.dados.get("cor", Color("ffd23f")) if especial else Color("ffd23f")
+		efeitos.append({"tipo": "pow", "pos": ponto + Vector2(dir * 40.0, -60.0), "t": 0, "dur": 34 if especial else 24,
+			"txt": palavras[randi() % palavras.size()], "cor": cor_b, "giro": randf_range(-0.25, 0.25), "grande": especial})
 	var som := "soco_fraco"
 	if forca == "forte" or g.get("especial", false):
 		som = "impacto" if r in ["derrubou", "nocaute"] else "soco_forte"
@@ -771,7 +798,12 @@ func _poder(l: Lutador, tipo: String) -> void:
 	efeitos.append({"tipo": "poder", "t": 0, "dur": congelado + 6, "dono": l, "ult": ult})
 	if not ult:
 		congelado = 34
-		efeitos.append({"tipo": "cutin", "t": 0, "dur": 40, "dados": l.dados, "lado": p.find(l), "nome": l.hab.get("nome", "")})
+		var memes: Array = l.dados.get("memes", [""])
+		efeitos.append({"tipo": "cutin", "t": 0, "dur": 40, "dados": l.dados, "lado": p.find(l), "nome": l.hab.get("nome", ""), "frase": memes[randi() % memes.size()]})
+	# quadro de impacto: clarão na cor do lutador, onda no chão e brilho no peito
+	efeitos.append({"tipo": "clarao", "t": 0, "dur": 10, "cor": l.dados.get("cor", Color("ffd23f"))})
+	particulas.onda(l.position, 1.2)
+	particulas.brilho(l.position + Vector2(0, -150), l.dados.get("cor", Color("ffd23f")), 1.4)
 	Som.sfx("ultimate" if ult else "super", 0.0)
 	if ult:
 		Som.voz(l.dados["id"], "super")
@@ -940,18 +972,54 @@ func _desenhar_efeitos(c: CanvasItem) -> void:
 				Desenho.texto(c, pos, ef["txt"], tam, cor, borda, 8)
 			"veiculo":
 				Arte.veiculo_ceu(c, ef["forma"], int(ef["t"]), int(ef["dur"]), int(ef["dir"]))
+			"pow":
+				_desenhar_pow(c, ef, k)
+			"clarao":
+				var cc: Color = ef["cor"]
+				cc = cc.lightened(0.5)
+				cc.a = 0.55 * (1.0 - k)
+				c.draw_rect(Rect2(-300, -300, 1880, 1320), cc)
 			"poder":
 				var l: Lutador = ef["dono"]
 				var ult: bool = ef["ult"]
 				c.draw_rect(Rect2(-200, -200, 1680, 1120), Color(0.02, 0.0, 0.08, (0.6 if ult else 0.45) * (1.0 - k * k)))
 				var centro := l.position + Vector2(0, -150)
-				var cor := Color(1, 0.85, 0.3) if ult else Color(0.5, 0.8, 1.0)
+				var cor: Color = Color(1, 0.85, 0.3) if ult else Color(l.dados.get("cor", Color(0.5, 0.8, 1.0))).lightened(0.25)
 				for j in 16:
 					var a: float = j * TAU / 16.0 + float(ef["t"]) * 0.06
 					cor.a = 0.4 * (1.0 - k)
 					c.draw_line(centro + Vector2(cos(a), sin(a)) * 70.0, centro + Vector2(cos(a), sin(a)) * 700.0, cor, 12.0 if j % 2 == 0 else 5.0)
 				cor.a = 0.9 * (1.0 - k)
 				c.draw_arc(centro, 60.0 + k * 220.0, 0, TAU, 32, cor, 10.0 * (1.0 - k) + 2.0)
+
+
+## Balão estourado de quadrinho: estrela de pontas irregulares com contorno e a palavra no meio.
+func _desenhar_pow(c: CanvasItem, ef: Dictionary, k: float) -> void:
+	var grande: bool = ef["grande"]
+	var txt: String = ef["txt"]
+	var entra := clampf(k / 0.18, 0.0, 1.0)
+	var esc := (1.25 - 0.25 * entra) * entra * (1.0 if k < 0.75 else 1.0 - (k - 0.75) / 0.25 * 0.3)
+	var a := 1.0 if k < 0.75 else (1.0 - k) / 0.25
+	var centro: Vector2 = ef["pos"] + Vector2(0, -k * 18.0)
+	var r := (50.0 + txt.length() * 6.0) * (0.98 if grande else 0.8) * esc
+	var giro: float = ef["giro"]
+	var pts := PackedVector2Array()
+	var dentro := PackedVector2Array()
+	for j in 18:
+		var ang := giro + j * TAU / 18.0
+		var rr := r * (1.0 if j % 2 == 0 else 0.68) * (1.0 + 0.08 * sin(j * 2.3))
+		var v := Vector2(cos(ang) * rr, sin(ang) * rr * 0.62)
+		pts.append(centro + v * 1.1)
+		dentro.append(centro + v)
+	c.draw_colored_polygon(pts, Color(0.08, 0.05, 0.1, a))
+	var cor: Color = ef["cor"]
+	cor = cor.lightened(0.35)
+	cor.a = a
+	c.draw_colored_polygon(dentro, cor)
+	c.draw_colored_polygon(PackedVector2Array([centro + Vector2(-r * 0.5, -r * 0.24), centro + Vector2(r * 0.2, -r * 0.3), centro + Vector2(-r * 0.3, -r * 0.1)]), Color(1, 1, 1, 0.45 * a))
+	if entra >= 0.6:
+		var tam := int((22 if grande else 18) * clampf(esc, 0.6, 1.2))
+		Desenho.texto(c, centro + Vector2(0, tam * 0.4), txt, tam, Color(0.85, 0.08, 0.12, a), Color(1, 1, 1, a), 5)
 
 
 func _desenhar_cinema_fundo(c: CanvasItem) -> void:
@@ -1166,6 +1234,9 @@ func _desenhar_cutin(c: CanvasItem, ef: Dictionary) -> void:
 	var tx := lerpf(1400.0, 760.0, desliza) if esq else lerpf(-120.0, 520.0, desliza)
 	Desenho.texto(c, Vector2(tx, y0 + 110), String(ef["nome"]).to_upper(), 40, Color("ffd23f"), Desenho.PRETO, 10)
 	Desenho.texto(c, Vector2(tx, y0 + 150), "SUPERPOWER", 20, Color.WHITE, Desenho.PRETO, 5)
+	var frase: String = ef.get("frase", "")
+	if frase != "" and t > 8:
+		Desenho.texto(c, Vector2(tx, y0 + 180), "\"" + frase + "\"", 16, Color(cor.lightened(0.5)), Desenho.PRETO, 4)
 
 
 func _desenhar_recargas(c: CanvasItem, l: Lutador, pos: Vector2) -> void:

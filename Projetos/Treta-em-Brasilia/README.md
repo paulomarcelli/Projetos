@@ -39,12 +39,14 @@
 - **Defesa e contra-ataque:** segure para trás (agachado defende rasteira). Começar a defender bem na hora do golpe é **DEFESA PERFEITA**: não perde vida e o rival fica desequilibrado. Acertar quem está preparando um golpe é **CONTRA-ATAQUE** (mais dano).
 - **Peso nos golpes:** antecipação antes de cada ataque, pausa de impacto proporcional à força, empurrão (knockback), reação diferente se pega na cabeça, no corpo ou nas pernas, recuperação no fim, preparação do pulo e aterrissagem.
 - **Efeitos:** faíscas, anel de impacto, poeira, fumaça, estrelas, confete, linhas de velocidade, rastro de silhueta nos dashes e investidas, tremor de tela moderado, zoom e câmera lenta no nocaute.
+- **Balões de quadrinho:** golpes fortes estouram um "POW!", "PÁ!", "TOMA!"; especiais e SUPER mostram a palavra de quem bateu ("PICANHA!", "TALKEY?", "INQUÉRITO!", "YOU'RE FIRED!", "6x1 NÃO!", "VIRALIZOU!", "É SÓ CHOCOLATE!", "NEM-NEM!"...). Quem apanha sacode na pausa de impacto.
 
 ## ⚡ SUPER e Ultimate
 
 A **barra de energia** enche batendo, defendendo, apanhando e provocando. Ela tem dois níveis:
 
 - **Meia barra = SUPERPOWER:** o botão SUPER solta a habilidade especial do personagem.
+- **Abertura do SUPER:** clarão na cor do lutador, onda no chão, raios na cor dele e o cut-in com o nome do golpe e um bordão do personagem.
 - **Barra cheia = ULTIMATE:** a tela congela, a câmera dá zoom e começa uma **cinemática** exclusiva. Dá para escapar pulando ou defendendo na hora certa.
 
 O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a carga num anel, brilha quando dá para usar, fica dourado no Ultimate e treme e faz "bzz" quando não há energia. Cada especial tem **recarga** (os quadradinhos ao lado do nome). Ao soltar o Superpower, o retrato do lutador cruza a tela com o nome do golpe. A **Censura Suprema** do Xandão cala o rival: tarja preta e mosaico no rosto, falas viram ####, o nome no placar vira CENSURADO e ele fica sem especiais por 5 segundos.
@@ -90,6 +92,8 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 Em breve: Flávio Bolsonaro, Milei e Janones.
 
 ## 🏟️ Arenas
+
+- **Memes de fundo em todas as arenas:** um teco-teco puxa faixa com manchetes satíricas ("STF INVESTIGA O INQUÉRITO", "CARTA DO FLÁVIO: VERSÃO 4", "TRABALHADOR PEDE ESCALA 7x0"...), o vira-lata caramelo atravessa, senta para assistir e late quando a briga esquenta (na USP é a capivara do campus com o passarinho nas costas), a Paulista ganhou um telão de LED com PLANTÃO e a Casa Branca mostra os posts do presidente ("FLAVIO WHO??", "COVFEFE").
 
 | Arena | O que tem |
 |---|---|

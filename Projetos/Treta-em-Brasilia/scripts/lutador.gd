@@ -1127,8 +1127,18 @@ func _pose_ataque(p: Dictionary) -> void:
 var _pose_atual: Dictionary = Desenho.pose_padrao()
 
 
+var tremido := 0.0  # sacode o corpo na pausa de impacto
+
+
 func _draw() -> void:
 	if dados.is_empty():
+		return
+	if tremido != 0.0:
+		Desenho._base = Transform2D(0.0, Vector2(tremido, 0))
+		draw_set_transform_matrix(Desenho._base)
+		Desenho.lutador(self, dados, _pose_atual)
+		Desenho._base = Transform2D.IDENTITY
+		draw_set_transform_matrix(Desenho._base)
 		return
 	var giro: float = _pose_atual.get("cambalhota", 0.0)
 	if giro != 0.0:

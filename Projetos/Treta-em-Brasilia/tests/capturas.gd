@@ -100,6 +100,8 @@ func _initialize() -> void:
 		["super_renan", _poder.bind("paulista", 9, 8, "super"), [300, 330]],
 		["ult_renan", _poder.bind("paulista", 9, 8, "ult"), [340, 370, 420, 480]],
 		["ren_idle", _luta.bind("paulista", 9, 8, {}), [60, 200]],
+		["memes_casa", _luta.bind("casa_branca", 3, 9, {}), [700]],
+		["memes_paulista", _luta.bind("paulista", 9, 7, {}), [500]],
 		["treino", _treino, [120]],
 	]
 	if filtro != "":

@@ -53,6 +53,7 @@ static func fundo(c: CanvasItem, id: String) -> void:
 static func vivo(c: CanvasItem, id: String, t: float, agito: float) -> void:
 	Desenho.adiar_textos = true
 	_vivo(c, id, t, agito)
+	_memes(c, id, t, agito)
 	Desenho.textos_pendentes(c)
 
 
@@ -562,3 +563,162 @@ static func _gramado_frente(c: CanvasItem) -> void:
 		c.draw_line(Vector2(i * 84.0, 600), Vector2(i * 84.0 - 20, 690), Color("b0a894"), 3.0)
 	c.draw_rect(Rect2(0, 600, 1280, 4), Color("b0a894"))
 	c.draw_rect(Rect2(0, 686, 1280, 4), Color("b0a894"))
+
+
+# ---------------------------------------------------------------- memes de fundo (todas as arenas)
+
+## Manchetes do avião com faixa e do telão. Sátira de papéis públicos, nada de gente comum.
+const MANCHETES := [
+	"PICANHA A R$ 89 O QUILO", "STF INVESTIGA O INQUÉRITO", "CARTA DO FLÁVIO: VERSÃO 4",
+	"PIX SEGUE DE GRAÇA. DE NOVO.", "TRABALHADOR PEDE ESCALA 7x0", "LIVE EMERGENCIAL ÀS 3H",
+	"CARAMELO LIDERA PARA 2030", "TARIFA DE 50% NO PÃO DE QUEIJO", "INSTALADA A CPI DA CPI",
+	"CAMISETA ANTIWOKE ESGOTA", "STORY BATE 300 MI DE VIEWS", "MANSÃO GANHA PISCINA DE BOMBOM",
+]
+const POSTS := ["BRAZIL? TARIFF!", "FLAVIO WHO??", "FAKE NEWS!!!", "PICANHA? TAX IT", "WITCH HUNT!", "COVFEFE"]
+
+
+static func _memes(c: CanvasItem, id: String, t: float, agito: float) -> void:
+	match id:
+		"paulista":
+			_telao(c, Rect2(400, 150, 420, 104), t)
+		"casa_branca":
+			_post(c, t)
+	# avião puxando faixa com a manchete do dia
+	var ciclo := fposmod(t + 6.0, 26.0)
+	if ciclo < 11.0:
+		var q := ciclo / 11.0
+		_aviao_faixa(c, Vector2(lerpf(1420.0, -820.0, q), 196.0 + sin(t * 1.3) * 5.0), MANCHETES[int((t + 6.0) / 26.0) % MANCHETES.size()], t)
+	# o bicho da arena atravessa (na USP é a capivara do campus; nas outras, o vira-lata caramelo)
+	var ciclo2 := fposmod(t, 34.0)
+	if ciclo2 < 17.0:
+		var anda := ciclo2 < 7.0 or ciclo2 > 10.0
+		var x := 0.0
+		if ciclo2 < 7.0:
+			x = lerpf(-80.0, 640.0, ciclo2 / 7.0)
+		elif ciclo2 <= 10.0:
+			x = 640.0
+		else:
+			x = lerpf(640.0, 1380.0, (ciclo2 - 10.0) / 7.0)
+		c.draw_set_transform(Vector2(x, 562), 0.0, Vector2(1.55, 1.55))
+		if id == "usp":
+			_capivara(c, Vector2.ZERO, t, anda)
+		else:
+			_caramelo(c, Vector2.ZERO, t, anda, agito)
+		c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		if id != "usp" and agito > 0.65 and fposmod(t, 1.2) < 0.6:
+			var cab := Vector2(x + 20.0, 470.0)
+			c.draw_rect(Rect2(cab + Vector2(-10, -34), Vector2(176, 34)), PRETO)
+			c.draw_rect(Rect2(cab + Vector2(-8, -32), Vector2(172, 30)), BRANCO)
+			Desenho.texto(c, cab + Vector2(78, -10), "AU! AU!", 14, PRETO, BRANCO, 0)
+
+
+static func _aviao_faixa(c: CanvasItem, pos: Vector2, txt: String, t: float) -> void:
+	# teco-teco amarelo indo para a esquerda, com a hélice girando
+	c.draw_rect(Rect2(pos + Vector2(-34, -10), Vector2(62, 18)), Color("f2c230"))
+	c.draw_colored_polygon(PackedVector2Array([pos + Vector2(-34, -10), pos + Vector2(-44, -2), pos + Vector2(-34, 8)]), Color("f2c230"))
+	c.draw_rect(Rect2(pos + Vector2(-8, 0), Vector2(22, 6)), Color("c99a1a"))
+	c.draw_rect(Rect2(pos + Vector2(-6, -16), Vector2(26, 5)), Color("d62828"))
+	c.draw_colored_polygon(PackedVector2Array([pos + Vector2(20, -10), pos + Vector2(32, -24), pos + Vector2(32, -10)]), Color("d62828"))
+	c.draw_rect(Rect2(pos + Vector2(-26, -7), Vector2(10, 7)), Color("7ec8ff"))
+	var h := 14.0 * absf(sin(t * 40.0))
+	c.draw_line(pos + Vector2(-46, -2 - h), pos + Vector2(-46, -2 + h), Color(0.3, 0.3, 0.3, 0.7), 3.0)
+	# corda e faixa
+	var w := txt.length() * 22.0 + 34.0
+	var fx := pos.x + 70.0
+	c.draw_line(pos + Vector2(28, 0), Vector2(fx, pos.y + 2), Color(0.25, 0.2, 0.15), 2.0)
+	var ond := sin(t * 3.0) * 3.0
+	c.draw_rect(Rect2(fx - 2, pos.y - 17 + ond, w + 4, 38), PRETO)
+	c.draw_rect(Rect2(fx, pos.y - 15 + ond, w, 34), BRANCO)
+	c.draw_rect(Rect2(fx, pos.y - 15 + ond, 6, 34), Color("d62828"))
+	Desenho.texto(c, Vector2(fx + w / 2.0 + 3.0, pos.y + 9 + ond), txt, 13, Color("d62828"), BRANCO, 0)
+
+
+static func _caramelo(c: CanvasItem, pos: Vector2, t: float, anda: bool, agito: float) -> void:
+	# o vira-lata caramelo: abana o rabo, senta para ver a briga e late quando esquenta
+	var cor := Color("c98a45")
+	var esc := Color("9c6428")
+	var passo := sin(t * 12.0) if anda else 0.0
+	var sentado := not anda
+	if sentado:
+		c.draw_colored_polygon(PackedVector2Array([pos + Vector2(-22, 0), pos + Vector2(-20, -26), pos + Vector2(8, -40), pos + Vector2(14, -20), pos + Vector2(10, 0)]), cor)
+		c.draw_line(pos + Vector2(6, -18), pos + Vector2(8, 0), esc, 6.0)
+		c.draw_line(pos + Vector2(12, -18), pos + Vector2(14, 0), cor, 6.0)
+	else:
+		c.draw_rect(Rect2(pos + Vector2(-26, -34), Vector2(48, 18)), cor)
+		for k in 4:
+			var lx := -22.0 + k * 13.0
+			var bal := passo * (5.0 if k % 2 == 0 else -5.0)
+			c.draw_line(pos + Vector2(lx, -18), pos + Vector2(lx + bal, 0), esc if k % 2 else cor, 5.0)
+	var cab := pos + (Vector2(12, -50) if sentado else Vector2(26, -42))
+	c.draw_circle(cab, 12.0, cor)
+	c.draw_rect(Rect2(cab + Vector2(6, -2), Vector2(12, 9)), cor)
+	c.draw_circle(cab + Vector2(18, 0), 3.0, PRETO)
+	c.draw_circle(cab + Vector2(3, -4), 2.0, PRETO)
+	c.draw_colored_polygon(PackedVector2Array([cab + Vector2(-8, -6), cab + Vector2(-2, -14), cab + Vector2(-12, 6)]), esc)
+	c.draw_line(cab + Vector2(-4, 10), cab + Vector2(6, 12), Color("d62828"), 4.0)  # coleira
+	var rabo := sin(t * (22.0 if sentado else 14.0)) * 9.0
+	var base := pos + (Vector2(-20, -8) if sentado else Vector2(-26, -30))
+	c.draw_line(base, base + Vector2(-14, -14 + rabo), cor, 5.0)
+
+
+static func _capivara(c: CanvasItem, pos: Vector2, t: float, anda: bool) -> void:
+	# a capivara do campus: passo lento, cara de paisagem e um passarinho nas costas
+	var cor := Color("8a5a36")
+	var esc := Color("6a4228")
+	var passo := sin(t * 6.0) if anda else 0.0
+	c.draw_rect(Rect2(pos + Vector2(-34, -40), Vector2(64, 30)), cor)
+	c.draw_rect(Rect2(pos + Vector2(-30, -44), Vector2(50, 6)), cor)
+	for k in 4:
+		var lx := -28.0 + k * 17.0
+		c.draw_line(pos + Vector2(lx, -12), pos + Vector2(lx + passo * (3.0 if k % 2 == 0 else -3.0), 0), esc, 7.0)
+	c.draw_rect(Rect2(pos + Vector2(24, -48), Vector2(24, 24)), cor)
+	c.draw_rect(Rect2(pos + Vector2(40, -40), Vector2(12, 14)), esc)
+	c.draw_rect(Rect2(pos + Vector2(26, -54), Vector2(7, 7)), esc)
+	c.draw_line(pos + Vector2(33, -40), pos + Vector2(39, -40), PRETO, 3.0)  # olho sonolento
+	# passarinho
+	var pulo := absf(sin(t * 3.0)) * 3.0 if not anda else 0.0
+	var ave := pos + Vector2(-6, -52 - pulo)
+	c.draw_circle(ave, 6.0, Color("ffd23f"))
+	c.draw_colored_polygon(PackedVector2Array([ave + Vector2(5, -1), ave + Vector2(11, 1), ave + Vector2(5, 3)]), Color("ff7a2f"))
+	c.draw_circle(ave + Vector2(2, -2), 1.5, PRETO)
+
+
+static func _telao(c: CanvasItem, r: Rect2, t: float) -> void:
+	# telão de LED no prédio: PLANTÃO piscando e a manchete
+	c.draw_rect(r.grow(5), Color("3a3f4a"))
+	c.draw_rect(r, Color("0b0b10"))
+	var i := int(t / 4.0) % MANCHETES.size()
+	if int(t * 2.0) % 2 == 0:
+		Desenho.texto(c, r.position + Vector2(r.size.x / 2.0, 26), "PLANTÃO", 12, Color("ff3b3b"), Color(0, 0, 0, 0), 0)
+	var entra := clampf(fposmod(t, 4.0) / 0.3, 0.0, 1.0)
+	var cor := Color("ffb02e")
+	cor.a = entra
+	# a manchete quebrada em duas linhas, na palavra do meio
+	var txt: String = MANCHETES[i]
+	var meio := txt.length() / 2
+	var corte := txt.find(" ", meio)
+	var antes := txt.rfind(" ", meio)
+	if corte < 0 or (antes >= 0 and meio - antes < corte - meio):
+		corte = antes
+	var l1 := txt.substr(0, corte) if corte > 0 else txt
+	var l2 := txt.substr(corte + 1) if corte > 0 else ""
+	Desenho.texto(c, r.position + Vector2(r.size.x / 2.0, 58), l1, 11, cor, Color(0, 0, 0, 0), 0)
+	Desenho.texto(c, r.position + Vector2(r.size.x / 2.0, 86), l2, 11, cor, Color(0, 0, 0, 0), 0)
+	# pontinhos do LED
+	for j in 15:
+		c.draw_rect(Rect2(r.position + Vector2(8 + j * 28.0, r.size.y - 4), Vector2(14, 2)), Color(1, 0.69, 0.18, 0.25))
+
+
+static func _post(c: CanvasItem, t: float) -> void:
+	# post do presidente pulando na tela de vez em quando
+	var ciclo := fposmod(t + 3.0, 13.0)
+	if ciclo > 5.0:
+		return
+	var k := minf(clampf(ciclo / 0.3, 0.0, 1.0), clampf((5.0 - ciclo) / 0.3, 0.0, 1.0))
+	var r := Rect2(30, 200 - (1.0 - k) * 20.0, 460, 84)
+	c.draw_rect(r.grow(4), Color(0.08, 0.06, 0.12, k))
+	c.draw_rect(r, Color(1, 1, 1, k))
+	c.draw_circle(r.position + Vector2(26, 26), 16.0, Color(1.0, 0.55, 0.15, k))
+	Desenho.texto(c, r.position + Vector2(180, 30), "@presidente", 11, Color(0.15, 0.15, 0.2, k), Color(0, 0, 0, 0), 0)
+	Desenho.texto(c, r.position + Vector2(240, 66), POSTS[int((t + 3.0) / 13.0) % POSTS.size()], 14, Color(0.1, 0.25, 0.7, k), Color(0, 0, 0, 0), 0)
+

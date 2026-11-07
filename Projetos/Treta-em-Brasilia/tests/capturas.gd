@@ -10,6 +10,7 @@ var etapa := -1
 var luta: Luta
 var roteiro: Array = []
 var _forcar := ""  # golpe a disparar no lutador 1 assim que ele puder agir
+var _vida_rival := -1.0
 
 
 class Botao:
@@ -41,6 +42,12 @@ func _initialize() -> void:
 	root.add_child(raiz)
 	roteiro = [
 		["titulo", _titulo, [50]],
+		["online_menu", _online.bind("menu"), [30]],
+		["online_digitar", _online.bind("digitar"), [30]],
+		["online_sala", _online.bind("aguardando"), [30]],
+		["online_erro", _online.bind("erro"), [30]],
+		["selecao_online", _selecao_online, [40]],
+		["luta_online", _luta_online, [200]],
 		["selecao", _selecao, [40]],
 		["arena", _arena, [20]],
 		["lutadores", _lutadores, [40, 100]],
@@ -100,8 +107,17 @@ func _initialize() -> void:
 		["super_renan", _poder.bind("paulista", 9, 8, "super"), [300, 330]],
 		["ult_renan", _poder.bind("paulista", 9, 8, "ult"), [340, 370, 420, 480]],
 		["ren_idle", _luta.bind("paulista", 9, 8, {}), [60, 200]],
+		["dil_vento", _poder.bind("praca", 10, 0, "projetil"), [248, 262]],
+		["dil_pedalada", _poder.bind("praca", 10, 0, "frente"), [250, 266]],
+		["dil_mandioca", _poder.bind("praca", 10, 0, "baixo"), [262, 300]],
+		["dil_telefone", _poder.bind("praca", 10, 0, "tras"), [258, 272]],
+		["super_dilma", _poder.bind("praca", 10, 0, "super"), [300, 330]],
+		["ult_dilma", _poder.bind("praca", 10, 0, "ult"), [340, 380, 420, 480]],
+		["dil_idle", _luta.bind("praca", 10, 1, {}), [60]],
 		["memes_casa", _luta.bind("casa_branca", 3, 9, {}), [700]],
 		["memes_paulista", _luta.bind("paulista", 9, 7, {}), [500]],
+		["entrada", _luta.bind("praca", 2, 10, {}), [20, 44]],
+		["ko_final", _ko, [395, 470, 520]],
 		["treino", _treino, [120]],
 	]
 	if filtro != "":
@@ -135,6 +151,47 @@ func _selecao() -> void:
 	s.modo = 1
 	s.cursor = [0, 3]
 	raiz.add_child(s)
+
+
+func _online(qual: String) -> void:
+	var o := Telas.Online.new()
+	raiz.add_child(o)
+	match qual:
+		"digitar":
+			o.modo = "digitar"
+			o.codigo = "KF"
+			o.grade = 5
+		"aguardando":
+			o.atualizar("aguardando", "", "BRKZ")
+		"erro":
+			o.atualizar("erro", "Não deu para conectar. Algumas redes bloqueiam conexão direta: tente outra rede.", "BRKZ")
+
+
+func _selecao_online() -> void:
+	var s := Telas.Selecao.new()
+	s.modo = 4
+	s.lado_local = 1
+	s.cursor = [10, 9]
+	raiz.add_child(s)
+	s.remoto(10, true)
+
+
+## Luta online com um transporte que só devolve a própria entrada (para ver o HUD e o aviso).
+class _Eco:
+	var luta: Luta
+	func enviar(d: Dictionary) -> void:
+		if d.get("k", "") == "in" and int(d["f"]) < 150:
+			luta.rede_receber(d)
+
+
+func _luta_online() -> void:
+	luta = Luta.new()
+	luta.cenario = "paulista"
+	luta.configurar(Personagens.por_indice(10), Personagens.por_indice(9), true)
+	var eco := _Eco.new()
+	eco.luta = luta
+	luta.configurar_online(eco, 0, 42, 4)
+	raiz.add_child(luta)
 
 
 func _arena() -> void:
@@ -203,6 +260,11 @@ func _poder(cenario: String, a: int, b: int, golpe: String) -> void:
 	_forcar = golpe
 
 
+func _ko() -> void:
+	_poder("praca", 0, 1, "ult")
+	_vida_rival = 60.0
+
+
 func _treino() -> void:
 	luta = Luta.new()
 	luta.treino = true
@@ -213,11 +275,14 @@ func _treino() -> void:
 
 func _process(_d: float) -> bool:
 	quadro += 1
+	if _vida_rival >= 0.0 and luta != null and luta.p.size() == 2:
+		luta.p[1].vida = _vida_rival
+		_vida_rival = -1.0
 	if _forcar != "" and luta != null and luta.p.size() == 2 and luta.ias[0] != null:
 		for l in luta.p:
 			l.entrada = null
 		luta.ias = [null, null]
-	if _forcar != "" and luta != null and luta.p.size() == 2 and quadro >= (232 if (String(roteiro[etapa][0]).contains("pav") or String(roteiro[etapa][0]).contains("nik") or String(roteiro[etapa][0]).contains("fla") or String(roteiro[etapa][0]).contains("ren")) else 96) and luta.p[0].pode_agir():
+	if _forcar != "" and luta != null and luta.p.size() == 2 and quadro >= (232 if (String(roteiro[etapa][0]).contains("pav") or String(roteiro[etapa][0]).contains("nik") or String(roteiro[etapa][0]).contains("fla") or String(roteiro[etapa][0]).contains("ren") or String(roteiro[etapa][0]).contains("dil")) else 96) and luta.p[0].pode_agir():
 		luta.p[0].position.x = 520.0
 		luta.p[1].position.x = 760.0 if _forcar not in ["tras", "frente"] else 900.0
 		var l := luta.p[0]

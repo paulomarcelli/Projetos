@@ -276,6 +276,19 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 				p["mao_t"] = Vector2(30, -60)
 				p["inclina"] = 0.22
 				p["expr"] = "feliz"
+		"pedalada":
+			# sobe na bicicleta e sai pedalando por cima do rival
+			p["prop"] = "bicicleta"
+			p["mao_f"] = Vector2(64, -126)
+			p["mao_t"] = Vector2(58, -124)
+			p["quadril"] = -66.0
+			p["inclina"] = 0.16 if not prep else 0.04
+			var cr := Vector2(22, -34)
+			var a := t * (0.0 if prep else 0.45)
+			p["pe_f"] = cr + Vector2(cos(a), sin(a)) * 14.0
+			p["pe_t"] = cr + Vector2(cos(a + PI), sin(a + PI)) * 14.0
+			p["expr"] = "feliz" if not prep else "esforco"
+			p["cabeca_giro"] = -0.06
 		"megafone":
 			# avança gritando no megafone: as ondas de som empurram o rival
 			p["prop"] = "megafone_on" if not prep else "megafone"
@@ -346,6 +359,14 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if sin(t * 0.18) > 0 else "neutro"
+		"dilma":
+			# segura o pote no alto enquanto o vento entra
+			p["prop"] = "mandioca" if t > 160 else ""
+			p["mao_f"] = Vector2(60, -220 + sin(t * 0.25) * 8)
+			p["mao_t"] = Vector2(30, -214 - sin(t * 0.25) * 8)
+			p["inclina"] = -0.08
+			p["cabeca_giro"] = -0.12
+			p["expr"] = "grito" if t > 150 else "esforco"
 		"renan":
 			# aperta os botões no ar: 1, 4 e o CONFIRMA
 			var bate := absf(sin(t * 0.25))

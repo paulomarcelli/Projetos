@@ -272,6 +272,7 @@ PERFIS = {
     "nikolas": {"f0": 138, "rouco": 0.08, "formante": 1.04, "vib": 4.0},
     "flavio": {"f0": 124, "rouco": 0.1, "formante": 1.0, "vib": 3.0},
     "renan": {"f0": 132, "rouco": 0.14, "formante": 1.02, "vib": 5.0},
+    "dilma": {"f0": 196, "rouco": 0.12, "formante": 1.1, "vib": 4.5},
 }
 
 

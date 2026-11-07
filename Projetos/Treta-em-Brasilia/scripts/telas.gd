@@ -131,12 +131,18 @@ class Titulo extends Node2D:
 	var opcao := 0
 	var t := 0.0
 	var _par := 0
-	const ITENS := [["PLAY", "1 jogador contra a CPU"], ["MULTIPLAYER", "2 jogadores no mesmo aparelho"], ["ARCADE MODE", "enfrente todos em sequência"],
-		["TRAINING", "treino livre, barra infinita"], ["CHARACTERS", "fichas e golpes dos lutadores"], ["SETTINGS", "som, dificuldade e controles"]]
-	const CHAVES := ["play", "multiplayer", "arcade", "treino", "lutadores", "config"]
+	const ITENS := [["PLAY", "1 jogador contra a CPU"], ["MULTIPLAYER", "2 jogadores no mesmo aparelho"], ["ONLINE", "jogue com um amigo pela internet"],
+		["ARCADE MODE", "enfrente todos em sequência"], ["TRAINING", "treino livre, barra infinita"], ["CHARACTERS", "fichas e golpes dos lutadores"],
+		["SETTINGS", "som, dificuldade e controles"]]
+	const CHAVES := ["play", "multiplayer", "online", "arcade", "treino", "lutadores", "config"]
+	var aviso := ""  # recado (ex.: a conexão online caiu), aparece no lugar da dica
+	var aviso_t := 0.0
 
 	func _item(i: int) -> Rect2:
-		return Rect2(300 + (i % 2) * 356, 336 + (i / 2) * 92, 324, 66)
+		# 2 colunas; o último sozinho fica no meio
+		if i == ITENS.size() - 1 and ITENS.size() % 2 == 1:
+			return Rect2(478, 322 + (i / 2) * 74, 324, 58)
+		return Rect2(300 + (i % 2) * 356, 322 + (i / 2) * 74, 324, 58)
 
 	func _ready() -> void:
 		Som.musica("menu")
@@ -164,8 +170,8 @@ class Titulo extends Node2D:
 			var col := opcao % 2
 			var lin := opcao / 2
 			col = clampi(col + d.x, 0, 1)
-			lin = clampi(lin + d.y, 0, 2)
-			var nova := lin * 2 + col
+			lin = clampi(lin + d.y, 0, (ITENS.size() - 1) / 2)
+			var nova := mini(lin * 2 + col, ITENS.size() - 1)
 			if nova != opcao:
 				opcao = nova
 				Som.sfx("menu_mover", 0.0)
@@ -211,7 +217,10 @@ class Titulo extends Node2D:
 			var rot: String = ITENS[i][0]
 			Telas.botao(self, r, rot, Color("ffd23f") if sel else Color.WHITE, sel, 24 if rot.length() <= 12 else (18 if rot.length() <= 14 else 15))
 		var dica: String = ITENS[opcao][1]
-		Desenho.texto(self, Vector2(640, 646), dica, 22, Color("7ec8ff"), Desenho.PRETO, 5)
+		if aviso != "" and t < aviso_t:
+			Desenho.texto(self, Vector2(640, 662), aviso, 20, Color("ff8a8a"), Desenho.PRETO, 5)
+		else:
+			Desenho.texto(self, Vector2(640, 662), dica, 22, Color("7ec8ff"), Desenho.PRETO, 5)
 		Desenho.texto(self, Vector2(640, 706), "Paródia e humor. Sem apoio a partido ou candidato.", 18, Color(1, 1, 1, 0.75), Desenho.PRETO, 4)
 
 
@@ -220,7 +229,10 @@ class Titulo extends Node2D:
 class Selecao extends Node2D:
 	signal pronto(a: int, b: int)
 	signal voltar
-	var modo := 1  # 1 = contra a CPU, 2 = dois jogadores, 3 = arcade/treino (só o jogador 1)
+	signal mudou(cursor: int, ok: bool)
+	var modo := 1  # 1 = contra a CPU, 2 = dois jogadores, 3 = arcade/treino (só o jogador 1), 4 = online
+	var lado_local := 0  # online: qual lado é meu
+	var _enviado := [-1, false]
 	var cursor := [0, 1]
 	var confirmado := [false, false]
 	var t := 0.0
@@ -267,6 +279,15 @@ class Selecao extends Node2D:
 			_mover(0, 1)
 			if Telas.confirmou(1):
 				_confirmar(0)
+		elif modo == 4:
+			var i := lado_local
+			if not confirmado[i]:
+				_mover(i, 1)
+				if Telas.confirmou(1):
+					_confirmar(i)
+			elif Telas.apertou("p1_especial"):
+				confirmado[i] = false
+			_avisar()
 		else:
 			for i in 2:
 				if not confirmado[i]:
@@ -286,6 +307,10 @@ class Selecao extends Node2D:
 			voltar.emit()
 			return
 		var i := 0 if not confirmado[0] else 1
+		if modo == 4:
+			i = lado_local
+			if confirmado[i]:
+				return
 		if BT_ALEATORIO.has_point(p):
 			cursor[i] = randi() % Personagens.LISTA.size()
 			_confirmar(i)
@@ -299,6 +324,22 @@ class Selecao extends Node2D:
 					cursor[i] = k
 					Som.sfx("menu_mover", 0.0)
 				return
+
+	## Online: manda o meu cursor quando muda.
+	func _avisar() -> void:
+		var i := lado_local
+		if _enviado[0] != cursor[i] or _enviado[1] != confirmado[i]:
+			_enviado = [cursor[i], confirmado[i]]
+			mudou.emit(cursor[i], confirmado[i])
+
+	## Online: o cursor do outro jogador chegou pela rede.
+	func remoto(c: int, ok: bool) -> void:
+		var i := 1 - lado_local
+		cursor[i] = clampi(c, 0, Personagens.LISTA.size() - 1)
+		if ok and not confirmado[i]:
+			_confirmar(i)
+		confirmado[i] = ok
+		queue_redraw()
 
 	func _confirmar(i: int) -> void:
 		confirmado[i] = true
@@ -340,6 +381,8 @@ class Selecao extends Node2D:
 		Telas.fundo_energia(self, t, Color("3a5aff"))
 		Desenho.texto(self, Vector2(640, 76), "ESCOLHA SEU LUTADOR", 50, Color("ffd23f"), Desenho.PRETO, 10)
 		var dica := "Escolha o seu e depois o rival (Especial = aleatório)" if modo == 1 else ("Cada jogador escolhe com seus comandos" if modo == 2 else "Escolha o seu lutador")
+		if modo == 4:
+			dica = "ONLINE: você é o %dP (%s) · Especial desfaz a escolha" % [lado_local + 1, "esquerda" if lado_local == 0 else "direita"]
 		Desenho.texto(self, Vector2(640, 108), dica, 20, Color(1, 1, 1, 0.8), Desenho.PRETO, 5)
 		var n := Personagens.LISTA.size()
 		for i in n + Personagens.EM_BREVE.size():
@@ -423,7 +466,9 @@ class Selecao extends Node2D:
 class SelecaoCenario extends Node2D:
 	signal pronto(id: String)
 	signal voltar
+	signal mudou(opcao: int)
 	var opcao := 0
+	var remoto := false  # online, convidado: só assiste o anfitrião escolher
 	var t := 0.0
 	const BT_VOLTAR := Rect2(30, 650, 170, 50)
 
@@ -450,9 +495,12 @@ class SelecaoCenario extends Node2D:
 		if BT_VOLTAR.has_point(p):
 			voltar.emit()
 			return
+		if remoto:
+			return
 		for i in Cenarios.LISTA.size():
 			if _miniatura(i).has_point(p):
 				opcao = i
+				mudou.emit(opcao)
 				_escolher()
 
 	func _escolher() -> void:
@@ -463,6 +511,11 @@ class SelecaoCenario extends Node2D:
 
 	func _process(delta: float) -> void:
 		t += delta
+		if remoto:
+			if Telas.apertou("ui_cancel"):
+				voltar.emit()
+			queue_redraw()
+			return
 		var d := Telas.direcao()
 		if d != Vector2i.ZERO:
 			var col := clampi(opcao % 2 + d.x, 0, 1)
@@ -470,6 +523,7 @@ class SelecaoCenario extends Node2D:
 			if lin * 2 + col != opcao:
 				opcao = lin * 2 + col
 				Som.sfx("menu_mover", 0.0)
+				mudou.emit(opcao)
 		if Telas.confirmou(1) or Telas.confirmou(2):
 			_escolher()
 		elif Telas.apertou("ui_cancel"):
@@ -486,6 +540,8 @@ class SelecaoCenario extends Node2D:
 		draw_rect(Rect2(616, 0, 48, 720), fundo)
 		draw_rect(Rect2(1136, 0, 144, 720), fundo)
 		Desenho.texto(self, Vector2(640, 80), "ESCOLHA A ARENA", 52, Color("ffd23f"), Desenho.PRETO, 10)
+		if remoto:
+			Desenho.texto(self, Vector2(640, 676), "O anfitrião está escolhendo a arena...", 22, Color("7ec8ff"), Desenho.PRETO, 5)
 		for i in Cenarios.LISTA.size():
 			var r := _miniatura(i)
 			var sel := i == opcao
@@ -859,6 +915,7 @@ class Resultado extends Node2D:
 	var texto_revanche := "REVANCHE"
 	var texto_trocar := "MENU"
 	var campeao := false
+	var aviso := ""
 	const BT_REVANCHE := Rect2(290, 636, 320, 58)
 	const BT_TROCAR := Rect2(670, 636, 320, 58)
 
@@ -910,4 +967,220 @@ class Resultado extends Node2D:
 		for i in linhas.size():
 			Desenho.texto(self, Vector2(balao.get_center().x, balao.position.y + 46 + i * 30), linhas[i], 24, Desenho.PRETO, Desenho.BRANCO, 0)
 		Telas.botao(self, BT_REVANCHE, texto_revanche, Color("ffd23f"), true, 22)
+		if aviso != "":
+			Desenho.texto(self, Vector2(640, 616), aviso, 20, Color("7ec8ff"), Desenho.PRETO, 5)
 		Telas.botao(self, BT_TROCAR, texto_trocar, Color.WHITE, false, 22)
+
+
+# ---------------------------------------------------------------- online: criar ou entrar numa sala
+
+class Online extends Node2D:
+	signal criar
+	signal entrar(codigo: String)
+	signal copiar
+	signal voltar
+	var modo := "menu"  # menu, digitar, status
+	var opcao := 0
+	var codigo := ""
+	var grade := 0
+	var estado := ""
+	var info := ""
+	var sala := ""
+	var copiado := 0.0
+	var t := 0.0
+	const BT_CRIAR := Rect2(390, 290, 500, 84)
+	const BT_ENTRAR := Rect2(390, 400, 500, 84)
+	const BT_VOLTAR := Rect2(30, 650, 170, 50)
+	const BT_APAGAR := Rect2(760, 650, 200, 50)
+	const BT_OK := Rect2(980, 650, 270, 50)
+	const BT_COPIAR := Rect2(440, 470, 400, 58)
+	const COLS := 8
+
+	func _ready() -> void:
+		Som.musica("selecao")
+
+	func _letra(i: int) -> Rect2:
+		var largura := COLS * 92.0 - 10.0
+		return Rect2(640.0 - largura / 2.0 + (i % COLS) * 92.0, 330 + (i / COLS) * 82.0, 82, 72)
+
+	## Estado da rede chegou (criando, aguardando, conectando, conectado, erro).
+	func atualizar(e: String, i: String, s: String) -> void:
+		estado = e
+		info = i
+		sala = s
+		if e != "parado":
+			modo = "status"
+		queue_redraw()
+
+	func _somar(letra: String) -> void:
+		if codigo.length() < 4 and Rede.LETRAS.contains(letra):
+			codigo += letra
+			Som.sfx("menu_mover", 0.0)
+			if codigo.length() == 4:
+				_enviar()
+
+	func _enviar() -> void:
+		if codigo.length() == 4:
+			Som.sfx("menu_ok", 0.0)
+			entrar.emit(codigo)
+			modo = "status"
+			estado = "conectando"
+			sala = codigo
+
+	func _unhandled_input(ev: InputEvent) -> void:
+		if modo == "digitar" and ev is InputEventKey and ev.pressed and not ev.echo:
+			if ev.physical_keycode == KEY_BACKSPACE:
+				codigo = codigo.substr(0, maxi(0, codigo.length() - 1))
+				get_viewport().set_input_as_handled()
+				return
+			var u := String.chr(ev.unicode).to_upper() if ev.unicode > 0 else ""
+			if u != "" and Rede.LETRAS.contains(u):
+				_somar(u)
+				get_viewport().set_input_as_handled()
+				return
+		var p = Telas.toque(self, ev)
+		if p == null:
+			return
+		if BT_VOLTAR.has_point(p):
+			_voltar()
+			return
+		match modo:
+			"menu":
+				if BT_CRIAR.has_point(p):
+					opcao = 0
+					_escolher()
+				elif BT_ENTRAR.has_point(p):
+					opcao = 1
+					_escolher()
+			"digitar":
+				for i in Rede.LETRAS.length():
+					if _letra(i).has_point(p):
+						grade = i
+						_somar(Rede.LETRAS[i])
+						return
+				if BT_APAGAR.has_point(p):
+					codigo = codigo.substr(0, maxi(0, codigo.length() - 1))
+				elif BT_OK.has_point(p):
+					_enviar()
+			"status":
+				if estado == "aguardando" and BT_COPIAR.has_point(p):
+					copiar.emit()
+					copiado = 2.0
+
+	func _escolher() -> void:
+		Som.sfx("menu_ok", 0.0)
+		if opcao == 0:
+			modo = "status"
+			estado = "criando"
+			criar.emit()
+		else:
+			modo = "digitar"
+			codigo = ""
+
+	func _voltar() -> void:
+		Som.sfx("menu_voltar", 0.0)
+		if modo == "digitar" and codigo != "":
+			codigo = ""
+			return
+		voltar.emit()
+
+	func _process(delta: float) -> void:
+		t += delta
+		copiado = maxf(copiado - delta, 0.0)
+		match modo:
+			"menu":
+				var d := Telas.direcao()
+				if d.y != 0:
+					opcao = clampi(opcao + d.y, 0, 1)
+					Som.sfx("menu_mover", 0.0)
+				if Telas.confirmou(1) or Telas.confirmou(2):
+					_escolher()
+				elif Telas.voltou():
+					_voltar()
+			"digitar":
+				# só setas e controle aqui: as letras do teclado são para digitar o código
+				var n := Rede.LETRAS.length()
+				if Telas.apertou("ui_right"):
+					grade = (grade + 1) % n
+				if Telas.apertou("ui_left"):
+					grade = (grade - 1 + n) % n
+				if Telas.apertou("ui_down"):
+					grade = (grade + COLS) % n
+				if Telas.apertou("ui_up"):
+					grade = (grade - COLS + n) % n
+				if Telas.apertou("ui_accept"):
+					if codigo.length() < 4:
+						_somar(Rede.LETRAS[grade])
+					else:
+						_enviar()
+				elif Telas.apertou("ui_cancel"):
+					if codigo == "":
+						modo = "menu"
+					else:
+						codigo = codigo.substr(0, codigo.length() - 1)
+			"status":
+				if Telas.apertou("ui_cancel"):
+					_voltar()
+				elif estado == "aguardando" and Telas.apertou("ui_accept"):
+					copiar.emit()
+					copiado = 2.0
+		queue_redraw()
+
+	func _draw() -> void:
+		Telas.fundo_energia(self, t, Color("2ad4ff"))
+		Desenho.texto(self, Vector2(640, 90), "ONLINE", 64, Color("ffd23f"), Desenho.PRETO, 12)
+		Desenho.texto(self, Vector2(640, 134), "Jogue com um amigo, cada um no seu aparelho", 20, Color.WHITE, Desenho.PRETO, 5)
+		match modo:
+			"menu":
+				Telas.botao(self, BT_CRIAR, "CRIAR SALA", Color("ffd23f") if opcao == 0 else Color.WHITE, opcao == 0, 30)
+				Telas.botao(self, BT_ENTRAR, "ENTRAR NA SALA", Color("ffd23f") if opcao == 1 else Color.WHITE, opcao == 1, 30)
+				Desenho.texto(self, Vector2(640, 540), "Quem cria a sala recebe um código de 4 letras.", 18, Color("7ec8ff"), Desenho.PRETO, 4)
+				Desenho.texto(self, Vector2(640, 568), "O amigo escolhe ENTRAR e digita o código.", 18, Color("7ec8ff"), Desenho.PRETO, 4)
+			"digitar":
+				Desenho.texto(self, Vector2(640, 196), "DIGITE O CÓDIGO DA SALA", 26, Color.WHITE, Desenho.PRETO, 6)
+				for i in 4:
+					var r := Rect2(640 - 2 * 86 + i * 86, 220, 76, 84)
+					draw_rect(r.grow(4), Desenho.PRETO)
+					draw_rect(r, Color("231c42"))
+					if i < codigo.length():
+						Desenho.texto(self, r.get_center() + Vector2(0, 22), codigo[i], 52, Color("ffd23f"), Desenho.PRETO, 8)
+					elif i == codigo.length() and int(t * 3) % 2 == 0:
+						draw_rect(Rect2(r.position + Vector2(18, 70), Vector2(40, 6)), Color("ffd23f"))
+				for i in Rede.LETRAS.length():
+					var r := _letra(i)
+					var sel := i == grade
+					draw_rect(r.grow(3), Color("ffd23f") if sel else Desenho.PRETO)
+					draw_rect(r, Color("3a2f6b") if sel else Color("1a1530"))
+					Desenho.texto(self, r.get_center() + Vector2(0, 16), Rede.LETRAS[i], 40, Color.WHITE, Desenho.PRETO, 6)
+				Telas.botao(self, BT_APAGAR, "APAGAR", Color.WHITE, false, 20)
+				Telas.botao(self, BT_OK, "ENTRAR", Color("ffd23f"), codigo.length() == 4, 22)
+			"status":
+				var titulo := ""
+				var sub := ""
+				match estado:
+					"criando":
+						titulo = "CRIANDO A SALA..."
+					"aguardando":
+						titulo = "SALA %s" % sala
+						sub = "Passe o código para seu amigo e espere ele entrar..."
+					"conectando":
+						titulo = "CONECTANDO..."
+						sub = "Sala %s" % sala
+					"conectado":
+						titulo = "CONECTADO!"
+						sub = "Indo para a seleção de lutadores"
+					"erro", "caiu":
+						titulo = "OPS!"
+						sub = info
+				Desenho.texto(self, Vector2(640, 300), titulo, 64 if estado == "aguardando" else 40, Color("ffd23f"), Desenho.PRETO, 10)
+				for j in Telas.quebrar(sub, 48).size():
+					Desenho.texto(self, Vector2(640, 380 + j * 30), Telas.quebrar(sub, 48)[j], 20, Color.WHITE, Desenho.PRETO, 5)
+				if estado == "aguardando":
+					var pontos := ".".repeat(1 + int(t * 2) % 3)
+					Telas.botao(self, BT_COPIAR, "LINK COPIADO!" if copiado > 0.0 else "COPIAR LINK", Color("7ef0ff"), true, 22)
+					Desenho.texto(self, Vector2(640, 590), "aguardando amigo" + pontos, 20, Color("7ec8ff"), Desenho.PRETO, 5)
+				if estado in ["criando", "conectando"]:
+					for j in 8:
+						var a := t * 4.0 + j * TAU / 8.0
+						draw_circle(Vector2(640, 470) + Vector2(cos(a), sin(a)) * 30.0, 6.0, Color(1, 0.84, 0.25, 0.3 + 0.7 * float(j) / 8.0))
+		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE, false, 20)

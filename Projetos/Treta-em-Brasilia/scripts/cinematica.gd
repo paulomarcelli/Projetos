@@ -38,6 +38,13 @@ static func passo(cin: Dictionary, atk: Lutador, def: Lutador, part: Particulas)
 				part.explosao(alvo, 1.1)
 			if t > 180 and t % 4 == 0:
 				part.confete(Vector2(640, 0), 8)
+		"dilma":
+			if t > 50 and t < 170 and t % 7 == 0:
+				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-60, 40)), 2)
+			if t == 176:
+				part.explosao(alvo, 1.1)
+			if t > 176 and t % 4 == 0:
+				part.confete(Vector2(640, 0), 8)
 		"renan":
 			if t > 50 and t < 170 and t % 8 == 0:
 				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
@@ -267,6 +274,59 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				fmt += txt[i]
 			c.draw_rect(Rect2(centro.x - 230, base.end.y + 6, 460, 56), Color(0.04, 0.04, 0.1, 0.85 * k))
 			Desenho.texto(c, Vector2(centro.x, base.end.y + 46), fmt + " VOTOS", 32, Color(1, 1, 1, k), Color("1f6fd1"), 6)
+		"dilma":
+			# estocando vento: parque eólico girando, tornado no rival e o medidor enchendo
+			var cxd := clampf((ax + dx) / 2.0, 320.0, 960.0)
+			var enche := clampf((t - 30) / 140.0, 0.0, 1.0)
+			if not fundo:
+				# tornado em volta do rival
+				if t > 40 and t < 176:
+					var forte := clampf((t - 40) / 30.0, 0.0, 1.0)
+					for j in 9:
+						var y := chao - 10.0 - j * 34.0
+						var rx := (30.0 + j * 13.0) * forte
+						var fase := t * 0.5 + j * 0.7
+						c.draw_set_transform(Vector2(dx + sin(fase * 0.5) * 10.0, y), 0.0, Vector2(1.0, 0.28))
+						c.draw_arc(Vector2.ZERO, rx, fase, fase + 4.2, 18, Color(0.85, 0.92, 1.0, 0.7 * k), 7.0)
+						c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				# potes voando do rival para a Dilma, cheios de vento
+				for j in 6:
+					var tt := 50 + j * 20
+					if t >= tt and t < tt + 28:
+						var q := clampf((t - tt) / 26.0, 0.0, 1.0)
+						var pos := Vector2(lerpf(dx, ax + dir * 40.0, q), chao - 160.0 - sin(q * PI) * 140.0)
+						c.draw_set_transform(pos, sin(t * 0.3 + j) * 0.5, Vector2(1.5, 1.5))
+						for passada in 2:
+							Desenho._cont = passada == 0
+							Arte.projetil(c, "vento", t + j * 5, Desenho._cont)
+						Desenho._cont = false
+						c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				# medidor
+				var barra := Rect2(cxd - 230, chao - 400, 460, 34)
+				c.draw_rect(barra.grow(4), Color(0.05, 0.04, 0.12, 0.85 * k))
+				c.draw_rect(Rect2(barra.position, Vector2(barra.size.x * enche, barra.size.y)), Color(0.45, 0.8, 1.0, k))
+				Desenho.texto(c, barra.get_center() + Vector2(0, 10), "VENTO ESTOCADO: %d%%" % int(enche * 100.0), 16, Color(1, 1, 1, k), Color(0.05, 0.1, 0.3, k), 4)
+				if t > 172:
+					var q4 := clampf((t - 172) / 10.0, 0.0, 1.0)
+					var tam := lerpf(150.0, 84.0, q4)
+					c.draw_rect(Rect2(dx - 290, chao - 250, 580, 110), Color(0.05, 0.05, 0.15, 0.75 * k))
+					Desenho.texto(c, Vector2(dx, chao - 172), "VENTO ESTOCADO!", int(tam * 0.46), Color(0.55, 0.9, 1.0, k), Color("d94f70"), 8)
+				return
+			# céu claro, morro verde e as turbinas eólicas
+			c.draw_rect(Rect2(-300, chao - 560, 1880, 560), Color(0.55, 0.78, 0.95, 0.85 * k))
+			c.draw_rect(Rect2(-300, chao - 60, 1880, 60), Color(0.3, 0.6, 0.3, k))
+			var giro := t * (0.05 + enche * 0.35)
+			for j in 3:
+				var bx := cxd - 330.0 + j * 330.0
+				var topo := Vector2(bx, chao - 360.0 + (j % 2) * 30.0)
+				c.draw_colored_polygon(PackedVector2Array([Vector2(bx - 9, chao - 50), Vector2(bx + 9, chao - 50), Vector2(bx + 4, topo.y), Vector2(bx - 4, topo.y)]), Color(0.95, 0.95, 0.97, k))
+				c.draw_rect(Rect2(topo + Vector2(-12, -8), Vector2(26, 14)), Color(0.9, 0.9, 0.93, k))
+				for pa in 3:
+					var a: float = giro + pa * TAU / 3.0 + j
+					var ponta := topo + Vector2(cos(a), sin(a)) * 120.0
+					var lado := Vector2(-sin(a), cos(a)) * 7.0
+					c.draw_colored_polygon(PackedVector2Array([topo + lado, ponta, topo - lado]), Color(0.98, 0.98, 1.0, k))
+				c.draw_circle(topo, 8.0, Color(0.8, 0.8, 0.85, k))
 		"renan":
 			# urna eletrônica gigante: digita 1, 4, CONFIRMA; as teclas voam no rival
 			var cxu := clampf((ax + dx) / 2.0, 320.0, 960.0)

@@ -43,6 +43,7 @@ CAIXAS = {
     "nikolas": {"caixa": (198, 10, 540, 450), "barba": False, "oculos": False, "sobr": 2, "sobr_cor": (48, 32, 24), "dentes": True},
     "flavio": {"caixa": (180, 52, 566, 580), "barba": False, "oculos": False, "sobr": 2, "sobr_cor": (52, 38, 30), "dentes": True},
     "renan": {"caixa": (228, 8, 520, 392), "barba": True, "oculos": False, "sobr": 2, "sobr_cor": (40, 28, 22)},
+    "dilma": {"caixa": (165, 58, 545, 585), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (92, 60, 40)},
     "erika": {"caixa": (205, 40, 585, 440), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (92, 62, 44)},
 }
 

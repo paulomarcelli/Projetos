@@ -300,6 +300,33 @@ const LISTA := [
 		"memes": ["Nem Lula, nem Flávio!", "Não somos terceira via!", "LIVE EMERGENCIAL!", "Superpresídio neles!", "Vota 14!", "Corta essa!"],
 		"vitoria": "Nem Lula, nem Flávio: deu Missão!",
 	},
+	{
+		"id": "dilma", "nome": "DILMA", "titulo": "A Mãe do PAC", "foto": "dilma",
+		"bio": "Presidenta duas vezes e hoje à frente do Banco dos BRICS. Estoca vento num pote, chega de bicicleta pedalando, faz brotar mandioca do chão e, se a meta não bater, dobra a meta.",
+		"pele": Color("e8b08c"), "cabelo": Color("6b3f22"), "estilo_cabelo": "curto", "barba": false, "oculos": false,
+		"roupa": Color("e9e1d6"), "camisa": Color("f6f1ea"), "gravata": Color(0, 0, 0, 0), "calca": Color("d9cfc2"),
+		"extra": "faixa", "velocidade": 0.98, "forca": 1.04, "vida": 1060,
+		"corpo": {"alt": 0.94, "larg": 1.0, "barriga": 0.15}, "idle": "gesticula", "cor": Color("d94f70"),
+		"musica": "praca",
+		"habilidades": {
+			"projetil": {"nome": "Estocar Vento", "pose": "arremesso", "inicio": 12, "ativo": 1, "rec": 18, "recarga": 58, "som": "whoosh",
+				"tiro": {"forma": "vento", "dano": 68.0, "vel": 8.5, "tam": 1.25}},
+			"frente": {"nome": "Pedalada Fiscal", "pose": "pedalada", "inicio": 8, "ativo": 36, "rec": 16, "recarga": 95, "som": "whoosh_forte",
+				"corpo": {"caixa": Rect2(-20, -200, 150, 200), "dano": 22.0, "avanco": 7.0, "hits": 4, "intervalo": 8, "empurra": 5.0}},
+			"cima": {"nome": "Mulher Sapiens!", "pose": "gancho", "inicio": 3, "ativo": 12, "rec": 24, "recarga": 50, "invencivel": 9, "som": "whoosh_forte",
+				"salto": Vector2(2.2, -16.0), "corpo": {"caixa": Rect2(5, -235, 72, 205), "dano": 102.0, "derruba": true, "nivel": "alto"}},
+			"baixo": {"nome": "Saudação à Mandioca", "pose": "chamar", "inicio": 14, "ativo": 1, "rec": 22, "recarga": 135, "som": "carimbo",
+				"zona": {"forma": "mandioca", "dist": 220.0, "larg": 220.0, "dur": 180, "dano": 11.0, "intervalo": 22, "efeito": "lento"}},
+			"tras": {"nome": "Tchau, Querida!", "pose": "arremesso", "inicio": 10, "ativo": 14, "rec": 18, "recarga": 78, "som": "notificacao",
+				"tiro": {"forma": "telefone", "dano": 34.0, "vel": 8.5, "arco": -11.0, "qtd": 2, "intervalo": 10, "tam": 1.1}},
+			"super": {"nome": "Dobraremos a Meta", "pose": "chamar", "inicio": 14, "ativo": 1, "rec": 22, "custo": 50.0, "som": "carimbo", "voz": "super",
+				"chuva": {"forma": "meta", "qtd": 8, "intervalo": 6, "dano": 25.0, "atraso": 22, "tam": 1.3, "espalha": 210.0}},
+			"ultimate": {"nome": "ESTOCANDO VENTO!", "cinema": "dilma", "dano": 330.0, "hits": 8},
+			"final": {"nome": "Dobraremos a meta!", "prop": "mandioca"},
+		},
+		"memes": ["Estocar vento!", "Saúdo a mandioca!", "Mulher sapiens!", "Dobraremos a meta!", "Tchau, querida!", "Pátria educadora!"],
+		"vitoria": "Não acho que quem ganhar ou quem perder vai ganhar ou perder. Vai todo mundo perder!",
+	},
 ]
 
 ## Quem ainda vai entrar (aparece com "?" na seleção até chegar a foto).

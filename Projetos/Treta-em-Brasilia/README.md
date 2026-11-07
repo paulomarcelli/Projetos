@@ -24,10 +24,20 @@
 |---|---|
 | **PLAY** | 1 jogador contra a CPU: escolhe os lutadores e a arena |
 | **MULTIPLAYER** | 2 jogadores no mesmo aparelho (teclado ou dois controles) |
+| **ONLINE** | 2 jogadores pela internet, cada um no seu aparelho: um cria a sala e passa o código de 4 letras (ou o link `?sala=CODIGO`), o outro entra |
 | **ARCADE MODE** | enfrente todo o elenco em sequência, uma arena por luta, cada CPU mais difícil |
 | **TRAINING** | contra um boneco parado, com barra infinita, vida que volta e contador de combo |
 | **CHARACTER SELECT** | ficha de cada lutador: biografia, atributos, golpes com os comandos e demonstração animada |
 | **SETTINGS** | volume de música e efeitos, dificuldade, tremor de tela, controles de toque, tempo do round e tela cheia |
+
+## 🌐 Online
+
+- **Criar sala:** ONLINE → CRIAR SALA mostra o código (4 letras, sem I e O) e o botão COPIAR LINK.
+- **Entrar:** ONLINE → ENTRAR NA SALA e digitar o código (teclado, setas ou toque), ou abrir o link `.../Treta-em-Brasilia/?sala=CODIGO`.
+- **Seleção em rede:** cada um move só o próprio lado (anfitrião 1P à esquerda, convidado 2P à direita); o anfitrião escolhe a arena. Na luta, os dois usam os comandos do jogador 1 (WASD + F G H J R T, ou o toque).
+- **Lockstep determinístico:** as duas telas rodam a mesma simulação quadro a quadro. Cada um manda a sua entrada para alguns quadros à frente (o atraso sai do ping, de 3 a 8 quadros) e só avança quando tem a entrada dos dois; a aleatoriedade que muda o jogo usa uma semente combinada. A cada 60 quadros as telas trocam um resumo do estado: se divergir, a partida para com aviso.
+- **Como conecta:** WebRTC direto entre os navegadores; o servidor público do [PeerJS](https://peerjs.com) só apresenta um ao outro (a biblioteca, MIT, vai junto em `web/peerjs.min.js`). Sem servidor TURN, algumas redes (corporativas, alguns 4G) bloqueiam a conexão direta: o jogo avisa e sugere outra rede.
+- **Revanche** só começa quando os dois apertam; sair, fechar a aba ou cair a conexão volta os dois para o título com aviso.
 
 ## 👊 Combate
 
@@ -40,6 +50,7 @@
 - **Peso nos golpes:** antecipação antes de cada ataque, pausa de impacto proporcional à força, empurrão (knockback), reação diferente se pega na cabeça, no corpo ou nas pernas, recuperação no fim, preparação do pulo e aterrissagem.
 - **Efeitos:** faíscas, anel de impacto, poeira, fumaça, estrelas, confete, linhas de velocidade, rastro de silhueta nos dashes e investidas, tremor de tela moderado, zoom e câmera lenta no nocaute.
 - **Balões de quadrinho:** golpes fortes estouram um "POW!", "PÁ!", "TOMA!"; especiais e SUPER mostram a palavra de quem bateu ("PICANHA!", "TALKEY?", "INQUÉRITO!", "YOU'RE FIRED!", "6x1 NÃO!", "VIRALIZOU!", "É SÓ CHOCOLATE!", "NEM-NEM!"...). Quem apanha sacode na pausa de impacto.
+- **Entrada e K.O.:** no 1º round cada lutador entra provocando, um de cada vez, com um bordão; no nocaute, depois do "K.O.!", estoura um balão gigante com a palavra de quem venceu. Trocar de lado andando e o fim do dash derrapam com poeira.
 
 ## ⚡ SUPER e Ultimate
 
@@ -63,6 +74,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 | **Nikolas** | O Vídeo do Pix · Caminhada até Brasília · Mais Votado do Brasil! · Revoga! · Story de 1 Minuto | 300 Milhões de Views | **Caminhada!** |
 | **Flávio** | Bombom Lavado · Rachadinha! · Cadê o Queiroz? · Mansão de R$ 6 Mi · Carta (Versão 3) | TariFlávio | **Saiu Escondido!** |
 | **Renan** | Corte da Live · Megafone do Impeachment · Vota 14! · Superpresídio · LIVE EMERGENCIAL | Chuva de Cortes | **Confirma!** |
+| **Dilma** | Estocar Vento · Pedalada Fiscal · Mulher Sapiens! · Saudação à Mandioca · Tchau, Querida! | Dobraremos a Meta | **Estocando Vento!** |
 
 <table>
   <tr>
@@ -83,6 +95,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 - **Nikolas Ferreira** (PL-MG, deputado federal mais votado do Brasil em 2022): terno azul-marinho e gravata, bandeira do Brasil no mastro. O vídeo do Pix vira um losango girando, a Caminhada até Brasília é uma marcha com armadura e 4 acertos, e o "Revoga!" derruba um carimbo gigante. Na Ultimate, a estrada BR-040 na chuva com a placa contando de 240 km até "CHEGAMOS!".
 - **Flávio Bolsonaro** (PL-RJ, senador, candidato derrotado no 2º turno de 2026): terno azul-marinho com a faixa verde e amarela e o brasão dourado; cabeça feita do retrato oficial do Senado (Agência Senado, Wikimedia Commons). O bombom da lojinha voa deixando bolhas de sabão, a Rachadinha avança com o envelope, a mansão sobe com a piscina que deixa lento, a carta sai em 3 versões e o TariFlávio faz chover caixotes de 50%. Na Ultimate, o aeroporto à noite com o voo para Miami, a lupa do "CADÊ O FLÁVIO?" e "SAIU ESCONDIDO!". As piadas são sobre fatos públicos e investigações noticiadas, não condenações.
 - **Renan Santos** (cofundador do MBL, candidato do Missão em 2026, 4º lugar com 2,24%): terno azul-marinho, barba e o megafone das manifestações. A tesoura do "corte" de live gira com rastro laranja, o megafone empurra com ondas de som, o superpresídio desce como uma grade com cadeado, as lives emergenciais saem em selos AO VIVO e a Chuva de Cortes derruba celulares com vídeos. Na Ultimate, a urna eletrônica gigante digita 1, 4 e CONFIRMA, e as teclas voam no rival.
+- **Dilma Rousseff** (presidenta de 2011 a 2016, hoje à frente do Banco dos BRICS): terninho creme com a faixa presidencial e o brasão. O pote de vidro com o vento estocado gira no ar, a Pedalada Fiscal chega de bicicleta, as mandiocas brotam do chão ("Saúdo a mandioca!"), o telefone do "Tchau, querida!" voa em arco e o SUPER faz chover alvos de META X2. Na Ultimate, o parque eólico gira cada vez mais rápido, o tornado pega o rival, os potes voam e o medidor chega a "VENTO ESTOCADO: 100%". Bordões das falas públicas dela, sem piada de gênero ou aparência.
 - **Tela de seleção nova:** grade 4 colunas só com retratos (fundo e faixa na cor de cada lutador), última linha centralizada, "?" para quem ainda vai entrar, e o confronto escrito embaixo do VS.
 - **Efeitos de poder na cor de cada lutador:** brilho e faíscas no início de cada especial, rastro nos projéteis, faíscas dos especiais puxando para a cor de quem bate e borda pulsando no chão das zonas.
 - **Cabeça independente:** atrasa em relação ao corpo, recua no golpe, balança andando, pisca sozinha.
@@ -167,13 +180,16 @@ godot --headless --fixed-fps 60 --path . --script res://tests/simular.gd
 - `simular.gd`: 10 partidas CPU x CPU com todos os lutadores até o fim.
 - `capturas.gd`: capturas de todas as telas, golpes e ultimates (precisa de tela, por exemplo com `xvfb-run`).
 - `cpu.gd`: custo de CPU por quadro de uma luta.
+- `online.gd`: duas lutas online ligadas por uma ponte falsa (atraso de 2 a 7 quadros, fora de ordem), com entradas aleatórias nos dois lados e barra cheia (SUPER e Ultimate): o estado tem de sair idêntico em todos os quadros.
+- `online_web.js`: o online de verdade em duas páginas do Chromium (Playwright), com a sala no PeerJS, seleção, arena e luta, conferindo os resumos de estado das duas telas.
 
 ## 📁 Estrutura
 
 ```text
 treta-em-brasilia/
 ├── scripts/
-│   ├── main.gd          # modos de jogo e transições entre telas
+│   ├── main.gd          # modos de jogo e transições entre telas (inclusive o fluxo online)
+│   ├── rede.gd          # online: sala no PeerJS, canal WebRTC, ping
 │   ├── telas.gd         # título, seleção, arena, lutadores, configurações, VS, resultado
 │   ├── luta.gd          # rounds, colisões, câmera, HUD, cinemática, treino, pausa
 │   ├── lutador.gd       # movimento, golpes quadro a quadro, defesa, agarrão, habilidades
@@ -190,10 +206,11 @@ treta-em-brasilia/
 ├── audio/               # sfx, vozes e músicas (gerados por ferramentas/sons.py)
 ├── sprites/             # cabeças e retratos em pixel art (gerados das fotos)
 ├── ferramentas/         # cabeca_pixel.py, rostos.py, sons.py
+├── web/                 # peerjs.min.js (copiado ao lado do jogo exportado)
 ├── fontes/ · tests/ · docs/
 ```
 
 ## 🛣️ Próximos passos
 
-- Multiplayer online com código de sala (hoje o multiplayer é no mesmo aparelho).
-- Os próximos lutadores: Flávio, Milei, Pavanato e Janones.
+- Servidor TURN próprio para o online funcionar em qualquer rede.
+- Os próximos lutadores: Milei e Janones.

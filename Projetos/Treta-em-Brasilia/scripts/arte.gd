@@ -164,6 +164,41 @@ static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 				Desenho._dl(c, Vector2(-28, -26).rotated(g3), Vector2(28, 26).rotated(g3), Color("8a5a2b"), 3.0)
 				Desenho._dr(c, Rect2(-23, -10, 46, 20), Color("e5243b"))
 				Desenho.letras_px(c, Vector2(-17.5, -7), "50%", 3.0, BRANCO)
+		"vento":
+			# pote de vidro com o vento estocado girando dentro, deixando rajadas para trás
+			if not cont:
+				for j in 3:
+					var y := -14.0 + j * 14.0
+					var x0 := -40.0 - fposmod(t * 3.0 + j * 9.0, 30.0)
+					Desenho._dl(c, Vector2(x0, y), Vector2(x0 - 26, y + 2), Color(0.8, 0.95, 1.0, 0.6), 3.0)
+			Desenho._poli(c, PackedVector2Array([Vector2(-20, -22), Vector2(20, -22), Vector2(24, -14), Vector2(24, 24), Vector2(18, 30), Vector2(-18, 30), Vector2(-24, 24), Vector2(-24, -14)]), Color(0.7, 0.9, 1.0, 0.55))
+			if not cont:
+				for j in 3:
+					var a := t * 0.4 + j * TAU / 3.0
+					Desenho._da(c, Vector2(0, 6), 8.0 + j * 5.0, a, a + 3.6, 10, Color(1, 1, 1, 0.85 - j * 0.2), 2.5)
+				Desenho._dr(c, Rect2(-20, -30, 40, 9), Color("c9a227"))
+				Desenho._dl(c, Vector2(-16, -10), Vector2(-16, 18), Color(1, 1, 1, 0.6), 3.0)
+		"telefone":
+			# telefone vermelho de fio, girando no ar com o fio enrolado atrás
+			var g := t * 0.3
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-26, -8), Vector2(-14, -12), Vector2(14, -12), Vector2(26, -8), Vector2(26, 6), Vector2(14, 2), Vector2(-14, 2), Vector2(-26, 6)]), Color("d62828"))
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-30, 2), Vector2(-16, 2), Vector2(-16, 12), Vector2(-30, 12)]), Color("b01e1e"))
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(16, 2), Vector2(30, 2), Vector2(30, 12), Vector2(16, 12)]), Color("b01e1e"))
+			if not cont:
+				for j in 5:
+					Desenho._da(c, Vector2(-30 - j * 7.0, sin(t * 0.5 + j) * 4.0), 4.0, 0.0, TAU, 8, Color("8a1515"), 2.0)
+		"meta":
+			# alvo da META, com a seta cravada e o X2
+			Desenho._circ(c, Vector2.ZERO, 30.0, Color("f2f2f2"))
+			if not cont:
+				Desenho._dc(c, Vector2.ZERO, 23.0, Color("d62828"))
+				Desenho._dc(c, Vector2.ZERO, 15.0, Color("f2f2f2"))
+				Desenho._dc(c, Vector2.ZERO, 7.0, Color("d62828"))
+				Desenho._dl(c, Vector2(2, -2), Vector2(28, -28), Color("6b4226"), 3.0)
+				Desenho._dp(c, PackedVector2Array([Vector2(26, -34), Vector2(34, -26), Vector2(36, -36)]), Color("ffd23f"))
+				Desenho._dr(c, Rect2(-30, -54, 60, 16), Color("1f9d55"))
+				Desenho.letras_px(c, Vector2(-27, -51), "META", 2.0, BRANCO)
+				Desenho.letras_px(c, Vector2(8, -51), "X2", 2.0, Color("ffd23f"))
 		"tesoura":
 			# tesoura de "corte" girando, abrindo e fechando, com rastro laranja
 			var g := t * 0.32
@@ -443,6 +478,25 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 			var cor2 := Color.WHITE
 			cor2.a = k
 			Desenho.texto(c, Vector2(0, -h - 14), "ANTIWOKE", 22, cor2, Color(0.1, 0.1, 0.3, k), 5)
+		"mandioca":
+			# mandiocas brotando do chão, uma depois da outra, com as folhas balançando
+			var n := 5
+			for j in n:
+				var x := -meia + 20.0 + j * (larg - 40.0) / (n - 1)
+				var sobe := clampf((t - j * 4) / 12.0, 0.0, 1.0)
+				var h := (130.0 + (j % 2) * 40.0) * sobe
+				var bal := sin(t * 0.15 + j) * 6.0
+				Desenho._dp(c, PackedVector2Array([Vector2(x - 19, 0), Vector2(x - 14, -h * 0.5), Vector2(x + bal, -h), Vector2(x + 14, -h * 0.5), Vector2(x + 19, 0)]), Color(0.54, 0.35, 0.21, k))
+				Desenho._dl(c, Vector2(x - 6, -h * 0.3), Vector2(x + 6, -h * 0.34), Color(0.42, 0.26, 0.15, k), 1.5)
+				Desenho._dl(c, Vector2(x - 5, -h * 0.6), Vector2(x + 5, -h * 0.64), Color(0.42, 0.26, 0.15, k), 1.5)
+				for f in 3:
+					var a := -0.8 + f * 0.8 + sin(t * 0.2 + j) * 0.15
+					Desenho._dl(c, Vector2(x + bal, -h), Vector2(x + bal, -h) + Vector2(sin(a), -cos(a)) * 30.0 * sobe, Color(0.25, 0.62, 0.29, k), 6.0)
+			# terra levantada
+			Desenho._dr(c, Rect2(-meia, -6, larg, 8), Color(0.45, 0.3, 0.18, k))
+			var cor := Color("ffd23f")
+			cor.a = k
+			Desenho.texto(c, Vector2(0, -230), "SAÚDO A MANDIOCA!", 18, cor, Color(0.1, 0.05, 0.0, k), 5)
 		"cela":
 			# superpresídio: grade de barras desce do céu e trava em volta do rival
 			var desce := clampf(t / 12.0, 0.0, 1.0)

@@ -276,6 +276,7 @@ func passo() -> void:
 			position.x += vel.x
 			vel.x *= 0.86
 			if quadro >= 16:
+				evento.emit(self, "derrapa")
 				_mudar(E.PARADO)
 		E.PROVOCANDO:
 			if quadro > (90 if dados.get("id", "") == "trump" else 60):
@@ -390,7 +391,10 @@ func _comando(seq: Array) -> bool:
 
 func _virar() -> void:
 	if oponente != null and no_chao():
-		lado = 1 if oponente.position.x >= position.x else -1
+		var novo := 1 if oponente.position.x >= position.x else -1
+		if novo != lado and estado == E.ANDANDO:
+			evento.emit(self, "derrapa")  # trocou de lado andando: pé arrasta e levanta poeira
+		lado = novo
 
 
 func _mudar(novo: int) -> void:

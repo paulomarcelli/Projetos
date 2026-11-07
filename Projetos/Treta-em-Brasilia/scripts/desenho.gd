@@ -142,6 +142,13 @@ static func pose_idle(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-8, -100)
 			p["cabeca_giro"] = sin(t * 0.1) * 0.06
 			p["boca"] = "grito" if (t / 12) % 4 == 0 else "normal"
+		"gesticula":
+			# discurso de palanque: as duas mãos girando, uma de cada vez
+			var g := t * 0.12
+			p["mao_f"] = Vector2(44 + cos(g) * 14, -142 + sin(g) * 14)
+			p["mao_t"] = Vector2(24 + cos(g + PI) * 12, -132 + sin(g + PI) * 12)
+			p["cabeca_giro"] = sin(t * 0.06) * 0.08
+			p["boca"] = "grito" if (t / 10) % 4 == 0 else "normal"
 		"megafone":
 			# megafone na mão; de tempos em tempos leva à boca e puxa o coro
 			p["mao_f"] = Vector2(30, -96)
@@ -244,6 +251,14 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(30, -200 + absf(sin(t * 0.25)) * 12)
 			p["cabeca_giro"] = -0.12
 			p["inclina"] = 0.06
+		"dilma":
+			# ergue a mandioca e saúda: "Eu saúdo a mandioca!"
+			p["mao_f"] = Vector2(50, -214 + sin(t * 0.2) * 6)
+			p["prop"] = "mandioca"
+			p["mao_t"] = Vector2(20, -150)
+			p["cabeca_giro"] = -0.12
+			p["inclina"] = -0.06
+			p["boca"] = "grito" if (t / 12) % 3 == 0 else "normal"
 		"renan":
 			# megafone na boca, dedo apontado para o rival: "nem Lula, nem Flávio!"
 			p["mao_f"] = Vector2(40, -196)
@@ -310,6 +325,11 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-30, -200)
 			p["prop_t"] = "joinha"
 			p["cabeca_giro"] = -0.15
+		"dilma":
+			p["mao_f"] = Vector2(44, -226 + bob * 4)
+			p["prop"] = "mandioca"
+			p["mao_t"] = Vector2(-30, -210 - absf(sin(t * 0.3)) * 10)
+			p["cabeca_giro"] = -0.1
 		"renan":
 			p["mao_f"] = Vector2(40, -196)
 			p["prop"] = "megafone_on"
@@ -382,6 +402,10 @@ static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
 		"pavanato":
 			p["mao_f"] = Vector2(30, -96)
 			p["prop"] = "celular"
+		"dilma":
+			p["mao_f"] = Vector2(28, -60)
+			p["prop"] = "mandioca"
+			p["mao_t"] = Vector2(14, -170)
 		"renan":
 			p["mao_f"] = Vector2(30, -62)
 			p["prop"] = "megafone"
@@ -746,7 +770,7 @@ const _FONTE_PX := {
 	"F": ["111", "100", "110", "100", "100"], "L": ["100", "100", "100", "100", "111"], "U": ["101", "101", "101", "101", "111"],
 	"H": ["101", "101", "111", "101", "101"], "B": ["110", "101", "110", "101", "110"], "?": ["110", "001", "010", "000", "010"],
 	"0": ["111", "101", "101", "101", "111"], "1": ["010", "110", "010", "010", "111"], "3": ["110", "001", "010", "001", "110"],
-	"5": ["111", "100", "110", "001", "110"], "4": ["101", "101", "111", "001", "001"], "6": ["011", "100", "110", "101", "010"], "%": ["101", "001", "010", "100", "101"],
+	"5": ["111", "100", "110", "001", "110"], "4": ["101", "101", "111", "001", "001"], "2": ["110", "001", "010", "100", "111"], "6": ["011", "100", "110", "101", "010"], "%": ["101", "001", "010", "100", "101"],
 	"$": ["011", "110", "010", "011", "110"], "!": ["010", "010", "010", "000", "010"],
 }
 
@@ -1180,6 +1204,43 @@ static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
 			_dp(c, PackedVector2Array([mao + Vector2(31, -88 + ond * 0.5), mao + Vector2(54, -74 + ond), mao + Vector2(31, -60 + ond * 0.5), mao + Vector2(8, -76)]), Color("ffd23f"))
 			_dc(c, mao + Vector2(31, -75 + ond * 0.5), 8.0, Color("1f3f9a"))
 			_dl(c, mao + Vector2(24, -77), mao + Vector2(38, -73), BRANCO, 1.5)
+		"mandioca":
+			# mandioca com casca marrom e as folhas no topo
+			for passada in 2:
+				_cont = passada == 0
+				_poli(c, PackedVector2Array([mao + Vector2(-5, 6), mao + Vector2(-9, -20), mao + Vector2(-6, -44), mao + Vector2(0, -58), mao + Vector2(6, -44), mao + Vector2(9, -20), mao + Vector2(5, 6)]), Color("8a5a35"))
+			_cont = false
+			for k in 3:
+				_dl(c, mao + Vector2(-6, -12 - k * 14), mao + Vector2(6, -16 - k * 14), Color("6b4226"), 1.5)
+			_dc(c, mao + Vector2(0, 8), 5.0, Color("f2e6c9"))
+			for k in 3:
+				var a := -0.9 + k * 0.9
+				_dl(c, mao + Vector2(0, -56), mao + Vector2(0, -56) + Vector2(sin(a), -cos(a)) * 18.0, Color("3f9d4a"), 4.0)
+		"bicicleta":
+			# bicicleta: o guidão fica na mão, rodas embaixo
+			var r := 24.0
+			var fr := mao + Vector2(14, 98)
+			var tr := mao + Vector2(-96, 98)
+			var pedal := mao + Vector2(-42, 92)
+			var selim := mao + Vector2(-70, 58)
+			var giro := Time.get_ticks_msec() * 0.02
+			for roda in [fr, tr]:
+				_da(c, roda, r, 0.0, TAU, 20, Color("2a2a30"), 5.0)
+				for k in 3:
+					var a: float = giro + k * TAU / 3.0
+					_dl(c, roda, roda + Vector2(cos(a), sin(a)) * r, Color("9aa0a6"), 1.5)
+			var quadro := Color("d94f70")
+			_dl(c, tr, pedal, quadro, 4.0)
+			_dl(c, pedal, selim, quadro, 4.0)
+			_dl(c, selim, mao + Vector2(-6, 30), quadro, 4.0)
+			_dl(c, mao + Vector2(-6, 30), pedal, quadro, 4.0)
+			_dl(c, mao + Vector2(-6, 30), fr, quadro, 4.0)
+			_dl(c, mao, mao + Vector2(-6, 30), Color("2a2a30"), 4.0)
+			_dl(c, mao + Vector2(-8, -2), mao + Vector2(8, -2), Color("2a2a30"), 4.0)
+			_dr(c, Rect2(selim + Vector2(-12, -4), Vector2(22, 6)), Color("2a2a30"))
+			_dc(c, pedal, 5.0, Color("9aa0a6"))
+			# cestinha com a bandeira
+			_dr(c, Rect2(mao + Vector2(6, 6), Vector2(20, 14)), Color("c49a5c"))
 		"megafone", "megafone_on":
 			# megafone branco com faixa laranja; ligado solta as ondas de som
 			for passada in 2:
@@ -1406,7 +1467,7 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 			if not _cont:
 				for i in 4:
 					_da(c, Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
-		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto", "pix", "curtida", "play", "revogado", "bombom", "carta", "tarifa", "tesoura", "aovivo", "corte":
+		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto", "pix", "curtida", "play", "revogado", "bombom", "carta", "tarifa", "tesoura", "aovivo", "corte", "vento", "telefone", "meta":
 			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))

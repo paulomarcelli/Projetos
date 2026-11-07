@@ -6,6 +6,23 @@ extends Node2D
 
 signal terminou(vencedor: int)  # 0 = jogador 1, 1 = jogador 2
 signal sair
+signal dessincronizou
+
+# ---------------------------------------------------------------- online (lockstep)
+## As duas pontas rodam a mesma simulação quadro a quadro com as mesmas entradas. Cada um manda
+## a sua entrada para "quadro + atraso" e só avança quando tem as dos dois para o quadro atual.
+const BOTOES := ["esq", "dir", "cima", "baixo", "soco", "chute", "especial", "provocar", "super", "agarrar"]
+var online = null          # transporte com enviar(d: Dictionary)
+var eu := 0                # meu lado (0 = anfitrião, 1 = convidado)
+var atraso := 4
+var q_sim := 0             # quadro da simulação
+var parado_q := 0          # quadros seguidos esperando o outro
+var fonte_local = null     # quem lê a minha entrada (teclado/toque, ou o teste)
+var rng := RandomNumberGenerator.new()  # aleatoriedade que muda o jogo (igual nas duas pontas)
+var tempo_round_fixo := -1
+var _in := [{}, {}]        # quadro -> botões em bits, de cada lado
+var _local_ate := -1
+var _chk := [{}, {}]
 
 var dados_p: Array = []
 var humano := [true, false]
@@ -42,6 +59,7 @@ const IMPACTOS := {
 	"nikolas": ["VIRALIZOU!", "REVOGA!", "O PIX É NOSSO!"],
 	"flavio": ["É SÓ CHOCOLATE!", "VERSÃO 3!", "TARIFLÁVIO!"],
 	"renan": ["NEM-NEM!", "VOTA 14!", "CORTA ESSA!"],
+	"dilma": ["ESTOCA VENTO!", "MANDIOCA!", "DOBROU A META!"],
 }
 var congelado := 0
 var tremor := 0.0
@@ -87,7 +105,98 @@ func configurar(a: Dictionary, b: Dictionary, dois_jogadores: bool, cpu_contra_c
 	humano = [not cpu_contra_cpu, dois_jogadores and not cpu_contra_cpu]
 
 
+func configurar_online(transporte, lado: int, semente: int, atraso_q: int) -> void:
+	online = transporte
+	eu = lado
+	atraso = atraso_q
+	rng.seed = semente
+	humano = [true, true]
+	for f in atraso:
+		_in[0][f] = 0
+		_in[1][f] = 0
+	_local_ate = atraso - 1
+
+
+## Mensagens da rede para esta luta ("in" = entrada de um quadro, "chk" = conferência).
+func rede_receber(d: Dictionary) -> void:
+	match d.get("k", ""):
+		"in":
+			_in[1 - eu][int(d["f"])] = int(d["b"])
+		"chk":
+			_chk[1 - eu][int(d["f"])] = int(d["h"])
+			_conferir(int(d["f"]))
+
+
+static func bits(e: Dictionary) -> int:
+	var b := 0
+	for i in BOTOES.size():
+		if e.get(BOTOES[i], false):
+			b |= 1 << i
+	return b
+
+
+func entrada_online(lado: int) -> Dictionary:
+	var b: int = _in[lado].get(q_sim, 0)
+	var e := {}
+	for i in BOTOES.size():
+		e[BOTOES[i]] = (b >> i) & 1 == 1
+	return e
+
+
+## Resumo do estado que importa para o jogo (as duas pontas precisam dar o mesmo número).
+func estado_hash() -> int:
+	var a := [q_sim, round_n, vitorias[0], vitorias[1], fase, fase_t, hitstop, congelado, snappedf(tempo, 0.001), projeteis.size(), zonas.size()]
+	for l in p:
+		a.append_array([snappedf(l.position.x, 0.01), snappedf(l.position.y, 0.01), snappedf(l.vida, 0.01), snappedf(l.barra, 0.01), l.estado, l.quadro, l.lado])
+	for pr in projeteis:
+		a.append_array([snappedf(pr.position.x, 0.01), snappedf(pr.position.y, 0.01)])
+	return hash(str(a))
+
+
+func _conferir(f: int) -> void:
+	if _chk[0].has(f) and _chk[1].has(f) and _chk[0][f] != _chk[1][f]:
+		push_warning("dessincronizou no quadro %d" % f)
+		dessincronizou.emit()
+		online = null
+
+
+## Manda a minha entrada adiantada e diz se já dá para rodar o quadro atual.
+func _online_pronto() -> bool:
+	while _local_ate < q_sim + atraso:
+		_local_ate += 1
+		var e: Dictionary = fonte_local.ler() if fonte_local != null and not pausado else {}
+		var b := bits(e)
+		_in[eu][_local_ate] = b
+		online.enviar({"k": "in", "f": _local_ate, "b": b})
+	return _in[1 - eu].has(q_sim)
+
+
+func _online_depois() -> void:
+	q_sim += 1
+	for lado in 2:
+		_in[lado].erase(q_sim - 30)
+	if q_sim % 60 == 0:
+		var h := estado_hash()
+		_chk[eu][q_sim] = h
+		online.enviar({"k": "chk", "f": q_sim, "h": h})
+		if online.has_method("publicar"):
+			online.publicar({"q": q_sim, "h": h, "vidas": [int(p[0].vida), int(p[1].vida)]})
+		_conferir(q_sim)
+
+
+class EntradaRede:
+	var luta: Luta
+	var lado := 0
+	func _init(l: Luta, i: int) -> void:
+		luta = l
+		lado = i
+	func ler() -> Dictionary:
+		return luta.entrada_online(lado)
+
+
 func _ready() -> void:
+	if online == null:
+		rng.randomize()
 	_mundo = Node2D.new()
 	add_child(_mundo)
 	# o cenário vira textura (1 chamada de desenho por camada): fundo e frente são desenhados
@@ -121,6 +230,12 @@ func _ready() -> void:
 			var ia := IA.new(nivel_cpu)
 			ias[i] = ia
 			l.entrada = ia
+	if online != null:
+		for i in 2:
+			p[i].entrada = EntradaRede.new(self, i)
+			ias[i] = null
+		if fonte_local == null:
+			fonte_local = EntradaHumana.new(1)
 	p[0].oponente = p[1]
 	p[1].oponente = p[0]
 	p[0].treino = treino
@@ -161,7 +276,8 @@ func _novo_round() -> void:
 	zonas.clear()
 	cinema = {}
 	vida_vis = [p[0].vida, p[1].vida]
-	tempo = float(Config.tempo_round) if Config.tempo_round > 0 and not treino else 999.0
+	var tr := tempo_round_fixo if tempo_round_fixo >= 0 else Config.tempo_round
+	tempo = float(tr) if tr > 0 and not treino else 999.0
 	combo = [0, 0]
 	fase = "intro"
 	fase_t = 0
@@ -217,29 +333,55 @@ func _escolher_pausa() -> void:
 		0:
 			_pausar(false)
 		1:
+			if online != null:
+				_pausar(false)
+				return
 			pausado = false
 			vitorias = [0, 0]
 			round_n = 1
 			_novo_round()
 		2:
 			Som.sfx("menu_voltar", 0.0)
+			if online != null:
+				online.enviar({"k": "sair"})
 			sair.emit()
 
 
 func _physics_process(_delta: float) -> void:
-	if pausado:
-		for a in ["p1_baixo", "p2_baixo", "ui_down"]:
-			if Input.is_action_just_pressed(a):
-				pausa_opcao = (pausa_opcao + 1) % 3
-				Som.sfx("menu_mover", 0.0)
-		for a in ["p1_cima", "p2_cima", "ui_up"]:
-			if Input.is_action_just_pressed(a):
-				pausa_opcao = (pausa_opcao + 2) % 3
-				Som.sfx("menu_mover", 0.0)
-		if Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("p1_soco"):
-			_escolher_pausa()
-		_hud.queue_redraw()
+	if online != null:
+		# online: a pausa é só um menu por cima; a luta não para (o outro continua jogando)
+		if pausado:
+			_menu_pausa()
+		if not _online_pronto():
+			parado_q += 1
+			_hud.queue_redraw()
+			return
+		parado_q = 0
+		_tick()
+		if online != null:
+			_online_depois()
 		return
+	if pausado:
+		_menu_pausa()
+		return
+	_tick()
+
+
+func _menu_pausa() -> void:
+	for a in ["p1_baixo", "p2_baixo", "ui_down"]:
+		if Input.is_action_just_pressed(a):
+			pausa_opcao = (pausa_opcao + 1) % 3
+			Som.sfx("menu_mover", 0.0)
+	for a in ["p1_cima", "p2_cima", "ui_up"]:
+		if Input.is_action_just_pressed(a):
+			pausa_opcao = (pausa_opcao + 2) % 3
+			Som.sfx("menu_mover", 0.0)
+	if Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("p1_soco"):
+		_escolher_pausa()
+	_hud.queue_redraw()
+
+
+func _tick() -> void:
 	# câmera lenta no nocaute: a lógica anda um quadro sim, outro não
 	if _lento_ko > 0:
 		_lento_ko -= 1
@@ -273,6 +415,15 @@ func _physics_process(_delta: float) -> void:
 
 	match fase:
 		"intro":
+			# no 1º round cada um entra provocando, um de cada vez, e solta um bordão
+			if round_n == 1 and not treino and fase_t in [4, 22]:
+				var l: Lutador = p[0 if fase_t == 4 else 1]
+				l._mudar(Lutador.E.PROVOCANDO)
+				l.quadro = (90 if l.dados.get("id", "") == "trump" else 60) - (80 - fase_t)
+				var memes: Array = l.dados.get("memes", [])
+				if not memes.is_empty():
+					# bem acima da cabeça, para não brigar com o "ROUND 1" no meio da tela
+					_texto(l.position + Vector2(0, -440), memes[randi() % memes.size()], Color("ffd23f"), 26, 70)
 			if fase_t == 72:
 				_mensagem("LUTE!", 45)
 				Som.sfx("lute", 0.0)
@@ -641,6 +792,13 @@ func _checar_fim() -> void:
 			Som.sfx("ko", 0.0)
 			Som.voz(p[1 if ko[1] else 0].dados["id"], "derrota")
 			particulas.explosao(p[1 if ko[1] else 0].position + Vector2(0, -140), 1.0)
+			# balão de quadrinho gigante com a palavra de quem venceu, em cima de quem caiu
+			var caiu: Lutador = p[1 if ko[1] else 0]
+			var venceu: Lutador = p[0 if ko[1] else 1]
+			var palavras: Array = IMPACTOS.get(venceu.dados.get("id", ""), POW)
+			# entra quando o "K.O.!" já está sumindo (t negativo = espera)
+			efeitos.append({"tipo": "pow", "pos": caiu.position + Vector2(0, -230), "t": -70, "dur": 150, "txt": palavras[0],
+				"cor": venceu.dados.get("cor", Color("ffd23f")), "giro": 0.12, "grande": true, "escala": 1.5})
 		else:
 			Som.sfx("round", 0.0)
 		for l in p:
@@ -710,7 +868,7 @@ func _criar_chuva(l: Lutador, spec: Dictionary) -> void:
 	for k in qtd:
 		var pr := Projetil.new()
 		pr.z_index = 3
-		var x := alvo.position.x + (randf_range(-espalha, espalha) if k > 0 else 0.0)
+		var x := alvo.position.x + (rng.randf_range(-espalha, espalha) if k > 0 else 0.0)
 		pr.iniciar_queda(l, spec, clampf(x, 60.0, 1220.0), int(spec.get("atraso", 30)) + k * int(spec.get("intervalo", 6)))
 		_palco.add_child(pr)
 		projeteis.append(pr)
@@ -750,6 +908,8 @@ func _evento(l: Lutador, nome: String) -> void:
 		"dash":
 			Som.sfx("dash")
 			particulas.poeira(l.position, 5, true)
+		"derrapa":
+			particulas.poeira(l.position + Vector2(-l.lado * 20.0, 0), 4, true)
 		"queda":
 			Som.sfx("queda")
 			particulas.poeira(l.position, 10, true)
@@ -973,7 +1133,8 @@ func _desenhar_efeitos(c: CanvasItem) -> void:
 			"veiculo":
 				Arte.veiculo_ceu(c, ef["forma"], int(ef["t"]), int(ef["dur"]), int(ef["dir"]))
 			"pow":
-				_desenhar_pow(c, ef, k)
+				if k > 0.0:
+					_desenhar_pow(c, ef, k)
 			"clarao":
 				var cc: Color = ef["cor"]
 				cc = cc.lightened(0.5)
@@ -1001,7 +1162,7 @@ func _desenhar_pow(c: CanvasItem, ef: Dictionary, k: float) -> void:
 	var esc := (1.25 - 0.25 * entra) * entra * (1.0 if k < 0.75 else 1.0 - (k - 0.75) / 0.25 * 0.3)
 	var a := 1.0 if k < 0.75 else (1.0 - k) / 0.25
 	var centro: Vector2 = ef["pos"] + Vector2(0, -k * 18.0)
-	var r := (50.0 + txt.length() * 6.0) * (0.98 if grande else 0.8) * esc
+	var r := (50.0 + txt.length() * 6.0) * (0.98 if grande else 0.8) * esc * float(ef.get("escala", 1.0))
 	var giro: float = ef["giro"]
 	var pts := PackedVector2Array()
 	var dentro := PackedVector2Array()
@@ -1018,7 +1179,7 @@ func _desenhar_pow(c: CanvasItem, ef: Dictionary, k: float) -> void:
 	c.draw_colored_polygon(dentro, cor)
 	c.draw_colored_polygon(PackedVector2Array([centro + Vector2(-r * 0.5, -r * 0.24), centro + Vector2(r * 0.2, -r * 0.3), centro + Vector2(-r * 0.3, -r * 0.1)]), Color(1, 1, 1, 0.45 * a))
 	if entra >= 0.6:
-		var tam := int((22 if grande else 18) * clampf(esc, 0.6, 1.2))
+		var tam := int((22 if grande else 18) * clampf(esc, 0.6, 1.2) * float(ef.get("escala", 1.0)))
 		Desenho.texto(c, centro + Vector2(0, tam * 0.4), txt, tam, Color(0.85, 0.08, 0.12, a), Color(1, 1, 1, a), 5)
 
 
@@ -1180,6 +1341,12 @@ func _desenhar_hud(c: CanvasItem) -> void:
 		borda.a = k
 		var escala := 1.0 + maxf(0.0, (msg_t - 50) / 30.0) * 0.4 if msg == "K.O.!" else 1.0
 		Desenho.texto(c, Vector2(640, 380), msg, int(96 * escala), cor, borda, 14)
+	if online != null:
+		Desenho.texto(c, Vector2(640, 676), "ONLINE · você é o %dP" % (eu + 1), 16, Color("7ef0ff"), Desenho.PRETO, 4)
+		if parado_q > 20:
+			var nome_o: String = p[1 - eu].dados.get("nome", "")
+			c.draw_rect(Rect2(340, 300, 600, 70), Color(0.05, 0.03, 0.12, 0.85))
+			Desenho.texto(c, Vector2(640, 346), "AGUARDANDO %s..." % nome_o, 24, Color("ffd23f"), Desenho.PRETO, 6)
 	if pausado:
 		_desenhar_pausa(c)
 

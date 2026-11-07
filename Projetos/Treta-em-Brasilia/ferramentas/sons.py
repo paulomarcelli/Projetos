@@ -270,6 +270,7 @@ PERFIS = {
     "erika": {"f0": 200, "rouco": 0.1, "formante": 1.1, "vib": 4.5},
     "pavanato": {"f0": 145, "rouco": 0.06, "formante": 1.08, "vib": 5.5},
     "nikolas": {"f0": 138, "rouco": 0.08, "formante": 1.04, "vib": 4.0},
+    "flavio": {"f0": 124, "rouco": 0.1, "formante": 1.0, "vib": 3.0},
 }
 
 

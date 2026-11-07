@@ -276,6 +276,24 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 				p["mao_t"] = Vector2(30, -60)
 				p["inclina"] = 0.22
 				p["expr"] = "feliz"
+		"rachadinha":
+			# puxa o envelope de trás e avança de ombro, "rachando" o golpe ao meio com a outra mão
+			p["prop"] = "envelope"
+			if prep:
+				p["mao_f"] = Vector2(-34, -150)
+				p["mao_t"] = Vector2(10, -130)
+				p["inclina"] = -0.14
+				p["cabeca_giro"] = -0.12
+			else:
+				var vai := sin(t * 0.6)
+				p["mao_f"] = Vector2(104, -150 + vai * 14).lerp(Vector2(60, -130), 1.0 - kp)
+				p["mao_t"] = Vector2(70, -110 - vai * 14)
+				p["inclina"] = 0.22 * kp
+				p["pe_f"] = Vector2(42, 0)
+				p["pe_t"] = Vector2(-34, 0)
+				p["expr"] = "feliz" if (t / 6) % 2 == 0 else "grito"
+				if kp >= 1.0:
+					p["rastro"] = [p["mao_f"], p["mao_t"]]
 		"ultimate_inicio":
 			# pose de poder antes da cinemática
 			p["mao_f"] = Vector2(40, -220)
@@ -312,6 +330,14 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if sin(t * 0.18) > 0 else "neutro"
+		"flavio":
+			# acena da escada do avião de mala na mão e depois mostra a carta
+			p["prop"] = "carta" if t > 150 else "envelope"
+			p["mao_f"] = Vector2(50, -214 + sin(t * 0.3) * 8) if t > 150 else Vector2(30, -96)
+			p["mao_t"] = Vector2(-30 + sin(t * 0.35) * 14, -214)
+			p["cabeca_giro"] = -0.15 + sin(t * 0.35) * 0.05
+			p["inclina"] = -0.05
+			p["expr"] = "feliz" if t < 150 else "grito"
 		"nikolas":
 			# marchando no lugar com a bandeira erguida
 			p["prop"] = "bandeira"

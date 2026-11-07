@@ -38,6 +38,13 @@ static func passo(cin: Dictionary, atk: Lutador, def: Lutador, part: Particulas)
 				part.explosao(alvo, 1.1)
 			if t > 180 and t % 4 == 0:
 				part.confete(Vector2(640, 0), 8)
+		"flavio":
+			if t > 50 and t < 170 and t % 9 == 0:
+				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
+			if t == 178:
+				part.explosao(alvo, 1.1)
+			if t > 178 and t % 4 == 0:
+				part.confete(Vector2(640, 0), 8)
 		"erika":
 			if t > 60 and t < 170 and t % 9 == 0:
 				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
@@ -253,6 +260,75 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				fmt += txt[i]
 			c.draw_rect(Rect2(centro.x - 230, base.end.y + 6, 460, 56), Color(0.04, 0.04, 0.1, 0.85 * k))
 			Desenho.texto(c, Vector2(centro.x, base.end.y + 46), fmt + " VOTOS", 32, Color(1, 1, 1, k), Color("1f6fd1"), 6)
+		"flavio":
+			# saiu escondido: aeroporto à noite, painel com o voo para Miami, avião decolando,
+			# a lupa procurando "CADÊ O FLÁVIO?" e as malas despencando no rival
+			if not fundo:
+				for j in 8:
+					var tt := 48 + j * 14
+					if t >= tt and t < tt + 30:
+						var q := clampf((t - tt) / 18.0, 0.0, 1.0)
+						var pos := Vector2(dx + (j % 3 - 1) * 56.0, lerpf(-60.0, chao - 120.0 - (j % 2) * 46.0, q * q))
+						c.draw_set_transform(pos, sin(t * 0.25 + j) * 0.5, Vector2(1.7, 1.7))
+						for passada in 2:
+							Desenho._cont = passada == 0
+							Arte.projetil(c, "mala", t + j * 7, Desenho._cont)
+						Desenho._cont = false
+						c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				# lupa varrendo a tela
+				var cxl := clampf((ax + dx) / 2.0, 320.0, 960.0)
+				if t > 96 and t < 168:
+					var q2 := (t - 96) / 72.0
+					var lp := Vector2(lerpf(cxl - 420.0, cxl + 420.0, q2), chao - 190.0 + sin(q2 * TAU * 1.5) * 60.0)
+					c.draw_circle(lp, 62.0, Color(0.85, 0.95, 1.0, 0.18 * k))
+					c.draw_arc(lp, 64.0, 0.0, TAU, 40, Color(0.1, 0.08, 0.14, k), 14.0)
+					c.draw_arc(lp, 64.0, 0.0, TAU, 40, Color(0.79, 0.64, 0.15, k), 8.0)
+					c.draw_line(lp + Vector2(44, 44), lp + Vector2(110, 110), Color(0.1, 0.08, 0.14, k), 20.0)
+					c.draw_line(lp + Vector2(46, 46), lp + Vector2(106, 106), Color(0.45, 0.28, 0.14, k), 12.0)
+					c.draw_rect(Rect2(cxl - 240, chao - 400, 480, 70), Color(0.05, 0.04, 0.12, 0.8 * k))
+					Desenho.texto(c, Vector2(cxl, chao - 352), "CADÊ O FLÁVIO?", 28, Color(1, 0.84, 0.25, k), Color(0.1, 0.1, 0.3, k), 6)
+				if t > 172:
+					var q4 := clampf((t - 172) / 10.0, 0.0, 1.0)
+					var tam := lerpf(150.0, 84.0, q4)
+					var cor := Color("ffd23f")
+					cor.a = k
+					c.draw_rect(Rect2(dx - 290, chao - 250, 580, 110), Color(0.0, 0.05, 0.15, 0.75 * k))
+					Desenho.texto(c, Vector2(dx, chao - 172), "SAIU ESCONDIDO!", int(tam * 0.46), cor, Color("1f9d55"), 8)
+				return
+			# céu noturno com estrelas e a pista iluminada
+			c.draw_rect(Rect2(-300, chao - 560, 1880, 560), Color(0.04, 0.06, 0.16, 0.85 * k))
+			for j in 24:
+				var sx := fposmod(j * 173.0, 1280.0)
+				var sy := chao - 540.0 + fposmod(j * 97.0, 300.0)
+				c.draw_circle(Vector2(sx, sy), 1.5 + (j % 3), Color(1, 1, 0.9, (0.4 + 0.4 * sin(t * 0.2 + j)) * k))
+			c.draw_rect(Rect2(-300, chao - 40, 1880, 40), Color(0.12, 0.12, 0.16, k))
+			for j in 14:
+				var lx := fposmod(j * 100.0 - t * 6.0, 1400.0) - 60.0
+				c.draw_circle(Vector2(lx, chao - 20), 4.0, Color(1, 0.85, 0.3, k))
+			# painel de partidas
+			var cxp := clampf((ax + dx) / 2.0, 320.0, 960.0)
+			if t < 98:
+				var kp := k * clampf((98 - t) / 8.0, 0.0, 1.0)
+				var painel := Rect2(cxp - 230, chao - 404, 460, 116)
+				c.draw_rect(painel.grow(6), Color(0.3, 0.3, 0.34, kp))
+				c.draw_rect(painel, Color(0.06, 0.06, 0.08, kp))
+				Desenho.texto(c, painel.position + Vector2(230, 30), "PARTIDAS", 18, Color(1, 0.84, 0.25, kp), Color(0, 0, 0, 0), 0)
+				var pisca := 1.0 if (t / 12) % 2 == 0 else 0.35
+				Desenho.texto(c, painel.position + Vector2(230, 66), "MIAMI  EMBARQUE", 17, Color(0.4, 1, 0.5, pisca * kp), Color(0, 0, 0, 0), 0)
+				Desenho.texto(c, painel.position + Vector2(230, 100), "BRASÍLIA  CANCELADO", 17, Color(1, 0.35, 0.3, kp), Color(0, 0, 0, 0), 0)
+			# o avião decolando
+			if t > 30 and t < 190:
+				var q3 := clampf((t - 30) / 150.0, 0.0, 1.0)
+				var pv := Vector2(lerpf(-160.0, 1460.0, q3), chao - 90.0 - maxf(0.0, q3 - 0.25) * 520.0)
+				var inc := -0.28 if q3 > 0.25 else 0.0
+				c.draw_set_transform(pv, inc, Vector2.ONE)
+				c.draw_colored_polygon(PackedVector2Array([Vector2(-150, -18), Vector2(130, -18), Vector2(170, 0), Vector2(130, 18), Vector2(-150, 18)]), Color(0.93, 0.94, 0.97, k))
+				c.draw_colored_polygon(PackedVector2Array([Vector2(-130, -18), Vector2(-150, -70), Vector2(-112, -70), Vector2(-90, -18)]), Color(0.12, 0.62, 0.33, k))
+				c.draw_colored_polygon(PackedVector2Array([Vector2(-20, 6), Vector2(40, 6), Vector2(-40, 70), Vector2(-70, 70)]), Color(0.75, 0.78, 0.85, k))
+				for w in 9:
+					c.draw_circle(Vector2(-110 + w * 26, -4), 5.0, Color(0.35, 0.6, 0.9, k))
+				c.draw_rect(Rect2(-150, 4, 300, 5), Color(1, 0.84, 0.25, k))
+				c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		"erika":
 			# plenário: painel de votação enchendo de SIM, calendários 6x1 caindo no rival e o carimbo APROVADA
 			if not fundo:

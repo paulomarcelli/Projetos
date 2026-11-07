@@ -142,6 +142,16 @@ static func pose_idle(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-8, -100)
 			p["cabeca_giro"] = sin(t * 0.1) * 0.06
 			p["boca"] = "grito" if (t / 12) % 4 == 0 else "normal"
+		"acenar":
+			# aceno de faixa no peito para a multidão imaginária, mãos juntas entre um aceno e outro
+			p["mao_f"] = Vector2(12, -104)
+			p["mao_t"] = Vector2(0, -100)
+			p["inclina"] = -0.03
+			if t % 220 < 70:
+				var ac := sin(t * 0.35)
+				p["mao_f"] = Vector2(54 + ac * 10, -214 + absf(ac) * 6)
+				p["cabeca_giro"] = -0.1 + ac * 0.04
+				p["boca"] = "grito" if (t / 14) % 3 == 0 else "normal"
 		"selfie":
 			# celular erguido filmando a si mesmo, falando com a câmera
 			p["mao_f"] = Vector2(58, -214 + sin(t * 0.08) * 4)
@@ -223,6 +233,14 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(30, -200 + absf(sin(t * 0.25)) * 12)
 			p["cabeca_giro"] = -0.12
 			p["inclina"] = 0.06
+		"flavio":
+			# lê a carta (mais uma versão) e olha para o rival por cima do papel
+			p["mao_f"] = Vector2(44, -176)
+			p["prop"] = "carta"
+			p["mao_t"] = Vector2(26, -170)
+			p["cabeca_giro"] = 0.1 + sin(t * 0.12) * 0.06
+			p["inclina"] = -0.04
+			p["boca"] = "grito" if (t / 10) % 3 == 0 else "normal"
 		"nikolas":
 			# segura a bandeira e acena para a câmera
 			p["mao_f"] = Vector2(40, -150)
@@ -274,6 +292,12 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-30, -200)
 			p["prop_t"] = "joinha"
 			p["cabeca_giro"] = -0.15
+		"flavio":
+			p["mao_f"] = Vector2(44, -226 + bob * 4)
+			p["prop"] = "carta"
+			p["mao_t"] = Vector2(-30, -206 - absf(sin(t * 0.3)) * 10)
+			p["cabeca_giro"] = -0.14
+			p["inclina"] = -0.06
 		"nikolas":
 			p["mao_f"] = Vector2(40, -150 + bob * 4)
 			p["prop"] = "bandeira"
@@ -334,6 +358,10 @@ static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
 		"pavanato":
 			p["mao_f"] = Vector2(30, -96)
 			p["prop"] = "celular"
+		"flavio":
+			p["mao_f"] = Vector2(34, -70)
+			p["prop"] = "carta"
+			p["mao_t"] = Vector2(14, -178)
 		"nikolas":
 			p["mao_f"] = Vector2(30, -60)
 			p["prop"] = "bandeira"
@@ -686,6 +714,12 @@ const _FONTE_PX := {
 	"K": ["101", "110", "100", "110", "101"], "E": ["111", "100", "110", "100", "111"],
 	"P": ["110", "101", "110", "100", "100"], "X": ["101", "101", "010", "101", "101"], "R": ["110", "101", "110", "101", "101"],
 	"V": ["101", "101", "101", "101", "010"], "G": ["011", "100", "101", "101", "011"], "D": ["110", "101", "101", "101", "110"],
+	"S": ["011", "100", "010", "001", "110"], "M": ["101", "111", "111", "101", "101"], "C": ["011", "100", "100", "100", "011"],
+	"F": ["111", "100", "110", "100", "100"], "L": ["100", "100", "100", "100", "111"], "U": ["101", "101", "101", "101", "111"],
+	"H": ["101", "101", "111", "101", "101"], "B": ["110", "101", "110", "101", "110"], "?": ["110", "001", "010", "000", "010"],
+	"0": ["111", "101", "101", "101", "111"], "1": ["010", "110", "010", "010", "111"], "3": ["110", "001", "010", "001", "110"],
+	"5": ["111", "100", "110", "001", "110"], "6": ["011", "100", "110", "101", "010"], "%": ["101", "001", "010", "100", "101"],
+	"$": ["011", "110", "010", "011", "110"], "!": ["010", "010", "010", "000", "010"],
 }
 
 
@@ -852,7 +886,18 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 				_dp(c, PackedVector2Array([Vector2(-20, -47), Vector2(-14, -49), Vector2(-12, -45), Vector2(-20, -44)]), lenco)
 			_dl(c, Vector2(14, -60), Vector2(3, -27), roupa.lightened(0.25), 1.2)
 			match extra:
-				"faixa_roseta", "faixa":
+				"faixa":
+					# faixa verde e amarela da foto (verde nas bordas, amarelo no meio), brasão dourado embaixo
+					var fx := PackedVector2Array([Vector2(-26, -57), Vector2(-14, -63), Vector2(25 + 10 * b, -8), Vector2(22 + 10 * b, 3), Vector2(13 + 8 * b, 3)])
+					_dp(c, fx, Color("1f9d55"))
+					_dp(c, PackedVector2Array([Vector2(-22, -59), Vector2(-17, -61), Vector2(22 + 10 * b, -5), Vector2(19 + 10 * b, 1)]), Color("ffd23f"))
+					_dl(c, Vector2(-23, -58), Vector2(20 + 10 * b, 0), Color("ffe680"), 1.0)
+					_dc(c, Vector2(12 + 8 * b, -10), 8.0, Color("c9a227"))
+					_estrela(c, Vector2(12 + 8 * b, -10), 7.0, Color("e8c547"))
+					_dc(c, Vector2(12 + 8 * b, -10), 3.2, Color("1f3f9a"))
+					# broche do Senado na lapela
+					_dc(c, Vector2(-15, -40), 2.2, Color("c9a227"))
+				"faixa_roseta":
 					# faixa presidencial verde e amarela atravessada, com a roseta
 					_dp(c, PackedVector2Array([Vector2(-25, -58), Vector2(-15, -62), Vector2(24 + 10 * b, -6), Vector2(20 + 10 * b, 2), Vector2(14 + 8 * b, 2)]), Color("1f9d55"))
 					_dp(c, PackedVector2Array([Vector2(-21, -60), Vector2(-17, -61), Vector2(22 + 10 * b, -4), Vector2(18 + 10 * b, 0)]), Color("ffd23f"))
@@ -1107,6 +1152,26 @@ static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
 			_dp(c, PackedVector2Array([mao + Vector2(31, -88 + ond * 0.5), mao + Vector2(54, -74 + ond), mao + Vector2(31, -60 + ond * 0.5), mao + Vector2(8, -76)]), Color("ffd23f"))
 			_dc(c, mao + Vector2(31, -75 + ond * 0.5), 8.0, Color("1f3f9a"))
 			_dl(c, mao + Vector2(24, -77), mao + Vector2(38, -73), BRANCO, 1.5)
+		"envelope":
+			# envelope pardo estufado, com notas escapando
+			for passada in 2:
+				_cont = passada == 0
+				_ret(c, Rect2(mao + Vector2(-16, -30), Vector2(34, 24)), Color("c49a5c"))
+			_cont = false
+			_dp(c, PackedVector2Array([mao + Vector2(-16, -30), mao + Vector2(18, -30), mao + Vector2(1, -17)]), Color("a87f45"))
+			_dr(c, Rect2(mao + Vector2(-10, -40), Vector2(20, 11)), Color("6fbf73"))
+			_dr(c, Rect2(mao + Vector2(-4, -44), Vector2(20, 11)), Color("8fd694"))
+			_dc(c, mao + Vector2(6, -39), 2.5, Color("3f8f46"))
+		"carta":
+			# a carta (versão 3): folha com linhas, uma riscada, e o lacre vermelho
+			for passada in 2:
+				_cont = passada == 0
+				_ret(c, Rect2(mao + Vector2(-14, -50), Vector2(30, 40)), Color("f7f3e6"))
+			_cont = false
+			for k in 4:
+				_dl(c, mao + Vector2(-9, -42 + k * 7), mao + Vector2(11 - (k % 2) * 6, -42 + k * 7), Color("6b7280"), 1.5)
+			_dl(c, mao + Vector2(-11, -35), mao + Vector2(13, -34), Color("e5243b"), 2.0)
+			_dc(c, mao + Vector2(9, -16), 4.5, Color("c8102e"))
 		"pec":
 			# a pasta da PEC erguida
 			for passada in 2:
@@ -1299,7 +1364,7 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 			if not _cont:
 				for i in 4:
 					_da(c, Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
-		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto", "pix", "curtida", "play", "revogado":
+		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto", "pix", "curtida", "play", "revogado", "bombom", "carta", "tarifa":
 			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))

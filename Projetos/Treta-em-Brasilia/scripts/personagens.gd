@@ -246,10 +246,37 @@ const LISTA := [
 		"memes": ["O Pix é do povo!", "Mais votado do Brasil!", "240 km a pé!", "Viralizou!", "Revoga!", "Chegamos a Brasília!"],
 		"vitoria": "Postei, viralizou e revogaram!",
 	},
+	{
+		"id": "flavio", "nome": "FLÁVIO", "titulo": "O Zero Um", "foto": "flavio",
+		"bio": "O filho 01. Joga bombom da lojinha, racha o golpe com quem estiver perto, ergue a mansão no meio da arena e, quando aperta, escreve mais uma versão da carta e sai escondido.",
+		"pele": Color("dfa585"), "cabelo": Color("2b211c"), "estilo_cabelo": "curto", "barba": false, "oculos": false,
+		"roupa": Color("1f2a44"), "camisa": Color("f4f4f4"), "gravata": Color("1c2438"), "calca": Color("1f2a44"),
+		"extra": "faixa", "velocidade": 1.02, "forca": 1.04, "vida": 1040,
+		"corpo": {"alt": 1.03, "larg": 0.96, "barriga": 0.1}, "idle": "acenar", "cor": Color("c9a227"),
+		"musica": "casa_branca",
+		"habilidades": {
+			"projetil": {"nome": "Bombom Lavado", "pose": "arremesso", "inicio": 11, "ativo": 1, "rec": 18, "recarga": 55, "som": "whoosh",
+				"tiro": {"forma": "bombom", "dano": 70.0, "vel": 9.0, "tam": 1.2}},
+			"frente": {"nome": "Rachadinha!", "pose": "rachadinha", "inicio": 9, "ativo": 16, "rec": 16, "recarga": 85, "som": "whoosh_forte",
+				"corpo": {"caixa": Rect2(0, -210, 140, 190), "dano": 46.0, "avanco": 9.0, "hits": 2, "intervalo": 8, "empurra": 5.0}},
+			"cima": {"nome": "Cadê o Queiroz?", "pose": "gancho", "inicio": 3, "ativo": 12, "rec": 24, "recarga": 50, "invencivel": 9, "som": "whoosh_forte",
+				"salto": Vector2(2.4, -16.0), "corpo": {"caixa": Rect2(5, -235, 72, 205), "dano": 100.0, "derruba": true, "nivel": "alto"}},
+			"baixo": {"nome": "Mansão de R$ 6 Mi", "pose": "chamar", "inicio": 14, "ativo": 1, "rec": 22, "recarga": 140, "som": "carimbo",
+				"zona": {"forma": "mansao", "dist": 210.0, "larg": 250.0, "dur": 200, "dano": 10.0, "intervalo": 24, "efeito": "lento"}},
+			"tras": {"nome": "Carta (Versão 3)", "pose": "arremesso", "inicio": 10, "ativo": 18, "rec": 18, "recarga": 80, "som": "papel",
+				"tiro": {"forma": "carta", "dano": 27.0, "vel": 8.0, "arco": -10.0, "qtd": 3, "intervalo": 8, "tam": 1.1}},
+			"super": {"nome": "TariFlávio", "pose": "chamar", "inicio": 14, "ativo": 1, "rec": 22, "custo": 50.0, "som": "carimbo", "voz": "super",
+				"chuva": {"forma": "tarifa", "qtd": 9, "intervalo": 5, "dano": 23.0, "atraso": 22, "tam": 1.3, "espalha": 210.0}},
+			"ultimate": {"nome": "SAIU ESCONDIDO!", "cinema": "flavio", "dano": 330.0, "hits": 8},
+			"final": {"nome": "Verdadeiro Presidente... digo, Líder!", "prop": "carta"},
+		},
+		"memes": ["Foi por muito pouco!", "Cadê o Queiroz?", "É só chocolate!", "TariFlávio!", "Sou o líder do Brasil!", "Versão 3 da carta!"],
+		"vitoria": "Escrevi a carta de novo: dessa vez eu venci!",
+	},
 ]
 
 ## Quem ainda vai entrar (aparece com "?" na seleção até chegar a foto).
-const EM_BREVE := ["FLÁVIO", "MILEI", "JANONES"]
+const EM_BREVE := ["MILEI", "JANONES"]
 
 ## Ordem e rótulo dos comandos, para a tela de lutadores e o "como jogar".
 const COMANDOS := [

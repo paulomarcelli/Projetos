@@ -127,6 +127,43 @@ static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 				Desenho._dp(c, _rot(Vector2.ZERO, g, [Vector2(0, -r * 0.62), Vector2(r * 0.62, 0), Vector2(0, r * 0.62), Vector2(-r * 0.62, 0)]), Color("1f8f84"))
 				Desenho.letras_px(c, Vector2(-10.5, -6), "PIX", 2.0, BRANCO)
 				Desenho._da(c, Vector2.ZERO, r + 8.0, -t * 0.2, -t * 0.2 + 2.0, 10, Color(0.6, 1, 0.95, 0.6), 3.0)
+		"bombom":
+			# bombom de chocolate na forminha dourada, girando, deixando bolhas de sabão para trás
+			var g := t * 0.2
+			if not cont:
+				for j in 4:
+					var bx := -26.0 - j * 15.0 - fposmod(t * 1.5, 15.0)
+					var by := sin(t * 0.3 + j * 1.9) * 12.0
+					Desenho._da(c, Vector2(bx, by), 6.0 - j, 0.0, TAU, 10, Color(0.75, 0.92, 1.0, 0.75 - j * 0.15), 1.5)
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-24, 0), Vector2(-28, -10), Vector2(-20, -6), Vector2(-24, -14), Vector2(-12, -10)]), Color("e0b84a"))
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(24, 0), Vector2(28, 10), Vector2(20, 6), Vector2(24, 14), Vector2(12, 10)]), Color("e0b84a"))
+			Desenho._circ(c, Vector2.ZERO, 20.0, Color("5a3218"))
+			if not cont:
+				Desenho._da(c, Vector2.ZERO, 14.0, g, g + 2.4, 8, Color("7b4a26"), 3.0)
+				Desenho._dc(c, Vector2(-7, -8), 4.5, Color(1, 1, 1, 0.45))
+				Desenho._da(c, Vector2.ZERO, 20.0, 0.4, PI - 0.4, 10, Color("e0b84a"), 4.0)
+		"carta":
+			# a carta: folha girando devagar com V3 no topo e o lacre vermelho
+			var g2 := sin(t * 0.2) * 0.35
+			Desenho._poli(c, _rot(Vector2.ZERO, g2, [Vector2(-18, -24), Vector2(18, -24), Vector2(18, 24), Vector2(-18, 24)]), Color("f7f3e6"))
+			if not cont:
+				Desenho.letras_px(c, Vector2(-14, -20), "V3", 2.0, Color("c8102e"))
+				for k in 4:
+					var y := -4.0 + k * 6.0
+					Desenho._dl(c, Vector2(-13, y).rotated(g2), Vector2(13 - (k % 2) * 7, y).rotated(g2), Color("6b7280"), 1.5)
+				Desenho._dl(c, Vector2(-15, 4).rotated(g2), Vector2(15, 2).rotated(g2), Color("e5243b"), 2.5)
+				Desenho._dc(c, Vector2(10, 16).rotated(g2), 4.5, Color("c8102e"))
+		"tarifa":
+			# caixote de exportação carimbado 50%
+			var g3 := sin(t * 0.15) * 0.15
+			Desenho._poli(c, _rot(Vector2.ZERO, g3, [Vector2(-30, -28), Vector2(30, -28), Vector2(30, 28), Vector2(-30, 28)]), Color("b07a3c"))
+			if not cont:
+				for k in 3:
+					var y := -18.0 + k * 18.0
+					Desenho._dl(c, Vector2(-28, y).rotated(g3), Vector2(28, y).rotated(g3), Color("8a5a2b"), 2.0)
+				Desenho._dl(c, Vector2(-28, -26).rotated(g3), Vector2(28, 26).rotated(g3), Color("8a5a2b"), 3.0)
+				Desenho._dr(c, Rect2(-23, -10, 46, 20), Color("e5243b"))
+				Desenho.letras_px(c, Vector2(-17.5, -7), "50%", 3.0, BRANCO)
 		"curtida":
 			# coração de curtida
 			Desenho._circ(c, Vector2(-8, -6), 11.0, Color("ff3b6b"))
@@ -376,6 +413,34 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 			var cor2 := Color.WHITE
 			cor2.a = k
 			Desenho.texto(c, Vector2(0, -h - 14), "ANTIWOKE", 22, cor2, Color(0.1, 0.1, 0.3, k), 5)
+		"mansao":
+			# a mansão sobe do chão com a piscina na frente (quem pisa na água fica lento)
+			var sobe := clampf(t / 14.0, 0.0, 1.0)
+			var h := 250.0 * sobe
+			var w := larg * 0.92
+			var base := -16.0
+			# sombra e paredes brancas em dois volumes
+			Desenho._dr(c, Rect2(-w / 2 - 4, base - h - 4, w + 8, h + 4), Color(0.08, 0.06, 0.12, 0.85 * k))
+			Desenho._dr(c, Rect2(-w / 2, base - h, w, h), Color(0.96, 0.95, 0.9, 0.92 * k))
+			Desenho._dr(c, Rect2(-w / 2, base - h * 0.55, w * 0.42, h * 0.55), Color(0.86, 0.84, 0.78, 0.92 * k))
+			# laje do telhado e janelões de vidro
+			Desenho._dr(c, Rect2(-w / 2 - 12, base - h - 12, w + 24, 12 * sobe), Color(0.2, 0.18, 0.24, k))
+			for j in 3:
+				var jx := -w / 2 + w * 0.48 + j * w * 0.17
+				Desenho._dr(c, Rect2(jx, base - h + 22, w * 0.13, h * 0.5), Color(0.45, 0.75, 0.95, 0.9 * k))
+				Desenho._dr(c, Rect2(jx + 3, base - h + 26, 4, h * 0.4), Color(1, 1, 1, 0.5 * k))
+			Desenho._dr(c, Rect2(-w / 2 + 18, base - h * 0.42, 26, h * 0.42), Color(0.45, 0.3, 0.18, k))
+			# piscina com ondinhas
+			Desenho._dr(c, Rect2(-meia, -18, larg, 18), Color(0.85, 0.85, 0.88, k))
+			Desenho._dr(c, Rect2(-meia + 6, -14, larg - 12, 12), Color(0.2, 0.62, 0.9, k))
+			for j in int(larg / 30.0):
+				var ox := -meia + 12 + j * 30.0 + fposmod(t * 0.8, 30.0)
+				if ox < meia - 16:
+					Desenho._dl(c, Vector2(ox, -9), Vector2(ox + 10, -11), Color(0.8, 0.95, 1.0, k), 2.0)
+			# placa com o preço
+			var cor := Color("ffd23f")
+			cor.a = k
+			Desenho.texto(c, Vector2(0, base - h - 30), "R$ 6 MI", 30, cor, Color(0.1, 0.08, 0.02, k), 6)
 		"assinaturas":
 			# o rolo do abaixo-assinado se desenrola pelo chão: folha comprida com linhas de assinatura
 			var abre := clampf(t / 18.0, 0.0, 1.0)

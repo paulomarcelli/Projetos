@@ -56,6 +56,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 | **Xandão** | Inquérito! · Conta Bloqueada · Martelo da Justiça · Canetada do STF · Suspensão de Conta | Censura Suprema | **Decisão Monocrática** |
 | **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | Bombardeio Presidencial | **YMCA Presidential Show** |
 | **Eduarda** | Corte Viral! · Microfone Explosivo · Lacração Reversa · Debate Infinito · 1,9 Milhão de Votos | Polêmica nas Redes | **Treta Nacional** |
+| **Erika** | PEC 6x1 · Vida Além do Trabalho · Não Me Calarão! · Abaixo-Assinado · Representação! | Fim da Escala 6x1 | **PEC Aprovada** |
 
 <table>
   <tr>
@@ -71,6 +72,8 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 ## 🧑‍🎤 Lutadores
 
 - **Rosto da foto em pixel art** (`ferramentas/cabeca_pixel.py`) com 8 expressões redesenhadas em cada quadro: neutro, piscar, esforço, grito, dor, nocaute, feliz e derrota. A Eduarda segue a caricatura do boneco abridor de garrafas: cabelo escuro liso, óculos transparentes e a risada escancarada.
+- **Erika Hilton** (deputada federal, PSOL-SP): sátira do papel público dela, a PEC pelo fim da escala 6x1 (44 h para 36 h, movimento Vida Além do Trabalho), os abaixo-assinados e as representações. Vestido-blazer preto sem manga, escarpim e pulseira dourada; a Ultimate é a votação no plenário com o painel enchendo de SIM.
+- **Efeitos de poder na cor de cada lutador:** brilho e faíscas no início de cada especial, rastro nos projéteis, faíscas dos especiais puxando para a cor de quem bate e borda pulsando no chão das zonas.
 - **Cabeça independente:** atrasa em relação ao corpo, recua no golpe, balança andando, pisca sozinha.
 - **Roupa com movimento:** gravata, toga e aba do paletó balançam; o topete do Trump mexe com o vento.
 - **Proporções e silhueta próprias**, jeito de ficar parado, provocação, vitória e derrota de cada um (a vitória do Trump é a dança).

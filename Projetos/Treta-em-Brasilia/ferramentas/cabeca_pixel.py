@@ -36,6 +36,8 @@ CAIXAS = {
     # óculos de armação transparente e a risada escancarada com uma fileira de dentes grandes
     "eduarda": {"caixa": (185, 0, 565, 410), "barba": False, "oculos": True, "sobr": 1, "sobr_cor": (40, 28, 26),
                 "risada": True, "cabelo_escuro": (34, 24, 24), "oculos_cor": (226, 228, 234)},
+    # cabelo loiro ondulado e volumoso, olhar firme e batom nude
+    "erika": {"caixa": (205, 40, 585, 440), "barba": False, "oculos": False, "sobr": 1, "sobr_cor": (92, 62, 44)},
 }
 
 TRACO = (36, 16, 20, 255)

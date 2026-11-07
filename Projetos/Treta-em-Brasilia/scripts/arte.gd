@@ -118,6 +118,46 @@ static func _prop_detalhe(c: CanvasItem, nome: String, mao: Vector2, ang: float)
 
 static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 	match forma:
+		"pec":
+			# a PEC: pasta dourada com o documento saindo, carimbo vermelho "6x1" riscado e brilho
+			var g := sin(t * 0.3) * 0.18
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-30, -22), Vector2(30, -22), Vector2(30, 24), Vector2(-30, 24)]), Color("f2c230"))
+			Desenho._poli(c, _rot(Vector2.ZERO, g, [Vector2(-24, -34), Vector2(22, -34), Vector2(22, 10), Vector2(-24, 10)]), BRANCO)
+			if not cont:
+				for j in 3:
+					Desenho._dl(c, Vector2(-18, -26 + j * 7).rotated(g), Vector2(16, -26 + j * 7).rotated(g), Color("9aa0a6"), 2.0)
+				_seis_x_um(c, Vector2(0, -6), 1.0, g, Color("d62828"))
+				Desenho._dl(c, Vector2(-16, 8).rotated(g), Vector2(16, -6).rotated(g), Color("d62828"), 4.0)
+				Desenho._dr(c, Rect2(-30, 12, 60, 4), Color("c9a227"))
+				for j in 3:
+					var r := 38.0 + j * 9.0 + fmod(t * 1.2, 9.0)
+					Desenho._da(c, Vector2(-4, 0), r, PI - 0.6, PI + 0.6, 8, Color(1, 0.85, 0.3, 0.7 - j * 0.22), 3.0)
+		"oficio":
+			# ofício de representação girando como bumerangue, com selo e rastro
+			var g3 := t * 0.45
+			if not cont:
+				for j in 3:
+					Desenho._da(c, Vector2.ZERO, 30.0 + j * 4.0, g3 + PI + j * 0.4, g3 + PI * 1.6 + j * 0.4, 8, Color(1, 1, 1, 0.45 - j * 0.12), 4.0)
+			Desenho._poli(c, _rot(Vector2.ZERO, g3, [Vector2(-22, -28), Vector2(22, -28), Vector2(22, 28), Vector2(-22, 28)]), BRANCO)
+			if not cont:
+				for j in 4:
+					Desenho._dl(c, Vector2(-15, -18 + j * 8).rotated(g3), Vector2(15, -18 + j * 8).rotated(g3), Color("9aa0a6"), 2.0)
+				Desenho._dc(c, Vector2(8, 16).rotated(g3), 8.0, Color("e5243b"))
+				Desenho._dc(c, Vector2(8, 16).rotated(g3), 4.0, Color("ffd23f"))
+		"calendario":
+			# folhinha de calendário caindo: argolas, cabeçalho vermelho, "6x1" e um X por cima
+			var g4 := sin(t * 0.2) * 0.12
+			Desenho._poli(c, _rot(Vector2.ZERO, g4, [Vector2(-30, -34), Vector2(30, -34), Vector2(30, 34), Vector2(-30, 34)]), BRANCO)
+			Desenho._poli(c, _rot(Vector2.ZERO, g4, [Vector2(-30, -34), Vector2(30, -34), Vector2(30, -18), Vector2(-30, -18)]), Color("e5243b"))
+			if not cont:
+				for j in 2:
+					Desenho._dc(c, Vector2(-14 + j * 28, -36).rotated(g4), 4.0, Color("4a4a55"))
+				for i in 4:
+					for j in 3:
+						Desenho._dr(c, Rect2((Vector2(-24 + i * 13, -12 + j * 9)).rotated(g4), Vector2(8, 5)), Color("d0d4dc"))
+				_seis_x_um(c, Vector2(0, 6), 1.1, g4, PRETO)
+				Desenho._dl(c, Vector2(-22, -10).rotated(g4), Vector2(22, 28).rotated(g4), Color("e5243b"), 5.0)
+				Desenho._dl(c, Vector2(22, -10).rotated(g4), Vector2(-22, 28).rotated(g4), Color("e5243b"), 5.0)
 		"picanha_fogo":
 			if not cont:
 				# chamas atrás (o projétil vai para +x)
@@ -209,6 +249,21 @@ static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 				Desenho._dr(c, Rect2(18, -13, 4, 3), BRANCO)
 
 
+## "6x1" desenhado com traços (dentro de projéteis girando não dá para usar a fonte).
+static func _seis_x_um(c: CanvasItem, centro: Vector2, s: float, g: float, cor: Color) -> void:
+	var r := func(v: Vector2) -> Vector2: return centro + (v * s).rotated(g)
+	# 6
+	Desenho._da(c, r.call(Vector2(-14, 3)), 5.0 * s, 0.0, TAU, 10, cor, 2.5)
+	Desenho._dl(c, r.call(Vector2(-19, 3)), r.call(Vector2(-16, -8)), cor, 2.5)
+	Desenho._dl(c, r.call(Vector2(-16, -8)), r.call(Vector2(-11, -9)), cor, 2.5)
+	# x
+	Desenho._dl(c, r.call(Vector2(-4, -2)), r.call(Vector2(4, 8)), cor, 2.5)
+	Desenho._dl(c, r.call(Vector2(4, -2)), r.call(Vector2(-4, 8)), cor, 2.5)
+	# 1
+	Desenho._dl(c, r.call(Vector2(14, -9)), r.call(Vector2(14, 8)), cor, 2.5)
+	Desenho._dl(c, r.call(Vector2(14, -9)), r.call(Vector2(10, -5)), cor, 2.5)
+
+
 # ---------------------------------------------------------------- zonas (base no chão em 0,0)
 
 static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, k: float) -> void:
@@ -245,6 +300,30 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 			var cor := Color("ff5a4e")
 			cor.a = k
 			Desenho.texto(c, Vector2(0, -alt * 0.25), "SUSPENSO", 26, cor, Color(0, 0, 0, k), 6)
+		"assinaturas":
+			# o rolo do abaixo-assinado se desenrola pelo chão: folha comprida com linhas de assinatura
+			var abre := clampf(t / 18.0, 0.0, 1.0)
+			var w := larg * abre
+			Desenho._dr(c, Rect2(-meia - 4, -50, w + 8, 54), Color(0.08, 0.05, 0.12, 0.85 * k))
+			Desenho._dr(c, Rect2(-meia, -46, w, 46), Color(0.98, 0.96, 0.9, k))
+			Desenho._dr(c, Rect2(-meia, -46, w, 7), Color(0.9, 0.14, 0.23, k))
+			var n := int(w / 20.0)
+			for i in n:
+				for linha in 2:
+					var x := -meia + 6 + i * 20.0
+					var y := -26.0 + linha * 14.0 + sin(i * 1.7 + linha) * 3.0
+					Desenho._dl(c, Vector2(x, y), Vector2(x + 6, y - 5), Color(0.1, 0.2, 0.6, k), 2.0)
+					Desenho._dl(c, Vector2(x + 6, y - 5), Vector2(x + 13, y + 2), Color(0.1, 0.2, 0.6, k), 2.0)
+			# o rolo na ponta, girando
+			var rx := -meia + w
+			Desenho._dc(c, Vector2(rx, -24), 26.0, Color(0.08, 0.05, 0.12, k))
+			Desenho._dc(c, Vector2(rx, -24), 22.0, Color(0.98, 0.96, 0.9, k))
+			Desenho._da(c, Vector2(rx, -24), 14.0, t * 0.3, t * 0.3 + 4.5, 12, Color(0.6, 0.6, 0.66, k), 3.0)
+			Desenho._da(c, Vector2(rx, -24), 7.0, t * 0.3 + 1.0, t * 0.3 + 5.0, 10, Color(0.6, 0.6, 0.66, k), 2.0)
+			# contador de assinaturas subindo
+			var cor := Color("ffd23f")
+			cor.a = k
+			Desenho.texto(c, Vector2(0, -92 - sin(t * 0.1) * 4.0), "+%d MIL ASSINATURAS" % (100 + t * 7), 20, cor, Color(0, 0, 0, k), 5)
 		"votos":
 			for i in 10:
 				var a := t * 0.12 + i * TAU / 10.0

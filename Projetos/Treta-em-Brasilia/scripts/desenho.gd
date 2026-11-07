@@ -136,6 +136,14 @@ static func pose_idle(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-14, -94)
 			if t % 300 < 34:
 				p["mao_f"] = Vector2(30, -150)  # mão no queixo, avaliando o réu
+		"cabelo":
+			# ajeita o cabelo de tempos em tempos, mão na cintura
+			p["mao_t"] = Vector2(-4, -82)
+			p["inclina"] = -0.04
+			if t % 260 < 46:
+				var k := sin(PI * (t % 260) / 46.0)
+				p["mao_f"] = Vector2(26, -150).lerp(Vector2(14, -214), k)
+				p["cabeca_giro"] = -0.12 * k
 		"celular":
 			p["mao_t"] = Vector2(30, -150)
 			p["prop_t"] = "celular"
@@ -189,6 +197,12 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-10, -100)
 			p["expr"] = "neutro"
 			p["cabeca_giro"] = -0.08
+		"erika":
+			# joga o cabelo e aponta o dedo: "Não me calarão!"
+			p["mao_f"] = Vector2(70, -170)
+			p["mao_t"] = Vector2(10, -212 + absf(sin(t * 0.2)) * 10)
+			p["cabeca_giro"] = -0.2 + sin(t * 0.2) * 0.08
+			p["inclina"] = -0.08
 		"eduarda":
 			p["mao_f"] = Vector2(72, -204)
 			p["prop"] = "celular"
@@ -222,6 +236,12 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 			p["mao_f"] = Vector2(54, -132).lerp(Vector2(40, -214), k)
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if k < 0.2 else "feliz"
+		"erika":
+			p["mao_f"] = Vector2(40, -228 + bob * 4)
+			p["prop"] = "pec"
+			p["mao_t"] = Vector2(-6, -84)
+			p["cabeca_giro"] = -0.12
+			p["inclina"] = -0.06
 		"eduarda":
 			p["mao_f"] = Vector2(72, -204 + bob * 4)
 			p["prop"] = "celular"
@@ -271,6 +291,9 @@ static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
 			p["cabeca_giro"] = -0.2
 		"xandao":
 			p["prop"] = "martelo"
+		"erika":
+			p["mao_f"] = Vector2(22, -100)
+			p["mao_t"] = Vector2(8, -96)
 		"eduarda":
 			p["mao_f"] = Vector2(30, -96)
 			p["prop"] = "celular"
@@ -473,6 +496,9 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 
 
 static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vector2, pe: Vector2, de_tras: bool) -> void:
+	if d["extra"] == "blazer_vestido":
+		_perna_salto(c, d, quadril, joelho, pe, de_tras)
+		return
 	var cor: Color = d["calca"]
 	if d["extra"] == "toga":
 		cor = Color("1b1b22")
@@ -519,6 +545,35 @@ static func _perna(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vecto
 				_dl(c, pe + cima * 8.5 + frente * (k * 4.0 - 2.0), pe + cima * 8.5 + frente * (k * 4.0 + 1.0), Color("2a2230"), 1.5)
 
 
+## Pernas de fora com escarpim preto de salto fino (vestido): canela mais fina, joelho marcado e brilho.
+static func _perna_salto(c: CanvasItem, d: Dictionary, quadril: Vector2, joelho: Vector2, pe: Vector2, de_tras: bool) -> void:
+	var pele: Color = d["pele"]
+	if de_tras:
+		pele = pele.darkened(0.22)
+	_lin(c, quadril, joelho, pele, 15.0)
+	_circ(c, joelho, 6.5, pele)
+	_lin(c, joelho, pe + Vector2(0, -8), pele, 11.0)
+	if not _cont:
+		_dl(c, quadril.lerp(joelho, 0.2) + Vector2(3, 0), joelho + Vector2(2, 0), pele.lightened(0.16), 2.5)
+		_dl(c, joelho + Vector2(2, 3), pe + Vector2(2, -14), pele.lightened(0.2), 2.0)
+		_dl(c, joelho + Vector2(-4, 3), pe + Vector2(-3, -14), pele.darkened(0.25), 2.0)
+	# escarpim: bico fino na frente, salto agulha atrás
+	var dir_canela := (pe - joelho).normalized()
+	var frente := Vector2(1, 0)
+	var cima := Vector2(0, -1)
+	if pe.y < -6.0:
+		frente = Vector2(-dir_canela.y, dir_canela.x)
+		if frente.x < 0:
+			frente = -frente
+		cima = -dir_canela
+	var preto := Color("141018")
+	_poli(c, PackedVector2Array([pe + cima * 11 - frente * 6, pe + cima * 6 + frente * 10, pe + frente * 20, pe + cima * 2 - frente * 4]), preto)
+	_lin(c, pe + cima * 9 - frente * 6, pe - frente * 8, preto, 3.0)
+	if not _cont:
+		_dl(c, pe + cima * 8 - frente * 2, pe + cima * 4 + frente * 12, Color("4a4250"), 2.0)
+		_dc(c, pe + cima * 3 + frente * 15, 1.6, Color("8a8494"))
+
+
 static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vector2, mao: Vector2, de_tras: bool, grande: bool) -> void:
 	var extra: String = d["extra"]
 	var manga: Color = d["roupa"]
@@ -526,6 +581,10 @@ static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vecto
 		manga = manga.darkened(0.3)
 	var pele: Color = d["pele"]
 	var curta := extra == "selecao"  # camisa da seleção: manga curta
+	var sem_manga := extra == "blazer_vestido"  # vestido-blazer sem manga: braço de fora
+	if sem_manga:
+		manga = d["pele"].darkened(0.22 if de_tras else 0.0)
+		curta = true
 	var toga := extra == "toga"
 	_circ(c, ombro, 10.0, manga)  # ombro: o braço sai do corpo
 	_lin(c, ombro, cotovelo, manga, 17.0)
@@ -534,7 +593,11 @@ static func _braco(c: CanvasItem, d: Dictionary, ombro: Vector2, cotovelo: Vecto
 	_lin(c, cotovelo, mao, ante, 13.0 if curta else (15.0 if not toga else 18.0))
 	if not _cont:
 		_dl(c, ombro + Vector2(0, -4), cotovelo + Vector2(0, -4), manga.lightened(0.2), 3.0)
-		if curta:
+		if sem_manga:
+			# pulseira dourada no pulso
+			var dpu := (mao - cotovelo).normalized()
+			_dl(c, mao - dpu * 10 + dpu.orthogonal() * 7, mao - dpu * 10 - dpu.orthogonal() * 7, Color("e0b84a"), 3.5)
+		elif curta:
 			# barra verde da manga
 			_dl(c, ombro.lerp(cotovelo, 0.72) + (cotovelo - ombro).orthogonal().normalized() * 9, ombro.lerp(cotovelo, 0.72) - (cotovelo - ombro).orthogonal().normalized() * 9, d["camisa"], 5.0)
 		elif toga:
@@ -606,6 +669,9 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 	elif extra == "selecao":
 		barra = 2.0
 		largura_barra = 21.0
+	elif extra == "blazer_vestido":
+		barra = 30.0  # saia lápis até o meio da coxa
+		largura_barra = 24.0
 	var bal := clampf(-vento * 6.0, -8.0, 8.0) if extra == "toga" else 0.0
 	var forma := PackedVector2Array([
 		Vector2(-21, -63), Vector2(21, -63), Vector2(27, -56), Vector2(26 + 4 * b, -42),
@@ -628,6 +694,19 @@ static func _tronco(c: CanvasItem, d: Dictionary, barriga: float, vento: float =
 	_da(c, Vector2(18, -50), 9.0, 1.2, 2.6, 6, roupa.darkened(0.25), 2.0)
 	var camisa: Color = d["camisa"]
 	match extra:
+		"blazer_vestido":
+			# vestido-blazer preto sem manga: decote em V, lapelas acetinadas, cinto fino e botões dourados
+			_dp(c, PackedVector2Array([Vector2(-10, -63), Vector2(10, -63), Vector2(0, -36)]), d["pele"])
+			_dp(c, PackedVector2Array([Vector2(-10, -63), Vector2(-17, -61), Vector2(-3, -33), Vector2(0, -36)]), roupa.lightened(0.16))
+			_dp(c, PackedVector2Array([Vector2(10, -63), Vector2(17, -61), Vector2(3, -33), Vector2(0, -36)]), roupa.lightened(0.24))
+			_dl(c, Vector2(-26, -56), Vector2(-22, -62), d["pele"], 4.0)  # cava sem manga
+			_dl(c, Vector2(26, -56), Vector2(22, -62), d["pele"], 4.0)
+			_dr(c, Rect2(-23, -8, 46, 4), roupa.lightened(0.12))
+			_dc(c, Vector2(2, -24), 1.8, Color("e0b84a"))
+			_dc(c, Vector2(2, -15), 1.8, Color("e0b84a"))
+			# fenda da saia e brilho do tecido
+			_dl(c, Vector2(14, 14), Vector2(16, barra - 2), roupa.darkened(0.4), 2.0)
+			_dl(c, Vector2(19, -50), Vector2(18, 24), roupa.lightened(0.3), 1.5)
 		"toga":
 			# gola branca, cordões vermelhos e a barra balançando
 			_dp(c, PackedVector2Array([Vector2(-12, -63), Vector2(12, -63), Vector2(7, -44), Vector2(0, -40), Vector2(-7, -44)]), BRANCO)
@@ -941,6 +1020,16 @@ static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
 				_lin(c, mao + Vector2(0, 6), mao + Vector2(2, -26), Color("9aa0a6"), 4.0)
 				Arte.picanha(c, mao + Vector2(4, -48), -0.15, 1.05, _cont)
 			_cont = false
+		"pec":
+			# a pasta da PEC erguida
+			for passada in 2:
+				_cont = passada == 0
+				_ret(c, Rect2(mao + Vector2(-16, -46), Vector2(34, 42)), Color("f2c230"))
+			_cont = false
+			_dr(c, Rect2(mao + Vector2(-12, -54), Vector2(26, 26)), BRANCO)
+			for k in 3:
+				_dl(c, mao + Vector2(-8, -48 + k * 6), mao + Vector2(10, -48 + k * 6), Color("9aa0a6"), 1.5)
+			_dc(c, mao + Vector2(8, -18), 6.0, Color("e5243b"))
 		"celular":
 			for passada in 2:
 				_cont = passada == 0
@@ -1123,7 +1212,7 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 			if not _cont:
 				for i in 4:
 					_da(c, Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
-		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante":
+		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario":
 			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))

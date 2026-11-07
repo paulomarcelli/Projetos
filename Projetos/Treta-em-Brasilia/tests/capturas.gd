@@ -68,6 +68,12 @@ func _initialize() -> void:
 		["ult_bolsonaro", _poder.bind("paulista", 1, 4, "ult"), [200, 280]],
 		["ult_xandao", _poder.bind("usp", 2, 3, "ult"), [200, 320]],
 		["ult_eduarda", _poder.bind("usp", 4, 1, "ult"), [200, 300]],
+		["erika_pec", _poder.bind("praca", 5, 1, "projetil"), [108, 122]],
+		["erika_giro", _poder.bind("praca", 5, 1, "frente"), [112, 124]],
+		["erika_assinado", _poder.bind("praca", 5, 1, "baixo"), [200, 260]],
+		["erika_representa", _poder.bind("praca", 5, 1, "tras"), [118, 140]],
+		["super_erika", _poder.bind("praca", 5, 1, "super"), [112, 150, 170, 190, 215]],
+		["ult_erika", _poder.bind("praca", 5, 1, "ult"), [140, 200, 260, 300]],
 		["treino", _treino, [120]],
 	]
 	if filtro != "":

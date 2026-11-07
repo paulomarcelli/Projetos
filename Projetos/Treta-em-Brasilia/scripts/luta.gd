@@ -520,6 +520,9 @@ func _resultado(i: int, r: String, ponto: Vector2, g: Dictionary, estava_tonto: 
 	atk.barra = minf(atk.barra + lerpf(5.0, 10.0, peso), 100.0)
 	agito = minf(agito + 0.08 + peso * 0.1, 1.0)
 	var cor := Color("fff3b0") if peso < 0.7 else Color("ffd23f")
+	if g.get("especial", false) or g.get("super", false):
+		# especiais: faíscas puxando para a cor de quem bateu
+		cor = cor.lerp(atk.dados.get("cor", cor), 0.55)
 	if def.ultimo_contra:
 		cor = Color("ff5a4e")
 		_texto(def.position + Vector2(0, -360), "CONTRA-ATAQUE!", Color("ff5a4e"), 30, 50)
@@ -648,6 +651,13 @@ func _quebrou(pr: Projetil) -> void:
 		particulas.fumaca(pr.position, 2, Color(0.4, 0.38, 0.4, 0.6))
 		Som.sfx("churrasco", 0.1, -8.0)
 		return
+	if pr.ao_quebrar == "papelada":
+		# o calendário 6x1 se rasga em pedaços de papel e sobe um "4x3"
+		particulas.confete(pr.position + Vector2(0, -40), 10)
+		particulas.poeira(Vector2(pr.position.x, Lutador.CHAO), 4)
+		Som.sfx("papel", 0.1, -6.0)
+		_texto(pr.position + Vector2(randf_range(-20, 20), -120), "4x3!", Color("ffd23f"), 34, 26)
+		return
 	if pr.ao_quebrar == "nuvem":
 		var z := Zona.new()
 		z.iniciar_em(pr.dono, pr.position.x, "nuvem")
@@ -723,6 +733,12 @@ func _evento(l: Lutador, nome: String) -> void:
 			Som.sfx("whoosh_forte" if forte else "whoosh", 0.1, -4.0)
 			if randf() < (0.7 if forte else 0.35):
 				Som.voz(id, "forte" if forte else ("ataque1" if randf() < 0.5 else "ataque2"))
+		"ativo":
+			# especial saindo: anel e faíscas na cor do lutador, na altura do peito
+			if not l.hab.is_empty() and l.golpe_nome != "ultimate":
+				var cor_l: Color = l.dados.get("cor", Color("ffd23f"))
+				var peito := l.position + Vector2(l.lado * 60.0, -150.0)
+				particulas.brilho(peito, cor_l, 1.0 if l.golpe_nome == "super" else 0.6)
 		"voz_especial", "voz_super":
 			Som.voz(id, "super" if nome == "voz_super" else "especial")
 			if l.hab.has("som"):

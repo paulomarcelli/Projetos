@@ -29,6 +29,14 @@ func impacto(pos: Vector2, dir: float, forca: float, cor: Color) -> void:
 			_add({"tipo": "risco", "pos": pos, "vel": Vector2(cos(a), sin(a)), "t": 0, "dur": 8, "cor": Color.WHITE, "tam": 50.0 + 70.0 * forca, "g": 0.0})
 
 
+## Brilho de poder: anel que abre e faíscas subindo, na cor do lutador (início de especial).
+func brilho(pos: Vector2, cor: Color, forca: float = 1.0) -> void:
+	_add({"tipo": "anel", "pos": pos, "vel": Vector2.ZERO, "t": 0, "dur": 14, "cor": cor, "tam": 50.0 + 50.0 * forca, "g": 0.0})
+	for i in int(5 + 6 * forca):
+		var a := randf() * TAU
+		_add({"tipo": "faisca", "pos": pos + Vector2(cos(a), sin(a)) * 20.0, "vel": Vector2(cos(a) * 3.0, -randf_range(2.0, 6.0)), "t": 0, "dur": randi_range(12, 20), "cor": cor.lightened(0.3) if i % 2 else cor, "tam": randf_range(3.0, 6.0), "g": -0.05})
+
+
 ## Clarão na boca do cano: estrela achatada na direção do tiro.
 func clarao(pos: Vector2, dir: float) -> void:
 	_add({"tipo": "clarao", "pos": pos, "vel": Vector2.ZERO, "t": 0, "dur": 4, "cor": Color("fff3b0"), "tam": 40.0, "g": 0.0, "giro": 0.0 if dir > 0 else PI})

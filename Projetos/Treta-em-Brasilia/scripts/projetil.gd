@@ -124,4 +124,14 @@ func _draw() -> void:
 		return
 	if atravessa:
 		draw_circle(Vector2.ZERO, 30.0 * tamanho * (1.0 + sin(t * 0.4) * 0.08), Color(1, 0.85, 0.3, 0.3))
+	# rastro de velocidade e brilho na cor de quem lançou (o nó já está espelhado pela direção)
+	var cor_d: Color = dono.dados.get("cor", Color("ffd23f")) if dono != null else Color("ffd23f")
+	var rap := vel.length()
+	if rap > 3.0:
+		var tras := Vector2(-absf(vel.x), vel.y * dir).normalized() if absf(vel.x) > 0.5 else Vector2(0, -signf(vel.y))
+		for j in 3:
+			var off := Vector2(0, (j - 1) * 14.0 * tamanho)
+			var a := Color(cor_d.r, cor_d.g, cor_d.b, 0.45 - j * 0.1)
+			draw_line(off + tras * 22.0 * tamanho, off + tras * (22.0 + rap * 4.0) * tamanho, a, 4.0 - j)
+	draw_circle(Vector2.ZERO, 34.0 * tamanho, Color(cor_d.r, cor_d.g, cor_d.b, 0.16 + 0.06 * sin(t * 0.5)))
 	Desenho.projetil(self, forma, tamanho, t)

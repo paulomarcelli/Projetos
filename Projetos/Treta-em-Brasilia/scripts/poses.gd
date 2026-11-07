@@ -210,6 +210,47 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 			p["inclina"] = -0.1
 			p["expr"] = "feliz"
 			p["cabeca_giro"] = -0.25
+		"protocolar":
+			# ergue a pasta da PEC e lança com o braço todo, girando o tronco
+			if prep:
+				p["mao_f"] = Vector2(-20, -200)
+				p["mao_t"] = Vector2(30, -120)
+				p["prop"] = "pec"
+				p["inclina"] = -0.16
+				p["cabeca_giro"] = -0.15
+			else:
+				p["mao_f"] = Vector2(96, -150).lerp(Vector2(70, -130), 1.0 - kp)
+				p["mao_t"] = Vector2(-30, -130)
+				p["inclina"] = 0.18 * kp
+				p["pe_f"] = Vector2(40, 0)
+				p["pe_t"] = Vector2(-30, 0)
+				if kp >= 1.0:
+					p["rastro"] = [p["mao_f"], Vector2(-20, -200)]
+		"giro_bolsa":
+			# avança girando com os braços abertos (o "giro" do corpo vem do vaivém dos braços)
+			var gi := t * 0.55
+			var lado := sin(gi)
+			p["mao_f"] = Vector2(70 * lado + 10, -150 + cos(gi) * 16)
+			p["mao_t"] = Vector2(-70 * lado - 10, -146 - cos(gi) * 16)
+			p["inclina"] = 0.12 + lado * 0.06
+			p["cabeca_giro"] = lado * 0.18
+			p["pe_f"] = Vector2(30 + lado * 10, -absf(lado) * 8.0)
+			p["pe_t"] = Vector2(-26 + lado * 10, 0)
+			p["expr"] = "feliz" if not prep else "esforco"
+			if not prep and kp >= 1.0:
+				p["rastro"] = [p["mao_f"], p["mao_t"]]
+		"assinar":
+			# abaixa e solta o rolo do abaixo-assinado no chão
+			if prep:
+				p["mao_f"] = Vector2(30, -170)
+				p["mao_t"] = Vector2(10, -150)
+				p["prop"] = "pec"
+			else:
+				_agacha(p)
+				p["mao_f"] = Vector2(80, -40)
+				p["mao_t"] = Vector2(30, -60)
+				p["inclina"] = 0.22
+				p["expr"] = "feliz"
 		"ultimate_inicio":
 			# pose de poder antes da cinemática
 			p["mao_f"] = Vector2(40, -220)
@@ -246,6 +287,14 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if sin(t * 0.18) > 0 else "neutro"
+		"erika":
+			# na tribuna: ergue a PEC e comemora cada voto
+			p["prop"] = "pec"
+			p["mao_f"] = Vector2(30, -230 + absf(sin(t * 0.15)) * 14)
+			p["mao_t"] = Vector2(-20, -200 + sin(t * 0.3) * 10)
+			p["inclina"] = -0.08
+			p["cabeca_giro"] = -0.15
+			p["expr"] = "feliz" if t > 120 else "grito"
 		"eduarda":
 			p["prop"] = "microfone"
 			p["mao_f"] = Vector2(60, -190)

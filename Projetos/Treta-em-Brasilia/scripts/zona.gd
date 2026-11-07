@@ -61,4 +61,11 @@ func passo() -> void:
 
 func _draw() -> void:
 	var k := clampf(minf(t / 12.0, (dur - t) / 15.0), 0.0, 1.0)
+	# marca no chão: elipse pulsando na cor da dona, para o rival ver onde não pisar
+	var cor_d: Color = dono.dados.get("cor", Color("ffd23f")) if dono != null else Color("ffd23f")
+	var pulso := 0.85 + 0.15 * sin(t * 0.25)
+	draw_set_transform(Vector2(0, -4), 0.0, Vector2(1.0, 0.18))
+	draw_circle(Vector2.ZERO, larg * 0.5, Color(cor_d.r, cor_d.g, cor_d.b, 0.14 * k))
+	draw_arc(Vector2.ZERO, larg * 0.5 * pulso, 0, TAU, 32, Color(cor_d.r, cor_d.g, cor_d.b, 0.7 * k), 6.0)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	Arte.zona(self, forma, larg, alt, t, k)

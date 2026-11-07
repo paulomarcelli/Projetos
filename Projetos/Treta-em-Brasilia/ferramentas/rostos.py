@@ -4,8 +4,8 @@ from mediapipe.tasks.python import vision
 opt = vision.FaceLandmarkerOptions(base_options=mpt.BaseOptions(model_asset_path=str(__import__('pathlib').Path(__file__).with_name('face_landmarker.task'))), num_faces=1)
 det = vision.FaceLandmarker.create_from_options(opt)
 res={}
-for n in ['lula','bolsonaro','xandao','trump','eduarda']:
-    img = mp.Image.create_from_file(f'' + str(__import__('pathlib').Path(__file__).resolve().parent.parent / 'fotos') + '/{n}.jpg')
+for n in ['lula','bolsonaro','xandao','trump','eduarda','erika']:
+    img = mp.Image.create_from_file(str(__import__('pathlib').Path(__file__).resolve().parent.parent / 'fotos' / f'{n}.jpg'))
     r = det.detect(img)
     if not r.face_landmarks: print(n,'sem rosto'); continue
     L=r.face_landmarks[0]; W,H=img.width,img.height
@@ -15,4 +15,4 @@ for n in ['lula','bolsonaro','xandao','trump','eduarda']:
       'sobr_e': media([70,63,105,66,107]), 'sobr_d': media([336,296,334,293,300]),
       'boca': media([13,14,78,308]), 'canto_e': P(78), 'canto_d': P(308), 'queixo': P(152), 'testa': P(10), 'nariz': P(1)}
     print(n, {k:[round(v[0]),round(v[1])] for k,v in res[n].items()})
-json.dump(res, open('/home/user/treta-em-brasilia/ferramentas/rostos.json','w'), indent=1)
+json.dump(res, open(__import__('pathlib').Path(__file__).with_name('rostos.json'),'w'), indent=1)

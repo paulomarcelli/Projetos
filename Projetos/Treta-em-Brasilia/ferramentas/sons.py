@@ -267,6 +267,7 @@ PERFIS = {
     "trump": {"f0": 120, "rouco": 0.22, "formante": 0.98, "vib": 4.0},
     "xandao": {"f0": 92, "rouco": 0.12, "formante": 0.9, "vib": 2.0},
     "eduarda": {"f0": 235, "rouco": 0.08, "formante": 1.18, "vib": 6.0},
+    "erika": {"f0": 200, "rouco": 0.1, "formante": 1.1, "vib": 4.5},
 }
 
 

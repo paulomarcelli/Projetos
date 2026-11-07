@@ -24,6 +24,13 @@ static func passo(cin: Dictionary, atk: Lutador, def: Lutador, part: Particulas)
 		"xandao":
 			if t == 192:
 				part.explosao(alvo, 1.2)
+		"erika":
+			if t > 60 and t < 170 and t % 9 == 0:
+				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
+			if t == 176:
+				part.explosao(alvo, 1.0)
+			if t > 176 and t % 5 == 0:
+				part.confete(Vector2(640, 0), 8)
 		"eduarda":
 			if t > 40 and t % 4 == 0:
 				part.estrelas(alvo + Vector2(randf_range(-80, 80), randf_range(-60, 60)), 1)
@@ -138,6 +145,46 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				cor4.a = k
 				c.draw_rect(Rect2(dx - 230, chao - 260, 460, 110).grow(-(1.0 - q2) * 10.0), Color(0.1, 0.0, 0.0, 0.6 * k))
 				Desenho.texto(c, Vector2(dx, chao - 180), "BLOQUEADO", int(tam * 0.5), cor4, Color.WHITE, 8)
+		"erika":
+			# plenário: painel de votação enchendo de SIM, calendários 6x1 caindo no rival e o carimbo APROVADA
+			if not fundo:
+				for j in 6:
+					var tt := 50 + j * 18
+					if t >= tt and t < tt + 40:
+						var q := clampf((t - tt) / 22.0, 0.0, 1.0)
+						var pos := Vector2(dx + (j - 2.5) * 46.0, lerpf(-80.0, chao - 150.0 - (j % 2) * 40.0, q * q))
+						c.draw_set_transform(pos, sin(t * 0.2 + j) * 0.3, Vector2(1.7, 1.7))
+						for passada in 2:
+							Desenho._cont = passada == 0
+							Arte.projetil(c, "calendario", t + j * 7, Desenho._cont)
+						Desenho._cont = false
+						c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				if t > 168:
+					var q4 := clampf((t - 168) / 10.0, 0.0, 1.0)
+					var tam := lerpf(150.0, 84.0, q4)
+					var cor := Color("1f9d55")
+					cor.a = k
+					c.draw_rect(Rect2(dx - 250, chao - 250, 500, 110), Color(0.0, 0.08, 0.03, 0.7 * k))
+					Desenho.texto(c, Vector2(dx, chao - 172), "APROVADA!", int(tam * 0.55), cor, Color.WHITE, 8)
+				return
+			var painel := Rect2(clampf((ax + dx) / 2.0, 320.0, 960.0) - 230, chao - 450, 460, 280)
+			c.draw_rect(painel.grow(10), Color(0.25, 0.18, 0.08, k))
+			c.draw_rect(painel, Color(0.04, 0.12, 0.08, 0.92 * k))
+			Desenho.texto(c, painel.position + Vector2(230, 46), "PEC 6x1 · VOTAÇÃO", 26, Color(1, 0.85, 0.3, k), PRETO, 4)
+			var sim := int(clampf((t - 40) / 130.0, 0.0, 1.0) * 412.0)
+			var nao := int(clampf((t - 40) / 130.0, 0.0, 1.0) * 37.0)
+			var w_sim := 380.0 * sim / 449.0
+			var w_nao := 380.0 * nao / 449.0
+			c.draw_rect(Rect2(painel.position + Vector2(40, 90), Vector2(380, 50)), Color(1, 1, 1, 0.12 * k))
+			c.draw_rect(Rect2(painel.position + Vector2(40, 90), Vector2(w_sim, 50)), Color(0.12, 0.62, 0.33, k))
+			Desenho.texto(c, painel.position + Vector2(230, 128), "SIM  %d" % sim, 30, Color(1, 1, 1, k), PRETO, 4)
+			c.draw_rect(Rect2(painel.position + Vector2(40, 170), Vector2(380, 50)), Color(1, 1, 1, 0.12 * k))
+			c.draw_rect(Rect2(painel.position + Vector2(40, 170), Vector2(w_nao, 50)), Color(0.84, 0.16, 0.16, k))
+			Desenho.texto(c, painel.position + Vector2(230, 208), "NÃO  %d" % nao, 30, Color(1, 1, 1, k), PRETO, 4)
+			# luzinhas dos deputados votando
+			for j in 24:
+				var aceso := (j * 37 + t / 3) % 7 != 0 and t > 40 + j * 4
+				c.draw_circle(painel.position + Vector2(40 + j * 16.5, 262), 5.0, Color(0.2, 0.9, 0.4, k) if aceso else Color(0.3, 0.3, 0.35, k))
 		"eduarda":
 			# live: tela de celular gigante ao fundo, comentários subindo, e as letras de TRETA caindo
 			if not fundo:

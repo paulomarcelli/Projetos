@@ -160,6 +160,34 @@ const LISTA := [
 		"memes": ["Mais votada de SP!", "1,9 milhão de votos!", "Me segue lá!", "Corte viral!", "Praia Grande no mapa!"],
 		"vitoria": "Postei e já viralizou. Próximo!",
 	},
+	{
+		# deputada federal (PSOL-SP), autora da PEC pelo fim da escala 6x1 (44h -> 36h, movimento VAT)
+		"id": "erika", "nome": "ERIKA", "titulo": "A Deputada da 6x1", "foto": "erika",
+		"bio": "Técnica e elegante. Trava o chão com o abaixo-assinado, devolve tudo com a Representação e soterra o rival em calendários no Fim da Escala 6x1.",
+		"pele": Color("b5764f"), "cabelo": Color("d9a85a"), "estilo_cabelo": "longo", "barba": false, "oculos": false,
+		"roupa": Color("1a171f"), "camisa": Color("1a171f"), "gravata": Color(0, 0, 0, 0), "calca": Color("b5764f"),
+		"extra": "blazer_vestido", "velocidade": 1.08, "forca": 0.98, "vida": 990,
+		"corpo": {"alt": 1.02, "larg": 0.84, "barriga": 0.0}, "idle": "cabelo", "cor": Color("e5243b"),
+		"musica": "praca",
+		"habilidades": {
+			"projetil": {"nome": "PEC 6x1", "pose": "protocolar", "inicio": 12, "ativo": 1, "rec": 20, "recarga": 65, "som": "papel",
+				"tiro": {"forma": "pec", "dano": 68.0, "vel": 8.5, "tam": 1.15, "hits": 2, "intervalo": 12}},
+			"frente": {"nome": "Vida Além do Trabalho", "pose": "giro_bolsa", "inicio": 9, "ativo": 18, "rec": 18, "recarga": 80, "som": "whoosh_forte",
+				"corpo": {"caixa": Rect2(-20, -200, 150, 190), "dano": 46.0, "avanco": 11.0, "hits": 2, "intervalo": 9, "derruba": true}},
+			"cima": {"nome": "Não Me Calarão!", "pose": "gancho", "inicio": 3, "ativo": 12, "rec": 22, "recarga": 48, "invencivel": 9, "som": "microfone",
+				"salto": Vector2(2.8, -16.5), "corpo": {"caixa": Rect2(5, -238, 76, 208), "dano": 96.0, "derruba": true, "nivel": "alto"}, "prop": "microfone"},
+			"baixo": {"nome": "Abaixo-Assinado", "pose": "assinar", "inicio": 12, "ativo": 1, "rec": 20, "recarga": 140, "som": "papel",
+				"zona": {"forma": "assinaturas", "dist": 230.0, "larg": 330.0, "dur": 200, "dano": 9.0, "intervalo": 24, "efeito": "lento"}},
+			"tras": {"nome": "Representação!", "pose": "arremesso", "inicio": 11, "ativo": 1, "rec": 20, "recarga": 80, "som": "projetil",
+				"tiro": {"forma": "oficio", "dano": 52.0, "vel": 10.0, "volta": true, "hits": 2, "intervalo": 20}},
+			"super": {"nome": "Fim da Escala 6x1", "pose": "chamar", "inicio": 16, "ativo": 1, "rec": 22, "custo": 50.0, "som": "papel", "voz": "super",
+				"chuva": {"forma": "calendario", "qtd": 7, "intervalo": 7, "dano": 32.0, "atraso": 30, "tam": 1.5, "espalha": 190.0, "ao_quebrar": "papelada"}},
+			"ultimate": {"nome": "PEC APROVADA", "cinema": "erika", "dano": 325.0, "hits": 8},
+			"final": {"nome": "Vida Além do Trabalho!"},
+		},
+		"memes": ["Fim da escala 6x1!", "Vida além do trabalho!", "Não me calarão!", "36 horas semanais!", "Assina a PEC!", "Vou representar!"],
+		"vitoria": "Mais uma vitória pra classe trabalhadora!",
+	},
 ]
 
 ## Quem ainda vai entrar (aparece com "?" na seleção até chegar a foto).

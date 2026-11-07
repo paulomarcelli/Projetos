@@ -164,6 +164,36 @@ static func projetil(c: CanvasItem, forma: String, t: int, cont: bool) -> void:
 				Desenho._dl(c, Vector2(-28, -26).rotated(g3), Vector2(28, 26).rotated(g3), Color("8a5a2b"), 3.0)
 				Desenho._dr(c, Rect2(-23, -10, 46, 20), Color("e5243b"))
 				Desenho.letras_px(c, Vector2(-17.5, -7), "50%", 3.0, BRANCO)
+		"tesoura":
+			# tesoura de "corte" girando, abrindo e fechando, com rastro laranja
+			var g := t * 0.32
+			var ab := 0.25 + 0.2 * sin(t * 0.8)
+			if not cont:
+				Desenho._da(c, Vector2.ZERO, 34.0, g - 1.6, g - 0.2, 8, Color(1, 0.48, 0.0, 0.55), 4.0)
+			for lado in [-1.0, 1.0]:
+				var a2: float = g + ab * lado
+				Desenho._poli(c, _rot(Vector2.ZERO, a2, [Vector2(-2, -3), Vector2(30, -1), Vector2(30, 1), Vector2(-2, 3)]), Color("d8dde6"))
+				Desenho._circ(c, Vector2(-14, 8 * lado).rotated(a2), 8.0, Color("ff7a00"))
+				if not cont:
+					Desenho._dc(c, Vector2(-14, 8 * lado).rotated(a2), 4.0, Color("2a1a10"))
+			if not cont:
+				Desenho._dc(c, Vector2.ZERO, 3.0, Color("6b7280"))
+		"aovivo":
+			# selo vermelho "AO VIVO" com a bolinha piscando
+			Desenho._poli(c, PackedVector2Array([Vector2(-34, -14), Vector2(34, -14), Vector2(38, -10), Vector2(38, 10), Vector2(34, 14), Vector2(-34, 14), Vector2(-38, 10), Vector2(-38, -10)]), Color("e5243b"))
+			if not cont:
+				if (t / 6) % 2 == 0:
+					Desenho._dc(c, Vector2(-27, 0), 5.0, BRANCO)
+				Desenho.letras_px(c, Vector2(-18, -5), "AO VIVO", 2.0, BRANCO)
+		"corte":
+			# celular em pé com o corte do vídeo: tela laranja, play e legenda
+			var g4 := sin(t * 0.2) * 0.2
+			Desenho._poli(c, _rot(Vector2.ZERO, g4, [Vector2(-18, -32), Vector2(18, -32), Vector2(18, 32), Vector2(-18, 32)]), Color("1f1a24"))
+			if not cont:
+				Desenho._dp(c, _rot(Vector2.ZERO, g4, [Vector2(-14, -27), Vector2(14, -27), Vector2(14, 25), Vector2(-14, 25)]), Color("ff7a00"))
+				Desenho._dp(c, _rot(Vector2.ZERO, g4, [Vector2(-5, -9), Vector2(8, 0), Vector2(-5, 9)]), BRANCO)
+				Desenho._dp(c, _rot(Vector2.ZERO, g4, [Vector2(-12, 14), Vector2(12, 14), Vector2(12, 20), Vector2(-12, 20)]), Color(0, 0, 0, 0.5))
+				Desenho.letras_px(c, Vector2(-11, -24).rotated(g4), "CORTE", 1.1, BRANCO)
 		"curtida":
 			# coração de curtida
 			Desenho._circ(c, Vector2(-8, -6), 11.0, Color("ff3b6b"))
@@ -413,6 +443,25 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 			var cor2 := Color.WHITE
 			cor2.a = k
 			Desenho.texto(c, Vector2(0, -h - 14), "ANTIWOKE", 22, cor2, Color(0.1, 0.1, 0.3, k), 5)
+		"cela":
+			# superpresídio: grade de barras desce do céu e trava em volta do rival
+			var desce := clampf(t / 12.0, 0.0, 1.0)
+			var h := 230.0
+			var topo := lerpf(-h - 300.0, -h, desce * desce)
+			var w := larg * 0.9
+			Desenho._dr(c, Rect2(-w / 2 - 6, topo - 6, w + 12, 20), Color(0.08, 0.06, 0.12, k))
+			Desenho._dr(c, Rect2(-w / 2, topo, w, 14), Color(0.45, 0.47, 0.52, k))
+			var n := 7
+			for j in n:
+				var x := -w / 2 + j * w / (n - 1)
+				Desenho._dl(c, Vector2(x, topo + 10), Vector2(x, topo + h), Color(0.08, 0.06, 0.12, k), 9.0)
+				Desenho._dl(c, Vector2(x, topo + 10), Vector2(x, topo + h), Color(0.62, 0.64, 0.7, k), 5.0)
+			Desenho._dr(c, Rect2(-w / 2, topo + h * 0.5, w, 8), Color(0.45, 0.47, 0.52, k))
+			# cadeado laranja no meio
+			cadeado(c, Vector2(0, topo + h * 0.5 + 4), 1.2 * k)
+			var cor := Color("ff7a00")
+			cor.a = k
+			Desenho.texto(c, Vector2(0, topo - 20), "SUPERPRESÍDIO", 20, cor, Color(0.1, 0.05, 0.0, k), 5)
 		"mansao":
 			# a mansão sobe do chão com a piscina na frente (quem pisa na água fica lento)
 			var sobe := clampf(t / 14.0, 0.0, 1.0)

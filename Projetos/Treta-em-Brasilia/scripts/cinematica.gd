@@ -38,6 +38,13 @@ static func passo(cin: Dictionary, atk: Lutador, def: Lutador, part: Particulas)
 				part.explosao(alvo, 1.1)
 			if t > 180 and t % 4 == 0:
 				part.confete(Vector2(640, 0), 8)
+		"renan":
+			if t > 50 and t < 170 and t % 8 == 0:
+				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
+			if t == 176:
+				part.explosao(alvo, 1.1)
+			if t > 176 and t % 4 == 0:
+				part.confete(Vector2(640, 0), 8)
 		"flavio":
 			if t > 50 and t < 170 and t % 9 == 0:
 				part.estrelas(alvo + Vector2(randf_range(-60, 60), randf_range(-40, 40)), 2)
@@ -260,6 +267,59 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				fmt += txt[i]
 			c.draw_rect(Rect2(centro.x - 230, base.end.y + 6, 460, 56), Color(0.04, 0.04, 0.1, 0.85 * k))
 			Desenho.texto(c, Vector2(centro.x, base.end.y + 46), fmt + " VOTOS", 32, Color(1, 1, 1, k), Color("1f6fd1"), 6)
+		"renan":
+			# urna eletrônica gigante: digita 1, 4, CONFIRMA; as teclas voam no rival
+			var cxu := clampf((ax + dx) / 2.0, 320.0, 960.0)
+			if not fundo:
+				for j in 8:
+					var tt := 46 + j * 15
+					if t >= tt and t < tt + 26:
+						var q := clampf((t - tt) / 22.0, 0.0, 1.0)
+						var pos := Vector2(lerpf(ax + dir * 60.0, dx, q), chao - 170.0 - sin(q * PI) * 160.0 + (j % 2) * 30.0)
+						var tecla := Rect2(pos - Vector2(30, 26), Vector2(60, 52))
+						c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+						c.draw_rect(tecla.grow(4), Color(0.08, 0.06, 0.12, k))
+						c.draw_rect(tecla, Color(0.16, 0.16, 0.2, k))
+						c.draw_rect(Rect2(tecla.position, Vector2(60, 8)), Color(0.3, 0.3, 0.36, k))
+						Desenho.texto(c, pos + Vector2(0, 14), "1" if j % 2 == 0 else "4", 28, Color(1, 1, 1, k), Color(0, 0, 0, 0), 0)
+				if t > 172:
+					var q4 := clampf((t - 172) / 10.0, 0.0, 1.0)
+					var tam := lerpf(150.0, 84.0, q4)
+					var cor := Color(0.3, 1.0, 0.45, k)
+					c.draw_rect(Rect2(dx - 250, chao - 250, 500, 110), Color(0.0, 0.08, 0.02, 0.75 * k))
+					Desenho.texto(c, Vector2(dx, chao - 172), "CONFIRMA!", int(tam * 0.55), cor, Color(0.05, 0.3, 0.1, k), 8)
+				return
+			var urna := Rect2(cxu - 270, chao - 400, 540, 290)
+			c.draw_rect(urna.grow(8), Color(0.08, 0.06, 0.12, k))
+			c.draw_rect(urna, Color(0.82, 0.8, 0.74, k))
+			var tela := Rect2(urna.position + Vector2(20, 20), Vector2(310, 200))
+			c.draw_rect(tela, Color(0.92, 0.94, 0.9, k))
+			if t < 124:
+				Desenho.texto(c, tela.position + Vector2(155, 34), "PRESIDENTE", 18, Color(0.1, 0.1, 0.1, k), Color(0, 0, 0, 0), 0)
+				var dig := ""
+				if t >= 40:
+					dig = "1"
+				if t >= 70:
+					dig = "14"
+				for j in 2:
+					var caixa := Rect2(tela.position + Vector2(95 + j * 66, 56), Vector2(54, 66))
+					c.draw_rect(caixa, Color(0.1, 0.1, 0.1, k), false, 3.0)
+					if dig.length() > j:
+						Desenho.texto(c, caixa.get_center() + Vector2(0, 18), dig[j], 40, Color(0.1, 0.1, 0.1, k), Color(0, 0, 0, 0), 0)
+				if t >= 80:
+					Desenho.texto(c, tela.position + Vector2(155, 170), "RENAN · MISSÃO", 16, Color(0.1, 0.1, 0.1, k), Color(0, 0, 0, 0), 0)
+			else:
+				Desenho.texto(c, tela.get_center() + Vector2(0, 24), "FIM", 54, Color(0.1, 0.1, 0.1, k), Color(0, 0, 0, 0), 0)
+			# teclado: números e os botões BRANCO, CORRIGE e CONFIRMA
+			var tx := urna.position + Vector2(350, 24)
+			for j in 9:
+				c.draw_rect(Rect2(tx + Vector2((j % 3) * 56, (j / 3) * 46), Vector2(48, 38)), Color(0.16, 0.16, 0.2, k))
+			var aperta := 4.0 if (t >= 108 and t < 122) else 0.0
+			c.draw_rect(Rect2(tx + Vector2(0, 150), Vector2(48, 30)), Color(0.95, 0.95, 0.95, k))
+			c.draw_rect(Rect2(tx + Vector2(56, 150), Vector2(48, 30)), Color(1.0, 0.5, 0.1, k))
+			c.draw_rect(Rect2(tx + Vector2(112, 146 + aperta), Vector2(56, 38)), Color(0.15, 0.7, 0.3, k))
+			if aperta > 0.0:
+				c.draw_circle(tx + Vector2(140, 165), 50.0, Color(0.4, 1, 0.5, 0.3 * k))
 		"flavio":
 			# saiu escondido: aeroporto à noite, painel com o voo para Miami, avião decolando,
 			# a lupa procurando "CADÊ O FLÁVIO?" e as malas despencando no rival

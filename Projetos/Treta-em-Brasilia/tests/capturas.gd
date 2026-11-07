@@ -93,6 +93,13 @@ func _initialize() -> void:
 		["super_flavio", _poder.bind("casa_branca", 8, 0, "super"), [300, 320, 340, 360]],
 		["ult_flavio", _poder.bind("casa_branca", 8, 0, "ult"), [300, 360, 400, 440]],
 		["fla_idle", _luta.bind("casa_branca", 8, 0, {}), [200]],
+		["ren_tesoura", _poder.bind("paulista", 9, 8, "projetil"), [246, 258]],
+		["ren_megafone", _poder.bind("paulista", 9, 8, "frente"), [250, 262]],
+		["ren_cela", _poder.bind("paulista", 9, 8, "baixo"), [262, 300]],
+		["ren_live", _poder.bind("paulista", 9, 8, "tras"), [258, 272]],
+		["super_renan", _poder.bind("paulista", 9, 8, "super"), [300, 330]],
+		["ult_renan", _poder.bind("paulista", 9, 8, "ult"), [340, 370, 420, 480]],
+		["ren_idle", _luta.bind("paulista", 9, 8, {}), [60, 200]],
 		["treino", _treino, [120]],
 	]
 	if filtro != "":
@@ -208,7 +215,7 @@ func _process(_d: float) -> bool:
 		for l in luta.p:
 			l.entrada = null
 		luta.ias = [null, null]
-	if _forcar != "" and luta != null and luta.p.size() == 2 and quadro >= (232 if (String(roteiro[etapa][0]).contains("pav") or String(roteiro[etapa][0]).contains("nik") or String(roteiro[etapa][0]).contains("fla")) else 96) and luta.p[0].pode_agir():
+	if _forcar != "" and luta != null and luta.p.size() == 2 and quadro >= (232 if (String(roteiro[etapa][0]).contains("pav") or String(roteiro[etapa][0]).contains("nik") or String(roteiro[etapa][0]).contains("fla") or String(roteiro[etapa][0]).contains("ren")) else 96) and luta.p[0].pode_agir():
 		luta.p[0].position.x = 520.0
 		luta.p[1].position.x = 760.0 if _forcar not in ["tras", "frente"] else 900.0
 		var l := luta.p[0]

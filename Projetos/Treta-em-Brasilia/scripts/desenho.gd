@@ -142,6 +142,17 @@ static func pose_idle(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-8, -100)
 			p["cabeca_giro"] = sin(t * 0.1) * 0.06
 			p["boca"] = "grito" if (t / 12) % 4 == 0 else "normal"
+		"megafone":
+			# megafone na mão; de tempos em tempos leva à boca e puxa o coro
+			p["mao_f"] = Vector2(30, -96)
+			p["prop"] = "megafone"
+			p["mao_t"] = Vector2(-6, -100)
+			if t % 240 < 60:
+				p["mao_f"] = Vector2(40, -196)
+				p["prop"] = "megafone_on"
+				p["mao_t"] = Vector2(10 + sin(t * 0.4) * 10, -190)
+				p["boca"] = "grito"
+				p["cabeca_giro"] = -0.08
 		"acenar":
 			# aceno de faixa no peito para a multidão imaginária, mãos juntas entre um aceno e outro
 			p["mao_f"] = Vector2(12, -104)
@@ -233,6 +244,13 @@ static func pose_provocar(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(30, -200 + absf(sin(t * 0.25)) * 12)
 			p["cabeca_giro"] = -0.12
 			p["inclina"] = 0.06
+		"renan":
+			# megafone na boca, dedo apontado para o rival: "nem Lula, nem Flávio!"
+			p["mao_f"] = Vector2(40, -196)
+			p["prop"] = "megafone_on"
+			p["mao_t"] = Vector2(80, -170 + sin(t * 0.3) * 8)
+			p["boca"] = "grito"
+			p["inclina"] = 0.06
 		"flavio":
 			# lê a carta (mais uma versão) e olha para o rival por cima do papel
 			p["mao_f"] = Vector2(44, -176)
@@ -292,6 +310,12 @@ static func pose_vitoria(d: Dictionary, t: int) -> Dictionary:
 			p["mao_t"] = Vector2(-30, -200)
 			p["prop_t"] = "joinha"
 			p["cabeca_giro"] = -0.15
+		"renan":
+			p["mao_f"] = Vector2(40, -196)
+			p["prop"] = "megafone_on"
+			p["mao_t"] = Vector2(-26, -224 + bob * 6)
+			p["boca"] = "grito"
+			p["cabeca_giro"] = -0.1
 		"flavio":
 			p["mao_f"] = Vector2(44, -226 + bob * 4)
 			p["prop"] = "carta"
@@ -358,6 +382,10 @@ static func pose_derrota(d: Dictionary, t: int) -> Dictionary:
 		"pavanato":
 			p["mao_f"] = Vector2(30, -96)
 			p["prop"] = "celular"
+		"renan":
+			p["mao_f"] = Vector2(30, -62)
+			p["prop"] = "megafone"
+			p["mao_t"] = Vector2(10, -96)
 		"flavio":
 			p["mao_f"] = Vector2(34, -70)
 			p["prop"] = "carta"
@@ -718,7 +746,7 @@ const _FONTE_PX := {
 	"F": ["111", "100", "110", "100", "100"], "L": ["100", "100", "100", "100", "111"], "U": ["101", "101", "101", "101", "111"],
 	"H": ["101", "101", "111", "101", "101"], "B": ["110", "101", "110", "101", "110"], "?": ["110", "001", "010", "000", "010"],
 	"0": ["111", "101", "101", "101", "111"], "1": ["010", "110", "010", "010", "111"], "3": ["110", "001", "010", "001", "110"],
-	"5": ["111", "100", "110", "001", "110"], "6": ["011", "100", "110", "101", "010"], "%": ["101", "001", "010", "100", "101"],
+	"5": ["111", "100", "110", "001", "110"], "4": ["101", "101", "111", "001", "001"], "6": ["011", "100", "110", "101", "010"], "%": ["101", "001", "010", "100", "101"],
 	"$": ["011", "110", "010", "011", "110"], "!": ["010", "010", "010", "000", "010"],
 }
 
@@ -1152,6 +1180,20 @@ static func _prop_mao(c: CanvasItem, prop: String, mao: Vector2) -> void:
 			_dp(c, PackedVector2Array([mao + Vector2(31, -88 + ond * 0.5), mao + Vector2(54, -74 + ond), mao + Vector2(31, -60 + ond * 0.5), mao + Vector2(8, -76)]), Color("ffd23f"))
 			_dc(c, mao + Vector2(31, -75 + ond * 0.5), 8.0, Color("1f3f9a"))
 			_dl(c, mao + Vector2(24, -77), mao + Vector2(38, -73), BRANCO, 1.5)
+		"megafone", "megafone_on":
+			# megafone branco com faixa laranja; ligado solta as ondas de som
+			for passada in 2:
+				_cont = passada == 0
+				_lin(c, mao + Vector2(0, 2), mao + Vector2(2, -12), Color("2a2a30"), 6.0)
+				_poli(c, PackedVector2Array([mao + Vector2(-10, -16), mao + Vector2(4, -20), mao + Vector2(34, -32), mao + Vector2(36, 2), mao + Vector2(4, -8), mao + Vector2(-10, -10)]), Color("f2f2f2"))
+			_cont = false
+			_dp(c, PackedVector2Array([mao + Vector2(14, -24), mao + Vector2(20, -26), mao + Vector2(21, -2), mao + Vector2(15, -4)]), Color("ff7a00"))
+			_dr(c, Rect2(mao + Vector2(33, -32), Vector2(4, 34)), Color("c9c9cf"))
+			if prop == "megafone_on":
+				var f := fposmod(Time.get_ticks_msec() * 0.01, 10.0)
+				for k in 3:
+					var r := 14.0 + k * 12.0 + f
+					_da(c, mao + Vector2(36, -15), r, -0.7, 0.7, 8, Color(1, 0.6, 0.15, 0.85 - k * 0.22), 3.0)
 		"envelope":
 			# envelope pardo estufado, com notas escapando
 			for passada in 2:
@@ -1364,7 +1406,7 @@ static func _projetil_forma(c: CanvasItem, forma: String, t: int, giro: float, s
 			if not _cont:
 				for i in 4:
 					_da(c, Vector2(i * 4, 0), 10.0 + i * 8.0, t * 0.3 + i, t * 0.3 + i + PI * 1.4, 16, Color(0.75, 0.9, 1.0, 0.9 - i * 0.15), 5.0)
-		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto", "pix", "curtida", "play", "revogado", "bombom", "carta", "tarifa":
+		"discurso", "comida", "rolha", "frasco", "onda", "selo", "documento", "bomba", "notificacao", "picanha_fogo", "carimbo_gigante", "pec", "oficio", "calendario", "rec", "mala", "voto", "pix", "curtida", "play", "revogado", "bombom", "carta", "tarifa", "tesoura", "aovivo", "corte":
 			Arte.projetil(c, forma, t, _cont)
 		_:
 			_circ(c, Vector2.ZERO, 20, Color(1, 0.9, 0.3))

@@ -273,6 +273,33 @@ const LISTA := [
 		"memes": ["Foi por muito pouco!", "Cadê o Queiroz?", "É só chocolate!", "TariFlávio!", "Sou o líder do Brasil!", "Versão 3 da carta!"],
 		"vitoria": "Escrevi a carta de novo: dessa vez eu venci!",
 	},
+	{
+		"id": "renan", "nome": "RENAN", "titulo": "O Nem-Nem", "foto": "renan",
+		"bio": "Fundador do MBL e candidato do Missão. Corta o rival em pedacinhos de live, grita no megafone desde 2015, prende geral no superpresídio e manda o povo digitar 14 e CONFIRMA.",
+		"pele": Color("e0aa88"), "cabelo": Color("1a1414"), "estilo_cabelo": "curto", "barba": true, "oculos": false,
+		"roupa": Color("1b2236"), "camisa": Color("f4f4f4"), "gravata": Color("1d2a4d"), "calca": Color("1b2236"),
+		"extra": "", "velocidade": 1.03, "forca": 0.98, "vida": 970,
+		"corpo": {"alt": 0.98, "larg": 0.9, "barriga": 0.0}, "idle": "megafone", "cor": Color("ff7a00"),
+		"musica": "paulista",
+		"habilidades": {
+			"projetil": {"nome": "Corte da Live", "pose": "arremesso", "inicio": 10, "ativo": 1, "rec": 17, "recarga": 60, "som": "whoosh",
+				"tiro": {"forma": "tesoura", "dano": 60.0, "vel": 10.0, "tam": 1.2}},
+			"frente": {"nome": "Megafone do Impeachment", "pose": "megafone", "inicio": 10, "ativo": 30, "rec": 20, "recarga": 105, "som": "microfone",
+				"corpo": {"caixa": Rect2(20, -230, 150, 210), "dano": 12.0, "avanco": 2.0, "hits": 4, "intervalo": 7, "empurra": 6.0}},
+			"cima": {"nome": "Vota 14!", "pose": "gancho", "inicio": 3, "ativo": 12, "rec": 24, "recarga": 50, "invencivel": 9, "som": "whoosh_forte",
+				"salto": Vector2(2.6, -16.5), "corpo": {"caixa": Rect2(5, -235, 72, 205), "dano": 100.0, "derruba": true, "nivel": "alto"}},
+			"baixo": {"nome": "Superpresídio", "pose": "chamar", "inicio": 14, "ativo": 1, "rec": 22, "recarga": 135, "som": "martelo",
+				"zona": {"forma": "cela", "dist": 230.0, "larg": 170.0, "dur": 170, "dano": 10.0, "intervalo": 22, "efeito": "lento"}},
+			"tras": {"nome": "LIVE EMERGENCIAL", "pose": "arremesso", "inicio": 10, "ativo": 18, "rec": 18, "recarga": 80, "som": "notificacao",
+				"tiro": {"forma": "aovivo", "dano": 26.0, "vel": 8.5, "arco": -10.0, "qtd": 3, "intervalo": 7, "tam": 1.0}},
+			"super": {"nome": "Chuva de Cortes", "pose": "celular_alto", "inicio": 14, "ativo": 1, "rec": 22, "custo": 50.0, "som": "notificacao", "voz": "super",
+				"chuva": {"forma": "corte", "qtd": 10, "intervalo": 5, "dano": 21.0, "atraso": 22, "tam": 1.3, "espalha": 210.0}},
+			"ultimate": {"nome": "CONFIRMA!", "cinema": "renan", "dano": 330.0, "hits": 8},
+			"final": {"nome": "Nem Lula, nem Flávio!", "prop": "megafone"},
+		},
+		"memes": ["Nem Lula, nem Flávio!", "Não somos terceira via!", "LIVE EMERGENCIAL!", "Superpresídio neles!", "Vota 14!", "Corta essa!"],
+		"vitoria": "Nem Lula, nem Flávio: deu Missão!",
+	},
 ]
 
 ## Quem ainda vai entrar (aparece com "?" na seleção até chegar a foto).

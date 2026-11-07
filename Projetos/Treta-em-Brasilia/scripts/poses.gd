@@ -276,6 +276,22 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 				p["mao_t"] = Vector2(30, -60)
 				p["inclina"] = 0.22
 				p["expr"] = "feliz"
+		"megafone":
+			# avança gritando no megafone: as ondas de som empurram o rival
+			p["prop"] = "megafone_on" if not prep else "megafone"
+			if prep:
+				p["mao_f"] = Vector2(20, -150)
+				p["mao_t"] = Vector2(-10, -140)
+				p["inclina"] = -0.12
+			else:
+				var tr := sin(t * 0.9) * 3.0
+				p["mao_f"] = Vector2(44 + tr, -194)
+				p["mao_t"] = Vector2(70, -150 + tr)
+				p["inclina"] = 0.14
+				p["pe_f"] = Vector2(40, 0)
+				p["pe_t"] = Vector2(-32, 0)
+				p["boca"] = "grito"
+				p["cabeca_desl"] = Vector2(tr, 0)
 		"rachadinha":
 			# puxa o envelope de trás e avança de ombro, "rachando" o golpe ao meio com a outra mão
 			p["prop"] = "envelope"
@@ -330,6 +346,14 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0
 			p["prop"] = "martelo"
 			p["expr"] = "esforco" if sin(t * 0.18) > 0 else "neutro"
+		"renan":
+			# aperta os botões no ar: 1, 4 e o CONFIRMA
+			var bate := absf(sin(t * 0.25))
+			p["mao_f"] = Vector2(90, -160 + bate * 30)
+			p["mao_t"] = Vector2(40, -196)
+			p["prop_t"] = "megafone_on"
+			p["inclina"] = 0.08
+			p["expr"] = "grito" if t > 110 else "esforco"
 		"flavio":
 			# acena da escada do avião de mala na mão e depois mostra a carta
 			p["prop"] = "carta" if t > 150 else "envelope"

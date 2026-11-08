@@ -1056,7 +1056,7 @@ func _disparou_ultimate(l: Lutador) -> void:
 		"hits": int(h.get("hits", 6)), "dados_hits": 0, "ao_acertar": h.get("ao_acertar", ""), "cura": float(h.get("cura", 0.0))}
 	l.entrar_cinematica(true)
 	alvo.entrar_cinematica(false)
-	Som.trilha("res://audio/ultimate/%s.ogg" % l.dados.get("id", ""))
+	Som.trilha(String(h.get("trilha", "res://audio/ultimate/%s.ogg" % l.dados.get("id", ""))))
 	# arruma os dois no palco para a cena
 	var centro := clampf((l.position.x + alvo.position.x) / 2.0, 340.0, 940.0)
 	var lado := 1.0 if alvo.position.x >= l.position.x else -1.0

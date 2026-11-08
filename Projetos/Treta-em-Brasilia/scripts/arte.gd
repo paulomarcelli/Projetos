@@ -430,6 +430,65 @@ static func _seis_x_um(c: CanvasItem, centro: Vector2, s: float, g: float, cor: 
 
 ## Batida do YMCA (125 BPM a 60 quadros por segundo), para a dança e a pista acenderem juntas.
 const YMCA_BATIDA := 28.8
+const YMCA_CORES := [Color("ff3b6b"), Color("2a9df4"), Color("ffd23f"), Color("1f9d55")]
+
+## Traços das letras de neon (caixa de -0,5 a 0,5 na largura, de -1 a 0 na altura).
+static func _tracos_neon(letra: int) -> Array:
+	match letra:
+		0:  # Y
+			return [[Vector2(-0.42, -1), Vector2(0, -0.5), Vector2(0.42, -1)], [Vector2(0, -0.5), Vector2(0, 0)]]
+		1:  # M
+			return [[Vector2(-0.44, 0), Vector2(-0.44, -1), Vector2(0, -0.42), Vector2(0.44, -1), Vector2(0.44, 0)]]
+		2:  # C
+			var arco := []
+			for i in 13:
+				var a := deg_to_rad(45.0 + i * 270.0 / 12.0)
+				arco.append(Vector2(0.06 + cos(a) * 0.46, -0.5 - sin(a) * 0.5))
+			return [arco]
+		_:  # A
+			return [[Vector2(-0.44, 0), Vector2(0, -1), Vector2(0.44, 0)], [Vector2(-0.24, -0.42), Vector2(0.24, -0.42)]]
+
+
+## Letreiro de neon Y M C A (base em centro): a letra da batida acende forte e pulsa,
+## as outras ficam com o tubo apagado. bt = batidas desde o começo da música.
+static func ymca_letreiro(c: CanvasItem, centro: Vector2, alt: float, bt: float, k: float) -> void:
+	var letra := int(floorf(bt)) % 4
+	var f := bt - floorf(bt)
+	var pulso := exp(-f * 4.0)
+	var passo := alt * 0.95
+	var larg := passo * 4.0 + alt * 0.3
+	# placa com lâmpadas correndo em volta
+	var placa := Rect2(centro.x - larg / 2.0, centro.y - alt * 1.32, larg, alt * 1.56)
+	Desenho._dr(c, placa.grow(8), Color(0.02, 0.01, 0.05, 0.55 * k))
+	Desenho._dr(c, placa, Color(0.06, 0.03, 0.12, 0.85 * k))
+	var n_l := 22
+	for i in n_l:
+		var q := float(i) / n_l
+		var pt: Vector2
+		if q < 0.5:
+			pt = Vector2(placa.position.x + placa.size.x * q * 2.0, placa.position.y + 6)
+		else:
+			pt = Vector2(placa.end.x - placa.size.x * (q - 0.5) * 2.0, placa.end.y - 6)
+		var on := (i + int(floorf(bt * 2.0))) % 3 == 0
+		Desenho._dc(c, pt, 4.0, Color(1, 0.9, 0.5, (0.95 if on else 0.25) * k))
+	for j in 4:
+		var aceso := j == letra
+		var cor: Color = YMCA_CORES[j]
+		var esc := alt * (1.0 + (0.14 * pulso if aceso else 0.0))
+		var base := Vector2(centro.x + (j - 1.5) * passo, centro.y - alt * 0.12 + (esc - alt) * 0.5)
+		var camadas: Array = [[alt * 0.3, 0.12 + 0.18 * pulso], [alt * 0.16, 0.35], [alt * 0.075, 1.0], [alt * 0.03, 1.0]] if aceso \
+			else [[alt * 0.075, 0.5]]
+		for ci in camadas.size():
+			var cam: Array = camadas[ci]
+			var cc := cor if ci < 3 or not aceso else cor.lerp(Color.WHITE, 0.75)
+			if not aceso:
+				cc = cor.darkened(0.45)
+			cc.a = float(cam[1]) * k
+			for tr: Array in _tracos_neon(j):
+				for i in tr.size() - 1:
+					Desenho._dl(c, base + tr[i] * esc, base + tr[i + 1] * esc, cc, float(cam[0]))
+				for pt2: Vector2 in tr:
+					Desenho._dc(c, base + pt2 * esc, float(cam[0]) * 0.5, cc)
 
 
 static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, k: float) -> void:
@@ -498,10 +557,8 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 					var a1 := a0 + q * TAU / 32.0
 					pts.append(Vector2(cos(a1) * meia, sin(a1) * meia * 0.2))
 				Desenho._dp(c, pts, cor)
-			var cor_l: Color = cores[letra]
-			cor_l.a = k
-			var tam := int(56 + 22 * pulso)
-			Desenho.texto(c, Vector2(0, -300 - pulso * 14.0), ["Y", "M", "C", "A"][letra], tam, cor_l, Color(0.05, 0.03, 0.1, k), 8)
+			# o letreiro de neon Y M C A em cima do Trump, acendendo na batida (igual aos braços)
+			ymca_letreiro(c, Vector2(0, -292), 78.0, bt, k)
 			# notinhas subindo
 			for j in 3:
 				var nx := -meia * 0.6 + j * meia * 0.6

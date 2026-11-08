@@ -284,30 +284,7 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 				p["mao_t"] = Vector2(-10, -160)
 				p["expr"] = "feliz"
 			else:
-				var bt := maxf(0.0, float(t - ini - 3)) / Arte.YMCA_BATIDA
-				var letra := int(floorf(bt)) % 4
-				var f := bt - floorf(bt)
-				var pulso := exp(-f * 5.0)
-				match letra:
-					0:  # Y: braços abertos para cima
-						p["mao_f"] = Vector2(70, -238)
-						p["mao_t"] = Vector2(-50, -238)
-					1:  # M: mãos na cabeça, cotovelos para fora
-						p["mao_f"] = Vector2(26, -210)
-						p["mao_t"] = Vector2(-14, -210)
-					2:  # C: os dois braços curvados para um lado
-						p["mao_f"] = Vector2(74, -206)
-						p["mao_t"] = Vector2(58, -126)
-					_:  # A: mãos juntas no alto
-						p["mao_f"] = Vector2(16, -252)
-						p["mao_t"] = Vector2(4, -252)
-				var lado := 1.0 if int(floorf(bt)) % 2 == 0 else -1.0
-				p["pe_f"] = Vector2(30 + lado * 10.0, -pulso * 10.0)
-				p["pe_t"] = Vector2(-26 + lado * 10.0, 0)
-				p["quadril"] = -72.0 + pulso * 6.0
-				p["inclina"] = lado * 0.06
-				p["cabeca_giro"] = -lado * 0.08
-				p["expr"] = "grito" if f < 0.3 else "feliz"
+				ymca(p, maxf(0.0, float(t - ini - 3)) / Arte.YMCA_BATIDA)
 		"pedalada":
 			# sobe na bicicleta e sai pedalando por cima do rival
 			p["prop"] = "bicicleta"
@@ -368,6 +345,34 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 	return p
 
 
+## Uma letra do YMCA com os braços a cada batida (bt = batidas desde o começo da música),
+## passinho de lado e o quadril quicando no tempo.
+static func ymca(p: Dictionary, bt: float) -> void:
+	var letra := int(floorf(bt)) % 4
+	var f := bt - floorf(bt)
+	var pulso := exp(-f * 5.0)
+	match letra:
+		0:  # Y: braços abertos para cima
+			p["mao_f"] = Vector2(70, -238)
+			p["mao_t"] = Vector2(-50, -238)
+		1:  # M: mãos na cabeça, cotovelos para fora
+			p["mao_f"] = Vector2(26, -210)
+			p["mao_t"] = Vector2(-14, -210)
+		2:  # C: os dois braços curvados para um lado
+			p["mao_f"] = Vector2(74, -206)
+			p["mao_t"] = Vector2(58, -126)
+		_:  # A: mãos juntas no alto
+			p["mao_f"] = Vector2(16, -252)
+			p["mao_t"] = Vector2(4, -252)
+	var lado := 1.0 if int(floorf(bt)) % 2 == 0 else -1.0
+	p["pe_f"] = Vector2(30 + lado * 10.0, -pulso * 10.0)
+	p["pe_t"] = Vector2(-26 + lado * 10.0, 0)
+	p["quadril"] = -72.0 + pulso * 6.0
+	p["inclina"] = lado * 0.06
+	p["cabeca_giro"] = -lado * 0.08
+	p["expr"] = "grito" if f < 0.3 else "feliz"
+
+
 ## Pose de cada um durante a cinemática do ultimate.
 static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 	p["aura"] = true
@@ -392,7 +397,8 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["chapeu"] = "capacete"
 			p["expr"] = "grito" if (t / 20) % 2 == 0 else "feliz"
 		"trump":
-			danca(p, t, 1.4)
+			# a trilha da Ultimate é o YMCA: a mesma dança, na mesma batida das letras do telão
+			ymca(p, maxf(0.0, float(t - 3)) / Arte.YMCA_BATIDA)
 		"xandao":
 			var a := -2.2 + absf(sin(t * 0.18)) * 2.4
 			p["mao_f"] = Vector2(14, -150) + Vector2(cos(a), sin(a)) * 60.0

@@ -9,6 +9,7 @@ Saída (ogg vorbis, mono, 22 050 Hz):
     audio/musica/<nome>.ogg     trilhas chiptune originais em loop
 """
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -331,7 +332,7 @@ def acorde(raiz_grau, escala, tonica):
     return [tonica + e[g % 7] + 12 * (g // 7) for g in graus]
 
 
-def faixa(nome, bpm, tonica, escala, progressao, semente, estilo="luta", compassos=16):
+def faixa(nome, bpm, tonica, escala, progressao, semente, estilo="luta", compassos=16, gravar=True):
     r = np.random.default_rng(semente)
     batida = 60.0 / bpm
     passo = batida / 4  # semicolcheia
@@ -404,7 +405,9 @@ def faixa(nome, bpm, tonica, escala, progressao, semente, estilo="luta", compass
                 coloca("lead", base_passo + p, s * 0.42)
     musica = pista["baixo"][:n_total] * 0.55 + pista["lead"][:n_total] * 0.5 + pista["arp"][:n_total] * 0.5 + pista["bateria"][:n_total] * 0.55
     musica = bitcrush(passa(musica, 7000), 8)
-    salvar(musica, f"audio/musica/{nome}.ogg", q=1)
+    if gravar:
+        salvar(musica, f"audio/musica/{nome}.ogg", q=1)
+    return musica
 
 
 def musicas():
@@ -417,7 +420,41 @@ def musicas():
     faixa("selecao", 120, 60, "maior", [0, 5, 3, 4], 71, "calmo", 8)
 
 
+def jingle(nome, bpm, tonica, escala, progressao, semente, dur=6.0):
+    """Tema da Ultimate (de quem não tem música própria): subida, pancada de orquestra,
+    4 compassos do tema em ritmo de luta e o acorde final segurado."""
+    subida_d = 0.55
+    subida = banda(ruido(subida_d), 800, 9000) * np.linspace(0, 1, int(SR * subida_d)) ** 2 * 0.5
+    subida = mix(subida, osc(varre(nota(tonica - 12), nota(tonica + 12), subida_d, 1.5), subida_d, "quad", 0.25)
+                 * np.linspace(0.1, 0.6, int(SR * subida_d)))
+    ac = acorde(0, escala, tonica)
+    hit_d = 0.6
+    hit = sum(osc(nota(n - 12 * o), hit_d, "serra" if o else "quad", 0.3) for n in ac for o in (0, 1))
+    hit = hit * env(int(SR * hit_d), 0.002, 0.25, 0.25, 0.2) * 0.35 + explosao(hit_d, 55) * 0.7
+    tema = faixa(nome, bpm, tonica, escala, progressao, semente, "luta", 4, gravar=False)
+    fim_d = 0.9
+    fim = sum(osc(nota(n + 12), fim_d, "quad", 0.25) for n in ac) * env(int(SR * fim_d), 0.003, 0.3, 0.5, 0.4) * 0.4
+    fim = mix(fim, golpe(1.0) * 0.8)
+    corpo = tema[:int(SR * max(1.0, dur - subida_d - fim_d))]
+    corpo[-int(SR * 0.08):] *= np.linspace(1, 0.3, int(SR * 0.08))
+    musica = np.concatenate([subida, mix(hit, corpo[:int(SR * hit_d)] * 0.6), corpo[int(SR * hit_d):], fim])
+    salvar(musica, f"audio/ultimate/{nome}.ogg", q=3)
+
+
+def ultimates():
+    # cada um com cara própria: escala, andamento e tom
+    jingle("erika", 150, 57, "dorico", [0, 3, 6, 4], 101)
+    jingle("pavanato", 142, 52, "menor", [0, 5, 6, 4], 113)
+    jingle("flavio", 128, 55, "frigio", [0, 1, 6, 0], 127)
+    jingle("renan", 164, 50, "menor", [0, 6, 5, 4], 131)
+    jingle("eduarda", 136, 60, "maior", [0, 4, 5, 3], 149)
+
+
 if __name__ == "__main__":
+    if sys.argv[1:] == ["ultimates"]:
+        ultimates()
+        print("ultimates ok")
+        sys.exit(0)
     print("efeitos:", len(efeitos()))
     vozes()
     print("vozes ok")

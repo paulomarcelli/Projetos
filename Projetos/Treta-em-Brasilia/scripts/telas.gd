@@ -1199,13 +1199,16 @@ class Online extends Node2D:
 # ---------------------------------------------------------------- créditos
 
 class Creditos extends Node2D:
+	## Créditos em clima de fim de fliperama: os dois cartões entram deslizando, o elenco todo
+	## dança em fila, confete caindo e o "OBRIGADO POR JOGAR!" ondulando letra por letra.
 	signal voltar
 	var t := 0.0
-	const BT_VOLTAR := Rect2(540, 640, 200, 52)
+	const BT_VOLTAR := Rect2(540, 644, 200, 42)
 	const LINHAS := [
-		["IDEALIZADORA DO JOGO", "Lorena Oliveira Nascimento"],
-		["DESENVOLVEDOR", "Paulo Marcelli"],
+		["IDEALIZADORA DO JOGO", "Lorena Oliveira Nascimento", "ideia"],
+		["DESENVOLVEDOR", "Paulo Marcelli", "codigo"],
 	]
+	const CORES := [Color("ff3b6b"), Color("2a9df4"), Color("ffd23f"), Color("1f9d55"), Color("b06cff")]
 
 	func _ready() -> void:
 		Som.musica("menu")
@@ -1224,15 +1227,161 @@ class Creditos extends Node2D:
 			set_process(false)
 		queue_redraw()
 
+	## Saída com passadinha (ease-out-back): passa um pouco do ponto e volta.
+	static func _volta(q: float) -> float:
+		q = clampf(q, 0.0, 1.0) - 1.0
+		return 1.0 + 2.2 * q * q * q + 1.2 * q * q
+
+	## Largura do texto na fonte do jogo (Press Start 2P é monoespaçada).
+	static func _largura(txt: String, tam: int) -> float:
+		return txt.length() * Desenho.tamanho_real(tam) / Desenho.ESCALA
+
+	func _estrela(c: Vector2, r: float, cor: Color) -> void:
+		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r * 0.25, -r * 0.25), c + Vector2(r, 0), c + Vector2(r * 0.25, r * 0.25),
+			c + Vector2(0, r), c + Vector2(-r * 0.25, r * 0.25), c + Vector2(-r, 0), c + Vector2(-r * 0.25, -r * 0.25)]), cor)
+
+	func _icone(tipo: String, pos: Vector2, a: float, esc := 1.0) -> void:
+		draw_set_transform(pos, 0.0, Vector2(esc, esc))
+		var c := Vector2.ZERO
+		draw_circle(c, 34.0, Color(0, 0, 0, 0.45 * a))
+		draw_circle(c, 30.0, Color("2c2450", a))
+		draw_arc(c, 30.0, 0, TAU, 32, Color("ffd23f", a), 3.0)
+		if tipo == "ideia":
+			# lâmpada acesa
+			var brilho := 0.6 + 0.4 * sin(t * 5.0)
+			draw_circle(c + Vector2(0, -5), 22.0, Color(1, 0.9, 0.4, 0.25 * brilho * a))
+			draw_circle(c + Vector2(0, -5), 13.0, Color(1, 0.88, 0.35, a))
+			draw_rect(Rect2(c.x - 7, c.y + 7, 14, 10), Color(0.75, 0.75, 0.8, a))
+			draw_line(c + Vector2(-7, 11), c + Vector2(7, 11), Color(0.4, 0.4, 0.5, a), 2.0)
+			for i in 5:
+				var ang := -PI / 2.0 + (i - 2) * 0.55
+				draw_line(c + Vector2(0, -5) + Vector2(cos(ang), sin(ang)) * 17.0, c + Vector2(0, -5) + Vector2(cos(ang), sin(ang)) * 24.0, Color(1, 0.9, 0.4, brilho * a), 2.0)
+		else:
+			# </> piscando o cursor
+			var cor := Color("7ef0ff", a)
+			draw_polyline(PackedVector2Array([c + Vector2(-8, -12), c + Vector2(-20, 0), c + Vector2(-8, 12)]), cor, 4.0)
+			draw_polyline(PackedVector2Array([c + Vector2(8, -12), c + Vector2(20, 0), c + Vector2(8, 12)]), cor, 4.0)
+			draw_line(c + Vector2(4, -14), c + Vector2(-4, 14), cor, 4.0)
+			if int(t * 3.0) % 2 == 0:
+				draw_rect(Rect2(c.x + 22, c.y + 8, 6, 4), cor)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+	func _cartao(i: int) -> void:
+		var linha: Array = LINHAS[i]
+		var q := _volta((t - 0.15 - i * 0.18) / 0.55)
+		var lado := -1.0 if i == 0 else 1.0
+		var r := Rect2(60.0 + lado * (1.0 - q) * 1300.0, 172.0 + i * 112.0 + sin(t * 1.6 + i * 1.7) * 2.0, 1160.0, 102.0)
+		var a := clampf((t - 0.15 - i * 0.18) / 0.3, 0.0, 1.0)
+		var cor: Color = CORES[i]
+		# sombra, moldura dourada, fundo com a cor do cartão e faixa no alto
+		draw_rect(Rect2(r.position + Vector2(8, 10), r.size).grow(6), Color(0, 0, 0, 0.45 * a))
+		draw_rect(r.grow(7), Color(Desenho.PRETO, a))
+		draw_rect(r.grow(3), Color("ffd23f", a))
+		draw_rect(r, Color(Color("1b1238").lerp(cor, 0.18), a))
+		draw_rect(Rect2(r.position, Vector2(r.size.x, 8)), Color(cor, a))
+		draw_rect(Rect2(r.position + Vector2(0, 8), Vector2(r.size.x, r.size.y * 0.4)), Color(1, 1, 1, 0.05 * a))
+		# brilho correndo de um lado ao outro
+		var bx := r.position.x + fposmod(t * 260.0 + i * 300.0, r.size.x + 400.0) - 200.0
+		var b0 := clampf(bx, r.position.x, r.end.x)
+		var b1 := clampf(bx + 50.0, r.position.x, r.end.x)
+		if b1 > b0:
+			draw_rect(Rect2(b0, r.position.y, b1 - b0, r.size.y), Color(1, 1, 1, 0.07 * a))
+		# parafusos nos cantos
+		for cx in [r.position.x + 10, r.end.x - 10]:
+			for cy in [r.position.y + 18, r.end.y - 10]:
+				draw_circle(Vector2(cx, cy), 4.0, Color(0.85, 0.7, 0.3, a))
+		_icone(String(linha[2]), r.position + Vector2(44, 32), a, 0.62)
+		_icone(String(linha[2]), Vector2(r.end.x - 44, r.position.y + 32), a, 0.62)
+		var x := r.get_center().x
+		Desenho.texto(self, Vector2(x, r.position.y + 32), String(linha[0]), 18, Color(cor.lightened(0.45), a), Color(0, 0, 0, a), 4)
+		# o nome no maior tamanho da fonte que cabe no cartão
+		var nome := String(linha[1])
+		var tam := 34
+		if _largura(nome, tam) > r.size.x - 30.0:
+			tam = 30
+		Desenho.texto(self, Vector2(x, r.position.y + 90), nome, tam, Color(1, 1, 1, a), Color(0, 0, 0, a), 7)
+		# estrelinhas piscando em volta
+		for j in 3:
+			var fase := fposmod(t * 1.3 + j * 0.37 + i * 0.5, 1.0)
+			var e := sin(fase * PI)
+			var pos := Vector2(r.position.x + fposmod(j * 197.0 + i * 89.0, r.size.x), r.position.y + (-6.0 if j % 2 == 0 else r.size.y + 6.0))
+			_estrela(pos, 9.0 * e, Color(1, 0.95, 0.6, e * a))
+
+	func _elenco() -> void:
+		var a := clampf((t - 0.7) / 0.5, 0.0, 1.0)
+		var n := Personagens.LISTA.size()
+		var passo := 1100.0 / n
+		# o holofote passa de um em um; quem está na luz pula mais alto e diz o nome na placa
+		var vez := int(t / 0.7) % n
+		var fy := 418.0
+		draw_colored_polygon(PackedVector2Array([Vector2(510, fy - 20), Vector2(770, fy - 20), Vector2(790, fy), Vector2(770, fy + 20), Vector2(510, fy + 20), Vector2(490, fy)]), Color("d62828", a))
+		draw_rect(Rect2(510, fy - 20, 260, 6), Color(1, 1, 1, 0.15 * a))
+		Desenho.texto(self, Vector2(640, fy + 8), "ELENCO", 24, Color(1, 1, 1, a), Color(0, 0, 0, a), 5)
+		draw_rect(Rect2(70, 520, 1140, 6), Color(1, 0.84, 0.25, 0.35 * a))
+		var xv := 90.0 + passo * (vez + 0.5)
+		draw_colored_polygon(PackedVector2Array([Vector2(xv - 14, 404), Vector2(xv + 14, 404), Vector2(xv + 58, 523), Vector2(xv - 58, 523)]), Color(1, 1, 0.8, 0.12 * a))
+		for i in n:
+			var d: Dictionary = Personagens.LISTA[i]
+			var cor: Color = d.get("cor", Color.WHITE)
+			var entra := clampf((t - 0.7 - i * 0.07) / 0.35, 0.0, 1.0)
+			var x := 90.0 + passo * (i + 0.5)
+			var na_luz := i == vez
+			var onda := maxf(0.0, sin(t * 5.0 - i * 0.7))
+			var pulo := (absf(sin(t * 9.0)) * 22.0) if na_luz else onda * 10.0
+			var y := 476.0 - pulo + (1.0 - _volta(entra)) * 140.0
+			draw_circle(Vector2(x, 523), 28.0 * (1.0 - pulo / 50.0), Color(0, 0, 0, 0.3 * entra))
+			draw_circle(Vector2(x, y), 44.0 if not na_luz else 52.0, Color(cor, (0.22 if not na_luz else 0.5) * entra))
+			var ex := "grito" if na_luz else ("piscar" if int(t * 10 + i * 13) % 37 == 0 else "feliz")
+			Desenho.cabeca(self, d, Vector2(x, y), 36.0 * (1.15 if na_luz else 1.0), {"expr": ex, "cabeca_giro": sin(t * 3.0 + i) * 0.08})
+		# placa com o nome e o apelido de quem está no holofote
+		var dv: Dictionary = Personagens.LISTA[vez]
+		var txt := "%s · %s" % [String(dv.get("nome", "")), String(dv.get("titulo", "")).to_upper()]
+		var w := _largura(txt, 16) + 40.0
+		var cv: Color = dv.get("cor", Color.WHITE)
+		var placa := Rect2(640.0 - w / 2.0, 534, w, 30)
+		draw_rect(placa.grow(4), Color(Desenho.PRETO, a))
+		draw_rect(placa, Color(Color("1b1238").lerp(cv, 0.35), a))
+		draw_rect(Rect2(placa.position, Vector2(placa.size.x, 4)), Color(cv, a))
+		Desenho.texto(self, placa.get_center() + Vector2(0, 9), txt, 16, Color(1, 1, 1, a), Color(0, 0, 0, a), 3)
+
+	func _obrigado() -> void:
+		var txt := "OBRIGADO POR JOGAR!"
+		var tam := 34
+		var w := _largura(txt, tam) / txt.length()
+		var x0 := 640.0 - w * txt.length() / 2.0 + w / 2.0
+		var a := clampf((t - 1.4) / 0.4, 0.0, 1.0)
+		for i in txt.length():
+			var ch := txt[i]
+			if ch == " ":
+				continue
+			var y := 610.0 - maxf(0.0, sin(t * 6.0 - i * 0.45)) * 8.0
+			var cor: Color = CORES[(i + int(t * 4.0)) % CORES.size()]
+			Desenho.texto(self, Vector2(x0 + i * w, y), ch, tam, Color(cor, a), Color(0, 0, 0, a), 7)
+
 	func _draw() -> void:
 		Telas.fundo_energia(self, t, Color("ffd23f"))
-		Telas.logo(self, Vector2(640, 120), t, 0.6)
-		Desenho.texto(self, Vector2(640, 240), "CRÉDITOS", 52, Color("ffd23f"), Desenho.PRETO, 10)
+		# confete caindo (posições só pelo tempo: sem sorteio)
+		for i in 46:
+			var x := fposmod(i * 131.0 + sin(t * 1.3 + i) * 40.0, 1300.0) - 10.0
+			var y := fposmod(t * (70.0 + (i % 5) * 22.0) + i * 71.0, 800.0) - 40.0
+			var ang := t * (2.0 + (i % 3)) + i
+			var cor: Color = CORES[i % CORES.size()]
+			var v := Vector2(cos(ang), sin(ang))
+			var lado := Vector2(-v.y, v.x) * 3.0
+			draw_colored_polygon(PackedVector2Array([Vector2(x, y) - v * 7.0 - lado, Vector2(x, y) + v * 7.0 - lado, Vector2(x, y) + v * 7.0 + lado, Vector2(x, y) - v * 7.0 + lado]), Color(cor, 0.8))
+		Telas.logo(self, Vector2(640, 56), t, 0.42)
+		# título com faixa
+		var ty := 150.0
+		draw_rect(Rect2(380, ty - 30, 520, 44), Color(0, 0, 0, 0.35))
+		draw_line(Vector2(380, ty - 30), Vector2(900, ty - 30), Color("ffd23f"), 2.0)
+		draw_line(Vector2(380, ty + 14), Vector2(900, ty + 14), Color("ffd23f"), 2.0)
+		_estrela(Vector2(360, ty - 8), 12.0 + sin(t * 4.0) * 3.0, Color("ffd23f"))
+		_estrela(Vector2(920, ty - 8), 12.0 + sin(t * 4.0 + 1.0) * 3.0, Color("ffd23f"))
+		Desenho.texto(self, Vector2(640, ty + 8), "CRÉDITOS", 40, Color("ffd23f"), Desenho.PRETO, 8)
 		for i in LINHAS.size():
-			var y := 320.0 + i * 120.0
-			var entra := clampf((t - i * 0.25) / 0.4, 0.0, 1.0)
-			Desenho.texto(self, Vector2(640, y), LINHAS[i][0], 22, Color(0.5, 0.8, 1.0, entra), Color(0, 0, 0, entra), 5)
-			Desenho.texto(self, Vector2(640, y + 50), LINHAS[i][1], 38, Color(1, 1, 1, entra), Color(0, 0, 0, entra), 8)
-		Desenho.texto(self, Vector2(640, 586), "Godot 4.3 · PeerJS (MIT) · paródia e humor", 15, Color(1, 1, 1, 0.7), Desenho.PRETO, 4)
-		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE, true, 22)
+			_cartao(i)
+		_elenco()
+		_obrigado()
+		Desenho.texto(self, Vector2(640, 632), "Godot 4.3 · PeerJS (MIT) · paródia", 12, Color(1, 1, 1, 0.55), Desenho.PRETO, 3)
+		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE, true, 20)
 

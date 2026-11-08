@@ -133,7 +133,7 @@ const LISTA := [
 				"trilha": "res://audio/ultimate/trump_ymca.ogg",
 				"zona": {"forma": "ymca", "dist": 0.0, "larg": 240.0, "dur": 236, "dano": 0.0, "intervalo": 999, "efeito": "", "segue": true},
 				"chuva": {"forma": "bomba", "qtd": 7, "intervalo": 29, "dano": 32.0, "atraso": 29, "tam": 1.5, "espalha": 200.0, "veiculo": "esquadrilha", "ao_quebrar": "explosao"}},
-			"ultimate": {"nome": "TARIFAÇO PRESIDENCIAL", "cinema": "trump", "dano": 335.0, "hits": 8},
+			"ultimate": {"nome": "TARIFAÇO PRESIDENCIAL", "cinema": "trump", "dano": 335.0, "hits": 8, "trilha": "res://audio/ultimate/trump_ymca.ogg"},
 			"final": {"nome": "Make Brasília Great Again!"},
 		},
 		"memes": ["You're fired!", "Fake news!", "Tarifaço!", "Make America Great Again!", "Tremendous!", "Nobody does it better!"],

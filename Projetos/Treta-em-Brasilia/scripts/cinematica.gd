@@ -202,9 +202,11 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 			var cores := [Color("ff3b6b"), Color("2a9df4"), Color("ffd23f"), Color("1f9d55")]
 			var cxt := clampf((ax + dx) / 2.0, 320.0, 960.0)
 			if not fundo:
-				for j in 4:
-					if (t / 16) % 4 == j and t > 60 and (t % 16) < 4:
-						c.draw_line(Vector2(cxt - 240.0 + j * 160.0, chao - 330), def.position + Vector2(0, -130), Color(cores[j], 0.8), 10.0)
+				var bt := maxf(0.0, float(t - 3)) / Arte.YMCA_BATIDA
+				var letra := int(floorf(bt)) % 4
+				# canhão de luz saindo da letra acesa até o rival, no ataque da batida
+				if t > 60 and bt - floorf(bt) < 0.18:
+					c.draw_line(Vector2(cxt + (letra - 1.5) * 86.0 * 0.95, chao - 250), def.position + Vector2(0, -130), Color(cores[letra], 0.8), 10.0)
 				for j in 7:
 					var tt := 60 + j * 15
 					if t >= tt and t < tt + 24:
@@ -223,12 +225,6 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 					c.draw_circle(Vector2(px, py - 40), 16.0, Color(0.1, 0.08, 0.14, k))
 					c.draw_rect(Rect2(px - 17, py - 58, 34, 12), Color(0.8, 0.1, 0.15, k))
 					c.draw_rect(Rect2(px - 4, py - 50, 26, 5), Color(0.8, 0.1, 0.15, k))
-				var letras := ["U", "S", "A", "!"]
-				for j in 4:
-					var aceso := (t / 16) % 4 == j
-					var cor3: Color = cores[j]
-					cor3.a = (1.0 if aceso else 0.35) * k
-					Desenho.texto(c, Vector2(cxt - 240.0 + j * 160.0, chao - 270), letras[j], 72 if aceso else 60, cor3, PRETO, 12)
 				var tarifa := int(lerpf(10.0, 500.0, clampf((t - 40) / 130.0, 0.0, 1.0)))
 				_letreiro(c, cxt, chao, "TARIFA: %d%%" % tarifa, Color("ff5a4e"), k)
 				if t > 172:
@@ -249,6 +245,8 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 				var cor: Color = cores[j]
 				cor.a = 0.18 * k
 				c.draw_colored_polygon(PackedVector2Array([topo, fim + Vector2(-140, 0), fim + Vector2(140, 0)]), cor)
+			# o telão Y M C A atrás do palco: acende uma letra por batida da música, junto com os braços do Trump
+			Arte.ymca_letreiro(c, Vector2(cxt, chao - 212), 86.0, maxf(0.0, float(t - 3)) / Arte.YMCA_BATIDA, k)
 			c.draw_rect(Rect2(-300, chao - 40, 1880, 40), Color(0.15, 0.1, 0.2, k))
 		"xandao":
 			# Supremo: colunas do STF, a estátua da Justiça, perfis caindo e sendo carimbados, e o martelo
@@ -367,35 +365,51 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 					var fy := chao - 160.0 + cos(t * 1.3) * 90.0
 					c.draw_circle(Vector2(fx, fy), 26.0, Color(1, 1, 0.9, 0.85 * k))
 					c.draw_circle(Vector2(fx, fy), 48.0, Color(1, 1, 0.9, 0.25 * k))
+				var votos := int(clampf((t - 30) / 140.0, 0.0, 1.0) * 3038438.0)
+				_letreiro(c, clampf((ax + dx) / 2.0, 320.0, 960.0), chao, "VOTOS: %s" % _milhar(votos), Color("ffd23f"), k)
 				if t > 172:
-					var q4 := clampf((t - 172) / 10.0, 0.0, 1.0)
-					var tam := lerpf(150.0, 84.0, q4)
-					var cor := Color("ffd23f")
-					cor.a = k
-					c.draw_rect(Rect2(dx - 260, chao - 250, 520, 110), Color(0.0, 0.05, 0.15, 0.7 * k))
-					Desenho.texto(c, Vector2(dx, chao - 172), "MAIS VOTADO!", int(tam * 0.5), cor, Color("1f6fd1"), 8)
+					_frase_final(c, dx, chao, t, "MAIS VOTADO!", Color("ffd23f"), Color("1f6fd1"), k)
 				return
-			# bandeira gigante ondulando atrás de tudo
+			# posse no palanque: céu de noite com holofotes, bandeira gigante ondulando, faixa presidencial
+			# no púlpito e a fila de fotógrafos
 			var cx := clampf((ax + dx) / 2.0, 320.0, 960.0)
-			var base := Rect2(cx - 300, chao - 470, 600, 300)
+			for j in 5:
+				var cor_c := Color("0b1a4a").lerp(Color("1d5c8f"), j / 4.0)
+				c.draw_rect(Rect2(-300, chao - 560 + j * 104.0, 1880, 106), Color(cor_c, 0.92 * k))
+			for j in 4:
+				var a := sin(t * 0.05 + j * 1.6) * 0.45
+				var topo := Vector2(cx - 480 + j * 320.0, chao - 20)
+				var fim := topo + Vector2(0, -760).rotated(a)
+				c.draw_colored_polygon(PackedVector2Array([topo, fim + Vector2(-110, 0), fim + Vector2(110, 0)]), Color(1, 1, 0.85, 0.1 * k))
+			var base := Rect2(cx - 300, chao - 330, 600, 300)
 			for i in 30:
 				var x0 := base.position.x + i * 20.0
 				var ond := sin(t * 0.12 + i * 0.4) * 8.0
-				c.draw_rect(Rect2(x0, base.position.y + ond, 21, base.size.y), Color(0.0, 0.6, 0.25, 0.9 * k))
-			var centro := base.get_center()
+				var sombra := 0.85 + 0.15 * sin(t * 0.12 + i * 0.4)
+				c.draw_rect(Rect2(x0, base.position.y + ond, 21, base.size.y), Color(0.0, 0.6 * sombra, 0.25 * sombra, k))
+			var centro := base.get_center() + Vector2(0, sin(t * 0.12 + 6.0) * 8.0)
 			var losango := PackedVector2Array([centro + Vector2(0, -120), centro + Vector2(260, 0), centro + Vector2(0, 120), centro + Vector2(-260, 0)])
-			c.draw_colored_polygon(losango, Color(1.0, 0.84, 0.15, 0.95 * k))
+			c.draw_colored_polygon(losango, Color(1.0, 0.84, 0.15, k))
 			c.draw_circle(centro, 84.0, Color(0.1, 0.2, 0.55, k))
 			c.draw_line(centro + Vector2(-82, -14), centro + Vector2(82, 14), Color(1, 1, 1, k), 10.0)
-			var votos := int(clampf((t - 30) / 140.0, 0.0, 1.0) * 3038438.0)
-			var txt := str(votos)
-			var fmt := ""
-			for i in txt.length():
-				if i > 0 and (txt.length() - i) % 3 == 0:
-					fmt += "."
-				fmt += txt[i]
-			c.draw_rect(Rect2(centro.x - 230, base.end.y + 6, 460, 56), Color(0.04, 0.04, 0.1, 0.85 * k))
-			Desenho.texto(c, Vector2(centro.x, base.end.y + 46), fmt + " VOTOS", 32, Color(1, 1, 1, k), Color("1f6fd1"), 6)
+			for j in 9:
+				c.draw_circle(centro + Vector2(-50 + (j * 37) % 100, 20 + (j * 23) % 45), 3.0, Color(1, 1, 1, k))
+			# mastro
+			c.draw_rect(Rect2(base.position.x - 14, base.position.y - 20, 10, 380), Color(0.85, 0.8, 0.6, k))
+			c.draw_circle(Vector2(base.position.x - 9, base.position.y - 24), 9.0, Color(1, 0.84, 0.25, k))
+			# palanque com degraus e tapete vermelho
+			c.draw_rect(Rect2(cx - 520, chao - 30, 1040, 30), Color(0.55, 0.42, 0.3, k))
+			c.draw_rect(Rect2(cx - 480, chao - 44, 960, 14), Color(0.68, 0.53, 0.38, k))
+			c.draw_rect(Rect2(cx - 90, chao - 44, 180, 44), Color(0.7, 0.08, 0.12, k))
+			# fotógrafos (silhuetas) com flashes na frente do palanque
+			for j in 9:
+				var px := cx - 560 + j * 140.0
+				var py := chao + 46.0
+				c.draw_circle(Vector2(px, py - 38), 15.0, Color(0.05, 0.05, 0.1, k))
+				c.draw_rect(Rect2(px - 18, py - 24, 36, 40), Color(0.05, 0.05, 0.1, k))
+				c.draw_rect(Rect2(px + 4, py - 46, 18, 12), Color(0.15, 0.15, 0.2, k))
+				if (t / 4 + j * 3) % 11 == 0:
+					c.draw_circle(Vector2(px + 13, py - 40), 22.0, Color(1, 1, 0.9, 0.85 * k))
 		"dilma":
 			# estocando vento: parque eólico girando, tornado no rival e o medidor enchendo
 			var cxd := clampf((ax + dx) / 2.0, 320.0, 960.0)

@@ -43,7 +43,7 @@ func _initialize() -> void:
 	root.add_child(raiz)
 	roteiro = [
 		["titulo", _titulo, [50]],
-		["creditos", _creditos, [60]],
+		["creditos", _creditos, [30, 150]],
 		["dilera", _dilera_cap, [24, 50]],
 		["online_menu", _online.bind("menu"), [30]],
 		["online_digitar", _online.bind("digitar"), [30]],

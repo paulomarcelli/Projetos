@@ -8,7 +8,7 @@ var lista: Array[Dictionary] = []
 
 
 func _add(p: Dictionary) -> void:
-	if lista.size() >= MAX:
+	if lista.size() >= (MAX / 2 if Config.leve else MAX):
 		lista.pop_front()
 	lista.append(p)
 

@@ -34,6 +34,7 @@ var _revanche := [false, false]
 func _ready() -> void:
 	randomize()
 	Config.carregar()
+	Config.aplicar_desempenho()
 	Som.iniciar(get_tree().root)
 	# O jogo pensa em 1280x720, mas desenha numa tela de 480x270 ampliada sem suavização:
 	# é isso que dá o visual de pixel dos fliperamas de 16 bits.
@@ -67,7 +68,41 @@ func _ready() -> void:
 		_titulo()
 
 
+## Medidor de fluidez: se o aparelho fica abaixo de ~47 quadros por segundo por duas janelas
+## seguidas de 2 s, liga o modo leve (Config, "AUTOMÁTICO"). Os 4 primeiros segundos não contam
+## (o jogo ainda está carregando o que precisa).
+var _med_t0 := 0
+var _med_q := 0
+var _med_lentas := 0
+
+
+func _medir_fluidez() -> void:
+	var agora := Time.get_ticks_msec()
+	if agora < 4000:
+		return
+	if _med_t0 == 0:
+		_med_t0 = agora
+		_med_q = 0
+		return
+	_med_q += 1
+	var dt := agora - _med_t0
+	if dt < 2000:
+		return
+	var fps := _med_q * 1000.0 / dt
+	_med_lentas = _med_lentas + 1 if fps < 47.0 else 0
+	if _med_lentas >= 2 and not Config.leve:
+		Config.detectou_lento()
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.brasiliaFps = {fps: %.1f, leve: %s}" % [fps, "true" if Config.leve else "false"], true)
+	_med_t0 = agora
+	_med_q = 0
+
+
 func _process(_d: float) -> void:
+	if Config.desempenho == 0 and not Config.leve:
+		_medir_fluidez()
+	elif OS.has_feature("web") and Engine.get_process_frames() % 60 == 0:
+		JavaScriptBridge.eval("window.brasiliaFps = {fps: %.1f, leve: %s}" % [Engine.get_frames_per_second(), "true" if Config.leve else "false"], true)
 	_aviso.queue_redraw()
 	_cortina.queue_redraw()
 	move_child(_cortina, get_child_count() - 1)

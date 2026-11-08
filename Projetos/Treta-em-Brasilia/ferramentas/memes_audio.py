@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 
 RAIZ = Path(__file__).resolve().parent.parent
-TAXA = 32000
+TAXA = 22050
 
 # (pasta/arquivo de origem, destino, duração máxima em segundos)
 MEMES = [
@@ -88,7 +88,7 @@ def gravar(arq: Path, destino: Path, inicio: float, dur: float, tirar_silencio: 
     filtros += [f"atrim=0:{dur}", "asetpts=PTS-STARTPTS", f"afade=t=out:st={max(0.0, dur - 0.35):.2f}:d=0.35",
                 "loudnorm=I=-15:TP=-1.5:LRA=11", f"aresample={TAXA}"]
     cmd = ["ffmpeg", "-v", "error", "-y", "-ss", f"{inicio:.3f}", "-i", str(arq), "-ac", "1", "-af", ",".join(filtros),
-           "-c:a", "libvorbis", "-q:a", "3", str(destino)]
+           "-c:a", "libvorbis", "-q:a", "1", str(destino)]
     subprocess.run(cmd, check=True)
 
 

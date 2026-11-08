@@ -165,6 +165,12 @@ Controle: direcional, X soco, A chute, B especial, Y provocar, **RB super**, LB 
   </tr>
 </table>
 
+## 📱 Leve em qualquer aparelho
+
+- **Download menor:** os rostos e retratos de foto vão em WebP com perda leve (qualidade 85, ~3 vezes menores, sem diferença visível no jogo) e os memes e trilhas em OGG a 22 kHz. O pacote do jogo caiu de 9,5 MB para 5,5 MB (de 8,6 MB para 4,4 MB baixados).
+- **Modo leve automático** (CONFIGURAÇÕES > DESEMPENHO): o jogo mede a fluidez; se o aparelho fica abaixo de ~47 quadros por segundo, passa a desenhar a 30 quadros por segundo, com metade das partículas e a plateia atualizada menos vezes. A luta continua a 60 passos por segundo, na mesma velocidade e igual no online. Dá para forçar LEVE ou MÁXIMO.
+- **Pouco trabalho por quadro:** cenário e plateia ficam guardados em imagens (1 chamada de desenho em vez de centenas), os lutadores saem num lote só de triângulos e a luta gasta ~1,5 ms de processador por quadro num computador (`tests/perf.gd` mede cada tela).
+
 ## 🎨 Visual 16 bits
 
 Não há imagens prontas além das cabeças: tudo é desenhado em código. O jogo pensa em 1280×720 e desenha numa tela de **480×270** ampliada sem suavização, com contorno escuro, sombreado, céu pontilhado (dithering) e a fonte pixelada **Press Start 2P** (OFL, em `fontes/`). Para rodar bem em aparelhos modestos, cenário, plateia e controles de toque viram textura (atualizada só quando muda) e cada lutador é enviado à placa de vídeo num único lote de triângulos (`scripts/lote.gd`): a luta inteira cabe em ~35–55 chamadas de desenho por quadro.
@@ -189,6 +195,7 @@ godot --headless --fixed-fps 60 --path . --script res://tests/simular.gd
 - `capturas.gd`: capturas de todas as telas, golpes e ultimates (precisa de tela, por exemplo com `xvfb-run`).
 - `cpu.gd`: custo de CPU por quadro de uma luta.
 - `online.gd`: duas lutas online ligadas por uma ponte falsa (atraso de 2 a 7 quadros, fora de ordem), com entradas aleatórias nos dois lados e barra cheia (SUPER e Ultimate): o estado tem de sair idêntico em todos os quadros.
+- `perf.gd`: custo de processador de cada tela (média, p95 e pior quadro), sem placa de vídeo.
 - `online_web.js`: o online de verdade em duas páginas do Chromium (Playwright), com a sala no PeerJS, seleção, arena e luta, conferindo os resumos de estado das duas telas.
 
 ## 📁 Estrutura

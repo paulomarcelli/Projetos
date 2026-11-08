@@ -691,10 +691,11 @@ class Configuracoes extends Node2D:
 	signal como_jogar
 	var opcao := 0
 	var t := 0.0
-	const ITENS := ["MÚSICA", "EFEITOS", "DIFICULDADE", "TREMOR DE TELA", "CONTROLES DE TOQUE", "TEMPO DO ROUND", "TELA CHEIA", "COMO JOGAR", "VOLTAR"]
+	const ITENS := ["MÚSICA", "EFEITOS", "DIFICULDADE", "TREMOR DE TELA", "CONTROLES DE TOQUE", "TEMPO DO ROUND", "DESEMPENHO", "TELA CHEIA", "COMO JOGAR", "VOLTAR"]
+	const N_VALORES := 7
 
 	func _linha(i: int) -> Rect2:
-		return Rect2(240, 140 + i * 58, 800, 48)
+		return Rect2(240, 126 + i * 54, 800, 46)
 
 	func _valor(i: int) -> String:
 		match i:
@@ -710,6 +711,9 @@ class Configuracoes extends Node2D:
 				return ["AUTOMÁTICO", "SEMPRE", "NUNCA"][Config.toque]
 			5:
 				return "SEM TEMPO" if Config.tempo_round == 0 else "%d s" % Config.tempo_round
+			6:
+				var v: String = Config.DESEMPENHOS[Config.desempenho]
+				return v + (" (LEVE)" if Config.desempenho == 0 and Config.leve else "")
 		return ""
 
 	func _mudar(i: int, d: int) -> void:
@@ -729,13 +733,16 @@ class Configuracoes extends Node2D:
 				var tempos := [60, 99, 0]
 				Config.tempo_round = tempos[wrapi(tempos.find(Config.tempo_round) + d, 0, 3)]
 			6:
+				Config.desempenho = wrapi(Config.desempenho + d, 0, 3)
+				Config.aplicar_desempenho()
+			7:
 				Config.alternar_tela_cheia()
 				Som.sfx("menu_ok", 0.0)
 				return
-			7:
+			8:
 				como_jogar.emit()
 				return
-			8:
+			9:
 				Config.salvar()
 				voltar.emit()
 				return
@@ -752,7 +759,7 @@ class Configuracoes extends Node2D:
 		for i in ITENS.size():
 			if _linha(i).has_point(p):
 				opcao = i
-				_mudar(i, -1 if p.x < 640 and i < 6 else 1)
+				_mudar(i, -1 if p.x < 640 and i < N_VALORES else 1)
 				return
 
 	func _process(delta: float) -> void:
@@ -761,7 +768,7 @@ class Configuracoes extends Node2D:
 		if d.y != 0:
 			opcao = wrapi(opcao + d.y, 0, ITENS.size())
 			Som.sfx("menu_mover", 0.0)
-		if d.x != 0 and opcao < 6:
+		if d.x != 0 and opcao < N_VALORES:
 			_mudar(opcao, d.x)
 		if Telas.confirmou(1):
 			_mudar(opcao, 1)
@@ -773,7 +780,7 @@ class Configuracoes extends Node2D:
 
 	func _draw() -> void:
 		Telas.fundo_energia(self, t, Color("1f9d55"))
-		Desenho.texto(self, Vector2(640, 96), "SETTINGS", 64, Color("ffd23f"), Desenho.PRETO, 10)
+		Desenho.texto(self, Vector2(640, 90), "SETTINGS", 64, Color("ffd23f"), Desenho.PRETO, 10)
 		for i in ITENS.size():
 			var r := _linha(i)
 			var sel := i == opcao
@@ -781,7 +788,7 @@ class Configuracoes extends Node2D:
 			draw_rect(r, Color("3a2d6a") if sel else Color("231b44"))
 			if sel:
 				draw_rect(r, Color("ffd23f"), false, 4.0)
-			if i < 6:
+			if i < N_VALORES:
 				Desenho.texto_esq(self, r.position + Vector2(24, 36), ITENS[i], 22, Color.WHITE, 5)
 				Desenho.texto_dir(self, Vector2(r.end.x - 70, r.position.y + 36), _valor(i), 22, Color("ffd23f"), 5)
 				Desenho.texto(self, Vector2(r.end.x - 40, r.position.y + 36), "<>", 18, Color(1, 1, 1, 0.5), Desenho.PRETO, 0)

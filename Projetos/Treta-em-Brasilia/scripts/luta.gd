@@ -492,7 +492,7 @@ func _tick() -> void:
 
 func _redesenhar() -> void:
 	# a plateia e o que anda no fundo mudam devagar: 20 vezes por segundo bastam
-	if Engine.get_physics_frames() % 3 == 0:
+	if Engine.get_physics_frames() % (6 if Config.leve else 3) == 0:
 		_cenario_vivo.atualizar()
 	_sombras.queue_redraw()
 	if not rastros.is_empty() or _rastro_camada.get_meta("tinha", false):

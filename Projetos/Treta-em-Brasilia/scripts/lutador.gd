@@ -1137,6 +1137,15 @@ var tremido := 0.0  # sacode o corpo na pausa de impacto
 func _draw() -> void:
 	if dados.is_empty():
 		return
+	if Camada.medir:
+		var t0 := Time.get_ticks_usec()
+		_desenhar()
+		Camada.tempos["lutador"] = Camada.tempos.get("lutador", 0) + Time.get_ticks_usec() - t0
+		return
+	_desenhar()
+
+
+func _desenhar() -> void:
 	if tremido != 0.0:
 		Desenho._base = Transform2D(0.0, Vector2(tremido, 0))
 		draw_set_transform_matrix(Desenho._base)

@@ -37,7 +37,13 @@
 - **Seleção em rede:** cada um move só o próprio lado (anfitrião 1P à esquerda, convidado 2P à direita); o anfitrião escolhe a arena. Na luta, os dois usam os comandos do jogador 1 (WASD + F G H J R T, ou o toque).
 - **Lockstep determinístico:** as duas telas rodam a mesma simulação quadro a quadro. Cada um manda a sua entrada para alguns quadros à frente (o atraso sai do ping, de 3 a 8 quadros) e só avança quando tem a entrada dos dois; a aleatoriedade que muda o jogo usa uma semente combinada. A cada 60 quadros as telas trocam um resumo do estado: se divergir, a partida para com aviso.
 - **Como conecta:** WebRTC direto entre os navegadores; o servidor público do [PeerJS](https://peerjs.com) só apresenta um ao outro (a biblioteca, MIT, vai junto em `web/peerjs.min.js`). Sem servidor TURN, algumas redes (corporativas, alguns 4G) bloqueiam a conexão direta: o jogo avisa e sugere outra rede.
-- **Revanche** só começa quando os dois apertam; sair, fechar a aba ou cair a conexão volta os dois para o título com aviso.
+- **Feito para o celular:**
+  - **sala que não cai no WhatsApp:** quem cria pode sair da tela para mandar o código ou o link. Se o celular derrubar a conexão com o servidor em segundo plano, a página volta sozinha com o **mesmo código**.
+  - **convidado espera:** quem abre o link enquanto o amigo ainda está fora da tela fica em "procurando a sala" por até 2 minutos.
+  - **reconexão na luta:** se a conexão direta piscar (troca de Wi-Fi para 4G, notificação, segundo plano), os dois ficam "RECONECTANDO..." e se acham de novo por até 45 s. O que foi enviado nesse meio-tempo fica numa fila, as jogadas guardadas são reenviadas e a luta continua exatamente de onde parou.
+  - **sair da tela avisa o outro:** aparece "O OUTRO JOGADOR SAIU DA TELA", e ele espera até 3 minutos.
+  - **a pausa em segundo plano não conta como silêncio**, então ninguém cai só por ter trocado de app.
+- **Revanche** só começa quando os dois apertam. Sair da sala ou passar do tempo de espera volta os dois para o título com aviso.
 
 ## 👊 Combate
 
@@ -199,12 +205,13 @@ godot --headless --fixed-fps 60 --path . --script res://tests/simular.gd
 - `simular.gd`: 10 partidas CPU x CPU com todos os lutadores até o fim.
 - `capturas.gd`: capturas de todas as telas, golpes e ultimates (precisa de tela, por exemplo com `xvfb-run`).
 - `cpu.gd`: custo de CPU por quadro de uma luta.
-- `online.gd`: duas lutas online ligadas por uma ponte falsa (atraso de 2 a 7 quadros, fora de ordem), com entradas aleatórias nos dois lados e barra cheia (SUPER e Ultimate): o estado tem de sair idêntico em todos os quadros.
+- `online.gd`: duas lutas online ligadas por uma ponte falsa (atraso de 2 a 7 quadros, fora de ordem, e uma queda de 300 quadros com reenvio das jogadas), com entradas aleatórias nos dois lados e barra cheia (SUPER e Ultimate): o estado tem de sair idêntico em todos os quadros.
 - `perf.gd`: custo de processador de cada tela (média, p95 e pior quadro), sem placa de vídeo.
 - `web_telas.js`: passeio pela versão web (título, configurações, como jogar, créditos, lutadores, online, seleção, arena, VS, luta e pausa), com captura de cada tela e os erros do console. Serve para conferir uma troca de motor.
 - `som_luta.gd`: a trilha da Ultimate só toca quando pega (defendida e esquivada: silêncio), a música de vitória de quem tem o rádio de memes com vários personagens e sem repetir antes de tocar todos, e o Zé Gotinha ao escolher um modo.
 - `perf_web.js`: tempo de abertura, fps do título e o modo leve automático, com CPU e rede limitadas (celular simulado).
 - `poligonos.gd`: deixa cada tela rodando para achar polígonos inválidos (o motor avisa quando não consegue triangular um).
+- `online_reconexao.js`: no navegador, com o servidor real, testa a sala com o anfitrião fora da tela (o convidado espera e entra na mesma sala), a conexão piscando no meio da luta e um jogador saindo da tela por 20 s, conferindo que a luta segue igual nas duas telas.
 - `online_web.js`: o online de verdade em duas páginas do Chromium (Playwright), com a sala no PeerJS, seleção, arena e luta, conferindo os resumos de estado das duas telas.
 
 ## 📁 Estrutura

@@ -48,6 +48,19 @@ func _ready() -> void:
 			c.draw_rect(Rect2(0, 0, 1280, 720), Color(0.05, 0.03, 0.12, 0.92))
 			Desenho.texto(c, Vector2(640, 330), "VIRE O CELULAR", 64, Color("ffd23f"), Desenho.PRETO, 10)
 			Desenho.texto(c, Vector2(640, 400), "o jogo é na horizontal", 26, Color.WHITE, Desenho.PRETO, 5)
+		elif modo == "online" and rede != null:
+			# faixa do online por cima de qualquer tela: reconectando, ou o outro saiu da tela
+			var txt := ""
+			if rede.estado == "reconectando":
+				txt = "RECONECTANDO... AGUENTA AÍ"
+			elif rede.outro_oculto and rede.estado == "conectado":
+				txt = "O OUTRO JOGADOR SAIU DA TELA · ESPERANDO VOLTAR"
+			if txt != "":
+				var pisca := 0.75 + 0.25 * sin(Time.get_ticks_msec() * 0.006)
+				c.draw_rect(Rect2(0, 200, 1280, 54), Color(0.05, 0.03, 0.12, 0.9))
+				c.draw_rect(Rect2(0, 200, 1280, 4), Color("ffd23f"))
+				c.draw_rect(Rect2(0, 250, 1280, 4), Color("ffd23f"))
+				Desenho.texto(c, Vector2(640, 236), txt, 22, Color(1, 0.84, 0.25, pisca), Desenho.PRETO, 5)
 	add_child(_aviso)
 	_cortina = Camada.new()
 	_cortina.z_index = 90
@@ -359,6 +372,11 @@ func _rede_estado(e: String, info: String) -> void:
 		(tela as Telas.Online).atualizar(e, info, rede.sala)
 	match e:
 		"conectado":
+			if info == "retomou":
+				# a conexão voltou: a luta segue de onde parou (reenvia as jogadas que podem ter se perdido)
+				if luta_online != null:
+					luta_online.reenviar()
+				return
 			lado = 0 if rede.anfitriao else 1
 			partida = 0
 			_revanche = [false, false]

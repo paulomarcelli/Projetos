@@ -2,6 +2,8 @@ extends SceneTree
 ## Teste do online sem rede: duas lutas (anfitrião e convidado) ligadas por uma "ponte" que
 ## entrega as mensagens com atraso variável e fora de ordem. As duas recebem entradas aleatórias
 ## (cada lado só conhece a sua) e o estado precisa sair idêntico em todos os quadros.
+## No meio de cada luta a conexão "cai" (quadros 2000 a 2300 perdem tudo); depois os dois
+## reenviam as jogadas guardadas (Luta.reenviar) e a luta tem de seguir igual dos dois lados.
 ## Rodar: godot --headless --fixed-fps 60 --path . --script res://tests/online.gd
 
 const QUADROS := 9000
@@ -29,8 +31,11 @@ class Ponte:
 	var rng := RandomNumberGenerator.new()
 	var min_q := 2
 	var max_q := 7
+	var caida := false  # conexão caída: tudo o que é enviado se perde
 
 	func enviar(d: Dictionary) -> void:
+		if caida:
+			return
 		fila.append([t + rng.randi_range(min_q, max_q), d.duplicate()])
 
 	func passo() -> void:
@@ -123,6 +128,14 @@ func _physics_process(_d: float) -> bool:
 	if etapa >= PARES.size() or a == null:
 		return false
 	quadro += 1
+	if quadro == 2000:
+		ponte_ab.caida = true
+		ponte_ba.caida = true
+	elif quadro == 2300:
+		ponte_ab.caida = false
+		ponte_ba.caida = false
+		a.reenviar()
+		b.reenviar()
 	ponte_ab.passo()
 	ponte_ba.passo()
 	for i in 2:

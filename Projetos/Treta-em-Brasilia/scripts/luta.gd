@@ -130,10 +130,23 @@ func configurar_online(transporte, lado: int, semente: int, atraso_q: int) -> vo
 func rede_receber(d: Dictionary) -> void:
 	match d.get("k", ""):
 		"in":
-			_in[1 - eu][int(d["f"])] = int(d["b"])
+			# jogadas reenviadas depois de uma reconexão podem ser de quadros já jogados: ignora
+			if int(d["f"]) >= q_sim:
+				_in[1 - eu][int(d["f"])] = int(d["b"])
 		"chk":
 			_chk[1 - eu][int(d["f"])] = int(d["h"])
 			_conferir(int(d["f"]))
+
+
+## Depois de uma reconexão: manda de novo todas as minhas jogadas guardadas (as que podem ter
+## se perdido na queda). Quem recebe só regrava o mesmo valor, então repetir não estraga nada.
+func reenviar() -> void:
+	if online == null:
+		return
+	var fs: Array = _in[eu].keys()
+	fs.sort()
+	for f in fs:
+		online.enviar({"k": "in", "f": f, "b": _in[eu][f]})
 
 
 static func bits(e: Dictionary) -> int:

@@ -9,7 +9,7 @@ Saída: docs/divulgacao/trailer.mp4 (H.264 + AAC, 30 fps), com:
   - o jogo no meio, ampliado 2x sem borrar, com moldura dourada;
   - uma legenda por cena embaixo, na fonte pixel do jogo;
   - "LINK NOS STORIES" no rodapé, fora da faixa que a interface dos stories cobre.
-Uso: python3 ferramentas/trailer.py <pasta_da_gravacao> [saida.mp4]
+Uso: python3 ferramentas/trailer.py <pasta_da_gravacao> [saida.mp4] [parte: 1 ou 2]
 """
 import subprocess
 import sys
@@ -33,6 +33,21 @@ LEGENDAS = [
     (18.0, 24.0, "ULTIMATE: PICANHA SUPREMA", OURO),
     (24.0, 28.0, "K.O.! E A VITÓRIA COM MÚSICA", BRANCO),
     (28.0, 31.0, "TESTA AÍ!", OURO),
+]
+# parte 2 (1 min): casa com as cenas de tests/trailer2.gd
+LEGENDAS_2 = [
+    (0.0, 3.0, "PARTE 2: MAIS TRETA!", OURO),
+    (3.0, 9.0, "11 LUTADORES PRA ESCOLHER", BRANCO),
+    (9.0, 13.0, "NIKOLAS x FLÁVIO", OURO),
+    (13.0, 19.0, "MEMES EM ÁUDIO DE VERDADE", BRANCO),
+    (19.0, 25.0, "XANDÃO: CENSURA SUPREMA", (126, 240, 255)),
+    (25.0, 31.0, "A USP GRITANDO RECUA!", (255, 90, 78)),
+    (31.0, 37.0, "DILMA ESTOCANDO VENTO", OURO),
+    (37.0, 43.0, "MOTOCIATA NACIONAL", (31, 200, 110)),
+    (43.0, 49.0, "TARIFAÇO PRESIDENCIAL", (255, 90, 78)),
+    (49.0, 53.0, "E O DILERA DO NADA", OURO),
+    (53.0, 56.0, "JOGA ONLINE COM OS AMIGOS", (126, 240, 255)),
+    (56.0, 61.0, "TESTA AÍ!", OURO),
 ]
 JOGO = (60, 700, 960, 540)  # x, y, largura, altura do jogo no vídeo
 
@@ -87,7 +102,7 @@ def legenda(txt: str, cor, saida: Path) -> None:
     img.save(saida)
 
 
-def main(pasta: Path, saida: Path) -> None:
+def main(pasta: Path, saida: Path, legendas: list = LEGENDAS) -> None:
     capa = Image.open(pasta / "q00000060.png").convert("RGB")
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -95,23 +110,25 @@ def main(pasta: Path, saida: Path) -> None:
         entradas = ["-loop", "1", "-framerate", "30", "-i", str(tmp / "base.png"),
                     "-framerate", "60", "-i", str(pasta / "q%08d.png"),
                     "-i", str(pasta / "q.wav")]
-        for i, (_, _, txt, cor) in enumerate(LEGENDAS):
+        for i, (_, _, txt, cor) in enumerate(legendas):
             legenda(txt, cor, tmp / f"leg{i}.png")
             entradas += ["-i", str(tmp / f"leg{i}.png")]
         x, y, w, h = JOGO
         filtros = [f"[1:v]fps=30,scale={w}:{h}:flags=neighbor[jogo]", f"[0:v][jogo]overlay={x}:{y}:shortest=1[v0]"]
         ult = "v0"
-        for i, (a, b, _, _) in enumerate(LEGENDAS):
+        for i, (a, b, _, _) in enumerate(legendas):
             filtros.append(f"[{ult}][{i + 3}:v]overlay=0:1290:enable='between(t,{a},{b})'[v{i + 1}]")
             ult = f"v{i + 1}"
         saida.parent.mkdir(parents=True, exist_ok=True)
         cmd = ["ffmpeg", "-v", "error", "-y", *entradas, "-filter_complex", ";".join(filtros),
                "-map", f"[{ult}]", "-map", "2:a", "-c:v", "libx264", "-preset", "slow", "-crf", "20",
-               "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "160k", "-af", "afade=t=out:st=29.2:d=1.3",
+               "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "160k", "-af", f"afade=t=out:st={legendas[-1][0] + 1.2}:d=1.3",
                "-movflags", "+faststart", "-shortest", str(saida)]
         subprocess.run(cmd, check=True)
     print(saida)
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]) if len(sys.argv) > 2 else RAIZ / "docs" / "divulgacao" / "trailer.mp4")
+    parte = sys.argv[3] if len(sys.argv) > 3 else "1"
+    main(Path(sys.argv[1]), Path(sys.argv[2]) if len(sys.argv) > 2 else RAIZ / "docs" / "divulgacao" / "trailer.mp4",
+         LEGENDAS_2 if parte == "2" else LEGENDAS)

@@ -246,6 +246,7 @@ treta-em-brasilia/
 
 - **Story** (`docs/divulgacao/story.png`, 1080x1920): a capa com Lula x Bolsonaro e os créditos, feita com capturas do próprio jogo por `ferramentas/story.py`.
 - **Mini trailer** (`docs/divulgacao/trailer.mp4`, 30 s, vertical): gravado com imagem e som do próprio jogo pelo Movie Maker do Godot (`tests/trailer.gd`: capa com o Zé Gotinha, VS, memes em áudio na luta, o YMCA do Trump, o Dilera, a Ultimate do Lula com K.O. e música de vitória, créditos) e montado com legendas por `ferramentas/trailer.py`.
+- **Trailer parte 2** (`docs/divulgacao/trailer2.mp4`, 1 min, vertical): a escolha de lutadores passando pelos 11, Nikolas x Flávio com os memes deles, a Censura Suprema do Xandão, a USP gritando "RECUA!", as Ultimates da Dilma, do Bolsonaro e do Trump com as músicas, o Dilera com o Renan, o online com código de sala e os créditos (`tests/trailer2.gd` + `ferramentas/trailer.py ... 2`).
 
 ## 🙌 Créditos
 

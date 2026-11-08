@@ -101,6 +101,10 @@ var _cinema_fundo: Camada
 var _hud: Camada
 var _palco: Node2D
 var _meme_cd := 0
+var _radio_em := 0.0     # quando sai o próximo meme do "rádio" (qualquer personagem)
+var _radio_ultimo := ""  # o último áudio tocado, para não repetir em seguida
+## Memes do rádio já tocados nesta luta (os testes conferem).
+var radio_tocados: Array[String] = []
 var _toque: Toque
 
 
@@ -461,6 +465,7 @@ func _tick() -> void:
 					tempo = maxf(tempo - 1.0 / 60.0, 0.0)
 				_checar_fim()
 				_torcida()
+				_radio_memes()
 		"fim_round":
 			_passo_lutadores()
 			_passo_projeteis()
@@ -471,7 +476,12 @@ func _tick() -> void:
 					p[v].comemorar()
 					p[1 - v].lamentar()
 					_fala_texto(p[v], p[v].dados["vitoria"], Color("ffd23f"))
-					if vitorias[v] >= 2 and p[v].dados.has("vitoria_audio"):
+					# venceu a partida: quem tem música toca a da Ultimate (segue na tela de resultado);
+					# venceu o round: a fala de vitória, se tiver (a Dilma), ou um meme
+					if vitorias[v] >= 2 and p[v].dados.has("vitoria_musica"):
+						Som.trilha(p[v].dados["vitoria_musica"])
+						_meme_visual(v)
+					elif p[v].dados.has("vitoria_audio"):
 						Som.meme("res://audio/memes/%s/%s.ogg" % [p[v].dados["id"], p[v].dados["vitoria_audio"]])
 					else:
 						_meme(v, true)
@@ -935,7 +945,10 @@ func _desenhar_dilera(c: CanvasItem) -> void:
 		c.draw_circle(base + Vector2(30, -190), 6.0, Desenho.PRETO)
 		c.draw_rect(Rect2(base + Vector2(-34, -140), Vector2(68, 14)), Color("b0304a"))
 	if k > 0.6:
-		Desenho.texto(c, base + Vector2(-60, -alt - 14), "DILERA!", 30, Color("ffd23f"), Desenho.PRETO, 6)
+		var faixa := Rect2(base + Vector2(-210, -alt - 58), Vector2(260, 52))
+		c.draw_rect(faixa.grow(4), Desenho.PRETO)
+		c.draw_rect(faixa, Color("b3001b"))
+		Desenho.texto(c, faixa.get_center() + Vector2(0, 14), "DILERA!", 40, Color("ffd23f"), Desenho.PRETO, 6)
 
 
 func _fala(l: Lutador, texto: String) -> void:
@@ -983,7 +996,9 @@ func _evento(l: Lutador, nome: String) -> void:
 			if randf() < (0.7 if forte else 0.35):
 				Som.voz(id, "forte" if forte else ("ataque1" if randf() < 0.5 else "ataque2"))
 		"ativo":
-			if l.hab.has("trilha"):
+			# a trilha do SUPER (a dança do YMCA) sai junto com o golpe; a da Ultimate só toca
+			# em _disparou_ultimate, depois de saber que pegou (defendeu ou esquivou: sem música)
+			if l.hab.has("trilha") and l.golpe_nome != "ultimate":
 				Som.trilha(l.hab["trilha"])
 			# especial saindo: anel e faíscas na cor do lutador, na altura do peito
 			if not l.hab.is_empty() and l.golpe_nome != "ultimate":
@@ -1105,6 +1120,7 @@ func _passo_cinema() -> void:
 		cinema = {}
 		_zoom_alvo = 1.0
 		Som.abafar(false)
+		Som.trilha_parar(0.8)
 		atk.sair_cinematica()
 		if c["cura"] > 0.0:
 			atk.vida = minf(atk.vida + c["cura"], atk.vida_max)
@@ -1139,6 +1155,53 @@ func _meme(i: int, forcar := false) -> void:
 	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
 	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": txt, "dados": d})
 	_meme_cd = 360
+
+
+## Só o retrato com a frase (sem áudio): na vitória, quando a música já está tocando.
+func _meme_visual(i: int) -> void:
+	var memes: Array = p[i].dados.get("memes", [])
+	if memes.is_empty():
+		return
+	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
+	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": memes[randi() % memes.size()], "dados": p[i].dados})
+
+
+## "Rádio de memes": de 7 a 13 s, um meme em áudio de qualquer personagem do elenco (não só de
+## quem está lutando), com o retrato e a legenda. Nunca por cima de outro meme, de trilha ou de
+## cinemática. Só visual e som (sorteio fora do rng da luta): o online continua igual nos dois lados.
+func _radio_memes() -> void:
+	if treino or not cinema.is_empty() or congelado > 0:
+		return
+	if _radio_em <= 0.0:
+		_radio_em = tempo_total + randf_range(5.0, 9.0)
+		return
+	if tempo_total < _radio_em:
+		return
+	if _meme_cd > 0 or Som.meme_tocando() or Som.trilha_tocando():
+		_radio_em = tempo_total + 1.0
+		return
+	var opcoes: Array = []
+	for d in Personagens.LISTA:
+		for m in d.get("memes_audio", []):
+			var caminho := "res://audio/memes/%s/%s.ogg" % [d["id"], m[1]]
+			if caminho != _radio_ultimo:
+				opcoes.append([d, m[0], caminho])
+	if opcoes.is_empty():
+		return
+	var e: Array = opcoes[randi() % opcoes.size()]
+	var d: Dictionary = e[0]
+	_radio_ultimo = e[2]
+	radio_tocados.append(String(d["id"]))
+	Som.meme(e[2])
+	# o retrato entra do lado de quem é o meme (se está lutando) ou alternando
+	var lado := radio_tocados.size() % 2
+	for i in 2:
+		if p[i].dados.get("id", "") == d["id"]:
+			lado = i
+	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
+	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": lado, "txt": e[1], "dados": d})
+	_meme_cd = 240
+	_radio_em = tempo_total + randf_range(7.0, 13.0)
 
 
 # ---------------------------------------------------------------- efeitos

@@ -25,7 +25,7 @@ class_name Personagens
 
 const LISTA := [
 	{
-		"id": "lula", "nome": "LULA", "titulo": "O Churrasqueiro", "foto": "lula",
+		"id": "lula", "vitoria_musica": "res://audio/ultimate/lula.ogg", "nome": "LULA", "titulo": "O Churrasqueiro", "foto": "lula",
 		"bio": "Resiste muito e controla o espaço com discursos e churrasco. Lento para entrar, difícil de derrubar.",
 		"pele": Color("e8a07a"), "cabelo": Color("dcd6cc"), "estilo_cabelo": "grisalho", "barba": true, "oculos": false,
 		"roupa": Color("23367d"), "camisa": Color("f2f2f2"), "gravata": Color("d04c86"), "calca": Color("1d2c66"),
@@ -54,7 +54,7 @@ const LISTA := [
 		"vitoria": "Companheiro, essa foi pro povo!",
 	},
 	{
-		"id": "bolsonaro", "nome": "BOLSONARO", "titulo": "O Capitão", "foto": "bolsonaro",
+		"id": "bolsonaro", "vitoria_musica": "res://audio/ultimate/bolsonaro.ogg", "nome": "BOLSONARO", "titulo": "O Capitão", "foto": "bolsonaro",
 		"bio": "Rápido e agressivo. Entra de moto, segura o rival à distância com o fuzil de brinquedo e metralha com a Rajada do Capitão.",
 		"pele": Color("e8a587"), "cabelo": Color("3a3a3a"), "estilo_cabelo": "repartido", "barba": false, "oculos": false,
 		"roupa": Color("4b5a2a"), "camisa": Color("ffd23f"), "gravata": Color(0, 0, 0, 0), "calca": Color("3b4724"),
@@ -82,7 +82,7 @@ const LISTA := [
 		"vitoria": "Tá OK? Tá OK!",
 	},
 	{
-		"id": "xandao", "nome": "XANDÃO", "titulo": "O Careca da Toga", "foto": "xandao",
+		"id": "xandao", "vitoria_musica": "res://audio/ultimate/xandao.ogg", "nome": "XANDÃO", "titulo": "O Careca da Toga", "foto": "xandao",
 		"bio": "Controle total. Bloqueia contas, fecha o espaço com zonas e, com a Censura Suprema, cala o rival: sem especiais e com tarja preta.",
 		"pele": Color("d39a7c"), "cabelo": Color("d39a7c"), "estilo_cabelo": "careca", "barba": false, "oculos": false,
 		"roupa": Color("15151c"), "camisa": Color("f5f5f5"), "gravata": Color("2f4f9a"), "calca": Color("15151c"),
@@ -110,7 +110,7 @@ const LISTA := [
 		"vitoria": "Inquérito aberto. Próximo!",
 	},
 	{
-		"id": "trump", "nome": "TRUMP", "titulo": "O Tarifador", "foto": "trump",
+		"id": "trump", "vitoria_musica": "res://audio/ultimate/trump_ymca.ogg", "nome": "TRUMP", "titulo": "O Tarifador", "foto": "trump",
 		"bio": "Pesado e imprevisível. Ataca com o cabelo, discursa no microfone, dança no meio da briga e chama a esquadrilha.",
 		"pele": Color("e8915a"), "cabelo": Color("e8c27a"), "estilo_cabelo": "repartido", "barba": false, "oculos": false,
 		"roupa": Color("1a1c26"), "camisa": Color("f5f5f5"), "gravata": Color("d62828"), "calca": Color("15171f"),
@@ -227,7 +227,7 @@ const LISTA := [
 	{
 		# deputado federal mais votado do Brasil em 2022 (PL-MG); o vídeo sobre o Pix passou de 300 milhões
 		# de views e o governo revogou a medida; em 2026 caminhou ~240 km de Paracatu até Brasília
-		"id": "nikolas", "nome": "NIKOLAS", "titulo": "O Viral do Pix", "foto": "nikolas",
+		"id": "nikolas", "vitoria_musica": "res://audio/ultimate/nikolas.ogg", "nome": "NIKOLAS", "titulo": "O Viral do Pix", "foto": "nikolas",
 		"bio": "Rei do viral. Viraliza o Pix na cara do rival, marcha 240 km sem parar de bater e faz a canetada do governo cair na cabeça de quem estiver embaixo.",
 		"pele": Color("e3a57e"), "cabelo": Color("2e1f18"), "estilo_cabelo": "curto", "barba": false, "oculos": false,
 		"roupa": Color("1b2440"), "camisa": Color("f2f2f2"), "gravata": Color("1e3a8a"), "calca": Color("1b2440"),
@@ -311,7 +311,7 @@ const LISTA := [
 		"vitoria": "Nem Lula, nem Flávio: deu Missão!",
 	},
 	{
-		"id": "dilma", "nome": "DILMA", "titulo": "A Mãe do PAC", "foto": "dilma",
+		"id": "dilma", "vitoria_musica": "res://audio/ultimate/dilma.ogg", "nome": "DILMA", "titulo": "A Mãe do PAC", "foto": "dilma",
 		"bio": "Presidenta duas vezes e hoje à frente do Banco dos BRICS. Estoca vento num pote, chega de bicicleta pedalando, faz brotar mandioca do chão e, se a meta não bater, dobra a meta.",
 		"pele": Color("e8b08c"), "cabelo": Color("6b3f22"), "estilo_cabelo": "curto", "barba": false, "oculos": false,
 		"roupa": Color("e9e1d6"), "camisa": Color("f6f1ea"), "gravata": Color(0, 0, 0, 0), "calca": Color("d9cfc2"),

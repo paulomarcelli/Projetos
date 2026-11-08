@@ -130,11 +130,13 @@ A plateia pula mais quando a luta esquenta.
 
 - **Efeitos, vozes e músicas das arenas:** originais e sintetizados (`ferramentas/sons.py`): 45 efeitos, vozes caricatas curtas de cada lutador e 6 músicas chiptune em loop, uma por arena.
 - **Memes em áudio** (enviados pelos idealizadores, convertidos por `ferramentas/memes_audio.py`: corte do silêncio, limite de duração, volume nivelado, OGG mono): cada lutador com áudio solta os memes dele com a legenda certa na luta e **ao ser escolhido na seleção** (sorteado). Lula, Bolsonaro, Xandão, Trump, Dilma, Nikolas, Flávio e Renan.
-- **Trilha da Ultimate para todos:** Lula, Bolsonaro, Xandão, Nikolas e Dilma tocam a própria música na cinemática (o trecho mais forte da faixa, escolhido pela energia); o Trump toca o YMCA; Erika, Pavanato, Flávio, Renan e Eduarda ganharam temas chiptune originais (subida, pancada de orquestra, tema e acorde final, gerados em `ferramentas/sons.py ultimates`). A música da arena abaixa enquanto isso.
+- **Rádio de memes:** durante a luta, a cada 7 a 13 segundos sai um meme em áudio de **qualquer** personagem do elenco (não só de quem está lutando), com o retrato e a legenda. Nunca por cima de outro meme, da trilha ou da cinemática, e sem repetir o último.
+- **Trilha da Ultimate para todos:** Lula, Bolsonaro, Xandão, Nikolas e Dilma tocam a própria música na cinemática (o trecho mais forte da faixa, escolhido pela energia); o Trump toca o YMCA; Erika, Pavanato, Flávio, Renan e Eduarda ganharam temas chiptune originais (subida, pancada de orquestra, tema e acorde final, gerados em `ferramentas/sons.py ultimates`). A música da arena abaixa enquanto isso. A trilha **só toca se a Ultimate pegar**: se o rival defende ou esquiva, fica em silêncio; e some com a cena.
+- **Música na vitória:** quem tem música própria (Lula, Bolsonaro, Xandão, Nikolas, Dilma e o Trump com o YMCA) vence a partida ao som da trilha da Ultimate, que segue na tela de resultado. A Dilma solta o "ganhar ou perder" ao vencer um round.
 - **YMCA no SUPER e na Ultimate do Trump:** a dança é sincronizada com a música (125 BPM medidos na faixa): a cada batida ele faz uma letra com os braços (Y, M, C, A), a pista de dança acende e o letreiro de neon **Y M C A** acende a mesma letra, pulsando na batida (em cima dele no SUPER, no telão do palco na Ultimate).
 - **Vitória da Dilma:** "Não acho que quem ganhar ou quem perder vai ganhar ou perder..." toca quando ela vence a partida.
 - **USP:** uma vez por partida a torcida canta "RECUA!".
-- **Dilera:** no meio da luta, depois de uma derrubada, ele pode surgir no canto da tela (como o "Toasty!" dos fliperamas) e soltar um áudio. Uma vez por partida. A foto dele vai em `sprites/dilera.png` (sem ela, aparece um rostinho de desenho).
+- **Dilera:** no meio da luta, depois de uma derrubada, ele pode surgir no canto da tela (como o "Toasty!" dos fliperamas) e soltar um áudio. Uma vez por partida. A foto (`fotos/dilera.jpg`) vira `sprites/dilera.png` com `ferramentas/dilera.py` (fundo removido, contorno), e sobe do canto com a tarja "DILERA!".
 
 ## 🕹️ Controles
 
@@ -198,6 +200,7 @@ godot --headless --fixed-fps 60 --path . --script res://tests/simular.gd
 - `online.gd`: duas lutas online ligadas por uma ponte falsa (atraso de 2 a 7 quadros, fora de ordem), com entradas aleatórias nos dois lados e barra cheia (SUPER e Ultimate): o estado tem de sair idêntico em todos os quadros.
 - `perf.gd`: custo de processador de cada tela (média, p95 e pior quadro), sem placa de vídeo.
 - `web_telas.js`: passeio pela versão web (título, configurações, como jogar, créditos, lutadores, online, seleção, arena, VS, luta e pausa), com captura de cada tela e os erros do console. Serve para conferir uma troca de motor.
+- `som_luta.gd`: a trilha da Ultimate só toca quando pega (defendida e esquivada: silêncio), a música de vitória de quem tem e o rádio de memes com vários personagens.
 - `perf_web.js`: tempo de abertura, fps do título e o modo leve automático, com CPU e rede limitadas (celular simulado).
 - `poligonos.gd`: deixa cada tela rodando para achar polígonos inválidos (o motor avisa quando não consegue triangular um).
 - `online_web.js`: o online de verdade em duas páginas do Chromium (Playwright), com a sala no PeerJS, seleção, arena e luta, conferindo os resumos de estado das duas telas.

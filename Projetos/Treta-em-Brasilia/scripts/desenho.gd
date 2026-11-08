@@ -95,7 +95,7 @@ static func textura(nome: String) -> Texture2D:
 		var tex: Texture2D = load(caminho) if ResourceLoader.exists(caminho) else null
 		# cabeças de foto: a GPU reduz pela média dos pixels (mipmaps), sem sumir com olho e boca.
 		# O filtro vale só para essas texturas; corpo, texto e cenário continuam em pixel duro.
-		if tex != null and (nome.ends_with("_rosto") or nome.ends_with("_retrato") or nome.ends_with("_cabeca")):
+		if tex != null and (nome.ends_with("_rosto") or nome.ends_with("_retrato") or nome.ends_with("_cabeca") or nome == "dilera"):
 			var ct := CanvasTexture.new()
 			ct.diffuse_texture = tex
 			ct.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS

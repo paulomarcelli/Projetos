@@ -61,16 +61,41 @@ static func meme(caminho: String) -> void:
 		_eu._tocar_em(_eu._meme_p, caminho, Config.efeitos, 1.0)
 
 
+## Quantas trilhas já foram pedidas e a última (os testes conferem quando a trilha toca).
+static var trilhas_pedidas := 0
+static var ultima_trilha := ""
+
+
 ## Trilha de Ultimate ou de SUPER (por cima da música, que abaixa).
 static func trilha(caminho: String) -> void:
+	trilhas_pedidas += 1
+	ultima_trilha = caminho
 	if _eu != null:
 		_eu._tocar_em(_eu._trilha_p, caminho, maxf(Config.musica, Config.efeitos * 0.8), 0.0)
 
 
-static func trilha_parar() -> void:
-	if _eu != null and _eu._trilha_p != null:
+static func meme_tocando() -> bool:
+	return _eu != null and _eu._meme_p != null and _eu._meme_p.playing
+
+
+static func trilha_tocando() -> bool:
+	return _eu != null and _eu._trilha_p != null and _eu._trilha_p.playing
+
+
+## Para a trilha; com fade (segundos), abaixa até sumir antes de parar.
+static func trilha_parar(fade := 0.0) -> void:
+	if _eu == null or _eu._trilha_p == null or not _eu._trilha_p.playing:
+		return
+	if fade <= 0.0:
 		_eu._trilha_p.stop()
 		_eu._volume_musica()
+		return
+	var a := _eu._trilha_p
+	var tw := _eu.create_tween()
+	tw.tween_property(a, "volume_db", a.volume_db - 30.0, fade)
+	tw.tween_callback(func() -> void:
+		a.stop()
+		_eu._volume_musica())
 
 
 ## Som de ambiente (a torcida cantando).

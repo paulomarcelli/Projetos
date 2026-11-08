@@ -50,6 +50,7 @@ const LISTA := [
 			"final": {"nome": "Nunca Antes Neste País!", "prop": "livro"},
 		},
 		"memes": ["Faz o L!", "Companheiro!", "A picanha voltou!", "Nunca antes na história deste país!", "O amor venceu!", "Taxa das blusinhas!"],
+		"memes_audio": [["Cara sem dente!", "cara_sem_dente"], ["Por favor, me ajuda!", "me_ajuda"], ["Defende meu pai!", "defende_meu_pai"], ["Cadê o Zé Gotinha?", "ze_gotinha"], ["Feijão puro!", "feijao_puro"], ["Uma pergunta simples...", "pergunta_simples"], ["Vai entrar o grosso!", "vai_entrar_o_grosso"], ["Vai todo mundo se f...!", "todo_mundo"], ["Pergunta pro Google!", "pergunta_pro_google"], ["Até teu pai!", "ate_teu_pai"]],
 		"vitoria": "Companheiro, essa foi pro povo!",
 	},
 	{
@@ -77,6 +78,7 @@ const LISTA := [
 			"final": {"nome": "E Daí?"},
 		},
 		"memes": ["Tá OK?", "Talquei?", "E daí?", "Imbrochável!", "Vai virar jacaré!", "Daqui pra frente é pra frente!"],
+		"memes_audio": [["Imbrochável!", "imbrochavel"], ["Pop corn!", "pop_corn"]],
 		"vitoria": "Tá OK? Tá OK!",
 	},
 	{
@@ -104,6 +106,7 @@ const LISTA := [
 			"final": {"nome": "Prisão Preventiva!", "prop": "martelo"},
 		},
 		"memes": ["Inquérito aberto!", "Conta bloqueada!", "Investigado!", "Multa diária!", "Está suspenso!", "Inelegível!"],
+		"memes_audio": [["Transparênciaaa!", "transparencia"]],
 		"vitoria": "Inquérito aberto. Próximo!",
 	},
 	{
@@ -125,12 +128,16 @@ const LISTA := [
 				"corpo": {"caixa": Rect2(-80, -220, 220, 220), "dano": 26.0, "hits": 5, "intervalo": 12, "empurra": 2.0}},
 			"tras": {"nome": "Boné MAGA!", "pose": "arremesso", "inicio": 12, "ativo": 1, "rec": 20, "recarga": 80, "som": "projetil",
 				"tiro": {"forma": "bone", "dano": 55.0, "vel": 10.0, "volta": true, "hits": 2, "intervalo": 20}},
-			"super": {"nome": "Bombardeio Presidencial", "pose": "chamar", "inicio": 16, "ativo": 1, "rec": 24, "custo": 50.0, "som": "caca", "voz": "super",
-				"chuva": {"forma": "bomba", "qtd": 8, "intervalo": 6, "dano": 34.0, "atraso": 36, "tam": 1.5, "espalha": 230.0, "veiculo": "esquadrilha", "ao_quebrar": "explosao"}},
-			"ultimate": {"nome": "YMCA PRESIDENTIAL SHOW", "cinema": "trump", "dano": 335.0, "hits": 8},
+			# YMCA: dança no ritmo da música (125 BPM = uma batida a cada 28,8 quadros); as bombas caem na batida
+			"super": {"nome": "YMCA Presidencial", "pose": "ymca", "inicio": 10, "ativo": 231, "rec": 14, "custo": 50.0, "som": "", "voz": "super",
+				"trilha": "res://audio/ultimate/trump_ymca.ogg",
+				"zona": {"forma": "ymca", "dist": 0.0, "larg": 240.0, "dur": 236, "dano": 0.0, "intervalo": 999, "efeito": "", "segue": true},
+				"chuva": {"forma": "bomba", "qtd": 7, "intervalo": 29, "dano": 32.0, "atraso": 29, "tam": 1.5, "espalha": 200.0, "veiculo": "esquadrilha", "ao_quebrar": "explosao"}},
+			"ultimate": {"nome": "TARIFAÇO PRESIDENCIAL", "cinema": "trump", "dano": 335.0, "hits": 8},
 			"final": {"nome": "Make Brasília Great Again!"},
 		},
 		"memes": ["You're fired!", "Fake news!", "Tarifaço!", "Make America Great Again!", "Tremendous!", "Nobody does it better!"],
+		"memes_audio": [["You are fake news!", "fake_news"], ["Thank you very much!", "thank_you"], ["Wrong!", "wrong"], ["I love Tesla!", "tesla"], ["Good job!", "good_job"]],
 		"vitoria": "Tremendous. The best fight ever. Everybody says so.",
 	},
 	{
@@ -244,6 +251,7 @@ const LISTA := [
 			"final": {"nome": "Chegamos a Brasília!", "prop": "bandeira"},
 		},
 		"memes": ["O Pix é do povo!", "Mais votado do Brasil!", "240 km a pé!", "Viralizou!", "Revoga!", "Chegamos a Brasília!"],
+		"memes_audio": [["Chupetinha!", "chupetinha"], ["Oi, Dani!", "oi_dani"], ["O peruca!", "o_peruca"], ["PEC da blindagem!", "pec_da_blindagem"]],
 		"vitoria": "Postei, viralizou e revogaram!",
 	},
 	{
@@ -271,6 +279,7 @@ const LISTA := [
 			"final": {"nome": "Verdadeiro Presidente... digo, Líder!", "prop": "carta"},
 		},
 		"memes": ["Foi por muito pouco!", "Cadê o Queiroz?", "É só chocolate!", "TariFlávio!", "Sou o líder do Brasil!", "Versão 3 da carta!"],
+		"memes_audio": [["Tem Bolsonaro dentro do Lula!", "bolsonaro_dentro_do_lula"]],
 		"vitoria": "Escrevi a carta de novo: dessa vez eu venci!",
 	},
 	{
@@ -298,6 +307,7 @@ const LISTA := [
 			"final": {"nome": "Nem Lula, nem Flávio!", "prop": "megafone"},
 		},
 		"memes": ["Nem Lula, nem Flávio!", "Não somos terceira via!", "LIVE EMERGENCIAL!", "Superpresídio neles!", "Vota 14!", "Corta essa!"],
+		"memes_audio": [["Verdades sobre o Lula!", "verdades_lula"], ["Tranqueira!", "tranqueira"], ["Eu quero chacinar um coletivo de traficantes!", "coletivo_de_traficantes"], ["Prendeu, matou!", "prendeu_matou"], ["São fáceis porque são pobres!", "sao_pobres"]],
 		"vitoria": "Nem Lula, nem Flávio: deu Missão!",
 	},
 	{
@@ -325,6 +335,8 @@ const LISTA := [
 			"final": {"nome": "Dobraremos a meta!", "prop": "mandioca"},
 		},
 		"memes": ["Estocar vento!", "Saúdo a mandioca!", "Mulher sapiens!", "Dobraremos a meta!", "Tchau, querida!", "Pátria educadora!"],
+		"memes_audio": [["Oi, internautas!", "oi_internautas"], ["Pelo amor de Deus, meu querido!", "meu_querido"], ["Porcaria dessa meta!", "porcaria_da_meta"], ["É uma...", "e_uma"]],
+		"vitoria_audio": "ganhar_ou_perder",
 		"vitoria": "Não acho que quem ganhar ou quem perder vai ganhar ou perder. Vai todo mundo perder!",
 	},
 ]

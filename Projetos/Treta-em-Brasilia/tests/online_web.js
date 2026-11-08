@@ -72,10 +72,14 @@ async function tecla(pg, k, n = 1) {
     await tecla(b, 'Enter');
     await espera(3500);
     await b.screenshot({ path: `${SAIDA}/web_B_arena.png` });
-    // arena: o anfitrião escolhe (a segunda)
+    // arena: o anfitrião escolhe; repete o Enter até a luta começar (a tela pode demorar a abrir)
+    const limite = Date.now() + 60000;
+    await espera(2000);
     await tecla(a, 'd');
-    await tecla(a, 'Enter');
-    await espera(6000);
+    while (Date.now() < limite && !(await estado(a)).q) {
+      await tecla(a, 'Enter');
+      await espera(2500);
+    }
 
     // luta: os dois apertam teclas por um tempo
     const golpes = ['f', 'g', 'h', 'd', 'a', 'f', 'j', 't', 's', 'w', 'f', 'g'];

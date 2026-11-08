@@ -276,6 +276,38 @@ static func habilidade(d: Dictionary, nome: String, t: int, ini: int, ativo: int
 				p["mao_t"] = Vector2(30, -60)
 				p["inclina"] = 0.22
 				p["expr"] = "feliz"
+		"ymca":
+			# YMCA no ritmo da música: uma letra com os braços a cada batida (125 BPM = 28,8 quadros),
+			# passinho de lado e o quadril quicando no tempo
+			if prep:
+				p["mao_f"] = Vector2(30, -170)
+				p["mao_t"] = Vector2(-10, -160)
+				p["expr"] = "feliz"
+			else:
+				var bt := maxf(0.0, float(t - ini - 3)) / Arte.YMCA_BATIDA
+				var letra := int(floorf(bt)) % 4
+				var f := bt - floorf(bt)
+				var pulso := exp(-f * 5.0)
+				match letra:
+					0:  # Y: braços abertos para cima
+						p["mao_f"] = Vector2(70, -238)
+						p["mao_t"] = Vector2(-50, -238)
+					1:  # M: mãos na cabeça, cotovelos para fora
+						p["mao_f"] = Vector2(26, -210)
+						p["mao_t"] = Vector2(-14, -210)
+					2:  # C: os dois braços curvados para um lado
+						p["mao_f"] = Vector2(74, -206)
+						p["mao_t"] = Vector2(58, -126)
+					_:  # A: mãos juntas no alto
+						p["mao_f"] = Vector2(16, -252)
+						p["mao_t"] = Vector2(4, -252)
+				var lado := 1.0 if int(floorf(bt)) % 2 == 0 else -1.0
+				p["pe_f"] = Vector2(30 + lado * 10.0, -pulso * 10.0)
+				p["pe_t"] = Vector2(-26 + lado * 10.0, 0)
+				p["quadril"] = -72.0 + pulso * 6.0
+				p["inclina"] = lado * 0.06
+				p["cabeca_giro"] = -lado * 0.08
+				p["expr"] = "grito" if f < 0.3 else "feliz"
 		"pedalada":
 			# sobe na bicicleta e sai pedalando por cima do rival
 			p["prop"] = "bicicleta"
@@ -458,4 +490,4 @@ static func danca(p: Dictionary, t: int, vel: float = 1.0) -> void:
 	p["cabeca_giro"] = -batida * 0.16
 	p["cabeca_desl"] = Vector2(batida * 4.0, -absf(batida) * 3.0)
 	p["expr"] = "feliz" if letra != 1 else "grito"
-	p["letra"] = ["Y", "M", "C", "A"][letra]
+	pass  # a letra flutuante saiu: o YMCA agora é o SUPER do Trump (pista de dança com a letra na batida)

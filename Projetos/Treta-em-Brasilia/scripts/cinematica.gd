@@ -223,7 +223,7 @@ static func desenhar(c: CanvasItem, cin: Dictionary, atk: Lutador, def: Lutador,
 					c.draw_circle(Vector2(px, py - 40), 16.0, Color(0.1, 0.08, 0.14, k))
 					c.draw_rect(Rect2(px - 17, py - 58, 34, 12), Color(0.8, 0.1, 0.15, k))
 					c.draw_rect(Rect2(px - 4, py - 50, 26, 5), Color(0.8, 0.1, 0.15, k))
-				var letras := ["Y", "M", "C", "A"]
+				var letras := ["U", "S", "A", "!"]
 				for j in 4:
 					var aceso := (t / 16) % 4 == j
 					var cor3: Color = cores[j]

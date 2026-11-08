@@ -133,8 +133,8 @@ class Titulo extends Node2D:
 	var _par := 0
 	const ITENS := [["PLAY", "1 jogador contra a CPU"], ["MULTIPLAYER", "2 jogadores no mesmo aparelho"], ["ONLINE", "jogue com um amigo pela internet"],
 		["ARCADE MODE", "enfrente todos em sequência"], ["TRAINING", "treino livre, barra infinita"], ["CHARACTERS", "fichas e golpes dos lutadores"],
-		["SETTINGS", "som, dificuldade e controles"]]
-	const CHAVES := ["play", "multiplayer", "online", "arcade", "treino", "lutadores", "config"]
+		["SETTINGS", "som, dificuldade e controles"], ["CRÉDITOS", "quem fez o jogo"]]
+	const CHAVES := ["play", "multiplayer", "online", "arcade", "treino", "lutadores", "config", "creditos"]
 	var aviso := ""  # recado (ex.: a conexão online caiu), aparece no lugar da dica
 	var aviso_t := 0.0
 
@@ -218,10 +218,12 @@ class Titulo extends Node2D:
 			Telas.botao(self, r, rot, Color("ffd23f") if sel else Color.WHITE, sel, 24 if rot.length() <= 12 else (18 if rot.length() <= 14 else 15))
 		var dica: String = ITENS[opcao][1]
 		if aviso != "" and t < aviso_t:
-			Desenho.texto(self, Vector2(640, 662), aviso, 20, Color("ff8a8a"), Desenho.PRETO, 5)
+			Desenho.texto(self, Vector2(640, 642), aviso, 20, Color("ff8a8a"), Desenho.PRETO, 5)
 		else:
-			Desenho.texto(self, Vector2(640, 662), dica, 22, Color("7ec8ff"), Desenho.PRETO, 5)
-		Desenho.texto(self, Vector2(640, 706), "Paródia e humor. Sem apoio a partido ou candidato.", 18, Color(1, 1, 1, 0.75), Desenho.PRETO, 4)
+			Desenho.texto(self, Vector2(640, 642), dica, 22, Color("7ec8ff"), Desenho.PRETO, 5)
+		Desenho.texto(self, Vector2(640, 668), "Idealizadora do jogo: Lorena Oliveira Nascimento", 15, Color("ffe7b0"), Desenho.PRETO, 4)
+		Desenho.texto(self, Vector2(640, 690), "Desenvolvedor: Paulo Marcelli", 15, Color("ffe7b0"), Desenho.PRETO, 4)
+		Desenho.texto(self, Vector2(640, 713), "Paródia e humor. Sem apoio a partido ou candidato.", 13, Color(1, 1, 1, 0.6), Desenho.PRETO, 3)
 
 
 # ---------------------------------------------------------------- seleção de lutadores
@@ -346,12 +348,20 @@ class Selecao extends Node2D:
 		espera = 0.5
 		Som.sfx("menu_ok", 0.0)
 		var d: Dictionary = Personagens.LISTA[cursor[i]]
-		Som.voz(d["id"], "provocar")
 		var memes: Array = d.get("memes", [])
-		if memes.is_empty():
-			return
-		var n := randi() % memes.size()
-		meme = {"lado": i, "txt": memes[n], "dados": d, "t": 0, "dur": 70}
+		var txt := ""
+		# escolheu: solta um meme em áudio do lutador, sorteado (ou a voz de provocação, se não tiver)
+		var falados: Array = d.get("memes_audio", [])
+		if not falados.is_empty():
+			var m: Array = falados[randi() % falados.size()]
+			txt = m[0]
+			Som.meme("res://audio/memes/%s/%s.ogg" % [d["id"], m[1]])
+		else:
+			Som.voz(d["id"], "provocar")
+			if memes.is_empty():
+				return
+			txt = memes[randi() % memes.size()]
+		meme = {"lado": i, "txt": txt, "dados": d, "t": 0, "dur": 90}
 
 	func _mover(i: int, jogador: int) -> void:
 		var pre := "p%d_" % jogador
@@ -1184,3 +1194,45 @@ class Online extends Node2D:
 						var a := t * 4.0 + j * TAU / 8.0
 						draw_circle(Vector2(640, 470) + Vector2(cos(a), sin(a)) * 30.0, 6.0, Color(1, 0.84, 0.25, 0.3 + 0.7 * float(j) / 8.0))
 		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE, false, 20)
+
+
+# ---------------------------------------------------------------- créditos
+
+class Creditos extends Node2D:
+	signal voltar
+	var t := 0.0
+	const BT_VOLTAR := Rect2(540, 640, 200, 52)
+	const LINHAS := [
+		["IDEALIZADORA DO JOGO", "Lorena Oliveira Nascimento"],
+		["DESENVOLVEDOR", "Paulo Marcelli"],
+	]
+
+	func _ready() -> void:
+		Som.musica("menu")
+
+	func _unhandled_input(ev: InputEvent) -> void:
+		var p = Telas.toque(self, ev)
+		if p != null and BT_VOLTAR.has_point(p):
+			Som.sfx("menu_voltar", 0.0)
+			voltar.emit()
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t > 0.3 and (Telas.voltou() or Telas.confirmou(1) or Telas.confirmou(2)):
+			Som.sfx("menu_voltar", 0.0)
+			voltar.emit()
+			set_process(false)
+		queue_redraw()
+
+	func _draw() -> void:
+		Telas.fundo_energia(self, t, Color("ffd23f"))
+		Telas.logo(self, Vector2(640, 120), t, 0.6)
+		Desenho.texto(self, Vector2(640, 240), "CRÉDITOS", 52, Color("ffd23f"), Desenho.PRETO, 10)
+		for i in LINHAS.size():
+			var y := 320.0 + i * 120.0
+			var entra := clampf((t - i * 0.25) / 0.4, 0.0, 1.0)
+			Desenho.texto(self, Vector2(640, y), LINHAS[i][0], 22, Color(0.5, 0.8, 1.0, entra), Color(0, 0, 0, entra), 5)
+			Desenho.texto(self, Vector2(640, y + 50), LINHAS[i][1], 38, Color(1, 1, 1, entra), Color(0, 0, 0, entra), 8)
+		Desenho.texto(self, Vector2(640, 586), "Godot 4.3 · PeerJS (MIT) · paródia e humor", 15, Color(1, 1, 1, 0.7), Desenho.PRETO, 4)
+		Telas.botao(self, BT_VOLTAR, "< VOLTAR", Color.WHITE, true, 22)
+

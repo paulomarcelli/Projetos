@@ -78,6 +78,10 @@ var pausa_opcao := 0
 var aviso_barra := [0, 0]
 var _sem_dano := [0, 0]
 var _lento_ko := 0
+var _recua_em := 0.0      # USP: quando a torcida canta "RECUA" (uma vez por partida)
+var _recua_tocou := false
+var _dilera := -1         # quadro em que o Dilera apareceu no canto (uma vez por partida)
+var _dilera_audio := ""
 var _quadro_impar := false
 
 # câmera
@@ -403,6 +407,8 @@ func _tick() -> void:
 			aviso_barra[i] -= 1
 	_atualizar_efeitos()
 	particulas.passo()
+	if _dilera >= 0 and _dilera <= 110:
+		_dilera += 1
 	for i in 2:
 		vida_vis[i] = move_toward(vida_vis[i], p[i].vida, 6.0) if vida_vis[i] > p[i].vida else p[i].vida
 		if combo_t[i] > 0:
@@ -454,6 +460,7 @@ func _tick() -> void:
 				if tempo < 900.0:
 					tempo = maxf(tempo - 1.0 / 60.0, 0.0)
 				_checar_fim()
+				_torcida()
 		"fim_round":
 			_passo_lutadores()
 			_passo_projeteis()
@@ -464,7 +471,10 @@ func _tick() -> void:
 					p[v].comemorar()
 					p[1 - v].lamentar()
 					_fala_texto(p[v], p[v].dados["vitoria"], Color("ffd23f"))
-					_meme(v, true)
+					if vitorias[v] >= 2 and p[v].dados.has("vitoria_audio"):
+						Som.meme("res://audio/memes/%s/%s.ogg" % [p[v].dados["id"], p[v].dados["vitoria_audio"]])
+					else:
+						_meme(v, true)
 					Som.voz(p[v].dados["id"], "vitoria")
 					Som.sfx("vitoria", 0.0)
 					particulas.confete(Vector2(640, 0), 50)
@@ -700,6 +710,8 @@ func _resultado(i: int, r: String, ponto: Vector2, g: Dictionary, estava_tonto: 
 	particulas.impacto(ponto, dir, peso, cor)
 	if peso >= 0.9:
 		particulas.estrelas(ponto, 3)
+	if r == "derrubou" and randf() < 0.35:
+		_chamar_dilera()
 	_treme = 1 - i
 	# balão de quadrinho: a palavra do lutador nos especiais, onomatopeia nos golpes fortes
 	var especial: bool = g.get("especial", false) or g.get("super", false)
@@ -876,6 +888,56 @@ func _criar_chuva(l: Lutador, spec: Dictionary) -> void:
 		efeitos.append({"tipo": "veiculo", "forma": spec["veiculo"], "t": 0, "dur": 110, "dir": l.lado})
 
 
+## USP: uma vez por partida a torcida canta "RECUA!" (só som e plateia: não mexe na luta).
+func _torcida() -> void:
+	if cenario != "usp" or _recua_tocou or treino:
+		return
+	if _recua_em <= 0.0:
+		_recua_em = randf_range(12.0, 30.0)
+	if tempo_total >= _recua_em:
+		_recua_tocou = true
+		Som.ambiente("res://audio/cenario/recua.ogg")
+		agito = 1.0
+		_texto(Vector2(640, 250), "RECUA! RECUA!", Color("ff5a4e"), 40, 150)
+
+
+## O Dilera aparece no canto da tela (como o "Toasty!" dos fliperamas) e solta um áudio. Uma vez por partida.
+const DILERA := ["ai_paje", "aiiin_gugu", "guguu", "oi_torto", "careca_do_stf"]
+
+
+func _chamar_dilera() -> void:
+	if _dilera >= 0 or treino:
+		return
+	_dilera = 0
+	_dilera_audio = DILERA[randi() % DILERA.size()]
+	Som.meme("res://audio/dilera/%s.ogg" % _dilera_audio)
+
+
+func _desenhar_dilera(c: CanvasItem) -> void:
+	if _dilera < 0 or _dilera > 110:
+		return
+	var t := float(_dilera)
+	var entra := clampf(t / 10.0, 0.0, 1.0)
+	var sai := clampf((110.0 - t) / 12.0, 0.0, 1.0)
+	var k := minf(entra, sai)
+	var tex := Desenho.textura("dilera")
+	var alt := 300.0
+	var base := Vector2(1280.0 - 150.0, 720.0 + alt * (1.0 - k) * 0.9)
+	if tex != null:
+		var w := alt * tex.get_width() / float(tex.get_height())
+		c.draw_texture_rect(tex, Rect2(base.x - w / 2.0, base.y - alt, w, alt), false)
+	else:
+		# sem a foto: um rostinho de desenho no lugar
+		c.draw_circle(base + Vector2(0, -170), 90.0, Color("e0aa88"))
+		c.draw_circle(base + Vector2(-30, -190), 14.0, Color.WHITE)
+		c.draw_circle(base + Vector2(30, -190), 14.0, Color.WHITE)
+		c.draw_circle(base + Vector2(-30, -190), 6.0, Desenho.PRETO)
+		c.draw_circle(base + Vector2(30, -190), 6.0, Desenho.PRETO)
+		c.draw_rect(Rect2(base + Vector2(-34, -140), Vector2(68, 14)), Color("b0304a"))
+	if k > 0.6:
+		Desenho.texto(c, base + Vector2(-60, -alt - 14), "DILERA!", 30, Color("ffd23f"), Desenho.PRETO, 6)
+
+
 func _fala(l: Lutador, texto: String) -> void:
 	_fala_texto(l, texto, Color.WHITE)
 
@@ -921,6 +983,8 @@ func _evento(l: Lutador, nome: String) -> void:
 			if randf() < (0.7 if forte else 0.35):
 				Som.voz(id, "forte" if forte else ("ataque1" if randf() < 0.5 else "ataque2"))
 		"ativo":
+			if l.hab.has("trilha"):
+				Som.trilha(l.hab["trilha"])
 			# especial saindo: anel e faíscas na cor do lutador, na altura do peito
 			if not l.hab.is_empty() and l.golpe_nome != "ultimate":
 				var cor_l: Color = l.dados.get("cor", Color("ffd23f"))
@@ -992,6 +1056,7 @@ func _disparou_ultimate(l: Lutador) -> void:
 		"hits": int(h.get("hits", 6)), "dados_hits": 0, "ao_acertar": h.get("ao_acertar", ""), "cura": float(h.get("cura", 0.0))}
 	l.entrar_cinematica(true)
 	alvo.entrar_cinematica(false)
+	Som.trilha("res://audio/ultimate/%s.ogg" % l.dados.get("id", ""))
 	# arruma os dois no palco para a cena
 	var centro := clampf((l.position.x + alvo.position.x) / 2.0, 340.0, 940.0)
 	var lado := 1.0 if alvo.position.x >= l.position.x else -1.0
@@ -1064,16 +1129,15 @@ func _meme(i: int, forcar := false) -> void:
 	var memes: Array = d.get("memes", [])
 	if memes.is_empty():
 		return
-	var n := randi() % memes.size()
+	var txt: String = memes[randi() % memes.size()]
+	# quando o lutador tem memes em áudio, quase sempre sai um deles (com a legenda certa)
+	var falados: Array = d.get("memes_audio", [])
+	if not falados.is_empty() and randf() < 0.75:
+		var m: Array = falados[randi() % falados.size()]
+		txt = m[0]
+		Som.meme("res://audio/memes/%s/%s.ogg" % [d["id"], m[1]])
 	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
-	efeitos.append({"tipo": "meme", "t": 0, "dur": 100, "lado": i, "txt": memes[n], "dados": d})
-	var som := Personagens.audio(d["id"], n)
-	if som != null:
-		var a := AudioStreamPlayer.new()
-		a.stream = som
-		add_child(a)
-		a.play()
-		a.finished.connect(a.queue_free)
+	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": txt, "dados": d})
 	_meme_cd = 360
 
 
@@ -1347,6 +1411,7 @@ func _desenhar_hud(c: CanvasItem) -> void:
 			var nome_o: String = p[1 - eu].dados.get("nome", "")
 			c.draw_rect(Rect2(340, 300, 600, 70), Color(0.05, 0.03, 0.12, 0.85))
 			Desenho.texto(c, Vector2(640, 346), "AGUARDANDO %s..." % nome_o, 24, Color("ffd23f"), Desenho.PRETO, 6)
+	_desenhar_dilera(c)
 	if pausado:
 		_desenhar_pausa(c)
 

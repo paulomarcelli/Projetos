@@ -67,7 +67,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 | **Lula** | Discurso do Planalto · Picanha Gigante · Faz o L! · Bolsa Família · Picanha Voadora | Picanha na Brasa | **Picanha Suprema** |
 | **Bolsonaro** | Fuzil Cartunesco · Motociata · Talquei? · Operação Cloroquina · Vai Virar Jacaré! | Rajada do Capitão | **Motociata Nacional** |
 | **Xandão** | Inquérito! · Conta Bloqueada · Martelo da Justiça · Canetada do STF · Suspensão de Conta | Censura Suprema | **Decisão Monocrática** |
-| **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | Bombardeio Presidencial | **YMCA Presidential Show** |
+| **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | YMCA Presidencial | **Tarifaço Presidencial** |
 | **Eduarda** | Corte Viral! · Microfone Explosivo · Lacração Reversa · Debate Infinito · 1,9 Milhão de Votos | Polêmica nas Redes | **Treta Nacional** |
 | **Erika** | PEC 6x1 · Vida Além do Trabalho · Não Me Calarão! · Abaixo-Assinado · Representação! | Fim da Escala 6x1 | **PEC Aprovada** |
 | **Pavanato** | Tá Gravando? · Visita Surpresa na USP · Mais Votado da História! · Frente Antiwoke · Treta no Aeroporto | 3 Milhões de Votos | **Presidente?!** |
@@ -128,7 +128,13 @@ A plateia pula mais quando a luta esquenta.
 
 ## 🔊 Áudio
 
-Tudo **original e sintetizado** (`ferramentas/sons.py`): 45 efeitos (socos, chutes, impactos, defesa, poderes, churrasqueira, moto, caça, martelo, notificação, menus), **vozes caricatas** curtas de cada lutador (grunhidos sintéticos, sem imitar a voz de ninguém) e 6 músicas chiptune em loop, uma por arena. Nenhuma gravação ou música protegida.
+- **Efeitos, vozes e músicas das arenas:** originais e sintetizados (`ferramentas/sons.py`): 45 efeitos, vozes caricatas curtas de cada lutador e 6 músicas chiptune em loop, uma por arena.
+- **Memes em áudio** (enviados pelos idealizadores, convertidos por `ferramentas/memes_audio.py`: corte do silêncio, limite de duração, volume nivelado, OGG mono): cada lutador com áudio solta os memes dele com a legenda certa na luta e **ao ser escolhido na seleção** (sorteado). Lula, Bolsonaro, Xandão, Trump, Dilma, Nikolas, Flávio e Renan.
+- **Trilha da Ultimate:** Lula, Bolsonaro, Xandão, Nikolas e Dilma tocam a própria música na cinemática (o trecho mais forte da faixa, escolhido pela energia); a música da arena abaixa enquanto isso.
+- **YMCA no SUPER do Trump:** a dança é sincronizada com a música (125 BPM medidos na faixa): a cada batida ele faz uma letra com os braços (Y, M, C, A), a pista de dança acende, a letra aparece em cima dele e uma bomba da esquadrilha cai.
+- **Vitória da Dilma:** "Não acho que quem ganhar ou quem perder vai ganhar ou perder..." toca quando ela vence a partida.
+- **USP:** uma vez por partida a torcida canta "RECUA!".
+- **Dilera:** no meio da luta, depois de uma derrubada, ele pode surgir no canto da tela (como o "Toasty!" dos fliperamas) e soltar um áudio. Uma vez por partida. A foto dele vai em `sprites/dilera.png` (sem ela, aparece um rostinho de desenho).
 
 ## 🕹️ Controles
 
@@ -211,6 +217,13 @@ treta-em-brasilia/
 ├── web/                 # peerjs.min.js (copiado ao lado do jogo exportado)
 ├── fontes/ · tests/ · docs/
 ```
+
+## 🙌 Créditos
+
+- **Idealizadora do jogo:** Lorena Oliveira Nascimento
+- **Desenvolvedor:** Paulo Marcelli
+
+Os créditos aparecem na tela inicial e no menu CRÉDITOS.
 
 ## 🛣️ Próximos passos
 

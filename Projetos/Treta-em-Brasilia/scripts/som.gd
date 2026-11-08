@@ -1,7 +1,10 @@
 class_name Som
 extends Node
-## Toca os efeitos (audio/sfx), as vozes dos lutadores (audio/vozes/<id>) e a música (audio/musica).
-## Todo o áudio é original, gerado por ferramentas/sons.py. Os sons carregam sob demanda e ficam em cache.
+## Toca os efeitos (audio/sfx), as vozes dos lutadores (audio/vozes/<id>) e a música (audio/musica),
+## gerados por ferramentas/sons.py, e os áudios de meme (audio/memes/<id>), as trilhas das Ultimates
+## (audio/ultimate), a torcida (audio/cenario) e o Dilera (audio/dilera), convertidos por
+## ferramentas/memes_audio.py. Enquanto um meme, uma trilha ou a torcida toca, a música de fundo abaixa.
+## Os sons carregam sob demanda e ficam em cache.
 
 const CANAIS := 10
 ## volume de cada efeito (dB) para equilibrar a mixagem
@@ -14,6 +17,10 @@ var _canais: Array[AudioStreamPlayer] = []
 var _proximo := 0
 var _musica: AudioStreamPlayer
 var _faixa := ""
+var _meme_p: AudioStreamPlayer
+var _trilha_p: AudioStreamPlayer
+var _amb_p: AudioStreamPlayer
+var _abafado := false
 
 
 ## O nó de som é criado na primeira vez que alguém toca algo (main.gd chama Som.iniciar).
@@ -48,6 +55,34 @@ static func abafar(sim: bool) -> void:
 		_eu._abafar(sim)
 
 
+## Meme falado (um por vez: o novo corta o anterior).
+static func meme(caminho: String) -> void:
+	if _eu != null:
+		_eu._tocar_em(_eu._meme_p, caminho, Config.efeitos, 1.0)
+
+
+## Trilha de Ultimate ou de SUPER (por cima da música, que abaixa).
+static func trilha(caminho: String) -> void:
+	if _eu != null:
+		_eu._tocar_em(_eu._trilha_p, caminho, maxf(Config.musica, Config.efeitos * 0.8), 0.0)
+
+
+static func trilha_parar() -> void:
+	if _eu != null and _eu._trilha_p != null:
+		_eu._trilha_p.stop()
+		_eu._volume_musica()
+
+
+## Som de ambiente (a torcida cantando).
+static func ambiente(caminho: String) -> void:
+	if _eu != null:
+		_eu._tocar_em(_eu._amb_p, caminho, Config.efeitos, -2.0)
+
+
+static func existe(caminho: String) -> bool:
+	return ResourceLoader.exists(caminho)
+
+
 var _fila_carga: Array[String] = []
 
 
@@ -68,6 +103,16 @@ func _ready() -> void:
 		_canais.append(a)
 	_musica = AudioStreamPlayer.new()
 	add_child(_musica)
+	for k in 3:
+		var a := AudioStreamPlayer.new()
+		add_child(a)
+		a.finished.connect(_volume_musica)
+		if k == 0:
+			_meme_p = a
+		elif k == 1:
+			_trilha_p = a
+		else:
+			_amb_p = a
 	if _faixa != "":
 		var f := _faixa
 		_faixa = ""
@@ -146,14 +191,14 @@ func _musica_tocar(nome: String) -> void:
 	if s is AudioStreamOggVorbis:
 		(s as AudioStreamOggVorbis).loop = true
 	_musica.stream = s
-	_musica.volume_db = _db(Config.musica) - 6.0
+	_volume_musica()
 	_musica.play()
 
 
 func _atualizar_volume() -> void:
 	if _musica == null:
 		return
-	_musica.volume_db = _db(Config.musica) - 6.0
+	_volume_musica()
 	if Config.musica <= 0.01:
 		_musica.stream_paused = true
 	else:
@@ -162,6 +207,31 @@ func _atualizar_volume() -> void:
 
 ## Abaixa a música (cinemática do ultimate) e volta depois.
 func _abafar(sim: bool) -> void:
+	_abafado = sim
+	_volume_musica()
+
+
+func _tocar_em(a: AudioStreamPlayer, caminho: String, vol: float, ganho_db: float) -> void:
+	if a == null or vol <= 0.01:
+		return
+	var s := _carregar(caminho)
+	if s == null:
+		return
+	a.stream = s
+	a.volume_db = _db(vol) + ganho_db
+	a.play()
+	_volume_musica()
+
+
+## A música de fundo abaixa enquanto tem trilha, meme ou torcida tocando (e na cinemática).
+func _volume_musica() -> void:
 	if _musica == null:
 		return
-	_musica.volume_db = _db(Config.musica) - (16.0 if sim else 6.0)
+	var corte := 6.0
+	if _trilha_p != null and _trilha_p.playing:
+		corte = 30.0
+	elif _abafado:
+		corte = 16.0
+	elif (_meme_p != null and _meme_p.playing) or (_amb_p != null and _amb_p.playing):
+		corte = 13.0
+	_musica.volume_db = _db(Config.musica) - corte

@@ -428,6 +428,10 @@ static func _seis_x_um(c: CanvasItem, centro: Vector2, s: float, g: float, cor: 
 
 # ---------------------------------------------------------------- zonas (base no chão em 0,0)
 
+## Batida do YMCA (125 BPM a 60 quadros por segundo), para a dança e a pista acenderem juntas.
+const YMCA_BATIDA := 28.8
+
+
 static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, k: float) -> void:
 	var meia := larg / 2.0
 	match forma:
@@ -478,6 +482,32 @@ static func zona(c: CanvasItem, forma: String, larg: float, alt: float, t: int, 
 			var cor2 := Color.WHITE
 			cor2.a = k
 			Desenho.texto(c, Vector2(0, -h - 14), "ANTIWOKE", 22, cor2, Color(0.1, 0.1, 0.3, k), 5)
+		"ymca":
+			# pista de dança acendendo na batida e a letra da vez grande em cima do Trump
+			var bt := maxf(0.0, float(t - 3)) / YMCA_BATIDA
+			var letra := int(floorf(bt)) % 4
+			var f := bt - floorf(bt)
+			var pulso := exp(-f * 4.0)
+			var cores := [Color("ff3b6b"), Color("2a9df4"), Color("ffd23f"), Color("1f9d55")]
+			for j in 8:
+				var a0 := j * TAU / 8.0 + floorf(bt) * 0.4
+				var cor: Color = cores[(j + letra) % 4]
+				cor.a = (0.35 + 0.35 * pulso) * k
+				var pts := PackedVector2Array([Vector2.ZERO])
+				for q in 5:
+					var a1 := a0 + q * TAU / 32.0
+					pts.append(Vector2(cos(a1) * meia, sin(a1) * meia * 0.2))
+				Desenho._dp(c, pts, cor)
+			var cor_l: Color = cores[letra]
+			cor_l.a = k
+			var tam := int(56 + 22 * pulso)
+			Desenho.texto(c, Vector2(0, -300 - pulso * 14.0), ["Y", "M", "C", "A"][letra], tam, cor_l, Color(0.05, 0.03, 0.1, k), 8)
+			# notinhas subindo
+			for j in 3:
+				var nx := -meia * 0.6 + j * meia * 0.6
+				var ny := -120.0 - fposmod(t * 2.0 + j * 40.0, 120.0)
+				Desenho._dc(c, Vector2(nx, ny), 6.0, Color(1, 1, 1, 0.8 * k))
+				Desenho._dl(c, Vector2(nx + 5, ny), Vector2(nx + 5, ny - 20), Color(1, 1, 1, 0.8 * k), 2.0)
 		"mandioca":
 			# mandiocas brotando do chão, uma depois da outra, com as folhas balançando
 			var n := 5

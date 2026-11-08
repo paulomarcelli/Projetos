@@ -130,6 +130,10 @@ func _escolheu_modo(opcao: String) -> void:
 			_lutadores()
 		"config":
 			_config()
+		"creditos":
+			var cr := Telas.Creditos.new()
+			cr.voltar.connect(_titulo)
+			_trocar(cr)
 		_:
 			_selecao()
 

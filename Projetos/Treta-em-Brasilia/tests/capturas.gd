@@ -11,6 +11,7 @@ var luta: Luta
 var roteiro: Array = []
 var _forcar := ""  # golpe a disparar no lutador 1 assim que ele puder agir
 var _vida_rival := -1.0
+var _chamar_dilera := false
 
 
 class Botao:
@@ -42,6 +43,8 @@ func _initialize() -> void:
 	root.add_child(raiz)
 	roteiro = [
 		["titulo", _titulo, [50]],
+		["creditos", _creditos, [60]],
+		["dilera", _dilera_cap, [24, 50]],
 		["online_menu", _online.bind("menu"), [30]],
 		["online_digitar", _online.bind("digitar"), [30]],
 		["online_sala", _online.bind("aguardando"), [30]],
@@ -62,7 +65,7 @@ func _initialize() -> void:
 		["super_lula", _poder.bind("praca", 0, 3, "super"), [112, 150, 170, 190, 215]],
 		["super_bolsonaro", _poder.bind("paulista", 1, 0, "super"), [112, 150, 170, 190, 215]],
 		["super_xandao", _poder.bind("praca", 2, 4, "super"), [112, 150, 170, 190, 215]],
-		["super_trump", _poder.bind("casa_branca", 3, 1, "super"), [112, 150, 170, 190, 215]],
+		["super_trump", _poder.bind("casa_branca", 3, 1, "super"), [150, 180, 210, 240, 270, 330]],
 		["super_eduarda", _poder.bind("usp", 4, 2, "super"), [112, 150, 170, 190, 215]],
 		["danca", _poder.bind("casa_branca", 3, 1, "baixo"), [112, 124, 136, 148]],
 		["cabelo", _poder.bind("casa_branca", 3, 1, "frente"), [114, 120]],
@@ -194,6 +197,15 @@ func _luta_online() -> void:
 	raiz.add_child(luta)
 
 
+func _creditos() -> void:
+	raiz.add_child(Telas.Creditos.new())
+
+
+func _dilera_cap() -> void:
+	_luta("paulista", 1, 0, {})
+	_chamar_dilera = true
+
+
 func _arena() -> void:
 	var s := Telas.SelecaoCenario.new()
 	s.opcao = 1
@@ -275,6 +287,9 @@ func _treino() -> void:
 
 func _process(_d: float) -> bool:
 	quadro += 1
+	if _chamar_dilera and luta != null and luta.p.size() == 2:
+		luta._chamar_dilera()
+		_chamar_dilera = false
 	if _vida_rival >= 0.0 and luta != null and luta.p.size() == 2:
 		luta.p[1].vida = _vida_rival
 		_vida_rival = -1.0

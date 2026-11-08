@@ -114,7 +114,52 @@ func _rodar() -> void:
 	print("  rádio: %d memes, de %s" % [l.radio_tocados.size(), ", ".join(ids.keys())])
 	ok(l.radio_tocados.size() >= 5, "rádio de memes tocou várias vezes")
 	ok(ids.size() >= 3, "rádio de memes com personagens diferentes")
+
+	# 8) variedade: 60 memes seguidos do rádio; todos os áudios saem antes de algum repetir
+	l.radio_audios.clear()
+	l.radio_tocados.clear()
+	Som._baralhos.erase("radio")  # o baralho vale para a sessão: começa um novo para contar
+	for i in 60:
+		l._meme_cd = 0
+		l._radio_em = 0.001
+		l.tempo_total = 1000.0 + i
+		l._radio_memes()
+	var total := 0
+	for dd in Personagens.LISTA:
+		total += dd.get("memes_audio", []).size()
+	var primeiros: Array = l.radio_audios.slice(0, total)
+	var unicos := {}
+	for a in primeiros:
+		unicos[a] = true
+	var quem := {}
+	for id in l.radio_tocados:
+		quem[id] = true
+	print("  rádio em sequência: %d áudios, %d diferentes nos %d primeiros, %d personagens" % [l.radio_audios.size(), unicos.size(), total, quem.size()])
+	ok(primeiros.size() == total and unicos.size() == total, "rádio: os %d áudios saem antes de repetir" % total)
+	ok(quem.size() >= 9, "rádio: memes de pelo menos 9 personagens (com as frases de quem não tem áudio)")
 	l.queue_free()
+
+	# 9) Xandão (1 áudio só): memes seguidos não repetem o áudio; sai a frase escrita
+	var xandao := Personagens.LISTA.map(func(d): return d["id"]).find("xandao")
+	l = _luta(xandao, lula)
+	_ate_lutar(l)
+	var pedidos := Som.memes_pedidos
+	for i in 5:
+		l._meme(0, true)
+	ok(Som.memes_pedidos - pedidos <= 1, "Xandão: o mesmo áudio não repete em sequência (%d de 5)" % (Som.memes_pedidos - pedidos))
+	l.queue_free()
+
+	# 10) título: escolher um modo toca o Zé Gotinha; SETTINGS não
+	var t := Telas.Titulo.new()
+	raiz.add_child(t)
+	t.opcao = 0
+	t._escolher()
+	ok(Som.ultimo_meme.ends_with("lula/ze_gotinha.ogg"), "PLAY: cadê o Zé Gotinha?")
+	pedidos = Som.memes_pedidos
+	t.opcao = 6
+	t._escolher()
+	ok(Som.memes_pedidos == pedidos, "SETTINGS: sem Zé Gotinha")
+	t.queue_free()
 
 	print("FALHAS: %d" % falhas)
 	quit(1 if falhas > 0 else 0)

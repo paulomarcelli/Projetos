@@ -157,8 +157,13 @@ class Titulo extends Node2D:
 				_escolher()
 				return
 
+	const MODOS := ["play", "multiplayer", "online", "arcade", "treino"]
+
 	func _escolher() -> void:
 		Som.sfx("menu_ok", 0.0)
+		# escolheu um modo de jogo: "cadê o Zé Gotinha?"
+		if CHAVES[opcao] in MODOS:
+			Som.meme("res://audio/memes/lula/ze_gotinha.ogg")
 		escolheu.emit(CHAVES[opcao])
 		set_process(false)
 		set_process_unhandled_input(false)
@@ -353,7 +358,8 @@ class Selecao extends Node2D:
 		# escolheu: solta um meme em áudio do lutador, sorteado (ou a voz de provocação, se não tiver)
 		var falados: Array = d.get("memes_audio", [])
 		if not falados.is_empty():
-			var m: Array = falados[randi() % falados.size()]
+			# baralho do lutador: não repete o mesmo meme a cada escolha
+			var m: Array = Som.baralho("meme_" + String(d["id"]), falados)
 			txt = m[0]
 			Som.meme("res://audio/memes/%s/%s.ogg" % [d["id"], m[1]])
 		else:

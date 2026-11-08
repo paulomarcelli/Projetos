@@ -102,7 +102,8 @@ var _hud: Camada
 var _palco: Node2D
 var _meme_cd := 0
 var _radio_em := 0.0     # quando sai o próximo meme do "rádio" (qualquer personagem)
-var _radio_ultimo := ""  # o último áudio tocado, para não repetir em seguida
+## Áudios que o rádio tocou nesta luta (os testes conferem a variedade).
+var radio_audios: Array[String] = []
 ## Memes do rádio já tocados nesta luta (os testes conferem).
 var radio_tocados: Array[String] = []
 var _toque: Toque
@@ -1145,13 +1146,21 @@ func _meme(i: int, forcar := false) -> void:
 	var memes: Array = d.get("memes", [])
 	if memes.is_empty():
 		return
-	var txt: String = memes[randi() % memes.size()]
-	# quando o lutador tem memes em áudio, quase sempre sai um deles (com a legenda certa)
+	var txt: String = Som.baralho("frase_" + String(d["id"]), memes)
+	# quando o lutador tem memes em áudio, quase sempre sai um deles (com a legenda certa), tirado
+	# do baralho dele; se esse áudio tocou há pouco (lista curta: Xandão, Flávio), sai só a frase
+	# escrita com a voz caricata, em vez de repetir
 	var falados: Array = d.get("memes_audio", [])
+	var falou := false
 	if not falados.is_empty() and randf() < 0.75:
-		var m: Array = falados[randi() % falados.size()]
-		txt = m[0]
-		Som.meme("res://audio/memes/%s/%s.ogg" % [d["id"], m[1]])
+		var m: Array = Som.baralho("meme_" + String(d["id"]), falados)
+		var caminho := "res://audio/memes/%s/%s.ogg" % [d["id"], m[1]]
+		if not Som.tocou_recente(caminho):
+			txt = m[0]
+			Som.meme(caminho)
+			falou = true
+	if not falou and forcar:
+		Som.voz(d["id"], "provocar")
 	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
 	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": txt, "dados": d})
 	_meme_cd = 360
@@ -1180,19 +1189,25 @@ func _radio_memes() -> void:
 	if _meme_cd > 0 or Som.meme_tocando() or Som.trilha_tocando():
 		_radio_em = tempo_total + 1.0
 		return
-	var opcoes: Array = []
-	for d in Personagens.LISTA:
-		for m in d.get("memes_audio", []):
-			var caminho := "res://audio/memes/%s/%s.ogg" % [d["id"], m[1]]
-			if caminho != _radio_ultimo:
-				opcoes.append([d, m[0], caminho])
-	if opcoes.is_empty():
-		return
-	var e: Array = opcoes[randi() % opcoes.size()]
+	# baralho com os 33 áudios do elenco: todos tocam antes de algum repetir (na sessão inteira).
+	# De vez em quando (1 em 5), a frase escrita de quem não tem áudio, com a voz caricata.
+	var e: Array
+	var sem_audio: Array = Personagens.LISTA.filter(func(x): return x.get("memes_audio", []).is_empty() and not x.get("memes", []).is_empty())
+	if not sem_audio.is_empty() and randf() < 0.2:
+		var ds: Dictionary = sem_audio[randi() % sem_audio.size()]
+		e = [ds, Som.baralho("frase_" + String(ds["id"]), ds["memes"])]
+		Som.voz(ds["id"], "provocar")
+	else:
+		var opcoes: Array = []
+		for dd in Personagens.LISTA:
+			for m in dd.get("memes_audio", []):
+				opcoes.append([dd["id"], m[0], "res://audio/memes/%s/%s.ogg" % [dd["id"], m[1]]])
+		var tirado: Array = Som.baralho("radio", opcoes)
+		e = [Personagens.LISTA.filter(func(x): return x["id"] == tirado[0])[0], tirado[1]]
+		Som.meme(tirado[2])
+		radio_audios.append(tirado[2])
 	var d: Dictionary = e[0]
-	_radio_ultimo = e[2]
 	radio_tocados.append(String(d["id"]))
-	Som.meme(e[2])
 	# o retrato entra do lado de quem é o meme (se está lutando) ou alternando
 	var lado := radio_tocados.size() % 2
 	for i in 2:

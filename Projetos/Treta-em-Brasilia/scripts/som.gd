@@ -55,8 +55,44 @@ static func abafar(sim: bool) -> void:
 		_eu._abafar(sim)
 
 
+## Últimos áudios de meme pedidos (os mais novos no fim) e quantos já foram pedidos.
+static var recentes: Array[String] = []
+static var memes_pedidos := 0
+static var ultimo_meme := ""
+static var _baralhos := {}
+
+
+## Baralho: embaralha os itens e entrega um por vez, sem repetir até acabar (vale para a sessão
+## inteira). Ao reembaralhar, o primeiro da rodada nova não é o último da anterior.
+static func baralho(chave: String, itens: Array) -> Variant:
+	if itens.is_empty():
+		return null
+	var b: Dictionary = _baralhos.get(chave, {})
+	if b.is_empty() or b["itens"] != itens:
+		b = {"itens": itens.duplicate(), "monte": [], "ultimo": null}
+		_baralhos[chave] = b
+	if b["monte"].is_empty():
+		var monte: Array = b["itens"].duplicate()
+		monte.shuffle()
+		if monte.size() > 1 and monte[-1] == b["ultimo"]:
+			monte.reverse()
+		b["monte"] = monte
+	var item = b["monte"].pop_back()
+	b["ultimo"] = item
+	return item
+
+
+static func tocou_recente(caminho: String, quantos := 8) -> bool:
+	return recentes.slice(maxi(0, recentes.size() - quantos)).has(caminho)
+
+
 ## Meme falado (um por vez: o novo corta o anterior).
 static func meme(caminho: String) -> void:
+	memes_pedidos += 1
+	ultimo_meme = caminho
+	recentes.append(caminho)
+	if recentes.size() > 20:
+		recentes.pop_front()
 	if _eu != null:
 		_eu._tocar_em(_eu._meme_p, caminho, Config.efeitos, 1.0)
 

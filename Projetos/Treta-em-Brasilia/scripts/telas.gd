@@ -135,6 +135,7 @@ class Titulo extends Node2D:
 		["ARCADE MODE", "enfrente todos em sequência"], ["TRAINING", "treino livre, barra infinita"], ["CHARACTERS", "fichas e golpes dos lutadores"],
 		["SETTINGS", "som, dificuldade e controles"], ["CRÉDITOS", "quem fez o jogo"]]
 	const CHAVES := ["play", "multiplayer", "online", "arcade", "treino", "lutadores", "config", "creditos"]
+	var dupla: Array = []  # [i, j]: fixa a dupla de lutadores da capa (capturas)
 	var aviso := ""  # recado (ex.: a conexão online caiu), aparece no lugar da dica
 	var aviso_t := 0.0
 
@@ -188,9 +189,13 @@ class Titulo extends Node2D:
 	func _draw() -> void:
 		Telas.fundo_energia(self, t)
 		# dois lutadores em pose de combate, trocando de dupla de tempos em tempos
+		# a primeira dupla é sempre Lula x Bolsonaro (a capa do jogo); depois o rodízio
 		var n := Personagens.LISTA.size()
 		var a: Dictionary = Personagens.LISTA[_par % n]
-		var b: Dictionary = Personagens.LISTA[(_par + 2) % n]
+		var b: Dictionary = Personagens.LISTA[1 if _par == 0 else (_par + 2) % n]
+		if dupla.size() == 2:
+			a = Personagens.LISTA[dupla[0]]
+			b = Personagens.LISTA[dupla[1]]
 		var tq := int(t * 60.0)
 		var entra := clampf(fmod(t, 4.0) / 0.35, 0.0, 1.0)
 		var pa := Desenho.pose_idle(a, tq)

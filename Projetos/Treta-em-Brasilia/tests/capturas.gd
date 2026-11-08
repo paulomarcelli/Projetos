@@ -43,6 +43,8 @@ func _initialize() -> void:
 	root.add_child(raiz)
 	roteiro = [
 		["titulo", _titulo, [50]],
+		["story_capa", _story_capa, [90]],
+		["story_creditos", _creditos, [200]],
 		["creditos", _creditos, [30, 150]],
 		["dilera", _dilera_cap, [24, 50]],
 		["online_menu", _online.bind("menu"), [30]],
@@ -147,6 +149,13 @@ func _proxima() -> void:
 
 func _titulo() -> void:
 	raiz.add_child(Telas.Titulo.new())
+
+
+## Capa para o story: Lula x Bolsonaro.
+func _story_capa() -> void:
+	var t := Telas.Titulo.new()
+	t.dupla = [0, 1]
+	raiz.add_child(t)
 
 
 func _selecao() -> void:

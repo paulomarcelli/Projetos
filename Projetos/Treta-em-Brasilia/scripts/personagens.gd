@@ -73,7 +73,7 @@ const LISTA := [
 				"tiro": {"forma": "seringa", "dano": 70.0, "vel": 9.5}},
 			"super": {"nome": "Rajada do Capitão", "pose": "metralhadora", "inicio": 14, "ativo": 54, "rec": 20, "custo": 50.0, "som": "fuzil", "voz": "super", "invencivel": 10,
 				"tiro": {"forma": "rolha", "dano": 13.0, "vel": 17.0, "qtd": 16, "intervalo": 3, "tam": 1.0, "y": -150.0, "empurra": 2.0}},
-			"ultimate": {"nome": "OPERAÇÃO PRESIDENCIAL", "cinema": "bolsonaro", "dano": 330.0, "hits": 7},
+			"ultimate": {"nome": "MOTOCIATA NACIONAL", "cinema": "bolsonaro", "dano": 330.0, "hits": 7},
 			"final": {"nome": "E Daí?"},
 		},
 		"memes": ["Tá OK?", "Talquei?", "E daí?", "Imbrochável!", "Vai virar jacaré!", "Daqui pra frente é pra frente!"],

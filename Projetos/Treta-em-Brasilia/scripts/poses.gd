@@ -348,10 +348,17 @@ static func _ultimate(d: Dictionary, id: String, t: int, p: Dictionary) -> void:
 			p["prop_ang"] = vira
 			p["expr"] = "feliz" if (t / 15) % 2 == 0 else "grito"
 		"bolsonaro":
+			# puxando a motociata, empinando de leve
+			p["veiculo"] = "moto"
+			p["agachado"] = true
+			p["quadril"] = -62.0
+			p["pe_f"] = Vector2(30, -26)
+			p["pe_t"] = Vector2(-10, -26)
+			p["mao_f"] = Vector2(56, -112) if (t / 30) % 2 == 0 else Vector2(40, -196)
+			p["mao_t"] = Vector2(44, -108)
+			p["inclina"] = 0.12 + sin(t * 0.2) * 0.04
 			p["chapeu"] = "capacete"
-			p["mao_f"] = Vector2(22, -176) if t < 50 else Vector2(80, -200)
-			p["expr"] = "grito"
-			p["inclina"] = -0.05
+			p["expr"] = "grito" if (t / 20) % 2 == 0 else "feliz"
 		"trump":
 			danca(p, t, 1.4)
 		"xandao":

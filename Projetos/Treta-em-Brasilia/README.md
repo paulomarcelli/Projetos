@@ -65,7 +65,7 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
 | Lutador | Especiais (Especial + direção) | SUPERPOWER | ULTIMATE |
 |---|---|---|---|
 | **Lula** | Discurso do Planalto · Picanha Gigante · Faz o L! · Bolsa Família · Picanha Voadora | Picanha na Brasa | **Picanha Suprema** |
-| **Bolsonaro** | Fuzil Cartunesco · Motociata · Talquei? · Operação Cloroquina · Vai Virar Jacaré! | Rajada do Capitão | **Operação Presidencial** |
+| **Bolsonaro** | Fuzil Cartunesco · Motociata · Talquei? · Operação Cloroquina · Vai Virar Jacaré! | Rajada do Capitão | **Motociata Nacional** |
 | **Xandão** | Inquérito! · Conta Bloqueada · Martelo da Justiça · Canetada do STF · Suspensão de Conta | Censura Suprema | **Decisão Monocrática** |
 | **Trump** | Presidential Speech · Hair Attack · You're Fired! · Make America Dance Again · Boné MAGA! | Bombardeio Presidencial | **YMCA Presidential Show** |
 | **Eduarda** | Corte Viral! · Microfone Explosivo · Lacração Reversa · Debate Infinito · 1,9 Milhão de Votos | Polêmica nas Redes | **Treta Nacional** |
@@ -87,9 +87,11 @@ O botão SUPER (tecla **J**, ou o botão grande na tela do celular) mostra a car
   </tr>
 </table>
 
+- **Ultimates dos 5 primeiros refeitas:** Lula (churrascão no Planalto ao pôr do sol, a placa da picanha despencando de R$ 89,90 a R$ 9,99, a multidão fazendo o L, "A PICANHA VOLTOU!"), Bolsonaro (Motociata Nacional na Esplanada, comboio de motos passando por cima do rival e o contador até 12.000, "TÁ OK?"), Xandão (colunas do STF e a estátua da Justiça, perfis caindo e levando o carimbo SUSPENSO, contador de perfis suspensos e o martelo, "INQUÉRITO ABERTO!"), Trump (comício com bandeirolas, Y M C A acendendo, plateia de bonés e caixotes de tarifa, contador até 500%, "YOU'RE FIRED!") e Eduarda (orla da Praia Grande, celulares e corações subindo, o pino do mapa caindo no rival e 1,9 milhão de votos, "PRAIA GRANDE NO MAPA!").
+
 ## 🧑‍🎤 Lutadores
 
-- **Rosto da foto em pixel art** (`ferramentas/cabeca_pixel.py`) com 8 expressões redesenhadas em cada quadro: neutro, piscar, esforço, grito, dor, nocaute, feliz e derrota. A Eduarda segue a caricatura do boneco abridor de garrafas: cabelo escuro liso, óculos transparentes e a risada escancarada.
+- **Rosto da foto, parecido de verdade** (`ferramentas/cabeca_foto.py`): a expressão neutra é a própria foto (com contraste, cor, nitidez e contorno de desenho), em alta resolução; as outras 7 (piscar, esforço, grito, dor, nocaute, feliz e derrota) mexem só nos olhos, sobrancelhas e boca: a região é apagada com inpainting (OpenCV) e o traço novo é desenhado no lugar e no tamanho certos, seguindo os contornos do rosto do MediaPipe (`ferramentas/rostos.py`). No jogo, a cabeça é reduzida pela GPU com mipmaps (só as cabeças usam filtro linear; corpo, texto e cenário continuam em pixel duro), então olho e boca não somem na tela de 480x270, e a cabeça ficou 15% maior, no estilo caricatura. A Eduarda continua na caricatura do boneco abridor de garrafas (`ferramentas/cabeca_pixel.py`).
 - **Erika Hilton** (deputada federal, PSOL-SP): sátira do papel público dela, a PEC pelo fim da escala 6x1 (44 h para 36 h, movimento Vida Além do Trabalho), os abaixo-assinados e as representações. Vestido-blazer preto sem manga, escarpim e pulseira dourada; a Ultimate é a votação no plenário com o painel enchendo de SIM.
 - **Lucas Pavanato** (PL-SP, vereador mais votado da história de SP e deputado federal com ~3 milhões de votos): blazer azul-marinho aberto sobre a camiseta preta "ANTI WOKE", tênis e celular sempre gravando. A Frente Antiwoke é um muro de escudos que apaga projéteis; a Ultimate é a "posse" com a bandeira, flashes e o contador de votos disparando.
 - **Nikolas Ferreira** (PL-MG, deputado federal mais votado do Brasil em 2022): terno azul-marinho e gravata, bandeira do Brasil no mastro. O vídeo do Pix vira um losango girando, a Caminhada até Brasília é uma marcha com armadura e 4 acertos, e o "Revoga!" derruba um carimbo gigante. Na Ultimate, a estrada BR-040 na chuva com a placa contando de 240 km até "CHEGAMOS!".

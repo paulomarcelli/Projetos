@@ -85,10 +85,22 @@ static var _texturas := {}
 
 
 ## Carrega sprites/<nome>.png uma vez (null se não existir).
+## Raio da cabeça no corpo (o pescoço fica sempre em y = -64): um pouco grande, de caricatura.
+const CABECA_R := 37.0
+
+
 static func textura(nome: String) -> Texture2D:
 	if not _texturas.has(nome):
 		var caminho := "res://sprites/%s.png" % nome
-		_texturas[nome] = load(caminho) if ResourceLoader.exists(caminho) else null
+		var tex: Texture2D = load(caminho) if ResourceLoader.exists(caminho) else null
+		# cabeças de foto: a GPU reduz pela média dos pixels (mipmaps), sem sumir com olho e boca.
+		# O filtro vale só para essas texturas; corpo, texto e cenário continuam em pixel duro.
+		if tex != null and (nome.ends_with("_rosto") or nome.ends_with("_retrato") or nome.ends_with("_cabeca")):
+			var ct := CanvasTexture.new()
+			ct.diffuse_texture = tex
+			ct.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			tex = ct
+		_texturas[nome] = tex
 	return _texturas[nome]
 
 
@@ -603,9 +615,9 @@ static func _corpo(c: CanvasItem, d: Dictionary, p: Dictionary) -> void:
 	if not _cont:
 		# contorno próprio da cabeça por cima do tronco
 		_cont = true
-		cabeca(c, d, Vector2(0, -96), 32.0, p)
+		cabeca(c, d, Vector2(0, -64 - CABECA_R), CABECA_R, p)
 		_cont = false
-	cabeca(c, d, Vector2(0, -96), 32.0, p)
+	cabeca(c, d, Vector2(0, -64 - CABECA_R), CABECA_R, p)
 	_dm(c, _base)
 
 	if not _cont:

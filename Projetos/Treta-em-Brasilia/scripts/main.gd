@@ -18,6 +18,7 @@ var _aviso: Camada
 var _cortina: Camada
 var _cortina_k := 0.0  # 0 = aberta, 1 = fechada
 var _trocando := false
+var _proxima: Node = null  # tela pedida durante uma transição: entra assim que a cortina abre
 
 # online
 var rede: Rede
@@ -120,6 +121,8 @@ func _desenhar_cortina(c: CanvasItem) -> void:
 			continue
 		var y := i * 72.0
 		var w := 1600.0 * k
+		if w < 1.0:
+			continue  # faixa quase sem largura (começo/fim da transição): área zero não triangula
 		var x0 := -160.0 if i % 2 == 0 else 1440.0 - w
 		c.draw_colored_polygon(PackedVector2Array([Vector2(x0, y), Vector2(x0 + w, y), Vector2(x0 + w - 40, y + 74), Vector2(x0 - 40, y + 74)]), Color("140c1c") if i % 2 else Color("1d1240"))
 	if _cortina_k > 0.95:
@@ -132,7 +135,11 @@ func _trocar(n: Node) -> void:
 		add_child(n)
 		return
 	if _trocando:
-		n.queue_free()
+		# confirmar durante a cortina (apertar várias vezes) não pode perder a tela nova:
+		# a tela atual já desligou a própria entrada e o jogo ficaria parado nela
+		if _proxima != null and _proxima != n:
+			_proxima.queue_free()
+		_proxima = n
 		return
 	_trocando = true
 	var tw := create_tween()
@@ -144,7 +151,12 @@ func _trocar(n: Node) -> void:
 		add_child(n)
 		move_child(_cortina, get_child_count() - 1))
 	tw.tween_property(self, "_cortina_k", 0.0, 0.25)
-	tw.tween_callback(func() -> void: _trocando = false)
+	tw.tween_callback(func() -> void:
+		_trocando = false
+		if _proxima != null:
+			var proxima := _proxima
+			_proxima = null
+			_trocar(proxima))
 
 
 func _titulo(aviso := "") -> void:

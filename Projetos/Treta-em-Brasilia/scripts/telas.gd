@@ -1244,6 +1244,8 @@ class Creditos extends Node2D:
 		return txt.length() * Desenho.tamanho_real(tam) / Desenho.ESCALA
 
 	func _estrela(c: Vector2, r: float, cor: Color) -> void:
+		if r < 1.0:
+			return  # piscando quase apagada: um polígono de tamanho zero nem dá para triangular
 		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r * 0.25, -r * 0.25), c + Vector2(r, 0), c + Vector2(r * 0.25, r * 0.25),
 			c + Vector2(0, r), c + Vector2(-r * 0.25, r * 0.25), c + Vector2(-r, 0), c + Vector2(-r * 0.25, -r * 0.25)]), cor)
 

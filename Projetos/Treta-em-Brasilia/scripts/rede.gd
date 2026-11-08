@@ -16,7 +16,7 @@ signal mensagem(d: Dictionary)
 
 const PREFIXO := "brkombat-"
 const LETRAS := "ABCDEFGHJKLMNPQRSTUVWXYZ"  # sem I e O (confundem com 1 e 0)
-const VERSAO := 1
+const VERSAO := 2  # 2: motor web enxuto (web/motor); páginas de versões diferentes não se conectam
 
 ## Ponte na página: carrega a PeerJS e guarda o que chega numa fila que o jogo esvazia.
 const JS := """

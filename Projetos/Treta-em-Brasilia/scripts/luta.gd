@@ -80,6 +80,7 @@ var _sem_dano := [0, 0]
 var _lento_ko := 0
 var _recua_em := 0.0      # USP: quando a torcida canta "RECUA" (uma vez por partida)
 var _recua_tocou := false
+var _recua_q := 0           # quadros que faltam do canto (balões "RECUA!" sobre a torcida)
 var _dilera := -1         # quadro em que o Dilera apareceu no canto (uma vez por partida)
 var _dilera_audio := ""
 var _quadro_impar := false
@@ -427,6 +428,7 @@ func _tick() -> void:
 	particulas.passo()
 	if _dilera >= 0 and _dilera <= 110:
 		_dilera += 1
+	_passo_recua()
 	for i in 2:
 		vida_vis[i] = move_toward(vida_vis[i], p[i].vida, 6.0) if vida_vis[i] > p[i].vida else p[i].vida
 		if combo_t[i] > 0:
@@ -919,10 +921,30 @@ func _torcida() -> void:
 	if _recua_em <= 0.0:
 		_recua_em = randf_range(12.0, 30.0)
 	if tempo_total >= _recua_em:
-		_recua_tocou = true
-		Som.ambiente("res://audio/cenario/recua.ogg")
-		agito = 1.0
-		_texto(Vector2(640, 250), "RECUA! RECUA!", Color("ff5a4e"), 40, 150)
+		cantar_recua()
+
+
+## A torcida da USP canta "RECUA!": o áudio, o público pulando e balões de quadrinho estourando
+## sobre a torcida no ritmo do canto (enquanto ele dura). Só visual e som: o online segue igual.
+func cantar_recua() -> void:
+	_recua_tocou = true
+	Som.ambiente("res://audio/cenario/recua.ogg")
+	agito = 1.0
+	_recua_q = 550
+	_texto(Vector2(640, 250), "RECUA! RECUA!", Color("ff5a4e"), 40, 150)
+
+
+func _passo_recua() -> void:
+	if _recua_q <= 0:
+		return
+	_recua_q -= 1
+	agito = 1.0
+	# um balão a cada ~meio segundo, espalhado pela torcida, alternando os lados
+	if _recua_q % 26 == 0:
+		var lado := 1.0 if (_recua_q / 26) % 2 == 0 else -1.0
+		var x := 640.0 + lado * randf_range(140.0, 520.0)
+		efeitos.append({"tipo": "pow", "pos": Vector2(x, randf_range(300.0, 360.0)), "t": 0, "dur": 40,
+			"txt": "RECUA!", "cor": Color("e63946") if randf() < 0.6 else Color("ffd23f"), "giro": randf_range(-0.3, 0.3), "grande": true})
 
 
 ## O Dilera aparece no canto da tela (como o "Toasty!" dos fliperamas) e solta um áudio. Uma vez por partida.

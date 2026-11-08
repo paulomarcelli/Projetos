@@ -143,7 +143,7 @@ A plateia pula mais quando a luta esquenta.
 - **Música na vitória:** quem tem música própria (Lula, Bolsonaro, Xandão, Nikolas, Dilma e o Trump com o YMCA) vence a partida ao som da trilha da Ultimate, que segue na tela de resultado. A Dilma solta o "ganhar ou perder" ao vencer um round.
 - **YMCA no SUPER e na Ultimate do Trump:** a dança é sincronizada com a música (125 BPM medidos na faixa): a cada batida ele faz uma letra com os braços (Y, M, C, A), a pista de dança acende e o letreiro de neon **Y M C A** acende a mesma letra, pulsando na batida (em cima dele no SUPER, no telão do palco na Ultimate).
 - **Vitória da Dilma:** "Não acho que quem ganhar ou quem perder vai ganhar ou perder..." toca quando ela vence a partida.
-- **USP:** uma vez por partida a torcida canta "RECUA!".
+- **USP:** uma vez por partida a torcida canta "RECUA!": o público pula e balões de quadrinho "RECUA!" estouram sobre a torcida no ritmo do canto.
 - **Dilera:** no meio da luta, depois de uma derrubada, ele pode surgir no canto da tela (como o "Toasty!" dos fliperamas) e soltar um áudio. Uma vez por partida. A foto (`fotos/dilera.jpg`) vira `sprites/dilera.png` com `ferramentas/dilera.py` (fundo removido, contorno), e sobe do canto com a tarja "DILERA!".
 
 ## 🕹️ Controles
@@ -246,7 +246,7 @@ treta-em-brasilia/
 
 - **Story** (`docs/divulgacao/story.png`, 1080x1920): a capa com Lula x Bolsonaro e os créditos, feita com capturas do próprio jogo por `ferramentas/story.py`.
 - **Mini trailer** (`docs/divulgacao/trailer.mp4`, 30 s, vertical): gravado com imagem e som do próprio jogo pelo Movie Maker do Godot (`tests/trailer.gd`: capa com o Zé Gotinha, VS, memes em áudio na luta, o YMCA do Trump, o Dilera, a Ultimate do Lula com K.O. e música de vitória, créditos) e montado com legendas por `ferramentas/trailer.py`.
-- **Trailer parte 2** (`docs/divulgacao/trailer2.mp4`, 1 min, vertical): a escolha de lutadores passando pelos 11, Nikolas x Flávio com os memes deles, a Censura Suprema do Xandão, a USP gritando "RECUA!", as Ultimates da Dilma, do Bolsonaro e do Trump com as músicas, o Dilera com o Renan, o online com código de sala e os créditos (`tests/trailer2.gd` + `ferramentas/trailer.py ... 2`).
+- **Trailer parte 2** (`docs/divulgacao/trailer2.mp4`, 1 min, vertical): a escolha de lutadores passando pelos 11, Nikolas x Flávio com os memes deles, a Censura Suprema do Xandão, a USP gritando "RECUA!", as Ultimates da Dilma, do Bolsonaro, do Flávio e do Trump com as músicas, o Dilera com o Renan, o online com código de sala e os créditos (`tests/trailer2.gd` + `ferramentas/trailer.py ... 2`).
 
 ## 🙌 Créditos
 

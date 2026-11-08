@@ -36,18 +36,19 @@ LEGENDAS = [
 ]
 # parte 2 (1 min): casa com as cenas de tests/trailer2.gd
 LEGENDAS_2 = [
-    (0.0, 3.0, "PARTE 2: MAIS TRETA!", OURO),
-    (3.0, 9.0, "11 LUTADORES PRA ESCOLHER", BRANCO),
-    (9.0, 13.0, "NIKOLAS x FLÁVIO", OURO),
-    (13.0, 19.0, "MEMES EM ÁUDIO DE VERDADE", BRANCO),
-    (19.0, 25.0, "XANDÃO: CENSURA SUPREMA", (126, 240, 255)),
-    (25.0, 31.0, "A USP GRITANDO RECUA!", (255, 90, 78)),
-    (31.0, 37.0, "DILMA ESTOCANDO VENTO", OURO),
-    (37.0, 43.0, "MOTOCIATA NACIONAL", (31, 200, 110)),
-    (43.0, 49.0, "TARIFAÇO PRESIDENCIAL", (255, 90, 78)),
-    (49.0, 53.0, "E O DILERA DO NADA", OURO),
-    (53.0, 56.0, "JOGA ONLINE COM OS AMIGOS", (126, 240, 255)),
-    (56.0, 61.0, "TESTA AÍ!", OURO),
+    (0.0, 2.5, "PARTE 2: MAIS TRETA!", OURO),
+    (2.5, 7.5, "11 LUTADORES PRA ESCOLHER", BRANCO),
+    (7.5, 10.5, "NIKOLAS x FLÁVIO", OURO),
+    (10.5, 15.5, "MEMES EM ÁUDIO DE VERDADE", BRANCO),
+    (15.5, 20.5, "XANDÃO: CENSURA SUPREMA", (126, 240, 255)),
+    (20.5, 26.5, "A USP GRITANDO RECUA!", (255, 90, 78)),
+    (26.5, 32.0, "DILMA ESTOCANDO VENTO", OURO),
+    (32.0, 37.5, "BOLSONARO: MOTOCIATA NACIONAL", (31, 200, 110)),
+    (37.5, 43.0, "FLÁVIO: SAIU ESCONDIDO!", OURO),
+    (43.0, 48.5, "TRUMP: TARIFAÇO PRESIDENCIAL", (255, 90, 78)),
+    (48.5, 52.0, "E O DILERA DO NADA", OURO),
+    (52.0, 55.0, "JOGA ONLINE COM OS AMIGOS", (126, 240, 255)),
+    (55.0, 59.0, "TESTA AÍ!", OURO),
 ]
 JOGO = (60, 700, 960, 540)  # x, y, largura, altura do jogo no vídeo
 

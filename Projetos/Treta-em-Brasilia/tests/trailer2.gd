@@ -6,7 +6,7 @@ extends SceneTree
 ##
 ## Cenas (60 quadros por segundo): capa com o Zé Gotinha · escolha de lutadores passando pelos 11 ·
 ## VS Nikolas x Flávio · luta com os memes deles · Censura Suprema do Xandão · a USP gritando
-## "RECUA!" · Ultimates da Dilma, do Bolsonaro e do Trump com as músicas · o Dilera com o Renan ·
+## "RECUA!" · Ultimates da Dilma, do Bolsonaro, do Flávio e do Trump com as músicas · o Dilera com o Renan ·
 ## online com código de sala · créditos.
 const LULA := 0
 const BOLSONARO := 1
@@ -38,18 +38,19 @@ func _initialize() -> void:
 	raiz.scale = Vector2.ONE * Desenho.ESCALA
 	root.add_child(raiz)
 	cenas = [
-		[180, _capa],                                             # 0–3 s
-		[360, _selecao],                                          # 3–9 s
-		[240, _versus],                                           # 9–13 s
-		[360, func(): _nova_luta("paulista", NIKOLAS, FLAVIO)],   # 13–19 s
-		[360, func(): _nova_luta("usp", XANDAO, EDUARDA, 0.0)],   # 19–25 s
-		[360, func(): _nova_luta("usp", ERIKA, PAVANATO)],        # 25–31 s
-		[360, func(): _nova_luta("praca", DILMA, RENAN, 0.0)],    # 31–37 s
-		[360, func(): _nova_luta("paulista", BOLSONARO, LULA, 0.0)],  # 37–43 s
-		[360, func(): _nova_luta("casa_branca", TRUMP, LULA, 0.0)],   # 43–49 s
-		[240, func(): _nova_luta("paulista", RENAN, LULA)],       # 49–53 s
-		[180, _online],                                           # 53–56 s
-		[240, _creditos],                                         # 56–60 s
+		[150, _capa],                                                 # 0–2,5 s
+		[300, _selecao],                                              # 2,5–7,5 s
+		[180, _versus],                                               # 7,5–10,5 s
+		[300, func(): _nova_luta("paulista", NIKOLAS, FLAVIO)],       # 10,5–15,5 s
+		[300, func(): _nova_luta("usp", XANDAO, EDUARDA, 0.0)],       # 15,5–20,5 s
+		[360, func(): _nova_luta("usp", ERIKA, PAVANATO)],            # 20,5–26,5 s
+		[330, func(): _nova_luta("praca", DILMA, RENAN, 0.0)],        # 26,5–32 s
+		[330, func(): _nova_luta("paulista", BOLSONARO, LULA, 0.0)],  # 32–37,5 s
+		[330, func(): _nova_luta("praca", FLAVIO, XANDAO, 0.0)],      # 37,5–43 s
+		[330, func(): _nova_luta("casa_branca", TRUMP, LULA, 0.0)],   # 43–48,5 s
+		[210, func(): _nova_luta("paulista", RENAN, LULA)],           # 48,5–52 s
+		[180, _online],                                               # 52–55 s
+		[210, _creditos],                                             # 55–58,5 s
 	]
 	_proxima.call_deferred()
 
@@ -161,14 +162,13 @@ func _process(_d: float) -> bool:
 			elif quadro == 200:
 				_meme_de(0, "res://audio/memes/xandao/transparencia.ogg", "Transparênciaaa!")
 		5:
+			# a torcida da USP canta "RECUA!" (áudio, público pulando e os balões)
 			if quadro == 10:
-				Som.ambiente("res://audio/cenario/recua.ogg")
-			elif quadro == 200:
-				luta._meme(0, true)
-		6, 7, 8:
+				luta.cantar_recua()
+		6, 7, 8, 9:
 			if quadro == 15:
 				_poder("ult", 100.0)
-		9:
+		10:
 			if quadro == 10:
 				_meme_de(0, "res://audio/memes/renan/tranqueira.ogg", "Tranqueira!")
 			elif quadro == 90:

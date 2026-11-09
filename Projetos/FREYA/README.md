@@ -51,6 +51,23 @@ O que a diferencia:
 
 Cada pergunta gera **uma única análise prospectiva** (um cenário: o desdobramento mais plausível), e não um leque de cenários alternativos.
 
+## 📸 Funcionando
+
+<table>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/readme/fotos/01-inicio.webp" alt="Tela inicial da F.R.E.Y.A.: menu lateral, explorador do grafo da última investigação, análises recentes e o painel Nova análise com perguntas de exemplo"><br><sub><b>Início</b> · o grafo da última investigação e uma nova análise ao lado</sub></td>
+    <td width="50%" valign="top"><img src="docs/readme/fotos/02-pergunta.webp" alt="Painel de nova análise com seis perguntas de exemplo, campo de horizonte e a pergunta sobre Thor e Loki digitada"><br><sub><b>A pergunta</b> · exemplos, horizonte opcional e as três etapas</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/readme/fotos/03-andamento.webp" alt="Tela A F.R.E.Y.A. está investigando, com as etapas Intelligence Day, Recuperação, Análise prospectiva e Validação e grafo acompanhadas ao vivo"><br><sub><b>Investigando</b> · as etapas acompanhadas ao vivo</sub></td>
+    <td width="50%" valign="top"><img src="docs/readme/fotos/04-resposta.webp" alt="Análise concluída: grafo da prospectiva com Thor, Loki e variantes à esquerda e a resposta em parágrafos com chips de evidência à direita"><br><sub><b>A resposta</b> · grafo à esquerda, análise à direita</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><img src="docs/readme/fotos/05-grafo.webp" alt="Grafo da prospectiva com seis entidades e a legenda de como ler o grafo"><br><sub><b>O grafo</b> · só as entidades que a análise usa</sub></td>
+    <td width="50%" valign="top"><img src="docs/readme/fotos/06-chat.webp" alt="Resposta completa da F.R.E.Y.A. sobre Thor e Loki em parágrafos, cada um com selo epistêmico e chips de evidência"><br><sub><b>A análise</b> · cada parágrafo com selo e evidências</sub></td>
+  </tr>
+</table>
+
 ## 🧠 O que acontece quando você pergunta
 
 | Etapa | O que faz |

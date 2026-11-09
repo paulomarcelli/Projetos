@@ -900,3 +900,25 @@ Refinamento da seção "02 · Futuros possíveis" e da página Análise do Cená
   falhar" são atenção analítica, não erro.
 - Indicadores com resumo no topo (a favor · contra), os que favorecem primeiro, e a data como "Quando:" em mono.
 - Rodapé: os outros futuros como dois cartões (letra, arquétipo, nome, ideia).
+
+## Mapa de relações: leitura ao lado (nov/2026)
+
+O mapa mostrava as linhas, mas não dizia o que se lê nelas, e num cenário a lista "O que mudou" ficava num cartão sobre o
+mapa, cobrindo parte dele. Refinamento feito com as skills de design (taste-skill para telas de app, data-visualization,
+Impeccable); a gramática das linhas (§8) não mudou.
+
+- **Leitura do mapa** (`relations/LeituraDoMapa.tsx`): com 1000 px ou mais de largura **no próprio contêiner** (abrir o
+  painel lateral da página estreita o mapa e ele volta ao modo compacto), o mapa ganha uma coluna de 19rem ao lado, com a
+  mesma altura e rolagem própria:
+  - uma frase montada dos dados ("7 relações entre 7 atores. Mais conectado: EUA, com 4." / "3 mudanças em relação a
+    hoje: 1 nova, 1 muda de natureza e 1 reforçada.");
+  - num cenário, "O que mudou em relação a hoje" sempre aberto (a mesma `ListaDeMudancas` do cartão das telas estreitas,
+    com o realce da linha ao passar o cursor);
+  - **Mais conectados**: até 5 atores, com a contagem de relações visíveis naquela vista e uma barra fina. O painel diz
+    que é contagem, não força nem importância. Passar o cursor acende o ator e os vizinhos no mapa; clicar abre o ator;
+  - **De onde vêm as linhas**: documentadas por fonte, inferidas (◌) e hipóteses (◇), com os mesmos símbolos do mapa.
+- **Legenda com contagem**: cada tipo de relação mostra quantas há na vista ("Competição 4"); com a leitura ao lado, a
+  legenda empilha (tipos numa linha; blocos e "Lista" na de baixo) para não invadir a coluna.
+- **Enquadramento**: margem maior à esquerda (72 px), para rótulos ancorados à esquerda do nó (Colômbia, Argentina) não
+  serem cortados.
+- Abaixo de 1000 px (e no celular) nada muda: o cartão "O que mudou" continua sobre o mapa, recolhível.

@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it } from "vitest";
 import type React from "react";
-import { abaDoEndereco, ProvedorDoResultado } from "../components/analysis/investigacao/contexto";
+import { abaDoEndereco, ProvedorDoResultado, relacaoNaVista } from "../components/analysis/investigacao/contexto";
 import { PainelContextual } from "../components/analysis/investigacao/PainelContextual";
 import { SecaoComparacao } from "../components/analysis/secoes/SecaoComparacao";
 import { SecaoMonitoramento } from "../components/analysis/secoes/SecaoMonitoramento";
@@ -16,6 +16,8 @@ import { AnaliseDoCenario, PARTES_DO_CENARIO } from "../components/analysis/cena
 import { ResultadoDaInvestigacao } from "../components/analysis/investigacao/ResultadoDaInvestigacao";
 import { INVESTIGACAO_EXEMPLO as r } from "../previa/investigacao-exemplo";
 import { MUDANCA_NA_RELACAO } from "../config/semantica";
+import { MapaGeopolitico } from "../components/relations/MapaGeopolitico";
+import { paisesNoMapa, relacoesDesenhaveis } from "../components/relations/apoioDoMapa";
 
 describe("integridade do exemplo (rastreabilidade)", () => {
   const evidencias = new Set(r.evidencias.map((e) => e.id));
@@ -336,6 +338,34 @@ describe("seção Relações (mapa geopolítico)", () => {
     // agrupado pelo tipo de mudança, com o mesmo glifo do mapa
     expect(screen.getByRole("region", { name: "Mudam de natureza" })).toHaveTextContent(/competição.*→.*cooperação/);
     expect(screen.getByText("Brasil entra no Escudo das Américas")).toBeInTheDocument();
+  });
+
+  it("com largura, a leitura do mapa fica ao lado: conta as relações, ordena os mais conectados e lista o que mudou", async () => {
+    render(
+      <MemoryRouter>
+        <ProvedorDoResultado r={r}>
+          <MapaGeopolitico painelProprio={false} largo />
+        </ProvedorDoResultado>
+      </MemoryRouter>,
+    );
+    const paises = paisesNoMapa(r);
+    const ehPais = new Set(paises.map((p) => p.a.id));
+    const desenhaveis = relacoesDesenhaveis(r, ehPais, new Map(r.blocos.map((b) => [b.ator, b])));
+    const leitura = screen.getByRole("complementary", { name: "Leitura do mapa" });
+    const hoje = desenhaveis.filter((x) => relacaoNaVista(x, "presente").visivel).length;
+    expect(leitura).toHaveTextContent(`${hoje} relações entre`);
+    // mais conectados em ordem decrescente de relações (contagem, não força)
+    const contagens = within(within(leitura).getByRole("region", { name: "Mais conectados" }))
+      .getAllByRole("button")
+      .map((b) => Number(/: (\d+) rela/.exec(b.getAttribute("aria-label") ?? "")?.[1]));
+    expect(contagens.length).toBeGreaterThan(0);
+    expect([...contagens].sort((a, b) => b - a)).toEqual(contagens);
+    expect(leitura).toHaveTextContent("não mede força nem importância");
+    // num cenário, "O que mudou" fica no painel, sempre aberto (sem o cartão sobre o mapa)
+    await userEvent.click(within(screen.getByRole("group", { name: /Vista do mapa/ })).getByRole("button", { name: /Cenário B/ }));
+    const mudou = within(leitura).getByRole("region", { name: "O que mudou em relação a hoje" });
+    expect(within(mudou).getByRole("region", { name: "Mudam de natureza" })).toHaveTextContent(/competição.*→.*cooperação/);
+    expect(screen.queryByRole("button", { name: /O que mudou em relação a hoje/ })).not.toBeInTheDocument();
   });
 
   it("clicar num país abre o painel com o essencial; detalhes e fontes ficam a um clique", async () => {

@@ -940,3 +940,23 @@ Refinamento da tela "Base científica" (`/app/base-cientifica`) e do leitor de f
   inteira leva ao leitor. A busca ficou maior, com a contagem dentro do campo.
 - **Leitor da fonte**: as páginas numa fileira acima do texto (não numa coluna estreita que quebrava a numeração) e a
   página como uma folha (superfície própria, margem de leitura, entrelinha 1,8).
+
+## Troca de tema e timeline mais legível (nov/2026)
+
+Feito com as skills de design (Emil Kowalski / animate, Impeccable, data-visualization).
+
+**Troca de tema.** Pelo botão de sol e lua, o tema novo se espalha num círculo que nasce no centro do botão e cresce
+até cobrir a tela (View Transitions API: a tela antiga fica parada embaixo, a nova é revelada por `clip-path`, 560 ms,
+`cubic-bezier(0.23, 1, 0.32, 1)`). O gesto e a mudança ficam ligados: a cor nasce de onde se clicou. Nas Configurações
+e quando o sistema muda o tema, continua o esmaecimento da tela inteira (agora 280 ms). Sem a API ou com "reduzir
+movimento", a troca é direta. O ícone do astro mantém a sua própria transformação (sol ↔ lua).
+
+**Timeline.**
+- **Anos com largura pela densidade**: um ano com muitos eventos numa trilha ganha até 2,6× de largura, e os pontos de
+  2026 deixam de se amontoar. Cada ano tem a sua faixa (alternada, quase imperceptível) com o rótulo no meio.
+- **Nome do cenário sobre cada faixa**, logo depois da abertura no "Hoje" (a letra continua no fim da faixa como botão).
+  O cenário em foco fica em destaque, os outros em segundo plano.
+- **Marcos em texto, abaixo do gráfico**, em duas colunas: "O que já aconteceu" (até o ano anterior ao horizonte) e "O
+  que vem pela frente" (calendário comum e, com um cenário escolhido, os marcos dele). Data em mono, o glifo da categoria
+  e o texto; o futuro em âmbar e itálico. Lê-se sem passar o cursor; passar o cursor ou focar um marco acende o ponto
+  no gráfico e clicar abre o evento no painel. "Ver como lista" continua como alternativa completa.

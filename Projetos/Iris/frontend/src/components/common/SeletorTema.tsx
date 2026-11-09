@@ -175,6 +175,12 @@ function Astro({ lua }: { lua: boolean }) {
   );
 }
 
+/** Centro do botão na janela: a troca de tema se espalha a partir dele. */
+function centroDe(el: HTMLElement) {
+  const r = el.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+}
+
 export function AlternarTema({ compacto = false }: { compacto?: boolean }) {
   const { temaEfetivo } = usePreferencias();
   const claro = temaEfetivo === "claro";
@@ -182,7 +188,7 @@ export function AlternarTema({ compacto = false }: { compacto?: boolean }) {
   return (
     <button
       type="button"
-      onClick={() => escolherTema(claro ? "escuro" : "claro")}
+      onClick={(e) => escolherTema(claro ? "escuro" : "claro", centroDe(e.currentTarget))}
       aria-label={compacto ? acao : undefined}
       className={`relative flex min-h-10 items-center gap-3 rounded-padrao text-legenda text-texto-2 transition-colors duration-150 hover:bg-grafite hover:text-texto ${
         compacto ? "w-11 justify-center" : "px-3"
@@ -213,7 +219,7 @@ export function BotaoTema() {
   return (
     <button
       type="button"
-      onClick={() => escolherTema(claro ? "escuro" : "claro")}
+      onClick={(e) => escolherTema(claro ? "escuro" : "claro", centroDe(e.currentTarget))}
       aria-label={acao}
       title={acao}
       className="botao-tema relative grid size-10 shrink-0 place-items-center rounded-full text-texto-2 transition-[color,background-color,scale] duration-150 hover:bg-grafite hover:text-texto active:scale-[0.92]"

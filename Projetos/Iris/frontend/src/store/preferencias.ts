@@ -114,22 +114,46 @@ function assinar(f: () => void) {
   return () => ouvintes.delete(f);
 }
 
-/**
- * Troca de tema sem clarão: com a View Transitions API, o navegador congela a tela antiga e faz
- * um esmaecimento curto (ver `::view-transition-*` no CSS) para a nova, de uma vez, em vez de
- * cada superfície mudar no seu tempo. Sem a API, ou com "reduzir movimento", a troca é direta.
- */
-function trocarComTransicao(aplicar: () => void) {
-  const doc = document as Document & { startViewTransition?: (f: () => void) => unknown };
-  const reduzir = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  if (doc.startViewTransition && !reduzir) doc.startViewTransition(aplicar);
-  else aplicar();
+/** Ponto da tela (em px, coordenadas da janela) de onde a troca de tema parte: o centro do botão clicado. */
+export interface OrigemDaTroca {
+  x: number;
+  y: number;
 }
 
-export function escolherTema(tema: PreferenciaTema) {
+/**
+ * Troca de tema sem clarão (View Transitions API: o navegador congela a tela antiga e anima para a nova de uma vez,
+ * em vez de cada superfície mudar no seu tempo).
+ *   - Com `origem` (o botão de sol e lua): o tema novo se espalha em círculo a partir do botão até cobrir a tela,
+ *     560 ms com saída exponencial. O gesto e a mudança ficam ligados: a cor nasce de onde o clique aconteceu.
+ *   - Sem origem (Configurações, mudança do sistema): um esmaecimento curto da tela inteira.
+ * Sem a API, ou com "reduzir movimento", a troca é direta.
+ */
+function trocarComTransicao(aplicar: () => void, origem?: OrigemDaTroca) {
+  type Transicao = { ready: Promise<void>; finished: Promise<void> };
+  const doc = document as Document & { startViewTransition?: (f: () => void) => Transicao };
+  const reduzir = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (!doc.startViewTransition || reduzir) return aplicar();
+  const raiz = document.documentElement;
+  raiz.dataset.trocaTema = origem ? "circulo" : "suave";
+  const t = doc.startViewTransition(aplicar);
+  if (origem) {
+    const raio = Math.hypot(Math.max(origem.x, window.innerWidth - origem.x), Math.max(origem.y, window.innerHeight - origem.y));
+    t.ready
+      .then(() =>
+        raiz.animate(
+          { clipPath: [`circle(0px at ${origem.x}px ${origem.y}px)`, `circle(${raio}px at ${origem.x}px ${origem.y}px)`] },
+          { duration: 560, easing: "cubic-bezier(0.23, 1, 0.32, 1)", pseudoElement: "::view-transition-new(root)" },
+        ),
+      )
+      .catch(() => {});
+  }
+  t.finished.finally(() => delete raiz.dataset.trocaTema).catch(() => {});
+}
+
+export function escolherTema(tema: PreferenciaTema, origem?: OrigemDaTroca) {
   gravar(CHAVES.tema, tema);
   const temaEfetivo = resolver(tema);
-  trocarComTransicao(() => aplicarNoDocumento({ temaEfetivo, texto: estado.texto }));
+  trocarComTransicao(() => aplicarNoDocumento({ temaEfetivo, texto: estado.texto }), origem);
   atualizar({ tema, temaEfetivo });
 }
 

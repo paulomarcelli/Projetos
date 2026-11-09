@@ -272,7 +272,9 @@ describe("resultado de investigação", () => {
     expect(within(vista).getByRole("group", { name: /Timeline de/ })).toBeInTheDocument();
     await userEvent.click(within(vista).getByRole("button", { name: /^Cenário B:/ }));
     expect(within(vista).getByRole("button", { name: /^Cenário B:/ })).toHaveAttribute("aria-pressed", "true");
-    const evento = within(vista).getByRole("button", { name: /STF condena Jair Bolsonaro/ });
+    const evento = within(within(vista).getByRole("group", { name: /Timeline de/ })).getByRole("button", { name: /STF condena Jair Bolsonaro/ });
+    // o mesmo marco também está na lista legível abaixo do gráfico, sem precisar do cursor
+    expect(within(vista).getByRole("region", { name: "O que já aconteceu" })).toHaveTextContent("STF condena Jair Bolsonaro");
     fireEvent.focus(evento);
     expect(screen.getAllByText("STF condena Jair Bolsonaro a 27 anos e 3 meses.").length).toBeGreaterThan(0);
     fireEvent.keyDown(evento, { key: "Enter" });

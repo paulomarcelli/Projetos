@@ -39,12 +39,25 @@ body {
   font-size: var(--text-corpo);
 }
 
-/* Troca de tema: um esmaecimento único da tela inteira (View Transitions API, ver
-   preferencias.ts). Curto, sem deslocamento; com "reduzir movimento" a troca nem passa por aqui. */
+/* Troca de tema (View Transitions API, ver preferencias.ts). Com "reduzir movimento" a troca nem passa por aqui.
+   - suave (Configurações, sistema): um esmaecimento único da tela inteira, curto, sem deslocamento;
+   - círculo (botão de sol e lua): a tela antiga fica parada embaixo e a nova se revela num círculo que cresce a partir
+     do botão (o clip-path é animado pelo script, com a origem do clique). */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: var(--duracao-tema);
   animation-timing-function: var(--ease-saida);
+}
+:root[data-troca-tema="circulo"]::view-transition-old(root),
+:root[data-troca-tema="circulo"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root[data-troca-tema="circulo"]::view-transition-old(root) {
+  z-index: 1;
+}
+:root[data-troca-tema="circulo"]::view-transition-new(root) {
+  z-index: 2;
 }
 
 ::selection {

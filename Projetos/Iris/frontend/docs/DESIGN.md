@@ -852,3 +852,51 @@ O contrato com o servidor (o que o motor recupera para aprofundar, sem inventar)
 - Tema: só um ícone de sol/lua, no canto direito da barra do topo, à vista em toda página (com o menu aberto,
   recolhido ou na gaveta do celular). Gira um pouco no hover, encolhe ao pressionar e, ao trocar, o sol vira lua
   (disco mordido, raios somem) com um giro. Sem animação com "reduzir movimento".
+
+## Análise prospectiva refinada (nov/2026)
+
+Refinamento da seção "02 · Futuros possíveis" e da página Análise do Cenário, feito com as skills de design
+(Impeccable, taste-skill para telas de app, Emil Kowalski). A estrutura e os dados não mudaram; nada novo é estimado.
+
+**02 · Futuros possíveis**
+
+- Abre com uma frase que nomeia as escolhas que separam os futuros (lidas das incertezas críticas) e diz que nenhum
+  ramo tem peso ou chance. O rótulo "Núcleo prospectivo" saiu (nada de rótulo pequeno acima do título).
+- **Leque dos futuros** (`prospectiva/LequeDosFuturos.tsx`, a partir de telas médias): o presente à esquerda, em traço
+  sólido; as escolhas como losangos âmbar, cada uma numa coluna com o nome da incerteza no cabeçalho e uma guia
+  pontilhada; os ramos em âmbar tracejado até A, B e C no fim do horizonte, com o polo junto da chegada de cada ramo. A
+  árvore sai só de `posicao`: em cada passo abre a incerteza que divide os cenários em menos grupos, sem
+  "indiferente". Passar o cursor ou o foco por um cartão acende o caminho dele em ciano e apaga os outros. Os ramos se
+  revelam uma vez, do presente para o horizonte (`clip-path`, 600 ms, `--ease-saida`); com "reduzir movimento", aparecem
+  no lugar. É um desenho de leitura (`aria-hidden`): o conteúdo está nos cartões.
+- Cartões: arquétipo e horizonte, letra e nome, a ideia, o primeiro sinal a observar e as contagens (premissas ·
+  evidências · sinais).
+
+**Análise do Cenário**
+
+- Cabeçalho: trilha e "Voltar" na mesma linha; letra, nome e, logo abaixo, o impacto principal (o primeiro achado da
+  página). Uma ficha com arquétipo, horizonte, premissas, evidências e sinais (a favor/contra) e o botão "Ver sinais a
+  acompanhar". A pílula de troca mostra o nome só do cenário aberto.
+- A partir de `xl`, duas colunas: a leitura e um trilho fixo de 240 px com o índice das oito partes (traço ciano de
+  2 px que desliza até a parte lida, via IntersectionObserver) e "Onde este futuro fica" (o leque compacto com o
+  cenário aceso e o polo dele em cada escolha). Abaixo de `xl`, o índice é a faixa fixa de antes, agora com a parte
+  atual marcada e trazida para a vista. Nada mais estoura a largura.
+- Cada parte tem o nome como título ("1 Tese do cenário", número em mono) e a pergunta como linha de apoio; filete
+  entre partes.
+- Tese sem filete lateral: é o maior texto da página. Lógica como cadeia em três elos (Se → Porque → Então), com o tipo
+  epistêmico e as fontes no mecanismo. Condições como fichas.
+- Relações agrupadas pelo tipo de mudança, sempre símbolo + palavra (`MUDANCA_NA_RELACAO` em `config/semantica.ts`):
+
+| Mudança | Símbolo | Cor |
+|---|---|---|
+| Nova | + | ciano-texto |
+| Reforçada | ↑ | ciano-texto |
+| Transformada | ↻ | âmbar |
+| Enfraquecida | − | texto-2 |
+| Ausente | ∅ | texto-3 |
+
+- Consequências com a mesma etiqueta (`EFEITO_NA_REGIAO`). Pontos de inflexão em dois painéis: "acelerar" com `+`
+  ciano e "desviar ou invalidar" com `!` âmbar. **O vermelho saiu da página**: desviar e "onde o raciocínio pode
+  falhar" são atenção analítica, não erro.
+- Indicadores com resumo no topo (a favor · contra), os que favorecem primeiro, e a data como "Quando:" em mono.
+- Rodapé: os outros futuros como dois cartões (letra, arquétipo, nome, ideia).

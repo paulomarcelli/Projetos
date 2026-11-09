@@ -15,6 +15,7 @@ import { PaginaCenario } from "../pages/Analysis/PaginaCenario";
 import { AnaliseDoCenario, PARTES_DO_CENARIO } from "../components/analysis/cenario/AnaliseDoCenario";
 import { ResultadoDaInvestigacao } from "../components/analysis/investigacao/ResultadoDaInvestigacao";
 import { INVESTIGACAO_EXEMPLO as r } from "../previa/investigacao-exemplo";
+import { MUDANCA_NA_RELACAO } from "../config/semantica";
 
 describe("integridade do exemplo (rastreabilidade)", () => {
   const evidencias = new Set(r.evidencias.map((e) => e.id));
@@ -147,10 +148,13 @@ describe("resultado de investigação", () => {
     expect(within(sec).getByText(r.sintese)).toBeInTheDocument();
   });
 
-  it("02 futuros possíveis: núcleo prospectivo, quantas trajetórias e cada cenário com letra, nome e frase; o cartão leva à análise aprofundada", () => {
+  it("02 futuros possíveis: quantas trajetórias, o que as separa e cada cenário com letra, nome e frase; o cartão leva à análise aprofundada", () => {
     montar();
     const sec = screen.getByRole("region", { name: "Futuros possíveis" });
-    expect(within(sec).getByText("Núcleo prospectivo")).toBeInTheDocument();
+    // sem rótulo acima do título; a frase de abertura nomeia as escolhas que separam os futuros (lidas das incertezas)
+    expect(within(sec).queryByText("Núcleo prospectivo")).not.toBeInTheDocument();
+    expect(sec).toHaveTextContent("Duas escolhas separam os futuros");
+    for (const i of r.incertezas) expect(sec.textContent?.toLowerCase()).toContain(i.nome.toLowerCase());
     expect(within(sec).getByRole("heading", { level: 2, name: `Três trajetórias até ${r.horizonte.fim}` })).toBeInTheDocument();
     for (const c of r.cenarios) {
       const cartao = within(sec).getByRole("link", { name: new RegExp(`^Cenário ${c.id}: ${c.nome}. Abrir a análise aprofundada`) });
@@ -179,7 +183,8 @@ describe("resultado de investigação", () => {
     );
     await userEvent.click(screen.getByRole("link", { name: /^Cenário B:/ }));
     expect(screen.getByRole("heading", { level: 1, name: r.cenarios[1].nome })).toBeInTheDocument();
-    expect(screen.getByText("Análise aprofundada")).toBeInTheDocument();
+    // o primeiro achado da página: o impacto principal, logo abaixo do título
+    expect(screen.getByText(r.cenarios[1].impacto)).toBeInTheDocument();
   });
 
   // Comparação e monitoramento estão prontos, fora da tela por enquanto: os testes renderizam as seções diretamente.
@@ -400,11 +405,14 @@ describe("análise do cenário", () => {
     expect(within(troca).getByRole("link", { name: /^Cenário C:/ })).toHaveAttribute("href", `/app/investigacoes/${r.id}/cenarios/C`);
   });
 
-  it("as oito partes, na ordem, com a pergunta de cada uma; o índice leva a cada parte", () => {
+  it("as oito partes, na ordem, com o nome como título e a pergunta logo abaixo; o índice leva a cada parte", () => {
     montar("B");
     const partes = PARTES_DO_CENARIO.map((p) => screen.getByRole("region", { name: p.nome }));
     for (let i = 1; i < partes.length; i++) expect(partes[i - 1].compareDocumentPosition(partes[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    PARTES_DO_CENARIO.forEach((p, i) => expect(within(partes[i]).getByRole("heading", { level: 2, name: p.pergunta })).toBeInTheDocument());
+    PARTES_DO_CENARIO.forEach((p, i) => {
+      expect(within(partes[i]).getByRole("heading", { level: 2, name: p.nome })).toBeInTheDocument();
+      expect(partes[i]).toHaveAccessibleDescription(p.pergunta);
+    });
     const indice = screen.getByRole("navigation", { name: "Partes da análise do cenário" });
     expect(
       within(indice)
@@ -431,6 +439,25 @@ describe("análise do cenário", () => {
     const sec = screen.getByRole("region", { name: "Premissas e vulnerabilidades" });
     for (const p of c.premissas) expect(within(sec).getByText(p.texto, { exact: false })).toBeInTheDocument();
     expect(document.body.textContent).not.toMatch(/\d+\s?%/);
+  });
+
+  it("dinâmicas agrupadas pelo tipo de mudança, com símbolo e palavra; desviar e falhar são atenção (âmbar), não erro (vermelho)", () => {
+    montar("A");
+    const sec = screen.getByRole("region", { name: "Dinâmicas estratégicas" });
+    const mudam = r.relacoes.filter((x) => x.cenarios.A && x.cenarios.A.mudanca !== "mantida");
+    for (const x of mudam) expect(sec).toHaveTextContent(MUDANCA_NA_RELACAO[x.cenarios.A.mudanca].rotulo);
+    // nenhuma relação mantida aparece como mudança
+    expect(sec.textContent).not.toContain(MUDANCA_NA_RELACAO.mantida.rotulo);
+    // vermelho só para erro real e contradição: nada nesta página usa a cor de erro
+    expect(document.querySelector(".text-negativo")).toBeNull();
+  });
+
+  it("a ficha do cabeçalho conta os sinais do cenário e leva aos indicadores", () => {
+    montar("A");
+    const n = r.sinais.filter((s) => s.favorece.includes("A") || s.enfraquece.includes("A")).length;
+    const ficha = screen.getByText("Sinais").closest("div")!;
+    expect(ficha).toHaveTextContent(String(n));
+    expect(screen.getByRole("link", { name: "Ver sinais a acompanhar" })).toHaveAttribute("href", "#cen-indicadores");
   });
 
   it("fora da prévia, o endereço do cenário leva ao estado vazio (não há motor)", () => {

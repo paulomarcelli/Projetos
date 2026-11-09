@@ -910,3 +910,39 @@ body {
   .indice-traco, .voltar-ao-topo { transition: none; }
   .indice-lista, .secao-chegou .marca-chegada, .vista-entra { animation: none; }
 }
+
+/* ================================================================== análise prospectiva
+   Leque dos futuros (seção 02): os ramos se revelam do presente para o horizonte, uma vez, ao abrir a página
+   (600 ms, saída exponencial). É o único momento autoral da seção; o resto aparece no lugar. */
+@keyframes leque-revelar {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.leque-futuros:not([data-compacto]) {
+  animation: leque-revelar 600ms var(--ease-saida) both;
+}
+/* Rótulos por cima das linhas: um contorno da cor do fundo separa o texto do traço. */
+.rotulo-sobre-fundo {
+  paint-order: stroke;
+  stroke: var(--color-abismo);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+/* Índice do cenário: o traço da parte atual desliza até ela. */
+.indice-traco {
+  transition:
+    transform var(--duracao-media) var(--ease-saida),
+    height var(--duracao-media) var(--ease-saida);
+}
+@media (prefers-reduced-motion: reduce) {
+  .leque-futuros:not([data-compacto]) {
+    animation: none;
+  }
+  .indice-traco {
+    transition: none;
+  }
+}

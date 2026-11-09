@@ -922,3 +922,21 @@ Impeccable); a gramática das linhas (§8) não mudou.
 - **Enquadramento**: margem maior à esquerda (72 px), para rótulos ancorados à esquerda do nó (Colômbia, Argentina) não
   serem cortados.
 - Abaixo de 1000 px (e no celular) nada muda: o cartão "O que mudou" continua sobre o mapa, recolhível.
+
+## Base científica mais elegante (nov/2026)
+
+Refinamento da tela "Base científica" (`/app/base-cientifica`) e do leitor de fonte, com as skills de design
+(Impeccable, taste-skill). Os dados e a honestidade dos números não mudaram.
+
+- **Cabeçalho** sem o rótulo "Presente" acima do título; a ação "Gestão do acervo" fica à direita.
+- **Números do acervo** numa faixa só, separados por filetes (sem cartões), em tipo grande e leve. "Com falha" só fica
+  em vermelho quando há falha real.
+- **Composição do acervo**: os três gráficos numa seção com um título e uma nota só (amostra e última ingestão), em
+  colunas separadas por filetes. Barras mais finas, em `texto-3`; no gráfico de anos, a maior faixa um tom acima.
+- **Procedência** (`GET /documents → total`, `publication_year`…) reunida em "De onde vêm os números", recolhível, em vez
+  de um código sob cada número e cada gráfico.
+- **Fontes como fichas de catálogo**: ícone do documento (com ou sem texto), título em destaque, autoria, uma linha
+  discreta com ano · páginas · idioma e, à direita, "Texto extraído" ou "Sem texto extraível" (âmbar, limitação). A linha
+  inteira leva ao leitor. A busca ficou maior, com a contagem dentro do campo.
+- **Leitor da fonte**: as páginas numa fileira acima do texto (não numa coluna estreita que quebrava a numeração) e a
+  página como uma folha (superfície própria, margem de leitura, entrelinha 1,8).

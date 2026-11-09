@@ -114,9 +114,10 @@ function Leitor({ doc }: { doc: Detalhe }) {
   const pagina: PaginaDeTexto | undefined = paginas.dados?.items.find((p) => p.page_number === atual);
 
   return (
-    <div className="grid gap-6 md:grid-cols-[132px_minmax(0,1fr)]">
-      <nav aria-label="Páginas" className="flex flex-col gap-3">
-        <ol className="grid grid-cols-5 gap-1 md:grid-cols-3">
+    <div className="flex flex-col gap-4">
+      {/* As páginas numa fileira acima da folha (não numa coluna estreita ao lado, que quebrava a numeração). */}
+      <nav aria-label="Páginas" className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <ol className="m-0 flex list-none flex-wrap gap-1 p-0">
           {Array.from({ length: Math.min(JANELA, total - inicioJanela) }, (_, i) => {
             const n = inicioJanela + i + 1;
             const p = paginas.dados?.items.find((x) => x.page_number === n);
@@ -127,7 +128,7 @@ function Leitor({ doc }: { doc: Detalhe }) {
                   onClick={() => mudar(n)}
                   aria-current={n === atual ? "page" : undefined}
                   aria-label={`Página ${n}${p?.extraction_status === "empty" ? ", sem texto" : p?.extraction_status === "error" ? ", com falha" : ""}`}
-                  className={`numeros relative h-8 w-full rounded-fino border text-micro transition-colors duration-150 ${
+                  className={`numeros relative h-8 min-w-8 rounded-fino border px-2 text-micro transition-colors duration-150 ${
                     n === atual ? "border-ciano bg-ciano-suave text-ciano-texto" : "border-linha text-texto-2 hover:border-linha-forte hover:text-texto"
                   } ${p && p.extraction_status !== "ok" ? "border-dashed" : ""}`}
                 >
@@ -172,8 +173,9 @@ function Leitor({ doc }: { doc: Detalhe }) {
         )}
       </nav>
 
-      <article aria-labelledby="titulo-pagina" className="min-w-0">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-linha pb-3">
+      {/* A página como uma folha: o texto da fonte numa superfície própria, com margem de leitura. */}
+      <article aria-labelledby="titulo-pagina" className="cartao min-w-0 px-5 py-5 sm:px-8 sm:py-7">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-linha pb-3">
           <h3 id="titulo-pagina" className="numeros font-dados text-legenda text-texto-2">
             p. {numero(atual)} <span className="text-texto-3">de {numero(total)}</span>
           </h3>
@@ -205,7 +207,7 @@ function Leitor({ doc }: { doc: Detalhe }) {
           </EstadoVazio>
         ) : (
           <>
-            <div className="max-w-[68ch] font-editorial text-leitura whitespace-pre-wrap text-texto [overflow-wrap:anywhere]">
+            <div className="max-w-[68ch] font-editorial text-leitura leading-[1.8] whitespace-pre-wrap text-texto [overflow-wrap:anywhere]">
               {bruto ? (pagina.text_raw ?? pagina.text) : pagina.text}
             </div>
             <dl className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-linha pt-3 text-micro text-texto-3">

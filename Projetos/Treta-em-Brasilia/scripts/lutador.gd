@@ -256,6 +256,9 @@ func passo() -> void:
 
 	match estado:
 		E.PARADO, E.ANDANDO, E.AGACHADO:
+			# de pé fora do chão (solto no ar por uma cena interrompida): cai, em vez de flutuar
+			if not no_chao():
+				_fisica_ar()
 			_virar()
 			if aperto["provocar"] and estado != E.AGACHADO:
 				_mudar(E.PROVOCANDO)
@@ -325,7 +328,13 @@ func passo() -> void:
 				_mudar(E.PARADO)
 		E.AGARRANDO:
 			_passo_arremesso()
-		E.AGARRADO, E.CINEMATICA, E.PRESO, E.VITORIA, E.DERROTA:
+		E.AGARRADO:
+			# quem agarrou foi interrompido no meio do arremesso (levou um tiro, entrou numa Ultimate,
+			# acabou o round): solta e cai, em vez de ficar preso no ar sem poder atacar nem defender
+			var g := agarrado_por
+			if g == null or g.estado != E.AGARRANDO or g.oponente != self or quadro > 60:
+				_cair(-float(lado), vida <= 0.0)
+		E.CINEMATICA, E.PRESO, E.VITORIA, E.DERROTA:
 			pass
 
 	if estado != E.AGARRADO:

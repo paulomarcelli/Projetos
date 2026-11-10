@@ -12,13 +12,23 @@ signal dessincronizou
 ## As duas pontas rodam a mesma simulação quadro a quadro com as mesmas entradas. Cada um manda
 ## a sua entrada para "quadro + atraso" e só avança quando tem as dos dois para o quadro atual.
 const BOTOES := ["esq", "dir", "cima", "baixo", "soco", "chute", "especial", "provocar", "super", "agarrar"]
+## Botões de toque rápido (pular e golpes): se forem apertados com a luta parada esperando o
+## outro, valem no próximo quadro, em vez de se perderem.
+const TOQUES := (1 << 2) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9)
 var online = null          # transporte com enviar(d: Dictionary)
 var eu := 0                # meu lado (0 = anfitrião, 1 = convidado)
 var atraso := 4
 var q_sim := 0             # quadro da simulação
 var parado_q := 0          # quadros seguidos esperando o outro
+var parado_total := 0      # quadros que a luta ficou parada esperando o outro (diagnóstico)
 var fonte_local = null     # quem lê a minha entrada (teclado/toque, ou o teste)
 var rng := RandomNumberGenerator.new()  # aleatoriedade que muda o jogo (igual nas duas pontas)
+## Sorteios do que só se vê e se ouve (memes, Dilera, rádio, frases). No online sai da mesma
+## semente nas duas pontas, para os dois verem o mesmo meme no mesmo quadro.
+var vis := RandomNumberGenerator.new()
+var em_rede := false       # luta online (continua true mesmo se a conexão cair)
+var _baralhos := {}        # baralhos de memes desta luta (online: iguais nas duas pontas)
+var _apertou := 0          # botões apertados enquanto a luta esperava o outro
 var tempo_round_fixo := -1
 var _in := [{}, {}]        # quadro -> botões em bits, de cada lado
 var _local_ate := -1
@@ -107,6 +117,9 @@ var _radio_em := 0.0     # quando sai o próximo meme do "rádio" (qualquer pers
 var radio_audios: Array[String] = []
 ## Memes do rádio já tocados nesta luta (os testes conferem).
 var radio_tocados: Array[String] = []
+## Memes que apareceram nesta luta e o último (os testes do online comparam as duas telas).
+var memes_soltos := 0
+var ultimo_meme := ""
 var _toque: Toque
 
 
@@ -120,6 +133,8 @@ func configurar_online(transporte, lado: int, semente: int, atraso_q: int) -> vo
 	eu = lado
 	atraso = atraso_q
 	rng.seed = semente
+	vis.seed = semente + 7919
+	em_rede = true
 	humano = [true, true]
 	for f in atraso:
 		_in[0][f] = 0
@@ -188,7 +203,8 @@ func _online_pronto() -> bool:
 	while _local_ate < q_sim + atraso:
 		_local_ate += 1
 		var e: Dictionary = fonte_local.ler() if fonte_local != null and not pausado else {}
-		var b := bits(e)
+		var b := bits(e) | _apertou
+		_apertou = 0
 		_in[eu][_local_ate] = b
 		online.enviar({"k": "in", "f": _local_ate, "b": b})
 	return _in[1 - eu].has(q_sim)
@@ -203,7 +219,7 @@ func _online_depois() -> void:
 		_chk[eu][q_sim] = h
 		online.enviar({"k": "chk", "f": q_sim, "h": h})
 		if online.has_method("publicar"):
-			online.publicar({"q": q_sim, "h": h, "vidas": [int(p[0].vida), int(p[1].vida)]})
+			online.publicar({"q": q_sim, "h": h, "vidas": [int(p[0].vida), int(p[1].vida)], "memes": memes_soltos, "meme": ultimo_meme, "parado": parado_total})
 		_conferir(q_sim)
 
 
@@ -220,6 +236,7 @@ class EntradaRede:
 func _ready() -> void:
 	if online == null:
 		rng.randomize()
+		vis.randomize()
 	_mundo = Node2D.new()
 	add_child(_mundo)
 	# o cenário vira textura (1 chamada de desenho por camada): fundo e frente são desenhados
@@ -377,6 +394,9 @@ func _physics_process(_delta: float) -> void:
 			_menu_pausa()
 		if not _online_pronto():
 			parado_q += 1
+			parado_total += 1
+			if fonte_local != null and not pausado:
+				_apertou |= bits(fonte_local.ler()) & TOQUES
 			_hud.queue_redraw()
 			return
 		parado_q = 0
@@ -449,7 +469,7 @@ func _tick() -> void:
 				var memes: Array = l.dados.get("memes", [])
 				if not memes.is_empty():
 					# bem acima da cabeça, para não brigar com o "ROUND 1" no meio da tela
-					_texto(l.position + Vector2(0, -440), memes[randi() % memes.size()], Color("ffd23f"), 26, 70)
+					_texto(l.position + Vector2(0, -440), memes[vis.randi() % memes.size()], Color("ffd23f"), 26, 70)
 			if fase_t == 72:
 				_mensagem("LUTE!", 45)
 				Som.sfx("lute", 0.0)
@@ -473,6 +493,7 @@ func _tick() -> void:
 					p[_treme].queue_redraw()
 			else:
 				_passo_lutadores()
+				_soltar_presos()
 				_passo_projeteis()
 				_passo_zonas()
 				_colisoes()
@@ -736,7 +757,7 @@ func _resultado(i: int, r: String, ponto: Vector2, g: Dictionary, estava_tonto: 
 	particulas.impacto(ponto, dir, peso, cor)
 	if peso >= 0.9:
 		particulas.estrelas(ponto, 3)
-	if r == "derrubou" and randf() < 0.35:
+	if r == "derrubou" and vis.randf() < 0.35:
 		_chamar_dilera()
 	_treme = 1 - i
 	# balão de quadrinho: a palavra do lutador nos especiais, onomatopeia nos golpes fortes
@@ -772,6 +793,15 @@ func _resultado(i: int, r: String, ponto: Vector2, g: Dictionary, estava_tonto: 
 	# empurrão no canto: quem bate é que recua
 	if def.position.x <= Lutador.LIMITE_ESQ + 1.0 or def.position.x >= Lutador.LIMITE_DIR - 1.0:
 		atk.position.x -= atk.lado * float(g.get("empurra", 6.0)) * 1.5
+
+
+## Ninguém fica preso numa cena que já acabou (Ultimate interrompida): volta a jogar.
+func _soltar_presos() -> void:
+	if not cinema.is_empty():
+		return
+	for l in p:
+		if l.estado in [Lutador.E.CINEMATICA, Lutador.E.PRESO]:
+			l.sair_cinematica()
 
 
 func _separar() -> void:
@@ -955,7 +985,7 @@ func _chamar_dilera() -> void:
 	if _dilera >= 0 or treino:
 		return
 	_dilera = 0
-	_dilera_audio = DILERA[randi() % DILERA.size()]
+	_dilera_audio = DILERA[vis.randi() % DILERA.size()]
 	Som.meme("res://audio/dilera/%s.ogg" % _dilera_audio)
 
 
@@ -1074,7 +1104,7 @@ func _poder(l: Lutador, tipo: String) -> void:
 	if not ult:
 		congelado = 34
 		var memes: Array = l.dados.get("memes", [""])
-		efeitos.append({"tipo": "cutin", "t": 0, "dur": 40, "dados": l.dados, "lado": p.find(l), "nome": l.hab.get("nome", ""), "frase": memes[randi() % memes.size()]})
+		efeitos.append({"tipo": "cutin", "t": 0, "dur": 40, "dados": l.dados, "lado": p.find(l), "nome": l.hab.get("nome", ""), "frase": memes[vis.randi() % memes.size()]})
 	# quadro de impacto: clarão na cor do lutador, onda no chão e brilho no peito
 	efeitos.append({"tipo": "clarao", "t": 0, "dur": 10, "cor": l.dados.get("cor", Color("ffd23f"))})
 	particulas.onda(l.position, 1.2)
@@ -1181,16 +1211,16 @@ func _meme(i: int, forcar := false) -> void:
 	var memes: Array = d.get("memes", [])
 	if memes.is_empty():
 		return
-	var txt: String = Som.baralho("frase_" + String(d["id"]), memes)
+	var txt: String = _baralho("frase_" + String(d["id"]), memes)
 	# quando o lutador tem memes em áudio, quase sempre sai um deles (com a legenda certa), tirado
 	# do baralho dele; se esse áudio tocou há pouco (lista curta: Xandão, Flávio), sai só a frase
 	# escrita com a voz caricata, em vez de repetir
 	var falados: Array = d.get("memes_audio", [])
 	var falou := false
-	if not falados.is_empty() and randf() < 0.75:
-		var m: Array = Som.baralho("meme_" + String(d["id"]), falados)
+	if not falados.is_empty() and vis.randf() < 0.75:
+		var m: Array = _baralho("meme_" + String(d["id"]), falados)
 		var caminho := "res://audio/memes/%s/%s.ogg" % [d["id"], m[1]]
-		if not Som.tocou_recente(caminho):
+		if em_rede or not Som.tocou_recente(caminho):
 			txt = m[0]
 			Som.meme(caminho)
 			falou = true
@@ -1198,7 +1228,29 @@ func _meme(i: int, forcar := false) -> void:
 		Som.voz(d["id"], "provocar")
 	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
 	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": txt, "dados": d})
+	memes_soltos += 1
+	ultimo_meme = txt
 	_meme_cd = 360
+
+
+## Baralho de memes. Offline: o do Som (vale a sessão inteira). Online: um desta luta, embaralhado
+## com o vis, para as duas pontas tirarem o mesmo meme.
+func _baralho(chave: String, itens: Array) -> Variant:
+	if not em_rede:
+		return Som.baralho(chave, itens)
+	if itens.is_empty():
+		return null
+	var b: Dictionary = _baralhos.get(chave, {})
+	if b.is_empty() or b["monte"].is_empty():
+		var monte: Array = itens.duplicate()
+		for k in range(monte.size() - 1, 0, -1):
+			var j := vis.randi() % (k + 1)
+			var x = monte[k]
+			monte[k] = monte[j]
+			monte[j] = x
+		b = {"monte": monte}
+		_baralhos[chave] = b
+	return b["monte"].pop_back()
 
 
 ## Só o retrato com a frase (sem áudio): na vitória, quando a música já está tocando.
@@ -1207,7 +1259,7 @@ func _meme_visual(i: int) -> void:
 	if memes.is_empty():
 		return
 	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
-	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": memes[randi() % memes.size()], "dados": p[i].dados})
+	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": i, "txt": memes[vis.randi() % memes.size()], "dados": p[i].dados})
 
 
 ## "Rádio de memes": de 7 a 13 s, um meme em áudio de qualquer personagem do elenco (não só de
@@ -1217,27 +1269,28 @@ func _radio_memes() -> void:
 	if treino or not cinema.is_empty() or congelado > 0:
 		return
 	if _radio_em <= 0.0:
-		_radio_em = tempo_total + randf_range(5.0, 9.0)
+		_radio_em = tempo_total + vis.randf_range(5.0, 9.0)
 		return
 	if tempo_total < _radio_em:
 		return
-	if _meme_cd > 0 or Som.meme_tocando() or Som.trilha_tocando():
+	# online: decide só pelo que é igual nas duas pontas (o áudio de cada aparelho tem seu tempo)
+	if _meme_cd > 0 or (not em_rede and (Som.meme_tocando() or Som.trilha_tocando())):
 		_radio_em = tempo_total + 1.0
 		return
 	# baralho com os 33 áudios do elenco: todos tocam antes de algum repetir (na sessão inteira).
 	# De vez em quando (1 em 5), a frase escrita de quem não tem áudio, com a voz caricata.
 	var e: Array
 	var sem_audio: Array = Personagens.LISTA.filter(func(x): return x.get("memes_audio", []).is_empty() and not x.get("memes", []).is_empty())
-	if not sem_audio.is_empty() and randf() < 0.2:
-		var ds: Dictionary = sem_audio[randi() % sem_audio.size()]
-		e = [ds, Som.baralho("frase_" + String(ds["id"]), ds["memes"])]
+	if not sem_audio.is_empty() and vis.randf() < 0.2:
+		var ds: Dictionary = sem_audio[vis.randi() % sem_audio.size()]
+		e = [ds, _baralho("frase_" + String(ds["id"]), ds["memes"])]
 		Som.voz(ds["id"], "provocar")
 	else:
 		var opcoes: Array = []
 		for dd in Personagens.LISTA:
 			for m in dd.get("memes_audio", []):
 				opcoes.append([dd["id"], m[0], "res://audio/memes/%s/%s.ogg" % [dd["id"], m[1]]])
-		var tirado: Array = Som.baralho("radio", opcoes)
+		var tirado: Array = _baralho("radio", opcoes)
 		e = [Personagens.LISTA.filter(func(x): return x["id"] == tirado[0])[0], tirado[1]]
 		Som.meme(tirado[2])
 		radio_audios.append(tirado[2])
@@ -1250,8 +1303,10 @@ func _radio_memes() -> void:
 			lado = i
 	efeitos = efeitos.filter(func(ef): return ef["tipo"] != "meme")
 	efeitos.append({"tipo": "meme", "t": 0, "dur": 110, "lado": lado, "txt": e[1], "dados": d})
+	memes_soltos += 1
+	ultimo_meme = String(e[1])
 	_meme_cd = 240
-	_radio_em = tempo_total + randf_range(7.0, 13.0)
+	_radio_em = tempo_total + vis.randf_range(7.0, 13.0)
 
 
 # ---------------------------------------------------------------- efeitos

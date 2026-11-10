@@ -92,25 +92,31 @@ async function tecla(pg, k, n = 1) {
       i++;
       for (const [nome, pg] of [['A', a], ['B', b]]) {
         const e = await estado(pg);
-        if (e.q) historico[nome][e.q] = e.h;
+        if (e.q) historico[nome][e.q] = `${e.h}|${e.memes}|${e.meme}`;
       }
       if (i === 40) {
         await a.screenshot({ path: `${SAIDA}/web_A_luta.png` });
         await b.screenshot({ path: `${SAIDA}/web_B_luta.png` });
       }
     }
+    // a conferência inclui os memes: as duas telas precisam mostrar o mesmo meme no mesmo quadro
     let comuns = 0;
     let diferentes = 0;
+    let memesDiferentes = 0;
     for (const q of Object.keys(historico.A)) {
       if (q in historico.B) {
         comuns++;
-        if (historico.A[q] !== historico.B[q]) diferentes++;
+        const [ha, ...ma] = historico.A[q].split('|');
+        const [hb, ...mb] = historico.B[q].split('|');
+        if (ha !== hb) diferentes++;
+        if (ma.join('|') !== mb.join('|')) memesDiferentes++;
       }
     }
     const ea = await estado(a);
     const eb = await estado(b);
+    console.log(`memes: A ${ea.memes} (último "${ea.meme}") B ${eb.memes} (último "${eb.meme}"); conferências com meme diferente: ${memesDiferentes}; quadros parados esperando o outro: A ${ea.parado} B ${eb.parado}`);
     console.log(`conferências em comum: ${comuns}, diferentes: ${diferentes}; quadro A ${ea.q} B ${eb.q}; vidas A ${JSON.stringify(ea.vidas)} B ${JSON.stringify(eb.vidas)}; estados ${ea.estado}/${eb.estado}`);
-    if (comuns < 3 || diferentes > 0 || ea.estado !== 'conectado' || eb.estado !== 'conectado') falhou = true;
+    if (comuns < 3 || diferentes > 0 || memesDiferentes > 0 || ea.estado !== 'conectado' || eb.estado !== 'conectado') falhou = true;
   } catch (err) {
     console.log('ERRO:', err.message);
     falhou = true;

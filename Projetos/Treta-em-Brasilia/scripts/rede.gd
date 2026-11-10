@@ -156,6 +156,7 @@ var estado := "parado"  # parado, criando, aguardando, conectando, conectado, re
 var sala := ""
 var anfitriao := false
 var rtt_ms := 120.0
+var rtt_pico := 0.0  # maior ping recente (cai devagar): o 4G e o relay têm picos
 var info := ""
 var outro_oculto := false  # o outro jogador saiu da tela (avisou)
 
@@ -186,6 +187,7 @@ func _ready() -> void:
 
 func criar() -> void:
 	fechar()
+	rtt_pico = 0.0
 	anfitriao = true
 	sala = codigo_aleatorio()
 	_pendente = "criar"
@@ -227,9 +229,11 @@ func enviar(d: Dictionary) -> void:
 	JavaScriptBridge.eval("brk.enviar(%s, %s)" % [JSON.stringify(JSON.stringify(d)), "true" if guardar else "false"], true)
 
 
-## Quadros de atraso das entradas para a latência medida (ida = metade do ping).
+## Quadros de atraso das entradas para a latência medida (ida = metade do ping). Conta os picos
+## (não só a média) e uma folga maior: se a jogada do outro atrasa, a luta inteira para no ar.
 func atraso_sugerido() -> int:
-	return clampi(int(ceil(rtt_ms / 2.0 / 16.67)) + 2, 3, 8)
+	var ping := maxf(rtt_ms, rtt_pico * 0.85)
+	return clampi(int(ceil(ping / 2.0 / 16.67)) + 3, 4, 12)
 
 
 func link() -> String:
@@ -407,6 +411,7 @@ func _receber(d: Dictionary) -> void:
 		"pong":
 			var medido := float(Time.get_ticks_msec() - int(d.get("t", 0)))
 			rtt_ms = medido if _pings == 0 else lerpf(rtt_ms, medido, 0.3)
+			rtt_pico = maxf(rtt_pico * 0.97, medido)
 			_pings += 1
 			_publicar()
 		_:

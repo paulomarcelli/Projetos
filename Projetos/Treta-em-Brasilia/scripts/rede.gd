@@ -36,7 +36,15 @@ const REDISCAR := 4.0         # de quanto em quanto tempo o convidado tenta de n
 const JS := """
 window.brk = window.brk || (function () {
   const B = {fila: [], eventos: [], saida: [], peer: null, conn: null, pronto: false, criada: false, timer: null, tentativas: 0};
-  const cfg = {config: {iceServers: [{urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302']}]}};
+  // STUN acha o endereço público; o TURN (relay) é o plano B quando os dois aparelhos estão em
+  // redes que não deixam ligar direto (4G, Wi-Fi de outra casa): sem ele, o convidado não entra
+  const R = 'openrelayproject';
+  const cfg = {config: {iceServers: [
+    {urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302']},
+    {urls: 'turn:openrelay.metered.ca:80', username: R, credential: R},
+    {urls: 'turn:openrelay.metered.ca:443', username: R, credential: R},
+    {urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: R, credential: R},
+  ]}};
   const DE_REDE = ['network', 'server-error', 'socket-error', 'socket-closed', 'disconnected'];
   B.ev = (t, i) => B.eventos.push({t: t, i: i || ''});
   B.carregar = () => {

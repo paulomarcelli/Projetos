@@ -79,7 +79,7 @@ body {
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 <meta name='apple-mobile-web-app-capable' content='yes'><meta name='mobile-web-app-capable' content='yes'><style>html,body{background:#000;}</style><script>(function(){var feito=false;function cheia(){if(feito)return;var el=document.documentElement;var pedir=el.requestFullscreen||el.webkitRequestFullscreen;if(!pedir)return;try{var r=pedir.call(el,{navigationUI:'hide'});feito=true;var travar=function(){if(screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(function(){});}};if(r&&r.then){r.then(travar).catch(function(){feito=false;});}else{travar();}}catch(e){feito=false;}}if(('ontouchstart' in window)||navigator.maxTouchPoints>0){document.addEventListener('touchend',cheia,{passive:true});}window.brasiliaTelaCheia=function(){feito=false;cheia();};})();</script>
-	</head>
+	<script src='peerjs.min.js'></script><script>(function(){var P=window.Peer;if(!P)return;var U='openrelayproject',T=[{urls:'stun:openrelay.metered.ca:80'},{urls:'turn:openrelay.metered.ca:80',username:U,credential:U},{urls:'turn:openrelay.metered.ca:443',username:U,credential:U},{urls:'turn:openrelay.metered.ca:443?transport=tcp',username:U,credential:U}];function W(a,b){var s=(a&&typeof a==='object'),o=(s?a:b)||{};o.config=o.config||{};var l=(o.config.iceServers||[]).slice();if(!l.some(function(x){return String(x.urls).indexOf('turn:')>=0;}))l=l.concat(T);o.config.iceServers=l;return s?new P(o):new P(a,o);}W.prototype=P.prototype;Object.keys(P).forEach(function(k){W[k]=P[k];});window.Peer=W;})();</script></head>
 	<body>
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.

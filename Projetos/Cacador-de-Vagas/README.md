@@ -5,13 +5,14 @@
 **O n8n lê os alertas de vaga do LinkedIn no seu e-mail, a IA dá uma nota para cada vaga e um modelo de Machine Learning aprende o seu gosto.**
 
 ![n8n](https://img.shields.io/badge/n8n-self--hosted-EA4B71?style=flat-square&logo=n8n&logoColor=white)
-![Gemini](https://img.shields.io/badge/Gemini_API-4285F4?style=flat-square&logo=googlegemini&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=flat-square&logo=openai&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-opcional-4285F4?style=flat-square&logo=googlegemini&logoColor=white)
 ![Ollama](https://img.shields.io/badge/Ollama-opcional-000000?style=flat-square)
 ![Notion](https://img.shields.io/badge/Notion_API-000000?style=flat-square&logo=notion&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
 
-Tudo roda no seu computador e de graça.
+Tudo roda no seu computador. A IA usa a mesma chave da OpenAI da F.R.E.Y.A. (centavos por mês), ou Gemini e Ollama de graça.
 
 </div>
 
@@ -22,7 +23,8 @@ Alerta de vagas do LinkedIn (e-mail)
         │  o n8n lê assim que chega (IMAP)
         ▼
 Extrair vagas ──► já está no Notion? ──► IA dá nota 0–10 ──► salva no Notion ──► e-mail com as melhores
-                                         (Gemini ou Ollama)    (banco "Vagas")
+                                         (OpenAI, Gemini       (banco "Vagas")
+                                          ou Ollama)
 
 Você marca 👍 / 👎 nas vagas ──► ml/treinar.py ──► seu modelo × a IA: quem acerta mais o seu gosto?
 ```
@@ -43,13 +45,13 @@ Você marca 👍 / 👎 nas vagas ──► ml/treinar.py ──► seu modelo �
 > [!NOTE]
 > **Sem raspagem do LinkedIn.** O projeto só lê os e-mails de alerta que o próprio LinkedIn manda para você. Nada acessa o site do LinkedIn, então não há risco para a sua conta.
 
-## Do que você precisa (tudo grátis)
+## Do que você precisa
 
 | | Para quê |
 |---|---|
 | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Rodar o n8n. Sem Docker: `npx n8n` (precisa do Node.js 24) |
-| Conta Google com verificação em 2 etapas | Ler os alertas (IMAP) e mandar o resumo (SMTP) com uma senha de app |
-| Chave da API do Gemini ([aistudio.google.com/apikey](https://aistudio.google.com/apikey)) | A IA. Alternativa sem chave: Ollama local |
+| E-mail do Yahoo com uma senha de app | Ler os alertas (IMAP) e mandar o resumo (SMTP) |
+| A chave da OpenAI da F.R.E.Y.A. (`OPENAI_API_KEY` no `.env` dela) | A IA (`gpt-4o-mini`). Alternativas: Gemini (grátis) ou Ollama local |
 | Notion | O banco "Vagas" (já criado em DASHBOARD › VAGAS) |
 | Python 3.11+ | Só para a parte de Machine Learning |
 
@@ -65,15 +67,17 @@ Abra **http://localhost:5678** e crie a sua conta local, que fica só no seu com
 
 ### 2. Alertas de vaga no LinkedIn
 
-1. Pesquise vagas no LinkedIn: "estágio dados", "python júnior", "inteligência artificial estágio" e assim por diante.
-2. Ative o **alerta** de cada pesquisa, com frequência **diária** e aviso **por e-mail**.
+1. Confira se o e-mail do LinkedIn é o do **Yahoo**: LinkedIn › Configurações › Login e segurança › Endereços de e-mail. Os alertas vão para o e-mail principal.
+2. Pesquise vagas no LinkedIn: "estágio dados", "python júnior", "inteligência artificial estágio" e assim por diante.
+3. Ative o **alerta** de cada pesquisa, com frequência **diária** e aviso **por e-mail**.
 
-### 3. Gmail: marcador e senha de app
+### 3. Yahoo: pasta, filtro e senha de app
 
-1. **Senha de app:** em [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords), crie uma senha de app. Ela só aparece se a verificação em 2 etapas estiver ligada.
-2. **Filtro:** no Gmail, crie um filtro para **De:** `jobalerts-noreply@linkedin.com` → **Aplicar o marcador** `Vagas` (crie o marcador) → **Pular a Caixa de entrada**.
+1. **Senha de app:** no Yahoo, vá em Informações da conta › **Segurança da conta** › **Gerar senha de app**. Dê o nome "n8n" e copie a senha de 16 letras. O n8n entra com ela, nunca com a sua senha normal.
+2. **Pasta:** no Yahoo Mail, crie uma pasta chamada `Vagas`.
+3. **Filtro:** Configurações › Mais configurações › **Filtros** › Adicionar: **De** contém `jobalerts-noreply@linkedin.com` → mover para a pasta `Vagas`.
 
-   O fluxo lê os e-mails **não lidos** do marcador `Vagas` e os marca como lidos. Assim nada se perde se você abrir o Gmail antes.
+   O fluxo lê os e-mails **não lidos** da pasta `Vagas` e os marca como lidos. Assim nada se perde se você abrir o Yahoo antes.
 
 ### 4. Notion: integração
 
@@ -91,14 +95,14 @@ Em cada nó com triângulo vermelho, clique e escolha **Create new credential**:
 | Credencial | Tipo | Preenchimento | Nós |
 |---|---|---|---|
 | **Notion** | Header Auth | Name `Authorization` · Value `Bearer SEU_TOKEN_DO_NOTION` | Já está no Notion?, Salvar no Notion |
-| **IA (Gemini)** | Header Auth | Name `Authorization` · Value `Bearer SUA_CHAVE_DO_GEMINI` | Nota da IA, IA analisa |
-| **Gmail IMAP** | IMAP | Usuário: seu Gmail · Senha: a senha de app · Host `imap.gmail.com` · Porta `993` · SSL ligado | Novo alerta no e-mail |
-| **Gmail SMTP** | SMTP | Usuário: seu Gmail · Senha: a senha de app · Host `smtp.gmail.com` · Porta `465` · SSL ligado | Enviar resumo |
+| **IA (OpenAI)** | Header Auth | Name `Authorization` · Value `Bearer ` + a mesma `OPENAI_API_KEY` do `.env` da F.R.E.Y.A. | Nota da IA, IA analisa |
+| **Yahoo IMAP** | IMAP | Usuário: seu e-mail do Yahoo · Senha: a senha de app · Host `imap.mail.yahoo.com` · Porta `993` · SSL/TLS ligado | Novo alerta no e-mail |
+| **Yahoo SMTP** | SMTP | Usuário: seu e-mail do Yahoo · Senha: a senha de app · Host `smtp.mail.yahoo.com` · Porta `465` · SSL/TLS ligado | Enviar resumo |
 
-No nó **Configuração** (nos dois fluxos), troque `email_resumo` pelo seu e-mail. Ali também ficam o seu perfil, o modelo da IA e a nota mínima do resumo.
+No nó **Configuração** (nos dois fluxos), confira `email_resumo`: é o e-mail do Yahoo que envia e recebe o resumo. Ali também ficam o seu perfil, o modelo da IA e a nota mínima do resumo.
 
 > [!TIP]
-> Se o Gemini responder "model not found", troque `llm_modelo` pelo modelo Flash mais recente que aparece no AI Studio.
+> **Quer a IA de graça?** Use o Gemini: crie uma chave em [aistudio.google.com/apikey](https://aistudio.google.com/apikey), ponha `Bearer SUA_CHAVE_DO_GEMINI` na credencial de IA e, no nó **Configuração**, `llm_url` = `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions` e `llm_modelo` = o modelo Flash mais recente do AI Studio (por exemplo `gemini-2.5-flash`).
 
 ### 7. Testar
 
@@ -169,7 +173,8 @@ Modelos de 7B precisam de uns 8 GB de RAM, são mais lentos em CPU e erram mais 
 
 - O e-mail de alerta traz só título, empresa e local, então a nota do fluxo 01 é uma triagem. Para decidir, cole a descrição completa no fluxo 02.
 - A IA pode errar. Ela foi instruída a não inventar experiência, mas **revise toda resposta antes de enviar**.
-- O plano grátis do Gemini tem limite por minuto. Por isso o fluxo pede uma nota a cada 5 segundos.
+- O fluxo pede uma nota a cada 1,5 segundo, para não esbarrar no limite por minuto da API. No plano grátis do Gemini, suba esse intervalo para 5 segundos (opção *Batching* do nó **Nota da IA**).
+- Com a OpenAI, cada vaga custa uma fração de centavo com o `gpt-4o-mini`. Ponha um limite de gasto mensal em platform.openai.com › Limits.
 - O fluxo 01 só funciona com o n8n ligado. E-mails que chegam com ele desligado ficam não lidos e são lidos quando ele volta.
 
 ## Estrutura

@@ -1,4 +1,4 @@
-// E-mail de EXEMPLO para testar o fluxo sem configurar o Gmail.
+// E-mail de EXEMPLO para testar o fluxo sem configurar o e-mail.
 // As duas vagas abaixo são inventadas.
 return [{
   json: {

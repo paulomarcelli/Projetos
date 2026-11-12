@@ -57,7 +57,7 @@
         200
       ],
       "parameters": {
-        "jsCode": "// E-mail de EXEMPLO para testar o fluxo sem configurar o Gmail.\n// As duas vagas abaixo são inventadas.\nreturn [{\n  json: {\n    subject: 'Exemplo: alerta de vagas',\n    date: new Date().toISOString(),\n    textPlain: [\n      'Seu alerta de vagas para estágio em dados em São Paulo',\n      '',\n      'Estágio em Ciência de Dados (EXEMPLO)',\n      'Empresa Fictícia de Tecnologia',\n      'São Paulo, SP (Híbrido)',\n      'Ver vaga: https://www.linkedin.com/comm/jobs/view/4999999901/?trackingId=exemplo',\n      '',\n      '---------------------------------------------------------',\n      '',\n      'Vendedor Externo Sênior (EXEMPLO)',\n      'Comércio Fictício Ltda',\n      'Guarulhos, SP (Presencial)',\n      'Ver vaga: https://www.linkedin.com/comm/jobs/view/4999999902/?trackingId=exemplo',\n    ].join('\\n'),\n    textHtml: '',\n  },\n}];\n"
+        "jsCode": "// E-mail de EXEMPLO para testar o fluxo sem configurar o e-mail.\n// As duas vagas abaixo são inventadas.\nreturn [{\n  json: {\n    subject: 'Exemplo: alerta de vagas',\n    date: new Date().toISOString(),\n    textPlain: [\n      'Seu alerta de vagas para estágio em dados em São Paulo',\n      '',\n      'Estágio em Ciência de Dados (EXEMPLO)',\n      'Empresa Fictícia de Tecnologia',\n      'São Paulo, SP (Híbrido)',\n      'Ver vaga: https://www.linkedin.com/comm/jobs/view/4999999901/?trackingId=exemplo',\n      '',\n      '---------------------------------------------------------',\n      '',\n      'Vendedor Externo Sênior (EXEMPLO)',\n      'Comércio Fictício Ltda',\n      'Guarulhos, SP (Presencial)',\n      'Ver vaga: https://www.linkedin.com/comm/jobs/view/4999999902/?trackingId=exemplo',\n    ].join('\\n'),\n    textHtml: '',\n  },\n}];\n"
       }
     },
     {
@@ -90,13 +90,13 @@
             {
               "id": "cdd29210-66d8-541b-9200-9d9aa7e6422b",
               "name": "llm_url",
-              "value": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+              "value": "https://api.openai.com/v1/chat/completions",
               "type": "string"
             },
             {
               "id": "1c8faa4f-c88c-5f56-be91-4c39a0e023ae",
               "name": "llm_modelo",
-              "value": "gemini-2.5-flash",
+              "value": "gpt-4o-mini",
               "type": "string"
             },
             {
@@ -108,7 +108,7 @@
             {
               "id": "16bd8c87-9c87-5b0a-80b3-9eb5a499a656",
               "name": "email_resumo",
-              "value": "seu-email@gmail.com",
+              "value": "seu-email@yahoo.com",
               "type": "string"
             }
           ]
@@ -198,7 +198,7 @@
           "batching": {
             "batch": {
               "batchSize": 1,
-              "batchInterval": 5000
+              "batchInterval": 1500
             }
           },
           "timeout": 120000

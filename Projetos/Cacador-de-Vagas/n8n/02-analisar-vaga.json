@@ -94,13 +94,13 @@
             {
               "id": "cdd29210-66d8-541b-9200-9d9aa7e6422b",
               "name": "llm_url",
-              "value": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+              "value": "https://api.openai.com/v1/chat/completions",
               "type": "string"
             },
             {
               "id": "1c8faa4f-c88c-5f56-be91-4c39a0e023ae",
               "name": "llm_modelo",
-              "value": "gemini-2.5-flash",
+              "value": "gpt-4o-mini",
               "type": "string"
             },
             {
@@ -112,7 +112,7 @@
             {
               "id": "16bd8c87-9c87-5b0a-80b3-9eb5a499a656",
               "name": "email_resumo",
-              "value": "seu-email@gmail.com",
+              "value": "seu-email@yahoo.com",
               "type": "string"
             }
           ]

@@ -5,6 +5,7 @@ Uso: python n8n/montar_fluxos.py
 Edite o código em n8n/codigo/*.js e o seu perfil em perfil.md, e rode de novo.
 """
 import json
+import os
 import uuid
 from pathlib import Path
 
@@ -12,8 +13,10 @@ PASTA = Path(__file__).resolve().parent
 COD = PASTA / "codigo"
 PERFIL = (PASTA.parent / "perfil.md").read_text(encoding="utf-8").strip()
 NOTION_DB = "e4d8a79cb87948ceadad7ec8504a6977"
-LLM_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-LLM_MODELO = "gemini-2.5-flash"
+# Mesmo provedor e modelo da F.R.E.Y.A. (OpenAI). Para Gemini ou Ollama, veja o README.
+LLM_URL = "https://api.openai.com/v1/chat/completions"
+LLM_MODELO = "gpt-4o-mini"
+EMAIL = os.environ.get("EMAIL_RESUMO", "seu-email@yahoo.com")
 
 ler = lambda nome: (COD / nome).read_text(encoding="utf-8")
 comum = ler("comum.js")
@@ -34,7 +37,7 @@ def config(pos):
         ("llm_url", LLM_URL, "string"),
         ("llm_modelo", LLM_MODELO, "string"),
         ("nota_minima_resumo", 7, "number"),
-        ("email_resumo", "seu-email@gmail.com", "string"),
+        ("email_resumo", EMAIL, "string"),
     ]
     return {"id": uid("Configuração"), "name": "Configuração", "type": "n8n-nodes-base.set", "typeVersion": 3.4,
             "position": pos,
@@ -101,7 +104,7 @@ f1 = {
              "={{ JSON.stringify($json.consulta) }}", [400, 0], NOTION_HDR, lote_ms=400),
         codigo("Só vagas novas", comum + "\n" + ler("so_novas.js"), [620, 0]),
         http("Nota da IA", f"={{{{ {CFG}.llm_url }}}}", "={{ JSON.stringify($json.pedido_ia) }}", [840, 0],
-             lote_ms=5000, continuar=True, timeout=120000),
+             lote_ms=1500, continuar=True, timeout=120000),
         codigo("Montar página", comum + "\n" + ler("montar_pagina.js"), [1060, 0]),
         http("Salvar no Notion", "https://api.notion.com/v1/pages", "={{ JSON.stringify($json.corpo_pagina) }}",
              [1280, 0], NOTION_HDR, lote_ms=400),

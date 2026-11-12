@@ -1,0 +1,28 @@
+# Sobe o n8n no seu computador: docker compose up -d  →  http://localhost:5678
+# Com IA local (Ollama) também:   docker compose --profile ollama up -d
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest   # testado com a versão 2.47
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_RUNNERS_ENABLED=true
+    volumes:
+      - n8n_dados:/home/node/.n8n
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_dados:/root/.ollama
+
+volumes:
+  n8n_dados:
+  ollama_dados:

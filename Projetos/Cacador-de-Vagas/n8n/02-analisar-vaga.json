@@ -1,0 +1,321 @@
+{
+  "name": "Caçador de Vagas · 02 analisar uma vaga",
+  "nodes": [
+    {
+      "id": "3b69974b-d42e-59bf-8acc-6d8b22482194",
+      "name": "Leia antes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -340
+      ],
+      "parameters": {
+        "content": "## 📝 Analisar uma vaga\n\nCole a descrição completa e as perguntas do formulário. A IA dá a nota, escreve as respostas com os seus projetos reais e salva tudo no Notion.\n\nFormulário (com o fluxo publicado): **http://localhost:5678/form/analisar-vaga**",
+        "width": 440,
+        "height": 240,
+        "color": 4
+      }
+    },
+    {
+      "id": "28cefb95-f63e-57cd-968b-8898191715ad",
+      "name": "Formulário: analisar vaga",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -460,
+        0
+      ],
+      "webhookId": "a14f0d38-aebd-57a2-99f1-7b0dfeec39a9",
+      "parameters": {
+        "formTitle": "Analisar uma vaga",
+        "formDescription": "Cole a descrição da vaga e as perguntas do formulário. A análise aparece na próxima tela e fica salva no Notion.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Título da vaga",
+              "requiredField": true,
+              "placeholder": "Ex.: Estágio em Dados"
+            },
+            {
+              "fieldLabel": "Empresa"
+            },
+            {
+              "fieldLabel": "Link da vaga",
+              "placeholder": "https://www.linkedin.com/jobs/view/..."
+            },
+            {
+              "fieldLabel": "Descrição da vaga",
+              "fieldType": "textarea",
+              "requiredField": true,
+              "placeholder": "Cole aqui a descrição completa da vaga"
+            },
+            {
+              "fieldLabel": "Perguntas do formulário",
+              "fieldType": "textarea",
+              "placeholder": "Uma pergunta por linha (opcional)"
+            }
+          ]
+        },
+        "options": {
+          "path": "analisar-vaga",
+          "buttonLabel": "Analisar",
+          "appendAttribution": false
+        }
+      }
+    },
+    {
+      "id": "56c73838-5120-5e6d-a108-cbe9298edf94",
+      "name": "Configuração",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        0
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": true,
+        "options": {},
+        "assignments": {
+          "assignments": [
+            {
+              "id": "191cbe66-4181-5db8-b2b5-2b97a9baf5c7",
+              "name": "perfil",
+              "value": "Paulo Marcelli, estudante de Análise e Desenvolvimento de Sistemas (ADS) na FECAP, em São Paulo (curso em andamento).\n\nExperiência profissional:\n- Consultor de atendimento trilíngue (português, inglês e espanhol) na Apex America (atual).\n- 3 anos como professor de inglês e espanhol na Fisk.\n\nProjetos (github.com/paulomarcelli/Projetos):\n- LUNA MIND: assistente de apoio emocional por texto e voz, publicada. Python, Flask, APIs da OpenAI e do Gemini, RAG com fontes e camada de segurança em código.\n- ATLAS: simulador de cenários geopolíticos com três agentes de IA (pesquisador, analista, revisor), validação com Pydantic, FastAPI, React e TypeScript, SQLite, Gemini, Groq e Ollama.\n- F.R.E.Y.A.: análise prospectiva com RAG híbrido (Qdrant e Elasticsearch) e GraphRAG em Neo4j, FastAPI, React e TypeScript.\n- Iris: plataforma de inteligência estratégica em Relações Internacionais (React, TypeScript, FastAPI, PostgreSQL com pgvector), em desenvolvimento.\n- Caçador de Vagas: automação com n8n, IA para classificar vagas e modelo de Machine Learning (scikit-learn) treinado com as minhas avaliações.\n- Jogos (Godot e Phaser) e sites com Three.js e GSAP.\n\nConhecimentos: Python, JavaScript e TypeScript, React, FastAPI, SQL (Oracle, MySQL, PL/SQL), C#, Git. Inglês e espanhol fluentes.\n\nO que procuro:\n- Estágio ou vaga júnior em IA, dados ou desenvolvimento de software.\n- Remoto, ou híbrido/presencial em São Paulo.\n- Não tenho interesse em vagas pleno ou sênior que exigem anos de experiência, nem em vendas.",
+              "type": "string"
+            },
+            {
+              "id": "945a8980-ddb0-5d30-a310-f9450d9d127c",
+              "name": "notion_database_id",
+              "value": "e4d8a79cb87948ceadad7ec8504a6977",
+              "type": "string"
+            },
+            {
+              "id": "cdd29210-66d8-541b-9200-9d9aa7e6422b",
+              "name": "llm_url",
+              "value": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+              "type": "string"
+            },
+            {
+              "id": "1c8faa4f-c88c-5f56-be91-4c39a0e023ae",
+              "name": "llm_modelo",
+              "value": "gemini-2.5-flash",
+              "type": "string"
+            },
+            {
+              "id": "9d582515-44a5-5a82-bbba-ab9fa077f97b",
+              "name": "nota_minima_resumo",
+              "value": 7,
+              "type": "number"
+            },
+            {
+              "id": "16bd8c87-9c87-5b0a-80b3-9eb5a499a656",
+              "name": "email_resumo",
+              "value": "seu-email@gmail.com",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "afc2d9b9-63ce-5ee8-9033-e014aeca6ec6",
+      "name": "Pedido para a IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Ajudantes usados nos nós de código (o montador copia este trecho para dentro de cada nó).\nconst AREAS = ['IA e dados', 'Desenvolvimento', 'Suporte e infra', 'Outra'];\nconst NIVEIS = ['Estágio', 'Júnior', 'Pleno ou sênior', 'Não informado'];\nconst MODALIDADES = ['Remoto', 'Híbrido', 'Presencial', 'Não informado'];\nconst opcao = (valor, lista, padrao) => (lista.includes(valor) ? valor : padrao);\nconst texto = (v) => (Array.isArray(v) ? v.join('; ') : v == null ? '' : String(v));\nconst rt = (v) => {\n  const s = texto(v);\n  return { rich_text: s ? [{ text: { content: s.slice(0, 1990) } }] : [] };\n};\nconst lerJsonDaIA = (resposta) => {\n  const conteudo = resposta?.choices?.[0]?.message?.content;\n  if (!conteudo) {\n    const erro = resposta?.error?.message || resposta?.error || JSON.stringify(resposta).slice(0, 300);\n    return { erro: `A IA não respondeu: ${texto(erro)}` };\n  }\n  const limpo = String(conteudo).replace(/^\\s*```(?:json)?/i, '').replace(/```\\s*$/, '').trim();\n  try { return JSON.parse(limpo); } catch (e) {\n    const m = limpo.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { return JSON.parse(m[0]); } catch (e2) {} }\n    return { erro: `A IA respondeu fora do formato: ${limpo.slice(0, 300)}` };\n  }\n};\nconst notaValida = (n) => (n === '' || n == null || !Number.isFinite(Number(n)) ? null : Math.max(0, Math.min(10, Math.round(Number(n)))));\nconst escapar = (s) => texto(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\n// Fluxo 02: monta o pedido para a IA com a descrição completa e as perguntas do formulário.\nconst f = $input.first().json;\nconst cfg = $('Configuração').first().json;\nconst campo = (nome) => texto(f[nome]).trim();\nconst perguntas = campo('Perguntas do formulário');\nconst sistema = `Você ajuda um candidato a avaliar uma vaga e a se candidatar. Perfil e preferências do candidato:\\n${cfg.perfil}\\n\\n` +\n  `Regras: use só o que está no perfil; nunca invente experiência, curso ou ferramenta que o candidato não tem. ` +\n  `Quando a vaga pedir algo que ele não tem, diga com honestidade e mostre o que ele tem de mais próximo.\\n` +\n  `Responda APENAS com um objeto JSON com estas chaves:\\n` +\n  `\"nota\": inteiro de 0 a 10 de compatibilidade,\\n\"porque\": 2 ou 3 frases,\\n\"pontos_fortes\": o que do perfil combina,\\n` +\n  `\"lacunas\": o que falta e como compensar,\\n\"area\": um de ${JSON.stringify(AREAS)},\\n\"nivel\": um de ${JSON.stringify(NIVEIS)},\\n` +\n  `\"modalidade\": um de ${JSON.stringify(MODALIDADES)},\\n` +\n  `\"respostas\": lista de objetos {\"pergunta\", \"resposta\"}, uma para cada pergunta do formulário, em primeira pessoa, ` +\n  `naturais e específicas, citando projetos reais do perfil (lista vazia se não houver perguntas),\\n` +\n  `\"mensagem_recrutador\": mensagem curta (até 600 caracteres) para mandar ao recrutador no LinkedIn,\\n` +\n  `\"destacar_no_curriculo\": o que destacar no currículo para esta vaga.\\nEscreva em português do Brasil.`;\nconst usuario = `Vaga: ${campo('Título da vaga')}\\nEmpresa: ${campo('Empresa')}\\nLink: ${campo('Link da vaga')}\\n\\n` +\n  `Descrição completa:\\n${campo('Descrição da vaga')}\\n\\nPerguntas do formulário:\\n${perguntas || '(nenhuma)'}`;\nreturn [{ json: { form: f, pedido_ia: { model: cfg.llm_modelo, temperature: 0.4, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: sistema }, { role: 'user', content: usuario }] } } }];\n"
+      }
+    },
+    {
+      "id": "33933f3f-0444-56a3-8516-e926767f9ce8",
+      "name": "IA analisa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuração').first().json.llm_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.pedido_ia) }}",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "7ac238e8-1055-5d0b-a92d-bfb6278b59f1",
+      "name": "Montar análise",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Ajudantes usados nos nós de código (o montador copia este trecho para dentro de cada nó).\nconst AREAS = ['IA e dados', 'Desenvolvimento', 'Suporte e infra', 'Outra'];\nconst NIVEIS = ['Estágio', 'Júnior', 'Pleno ou sênior', 'Não informado'];\nconst MODALIDADES = ['Remoto', 'Híbrido', 'Presencial', 'Não informado'];\nconst opcao = (valor, lista, padrao) => (lista.includes(valor) ? valor : padrao);\nconst texto = (v) => (Array.isArray(v) ? v.join('; ') : v == null ? '' : String(v));\nconst rt = (v) => {\n  const s = texto(v);\n  return { rich_text: s ? [{ text: { content: s.slice(0, 1990) } }] : [] };\n};\nconst lerJsonDaIA = (resposta) => {\n  const conteudo = resposta?.choices?.[0]?.message?.content;\n  if (!conteudo) {\n    const erro = resposta?.error?.message || resposta?.error || JSON.stringify(resposta).slice(0, 300);\n    return { erro: `A IA não respondeu: ${texto(erro)}` };\n  }\n  const limpo = String(conteudo).replace(/^\\s*```(?:json)?/i, '').replace(/```\\s*$/, '').trim();\n  try { return JSON.parse(limpo); } catch (e) {\n    const m = limpo.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { return JSON.parse(m[0]); } catch (e2) {} }\n    return { erro: `A IA respondeu fora do formato: ${limpo.slice(0, 300)}` };\n  }\n};\nconst notaValida = (n) => (n === '' || n == null || !Number.isFinite(Number(n)) ? null : Math.max(0, Math.min(10, Math.round(Number(n)))));\nconst escapar = (s) => texto(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\n// Fluxo 02: guarda a análise no Notion, com as respostas no corpo da página.\nconst cfg = $('Configuração').first().json;\nconst f = $('Pedido para a IA').first().json.form;\nconst campo = (nome) => texto(f[nome]).trim();\nconst a = lerJsonDaIA($input.first().json);\nconst nota = notaValida(a.nota);\nconst respostas = Array.isArray(a.respostas) ? a.respostas : [];\nconst paragrafos = (s) => {\n  const t = texto(s);\n  const blocos = [];\n  for (let i = 0; i < t.length; i += 1900) blocos.push({ object: 'block', type: 'paragraph', paragraph: { rich_text: [{ text: { content: t.slice(i, i + 1900) } }] } });\n  return blocos.length ? blocos : [{ object: 'block', type: 'paragraph', paragraph: { rich_text: [] } }];\n};\nconst titulo = (nivel, s) => ({ object: 'block', type: `heading_${nivel}`, [`heading_${nivel}`]: { rich_text: [{ text: { content: texto(s).slice(0, 190) } }] } });\nconst filhos = [];\nif (respostas.length) {\n  filhos.push(titulo(2, 'Respostas para o formulário'));\n  for (const r of respostas) filhos.push(titulo(3, r.pergunta), ...paragrafos(r.resposta));\n}\nfilhos.push(titulo(2, 'Mensagem para o recrutador'), ...paragrafos(a.mensagem_recrutador));\nfilhos.push(titulo(2, 'O que destacar no currículo'), ...paragrafos(a.destacar_no_curriculo));\nconst rascunho = respostas.map((r) => `${texto(r.pergunta)}\\n${texto(r.resposta)}`).join('\\n\\n') || texto(a.mensagem_recrutador);\nconst link = campo('Link da vaga');\nconst id = (link.match(/jobs\\/view\\/(?:[^\\/?]*-)?(\\d{6,})/) || [])[1] || '';\nconst corpo = {\n  parent: { database_id: cfg.notion_database_id },\n  properties: {\n    'Vaga': { title: [{ text: { content: campo('Título da vaga').slice(0, 1990) || 'Vaga sem título' } }] },\n    'Empresa': rt(campo('Empresa')),\n    'Link': { url: link || null },\n    'Nota IA': { number: nota },\n    'Por quê': rt(a.erro || a.porque),\n    'Pontos fortes': rt(a.pontos_fortes),\n    'Lacunas': rt(a.lacunas),\n    'Área': { select: { name: opcao(a.area, AREAS, 'Outra') } },\n    'Nível': { select: { name: opcao(a.nivel, NIVEIS, 'Não informado') } },\n    'Modalidade': { select: { name: opcao(a.modalidade, MODALIDADES, 'Não informado') } },\n    'Status': { select: { name: 'Vi' } },\n    'Fonte': { select: { name: 'Análise manual' } },\n    'Descrição': rt(campo('Descrição da vaga')),\n    'Rascunho': rt(rascunho),\n    'Recebida em': { date: { start: new Date().toISOString().slice(0, 10) } },\n    'ID vaga': rt(id),\n  },\n  children: filhos.slice(0, 95),\n};\nreturn [{ json: { analise: a, nota, corpo_pagina: corpo } }];\n"
+      }
+    },
+    {
+      "id": "2deec3d1-2d24-550c-8047-1cef9c05e874",
+      "name": "Salvar no Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.corpo_pagina) }}",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "8d99a7cf-379d-50a6-8326-255e317a3c0d",
+      "name": "Página de resultado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Ajudantes usados nos nós de código (o montador copia este trecho para dentro de cada nó).\nconst AREAS = ['IA e dados', 'Desenvolvimento', 'Suporte e infra', 'Outra'];\nconst NIVEIS = ['Estágio', 'Júnior', 'Pleno ou sênior', 'Não informado'];\nconst MODALIDADES = ['Remoto', 'Híbrido', 'Presencial', 'Não informado'];\nconst opcao = (valor, lista, padrao) => (lista.includes(valor) ? valor : padrao);\nconst texto = (v) => (Array.isArray(v) ? v.join('; ') : v == null ? '' : String(v));\nconst rt = (v) => {\n  const s = texto(v);\n  return { rich_text: s ? [{ text: { content: s.slice(0, 1990) } }] : [] };\n};\nconst lerJsonDaIA = (resposta) => {\n  const conteudo = resposta?.choices?.[0]?.message?.content;\n  if (!conteudo) {\n    const erro = resposta?.error?.message || resposta?.error || JSON.stringify(resposta).slice(0, 300);\n    return { erro: `A IA não respondeu: ${texto(erro)}` };\n  }\n  const limpo = String(conteudo).replace(/^\\s*```(?:json)?/i, '').replace(/```\\s*$/, '').trim();\n  try { return JSON.parse(limpo); } catch (e) {\n    const m = limpo.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { return JSON.parse(m[0]); } catch (e2) {} }\n    return { erro: `A IA respondeu fora do formato: ${limpo.slice(0, 300)}` };\n  }\n};\nconst notaValida = (n) => (n === '' || n == null || !Number.isFinite(Number(n)) ? null : Math.max(0, Math.min(10, Math.round(Number(n)))));\nconst escapar = (s) => texto(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\n// Fluxo 02: página de resultado que aparece depois de enviar o formulário.\nconst m = $('Montar análise').first().json;\nconst a = m.analise;\nconst pagina = $input.first().json.url || '';\nconst bloco = (t, c) => (c ? `<h3 style=\"margin:18px 0 6px\">${escapar(t)}</h3><p style=\"white-space:pre-wrap;margin:0\">${escapar(c)}</p>` : '');\nconst respostas = (Array.isArray(a.respostas) ? a.respostas : []).map((r) => bloco(r.pergunta, r.resposta)).join('');\nconst html = `<div style=\"font-family:Arial,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;color:#1f2937;line-height:1.5\">` +\n  `<p style=\"font-size:14px;color:#6b7280;margin:0\">Nota de compatibilidade</p>` +\n  `<p style=\"font-size:44px;font-weight:700;color:#c2410c;margin:0\">${m.nota ?? '–'}<span style=\"font-size:20px;color:#9ca3af\">/10</span></p>` +\n  `<p>${escapar(a.erro || a.porque)}</p>` +\n  bloco('Pontos fortes', a.pontos_fortes) + bloco('Lacunas', a.lacunas) +\n  (respostas ? `<h2 style=\"margin-top:28px\">Respostas para o formulário</h2>${respostas}` : '') +\n  bloco('Mensagem para o recrutador', a.mensagem_recrutador) + bloco('O que destacar no currículo', a.destacar_no_curriculo) +\n  (pagina ? `<p style=\"margin-top:28px\"><a href=\"${escapar(pagina)}\">Abrir no Notion</a></p>` : '') +\n  `<p style=\"font-size:13px;color:#6b7280\">Revise antes de enviar: a IA escreve o rascunho, a decisão é sua.</p></div>`;\nreturn [{ json: { html } }];\n"
+      }
+    },
+    {
+      "id": "06a468cb-27de-5d3a-8674-72bcbcba5293",
+      "name": "Mostrar resultado",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        1080,
+        0
+      ],
+      "webhookId": "07ab3eec-c4bb-55f0-87be-fe8aa9a9fa95",
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "showText",
+        "responseText": "={{ $json.html }}"
+      }
+    }
+  ],
+  "connections": {
+    "Formulário: analisar vaga": {
+      "main": [
+        [
+          {
+            "node": "Configuração",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuração": {
+      "main": [
+        [
+          {
+            "node": "Pedido para a IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedido para a IA": {
+      "main": [
+        [
+          {
+            "node": "IA analisa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA analisa": {
+      "main": [
+        [
+          {
+            "node": "Montar análise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar análise": {
+      "main": [
+        [
+          {
+            "node": "Salvar no Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar no Notion": {
+      "main": [
+        [
+          {
+            "node": "Página de resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página de resultado": {
+      "main": [
+        [
+          {
+            "node": "Mostrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo"
+  },
+  "pinData": {}
+}

@@ -1,11 +1,11 @@
-# PRD — Newsletter de PP [nome a definir]
+# PRD — Newsletter do Eduardo Pereira [nome a definir — sugestão: *Intervalo Comercial*]
 
 > Etapa 1 do fluxo "Criar sites com IA". Itens marcados com `[a definir]` ainda precisam de resposta;
 > itens marcados com `(proposta)` são sugestões a confirmar.
 
 ## 1. Visão geral
-- **O que é:** uma newsletter com site próprio onde um estudante de Publicidade e Propaganda publica seus textos, e cada post novo chega por e-mail a quem assinou.
-- **Para quem:** colegas de curso, professores, recrutadores de agências e quem acompanha publicidade e criatividade. `[a definir: público principal]`
+- **O que é:** uma newsletter com site próprio onde Eduardo Pereira, estudante de Publicidade e Propaganda, escreve sobre **séries e cultura pop com olhar de publicitário**: o marketing por trás dos lançamentos, as aberturas, os pôsteres, os personagens como marca, o merchandising dentro dos episódios. Cada post novo chega por e-mail a quem assinou.
+- **Para quem:** fãs de séries curiosos sobre os bastidores, colegas de curso e professores de PP, e recrutadores de agências (o site também é portfólio).
 - **Objetivo principal:** o visitante **assina a newsletter** (deixa o e-mail) e lê os posts.
 - **Tipo:** aplicação com login e dados (painel do autor, assinantes e envio de e-mails).
 
@@ -13,7 +13,8 @@
 - O site também funciona como **portfólio vivo**: a própria newsletter mostra o olhar criativo do estudante.
 - Identidade visual de cores vivas e com personalidade, longe do visual padrão de Substack e Medium.
 - O e-mail chega com a mesma cara do site, não com a marca de uma plataforma.
-- `[a definir: assuntos e frequência — ex.: análise de campanhas, bastidores do curso, referências da semana]`
+- Assunto: séries e cultura pop, sempre lidas pelo ângulo da publicidade. `[a definir: frequência — ex.: semanal]`
+- Ideias de seções fixas (proposta): **Análise do episódio** (a campanha de lançamento de uma série), **Pôster da semana** (direção de arte de um cartaz), **Product placement** (marcas que aparecem em cena), **Maratona** (lista de indicações).
 
 ## 3. Estrutura (telas e seções)
 | Tela | Seções | Objetivo da tela |
@@ -32,16 +33,23 @@
 **E-mail do post novo:** título, capa, resumo (ou texto completo `[a definir]`), botão "Ler no site" e link de descadastro em todo envio.
 
 ## 4. Identidade visual
-- **Estilo:** vibrante e editorial, com tipografia grande, blocos de cor chapada e um clima de "cartaz de campanha". `(proposta)`
-- **Paleta (proposta):** magenta `#FF2E88`, amarelo `#FFD400`, azul elétrico `#2D5BFF`, laranja `#FF6B2C`, fundo creme `#FFF8EC`, texto quase preto `#14121F`. As combinações serão conferidas para contraste (WCAG AA) na etapa de design.
-- **Fontes (proposta):** títulos em Bricolage Grotesque; texto em Instrument Sans (Google Fonts).
-- **Tom de voz:** descontraído, criativo e próximo, sem perder a credibilidade. `[a confirmar]`
-- **Nome da newsletter (sugestões):** *Caixa Alta*, *Briefing Aberto*, *Pauta Livre*, *Call to Read*. `[a definir]`
+- **Conceito:** *o intervalo comercial vira o site.* Cada seção é um "bloco" de cor chapada, de ponta a ponta, como as barras coloridas da TV e os cartazes de campanha em sequência. É onde séries (TV) e publicidade (o comercial) se encontram.
+- **Direção de arte:** "Capítulos de cor", sorteada e escolhida com a skill de design (taste-skill). Seções de tela cheia, cada uma de uma cor, encostadas sem divisória; um só grid e uma só fonte segurando tudo.
+- **Paleta:** azul elétrico `#2436FF`, vermelho-laranja `#FF3B1F`, preto `#0A0A0A`, azul-noite `#050A5C`, amarelo `#FFD400` (acrescentado para reforçar as "cores vivas"), fundo branco `#FFFFFF`. Cada cor tem seu texto fixo (branco ou preto) para garantir contraste; nada de degradês nem tons intermediários.
+- **Fonte:** Albert Sans (Google Fonts), uma família só: 600 nos títulos enormes e apertados, 400/500 no texto, com corpo de 18–20px.
+- **Abertura da Home:** "linha d'água". A tela é dividida ao meio em branco e cor, e o título gigante em caixa alta é cortado pela linha: em cima de uma cor, embaixo de outra.
+- **Animação assinatura:** cada linha do título sobe de trás da própria linha de base ao carregar. O resto do site só tem entradas discretas e respostas aos cliques.
+- **Tom de voz:** descontraído e opinativo, com vocabulário de quem é fã e de quem é publicitário.
+- **Nome da newsletter (sugestões):** **Intervalo Comercial** (recomendado: junta TV e publicidade num nome só), *Pós-Créditos*, *Próximo Episódio*, *Plot & Pitch*. `[a definir]`
 
 ## 5. Referências
+Estudadas pela skill de design (Awwwards). Aproveitamos só o princípio, nunca nomes, textos ou imagens.
 | Referência | O que aproveitar |
 |-----------|------------------|
-| `[a definir — Etapa 2]` | |
+| Site de estúdio com seções em cor chapada (azul, preto, amarelo) | Trocar de cor a cada seção, com texto só preto ou branco |
+| Relatório anual em blocos de cor | Começar títulos e textos numa linha fixa a ~42% da largura; à esquerda, só números de capítulo e créditos |
+| Site de comediante com recortes em "adesivo" | Fotos recortadas com borda branca grossa, como figurinha — bom para personagens e pôsteres nos posts |
+| Barras de cor da TV e a vinheta "Voltamos já" | Ritmo de blocos de cor; textos de transição como "intervalo", "voltamos já", "próximo episódio" |
 
 ## 6. Conteúdo
 - Nome e foto do estudante, faculdade/semestre, links de redes: `[a definir]`

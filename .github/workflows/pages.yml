@@ -83,6 +83,9 @@ jobs:
           mkdir -p _site/Projetos/Treta-em-Brasilia
           cp -a Projetos/Treta-em-Brasilia/web-build/. _site/Projetos/Treta-em-Brasilia/
           rm -f _site/Projetos/Treta-em-Brasilia/.gdignore
+          # Relógio de Estudos: página única (relógio de placas de 30 min, incorporado no Notion)
+          mkdir -p _site/Projetos/Relogio-de-Estudos
+          cp -a Projetos/Relogio-de-Estudos/index.html _site/Projetos/Relogio-de-Estudos/
           touch _site/.nojekyll
         env:
           # Servidor da Luna no Render. A variável LUNA_API_URL do repositório, se existir, tem prioridade.

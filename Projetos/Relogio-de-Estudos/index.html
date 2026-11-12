@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relógio de Estudos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Oswald:wght@500&display=swap">
+<style>
+/* Relógio de placas: contagem regressiva para sessões de estudo (padrão 30 min). */
+:root {
+  --fundo: #f6f1ea;
+  --placa: #2a211b;
+  --placa-alto: #352a22;
+  --numero: #f4ece2;
+  --linha: #120d0a;
+  --texto: #4a3a2e;
+  --suave: #8a7462;
+  --acento: #b5713d;
+  --botao: #ffffff;
+  --botao-borda: #e3d6c6;
+  --f-num: "Oswald", "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  --f-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #191919; --placa: #2b2b2b; --placa-alto: #343434; --numero: #f1ebe4; --linha: #111;
+    --texto: #e6ddd3; --suave: #9b8f84; --acento: #d58a4d; --botao: #252525; --botao-borda: #3a3a3a;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--f-ui);
+  display: grid; place-items: center;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px;
+}
+.relogio { display: grid; gap: 18px; justify-items: center; width: 100%; max-width: 760px; }
+.rotulo { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--suave); font-weight: 600; }
+.rotulo b { color: var(--acento); font-weight: 600; }
+.placas { display: flex; align-items: center; gap: clamp(6px, 1.6vw, 14px); }
+.grupo { display: flex; gap: clamp(4px, 1vw, 8px); }
+.dois-pontos { display: grid; gap: clamp(10px, 3vw, 22px); }
+.dois-pontos i { width: clamp(7px, 1.6vw, 12px); aspect-ratio: 1; border-radius: 50%; background: var(--placa); display: block; }
+
+/* Cada dígito é uma placa com duas metades e duas abas que giram na troca */
+.placa {
+  --alt: clamp(88px, 22vw, 168px);
+  position: relative; width: calc(var(--alt) * .68); height: var(--alt);
+  border-radius: 10px; perspective: 600px; font-family: var(--f-num); font-weight: 500;
+  font-size: calc(var(--alt) * .78); color: var(--numero);
+  box-shadow: 0 10px 24px -14px rgba(0,0,0,.55);
+}
+.metade, .aba {
+  position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--placa);
+}
+.metade span, .aba span {
+  display: block; height: var(--alt); line-height: var(--alt); text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.cima, .aba-cima { top: 0; border-radius: 10px 10px 0 0; background: var(--placa-alto); }
+.baixo, .aba-baixo { bottom: 0; border-radius: 0 0 10px 10px; }
+.baixo span, .aba-baixo span { transform: translateY(-50%); }
+.aba-cima { transform-origin: 50% 100%; z-index: 2; backface-visibility: hidden; }
+.aba-baixo { transform-origin: 50% 0; z-index: 2; transform: rotateX(90deg); backface-visibility: hidden; }
+.placa::after { /* a fresta do meio */
+  content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: var(--linha); z-index: 3;
+}
+.virando .aba-cima { animation: cai .3s ease-in forwards; }
+.virando .aba-baixo { animation: sobe .3s .3s ease-out forwards; }
+@keyframes cai { to { transform: rotateX(-90deg); } }
+@keyframes sobe { from { transform: rotateX(90deg); } to { transform: rotateX(0); } }
+
+.controles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+button {
+  font: 600 15px var(--f-ui); color: var(--texto); background: var(--botao); border: 1px solid var(--botao-borda);
+  border-radius: 999px; padding: 10px 18px; cursor: pointer; min-height: 44px;
+}
+button.principal { background: var(--acento); border-color: var(--acento); color: #fff; min-width: 132px; }
+button[aria-pressed="true"] { border-color: var(--acento); color: var(--acento); }
+button:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.tempos { display: flex; gap: 6px; }
+.tempos button { padding: 8px 14px; font-size: 14px; min-height: 38px; }
+.fim .placa { animation: pulsa 1s ease-in-out 3; }
+@keyframes pulsa { 50% { filter: brightness(1.35); } }
+@media (prefers-reduced-motion: reduce) {
+  .virando .aba-cima, .virando .aba-baixo, .fim .placa { animation: none; }
+  .aba { display: none; }
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<main class="relogio" id="relogio">
+  <div class="rotulo" id="rotulo">Sessão de estudo · <b>30 min</b></div>
+  <div class="placas" aria-hidden="true">
+    <div class="grupo" id="minutos"></div>
+    <div class="dois-pontos"><i></i><i></i></div>
+    <div class="grupo" id="segundos"></div>
+  </div>
+  <p class="sr" id="anuncio" aria-live="polite"></p>
+  <div class="controles">
+    <button class="principal" id="iniciar" type="button">Começar</button>
+    <button id="reiniciar" type="button">Reiniciar</button>
+  </div>
+  <div class="tempos" role="group" aria-label="Duração">
+    <button type="button" data-min="30" aria-pressed="true">30 min</button>
+    <button type="button" data-min="5" aria-pressed="false">Pausa 5</button>
+    <button type="button" data-min="15" aria-pressed="false">Pausa 15</button>
+  </div>
+</main>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  let duracao = Math.max(1, Math.min(180, Number(params.get('min')) || 30)) * 60;
+  let restante = duracao, fimEm = null, timer = null;
+
+  const placa = () => {
+    const el = document.createElement('div');
+    el.className = 'placa';
+    el.innerHTML = '<div class="metade cima"><span></span></div><div class="metade baixo"><span></span></div>' +
+                   '<div class="aba aba-cima"><span></span></div><div class="aba aba-baixo"><span></span></div>';
+    el.valor = null;
+    return el;
+  };
+  const placas = [placa(), placa(), placa(), placa()];
+  document.getElementById('minutos').append(placas[0], placas[1]);
+  document.getElementById('segundos').append(placas[2], placas[3]);
+
+  function trocar(el, novo) {
+    if (el.valor === novo) return;
+    const antigo = el.valor ?? novo;
+    const [cima, baixo, abaCima, abaBaixo] = el.querySelectorAll('span');
+    cima.textContent = novo; abaBaixo.textContent = novo;
+    abaCima.textContent = antigo; baixo.textContent = antigo;
+    el.classList.remove('virando'); void el.offsetWidth; el.classList.add('virando');
+    clearTimeout(el.t);
+    el.t = setTimeout(() => { baixo.textContent = novo; el.classList.remove('virando'); }, 600);
+    el.valor = novo;
+  }
+
+  function mostrar(seg) {
+    const m = String(Math.floor(seg / 60)).padStart(2, '0').slice(-2);
+    const s = String(seg % 60).padStart(2, '0');
+    [m[0], m[1], s[0], s[1]].forEach((d, i) => trocar(placas[i], d));
+    document.title = (fimEm ? '▶ ' : '') + m + ':' + s + ' · Estudos';
+  }
+
+  const botao = document.getElementById('iniciar');
+  const anuncio = document.getElementById('anuncio');
+  let audio;
+  function tocar() {
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      [0, .35, .7].forEach((t) => {
+        const o = audio.createOscillator(), g = audio.createGain();
+        o.frequency.value = 880; o.connect(g); g.connect(audio.destination);
+        g.gain.setValueAtTime(.0001, audio.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(.3, audio.currentTime + t + .02);
+        g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + t + .3);
+        o.start(audio.currentTime + t); o.stop(audio.currentTime + t + .32);
+      });
+    } catch (e) {}
+  }
+
+  function tique() {
+    restante = Math.max(0, Math.round((fimEm - Date.now()) / 1000));
+    mostrar(restante);
+    if (restante % 300 === 0 && restante > 0) anuncio.textContent = `Faltam ${restante / 60} minutos`;
+    if (restante === 0) {
+      parar();
+      botao.textContent = 'Começar de novo';
+      anuncio.textContent = 'Tempo esgotado. Hora de fazer uma pausa.';
+      document.getElementById('relogio').classList.add('fim');
+      tocar();
+    }
+  }
+  function iniciar() {
+    if (restante === 0) restante = duracao;
+    document.getElementById('relogio').classList.remove('fim');
+    if (audio && audio.state === 'suspended') audio.resume();
+    else if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    fimEm = Date.now() + restante * 1000;
+    timer = setInterval(tique, 250);
+    botao.textContent = 'Pausar';
+    tique();
+  }
+  function parar() {
+    clearInterval(timer); timer = null; fimEm = null;
+    botao.textContent = 'Continuar';
+    mostrar(restante);
+  }
+  botao.addEventListener('click', () => (timer ? parar() : iniciar()));
+  document.getElementById('reiniciar').addEventListener('click', () => {
+    clearInterval(timer); timer = null; fimEm = null; restante = duracao;
+    document.getElementById('relogio').classList.remove('fim');
+    botao.textContent = 'Começar'; mostrar(restante);
+  });
+  document.querySelectorAll('.tempos button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.tempos button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    duracao = Number(b.dataset.min) * 60;
+    document.getElementById('rotulo').innerHTML = (duracao >= 1800 ? 'Sessão de estudo' : 'Pausa') + ` · <b>${b.dataset.min} min</b>`;
+    clearInterval(timer); timer = null; fimEm = null; restante = duracao;
+    document.getElementById('relogio').classList.remove('fim');
+    botao.textContent = 'Começar'; mostrar(restante);
+  }));
+  document.addEventListener('keydown', (e) => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); botao.click(); } });
+  if (duracao !== 1800) document.getElementById('rotulo').innerHTML = `Sessão de estudo · <b>${duracao / 60} min</b>`;
+  mostrar(restante);
+})();
+</script>
+</body>
+</html>

@@ -137,7 +137,11 @@ button:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
     abaCima.textContent = antigo; baixo.textContent = antigo;
     el.classList.remove('virando'); void el.offsetWidth; el.classList.add('virando');
     clearTimeout(el.t);
-    el.t = setTimeout(() => { baixo.textContent = novo; el.classList.remove('virando'); }, 600);
+    // Depois da virada, as quatro partes mostram o número novo (senão a aba de cima volta com o antigo)
+    el.t = setTimeout(() => {
+      baixo.textContent = novo; abaCima.textContent = novo;
+      el.classList.remove('virando');
+    }, 620);
     el.valor = novo;
   }
 

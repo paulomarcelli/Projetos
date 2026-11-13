@@ -10,7 +10,10 @@
  *  - dedos: a mão da frente alterna entre relaxada e fechada, com pequenos ajustes de ângulo
  *  - túnica: a barra balança
  */
-import { Assets, Container, MeshPlane, MeshRope, Point, Sprite } from '../vendor/pixi.min.mjs';
+// EXPERIMENTO ARQUIVADO (não é usado pelo jogo): boneco montado com as peças de arte/boneco/partes.
+// Foi trocado por src/aurora_viva.js porque as peças do Gemini vieram em ângulos e escalas diferentes.
+// Para voltar a testar: copie para jogo/src/ e ajuste o caminho do import abaixo.
+import { Assets, Container, MeshPlane, MeshRope, Point, Sprite } from '../jogo/vendor/pixi.min.mjs';
 
 const PASTA = 'assets/boneco/';
 const PES = { x: 214, y: 486 };          // ponto dos pés na montagem (vira a origem do boneco)

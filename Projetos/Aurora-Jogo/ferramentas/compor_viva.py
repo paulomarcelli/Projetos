@@ -17,7 +17,7 @@ from recortar import recortar  # noqa: E402  (mesmo diretório)
 RAIZ = Path(__file__).resolve().parent.parent
 ORIG = RAIZ / 'arte/viva-original'
 SAIDA = RAIZ / 'jogo/assets/viva'
-FONTES = {'base': '19.webp', 'olhos_semi': '20.webp', 'mao_fechada': '22.webp'}
+FONTES = {'base': 'aurora_base.webp', 'olhos_semi': 'aurora_olhos_semicerrados.webp', 'mao_fechada': 'aurora_mao_fechada.webp'}
 
 
 def rgba_sem_corte(caminho):

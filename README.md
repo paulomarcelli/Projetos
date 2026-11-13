@@ -135,6 +135,13 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · lógica de programação</sub><br><br>
       <a href="Projetos/Joken-Po-Python"><b>Ver o código ↗</b></a>
     </td>
+    <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Aurora/"><img src="docs/capas/aurora.webp" alt="Aurora: guerreira de cabelo prateado e olhos violeta com arco, sob a lua, com o título AURORA O Dízimo da Lua"></a>
+      <h3>🌙 Aurora: O Dízimo da Lua</h3>
+      Plataforma 2D de fantasia sombria: Aurora respira, pisca e mexe os dedos parada, o vento move o cabelo, e as Fogueiras Lunares salvam e evoluem a personagem.<br>
+      <sub>JavaScript · PixiJS 8 · arte gerada com IA · protótipo jogável</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Aurora/"><b>Jogar o protótipo ↗</b></a> · <a href="Projetos/Aurora-Jogo">Código e documentação</a>
+    </td>
   </tr>
 </table>
 
@@ -155,6 +162,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 | [Una Noche Más](Projetos/Una-Noche-Mas) | HTML · CSS · JavaScript | 🟢 Publicado |
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | 🟢 Concluído |
 | [LUNA MIND](Projetos/Luna-AI) | Python · Flask · OpenAI · Gemini API | 🟢 Publicado |
+| [Aurora: O Dízimo da Lua](Projetos/Aurora-Jogo) · [jogar ↗](https://paulomarcelli.github.io/Projetos/Projetos/Aurora/) | JavaScript · PixiJS 8 · Python (ferramentas de arte) | 🟡 Em desenvolvimento (protótipo jogável) |
 
 ## 📂 Estrutura
 
@@ -210,6 +218,12 @@ Projetos/
 │   └── README.md
 ├── Joken-Po-Python/
 │   ├── pedra_papel_tesoura.py
+│   └── README.md
+├── Aurora-Jogo/
+│   ├── jogo/                     (protótipo em PixiJS 8: src/, assets/, vendor/, testes/)
+│   ├── arte/                     (arte original do Gemini, recortes, folha de sprites)
+│   ├── ferramentas/              (Python: recortar, fatiar folhas, montar sprites, compor a Aurora parada)
+│   ├── docs/                     (roteiro, arquitetura, ficha da Aurora, prompts, passagem para a próxima IA)
 │   └── README.md
 ├── Cenicienta/
 │   ├── index.html

@@ -14,6 +14,8 @@ import { Fogueira } from './fogueira.js';
 import { carregarSombras, Sombra } from './inimigos.js';
 import { MenuFogueira, Painel } from './hud.js';
 import { QuadrosVivos, Vento } from './vento.js';
+import { normalizar } from './nivel.js';
+import { Alvo, CenaFinal, Cervo, Nevoa, Titulo, criarPlaca, desenharCenario, desenharRastros, desenharTerreno } from './fase.js';
 import { derivados, desserializar, evoluir, novoProgresso, serializar } from './progresso.js';
 
 const ALTURA_VISUAL = 210;                 // altura da Aurora na tela, em px do mundo
@@ -25,24 +27,16 @@ const app = new Application();
 await app.init({ resizeTo: window, background: '#1b1533', antialias: true, resolution: Math.min(window.devicePixelRatio || 1, 2), autoDensity: true });
 document.getElementById('jogo').appendChild(app.canvas);
 
-// ---------- mundo de teste ----------
-const mundo = [
-  { x: -400, y: 640, w: 3600, h: 400 },        // chão
-  { x: 520, y: 500, w: 260, h: 40 },
-  { x: 900, y: 400, w: 200, h: 40 },
-  { x: 1240, y: 300, w: 260, h: 40 },
-  { x: 1650, y: 480, w: 64, h: 160 },          // pilar
-  { x: 1900, y: 420, w: 320, h: 40 },
-  { x: -400, y: 0, w: 60, h: 640 },            // parede esquerda
-  { x: 3140, y: 0, w: 60, h: 640 },            // parede direita
-];
+// ---------- fase (dados em fases/*.json; verificações em testes/fase1.test.mjs) ----------
+const fase = normalizar(await (await fetch('fases/fase1.json')).json());
+const mundo = fase.solidos;
 
 const fundo = new Container();
 const camada1 = new Graphics();                 // céu, lua e estrelas (quase parado)
 const camada2 = new Graphics();                 // montanhas distantes
 const camada3 = new Graphics();                 // árvores
 const cena = new Container();                   // mundo jogável (segue a câmera)
-const vento = new Vento();
+const vento = new Vento({ neve: fase.clima === 'neve' });
 app.stage.addChild(fundo, vento.atras, cena, vento.frente);
 fundo.addChild(camada1, camada2, camada3);
 
@@ -59,34 +53,38 @@ function desenharFundo() {
   }
   camada2.clear();
   for (let i = -1; i < 12; i++) {
-    const x = i * 360;
-    camada2.poly([x, H, x + 180, H * 0.45 + (i % 3) * 40, x + 360, H]).fill('#2a2150');
+    const x = i * 360, topo = H * 0.42 + (i % 3) * 40;
+    camada2.poly([x, H, x + 180, topo, x + 360, H]).fill('#2a2150');
+    // neve no pico das montanhas
+    camada2.poly([x + 180, topo, x + 222, topo + 52, x + 196, topo + 44, x + 176, topo + 60, x + 154, topo + 46, x + 140, topo + 50]).fill({ color: '#d7dcf2', alpha: 0.55 });
   }
+  camada2.rect(-400, H * 0.7, W + 800, H * 0.3).fill({ color: '#cfd4ee', alpha: 0.05 });   // névoa distante
   camada3.clear();
-  for (let i = -1; i < 30; i++) {
-    const x = i * 170 + (i % 2) * 40, h = 160 + (i % 4) * 40;
-    camada3.poly([x, H, x + 50, H - h, x + 100, H]).fill('#1d1840');
+  for (let i = -1; i < 34; i++) {
+    // pinheiros ao longe, em silhueta, com a ponta nevada
+    const x = i * 150 + (i % 2) * 40, h = 170 + (i % 4) * 46, base = H;
+    for (let k = 0; k < 3; k++) {
+      const topo = base - h + k * h * 0.22, larg = 26 + k * 16;
+      camada3.poly([x, topo, x + larg, topo + h * 0.34, x - larg, topo + h * 0.34]).fill('#1b1d3c');
+    }
+    camada3.poly([x, base - h, x + 9, base - h + 20, x - 9, base - h + 20]).fill({ color: '#cfd6ee', alpha: 0.45 });
   }
 }
 desenharFundo();
 window.addEventListener('resize', desenharFundo);
 
-const chao = new Graphics();
-for (const r of mundo) {
-  chao.rect(r.x, r.y, r.w, r.h).fill('#3a3157').stroke({ color: '#17112b', width: 3 });
-  chao.rect(r.x, r.y, r.w, 10).fill('#6f8f57');                  // musgo no topo
-  chao.rect(r.x, r.y + 10, r.w, 4).fill({ color: '#000000', alpha: 0.25 });
-  for (let x = r.x + 20; x < r.x + r.w - 10; x += 46) chao.circle(x, r.y + 30 + (x % 3) * 9, 3).fill({ color: '#bfe6ff', alpha: 0.18 });
-}
-cena.addChild(chao);
+cena.addChild(desenharCenario(fase), desenharTerreno(fase), desenharRastros(fase));
+for (const p of fase.placas ?? []) cena.addChild(criarPlaca(p));
+const alvos = (fase.alvos ?? []).map((a) => new Alvo(a.x, a.y));
+for (const a of alvos) cena.addChild(a.raiz);
+const cervo = fase.cervo ? new Cervo(fase.cervo.x, fase.cervo.y, fase.cervo.direcao) : null;
+if (cervo) cena.addChild(cervo.raiz);
+let fimDaFase = -1;   // segundos desde que o cervo foi abatido (-1 = ainda não)
 
-const fogueiras = [new Fogueira('fogueira_1', 250, 640), new Fogueira('fogueira_2', 2700, 640)];
+const fogueiras = fase.fogueiras.map((f) => new Fogueira(f.id, f.x, f.y));
 for (const f of fogueiras) cena.addChild(f.raiz);
 await carregarSombras();
-const sombras = [
-  new Sombra(1150, 640, 160, 35), new Sombra(1500, 640, 120, 45),
-  new Sombra(2060, 420, 120, 60), new Sombra(2450, 640, 150, 50),
-];
+const sombras = fase.sombras.map((s) => new Sombra(s.x, s.y, s.limite, s.moedas));
 for (const s of sombras) cena.addChild(s.raiz);
 const aviso = new Text({ text: 'E  descansar', style: { fill: '#efeaff', fontSize: 16, fontFamily: 'system-ui, sans-serif', fontWeight: '600' } });
 aviso.anchor.set(0.5, 1);
@@ -127,6 +125,8 @@ const PONTA_FLECHA = (texFlecha.width / 2) * ESCALA_FLECHA;
 // efeitos de impacto
 const faiscas = new Faiscas(), numeros = new Numeros(), vinheta = new Vinheta(), impacto = new Impacto();
 cena.addChild(faiscas.raiz, numeros.raiz);
+const nevoa = new Nevoa(fase);
+cena.addChild(nevoa.raiz);
 let clarao = 0, recuo = 0;   // clarão vermelho na Aurora e inclinação para trás ao apanhar
 const flechas = [];
 
@@ -138,7 +138,8 @@ let stats = derivados(progresso);
 let vida = stats.vidaMax, mana = stats.manaMax, invulneravel = 0, sentada = false, levantando = 0;
 const CUSTO_SALTO_LUA = 12;
 const fogueiraInicial = fogueiras.find((f) => f.id === progresso.fogueira);
-const corpo = criarCorpo(fogueiraInicial ? fogueiraInicial.x + 60 : 60, 640 - CONST.ALTURA);
+const corpo = criarCorpo(fogueiraInicial ? fogueiraInicial.x + 60 : fase.inicio.x, (fogueiraInicial ? fogueiraInicial.chaoY : fase.inicio.y) - CONST.ALTURA);
+let seguro = { x: corpo.x, y: corpo.y };   // último lugar firme onde ela pisou (volta para cá se cair no abismo)
 if (fogueiraInicial) fogueiraInicial.acesa = true;
 let estado = 'parada', acao = null, tempoAcao = 0, tempoAterrissar = 0, flechaSolta = false, golpeAcertou = false;
 let guarda = 0;   // depois do golpe de lâmina ela fica um instante em guarda (folha H); andar, pular ou golpear cancela
@@ -165,7 +166,7 @@ const MAPA = {
   ArrowLeft: 'esquerda', KeyA: 'esquerda', ArrowRight: 'direita', KeyD: 'direita',
   Space: 'pular', ArrowUp: 'pular', KeyW: 'pular', ShiftLeft: 'esquiva', KeyC: 'esquiva',
   KeyJ: 'lamina', KeyZ: 'lamina', KeyK: 'arco', KeyX: 'arco', KeyH: 'dano', KeyV: 'vitoria', KeyL: 'lupa',
-  KeyE: 'interagir', Digit1: 'evoluir1', Digit2: 'evoluir2', Digit3: 'evoluir3', Digit4: 'evoluir4',
+  KeyE: 'interagir', Enter: 'interagir', KeyR: 'recomecar', Digit1: 'evoluir1', Digit2: 'evoluir2', Digit3: 'evoluir3', Digit4: 'evoluir4',
 };
 window.addEventListener('keydown', (e) => {
   const acaoTecla = MAPA[e.code]; if (!acaoTecla) return;
@@ -185,15 +186,17 @@ ajuda.position.set(16, 12);
 app.stage.addChild(ajuda);
 const painel = new Painel();
 const menu = new MenuFogueira();
-app.stage.addChild(vinheta.g, painel.raiz, menu.raiz);
+const titulo = new Titulo(fase);
+const cenaFinal = new CenaFinal(fase);
+app.stage.addChild(vinheta.g, painel.raiz, menu.raiz, titulo.raiz, cenaFinal.raiz);
 
 // ---------- laço do jogo ----------
 let acumulado = 0, lupa = false, vxAntes = 0, vyAntes = 0;
-const camera = { x: 0, y: 0, zoom: 1 };
+const camera = { x: corpo.x + CONST.LARGURA / 2 + 120, y: corpo.y + CONST.ALTURA - ALTURA_VISUAL * 0.9, zoom: 1 };   // já começa nela
 
 function fogueiraPerto() {
   const cx = corpo.x + CONST.LARGURA / 2;
-  return fogueiras.find((f) => Math.abs(f.x - cx) < 90 && corpo.noChao);
+  return fogueiras.find((f) => Math.abs(f.x - cx) < 90 && Math.abs(f.chaoY - (corpo.y + CONST.ALTURA)) < 4 && corpo.noChao);
 }
 
 function descansar(f) {
@@ -211,12 +214,19 @@ function levantar() { sentada = false; levantando = animacoes.levantar.texturas.
 
 function morrer() {
   const f = fogueiras.find((x) => x.id === progresso.fogueira);
-  corpo.x = (f ? f.x + 60 : 60); corpo.y = 640 - CONST.ALTURA; corpo.vx = corpo.vy = 0;
+  corpo.x = (f ? f.x + 60 : fase.inicio.x); corpo.y = (f ? f.chaoY : fase.inicio.y) - CONST.ALTURA; corpo.vx = corpo.vy = 0;
+  seguro = { x: corpo.x, y: corpo.y };
   vida = stats.vidaMax; mana = stats.manaMax; invulneravel = 1.5; acao = null;
   for (const s of sombras) s.reiniciar();
 }
 
 function passoFixo() {
+  if (cenaFinal.ativa) {
+    if (apertou.has('interagir')) cenaFinal.avancar();
+    if (apertou.has('recomecar') && cenaFinal.acabou) { progresso = { ...progresso, fogueira: null }; salvar(); location.reload(); }
+    apertou.clear();
+    return;
+  }
   if (sentada) {
     vida = Math.min(stats.vidaMax, vida + stats.vidaMax * CONST.DT * 1.2);
     mana = Math.min(stats.manaMax, mana + stats.manaMax * CONST.DT * 1.2);
@@ -253,6 +263,17 @@ function passoFixo() {
   if (acao === 'ataque_lamina') corpo.vx *= 0.86;   // o avanço freia aos poucos
   else if (acao) corpo.vx *= 0.7;
   passo(corpo, entrada, mundo);
+  if (corpo.noChao && corpo.esquiva === 0) seguro = { x: corpo.x, y: corpo.y };
+  if (corpo.y > fase.abismo) {
+    // caiu no abismo: perde um pouco de vida e volta para onde pisou por último
+    corpo.x = seguro.x; corpo.y = seguro.y; corpo.vx = corpo.vy = 0;
+    // volta um pouco para dentro da plataforma (o último pisão costuma ser na beirada, e cairia de novo)
+    const base = mundo.find((s) => Math.abs(s.y - (seguro.y + CONST.ALTURA)) < 1 && seguro.x + CONST.LARGURA > s.x && seguro.x < s.x + s.w);
+    if (base) corpo.x = Math.min(Math.max(corpo.x, base.x + 30), base.x + base.w - CONST.LARGURA - 30);
+    vida -= fase.danoQueda; invulneravel = 1.2; clarao = 1; vinheta.piscar(1);
+    numeros.mostrar(corpo.x + CONST.LARGURA / 2, corpo.y - 20, '-' + fase.danoQueda, '#ff6b7d');
+    if (vida <= 0) { morrer(); return; }
+  }
   if (corpo.aterrissou) tempoAterrissar = 0.13;
   if (corpo.pulouNoAr) mana -= CUSTO_SALTO_LUA;
   mana = Math.min(stats.manaMax, mana + 2 * CONST.DT);
@@ -263,6 +284,8 @@ function passoFixo() {
     const cx = corpo.x + CONST.LARGURA / 2;
     // alcance de 140 px na frente (cobre também a criatura encostada nela)
     const area = { x: corpo.direcao > 0 ? cx - 10 : cx - 130, y: corpo.y + 20, w: 140, h: CONST.ALTURA - 20 };
+    for (const a of alvos) if (a.inteiro && sobrepoe(area, a.caixa)) { golpeAcertou = true; quebrarAlvo(a, corpo.direcao); }
+    if (cervo?.vivo && sobrepoe(area, cervo.caixa)) { golpeAcertou = true; abaterCervo(); }
     for (const s of sombras) {
       if (!s.viva || !sobrepoe(area, s.caixa)) continue;
       golpeAcertou = true;
@@ -288,6 +311,21 @@ function passoFixo() {
   const ax = (corpo.vx - vxAntes) / CONST.DT, ay = (corpo.vy - vyAntes) / CONST.DT;
   vxAntes = corpo.vx; vyAntes = corpo.vy;
   boneco.sentir(ax, ay, corpo.direcao);
+}
+
+function quebrarAlvo(a, dir) {
+  if (!a.quebrar()) return;
+  const c = a.caixa;
+  faiscas.explodir(c.x + c.w / 2, c.y + c.h / 2, 0xe0c27a, 18, dir);
+  impacto.golpe(0.03, 3);
+}
+
+function abaterCervo() {
+  if (!cervo.ferir()) return;
+  const c = cervo.caixa;
+  faiscas.explodir(c.x + c.w / 2, c.y + c.h * 0.4, 0xefe6ff, 14);
+  impacto.golpe(0.08, 4);
+  fimDaFase = 0;
 }
 
 /** golpe que acerta uma criatura: dano, faíscas, número, pausa e tremor */
@@ -361,7 +399,11 @@ function atualizarFlechas(dt) {
       const ponta = { x: f.s.x + Math.sign(f.vx) * PONTA_FLECHA, y: f.s.y };
       const alvo = sombras.find((s) => s.viva && sobrepoe({ x: ponta.x - 4, y: ponta.y - 4, w: 8, h: 8 }, s.caixa));
       if (alvo) { acertar(alvo, stats.danoFlecha, Math.sign(f.vx), 0.04, 3); f.vida = 0; continue; }
-      if (mundo.some((r) => ponta.x > r.x && ponta.x < r.x + r.w && ponta.y > r.y && ponta.y < r.y + r.h)) {
+      const pontaCaixa = { x: ponta.x - 4, y: ponta.y - 4, w: 8, h: 8 };
+      const palha = alvos.find((a) => a.inteiro && sobrepoe(pontaCaixa, a.caixa));
+      if (palha) { quebrarAlvo(palha, Math.sign(f.vx)); f.vida = 0; continue; }
+      if (cervo?.vivo && sobrepoe(pontaCaixa, cervo.caixa)) { abaterCervo(); f.vida = 0; continue; }
+      if (mundo.some((r) => !r.umaVia && ponta.x > r.x && ponta.x < r.x + r.w && ponta.y > r.y && ponta.y < r.y + r.h)) {
         f.cravada = true; f.s.texture = texFlechaCravada; f.s.rotation = 0; f.s.scale.set((Math.sign(f.vx) > 0 ? 1 : -1) * ESCALA_FLECHA, ESCALA_FLECHA);
       }
     }
@@ -405,8 +447,14 @@ app.ticker.add((ticker) => {
   const perto = fogueiraPerto();
   for (const f of fogueiras) f.atualizar(dt, f === perto, vento.forca);
   for (const s of sombras) s.atualizar(dt);
+  for (const a of alvos) a.atualizar(dt);
+  cervo?.atualizar(dt);
+  nevoa.atualizar(dt, vento.forca);
+  titulo.atualizar(dtReal, app.screen.width, app.screen.height);
+  if (fimDaFase >= 0) { fimDaFase += dtReal; if (fimDaFase > 1.4 && !cenaFinal.ativa) cenaFinal.comecar(); }
+  cenaFinal.atualizar(dtReal, app.screen.width, app.screen.height);
   aviso.visible = !!perto && !sentada;
-  if (perto) aviso.position.set(perto.x, 640 - 110);
+  if (perto) aviso.position.set(perto.x, perto.chaoY - 150);
   for (const x of textosFlutuantes) { x.vida -= dt; x.t.y -= 40 * dt; x.t.alpha = Math.max(0, x.vida); }
   for (let i = textosFlutuantes.length - 1; i >= 0; i--) if (textosFlutuantes[i].vida <= 0) { textosFlutuantes[i].t.destroy(); textosFlutuantes.splice(i, 1); }
   painel.atualizar(vida, stats.vidaMax, mana, stats.manaMax, progresso.moedas, progresso.nivel);
@@ -431,7 +479,7 @@ app.ticker.add((ticker) => {
 // ganchos para os testes automáticos
 window.__jogo = {
   vento, quadros, impacto, faiscas,
-  corpo, boneco, app, teclas, apertou, sombras, fogueiras,
+  corpo, boneco, app, teclas, apertou, sombras, fogueiras, fase, alvos, cervo, cenaFinal,
   get estado() { return estado; }, get sentada() { return sentada; },
   get vida() { return vida; }, get mana() { return mana; }, get progresso() { return progresso; },
   darMoedas(n) { progresso = { ...progresso, moedas: progresso.moedas + n }; },

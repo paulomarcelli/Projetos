@@ -9,7 +9,9 @@ import { MolaCabelo, amostrar } from './pesos.js';
 const CORES = ['#7c9a5a', '#a3b86c', '#c9a25a', '#8a6a9e', '#5f8a7a'];
 
 export class Vento {
-  constructor() {
+  /** neve: em vez de folhas, flocos de neve caindo o tempo todo (a rajada os empurra de lado). */
+  constructor({ neve = false } = {}) {
+    this.neve = neve;
     this.forca = 0;
     this.t = 0;
     this.proximaRajada = 6 + Math.random() * 6;
@@ -38,7 +40,7 @@ export class Vento {
 
     // folhas: muitas durante a rajada, poucas na brisa
     const intensidade = Math.abs(rajada);
-    const taxa = 2 + intensidade * 38;
+    const taxa = this.neve ? 22 + intensidade * 30 : 2 + intensidade * 38;
     if (Math.random() < taxa * dt) this.criarFolha(Math.random() < 0.4 ? 'frente' : 'atras', largura, altura);
     for (const f of this.folhas) {
       f.vida -= dt;
@@ -46,7 +48,7 @@ export class Vento {
       f.g.x += vx * dt - deslocCamera * f.parallax;   // parallax: a câmera arrasta mais a camada da frente
       f.g.y += (f.queda + 30 * Math.sin(this.t * 3 + f.fase)) * dt;
       f.g.rotation += f.giro * dt * (0.5 + intensidade);
-      f.g.scale.y = f.esc * Math.abs(Math.sin(this.t * f.vira + f.fase));
+      if (!this.neve) f.g.scale.y = f.esc * Math.abs(Math.sin(this.t * f.vira + f.fase));
       if (f.g.x < -80 || f.g.x > largura + 80 || f.g.y > altura + 60) f.vida = 0;
     }
     for (let i = this.folhas.length - 1; i >= 0; i--) {
@@ -55,6 +57,7 @@ export class Vento {
   }
 
   criarFolha(camada, largura, altura) {
+    if (this.neve) return this.criarFloco(camada, largura, altura);
     const frente = camada === 'frente';
     const g = new Graphics();
     const tam = frente ? 9 + Math.random() * 9 : 3 + Math.random() * 3;
@@ -72,6 +75,22 @@ export class Vento {
     });
   }
 }
+
+Vento.prototype.criarFloco = function criarFloco(camada, largura, altura) {
+  const frente = camada === 'frente';
+  const g = new Graphics();
+  const r = frente ? 2.2 + Math.random() * 2.2 : 0.9 + Math.random() * 1.2;
+  g.circle(0, 0, r).fill({ color: '#f4f6ff', alpha: frente ? 0.85 : 0.6 });
+  // nasce em cima, em qualquer ponto; na rajada também entra pelo lado de onde o vento vem
+  const deLado = Math.abs(this.forca) > 0.4 && Math.random() < 0.5;
+  g.x = deLado ? (this.forca >= 0 ? -20 : largura + 20) : Math.random() * largura;
+  g.y = deLado ? Math.random() * altura * 0.8 : -10;
+  (frente ? this.frente : this.atras).addChild(g);
+  this.folhas.push({
+    g, vida: 14, vel: (frente ? 260 : 120) + Math.random() * 80, queda: (frente ? 90 : 45) + Math.random() * 40,
+    giro: 0, vira: 0, fase: Math.random() * 6, esc: 1, parallax: frente ? 1.35 : 0.5,
+  });
+};
 
 /** Animações desenhadas numa malha, para o cabelo seguir o vento e o movimento. */
 const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };

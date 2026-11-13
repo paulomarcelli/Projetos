@@ -45,7 +45,7 @@ function sobrepoe(c, r) {
 function moverX(c, dx, mundo) {
   c.x += dx;
   for (const r of mundo) {
-    if (!sobrepoe(c, r)) continue;
+    if (r.umaVia || !sobrepoe(c, r)) continue;   // galho (umaVia) não barra de lado
     if (dx > 0) c.x = r.x - CONST.LARGURA; else if (dx < 0) c.x = r.x + r.w;
     c.vx = 0;
   }
@@ -56,6 +56,8 @@ function moverY(c, dy, mundo) {
   let pousou = false;
   for (const r of mundo) {
     if (!sobrepoe(c, r)) continue;
+    // galho (umaVia): só segura quem vem caindo e estava acima dele no passo anterior; por baixo, atravessa
+    if (r.umaVia && (dy <= 0 || c.y - dy + CONST.ALTURA > r.y + 0.5)) continue;
     if (dy > 0) { c.y = r.y - CONST.ALTURA; pousou = true; } else if (dy < 0) c.y = r.y + r.h;
     c.vy = 0;
   }

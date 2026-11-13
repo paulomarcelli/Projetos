@@ -12,10 +12,25 @@ index.html
        ├─ efeitos.js ........ faíscas, números de dano, vinheta vermelha, hit-stop e tremor de câmera
        ├─ fogueira.js ....... Fogueira Lunar (desenho em código: pedra da lua, pedras, lenha, chama em 3 tons que
        │                      reage ao vento, labaredas, brasas e fumaça; prévia isolada em previa/fogueira.html)
+       ├─ nivel.js .......... fase em dados: normalizar() e as verificações (ritmo, jogador robô nos saltos) — sem gráficos
+       ├─ fase.js ........... desenho da fase em camadas (terreno, pinheiros, placas, rastros, alvos, cervo, névoa,
+       │                      título e cena final)
        ├─ inimigos.js ....... Sombra de névoa (sprites do Gemini: patrulha, dano, morte, moedas)
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
 ```
 `fisica.js` e `progresso.js` não importam nada gráfico: rodam no Node e têm testes em `testes/`.
+
+## Fases em dados (fases/*.json)
+Cada fase é um JSON lido no começo do `main.js` (`fases/fase1.json` = Ato I, Fase 1, A Floresta da Névoa):
+- `solidos`: retângulos `{ id, x, y, w, h?, tipo, umaVia? }` (sem `h`, vai até y = 1100). `tipo`: `neve`, `rocha`,
+  `tronco`, `galho` (com `umaVia: true`: só segura por cima, atravessa subindo) ou `invisivel` (limite da fase).
+- `caminho`: ids em ordem do caminho principal; `retornos`: saídas de onde o jogador pode cair (vala, chão sob os galhos).
+- `batidas`: ritmo da fase (tipo `ensina`/`desenvolve`/`combate`/`desafio`/`descanso`/`climax` e intensidade 0–1).
+- `fogueiras`, `sombras`, `alvos`, `cervo`, `placas` (dicas), `rastros` (pegadas que guiam), `troncos` e `pinheiros`
+  (cenário), `inicio`, `abismo` (cair abaixo disso tira `danoQueda` e volta ao último lugar firme) e `fim` (falas).
+`testes/fase1.test.mjs` (skill level-design) mede o pulo real (`ferramentas/medir_pulo.mjs`: 205 px de altura, 262 px
+de alcance), confere vãos ≤ 70% do alcance e subidas ≤ topo − meio bloco, faz um **jogador robô** pular cada trecho do
+caminho e dos retornos com a física do jogo, confere o ritmo e se tudo está sobre um chão. Rode depois de mexer na fase.
 
 ## Laço do jogo (main.js)
 1. O `app.ticker` acumula o tempo real e chama `passoFixo()` a cada 1/60 s (física estável em qualquer taxa de quadros).

@@ -1,0 +1,103 @@
+{
+  "id": "fase1",
+  "titulo": "A Floresta da Névoa",
+  "subtitulo": "Ato I · Fase 1",
+  "clima": "neve",
+  "inicio": { "x": 120, "y": 640 },
+  "abismo": 1000,
+  "danoQueda": 15,
+  "_unidades": "px; y cresce para baixo; cada sólido vai até o fundo (y = 1100) a menos que tenha h. umaVia = galho: só segura por cima. tipo invisivel = limite da fase (não é desenhado).",
+  "solidos": [
+    { "id": "parede_esq", "x": -260, "y": -400, "w": 60, "h": 1500, "tipo": "invisivel" },
+    { "id": "A1", "x": -200, "y": 640, "w": 1100, "tipo": "neve" },
+    { "id": "A2", "x": 900, "y": 560, "w": 600, "tipo": "tronco" },
+    { "id": "V1", "x": 1500, "y": 700, "w": 140, "tipo": "neve" },
+    { "id": "A3", "x": 1640, "y": 560, "w": 660, "tipo": "neve" },
+    { "id": "A4", "x": 2300, "y": 700, "w": 880, "tipo": "neve" },
+    { "id": "B0", "x": 2400, "y": 590, "w": 140, "h": 18, "tipo": "galho", "umaVia": true },
+    { "id": "B1", "x": 2380, "y": 440, "w": 180, "h": 18, "tipo": "galho", "umaVia": true },
+    { "id": "B2", "x": 2640, "y": 330, "w": 160, "h": 18, "tipo": "galho", "umaVia": true },
+    { "id": "B3", "x": 2880, "y": 230, "w": 220, "h": 18, "tipo": "galho", "umaVia": true },
+    { "id": "C1", "x": 3180, "y": 230, "w": 520, "tipo": "rocha" },
+    { "id": "C2", "x": 3700, "y": 400, "w": 250, "tipo": "rocha" },
+    { "id": "D1", "x": 3950, "y": 640, "w": 950, "tipo": "neve" },
+    { "id": "P1", "x": 5050, "y": 600, "w": 200, "tipo": "rocha" },
+    { "id": "P2", "x": 5400, "y": 520, "w": 160, "tipo": "rocha" },
+    { "id": "P3", "x": 5720, "y": 560, "w": 180, "tipo": "rocha" },
+    { "id": "E1", "x": 6050, "y": 500, "w": 1550, "tipo": "neve" },
+    { "id": "G1", "x": 6300, "y": 380, "w": 180, "h": 18, "tipo": "galho", "umaVia": true },
+    { "id": "H1", "x": 7600, "y": 640, "w": 1100, "tipo": "neve" },
+    { "id": "parede_dir", "x": 8700, "y": -400, "w": 60, "h": 1500, "tipo": "invisivel" }
+  ],
+  "caminho": ["A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "D1", "P1", "P2", "P3", "E1", "H1"],
+  "retornos": [
+    { "de": "V1", "para": "A3", "porque": "quem cai na vala do primeiro salto sai sozinho" },
+    { "de": "A4", "para": "B0", "porque": "quem cai dos galhos volta pela árvore" },
+    { "de": "B0", "para": "B1", "porque": "e retoma a subida" }
+  ],
+  "batidas": [
+    { "trecho": "clareira",      "tipo": "ensina",  "intensidade": 0.1,  "de": -200, "ate": 900 },
+    { "trecho": "primeiro_salto","tipo": "ensina",  "intensidade": 0.2,  "de": 900,  "ate": 1640 },
+    { "trecho": "alvos",         "tipo": "ensina",  "intensidade": 0.2,  "de": 1640, "ate": 2300 },
+    { "trecho": "arvores",       "tipo": "desenvolve", "intensidade": 0.35, "de": 2300, "ate": 3180 },
+    { "trecho": "mirante",       "tipo": "descanso","intensidade": 0.15, "de": 3180, "ate": 3950 },
+    { "trecho": "ravina",        "tipo": "combate", "intensidade": 0.5,  "de": 3950, "ate": 4900 },
+    { "trecho": "penhascos",     "tipo": "desafio", "intensidade": 0.65, "de": 4900, "ate": 6050 },
+    { "trecho": "galhos_sombra", "tipo": "combate", "intensidade": 0.7,  "de": 6050, "ate": 6900 },
+    { "trecho": "fogueira",      "tipo": "descanso","intensidade": 0.2,  "de": 6900, "ate": 7600 },
+    { "trecho": "cervo",         "tipo": "climax",  "intensidade": 0.8,  "de": 7600, "ate": 8700 }
+  ],
+  "fogueiras": [
+    { "id": "f1_fogueira_1", "x": 250, "y": 640 },
+    { "id": "f1_fogueira_2", "x": 7080, "y": 500 }
+  ],
+  "sombras": [
+    { "x": 4300, "y": 640, "limite": 120, "moedas": 40 },
+    { "x": 4700, "y": 640, "limite": 150, "moedas": 40 },
+    { "x": 6250, "y": 500, "limite": 120, "moedas": 45 },
+    { "x": 6650, "y": 500, "limite": 130, "moedas": 45 },
+    { "x": 6390, "y": 380, "limite": 60, "moedas": 60 },
+    { "x": 7950, "y": 640, "limite": 140, "moedas": 50 },
+    { "x": 8250, "y": 640, "limite": 120, "moedas": 50 }
+  ],
+  "alvos": [
+    { "x": 2060, "y": 560 },
+    { "x": 2220, "y": 560 }
+  ],
+  "cervo": { "x": 8480, "y": 640, "direcao": -1 },
+  "placas": [
+    { "x": 430,  "y": 640, "texto": "← →  andar     Espaço  pular" },
+    { "x": 1180, "y": 560, "texto": "segure Espaço para pular mais alto" },
+    { "x": 1900, "y": 560, "texto": "K  arco · acerte os alvos" },
+    { "x": 2270, "y": 560, "texto": "suba pelos galhos  ↗" },
+    { "x": 3330, "y": 230, "texto": "os rastros do cervo descem para o vale" },
+    { "x": 4040, "y": 640, "texto": "J  lâmina     Shift  esquiva" },
+    { "x": 4980, "y": 640, "texto": "cuidado: abismo" }
+  ],
+  "rastros": [
+    { "de": 3240, "ate": 3680, "y": 230 },
+    { "de": 3990, "ate": 4880, "y": 640 },
+    { "de": 6080, "ate": 7560, "y": 500 },
+    { "de": 7640, "ate": 8420, "y": 640 }
+  ],
+  "troncos": [
+    { "x": 2470, "topo": 400, "base": 700 },
+    { "x": 2720, "topo": 290, "base": 700 },
+    { "x": 2990, "topo": 190, "base": 700 },
+    { "x": 6390, "topo": 340, "base": 500 }
+  ],
+  "pinheiros": [
+    { "x": -40, "y": 640, "h": 300 }, { "x": 640, "y": 640, "h": 340 }, { "x": 1320, "y": 560, "h": 280 },
+    { "x": 1780, "y": 560, "h": 320 }, { "x": 3560, "y": 230, "h": 260 }, { "x": 4150, "y": 640, "h": 360 },
+    { "x": 4820, "y": 640, "h": 300 }, { "x": 6150, "y": 500, "h": 330 }, { "x": 6860, "y": 500, "h": 300 },
+    { "x": 7400, "y": 500, "h": 360 }, { "x": 7760, "y": 640, "h": 320 }, { "x": 8600, "y": 640, "h": 380 }
+  ],
+  "fim": [
+    { "quem": "", "fala": "Aurora volta para casa com o cervo nos ombros." },
+    { "quem": "LIA", "fala": "É você no dia que o Dízimo acabar. Todo mundo vai fazer festa." },
+    { "quem": "AURORA", "fala": "O Dízimo não acaba, Lia." },
+    { "quem": "LIA", "fala": "Acaba se alguém sair de lá." },
+    { "quem": "AURORA", "fala": "Ninguém sai de lá." },
+    { "quem": "", "fala": "Da porta, Bram olha as raízes do cabelo de Aurora: estão ficando prateadas. A tinta acabou. Ninguém fala nada." }
+  ]
+}

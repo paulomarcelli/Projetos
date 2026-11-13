@@ -65,6 +65,17 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
   semitransparente do cabelo vão junto com a mecha. A respiração por malha da pose sentada saiu (os quadros do
   Gemini já respiram).
 
+## Fase 1 — A Floresta da Névoa (feita)
+- A fase de teste foi trocada pela **Fase 1** em dados (`jogo/fases/fase1.json`), feita com as skills `gamedev-skills`
+  (`level-design`, `platformer`, `pixijs-rendering`) e `2d-games` (camadas). Caçada do roteiro: clareira → primeiro
+  salto (com vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante → ravina com
+  sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo (clímax). Abater o cervo
+  (flecha ou lâmina) abre a cena final com as falas de Lia e Aurora; R recomeça.
+- Galhos são plataformas de uma via (`umaVia` em `fisica.js`). Cair no abismo tira 15 de vida e volta ao último chão.
+- Para a próxima fase: copie o formato do JSON, mude `fetch('fases/fase1.json')` no `main.js` para escolher a fase e
+  escreva o teste igual ao `fase1.test.mjs` (o jogador robô acusa vão ou subida impossível).
+- Fica de fora por falta de arte: a **patrulha imperial** do roteiro (soldados) e o **Prólogo** (Aurora criança).
+
 ## Provisório / incompleto (prioridade de cima para baixo)
 1. **Combo de verdade**: hoje J faz sempre o mesmo golpe (apertar J na guarda recomeça o golpe). Um 2º golpe
    diferente (outra folha) deixaria encadear golpe 1 → golpe 2.
@@ -72,8 +83,8 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
 3. **Olhos fechados**: a Aurora parada só tem olhos semicerrados (piscar mais suave). Pedir ao Gemini a mesma
    imagem base com os olhos fechados e incluir em `compor_viva.py` (`FONTES`, novas combinações).
 4. **Mão meio fechada**: idem, para o gesto dos dedos ficar com 3 estados (prompt F em `prompts-aurora-rodada2.md`).
-5. **Fases do roteiro**: hoje há só uma fase de teste. Começar pelo Prólogo e pela Fase 1 (Floresta da Névoa),
-   com a skill `level-design`. Montar os níveis em dados (JSON) em vez de no código.
+5. **Próximas fases do roteiro**: a Fase 1 está pronta. Próxima: Fase 2 (A Tinta que Escorre). O Prólogo precisa da
+   Aurora criança (arte nova).
 6. **Chefes** (Brakus, o Carneiro, é o primeiro), **diálogos e escolhas** (skill `dialogue-systems`), **som**
    (skill `audio-design`), **controles de toque** e **menu inicial**.
 7. Detalhes de arte: as flechas da aljava vieram com penas coloridas (a ficha pede cinza e prata); as folhas do arco

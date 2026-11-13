@@ -13,10 +13,10 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-AREA_MIN_BURACO = 2500  # px na imagem original
+AREA_FRACAO_BURACO = 0.0006  # área branca fechada maior que 0,06% da imagem é fundo
 
 
-def mascara_fundo(rgb):
+def mascara_fundo(rgb, fracao_buraco=None):
     h, w, _ = rgb.shape
     mn, mx = rgb.min(axis=2), rgb.max(axis=2)
     candidato = (mn >= 232) & ((mx - mn) <= 24)
@@ -38,7 +38,7 @@ def mascara_fundo(rgb):
     # áreas brancas fechadas grandes (ex.: entre o arco e a corda) também são fundo;
     # as pequenas (brilho dos olhos, reflexos) ficam
     rot, areas = componentes(candidato & ~fundo)
-    grande = areas >= AREA_MIN_BURACO
+    grande = areas >= max(120, (fracao_buraco or AREA_FRACAO_BURACO) * h * w)
     grande[0] = False
     return fundo | grande[rot]
 

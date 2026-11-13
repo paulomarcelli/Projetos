@@ -19,21 +19,36 @@ CEL = 384            # tamanho da célula
 BASE = CEL - 12      # linha dos pés
 CABECA_ALVO = 70     # altura da cabeça (tiara ao queixo) no jogo, em px
 
-# Altura da cabeça medida em cada pose original (px, da ponta da tiara ao queixo)
+# Altura da cabeça (px, ponta da asa da tiara ao queixo) medida com régua em cada fonte original.
+# Imagens soltas (primeiro lote):
 POSES = {
-    'correndo':  {'arquivo': 'aurora_correndo.png',      'cabeca': 155, 'ancora': 'pes'},
-    'ataque':    {'arquivo': 'aurora_ataque_lamina.png', 'cabeca': 160, 'ancora': 'pes'},
-    'pulo':      {'arquivo': 'aurora_pulo.png',          'cabeca': 196, 'ancora': 'pes'},
-    'vitoria':   {'arquivo': 'aurora_vitoria.png',       'cabeca': 200, 'ancora': 'pes'},
-    'cambalhota': {'arquivo': 'aurora_cambalhota.png',   'cabeca': 223, 'ancora': 'centro'},
+    'ataque':     {'arquivo': 'aurora_ataque_lamina.png', 'cabeca': 173},
+    'vitoria':    {'arquivo': 'aurora_vitoria.png',       'cabeca': 175},
+    'cambalhota': {'arquivo': 'aurora_cambalhota.png',    'cabeca': 230},
+}
+# Folhas do Gemini (fatiadas por ferramentas/fatiar_folha.py), na mesma escala entre si.
+# Cabeça medida na pose parada: ponta da asa da tiara ao queixo ≈ 56 px.
+CABECA_FOLHAS = 56
+QUADROS = {
+    'parada':   [f'aurora_parada_{i:02d}.png' for i in range(1, 6)],
+    'correndo': [f'aurora_correndo_{i:02d}.png' for i in range(1, 9)],
+    'pulo':     [f'aurora_pulo_{i:02d}.png' for i in range(1, 6)],
+    'esquiva':  [f'aurora_esquiva_{i:02d}.png' for i in range(1, 5)],
 }
 
 
-def carregar(nome):
-    p = POSES[nome]
-    img = Image.open(RECORTES / p['arquivo']).convert('RGBA')
-    s = CABECA_ALVO / p['cabeca']
+def abrir(arquivo, cabeca):
+    img = Image.open(RECORTES / arquivo).convert('RGBA')
+    s = CABECA_ALVO / cabeca
     return img.resize((round(img.width * s), round(img.height * s)), Image.LANCZOS)
+
+
+def carregar(nome):
+    return abrir(POSES[nome]['arquivo'], POSES[nome]['cabeca'])
+
+
+def quadros(nome):
+    return [abrir(a, CABECA_FOLHAS) for a in QUADROS[nome]]
 
 
 def centro_dos_pes(img):
@@ -49,14 +64,25 @@ def centro_dos_pes(img):
     return float((a.sum(axis=0) * np.arange(a.shape[1])).sum() / a.sum())
 
 
+def media_x(img, ini, fim):
+    """x médio ponderado pela opacidade numa faixa de altura (frações de 0 a 1)."""
+    import numpy as np
+    a = np.asarray(img.getchannel('A'), dtype=float)[int(img.height * ini):int(img.height * fim), :]
+    if a.sum() == 0:
+        return img.width / 2
+    return float((a.sum(axis=0) * np.arange(a.shape[1])).sum() / a.sum())
+
+
 def celula(img, ancora='pes', dx=0, dy=0):
+    """Coloca o quadro na célula com a base nos pés (y = BASE), ou centralizado ('centro')."""
     c = Image.new('RGBA', (CEL, CEL), (0, 0, 0, 0))
-    if ancora == 'pes':
-        x = round(CEL / 2 - centro_dos_pes(img)) + dx
-        y = BASE - img.height + dy
+    if ancora == 'centro':
+        x, y = (CEL - img.width) // 2 + dx, (CEL - img.height) // 2 + dy
     else:
-        x = (CEL - img.width) // 2 + dx
-        y = (CEL - img.height) // 2 + dy
+        cx = {'pes': lambda: centro_dos_pes(img),
+              'tronco': lambda: media_x(img, 0.20, 0.55),
+              'caixa': lambda: img.width / 2}[ancora]()
+        x, y = round(CEL / 2 - cx) + dx, BASE - img.height + dy
     c.paste(img, (x, y), img)
     return c
 
@@ -79,20 +105,24 @@ def tingir(img, cor, forca):
 
 
 def montar_animacoes():
-    corr, atq, pulo, vit, camb = (carregar(n) for n in ['correndo', 'ataque', 'pulo', 'vitoria', 'cambalhota'])
+    atq, vit, camb = (carregar(n) for n in ['ataque', 'vitoria', 'cambalhota'])
+    parada, corr, pulo, esq = (quadros(n) for n in ['parada', 'correndo', 'pulo', 'esquiva'])
     anims = {}
-    # PROVISÓRIA: uma só pose de corrida; o balanço dá vida até chegarem os quadros reais
-    anims['correndo_provisorio'] = {'fps': 10, 'loop': True, 'quadros': [
-        celula(corr), celula(esticar(corr, 1.02, 0.97)), celula(corr, dy=-6), celula(esticar(corr, 0.99, 1.02), dy=-3)]}
+    # vai e volta (1-2-3-4-5-4-3-2) para a respiração não "pular" ao recomeçar
+    anims['parada'] = {'fps': 6, 'loop': True, 'quadros': [celula(q) for q in parada + parada[3:0:-1]]}
+    anims['correndo'] = {'fps': 12, 'loop': True, 'quadros': [celula(q, 'tronco') for q in corr]}
+    anims['pulo'] = {'fps': 12, 'loop': False, 'quadros': [celula(q, 'tronco') for q in pulo[:3]]}
+    anims['queda'] = {'fps': 8, 'loop': True, 'quadros': [celula(pulo[3], 'tronco')]}
+    anims['aterrissar'] = {'fps': 12, 'loop': False, 'quadros': [celula(pulo[4], 'tronco'), celula(parada[0])]}
+    anims['esquiva'] = {'fps': 14, 'loop': False, 'quadros': [celula(q, 'caixa') for q in esq]}
     anims['ataque_lamina'] = {'fps': 14, 'loop': False, 'quadros': [
         celula(esticar(atq, 0.96, 1.03), dx=-10), celula(atq), celula(atq, dx=6), celula(atq, dx=6)]}
-    anims['pulo'] = {'fps': 12, 'loop': False, 'quadros': [
-        celula(esticar(pulo, 1.08, 0.90)), celula(esticar(pulo, 0.94, 1.07)), celula(pulo)]}
     anims['cambalhota'] = {'fps': 16, 'loop': True, 'quadros': [
         celula(camb.rotate(-ang, resample=Image.BICUBIC, expand=True), 'centro') for ang in range(0, 360, 45)]}
+    branco = (255, 255, 255, 255)
     anims['dano'] = {'fps': 12, 'loop': False, 'quadros': [
-        celula(silhueta(corr, (255, 255, 255, 255)), dx=-8), celula(tingir(corr, (230, 60, 70), 0.35), dx=-6),
-        celula(silhueta(corr, (255, 255, 255, 255)), dx=-4), celula(corr, dx=-2)]}
+        celula(silhueta(parada[0], branco), dx=-8), celula(tingir(parada[0], (230, 60, 70), 0.35), dx=-6),
+        celula(silhueta(parada[0], branco), dx=-4), celula(parada[0], dx=-2)]}
     anims['vitoria'] = {'fps': 8, 'loop': True, 'quadros': [
         celula(vit), celula(esticar(vit, 1.03, 0.97)), celula(vit, dy=-10), celula(vit, dy=-4)]}
     return anims

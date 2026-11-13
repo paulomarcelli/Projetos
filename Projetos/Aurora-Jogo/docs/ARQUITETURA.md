@@ -10,7 +10,8 @@ index.html
        ├─ vento.js .......... Vento (brisa, rajadas, folhas em 2 camadas) e QuadrosVivos (animações numa malha)
        ├─ pesos.js .......... pesos do cabelo (PNG → peso por vértice) e MolaCabelo (atraso e balanço do cabelo)
        ├─ efeitos.js ........ faíscas, números de dano, vinheta vermelha, hit-stop e tremor de câmera
-       ├─ fogueira.js ....... Fogueira Lunar (desenho em código, chama animada que reage ao vento)
+       ├─ fogueira.js ....... Fogueira Lunar (desenho em código: pedra da lua, pedras, lenha, chama em 3 tons que
+       │                      reage ao vento, labaredas, brasas e fumaça; prévia isolada em previa/fogueira.html)
        ├─ inimigos.js ....... Sombra de névoa (sprites do Gemini: patrulha, dano, morte, moedas)
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
 ```

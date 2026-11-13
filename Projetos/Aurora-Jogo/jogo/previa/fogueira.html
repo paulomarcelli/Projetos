@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prévia da fogueira</title>
+<style>html, body { margin: 0; background: #1b1533; }</style>
+</head>
+<body>
+<script type="module">
+// Prévia isolada da Fogueira Lunar, ampliada, para ajustar o desenho sem abrir o jogo inteiro.
+// Uso: python3 -m http.server 8080 dentro de jogo/ e abrir http://localhost:8080/previa/fogueira.html?vento=0.6
+// À esquerda: antes do primeiro descanso. À direita: acesa (depois de descansar).
+import { Application, Graphics } from '../vendor/pixi.min.mjs';
+import { Fogueira } from '../src/fogueira.js';
+
+const q = new URLSearchParams(location.search);
+const app = new Application();
+await app.init({ width: 900, height: 520, background: '#1b1533', antialias: true });
+document.body.appendChild(app.canvas);
+app.stage.addChild(new Graphics().rect(0, 400, 900, 120).fill('#2a2342').rect(0, 400, 900, 6).fill('#6f9a5a'));
+const fogos = [new Fogueira('a', 250, 400), new Fogueira('b', 650, 400)];
+fogos[1].acesa = true;
+for (const f of fogos) { f.raiz.scale.set(2.2); app.stage.addChild(f.raiz); }   // ampliada só na prévia
+const vento = Number(q.get('vento') || 0);
+app.ticker.add((tk) => { for (const f of fogos) f.atualizar(tk.deltaMS / 1000, true, vento); });
+window.__pronto = true;
+</script>
+</body>
+</html>

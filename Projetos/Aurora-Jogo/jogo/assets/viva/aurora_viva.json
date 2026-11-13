@@ -1,0 +1,36 @@
+{
+ "largura": 482,
+ "altura": 953,
+ "pes": [
+  199.3,
+  947
+ ],
+ "pescoco_y": 220,
+ "ombro_y": 245,
+ "cintura_y": 400,
+ "cabelo": [
+  2,
+  55,
+  172,
+  465
+ ],
+ "tranca": [
+  227,
+  115,
+  307,
+  355
+ ],
+ "peito": [
+  142,
+  235,
+  322,
+  365
+ ],
+ "cabeca_topo": 5,
+ "texturas": [
+  "olhos_abertos_mao_aberta",
+  "olhos_abertos_mao_fechada",
+  "olhos_semi_mao_aberta",
+  "olhos_semi_mao_fechada"
+ ]
+}

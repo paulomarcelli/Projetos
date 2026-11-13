@@ -42,10 +42,23 @@
 2. **Cena de teste:** Luna no Calçadão do Farol, no tamanho real do jogo, sobre o cenário em camadas.
 - Responsável pela aprovação: usuário.
 
+## Ficha da Luna (proposta, a aprovar)
+Visual próprio. Não reproduz figurino, penteado nem rosto da série, da atriz ou de fotos de referência.
+- **Cabelo:** castanho-escuro, cacheado e volumoso, preso num rabo alto com um lenço amarelo-mostarda.
+- **Rosto:** olhos castanho-mel grandes, sardinhas no nariz, sorriso aberto.
+- **Jaqueta:** jeans curta azul-clara com mangas dobradas e 3 adesivos bordados (estrela, onda do mar, nota musical).
+- **Roupa:** camiseta listrada creme e coral + bermuda tipo macacão (jardineira) amarelo-mostarda.
+- **Proteção:** capacete turquesa com adesivo de estrela; joelheiras e cotoveleiras brancas com borda turquesa.
+- **Meias:** cano alto brancas com uma listra turquesa.
+- **Patins:** quad (4 rodas) brancos com detalhes turquesa, rodas amarelas e freio coral.
+- **Pose-assinatura:** comemoração com um braço para o alto e um pé levantado para trás.
+- **Cores-chave:** mostarda `#E9B23A`, turquesa `#2FA8A4`, coral `#F2765B`, jeans `#8FB3D9`, creme `#FFF3DD`.
+
 ## Prompt-base para gerar arte (se a escolha for IA)
 ```
 FINALIDADE: personagem jogável de um jogo de plataforma 2D
-ASSUNTO: Luna, garota de 16 anos, cabelo [cor/formato], jaqueta [cor], shorts, patins quad [cor]
+ASSUNTO: Luna, garota de 16 anos, cabelo castanho-escuro cacheado em rabo alto com lenço mostarda, jaqueta
+  jeans curta com adesivos, jardineira amarela, capacete turquesa, patins quad brancos com rodas amarelas
 VISTA: perfil lateral, voltada para a direita, de corpo inteiro, patinando
 DIREÇÃO DE ARTE: chibi, cabeça grande (~40% da altura), olhos enormes com dois brilhos, blush,
   contorno marrom-escuro com espessura variável, cel shading em 2 tons, cores quentes de fim de tarde

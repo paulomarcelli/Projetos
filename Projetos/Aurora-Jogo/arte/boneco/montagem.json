@@ -1,0 +1,74 @@
+{
+  "_sobre": "Posição de cada peça na pose parada (px da folha de partes). x,y = canto superior esquerdo; ordem = de trás para a frente.",
+  "tela": [
+    420,
+    520
+  ],
+  "pecas": [
+    {
+      "nome": "cabelo_tras",
+      "x": 84,
+      "y": 38
+    },
+    {
+      "nome": "aljava",
+      "x": 88,
+      "y": 150
+    },
+    {
+      "nome": "tranca_esquerda",
+      "x": 138,
+      "y": 80
+    },
+    {
+      "nome": "braco_inteiro_2",
+      "x": 128,
+      "y": 122
+    },
+    {
+      "nome": "perna_2",
+      "x": 164,
+      "y": 238
+    },
+    {
+      "nome": "perna_1",
+      "x": 204,
+      "y": 234
+    },
+    {
+      "nome": "tunica_barra",
+      "x": 148,
+      "y": 200
+    },
+    {
+      "nome": "shorts",
+      "x": 152,
+      "y": 206
+    },
+    {
+      "nome": "tronco_peitoral",
+      "x": 160,
+      "y": 96
+    },
+    {
+      "nome": "cabeca_olhos_abertos",
+      "x": 150,
+      "y": 2
+    },
+    {
+      "nome": "mecha_2",
+      "x": 160,
+      "y": 60
+    },
+    {
+      "nome": "tranca_direita",
+      "x": 172,
+      "y": 92
+    },
+    {
+      "nome": "braco_inteiro_1",
+      "x": 196,
+      "y": 118
+    }
+  ]
+}

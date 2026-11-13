@@ -11,7 +11,7 @@
 - **Plataformas:** celular (controles na tela), computador e navegador; controle de videogame opcional.
 - **Duração:** 8 a 10 fases de 10 a 20 minutos, alternando **Aldemar** (mundo humano) e o **Ermo Velho** (mundo encantado).
 
-## 2. O que a Ilsa faz
+## 2. O que a Aurora faz
 | Ação | Botão (celular) | Detalhe |
 |------|-----------------|---------|
 | Andar e pular | direcional + A | Pulo com tempo extra na borda e memória do botão (skill `platformer`) |
@@ -21,7 +21,7 @@
 | **Fia, a raposa** | automática / toque nela | Ilumina segredos, alcança alavancas em buracos pequenos e dá dicas |
 
 - **Vida:** 5 corações. Não há "vidas"; ao cair, ela volta ao último marco de pedra (checkpoint).
-- **Combate leve:** Ilsa não é guerreira. Ela desvia, distrai com a lanterna e usa o cenário (derrubar caixas, abrir portas sob inimigos).
+- **Combate leve:** Aurora não é guerreira. Ela desvia, distrai com a lanterna e usa o cenário (derrubar caixas, abrir portas sob inimigos).
 - **Tinta de sal:** recurso que limita os desenhos; recarregada em fontes de sal escondidas.
 
 ## 3. Fases (rascunho)
@@ -38,7 +38,7 @@
 | 9 | Aldemar | Ilha do Farol | Luz e sombra: virar espelhos |
 | 10 | Os dois | Pedralva engolida pela Maré | Fase final; a escolha do fim |
 
-Entre as fases há conversas curtas com escolhas (quem apoiar, o que contar), que mudam quem ajuda Ilsa
+Entre as fases há conversas curtas com escolhas (quem apoiar, o que contar), que mudam quem ajuda Aurora
 no final e qual dos três finais aparece.
 
 **Inimigos e obstáculos (originais):** plantas-boca de sal, guardas dos Ferrabraz com lanternas,
@@ -48,12 +48,12 @@ morcegos de névoa, estátuas que só andam no escuro e a própria Maré Cinza, 
 - **Motor recomendado: Godot 4.7.** Faz bem o 2,5D (cenário 3D + personagens 2D), tem luzes e brilho
   prontos para a cena noturna, é gratuito e exporta para celular, computador e navegador.
   O Phaser, que usamos antes, é 2D puro e teria dificuldade com essa iluminação.
-- Câmera em perspectiva leve vista de lado (dá profundidade às camadas), seguindo a Ilsa com suavidade.
+- Câmera em perspectiva leve vista de lado (dá profundidade às camadas), seguindo a Aurora com suavidade.
 - Física e colisão em 2D (a jogabilidade é toda num plano), com o cenário 3D só como visual.
 - Controles na tela para celular, no estilo das referências (direcional à esquerda, 4 botões à direita).
 
 ## 5. Etapas
-1. **Protótipo cinza:** movimento da Ilsa, caixas, checkpoint e o desenho de ponte. Ajustar até ficar gostoso.
+1. **Protótipo cinza:** movimento da Aurora, caixas, checkpoint e o desenho de ponte. Ajustar até ficar gostoso.
 2. **Alvo visual:** um trecho da fase 1 (Porto de Morvane) com arte e luz finais, testado no celular.
 3. **Fatia vertical:** fase 1 completa, com Fia, inimigo, conversa com escolha, som e menu.
 4. **Produção** das outras fases, alternando os dois mundos.

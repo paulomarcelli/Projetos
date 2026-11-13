@@ -21,10 +21,10 @@
 - **Os dois mundos:**
   - **Aldemar:** pedra, madeira escura, ferro, velas amarelas; roxo frio e laranja de tochas.
   - **Ermo Velho:** papel colorido, flores luminosas, árvores enormes; turquesa, verde-lima e rosa.
-- **Desenhos da Ilsa:** o que ela desenha aparece com traço de nanquim azul e brilho de sal, até sumir.
+- **Desenhos da Aurora:** o que ela desenha aparece com traço de nanquim azul e brilho de sal, até sumir.
 
 ## Personagens (originais)
-- **Ilsa Morvane:** cabelo ruivo-escuro em trança lateral, sardas, capa curta azul-marinho com
+- **Aurora Morvane:** cabelo ruivo-escuro em trança lateral, sardas, capa curta azul-marinho com
   borda de garça bordada, bolsa de couro cheia de rolos de mapa, botas gastas. Lápis atrás da orelha.
 - **Fia:** raposa vermelha pequena, cauda grande com ponta branca que brilha levemente; olhos cor de âmbar.
 - Proporção: cabeça grande (≈ 1/3 da altura), olhos expressivos, contorno marrom-escuro.
@@ -43,9 +43,9 @@
 ## Contrato técnico
 - Cenário: modelos 3D simples (poucos polígonos), texturas pintadas 512–1024 px, luz em tempo real com brilho (glow).
 - Personagens: folhas de sprites 2D, 256×256 por quadro, ponto de apoio nos pés.
-- Animações da Ilsa: parada, andando, correndo, pulo, queda, empurrando, desenhando, lanterna, dano, comemoração.
+- Animações da Aurora: parada, andando, correndo, pulo, queda, empurrando, desenhando, lanterna, dano, comemoração.
 - Interface: corações, barra de tinta de sal, botões na tela, todos com a mesma espessura de contorno.
 
 ## Alvo visual (aprovar antes de produzir)
 Um trecho do **Porto de Morvane à noite**: cais de madeira, caixas, redes, um farol ao fundo,
-cristais de sal brilhando, Ilsa e Fia no tamanho real do jogo, testado num celular.
+cristais de sal brilhando, Aurora e Fia no tamanho real do jogo, testado num celular.

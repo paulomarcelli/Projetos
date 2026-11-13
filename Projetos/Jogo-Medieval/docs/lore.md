@@ -58,7 +58,7 @@ mapas e da memória. Elas não morrem: vão para o Ermo Velho. Quem as procura j
   de verdade, o que é desenhado passa a existir por um tempo: uma ponte, uma escada, uma porta.
 - **Portas para o Ermo:** uma porta desenhada e pintada com tinta de sal se abre para o Ermo Velho. Cada mapa abre só uma vez.
 - **O preço:** cada desenho que vira real custa ao cartógrafo uma pequena lembrança dele mesmo.
-  Ilsa começa a esquecer coisas pequenas (o cheiro da casa, o nome de um cavalo) e precisa decidir quanto está disposta a perder.
+  Aurora começa a esquecer coisas pequenas (o cheiro da casa, o nome de um cavalo) e precisa decidir quanto está disposta a perder.
 - **Lanterna de sal:** um cristal aceso que afasta a névoa por pouco tempo; presente de Alvor, o Cervo-de-Luar.
 
 ## 8. Crenças
@@ -68,9 +68,9 @@ mapas e da memória. Elas não morrem: vão para o Ermo Velho. Quem as procura j
   Cada casa interpreta do jeito que lhe convém.
 
 ## 9. Os segredos que o jogo revela
-1. **A culpa da Casa Morvane** (Ato II): foi um antepassado de Ilsa quem desenhou o mapa até a Baleia.
+1. **A culpa da Casa Morvane** (Ato II): foi um antepassado de Aurora quem desenhou o mapa até a Baleia.
 2. **Quem pegou a Coroa** (fim do Ato II): **Bertran Morvane e a Irmã Odile**, juntos. Queriam devolvê-la ao mar
-   para salvar o reino, mas a Maré chegou antes e a Coroa ficou escondida num mapa que só Ilsa consegue abrir.
+   para salvar o reino, mas a Maré chegou antes e a Coroa ficou escondida num mapa que só Aurora consegue abrir.
 3. **A Ordem do Farol mente desde o começo:** foi fundada para esconder a Noite do Cristal.
 4. **Os gigantes sob as minas** são os filhos da Baleia, e acordá-los é declarar guerra ao Ermo.
 

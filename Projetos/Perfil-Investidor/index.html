@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qual é o seu perfil de investidor?</title>
+  <meta name="description" content="Sistema especialista que identifica o seu perfil de investidor e explica o raciocínio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <header class="topo">
+    <span class="marca">Perfil de Investidor</span>
+    <span class="topo-nota">Sistema especialista · projeto educacional FECAP</span>
+  </header>
+
+  <main id="app">
+    <!-- Tela inicial -->
+    <section class="tela tela-inicio" id="tela-inicio" aria-labelledby="titulo-inicio">
+      <div class="inicio-texto">
+        <h1 id="titulo-inicio" tabindex="-1">Qual é o seu perfil de investidor?</h1>
+        <p class="lead">Responda 10 perguntas sobre seus objetivos e sua relação com o risco. Um sistema especialista aplica regras de análise, chega ao seu perfil e mostra, passo a passo, como chegou nele.</p>
+        <button class="botao botao-principal" id="btn-comecar" type="button">Começar</button>
+        <p class="detalhe">10 perguntas · cerca de 2 minutos · nada é salvo</p>
+      </div>
+      <ol class="inicio-perfis" aria-label="Os três perfis possíveis">
+        <li class="perfil-bloco perfil-conservador"><strong>Conservador</strong><span>Segurança acima de tudo.</span></li>
+        <li class="perfil-bloco perfil-moderado"><strong>Moderado</strong><span>Equilíbrio entre risco e retorno.</span></li>
+        <li class="perfil-bloco perfil-arrojado"><strong>Arrojado</strong><span>Aceita oscilar para buscar mais.</span></li>
+      </ol>
+    </section>
+
+    <!-- Tela de pergunta -->
+    <section class="tela tela-pergunta" id="tela-pergunta" aria-labelledby="titulo-pergunta" hidden>
+      <div class="progresso">
+        <p class="progresso-texto" id="progresso-texto" aria-live="polite">Pergunta 1 de 10</p>
+        <div class="progresso-trilho" aria-hidden="true"><div class="progresso-barra" id="progresso-barra"></div></div>
+      </div>
+      <form id="form-pergunta" class="pergunta" novalidate>
+        <fieldset>
+          <legend><h2 id="titulo-pergunta" tabindex="-1"></h2></legend>
+          <p class="ajuda" id="ajuda-pergunta" hidden></p>
+          <div class="opcoes" id="opcoes"></div>
+        </fieldset>
+        <div class="acoes">
+          <button class="botao botao-secundario" id="btn-voltar" type="button">Voltar</button>
+          <button class="botao botao-principal" id="btn-proxima" type="submit" disabled>Próxima</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tela de resultado -->
+    <section class="tela tela-resultado" id="tela-resultado" aria-labelledby="titulo-resultado" hidden>
+      <div class="resultado-destaque" id="resultado-destaque">
+        <p class="resultado-rotulo">Seu perfil é</p>
+        <h2 id="titulo-resultado" tabindex="-1"></h2>
+        <p class="resultado-descricao" id="resultado-descricao"></p>
+      </div>
+
+      <div class="alertas" id="alertas"></div>
+
+      <div class="resultado-grade">
+        <section class="bloco" aria-labelledby="titulo-carteira">
+          <h3 id="titulo-carteira">Carteira de exemplo</h3>
+          <p class="bloco-intro">Como alguém com esse perfil poderia dividir o dinheiro entre tipos de investimento.</p>
+          <ul class="carteira" id="carteira"></ul>
+        </section>
+        <section class="bloco" aria-labelledby="titulo-raciocinio">
+          <h3 id="titulo-raciocinio">Como cheguei nisso</h3>
+          <p class="bloco-intro">As regras da base de conhecimento que o motor de inferência usou, na ordem em que foram aplicadas.</p>
+          <ol class="raciocinio" id="raciocinio"></ol>
+        </section>
+      </div>
+
+      <div class="resultado-fim">
+        <button class="botao botao-principal" id="btn-refazer" type="button">Refazer o teste</button>
+        <p class="aviso">Projeto educacional da disciplina Expert System (FECAP). Não é recomendação de investimento: a análise de perfil oficial é feita pela sua corretora ou banco.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/motor.js"></script>
+  <script src="js/base-conhecimento.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

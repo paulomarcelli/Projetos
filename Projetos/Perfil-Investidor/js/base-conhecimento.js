@@ -205,9 +205,15 @@
       id: 'R20', nome: 'Perfil final', prioridade: 20,
       se: (f) => !!f.perfilPreliminar && !f.perfil,
       entao: (f) => ({ perfil: menor(f.perfilPreliminar, f.limite) }),
-      explicacao: (f) => (f.perfil === f.perfilPreliminar
-        ? `Nenhuma regra de segurança limitou o resultado: seu perfil é ${NOMES[f.perfil]}.`
-        : `Pela pontuação você seria ${NOMES[f.perfilPreliminar]}, mas por segurança o perfil final ficou ${NOMES[f.perfil]}.`),
+      explicacao: (f) => {
+        if (f.perfil !== f.perfilPreliminar) {
+          return `Pela pontuação você seria ${NOMES[f.perfilPreliminar]}, mas por segurança o perfil final ficou ${NOMES[f.perfil]}.`;
+        }
+        if (f.limite !== 'arrojado') {
+          return `Sua pontuação já indicava ${NOMES[f.perfil]}, e as regras de segurança também não permitiriam um perfil acima de ${NOMES[f.limite]}.`;
+        }
+        return `Nenhuma regra de segurança limitou o resultado: seu perfil é ${NOMES[f.perfil]}.`;
+      },
     },
     ...NIVEIS.map((nivel, i) => ({
       id: `R3${i}`, nome: `Carteira de exemplo — ${NOMES[nivel]}`, prioridade: 10,

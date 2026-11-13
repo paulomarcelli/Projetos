@@ -100,3 +100,12 @@ test('o resultado inclui a carteira do perfil final', () => {
 test('respostas incompletas geram erro claro', () => {
   assert.throws(() => base.avaliar({ objetivo: 0 }), /sem resposta/);
 });
+
+test('quando o perfil já era o limite, a explicação não diz que nenhuma regra de segurança agiu', () => {
+  const trocas = Object.fromEntries(base.perguntas.map((p) => [p.id, opcaoMaisCautelosa(p)]));
+  const r = base.avaliar(respostas(trocas));
+  const final = r.trilha.find((t) => t.id === 'R20');
+  assert.equal(r.fatos.perfil, 'conservador');
+  assert.doesNotMatch(final.explicacao, /Nenhuma regra de segurança/);
+  assert.match(final.explicacao, /segurança/);
+});

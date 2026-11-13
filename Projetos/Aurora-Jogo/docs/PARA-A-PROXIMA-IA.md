@@ -55,6 +55,12 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
 - **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): volta à guarda (H), dano (I), mão meio
   fechada (F) e corrida maior (J).
 
+- **Corpo "elástico" na corrida (corrigido):** com o desenho inteiro numa malha 30×30, os triângulos que cruzavam o
+  contorno do rosto, da tiara e do pescoço puxavam o corpo junto com o cabelo. Agora a Aurora em movimento tem duas
+  camadas: corpo fixo (Sprite) por cima e só o cabelo na malha, por baixo. O contorno escuro e a borda
+  semitransparente do cabelo vão junto com a mecha. A respiração por malha da pose sentada saiu (os quadros do
+  Gemini já respiram).
+
 ## Provisório / incompleto (prioridade de cima para baixo)
 1. **Combo de verdade**: hoje J faz sempre o mesmo golpe. Com a folha H (volta à guarda), dá para encadear
    golpe 1 → golpe 2 ao apertar de novo durante a estocada.
@@ -82,7 +88,7 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
 - Texturas maiores que 4096 px quebram em muitos celulares: a folha de sprites usa 8 colunas (3072×2688).
 - Ao processar imagens novas, confira sempre o resultado **sobre fundo escuro** (é onde aparecem halos e sobras).
 - Ordem depois de mexer na folha: `montar_folha.py` → `limpar_bordas.py arte/sprites/aurora_folha.png` →
-  `pesos_cabelo.py` → `npm run preparar`. Os pesos dependem da folha final (posição de cada quadro).
+  `pesos_cabelo.py` (pesos + camadas corpo/mecha) → `npm run preparar`. Os pesos dependem da folha final (posição de cada quadro).
 - Nos testes com Playwright, ponha a Aurora perto da fogueira (`__jogo.corpo.x = 270`) antes de apertar E:
   sem save, ela começa a 168 px da fogueira, longe demais para sentar.
 

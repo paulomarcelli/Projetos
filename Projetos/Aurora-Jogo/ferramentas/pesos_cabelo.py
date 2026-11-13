@@ -10,6 +10,8 @@ peito embaixo das tranças) balançava junto. Agora o peso vem do próprio desen
 Saídas (PNG, um canal por tipo de cabelo):
   jogo/assets/viva/aurora_viva_cabelo.png   R = cabelo solto, G = tranças (Aurora parada, mesma resolução / 2)
   arte/sprites/aurora_folha_cabelo.png      R = cabelo (folha de sprites inteira, em 1/4 da resolução)
+  arte/sprites/aurora_folha_corpo.png       folha sem o cabelo que balança (camada fixa do jogo)
+  arte/sprites/aurora_folha_mecha.png       só o cabelo que balança, 1/2 da resolução (camada da malha)
 
 Uso (na pasta Aurora-Jogo):  python3 ferramentas/pesos_cabelo.py
 """
@@ -102,6 +104,41 @@ def folha():
     img[..., 0] = np.clip(saida * 255, 0, 255)
     Image.fromarray(img).resize((W // 4, H // 4), Image.BILINEAR).save(RAIZ / 'arte/sprites/aurora_folha_cabelo.png')
     print('folha:', RAIZ / 'arte/sprites/aurora_folha_cabelo.png')
+    camadas(sheet, saida)
+
+
+LIMIAR_MECHA = 0.12   # peso a partir do qual o pixel de cabelo vai para a camada que balança
+
+
+def camadas(sheet, peso):
+    """Separa a folha em duas camadas para o jogo (o corpo nunca é deformado pela malha do cabelo):
+      aurora_folha_corpo.png  folha inteira SEM o cabelo que balança (imagem fixa, por cima)
+      aurora_folha_mecha.png  só o cabelo que balança, em meia resolução (malha deformada, por baixo do corpo);
+                              alargado ~6 px para dentro do corpo, para não abrir fresta quando o cabelo se move
+    """
+    a = sheet[..., 3].astype(np.float32) / 255
+    # decisão sobre o peso suavizado (o limiar num campo ruidoso deixava pontinhos soltos na camada fixa)
+    mecha = (cv2.GaussianBlur(peso, (0, 0), 2.0) > LIMIAR_MECHA) & (a > 0)
+    # o contorno escuro e a borda semitransparente do cabelo não são "prateado opaco" (ficam fora da máscara):
+    # vão junto com a mecha que contornam. Contornos do corpo encostados no cabelo também entram, mas o peso
+    # deles é ~0 (estão no corpo) e eles não se movem.
+    v = sheet[..., :3].max(axis=2)
+    borda = ((v < 110) | (a < 0.95)) & (a > 0)
+    perto = cv2.dilate(mecha.astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))).astype(bool)
+    mecha = mecha | (perto & borda)
+    # borda suave de 1 px entre as camadas (a soma das duas cobre o desenho original)
+    m_suave = cv2.GaussianBlur(mecha.astype(np.float32), (0, 0), 0.7)
+    corpo = sheet.copy()
+    corpo[..., 3] = np.clip(a * (1 - m_suave) * 255, 0, 255).astype(np.uint8)
+    corpo[corpo[..., 3] == 0, :3] = 0
+    Image.fromarray(corpo).save(RAIZ / 'arte/sprites/aurora_folha_corpo.png', optimize=True)
+    largo = cv2.dilate(mecha.astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (13, 13))).astype(bool)
+    cab = sheet.copy()
+    cab[..., 3] = np.where(largo, sheet[..., 3], 0)
+    cab[cab[..., 3] == 0, :3] = 0
+    H, W = a.shape
+    Image.fromarray(cab).resize((W // 2, H // 2), Image.LANCZOS).save(RAIZ / 'arte/sprites/aurora_folha_mecha.png', optimize=True)
+    print('camadas: aurora_folha_corpo.png (fixa) + aurora_folha_mecha.png (cabelo, 1/2)')
 
 
 if __name__ == '__main__':

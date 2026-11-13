@@ -30,7 +30,7 @@ index.html
 | Situação | Como | Arquivo |
 |----------|------|---------|
 | **Parada** | Um desenho inteiro em alta resolução (482×953) numa `MeshPlane` 42×80, deformada por regiões (cabelo e tranças pelos pesos de `aurora_viva_cabelo.png`): respiração (sobe acima da cintura), peito, cabeça, cabelo solto, tranças. Olhos e mão trocam por variações do **mesmo** desenho; a mão troca com transição suave (2 malhas sobrepostas). | `aurora_viva.js`, `assets/viva/` |
-| **Em movimento** | Quadros desenhados (folha 3072×2688, células 384×384) numa `MeshPlane` 30×30; o cabelo (pesos de `aurora_folha_cabelo.png`, por quadro) é empurrado pelo vento e pela corrida através da `MolaCabelo`. | `vento.js` (`QuadrosVivos`), `assets/sprites/` |
+| **Em movimento** | Quadros desenhados (células 384×384) em **duas camadas**: o corpo é uma imagem fixa (`aurora_folha_corpo.png`, sem o cabelo que balança) por cima, e só o cabelo (`aurora_folha_mecha.png`, meia resolução) fica numa `MeshPlane` 30×30 por baixo, empurrado pelo vento e pela corrida (pesos de `aurora_folha_cabelo.png`, `MolaCabelo`). Assim a malha nunca estica o corpo. | `vento.js` (`QuadrosVivos`), `assets/sprites/` |
 
 Ambas usam os **pés** como origem (y = base da célula) e são espelhadas com `scale.x = direção`.
 Altura visual na tela: 210 px (`ALTURA_VISUAL`).
@@ -81,7 +81,7 @@ Folhas: camada de trás (pequenas, parallax 0,5) e da frente (grandes, parallax 
 | `montar_folha.py` | iguala a escala **pela altura da cabeça** medida em cada fonte, alinha os pés, cria quadros extras por código, gera a folha, o JSON, o SpriteFrames do Godot (legado) e as prévias |
 | `compor_viva.py` | junta base + variações (olhos, mão) por máscaras de diferença e gera as combinações da Aurora parada |
 | `limpar_bordas.py` | tira a franja branca das bordas da folha (descontamina a cor e afina 1 px) |
-| `pesos_cabelo.py` | acha o cabelo pela cor e gera os pesos (zero no corpo) da Aurora parada e de cada quadro da folha |
+| `pesos_cabelo.py` | acha o cabelo pela cor e gera os pesos (zero no corpo) da Aurora parada e de cada quadro da folha, e separa a folha nas camadas corpo (fixa) e mecha (cabelo que balança) |
 | `extrair_partes.py`, `texturas_corda.py`, `previa_montagem.py` | do experimento arquivado do boneco de peças |
 Detalhes de cada animação e origem: `arte/sprites/LEIA-ME.md`.
 

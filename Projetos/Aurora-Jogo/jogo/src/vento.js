@@ -3,7 +3,7 @@
  * (atrás do cenário, pequenas; na frente da câmera, grandes) para dar profundidade (parallax).
  * `forca` vai de -1 (soprando para a esquerda) a 1 (para a direita).
  */
-import { Container, Graphics, MeshPlane } from '../vendor/pixi.min.mjs';
+import { Container, Graphics, MeshPlane, Sprite } from '../vendor/pixi.min.mjs';
 import { MolaCabelo, amostrar } from './pesos.js';
 
 const CORES = ['#7c9a5a', '#a3b86c', '#c9a25a', '#8a6a9e', '#5f8a7a'];
@@ -78,39 +78,51 @@ const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a)
 
 export class QuadrosVivos {
   /**
-   * pesos: imagem de pesos do cabelo da folha inteira (ferramentas/pesos_cabelo.py), em `escalaPesos` da folha.
-   * Sem pesos, cai na região antiga (atrás da cabeça e das costas).
+   * Duas camadas por quadro (ferramentas/pesos_cabelo.py):
+   *  - corpo: imagem FIXA (folha sem o cabelo que balança), por cima — nunca é esticada pela malha;
+   *  - mecha: só o cabelo que balança (folha em meia resolução), numa malha deformada, por baixo do corpo.
+   * Antes era um desenho só numa malha: os triângulos que cruzavam o contorno do rosto e das costas puxavam o
+   * corpo junto com o cabelo ("elástico" na corrida).
+   * pesos: imagem de pesos do cabelo da folha inteira, em `escalaPesos` da folha (coordenadas da camada corpo).
    */
-  constructor(texInicial, base, pesos = null, escalaPesos = 0.25) {
+  constructor(texCorpo, texMecha, base, pesos = null, escalaPesos = 0.25) {
     this.raiz = new Container();
-    this.malha = new MeshPlane({ texture: texInicial, verticesX: 30, verticesY: 30 });
-    this.malha.position.set(-texInicial.width / 2, -base);
-    this.raiz.addChild(this.malha);
+    this.w = texCorpo.width; this.h = texCorpo.height;     // célula em px da folha (384)
+    this.malha = new MeshPlane({ texture: texMecha, verticesX: 30, verticesY: 30 });
+    this.escalaMecha = this.w / texMecha.width;             // a mecha está em meia resolução
+    this.malha.scale.set(this.escalaMecha);
+    this.malha.position.set(-this.w / 2, -base);
+    this.corpo = new Sprite(texCorpo);
+    this.corpo.position.set(-this.w / 2, -base);
+    this.raiz.addChild(this.malha, this.corpo);
     this.buf = this.malha.geometry.attributes.aPosition.buffer;
     this.orig = Float32Array.from(this.buf.data);
-    this.w = texInicial.width; this.h = texInicial.height;
-    this.texturas = [texInicial]; this.fps = 10; this.loop = true; this.velocidade = 1;
+    this.wm = texMecha.width; this.hm = texMecha.height;
+    this.texturas = [texCorpo]; this.mechas = [texMecha]; this.fps = 10; this.loop = true; this.velocidade = 1;
     this.t = 0; this.quadro = 0; this.tt = 0;
     this.pesos = pesos; this.escalaPesos = escalaPesos; this.cache = new Map();
     this.mola = new MolaCabelo(36, 0.3);
-    this.respirar = 0;                     // 0..1: respiração do tronco (sentada)
   }
   get currentFrame() { return this.quadro; }
-  tocar(anim) {
-    this.texturas = anim.texturas; this.fps = anim.fps; this.loop = anim.loop;
-    this.velocidade = 1; this.t = 0; this.quadro = 0; this.parado = false;
-    this.malha.texture = this.texturas[0];
+  set tint(cor) { this.malha.tint = cor; this.corpo.tint = cor; }
+  mostrar(q) {
+    this.quadro = q; this.corpo.texture = this.texturas[q]; this.malha.texture = this.mechas[q];
   }
-  parar(i) { this.parado = true; this.quadro = i; this.malha.texture = this.texturas[i]; }
+  tocar(anim) {
+    this.texturas = anim.texturas; this.mechas = anim.mechas; this.fps = anim.fps; this.loop = anim.loop;
+    this.velocidade = 1; this.t = 0; this.parado = false;
+    this.mostrar(0);
+  }
+  parar(i) { this.parado = true; this.mostrar(i); }
 
-  /** Peso do cabelo em cada vértice para a textura atual (calculado uma vez por quadro e guardado). */
+/** Peso do cabelo em cada vértice para a textura atual (calculado uma vez por quadro e guardado). */
   pesosDe(tex) {
     let w = this.cache.get(tex);
     if (w) return w;
     const n = this.orig.length / 2, f = tex.frame, e = this.escalaPesos;
     w = new Float32Array(n);
     for (let i = 0; i < n; i++) {
-      const u = this.orig[i * 2] / this.w, v = this.orig[i * 2 + 1] / this.h;
+      const u = this.orig[i * 2] / this.wm, v = this.orig[i * 2 + 1] / this.hm;
       w[i] = this.pesos ? amostrar(this.pesos, (f.x + u * f.width) * e, (f.y + v * f.height) * e, 0)
         : (1 - suave(0.4, 0.55, u)) * suave(0.12, 0.3, v) * (1 - suave(0.58, 0.7, v));
     }
@@ -129,23 +141,20 @@ export class QuadrosVivos {
       const n = this.texturas.length;
       let q = Math.floor(this.t * this.fps);
       q = this.loop ? q % n : Math.min(q, n - 1);
-      if (q !== this.quadro) { this.quadro = q; this.malha.texture = this.texturas[q]; }
+      if (q !== this.quadro) this.mostrar(q);
     }
     this.mola.atualizar(dt, cabeloX);
-    const w = this.pesosDe(this.malha.texture);
-    const resp = this.respirar * (Math.sin((this.tt / 3.4) * Math.PI * 2) * 0.5 + 0.5);
-    const d = this.buf.data, o = this.orig, H = this.h;
+    const w = this.pesosDe(this.corpo.texture);
+    const d = this.buf.data, o = this.orig, H = this.hm, s = 1 / this.escalaMecha;   // px da célula → px da mecha
     for (let i = 0, k = 0; i < d.length; i += 2, k++) {
-      const v = o[i + 1] / H;
       let dx = 0, dy = 0;
       if (w[k] > 0.002) {
+        const v = o[i + 1] / H;
         const desce = Math.min(1, Math.max(0, (v - 0.12) / 0.45));
         const m = this.mola.deslocamento(desce, forcaVento);
         dx = w[k] * m.dx; dy = w[k] * (m.dy + 0.6 * Math.sin(this.tt * 4 + v * 6) * Math.min(1, Math.abs(this.mola.valor) / 6));
       }
-      // respiração: o tronco sobe um pouco (mais nos ombros), as pernas ficam paradas
-      if (resp > 0) dy -= resp * 4 * (1 - suave(0.25, 0.62, v)) * suave(0.05, 0.2, v);
-      d[i] = o[i] + dx; d[i + 1] = o[i + 1] + dy;
+      d[i] = o[i] + dx * s; d[i + 1] = o[i + 1] + dy * s;
     }
     this.buf.update();
   }

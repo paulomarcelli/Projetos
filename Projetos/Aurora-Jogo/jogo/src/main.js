@@ -98,14 +98,17 @@ const boneco = await carregarAuroraViva();
 const escalaBoneco = ALTURA_VISUAL / boneco.altura;
 cena.addChild(boneco.raiz);
 
-const folha = nitida(await Assets.load('assets/sprites/aurora_folha.png'));
+// duas camadas (ferramentas/pesos_cabelo.py): corpo fixo + cabelo que balança (meia resolução), ver QuadrosVivos
+const [folhaCorpo, folhaMecha] = await Promise.all(['corpo', 'mecha'].map(async (c) => nitida(await Assets.load(`assets/sprites/aurora_folha_${c}.png`))));
 const pesosFolha = await lerPesos('assets/sprites/aurora_folha_cabelo.png');
 const meta = await (await fetch('assets/sprites/aurora_folha.json')).json();
 const animacoes = {};
+const recorte = (fonte, [x, y, w, h], e = 1) => new Texture({ source: fonte.source, frame: new Rectangle(x * e, y * e, w * e, h * e) });
 for (const [nome, a] of Object.entries(meta.animacoes)) {
   animacoes[nome] = {
     ...a,
-    texturas: a.quadros.map(([x, y, w, h]) => new Texture({ source: folha.source, frame: new Rectangle(x, y, w, h) })),
+    texturas: a.quadros.map((q) => recorte(folhaCorpo, q)),
+    mechas: a.quadros.map((q) => recorte(folhaMecha, q, 0.5)),
   };
 }
 // sentar → sentada (respira e pisca) → levantar: quadros do Gemini, montados em ferramentas/montar_folha.py
@@ -113,7 +116,7 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
 // (a folha antiga tem 4 quadros de dano: 3 piscadas + a pose; a folha nova do Gemini terá os 3 quadros de reação)
 if (animacoes.dano.quadros.length === 4) animacoes.dano = { ...animacoes.dano, loop: false, texturas: [animacoes.dano.texturas[3]] };
 // animações desenhadas numa malha, para o cabelo seguir o vento e o movimento
-const quadros = new QuadrosVivos(animacoes.parada.texturas[0], BASE_CELULA, pesosFolha, 0.25);
+const quadros = new QuadrosVivos(animacoes.parada.texturas[0], animacoes.parada.mechas[0], BASE_CELULA, pesosFolha, 0.25);
 const escalaQuadros = ALTURA_VISUAL / ALTURA_QUADRO;
 cena.addChild(quadros.raiz);
 
@@ -311,10 +314,8 @@ function escolherAnimacao(dt) {
     // senta (de pé → agachada) e fica respirando; antes era um quadro congelado
     if (estado !== 'sentar' && estado !== 'sentada') tocar('sentar');
     if (estado === 'sentar' && quadros.currentFrame >= animacoes.sentar.texturas.length - 1 && quadros.t > animacoes.sentar.texturas.length / animacoes.sentar.fps) tocar('sentada');
-    quadros.respirar = Math.min(1, quadros.respirar + dt * 2);
     return;
   }
-  quadros.respirar = Math.max(0, quadros.respirar - dt * 4);
   if (levantando > 0) { levantando -= dt; return tocar('levantar'); }
   if (acao) {
     tempoAcao -= dt;
@@ -396,7 +397,7 @@ app.ticker.add((ticker) => {
   // clarão vermelho que volta ao normal e recuo (inclina para trás e volta)
   clarao = Math.max(0, clarao - dtReal * 3.2); recuo = Math.max(0, recuo - dtReal * 3.2);
   const tint = clarao > 0 ? (0xff << 16) | (Math.round(255 - 165 * clarao) << 8) | Math.round(255 - 150 * clarao) : 0xffffff;
-  quadros.malha.tint = tint;
+  quadros.tint = tint;
   for (const m of boneco.raiz.children) m.tint = tint;
   const inclina = -corpo.direcao * 0.12 * Math.sin(Math.min(1, recuo) * Math.PI) * (estado === 'boneco' ? 0 : 1);
   quadros.raiz.rotation = inclina;

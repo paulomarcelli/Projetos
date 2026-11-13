@@ -5,7 +5,8 @@ import { cpSync, mkdirSync } from 'node:fs';
 const raiz = new URL('..', import.meta.url).pathname;
 mkdirSync(raiz + 'vendor', { recursive: true });
 cpSync(raiz + 'node_modules/pixi.js/dist/pixi.min.mjs', raiz + 'vendor/pixi.min.mjs');
-cpSync(raiz + '../arte/sprites/aurora_folha.png', raiz + 'assets/sprites/aurora_folha.png');
+// a Aurora em movimento usa as duas camadas (corpo fixo + cabelo); a folha inteira fica só em arte/sprites
+for (const c of ['corpo', 'mecha']) cpSync(raiz + `../arte/sprites/aurora_folha_${c}.png`, raiz + `assets/sprites/aurora_folha_${c}.png`);
 cpSync(raiz + '../arte/sprites/aurora_folha.json', raiz + 'assets/sprites/aurora_folha.json');
 cpSync(raiz + '../arte/sprites/aurora_folha_cabelo.png', raiz + 'assets/sprites/aurora_folha_cabelo.png'); // pesos do cabelo (ferramentas/pesos_cabelo.py)
 cpSync(raiz + '../arte/sprites/flecha', raiz + 'assets/sprites/flecha', { recursive: true });

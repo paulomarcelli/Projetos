@@ -62,7 +62,7 @@ function moverY(c, dy, mundo) {
   return pousou;
 }
 
-/** Avança um tick. entrada: { esquerda, direita, pular (apertou agora), pularSegurado, esquiva } */
+/** Avança um tick. entrada: { esquerda, direita, pular (apertou agora), pularSegurado, esquiva, podeSaltoDuplo } */
 export function passo(c, entrada, mundo) {
   const K = CONST, dt = K.DT;
   c.tick += 1;
@@ -97,7 +97,7 @@ export function passo(c, entrada, mundo) {
     c.noChao = false;
     c.pulou = true;
     if (!entrada.pularSegurado) c.vy *= K.CORTE_PULO;
-  } else if (entrada.pular && !c.noChao && !c.saltoDuplo && c.tick - c.ultimoChao > K.COYOTE_TICKS) {
+  } else if (entrada.pular && entrada.podeSaltoDuplo !== false && !c.noChao && !c.saltoDuplo && c.tick - c.ultimoChao > K.COYOTE_TICKS) {
     c.vy = K.VEL_PULO * K.PULO_DUPLO;
     c.saltoDuplo = true;
     c.ultimoAperto = NUNCA;

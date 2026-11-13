@@ -83,3 +83,14 @@ test('pulo duplo (Salto da Lua): um só no ar', () => {
   passo(c, comPulo, CHAO);
   assert.ok(c.vy >= vy, 'terceiro pulo no ar não deve acontecer');
 });
+
+test('sem mana, o Salto da Lua não acontece', () => {
+  const c = noChao();
+  passo(c, comPulo, CHAO);
+  for (let i = 0; i < 15; i++) passo(c, segurando, CHAO);
+  passo(c, nada, CHAO);
+  const vy = c.vy;
+  passo(c, { ...comPulo, podeSaltoDuplo: false }, CHAO);
+  assert.equal(c.saltoDuplo, false);
+  assert.ok(c.vy >= vy);
+});

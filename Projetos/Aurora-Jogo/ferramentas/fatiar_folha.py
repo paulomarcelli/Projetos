@@ -6,6 +6,9 @@ Uso: python3 ferramentas/fatiar_folha.py FOLHA.webp --nomes parada:5,correndo:8 
 - Cada personagem vira uma peça; pedaços menores (arco, mecha de cabelo) se juntam à peça mais próxima.
 - Ordena por linha (de cima para baixo) e, em cada linha, da esquerda para a direita.
 - Mantém a escala da folha: todos os quadros saem no mesmo tamanho relativo.
+- --separar N (plano C): quando quadros se tocam por ligações finas (corda do arco, arco deitado no chão
+  encostando no vizinho), afina a máscara N px para romper as ligações, acha as peças e devolve cada pixel
+  à peça mais próxima. Use quando o plano B cortar pedaços de um quadro para dentro do outro.
 """
 import argparse
 import sys
@@ -83,6 +86,34 @@ def fatiar(caminho, linhas):
     return quadros
 
 
+def fatiar_separando(cor, alpha, linhas, raio):
+    import cv2
+    from scipy import ndimage
+    opaco = alpha > 0.5
+    fino = cv2.erode(opaco.astype(np.uint8), np.ones((2 * raio + 1, 2 * raio + 1), np.uint8)) > 0
+    rot, n = ndimage.label(fino, structure=np.ones((3, 3)))
+    areas = ndimage.sum(np.ones_like(rot), rot, index=np.arange(1, n + 1))
+    total = sum(q for _, q in linhas)
+    principais = list(np.argsort(areas)[::-1][:total] + 1)
+    # cada pixel visível vai para a peça principal mais próxima
+    so_principais = np.isin(rot, principais)
+    _, (iy, ix) = ndimage.distance_transform_edt(~so_principais, return_indices=True)
+    dono = np.where(alpha > 0, rot[iy, ix], 0)
+    caixas = {j: ndimage.find_objects((dono == j).astype(np.int32))[0] for j in principais}
+    cy = {j: (caixas[j][0].start + caixas[j][0].stop) / 2 for j in principais}
+    ordem, resto = [], sorted(principais, key=lambda j: cy[j])
+    for _, q in linhas:  # linhas de cima para baixo, cada uma da esquerda para a direita
+        ordem.append(sorted(resto[:q], key=lambda j: caixas[j][1].start)); resto = resto[q:]
+    quadros = []
+    for (nome, _), grupo in zip(linhas, ordem):
+        for k, j in enumerate(grupo, 1):
+            a = np.where(dono == j, alpha, 0.0)
+            img = Image.fromarray(np.dstack([cor, a * 255]).astype(np.uint8), 'RGBA')
+            quadros.append((f'{nome}_{k:02d}', img.crop(img.getbbox())))
+    print(f'(plano C: máscara afinada {raio} px)')
+    return quadros
+
+
 def fatiar_por_vales(cor, alpha, linha):
     nome, n = linha
     ys, xs = np.nonzero(alpha > 0.5)
@@ -110,10 +141,16 @@ def main():
     ap.add_argument('folha')
     ap.add_argument('--nomes', required=True, help='linhas no formato nome:quantidade,nome:quantidade')
     ap.add_argument('--saida', required=True)
+    ap.add_argument('--separar', type=int, default=0, help='plano C: afina a máscara N px para separar quadros que se tocam')
     args = ap.parse_args()
     linhas = [(p.split(':')[0], int(p.split(':')[1])) for p in args.nomes.split(',')]
     saida = Path(args.saida); saida.mkdir(parents=True, exist_ok=True)
-    for nome, img in fatiar(args.folha, linhas):
+    if args.separar:
+        cor, alpha = recorte_completo(args.folha)
+        lista = fatiar_separando(cor, alpha, linhas, args.separar)
+    else:
+        lista = fatiar(args.folha, linhas)
+    for nome, img in lista:
         img.save(saida / f'aurora_{nome}.png')
         print(f'aurora_{nome}.png {img.size[0]}x{img.size[1]}')
 

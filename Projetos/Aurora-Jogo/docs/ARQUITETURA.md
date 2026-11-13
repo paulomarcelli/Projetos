@@ -11,7 +11,7 @@ index.html
        ├─ pesos.js .......... pesos do cabelo (PNG → peso por vértice) e MolaCabelo (atraso e balanço do cabelo)
        ├─ efeitos.js ........ faíscas, números de dano, vinheta vermelha, hit-stop e tremor de câmera
        ├─ fogueira.js ....... Fogueira Lunar (desenho em código, chama animada que reage ao vento)
-       ├─ inimigos.js ....... Sombra (criatura provisória: patrulha, dano, morte, moedas)
+       ├─ inimigos.js ....... Sombra de névoa (sprites do Gemini: patrulha, dano, morte, moedas)
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
 ```
 `fisica.js` e `progresso.js` não importam nada gráfico: rodam no Node e têm testes em `testes/`.
@@ -37,8 +37,8 @@ Altura visual na tela: 210 px (`ALTURA_VISUAL`).
 
 Estados de animação (`escolherAnimacao`): `boneco` (parada viva) · `correndo` · `pulo` · `queda` · `aterrissar` ·
 `esquiva` · `cambalhota` (Salto da Lua) · `ataque_lamina` · `arco_preparar` → `arco_atirar` (solta a flecha no
-quadro 3) · `dano` · `vitoria` · `sentar` → `sentada` → `levantar` (montadas por código com quadros de `aterrissar`
-até chegarem as poses do Gemini).
+quadro 3) · `dano` · `vitoria` · `sentar` → `sentada` → `levantar` (quadros do Gemini; quadros repetidos ocupam
+uma célula só na folha).
 
 ## Física (fisica.js)
 | Constante | Valor | Origem |
@@ -76,7 +76,8 @@ Folhas: camada de trás (pequenas, parallax 0,5) e da frente (grandes, parallax 
 | Ferramenta | Faz |
 |------------|-----|
 | `recortar.py` | tira o fundo branco (só o branco ligado à borda + áreas brancas fechadas grandes), borda suave sem halo, remove pedaços soltos |
-| `fatiar_folha.py` | separa os quadros de uma folha do Gemini por peças; se quadros se encostam, corta nos vales (plano B) |
+| `fatiar_folha.py` | separa os quadros de uma folha do Gemini por peças; se quadros se encostam, corta nos vales (plano B) ou afina a máscara e separa (`--separar N`, plano C) |
+| `fatiar_sombra.py` | folha da sombra de névoa: transparência pela distância até o branco (a fumaça não some), gera `arte/sprites/sombra/` |
 | `montar_folha.py` | iguala a escala **pela altura da cabeça** medida em cada fonte, alinha os pés, cria quadros extras por código, gera a folha, o JSON, o SpriteFrames do Godot (legado) e as prévias |
 | `compor_viva.py` | junta base + variações (olhos, mão) por máscaras de diferença e gera as combinações da Aurora parada |
 | `limpar_bordas.py` | tira a franja branca das bordas da folha (descontamina a cor e afina 1 px) |

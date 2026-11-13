@@ -11,7 +11,7 @@ import { carregarAuroraViva, nitida } from './aurora_viva.js';
 import { Faiscas, Impacto, Numeros, Vinheta } from './efeitos.js';
 import { lerPesos } from './pesos.js';
 import { Fogueira } from './fogueira.js';
-import { Sombra } from './inimigos.js';
+import { carregarSombras, Sombra } from './inimigos.js';
 import { MenuFogueira, Painel } from './hud.js';
 import { QuadrosVivos, Vento } from './vento.js';
 import { derivados, desserializar, evoluir, novoProgresso, serializar } from './progresso.js';
@@ -82,6 +82,7 @@ cena.addChild(chao);
 
 const fogueiras = [new Fogueira('fogueira_1', 250, 640), new Fogueira('fogueira_2', 2700, 640)];
 for (const f of fogueiras) cena.addChild(f.raiz);
+await carregarSombras();
 const sombras = [
   new Sombra(1150, 640, 160, 35), new Sombra(1500, 640, 120, 45),
   new Sombra(2060, 420, 120, 60), new Sombra(2450, 640, 150, 50),
@@ -107,12 +108,7 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
     texturas: a.quadros.map(([x, y, w, h]) => new Texture({ source: folha.source, frame: new Rectangle(x, y, w, h) })),
   };
 }
-// animações montadas por código a partir dos quadros que existem (até chegarem as poses do Gemini)
-// sentar: de pé → agachada (1º quadro de aterrissar), com respiração; levantar é o contrário
-const [agachada, dePe] = animacoes.aterrissar.texturas;
-animacoes.sentar ??= { fps: 7, loop: false, texturas: [dePe, agachada] };   // ??=: se a folha já tiver, usa a dela
-animacoes.sentada ??= { fps: 1, loop: true, texturas: [agachada] };
-animacoes.levantar ??= { fps: 8, loop: false, texturas: [...animacoes.sentar.texturas].reverse() };
+// sentar → sentada (respira e pisca) → levantar: quadros do Gemini, montados em ferramentas/montar_folha.py
 // dano: a pose normal (o quadro 4) com o recuo, o clarão e as faíscas feitos por código (não a silhueta branca)
 // (a folha antiga tem 4 quadros de dano: 3 piscadas + a pose; a folha nova do Gemini terá os 3 quadros de reação)
 if (animacoes.dano.quadros.length === 4) animacoes.dano = { ...animacoes.dano, loop: false, texturas: [animacoes.dano.texturas[3]] };
@@ -200,7 +196,7 @@ function fogueiraPerto() {
 
 function descansar(f) {
   sentada = true; acao = null;
-  corpo.vx = 0; corpo.x = f.x + 62 - CONST.LARGURA / 2; corpo.direcao = -1;  // ao lado do fogo, olhando para ele
+  corpo.vx = 0; corpo.x = f.x + 100 - CONST.LARGURA / 2; corpo.direcao = -1;  // ao lado do fogo, olhando para ele (o arco deitado e os joelhos ficam fora da chama)
   f.acesa = true;
   progresso = { ...progresso, fogueira: f.id };
   stats = derivados(progresso);
@@ -347,7 +343,7 @@ function atirar() {
   const s = new Sprite(texFlecha);
   s.anchor.set(0.5); s.scale.y = ESCALA_FLECHA;
   const pes = { x: corpo.x + CONST.LARGURA / 2, y: corpo.y + CONST.ALTURA };
-  s.position.set(pes.x + corpo.direcao * 70, pes.y - ALTURA_VISUAL * 0.58);
+  s.position.set(pes.x + corpo.direcao * 70, pes.y - ALTURA_VISUAL * 0.76);   // na altura da flecha do desenho (arco v2: corda no canto da boca)
   s.scale.x = corpo.direcao * ESCALA_FLECHA;
   cena.addChild(s);
   flechas.push({ s, vx: corpo.direcao * 1150, vy: -40, vida: 4, cravada: false });

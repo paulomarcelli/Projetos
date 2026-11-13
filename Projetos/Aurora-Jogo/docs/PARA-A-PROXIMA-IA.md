@@ -40,17 +40,21 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
   A animação `dano` usa a pose normal (as silhuetas branca/vermelha da folha antiga não são mais usadas).
 - **Faca:** avanço de um passo no golpe, alcance de 140 px, criatura jogada para trás e atordoada, recuo dela; a
   criatura só machuca pelo miolo (`caixaToque`).
-- **Sentar:** de pé → agachada com respiração e levantar ao contrário (provisório, com quadros que já existiam).
-- **Falta arte do Gemini** (prompts prontos em `docs/prompts-aurora-rodada2.md`): sentar e sentada, arco com a
-  pegada certa e o cabelo sobre o ombro, mãos, combo de lâmina com distância, dano e corrida em resolução maior.
+- **Sentar (arte do Gemini, folhas A e B):** `sentar` 4 quadros → `sentada` (respira e pisca, 3 quadros em sequência
+  longa) → `levantar` (sentar ao contrário). Ela senta 100 px ao lado do fogo, virada para ele. A folha de sentar
+  foi fatiada com `fatiar_folha.py --separar 3` (os arcos deitados encostavam nos vizinhos).
+- **Arco v2 (folhas C e D):** pegada fechada no punho, corda no canto da boca, cabelo jogado para trás. A flecha
+  que voa sai a 76% da altura dela (na flecha do desenho). As folhas antigas continuam em `poses-originais/`.
+- **Criatura com arte:** a sombra de névoa usa a folha do Gemini (`ferramentas/fatiar_sombra.py`: transparência pela
+  distância até o branco, para a fumaça não sumir): 4 quadros flutuando, o 1º de morte quando atordoada, os 3 de
+  morte ao morrer, clarão do golpe com a mesma imagem somada por cima.
+- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): combo de lâmina (G chegou só como
+  visualização: pedir o arquivo), volta à guarda (H), dano (I), mão meio fechada (F) e corrida maior (J).
 
 ## Provisório / incompleto (prioridade de cima para baixo)
-1. **Pose sentada na fogueira**: hoje é de pé → agachada (quadros de `aterrissar`) com respiração. Prompts em
-   `docs/prompts-aurora-rodada2.md` (§1: "SENTANDO" 4 quadros + "SENTADA" 3 quadros). Fatiar com
-   `fatiar_folha.py --nomes sentar:4` e `--nomes sentada:3`, registrar em `montar_folha.py`; o `main.js` usa as da
-   folha automaticamente (`animacoes.sentar ??= …`).
-2. **Criaturas**: hoje são formas desenhadas em código (`inimigos.js`). A folha da "sombra de névoa" (4 quadros
-   andando + 3 de dano/morte) também chegou só como visualização: pedir de novo e trocar o desenho por sprites.
+1. **Combo de lâmina** (folha G, 4 quadros, cabeça ≈ 95 px): registrar como `ataque_lamina` em `montar_folha.py`
+   (hoje é 1 pose esticada por código) e ligar a área do golpe aos quadros 2–4 no `main.js`.
+2. **Criaturas**: só existe a sombra de névoa. Faltam as outras do roteiro e os chefes.
 3. **Olhos fechados**: a Aurora parada só tem olhos semicerrados (piscar mais suave). Pedir ao Gemini a mesma
    imagem base com os olhos fechados e incluir em `compor_viva.py` (`FONTES`, novas combinações).
 4. **Mão meio fechada**: idem, para o gesto dos dedos ficar com 3 estados (prompt F em `prompts-aurora-rodada2.md`).
@@ -65,7 +69,10 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
 - `Math.pow` com base negativa e expoente quebrado dá `NaN` e **apaga vértices da malha** (sumiu a cabeça uma vez).
   Sempre limite a base com `Math.max(0, …)`.
 - Módulos ES não abrem em `file://`: rode `python3 -m http.server` dentro de `jogo/`.
-- Folhas do Gemini: quadros vizinhos às vezes se encostam (cabelo, flecha); o `fatiar_folha.py` tem plano B.
+- Folhas do Gemini: quadros vizinhos às vezes se encostam (cabelo, flecha, arco deitado); o `fatiar_folha.py` tem
+  plano B (corte nos vales) e plano C (`--separar N`: afina a máscara, separa e devolve cada pixel à peça mais perto).
+- As folhas do Gemini chegam com 1024 px de largura (o pedido de 2048 px não é respeitado). Como o jogo reduz os
+  quadros (cabeça de 93–148 px na fonte → 70 px no jogo), ainda ficam nítidos.
 - O branco preso entre o arco e a corda não encosta na borda: o recorte também apaga áreas brancas fechadas
   grandes (limite proporcional ao tamanho da imagem; menor nas folhas).
 - Texturas maiores que 4096 px quebram em muitos celulares: a folha de sprites usa 8 colunas (3072×2688).

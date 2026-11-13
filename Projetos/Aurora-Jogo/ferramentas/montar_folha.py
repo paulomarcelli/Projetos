@@ -34,11 +34,14 @@ QUADROS = {
     'correndo': [f'aurora_correndo_{i:02d}.png' for i in range(1, 9)],
     'pulo':     [f'aurora_pulo_{i:02d}.png' for i in range(1, 6)],
     'esquiva':  [f'aurora_esquiva_{i:02d}.png' for i in range(1, 5)],
-    'arco_preparar': [f'aurora_arco_preparar_{i:02d}.png' for i in range(1, 5)],
-    'arco_atirar':   [f'aurora_arco_atirar_{i:02d}.png' for i in range(1, 5)],
+    # arco v2 (rodada 2): pegada fechada no punho, cabelo jogado sobre o ombro, mais de perfil
+    'arco_preparar': [f'aurora_arco2_preparar_{i:02d}.png' for i in range(1, 5)],
+    'arco_atirar':   [f'aurora_arco2_atirar_{i:02d}.png' for i in range(1, 5)],
+    'sentar':  [f'aurora_sentar_{i:02d}.png' for i in range(1, 5)],    # fatiado com --separar 3
+    'sentada': [f'aurora_sentada_{i:02d}.png' for i in range(1, 4)],
 }
-# As folhas do arco vieram numa escala maior: cabeça ≈ 95 px (medida com régua).
-CABECA_POR_GRUPO = {'arco_preparar': 95, 'arco_atirar': 95}
+# Folhas em outras escalas (cabeça medida com régua, ponta da asa da tiara ao queixo):
+CABECA_POR_GRUPO = {'arco_preparar': 93, 'arco_atirar': 93, 'sentar': 103, 'sentada': 148}
 COLUNAS = 8          # quadros por linha na folha (as animações seguem em sequência)
 FLECHA_COMPRIMENTO = 150  # px no jogo, igual à flecha que a Aurora segura no arco
 
@@ -112,7 +115,8 @@ def tingir(img, cor, forca):
 
 def montar_animacoes():
     atq, vit, camb = (carregar(n) for n in ['ataque', 'vitoria', 'cambalhota'])
-    parada, corr, pulo, esq, arco1, arco2 = (quadros(n) for n in ['parada', 'correndo', 'pulo', 'esquiva', 'arco_preparar', 'arco_atirar'])
+    parada, corr, pulo, esq, arco1, arco2, sentar, sentada = (quadros(n) for n in [
+        'parada', 'correndo', 'pulo', 'esquiva', 'arco_preparar', 'arco_atirar', 'sentar', 'sentada'])
     anims = {}
     # vai e volta (1-2-3-4-5-4-3-2) para a respiração não "pular" ao recomeçar
     anims['parada'] = {'fps': 6, 'loop': True, 'quadros': [celula(q) for q in parada + parada[3:0:-1]]}
@@ -124,6 +128,13 @@ def montar_animacoes():
     anims['arco_preparar'] = {'fps': 10, 'loop': False, 'quadros': [celula(q) for q in arco1]}
     # segura a mira um quadro a mais antes de soltar
     anims['arco_atirar'] = {'fps': 12, 'loop': False, 'quadros': [celula(q) for q in [arco2[0], arco2[1], arco2[1], arco2[2], arco2[3]]]}
+    # fogueira: senta (uma vez), fica sentada respirando e piscando, levanta (sentar ao contrário).
+    # Alinhadas pelo tronco: os arcos deitados no chão puxariam o centro dos pés para o lado.
+    sen = [celula(q, 'tronco') for q in sentar]
+    anims['sentar'] = {'fps': 6, 'loop': False, 'quadros': sen}
+    s1, s2, s3 = (celula(q, 'tronco') for q in sentada)
+    anims['sentada'] = {'fps': 3, 'loop': True, 'quadros': [s1, s1, s2, s2, s2, s1, s1, s2, s2, s2, s1, s3]}
+    anims['levantar'] = {'fps': 7, 'loop': False, 'quadros': sen[::-1]}
     anims['ataque_lamina'] = {'fps': 14, 'loop': False, 'quadros': [
         celula(esticar(atq, 0.96, 1.03), dx=-10), celula(atq), celula(atq, dx=6), celula(atq, dx=6)]}
     anims['cambalhota'] = {'fps': 16, 'loop': True, 'quadros': [
@@ -138,18 +149,18 @@ def montar_animacoes():
 
 
 def salvar(anims):
-    total = sum(len(a['quadros']) for a in anims.values())
-    linhas = -(-total // COLUNAS)
+    # o mesmo quadro usado de novo (vai e volta, levantar = sentar ao contrário) ocupa uma célula só
+    unicos = list({id(q): q for a in anims.values() for q in a['quadros']}.values())
+    linhas = -(-len(unicos) // COLUNAS)
     folha = Image.new('RGBA', (COLUNAS * CEL, linhas * CEL), (0, 0, 0, 0))
     meta = {'celula': CEL, 'ancora': 'centro inferior (pés) em y=%d; cambalhota no centro' % BASE, 'animacoes': {}}
-    i = 0
+    lugar = {}
+    for i, q in enumerate(unicos):
+        x, y = (i % COLUNAS) * CEL, (i // COLUNAS) * CEL
+        folha.paste(q, (x, y), q)
+        lugar[id(q)] = [x, y, CEL, CEL]
     for nome, a in anims.items():
-        regs = []
-        for q in a['quadros']:
-            x, y = (i % COLUNAS) * CEL, (i // COLUNAS) * CEL
-            folha.paste(q, (x, y), q)
-            regs.append([x, y, CEL, CEL])
-            i += 1
+        regs = [lugar[id(q)] for q in a['quadros']]
         meta['animacoes'][nome] = {'fps': a['fps'], 'loop': a['loop'], 'quadros': regs}
     folha.save(SAIDA / 'aurora_folha.png', optimize=True)
     (SAIDA / 'aurora_folha.json').write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding='utf-8')

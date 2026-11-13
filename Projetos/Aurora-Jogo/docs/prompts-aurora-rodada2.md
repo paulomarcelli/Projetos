@@ -8,6 +8,9 @@ muito colado e personagem menos pixelada.
 tamanho da flecha, efeito de dano, avanço e alcance da faca, nitidez na tela (mipmaps e resolução da tela) e
 transição de sentar e levantar com respiração. O que depende de desenho novo está nos prompts abaixo.
 
+**Já chegaram e estão no jogo:** A (sentando), B (sentada), C (preparar o arco), D (mirar e atirar) e a sombra de
+névoa. A folha G (lâmina) e a E (mãos) chegaram só como visualização: mandar como arquivo.
+
 ## Antes de gerar: regras para as imagens chegarem boas
 
 1. **Anexe a imagem de referência** da Aurora (`arte/viva-original/aurora_base.webp`) em todo prompt.

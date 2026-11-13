@@ -9,17 +9,18 @@
 ## O mundo: Aldemar
 
 Aldemar é um reino de costas frias, montanhas de minério e planícies de vinho. Há trezentos anos ele é
-governado por quem usa a **Coroa de Sal**: um diadema talhado num único cristal tirado do fundo do mar.
-Diz a lenda que a Coroa **escurece na cabeça de quem mente** diante da corte. Por isso nenhum rei de
-Aldemar jura nada em público, e por isso os nobres aprenderam a falar em meias-verdades.
+governado por quem usa a **Coroa de Sal**, um diadema de cristal que **escurece na cabeça de quem mente**.
+Por isso nenhum rei jura nada em público, e a corte vive de meias-verdades.
 
-O velho rei **Osric, o Calado**, morre sem herdeiro numa noite de tempestade. A Coroa some do
-salão do trono na mesma noite.
+O que ninguém sabe: **o reino inteiro foi construído sobre as costas de Aldaria, uma dragoa colossal de sal e pedra**
+que dorme no mar desde o começo do mundo. As montanhas são as garras dela; a capital fica sobre o crânio.
+A Coroa foi talhada de um pedaço do coração dela, e é ela que a mantém dormindo.
 
-Ao mesmo tempo, do mar chega a **Maré Cinza**, uma névoa que avança um pouco a cada inverno. Quem
-fica dentro dela esquece o caminho de casa, e as aldeias engolidas somem até dos mapas, como se
-nunca tivessem existido. Os nobres acham que é superstição de pescador. Os pescadores já não
-pescam.
+Agora a Coroa está rachando. Do mar sobe a **Maré Cinza**, o hálito da Dragoa entre o sono e a vigília,
+que apaga aldeias inteiras dos mapas e da memória. A terra treme. Os centauros veem no céu uma Estrela
+Vermelha que não estava lá. E o velho rei **Osric, o Calado**, morre sem herdeiro numa noite de tempestade.
+**A Coroa some do salão do trono na mesma noite.** Sem ela, Aldaria vai acordar em poucos meses, e quando
+acordar, o reino nas costas dela vai cair no mar.
 
 ## O Ermo Velho e os seres míticos
 
@@ -30,9 +31,9 @@ Lá é sempre fim de tarde, as árvores lembram nomes e os rios correm na direç
 **Como se entra:** quando Aurora desenha uma porta num dos seus mapas e a pinta com tinta de sal,
 a porta se abre de verdade, no lugar do mundo que o mapa mostra. Cada mapa abre só uma vez.
 
-**A origem de tudo:** no fundo do mar dorme a **Baleia Antiga**, tão velha quanto o reino. O cristal
-da Coroa de Sal foi arrancado do coração dela há trezentos anos. A Maré Cinza é o luto dela: a névoa
-leva embora o que os humanos tiraram do mundo encantado.
+**A origem de tudo:** o Ermo Velho é feito dos sonhos mais antigos de **Aldaria, a Dragoa de Sal**. Os Primeiros Povos
+nasceram desses sonhos e foram derrotados pelos humanos na Guerra Esquecida, há trezentos anos, quando tentaram
+recuperar o pedaço do coração dela que virou a Coroa.
 
 | Povo | Como é | Do que é capaz | Onde vive |
 |------|--------|----------------|-----------|
@@ -40,17 +41,16 @@ leva embora o que os humanos tiraram do mundo encantado.
 | **Grifos das Falésias** | Metade águia, metade leão, orgulhosos e territoriais | Levam quem conquista o respeito deles pelos céus | Penhascos da Costa do Norte |
 | **Centauros do Vale Âmbar** | Arqueiros e astrônomos, leem o futuro nas estrelas | Sabem quando a Maré vai chegar; cobram promessas | Planícies do Ermo |
 | **Mouras do Poço** | Espíritos de água que guardam tesouros nos poços antigos | Trocam segredos por segredos | Poços e fontes |
-| **Gigantes Adormecidos** | Gigantes de pedra cobertos de musgo | Quando acordam, montanhas andam | Sob as minas dos Ferrabraz, que estão escavando em cima deles |
+| **Gigantes Adormecidos** | Gigantes de pedra cobertos de musgo, guardiões das garras da Dragoa | Quando acordam, montanhas andam | Sob as minas dos Ferrabraz, que escavam o corpo da própria Dragoa |
 | **Raposas-Rubras** | Raposas que falam, ladras e contadoras de histórias | Conhecem todos os atalhos entre os dois mundos | Em todo lugar |
 | **Serpente-de-Brasa** | Serpente de fogo, guardiã das matas | Queima quem derruba árvores do Ermo | Bosques de fronteira |
-| **Sereias Cinzentas** | Servas da Baleia Antiga | Falam pela névoa; são a voz da Maré | O mar e a própria névoa |
+| **Filhas da Névoa** | Espectros de névoa nascidos do hálito da Dragoa | Falam pelos sonhos dela; apagam o que tocam | O mar e a própria Maré Cinza |
 
 **Aliada encantada de Aurora:** **Fia**, uma Raposa-Rubra jovem e debochada que vive roubando os
 lápis de Aurora. É a primeira criatura que ela conhece e a única que sabe andar entre os dois mundos sem mapa.
 
-**Conflito entre os mundos:** cada casa nobre quer algo do Ermo. Os Ferrabraz querem acordar os
-gigantes para usar na guerra, o Lírio-Rubro quer vender o ouro das Mouras e a Ordem do Farol quer
-fechar todas as portas para sempre. As criaturas não confiam em humanos, e têm motivo.
+**Conflito entre os mundos:** cada casa nobre quer algo do Ermo e da Dragoa. Os Ferrabraz querem matá-la e ficar com todo o cristal do corpo dela, o Lírio-Rubro quer vender o ouro das Mouras, os Altaneira querem forjar uma Coroa nova e a
+Ordem do Farol quer fechar todas as portas para sempre. As criaturas não confiam em humanos, e têm motivo.
 
 ## As casas
 
@@ -88,17 +88,18 @@ conselho, descobre num mapa do palácio uma passagem que não deveria existir, a
 Coroa de Sal saiu. Todas as casas a querem como aliada (ou calada).
 
 **Ato II: Dois mundos.** Fugindo da capital, Aurora abre sem querer a primeira porta para o Ermo Velho
-e conhece Fia, a raposa. Segue o rastro da Coroa pelos dois mundos: as minas dos Ferrabraz (sobre os
-gigantes adormecidos), os mercados do Lírio-Rubro, a ilha do Farol, as florestas dos Cervos-de-Luar e o
-conselho dos Centauros. A cada casa ela precisa decidir o que
-contar, o que esconder e quem trair. Descobre que a Maré Cinza não é castigo: ela nasceu no dia
-em que alguém arrancou o cristal do coração da Baleia Antiga, há trezentos anos.
+e conhece Fia, a raposa. Segue o rastro da Coroa pelos dois mundos: as minas dos Ferrabraz (cavadas nas
+garras da Dragoa), os mercados do Lírio-Rubro, a ilha do Farol, as florestas dos Cervos-de-Luar e o conselho
+dos Centauros. Descobre que a própria família traiu o Pacto há trezentos anos, e que **quem pegou a Coroa foi
+o pai dela**, para devolvê-la ao coração antes que fosse tarde.
 
-**Ato III: A Maré chega à capital.** A névoa engole Pedralva durante a coroação de um novo rei.
-Aurora tem o único mapa capaz de trazer a cidade de volta e a Coroa nas mãos. Ela precisa escolher:
-- **Devolver a Coroa à Baleia Antiga:** a Maré recua e o Ermo Velho volta a se misturar com Aldemar, mas o reino fica sem coroa e as casas entram em guerra aberta.
-- **Coroar alguém:** a Maré continua avançando, mas o reino tem paz por mais um tempo. Quem usa a Coroa?
-- **Usar a Coroa ela mesma:** a Coroa vai escurecer na cabeça dela se mentir algum dia, e ela sabe quantas vezes já mentiu.
+**Ato III: O Despertar.** Durante a coroação de um falso rei em Pedralva, Aldaria abre um olho. A capital
+treme sobre o crânio, a Maré Cinza engole as ruas e as casas viram suas espadas umas contra as outras.
+Aurora desce pelo túnel até **o Coração**, com a Coroa nas mãos, perseguida pela Ordem do Farol e pelos
+Ferrabraz. Lá ela precisa escolher:
+- **Devolver o coração:** a Dragoa volta a dormir em paz e o Ermo se mistura de novo com Aldemar, mas o reino fica sem Coroa e explode em guerra pelo trono.
+- **Matar a Dragoa:** o reino fica seguro para sempre, mas o Ermo Velho e todos os Primeiros Povos desaparecem, inclusive Fia.
+- **Tornar-se a Sonhadora:** Aurora toma o lugar da Dragoa no sonho. O mundo continua existindo porque ela o sonha, mas ela esquece quem era.
 
 O final depende das alianças, das mentiras e das promessas feitas ao longo do jogo.
 

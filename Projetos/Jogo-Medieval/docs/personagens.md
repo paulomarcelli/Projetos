@@ -28,7 +28,7 @@
 | 12 | **Nívea, a Moura do Poço** | Guardiã do tesouro do poço | Moça feita de água azul, cabelo que escorre como cascata, joias de conchas | Brincalhona; troca segredos por segredos | |
 | 13 | **Brun, o Gigante Adormecido** | Gigante de pedra sob as minas | Gigante de pedra coberto de musgo e flores, olhos de cristal; aparece só em parte (mão, rosto) | Lento, gentil, assustado com as escavações | |
 | 14 | **A Serpente-de-Brasa** | Guardiã das matas, teste de coragem | Serpente longa de fogo e brasas, com olhos amarelos | Furiosa com quem fere a floresta; respeita quem a protege | |
-| 15 | **A Baleia Antiga** | Origem da Coroa e da Maré Cinza | Baleia colossal, translúcida, com um buraco de cristal no peito | Triste, imensa; só fala no final | |
+| 15 | **Aldaria, a Dragoa de Sal** | O segredo do mundo: o reino está construído sobre ela | Dragoa colossal de cristal branco e pedra coberta de cidades, florestas e musgo; olhos que brilham em vermelho; um buraco no peito onde falta o pedaço do coração. Aparece em partes (uma garra, um olho, a cabeça inteira no final) | Antiga, imensa; fala por sonhos. Não é má: está acordando com dor | |
 
 ## Inimigos e chefes
 | # | Personagem | Tipo | Aparência | Comportamento | Status |
@@ -38,4 +38,6 @@
 | 18 | **Morcegos de Névoa** | Inimigo voador | Morcegos cinza meio transparentes | Saem da Maré Cinza e apagam a lanterna | |
 | 19 | **Estátuas Andarilhas** | Inimigo de quebra-cabeça (Farol) | Estátuas de pedra com rosto coberto | Só andam no escuro; param na luz | |
 | 20 | **Mestre Gorm Ferrabraz** | Chefe (minas) | Pai de Cael, homem enorme de barba ruiva, martelo e armadura de ferro | Quer acordar o gigante a marteladas | |
-| 21 | **A Rainha das Sereias Cinzentas** | Chefe final | Sereia gigante feita de névoa, coroa de espuma, voz que ecoa | Fala pela Maré; quer a Coroa de volta a qualquer custo | |
+| 21 | **O Arauto do Farol** | Chefe final (humano) | O Sumo-Sacerdote da Ordem do Farol em armadura branca, com a lâmina antiga que cortou o coração | Quer matar a Dragoa antes que ela acorde, nem que o Ermo inteiro morra junto | |
+| 22 | **As Filhas da Névoa** | Inimigo especial | Espectros femininos de névoa cinza-lilás, sem rosto | Nascem do hálito da Dragoa; apagam o que tocam; só a lanterna de sal as afasta | |
+| 23 | **Aldaria desperta** | Evento final (não é luta) | A cabeça da Dragoa erguendo Pedralva inteira | Fase de fuga épica: a capital desaba enquanto ela levanta a cabeça | |

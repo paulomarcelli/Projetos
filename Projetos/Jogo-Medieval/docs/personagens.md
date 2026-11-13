@@ -1,43 +1,40 @@
-# A Coroa de Sal — elenco (para aprovação)
+# A Prova do Sal — elenco (para aprovação)
 
-> Todos os personagens são originais. Estilo: desenho animado 2D, cores chapadas, contorno escuro fino,
-> cabeça grande. Marque cada um como ✅ aprovado, ✏️ mudar ou ❌ cortar.
+> Todos originais. Estilo: desenho animado 2D, cores chapadas, contorno escuro fino, cabeça grande.
+> Marque cada um como ✅ aprovado, ✏️ mudar ou ❌ cortar.
 
-## Heroínas
+## Protagonista
 | # | Personagem | Papel | Aparência | Personalidade | Status |
 |---|-----------|-------|-----------|---------------|--------|
-| 1 | **Aurora Morvane** | Protagonista jogável, 19 anos, cartógrafa | Cabelo ruivo-escuro em trança lateral, sardas, lápis atrás da orelha, capa curta azul-marinho com garça bordada, túnica cor de areia, bolsa de mapas, botas marrons | Curiosa, teimosa, mede tudo; insegura na corte | |
-| 2 | **Fia** | Companheira, raposa falante do Ermo Velho | Raposa vermelha pequena, cauda enorme com ponta branca que brilha, olhos âmbar, um lápis roubado na boca | Debochada, corajosa, leal do jeito dela | |
+| 1 | **Aurora Morvane** | Campeã da Casa Morvane, jogável | Cabelo ruivo-escuro em trança lateral, sardas, lápis atrás da orelha, capa curta azul-marinho com garça bordada, bolsa de mapas, botas gastas | Observadora, teimosa, mede tudo; odeia ser subestimada | |
+| 2 | **Fia** | Raposa domesticada de Aurora (não fala) | Raposa vermelha pequena, cauda grande de ponta branca, coleira de couro com um cristal | Rápida, curiosa, fareja a névoa | |
 
-## Aldemar: a corte e as casas
+## Os outros Campeões da Prova
+| # | Personagem | Casa | Aparência | Personalidade | Status |
+|---|-----------|------|-----------|---------------|--------|
+| 3 | **Cael Ferrabraz** | Ferrabraz | Alto e forte, cabelo preto curto, cicatriz no queixo, armadura de couro com urso | Treinado para vencer; gentil com Aurora, cruel com o resto | |
+| 4 | **Serafina Lírio-Rubro** | Lírio-Rubro | Cabelo loiro platinado em coque, vestido de couro vinho, adagas escondidas no leque | Sorriso doce, apostou em si mesma | |
+| 5 | **Dorian Altaneira** | Altaneira | Jovem pálido de capa cinza, chave de ouro no pescoço | Frio e confiante: sabe que a Prova é combinada para ele vencer | |
+| 6 | **Irmão Ansel** | Ordem do Farol | Monge careca de manto branco, lanterna presa às costas | Fanático; quer chegar ao coração para matar a Dragoa | |
+| 7 | **Mira Valcorvo** | Valcorvo | Garota baixinha de tranças pretas, capa de penas de corvo, arco curto | Caçadora calada; ninguém sabe de que lado está | |
+| 8 | **Nico das Salinas** | Salinas (mineiros) | Rapaz magro de pele queimada de sal, mão marcada, picareta e lenço no rosto | Desconfiado do Alto; vira o principal aliado de Aurora | |
+
+## Fora do Labirinto
 | # | Personagem | Papel | Aparência | Personalidade | Status |
 |---|-----------|-------|-----------|---------------|--------|
-| 3 | **Bertran Morvane** | Pai de Aurora, senhor da Casa Morvane | Homem magro de barba grisalha curta, óculos redondos, manto cinza com gola de penas | Astuto e cansado; vende mapas falsos aos inimigos | |
-| 4 | **Cael Ferrabraz** | Herdeiro dos Ferrabraz (aliado ou ameaça) | Rapaz alto e forte, cabelo preto curto, cicatriz no queixo, armadura de couro com urso de pedra no peito | Gentil com Aurora, cruel com o resto; quer provar valor ao pai | |
-| 5 | **Senhora Verena Lírio-Rubro** | Banqueira do reino | Mulher elegante de cabelo branco preso alto, vestido vinho com lírios dourados, leque | Sorridente, calculista; empresta a todos e cobra na pior hora | |
-| 6 | **Lorde Aldric Altaneira** | Guardião da capital e do palácio | Homem de meia-idade, careca, capa com falcão e um molho de chaves na cintura | Cortês e frio; sabe de todas as passagens secretas, menos uma | |
-| 7 | **Irmã Odile** | Sacerdotisa da Ordem do Farol | Mulher baixinha de manto branco e azul, véu com uma chama bordada, lanterna sempre acesa | Fervorosa e assustada; guarda um segredo sobre a Coroa | |
-| 8 | **Tobias Sem-Sobrenome** | Contrabandista, guia de estradas proibidas | Jovem de cabelo bagunçado castanho, lenço no pescoço, casaco remendado cheio de bolsos | Brincalhão, interesseiro, mais honesto do que parece | |
+| 9 | **Bertran Morvane** | Pai de Aurora, vendeu o voto da Casa | Magro, barba grisalha, óculos redondos, manto cinza | Astuto e envergonhado; tenta ajudar a filha às escondidas | |
+| 10 | **Senhora Verena Lírio-Rubro** | Banqueira e dona das apostas | Cabelo branco preso alto, vestido vinho com lírios dourados | Lucra com cada morte; muda de lado quando a aposta muda | |
+| 11 | **Lorde Aldric Altaneira** | Guardião da Lei de Edric, arma a farsa | Careca, capa com falcão, molho de chaves | Cortês e implacável | |
+| 12 | **O Pregoeiro** | Apresentador da Prova nos Espelhos | Homem elegante de cartola de cristal, voz que ecoa nas praças | Faz da morte um espetáculo; ama a plateia | |
+| 13 | **Tobias Sem-Sobrenome** | Contrabandista das Salinas, contato da revolta | Cabelo bagunçado, lenço no pescoço, casaco cheio de bolsos | Brincalhão e corajoso; leva recados de fora para dentro | |
+| 14 | **Velha Joana** | Líder secreta das Salinas, avó de Nico | Senhora curvada de xale, mãos marcadas por décadas de mina | Paciente; esperou 40 anos por um símbolo | |
 
-## Ermo Velho: seres míticos (possíveis aliados)
-| # | Personagem | Papel | Aparência | Personalidade | Status |
-|---|-----------|-------|-----------|---------------|--------|
-| 9 | **Alvor, o Cervo-de-Luar** | Ancião dos cervos, dá a lanterna de sal a Aurora | Cervo branco enorme, galhada com flores que brilham em azul | Sábio, nunca mente, fala pouco | |
-| 10 | **Kessa, a Grifa** | Leva Aurora pelos céus na fase dos penhascos | Grifa de penas cinza e douradas, corpo de leoa, uma asa com cicatriz | Orgulhosa, desconfiada, fiel depois de conquistada | |
-| 11 | **Tarsis, o Centauro** | Astrônomo, prevê a chegada da Maré | Centauro de pelagem castanha, barba trançada, luneta e mapa estelar | Calmo, enigmático, cobra promessas | |
-| 12 | **Nívea, a Moura do Poço** | Guardiã do tesouro do poço | Moça feita de água azul, cabelo que escorre como cascata, joias de conchas | Brincalhona; troca segredos por segredos | |
-| 13 | **Brun, o Gigante Adormecido** | Gigante de pedra sob as minas | Gigante de pedra coberto de musgo e flores, olhos de cristal; aparece só em parte (mão, rosto) | Lento, gentil, assustado com as escavações | |
-| 14 | **A Serpente-de-Brasa** | Guardiã das matas, teste de coragem | Serpente longa de fogo e brasas, com olhos amarelos | Furiosa com quem fere a floresta; respeita quem a protege | |
-| 15 | **Aldaria, a Dragoa de Sal** | O segredo do mundo: o reino está construído sobre ela | Dragoa colossal de cristal branco e pedra coberta de cidades, florestas e musgo; olhos que brilham em vermelho; um buraco no peito onde falta o pedaço do coração. Aparece em partes (uma garra, um olho, a cabeça inteira no final) | Antiga, imensa; fala por sonhos. Não é má: está acordando com dor | |
-
-## Inimigos e chefes
+## A Dragoa e os perigos
 | # | Personagem | Tipo | Aparência | Comportamento | Status |
 |---|-----------|------|-----------|---------------|--------|
-| 16 | **Guardas Ferrabraz** | Inimigo comum (Aldemar) | Soldados largos, capacete de urso, lanterna na mão | Patrulham; se veem Aurora, dão o alarme | |
-| 17 | **Bocas-de-Sal** | Planta inimiga | Planta-boca de caule grosso, dentes de cristal | Mordem quem chega perto; dormem sob a luz de sal | |
-| 18 | **Morcegos de Névoa** | Inimigo voador | Morcegos cinza meio transparentes | Saem da Maré Cinza e apagam a lanterna | |
-| 19 | **Estátuas Andarilhas** | Inimigo de quebra-cabeça (Farol) | Estátuas de pedra com rosto coberto | Só andam no escuro; param na luz | |
-| 20 | **Mestre Gorm Ferrabraz** | Chefe (minas) | Pai de Cael, homem enorme de barba ruiva, martelo e armadura de ferro | Quer acordar o gigante a marteladas | |
-| 21 | **O Arauto do Farol** | Chefe final (humano) | O Sumo-Sacerdote da Ordem do Farol em armadura branca, com a lâmina antiga que cortou o coração | Quer matar a Dragoa antes que ela acorde, nem que o Ermo inteiro morra junto | |
-| 22 | **As Filhas da Névoa** | Inimigo especial | Espectros femininos de névoa cinza-lilás, sem rosto | Nascem do hálito da Dragoa; apagam o que tocam; só a lanterna de sal as afasta | |
-| 23 | **Aldaria desperta** | Evento final (não é luta) | A cabeça da Dragoa erguendo Pedralva inteira | Fase de fuga épica: a capital desaba enquanto ela levanta a cabeça | |
+| 15 | **Aldaria, a Dragoa de Sal** | O segredo do mundo | Colossal, de cristal branco e pedra; olhos vermelhos; aparece em partes (costelas, um olho, a cabeça no final) | Está acordando com dor. Não é vilã | |
+| 16 | **Filhas da Névoa** | Perigo do Labirinto | Figuras de névoa cinza-lilás, sem rosto | Nascem do hálito da Dragoa; apagam o que tocam; a lanterna as afasta | |
+| 17 | **Guardiões de Sal** | Armadilha viva | Estátuas de cristal de três séculos | Ativadas por pressão; perseguem em linha reta | |
+| 18 | **Guardas Ferrabraz** | Inimigos (fases fora do Labirinto) | Soldados largos, capacete de urso, lanterna | Patrulham; dão alarme | |
+| 19 | **Mestre Gorm Ferrabraz** | Chefe (minas) | Pai de Cael, enorme, barba ruiva, martelo de guerra | Quer garantir a vitória do filho a qualquer custo | |
+| 20 | **Irmão Ansel desperto** | Chefe final | Ansel com a lâmina antiga que cortou o coração | Tenta matar a Dragoa no coração do Labirinto | |

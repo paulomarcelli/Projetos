@@ -1,4 +1,4 @@
-# A Coroa de Sal — direção de arte
+# A Prova do Sal — direção de arte
 
 > Referências enviadas pelo usuário: capturas de um jogo de plataforma 2,5D independente.
 > Usamos **só os princípios de estilo**. Personagens, criaturas, cenários e interface são criados do zero.
@@ -18,15 +18,17 @@
   tinta, a Coroa). É a luz "boa" do jogo.
 - **Maré Cinza:** névoa cinza-lilás que apaga cores e contornos do que toca; o cenário dentro dela
   vira só um esboço a lápis.
-- **Os dois mundos:**
-  - **Aldemar:** pedra, madeira escura, ferro, velas amarelas; roxo frio e laranja de tochas.
-  - **Ermo Velho:** papel colorido, flores luminosas, árvores enormes; turquesa, verde-lima e rosa.
+- **Os três ambientes:**
+  - **Pedralva (o Alto):** pedra clara, cristal, seda, ouro; roxo frio com luz quente de candelabros.
+  - **Salinas (o Baixo):** madeira escura, sacos, picaretas, sal sujo; marrom e cinza com tochas laranja.
+  - **O Labirinto:** túneis de cristal e pedra que lembram costelas e veias; azul-escuro com brilho de sal e névoa lilás.
+- **Os Espelhos de Sal:** cristais grandes nas praças, que mostram a cena com um brilho azul; aparecem como transição entre fases.
 - **Desenhos da Aurora:** o que ela desenha aparece com traço de nanquim azul e brilho de sal, até sumir.
 
 ## Personagens (originais)
 - **Aurora Morvane:** cabelo ruivo-escuro em trança lateral, sardas, capa curta azul-marinho com
   borda de garça bordada, bolsa de couro cheia de rolos de mapa, botas gastas. Lápis atrás da orelha.
-- **Fia:** raposa vermelha pequena, cauda grande com ponta branca que brilha levemente; olhos cor de âmbar.
+- **Fia:** raposa vermelha pequena (não fala), cauda grande com ponta branca, coleira com um cristal.
 - Proporção: cabeça grande (≈ 1/3 da altura), olhos expressivos, contorno marrom-escuro.
 
 ## Paleta-base
@@ -36,7 +38,7 @@
 | Sombras do primeiro plano | `#17122B` |
 | Luz de sal | `#E8F6FF` com halo `#8FD3FF` |
 | Tochas e velas (Aldemar) | `#F2A541` |
-| Ermo Velho | turquesa `#3FC1B0`, lima `#B5E05A`, rosa-flor `#F07AC0` |
+| Labirinto | azul profundo `#1C2A4A`, brilho de sal `#BFE6FF`, veias `#6A4C93` |
 | Maré Cinza | `#A9A3B8` |
 | Contorno dos personagens | `#2B1A14` |
 
@@ -47,5 +49,5 @@
 - Interface: corações, barra de tinta de sal, botões na tela, todos com a mesma espessura de contorno.
 
 ## Alvo visual (aprovar antes de produzir)
-Um trecho do **Porto de Morvane à noite**: cais de madeira, caixas, redes, um farol ao fundo,
-cristais de sal brilhando, Aurora e Fia no tamanho real do jogo, testado num celular.
+Um trecho dos **Túneis Mutantes do Labirinto**: paredes de cristal em forma de costelas, névoa lilás,
+cristais de sal brilhando, um Espelho de Sal ao fundo, Aurora e Fia no tamanho real do jogo, testado num celular.

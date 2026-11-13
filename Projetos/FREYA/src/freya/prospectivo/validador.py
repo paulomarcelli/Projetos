@@ -65,6 +65,7 @@ def validar(corpo: CorpoDaAnalise, registro: RegistroDeEvidencias, entidades_con
         return list(dict.fromkeys(ok))
 
     c = corpo.model_copy(deep=True)
+    c.resposta = lista(c.resposta, "resposta")
     contexto = []
     for i, a in enumerate(lista(c.contexto, "contexto")):
         if a.tipo == TipoEpistemico.CONFIRMADO:

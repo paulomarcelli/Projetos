@@ -2,6 +2,8 @@
 
 Os dois implementam a mesma interface:
 - `carregar(corpus)`: reconstrói o grafo a partir do corpus (nós tipados, arestas com evidência);
+- `adicionar_entidades(entidades)` e `adicionar_fatos(fatos)`: juntam nós e arestas sem recriar o grafo
+  (as notícias do Intelligence Day);
 - `nos()`: todos os nós (para o reconhecimento de entidades);
 - `vizinhanca(chaves, profundidade, limite)`: subgrafo em volta das entidades;
 - `caminhos(a, b, max_saltos, limite)`: caminhos reais entre duas entidades (lista vazia se não houver).
@@ -16,7 +18,7 @@ from typing import Protocol
 import networkx as nx
 
 from freya.conhecimento.corpus import Corpus
-from freya.conhecimento.modelos import Fato
+from freya.conhecimento.modelos import Entidade, Fato
 from freya.conhecimento.ontologia import Predicado
 from freya.graph.modelos import Aresta, Caminho, EvidenciaAresta, No, Subgrafo
 
@@ -38,6 +40,8 @@ def _aresta(f: Fato) -> Aresta:
 
 class ArmazenamentoGrafo(Protocol):
     def carregar(self, corpus: Corpus) -> dict: ...
+    def adicionar_entidades(self, entidades: list[Entidade]) -> int: ...
+    def adicionar_fatos(self, fatos: list[Fato]) -> int: ...
     def nos(self) -> list[No]: ...
     def no(self, chave: str) -> No | None: ...
     def vizinhanca(self, chaves: list[str], profundidade: int = 1, limite: int = 60, incluir_catalogo: bool = False) -> Subgrafo: ...
@@ -58,6 +62,20 @@ class GrafoMemoria:
             if f.sujeito in self.g and f.objeto in self.g:
                 self.g.add_edge(f.sujeito, f.objeto, key=f.id, aresta=_aresta(f))
         return {"nos": self.g.number_of_nodes(), "arestas": self.g.number_of_edges()}
+
+    def adicionar_entidades(self, entidades: list[Entidade]) -> int:
+        novas = [e for e in entidades if e.chave not in self.g]
+        for e in novas:
+            self.g.add_node(e.chave, no=_no(e))
+        return len(novas)
+
+    def adicionar_fatos(self, fatos: list[Fato]) -> int:
+        novos = 0
+        for f in fatos:
+            if f.sujeito in self.g and f.objeto in self.g and not self.g.has_edge(f.sujeito, f.objeto, key=f.id):
+                self.g.add_edge(f.sujeito, f.objeto, key=f.id, aresta=_aresta(f))
+                novos += 1
+        return novos
 
     def nos(self) -> list[No]:
         return [d["no"] for _, d in self.g.nodes(data=True)]
@@ -142,17 +160,34 @@ class GrafoNeo4j:
                 lote = [n for n in nos if n["rotulo"] == rotulo]
                 s.run(f"UNWIND $nos AS n MERGE (e:Entity {{uid:$b + '|' + n.chave}}) SET e:{rotulo}, e += n, e.base=$b, e.continuidade='MCU'",
                       nos=lote, b=self.base)
-            fatos = [f for f in corpus.fatos.values() if f.sujeito in corpus.entidades and f.objeto in corpus.entidades]
-            for pred in sorted({f.predicado.value for f in fatos}):
-                lote = [{"s": f.sujeito, "o": f.objeto, "id": f.id, "citacao": f.evidencia, "tipo": f.tipo_evidencia.value, "campo": f.campo,
-                         "doc_id": f.doc_id, "url": f.url, "captura_id": f.captura_id, "predicado_original": f.predicado_original,
-                         "ordem": f.ordem, "ano": f.ano, "obra": f.obra, "qualificador": f.qualificador,
-                         "confiabilidade": f.confiabilidade.value} for f in fatos if f.predicado.value == pred]
-                s.run(f"UNWIND $fs AS f MATCH (a:Entity {{uid:$b + '|' + f.s}}), (b:Entity {{uid:$b + '|' + f.o}}) "
-                      f"MERGE (a)-[r:{pred} {{id:f.id}}]->(b) SET r += f", fs=lote, b=self.base)
+            self._gravar_fatos(s, [f for f in corpus.fatos.values() if f.sujeito in corpus.entidades and f.objeto in corpus.entidades])
             n = s.run("MATCH (e:Entity {base:$b}) RETURN count(e) AS n", b=self.base).single()["n"]
             m = s.run("MATCH (:Entity {base:$b})-[r]->(:Entity {base:$b}) RETURN count(r) AS n", b=self.base).single()["n"]
         return {"nos": n, "arestas": m}
+
+    def _gravar_fatos(self, s, fatos: list[Fato]) -> None:
+        for pred in sorted({f.predicado.value for f in fatos}):
+            lote = [{"s": f.sujeito, "o": f.objeto, "id": f.id, "citacao": f.evidencia, "tipo": f.tipo_evidencia.value, "campo": f.campo,
+                     "doc_id": f.doc_id, "url": f.url, "captura_id": f.captura_id, "predicado_original": f.predicado_original,
+                     "ordem": f.ordem, "ano": f.ano, "obra": f.obra, "qualificador": f.qualificador,
+                     "confiabilidade": f.confiabilidade.value} for f in fatos if f.predicado.value == pred]
+            s.run(f"UNWIND $fs AS f MATCH (a:Entity {{uid:$b + '|' + f.s}}), (b:Entity {{uid:$b + '|' + f.o}}) "
+                  f"MERGE (a)-[r:{pred} {{id:f.id}}]->(b) SET r += f", fs=lote, b=self.base)
+
+    def adicionar_entidades(self, entidades: list[Entidade]) -> int:
+        nos = [{"chave": e.chave, "nome": e.nome, "tipo": e.tipo.value, "rotulo": e.tipo.rotulo_neo4j, "apelidos": e.apelidos,
+                "descricao": e.descricao} for e in entidades]
+        with self.driver.session() as s:
+            for rotulo in sorted({n["rotulo"] for n in nos}):
+                # ON CREATE: uma entidade que já existe não é sobrescrita pela notícia
+                s.run(f"UNWIND $nos AS n MERGE (e:Entity {{uid:$b + '|' + n.chave}}) ON CREATE SET e:{rotulo}, e += n, e.base=$b, "
+                      "e.continuidade='MCU'", nos=[n for n in nos if n["rotulo"] == rotulo], b=self.base)
+        return len(nos)
+
+    def adicionar_fatos(self, fatos: list[Fato]) -> int:
+        with self.driver.session() as s:
+            self._gravar_fatos(s, fatos)
+        return len(fatos)
 
     @staticmethod
     def _no_de(props) -> No:

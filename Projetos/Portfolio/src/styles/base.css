@@ -1,0 +1,55 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte);
+  font-weight: var(--peso-normal);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+
+.so-leitor {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.rotulo { font-size: var(--t-pequeno); color: var(--secundario); }
+
+/* pílulas */
+.pilula, .pilula-preta {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: var(--nav-altura); padding: 0 14px;
+  border-radius: var(--raio-pilula);
+  font-size: var(--t-pequeno); text-decoration: none; white-space: nowrap;
+  transition: background-color .2s ease, color .2s ease;
+}
+.pilula { background: var(--pilula); color: var(--texto); }
+.pilula:hover { background: var(--texto); color: var(--fundo); }
+.pilula-preta { background: var(--texto); color: var(--fundo); height: 40px; padding: 0 20px; font-size: 14px; }
+.pilula-preta:hover { background: var(--acento); }
+
+.pilula-vidro {
+  display: inline-block; padding: 6px 12px; border-radius: var(--raio-pilula);
+  background: rgb(var(--fundo-rgb) / .82);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  font-size: var(--t-pequeno);
+}
+
+.marca svg { display: block; width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; }
+}

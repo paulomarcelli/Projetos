@@ -1,0 +1,44 @@
+.estudio {
+  position: relative;
+  display: grid; grid-template-columns: 73% 27%;
+  padding: clamp(110px, 16vh, 200px) var(--margem) clamp(90px, 14vh, 180px);
+}
+.estudio__texto { padding-right: clamp(20px, 3vw, 56px); }
+.estudio__texto .rotulo { margin-bottom: 26px; }
+
+.estudio__manifesto {
+  font-size: var(--t-manifesto); line-height: 1.08; letter-spacing: -0.035em;
+}
+.m-palavra { display: inline-block; }
+.m-foto {
+  display: inline-block; vertical-align: -0.1em;
+  width: 2.5em; height: 0.82em; border-radius: 0.12em;
+  background-repeat: no-repeat;
+}
+
+.estudio__equipe { display: flex; gap: 8px; margin-top: 48px; }
+.estudio__equipe li { width: 24px; height: 24px; border-radius: 50%; }
+
+/* a margem do livro */
+.estudio__margem { border-left: 1px solid var(--texto); position: relative; }
+.estudio__margem ul { position: relative; height: 100%; }
+.nota {
+  position: absolute; left: clamp(18px, 2vw, 32px); right: 0;
+  display: flex; align-items: center; gap: 10px;
+  font-size: clamp(13px, 1.15vw, 19px);
+}
+.nota__ponto { width: 7px; height: 7px; border-radius: 50%; background: var(--texto); flex: none; }
+
+.estudio__fios {
+  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none;
+}
+.estudio__fios path { fill: none; stroke: var(--texto); stroke-width: 1; }
+
+@media (max-width: 860px) {
+  .estudio { grid-template-columns: 1fr; }
+  .estudio__texto { padding-right: 0; }
+  .estudio__margem { border-left: 0; border-top: 1px solid var(--texto); margin-top: 40px; padding-top: 20px; }
+  .estudio__margem ul { display: flex; flex-direction: column; gap: 10px; }
+  .nota { position: static; }
+  .estudio__fios { display: none; }
+}

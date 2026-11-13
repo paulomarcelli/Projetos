@@ -87,14 +87,19 @@ def main(argv: list[str] | None = None) -> int:
     from freya.conhecimento.ingestao import ingerir, salvar_relatorio, unificar
     from freya.fabrica import montar
 
-    def preparar(modo: str, sempre_indexar: bool):
-        comp = montar(cfg, modo)
+    def preparar(modo: str, sempre_indexar: bool, intelligence_day: bool = False):
+        comp = montar(cfg, modo, intelligence_day=intelligence_day)
         if modo == "memoria" or sempre_indexar:
             corpus, rel = unificar()
             corpus.salvar("data/corpus/unificado")
             rel["indexacao"] = ingerir(corpus, comp.hibrido, comp.grafo)
             salvar_relatorio(rel, "data/corpus/unificado/relatorio.json")
             logging.info("indexado: %s", rel["indexacao"])
+            # a base foi recriada: o que já foi estudado e as notícias já lidas voltam para os índices e o grafo
+            if comp.estudo:
+                logging.info("estudo: personagens reaplicados %s", comp.estudo.reaplicar())
+            if comp.intelligence_day:
+                logging.info("intelligence day: notícias reaplicadas %s", comp.intelligence_day.reaplicar())
         return comp
 
     if a.cmd == "preparar":
@@ -119,10 +124,13 @@ def main(argv: list[str] | None = None) -> int:
         if a.preparar and a.modo == "servicos":
             from freya.implantacao import preparar_base
 
-            comp = montar(cfg, "servicos")
+            comp = montar(cfg, "servicos", intelligence_day=True)
             preparar_base(cfg, comp)
+            for fonte in (comp.estudo, comp.intelligence_day):
+                if fonte:
+                    fonte.reaplicar()
         else:
-            comp = preparar(a.modo, sempre_indexar=False)
+            comp = preparar(a.modo, sempre_indexar=False, intelligence_day=True)
         uvicorn.run(criar_app(comp, origens=cfg.cors_origens_lista), host=a.host or cfg.freya_host, port=a.porta)
         return 0
     return 2

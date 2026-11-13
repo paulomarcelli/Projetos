@@ -1,0 +1,239 @@
+{
+ "de": "character:thor-thor-odinson",
+ "para": "character:loki",
+ "caminhos": [
+  {
+   "id": "X1",
+   "nos": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "arestas": [
+    {
+     "id": "character:loki|ALLY_OF|character:thor-thor-odinson|marvel:character:loki:on-screen",
+     "origem": "character:loki",
+     "destino": "character:thor-thor-odinson",
+     "predicado": "ALLY_OF",
+     "rotulo": "aliado de",
+     "dirigida": false,
+     "tipo_epistemico": "confirmado",
+     "peso": 0.5,
+     "evidencias": [
+      "E9"
+     ],
+     "ordem": null,
+     "ano": null,
+     "em_caminhos": [],
+     "cenarios": []
+    }
+   ]
+  },
+  {
+   "id": "X2",
+   "nos": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "arestas": [
+    {
+     "id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-the-dark-world:plot",
+     "origem": "character:thor-thor-odinson",
+     "destino": "character:loki",
+     "predicado": "ALLY_OF",
+     "rotulo": "aliado de",
+     "dirigida": false,
+     "tipo_epistemico": "confirmado",
+     "peso": 0.5,
+     "evidencias": [
+      "E10"
+     ],
+     "ordem": null,
+     "ano": 2013,
+     "em_caminhos": [],
+     "cenarios": []
+    }
+   ]
+  },
+  {
+   "id": "X3",
+   "nos": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "arestas": [
+    {
+     "id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:the-avengers:plot",
+     "origem": "character:thor-thor-odinson",
+     "destino": "character:loki",
+     "predicado": "ALLY_OF",
+     "rotulo": "aliado de",
+     "dirigida": false,
+     "tipo_epistemico": "confirmado",
+     "peso": 0.5,
+     "evidencias": [
+      "E11"
+     ],
+     "ordem": null,
+     "ano": 2012,
+     "em_caminhos": [],
+     "cenarios": []
+    }
+   ]
+  },
+  {
+   "id": "X4",
+   "nos": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "arestas": [
+    {
+     "id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-ragnarok:plot",
+     "origem": "character:thor-thor-odinson",
+     "destino": "character:loki",
+     "predicado": "ALLY_OF",
+     "rotulo": "aliado de",
+     "dirigida": false,
+     "tipo_epistemico": "confirmado",
+     "peso": 0.5,
+     "evidencias": [
+      "E178"
+     ],
+     "ordem": null,
+     "ano": 2017,
+     "em_caminhos": [],
+     "cenarios": []
+    }
+   ]
+  },
+  {
+   "id": "X5",
+   "nos": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "arestas": [
+    {
+     "id": "character:thor-thor-odinson|ALLY_OF|character:loki|marvel:character:thor-thor-odinson:on-screen",
+     "origem": "character:thor-thor-odinson",
+     "destino": "character:loki",
+     "predicado": "ALLY_OF",
+     "rotulo": "aliado de",
+     "dirigida": false,
+     "tipo_epistemico": "confirmado",
+     "peso": 0.5,
+     "evidencias": [
+      "E182"
+     ],
+     "ordem": null,
+     "ano": null,
+     "em_caminhos": [],
+     "cenarios": []
+    }
+   ]
+  }
+ ],
+ "existe": true,
+ "evidencias": {
+  "E9": {
+   "id": "E9",
+   "tipo": "relacao",
+   "texto": "Connections › Allies: Thor",
+   "fonte": {
+    "doc_id": "marvel:character:loki:on-screen",
+    "url": "https://www.marvel.com/characters/loki/on-screen/profile",
+    "titulo": null,
+    "captura_id": "5b1a4e3cf4670b57c040f1e5c5aa0cdfb26c42e3a9abc7a3bb491ee40b3084d4",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:loki|ALLY_OF|character:thor-thor-odinson|marvel:character:loki:on-screen",
+   "entidades": [
+    "character:loki",
+    "character:thor-thor-odinson"
+   ],
+   "nota": null
+  },
+  "E10": {
+   "id": "E10",
+   "tipo": "relacao",
+   "texto": "Thor, Foster, and Loki hijack a downed Dark Elf ship and make their way out of Asgard",
+   "fonte": {
+    "doc_id": "wiki:film:thor-the-dark-world:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_The_Dark_World",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-the-dark-world:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E11": {
+   "id": "E11",
+   "tipo": "relacao",
+   "texto": "Thor finally agrees to work with the humans and joins them in bringing Loki to the Helicarrier",
+   "fonte": {
+    "doc_id": "wiki:film:the-avengers:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/The_Avengers",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:the-avengers:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E178": {
+   "id": "E178",
+   "tipo": "relacao",
+   "texto": "Thor has Volstagg transport him and Loki to Earth to find the real Odin.",
+   "fonte": {
+    "doc_id": "wiki:film:thor-ragnarok:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Ragnarok",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-ragnarok:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E182": {
+   "id": "E182",
+   "tipo": "relacao",
+   "texto": "Connections › Allies: Loki",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  }
+ }
+}

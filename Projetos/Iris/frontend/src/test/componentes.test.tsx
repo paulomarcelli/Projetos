@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
@@ -94,9 +94,11 @@ describe("base científica", () => {
       }),
     );
     comApp(<PainelBase />);
-    expect(await screen.findByText("Documentos no acervo")).toBeInTheDocument();
+    const numeros = await screen.findByLabelText("Números do acervo");
+    expect(within(numeros).getByText("Documentos no acervo")).toBeInTheDocument();
+    // a procedência de cada número continua na página, reunida em "De onde vêm os números"
     expect(screen.getByText("GET /documents → total")).toBeInTheDocument();
-    expect(screen.getByText("Com texto extraível").nextSibling).toHaveTextContent("1");
+    expect(within(numeros).getByText("Com texto extraível").nextSibling).toHaveTextContent("1");
     expect(screen.getByText("Não identificado")).toBeInTheDocument();
   });
 

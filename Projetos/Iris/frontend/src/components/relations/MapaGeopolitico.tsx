@@ -14,8 +14,9 @@ import { LARGURA, ALTURA } from "./geo/mundo";
 import { relacaoNaVista, statusDaRelacao, useResultado } from "../analysis/investigacao/contexto";
 import { Letra } from "../analysis/investigacao/pecas";
 import { PainelContextual } from "../analysis/investigacao/PainelContextual";
-import { baseDe, paisesNoMapa, relacoesDesenhaveis, ESTILO, GLIFO, MUDANCA, naCurva, ROTULO, suave, useTransicao, VISTAS, curto } from "./apoioDoMapa";
+import { baseDe, paisesNoMapa, relacoesDesenhaveis, ESTILO, GLIFO, naCurva, ROTULO, suave, useTransicao, VISTAS, curto } from "./apoioDoMapa";
 import { LegendaDoMapa } from "./LegendaDoMapa";
+import { LeituraDoMapa, ListaDeMudancas } from "./LeituraDoMapa";
 import { ListaDeRelacoes } from "./ListaDeRelacoes";
 import { Territorios } from "./Territorios";
 
@@ -32,9 +33,23 @@ function caixaDaCurva(a: { x: number; y: number }, c: { x: number; y: number }, 
  * `painelProprio`: o mapa traz um painel flutuante para quando ocupa a tela sozinho. Dentro da página da
  * investigação (seção 05), o painel lateral da página já mostra a seleção; aí o mapa não monta o seu, para não haver
  * dois painéis com o mesmo conteúdo.
+ *
+ * `largo`: com 1000 px ou mais de largura (medidos no próprio contêiner, não na janela: abrir o painel lateral da página
+ * estreita o mapa), a leitura do mapa (LeituraDoMapa) fica numa coluna ao lado, e "O que mudou" sai de cima do mapa.
+ * A prop força um dos modos (testes); sem ela, decide a largura.
  */
-export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: boolean } = {}) {
+export function MapaGeopolitico({ painelProprio = true, largo: largoForcado }: { painelProprio?: boolean; largo?: boolean } = {}) {
   const { r, ix, vista, setVista, selecao, selecionar } = useResultado();
+  const raiz = useRef<HTMLDivElement>(null);
+  const [larguraRaiz, setLarguraRaiz] = useState(0);
+  useEffect(() => {
+    const el = raiz.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setLarguraRaiz(el.getBoundingClientRect().width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const largo = largoForcado ?? larguraRaiz >= 1000;
   const caixa = useRef<HTMLDivElement>(null);
   const svg = useRef<SVGSVGElement>(null);
   const [tela, setTela] = useState({ w: 900, h: 560 });
@@ -59,16 +74,19 @@ export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: bool
     // Reserva espaço em pixels para o zoom (em cima) e o cartão de mudanças fechado (embaixo, no celular).
     const topo = reservaTopo ?? (tela.w < 640 ? 64 : 60);
     const base = tela.w < 640 ? 64 : 28;
-    const lado = 24;
-    const larguraUtil = Math.max(120, tela.w - lado * 2);
+    // Margem lateral maior à esquerda: rótulos ancorados à esquerda do nó (Colômbia, Argentina) não podem ser cortados.
+    const ladoEsq = tela.w < 640 ? 24 : 72;
+    const ladoDir = tela.w < 640 ? 24 : 40;
+    const larguraUtil = Math.max(120, tela.w - ladoEsq - ladoDir);
     const alturaUtil = Math.max(120, tela.h - topo - base);
     const k = Math.min(larguraUtil / (x1 - x0), alturaUtil / (y1 - y0)); // pixels por unidade
     const w = tela.w / k;
     const h = tela.h / k;
     const cx = (x0 + x1) / 2;
     const cy = (y0 + y1) / 2;
+    const centroUtilX = ladoEsq + larguraUtil / 2; // em pixels
     const centroUtilY = topo + alturaUtil / 2; // em pixels
-    return { x: cx - w / 2, y: cy - centroUtilY / k, w, h };
+    return { x: cx - centroUtilX / k, y: cy - centroUtilY / k, w, h };
   }, [tela]);
   // Em tela estreita, o mundo inteiro fica pequeno demais: começa pelas Américas (arraste para o resto).
   const enquadrar = useCallback(
@@ -313,8 +331,15 @@ export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: bool
 
   // ---------------------------------------------------------------- render
   const estadoBloco = { ativo: "ativo", reforcado: "reforçado", enfraquecido: "enfraquecido" } as const;
+  const contagem = new Map<TipoRelacao, number>();
+  for (const x of visiveis) contagem.set(x.tipo, (contagem.get(x.tipo) ?? 0) + 1);
+  const alternarBloco = (id: string) => setBlocoAtivo((x) => (x === id ? null : id));
   return (
-    <div className="flex h-full w-full flex-col gap-2.5">
+    <div
+      ref={raiz}
+      className={largo ? "grid h-full w-full grid-cols-[minmax(0,1fr)_19rem] grid-rows-[minmax(0,1fr)] gap-5" : "flex h-full w-full flex-col"}
+    >
+    <div className="flex h-full min-h-0 min-w-0 flex-col gap-2.5">
       {/* ------------------------------------------------ cenários: fora do mapa, para não cobrir nada */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
         <div className="flex w-full shrink-0 items-center gap-1 rounded-padrao border border-linha bg-abismo/85 p-1 sm:w-fit" role="group" aria-label="Vista do mapa: hoje ou um dos cenários da investigação">
@@ -721,7 +746,7 @@ export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: bool
           estreito && <p className="pointer-events-none absolute top-3 left-3 z-10 rounded-full bg-abismo/80 px-2.5 py-1 text-micro text-texto-3">Arraste para ver Europa e Ásia</p>
         )}
 
-        {cenario && !selecao && !blocoInfo && (
+        {cenario && !selecao && !blocoInfo && !largo && (
               <div
                 key={`mud-${vista}`}
                 className="aparecer absolute right-2.5 bottom-2.5 left-2.5 z-20 rounded-padrao border border-ambar/30 bg-abismo/88 px-3 py-1.5 sm:right-3 sm:bottom-3 sm:left-auto sm:w-[19rem]"
@@ -738,69 +763,17 @@ export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: bool
                   <ChevronDown size={14} aria-hidden="true" className={`transition-transform duration-200 ${mudancasAbertas ? "rotate-180" : ""}`} />
                 </button>
                 {mudancasAbertas && (
-                  <div className="pointer-events-auto flex max-h-[min(19rem,30dvh)] flex-col gap-2 overflow-y-auto pt-1 pb-0.5 sm:max-h-[min(21rem,48dvh)]" onPointerLeave={() => setRelSobre(null)}>
-                    {MUDANCA.map((g) => {
-                      const itens = mudancas.filter((l) => l.estado?.mudanca === g.chave);
-                      if (itens.length === 0) return null;
-                      return (
-                        <section key={g.chave} aria-label={g.titulo}>
-                          <p className="mb-0.5 flex items-center gap-1.5 text-micro text-texto-3">
-                            <span aria-hidden="true" className="grid size-4 place-items-center rounded-full border border-ambar/60 text-[0.625rem] font-bold text-ambar">
-                              {g.glifo}
-                            </span>
-                            {g.titulo}
-                          </p>
-                          <ul className="m-0 flex list-none flex-col p-0">
-                            {itens.map((l) => (
-                              <li key={l.rel.id}>
-                                <button
-                                  type="button"
-                                  onPointerEnter={() => setRelSobre(l.rel.id)}
-                                  onFocus={() => setRelSobre(l.rel.id)}
-                                  onBlur={() => setRelSobre(null)}
-                                  onClick={() => selecionar({ tipo: "relacao", id: l.rel.id })}
-                                  className={`flex w-full flex-col rounded-fino px-1.5 py-1 text-left transition-colors duration-150 ${relSobre === l.rel.id ? "bg-grafite" : "hover:bg-grafite"}`}
-                                >
-                                  <span className="text-legenda text-texto">
-                                    {nome(l.rel.de)} → {nome(l.rel.para)}
-                                    {g.chave === "transformada" && (
-                                      <span className="text-texto-2">
-                                        {" "}
-                                        · {curto(l.rel.tipo)} <span className="text-ambar">→</span> {curto(l.tipo)}
-                                      </span>
-                                    )}
-                                  </span>
-                                  <span className="text-micro text-texto-3">{l.visivel ? l.texto : l.rel.presente?.texto}</span>
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </section>
-                      );
-                    })}
-                    {mudancasDeBloco.length > 0 && (
-                      <section aria-label="Blocos">
-                        <p className="mb-0.5 flex items-center gap-1.5 text-micro text-texto-3">
-                          <span aria-hidden="true" className="size-4 rounded-sm border border-ciano/60 bg-[repeating-linear-gradient(45deg,color-mix(in_srgb,var(--color-ciano-texto)_50%,transparent)_0_1px,transparent_1px_4px)]" />
-                          Blocos (no território)
-                        </p>
-                        <ul className="m-0 flex list-none flex-col p-0">
-                          {mudancasDeBloco.map((m) => (
-                            <li key={m.texto}>
-                              <button
-                                type="button"
-                                onClick={() => setBlocoAtivo((x) => (x === m.bloco ? null : m.bloco))}
-                                aria-pressed={blocoAtivo === m.bloco}
-                                className={`w-full rounded-fino px-1.5 py-1 text-left text-legenda text-texto transition-colors duration-150 ${blocoAtivo === m.bloco ? "bg-ciano-suave" : "hover:bg-grafite"}`}
-                              >
-                                {m.texto}
-                                <span className="block text-micro text-texto-3">{blocoAtivo === m.bloco ? "Destacado no mapa" : "Clique para ver no mapa"}</span>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </section>
-                    )}
+                  <div className="pointer-events-auto max-h-[min(19rem,30dvh)] overflow-y-auto pt-1 pb-0.5 sm:max-h-[min(21rem,48dvh)]">
+                    <ListaDeMudancas
+                      mudancas={mudancas}
+                      mudancasDeBloco={mudancasDeBloco}
+                      nome={nome}
+                      relSobre={relSobre}
+                      setRelSobre={setRelSobre}
+                      selecionarRelacao={(id) => selecionar({ tipo: "relacao", id })}
+                      blocoAtivo={blocoAtivo}
+                      alternarBloco={alternarBloco}
+                    />
                   </div>
                 )}
               </div>
@@ -882,7 +855,29 @@ export function MapaGeopolitico({ painelProprio = true }: { painelProprio?: bool
         }}
         listaAberta={listaAberta}
         aoAlternarLista={() => setListaAberta((x) => !x)}
+        contagem={contagem}
+        empilhada={largo}
       />
+    </div>
+    {largo && (
+      <LeituraDoMapa
+        vista={vista}
+        cenario={cenario}
+        visiveis={visiveis}
+        mudancas={mudancas}
+        mudancasDeBloco={mudancasDeBloco}
+        blocos={blocosNoMapa}
+        nome={nome}
+        sobre={sobre}
+        setSobre={setSobre}
+        relSobre={relSobre}
+        setRelSobre={setRelSobre}
+        selecionarAtor={(id) => selecionar({ tipo: "ator", id })}
+        selecionarRelacao={(id) => selecionar({ tipo: "relacao", id })}
+        blocoAtivo={blocoAtivo}
+        alternarBloco={alternarBloco}
+      />
+    )}
     </div>
   );
 }

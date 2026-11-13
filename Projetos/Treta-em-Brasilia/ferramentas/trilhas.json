@@ -1,0 +1,32 @@
+{
+ "ultimate/lula": {
+  "inicio": 35.6,
+  "bpm": 87.21,
+  "primeira": 0.336
+ },
+ "ultimate/bolsonaro": {
+  "inicio": 5.1,
+  "bpm": 89.29,
+  "primeira": 0.56
+ },
+ "ultimate/xandao": {
+  "inicio": 0.6,
+  "bpm": 113.64,
+  "primeira": 0.224
+ },
+ "ultimate/nikolas": {
+  "inicio": 6.3,
+  "bpm": 156.25,
+  "primeira": 0.08
+ },
+ "ultimate/dilma": {
+  "inicio": 19.4,
+  "bpm": 129.31,
+  "primeira": 0.288
+ },
+ "ultimate/trump_ymca": {
+  "inicio": 2.6,
+  "bpm": 125.0,
+  "primeira": 0.048
+ }
+}

@@ -69,6 +69,7 @@ class Cenario(BaseModel):
 class CorpoDaAnalise(BaseModel):
     """O que o motor (modelo de linguagem ou modo determinístico) produz; o resto é preenchido pela orquestração."""
 
+    resposta: list[Afirmacao] = Field(default_factory=list, description="a análise prospectiva explicada em parágrafos corridos, um por item")
     contexto: list[Afirmacao] = Field(default_factory=list)
     atores: list[Ator] = Field(default_factory=list)
     relacoes_sistemicas: list[RelacaoSistemica] = Field(default_factory=list)

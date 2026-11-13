@@ -87,7 +87,7 @@ class Coletor:
             return None
         conteudo = json.dumps(estado, ensure_ascii=False, sort_keys=True)
         sha = hashlib.sha256(conteudo.encode("utf-8")).hexdigest()
-        caminho = self.raw / f"{sha}.json"
+        caminho = self.raw / f"{sha[:24]}.json"  # o id da captura é o sha256 inteiro; o nome curto cabe no limite de caminho do Windows
         caminho.write_text(conteudo, encoding="utf-8")
         cap = Captura(id=sha, url=url, recuperado_em=datetime.now(timezone.utc), caminho_local=str(caminho), status_http=resp.status_code)
         self.indice[url] = json.loads(cap.model_dump_json())

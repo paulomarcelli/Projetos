@@ -1,0 +1,72 @@
+.hero {
+  position: relative; height: 100svh; overflow: hidden;
+  background: var(--fundo);
+}
+.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* o que fica sobre o túnel no início */
+.hero__intro { position: absolute; inset: 0; pointer-events: none; }
+
+.hero__frase {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: max-content; max-width: calc(100vw - 2 * var(--margem));
+  font-size: var(--t-frase); font-weight: var(--peso-normal); line-height: 1.12; text-align: center;
+  letter-spacing: -0.02em;
+}
+/* halo na cor do fundo atrás da frase */
+.hero__frase::before {
+  content: ""; position: absolute; inset: -60% -22%; z-index: -1;
+  background: radial-gradient(closest-side, var(--fundo) 0%, rgb(var(--fundo-rgb) / .85) 45%, rgb(var(--fundo-rgb) / 0) 100%);
+}
+
+.hero__marca {
+  position: absolute; left: var(--margem); bottom: var(--margem);
+  width: 49vw; color: var(--texto);
+}
+.hero__role, .hero__local { position: absolute; bottom: var(--margem); }
+.hero__role { left: 53vw; }
+.hero__local { right: var(--margem); }
+
+/* abertura do case, sobre a foto que cobre a tela */
+.case {
+  position: absolute; inset: 0; pointer-events: none; color: var(--texto);
+  visibility: hidden; opacity: 0;
+}
+.case a { pointer-events: auto; }
+.case__nevoa {
+  position: absolute; inset: auto 0 0 0; height: 40%;
+  background: linear-gradient(to top, rgb(var(--fundo-rgb) / .92), rgb(var(--fundo-rgb) / 0));
+}
+.case__num { position: absolute; left: var(--margem); top: 78px; font-size: var(--t-pequeno); }
+.case__base { position: absolute; left: var(--margem); bottom: var(--margem); max-width: min(760px, 62vw); }
+.case__meta { font-size: var(--t-pequeno); margin-bottom: 10px; }
+.case__nome {
+  font-size: var(--t-cliente); font-weight: var(--peso-medio); line-height: .9;
+  letter-spacing: var(--tracking-nome); margin-bottom: 18px;
+}
+.case__resumo { max-width: 30em; font-size: 16px; line-height: 1.4; }
+.case__abrir { position: absolute; right: var(--margem); bottom: var(--margem); }
+
+/* fim do túnel */
+.hero__fim {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center;
+  visibility: hidden;
+}
+.hero__fim-texto { font-size: var(--t-cliente); font-weight: var(--peso-medio); letter-spacing: var(--tracking-nome); line-height: .95; }
+
+.hero__progresso { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgb(242 240 235 / .1); }
+.hero__progresso span { display: block; height: 100%; background: var(--texto); transform-origin: 0 50%; transform: scaleX(0); }
+
+/* retrato: a foto não cobre a tela; o texto do case fica logo abaixo dela */
+@media (max-aspect-ratio: 4/5) {
+  .hero__marca { left: var(--margem); right: var(--margem); width: auto; }
+  .hero__role, .hero__local { bottom: calc(var(--margem) + (100vw - 2 * var(--margem)) * var(--assinatura-razao) + 12px); }
+  .hero__role { left: var(--margem); }
+  .case__nevoa { display: none; }
+  .case__base { top: calc(50% + 30vw + 18px); bottom: auto; max-width: none; right: var(--margem); }
+  .case__nome { font-size: clamp(44px, 13vw, 72px); margin-bottom: 10px; }
+  .case__resumo { font-size: 15px; }
+  .case__abrir { bottom: calc(var(--margem) + 8px); }
+  .hero__fim-texto { font-size: clamp(48px, 15vw, 80px); }
+}

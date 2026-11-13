@@ -6,6 +6,7 @@ testes e ao uso sem os serviços. Em produção: Qdrant e Elasticsearch, como na
 from __future__ import annotations
 
 import hashlib
+import logging
 import math
 import re
 import uuid
@@ -41,14 +42,46 @@ class IndiceLexical(Protocol):
 class EmbedderSentenceTransformers:
     """Modelo multilíngue da Manus (consultas em português sobre textos em inglês)."""
 
-    def __init__(self, modelo: str):
+    def __init__(self, modelo: str, cache: str | None = None):
         from sentence_transformers import SentenceTransformer
 
         self._m = SentenceTransformer(modelo)
+        self._modelo = modelo
         self.dimensao = int(self._m.get_sentence_embedding_dimension())
+        self._cache = None
+        if cache:  # SQLite com os vetores já calculados: reiniciar não recodifica o corpus inteiro
+            import pathlib
+            import sqlite3
+
+            pathlib.Path(cache).parent.mkdir(parents=True, exist_ok=True)
+            self._cache = sqlite3.connect(cache, check_same_thread=False)
+            self._cache.execute("CREATE TABLE IF NOT EXISTS vetores (chave TEXT PRIMARY KEY, vetor BLOB)")
+
+    def _codificar(self, textos: list[str]) -> list[list[float]]:
+        return self._m.encode(textos, normalize_embeddings=True, batch_size=64, show_progress_bar=False).tolist()
 
     def codificar(self, textos: list[str]) -> list[list[float]]:
-        return self._m.encode(textos, normalize_embeddings=True, batch_size=64, show_progress_bar=False).tolist()
+        if self._cache is None:
+            return self._codificar(textos)
+        import array
+
+        chaves = [hashlib.sha1(f"{self._modelo}\0{t}".encode()).hexdigest() for t in textos]
+        achados: dict[str, list[float]] = {}
+        for i in range(0, len(chaves), 500):
+            lote = chaves[i:i + 500]
+            for chave, blob in self._cache.execute(f"SELECT chave, vetor FROM vetores WHERE chave IN ({','.join('?' * len(lote))})", lote):
+                achados[chave] = array.array("f", blob).tolist()
+        faltam = [i for i, c in enumerate(chaves) if c not in achados]
+        for i in range(0, len(faltam), 1024):  # grava por lote: uma interrupção não perde o que já foi calculado
+            lote = faltam[i:i + 1024]
+            novos = self._codificar([textos[j] for j in lote])
+            with self._cache:
+                self._cache.executemany("INSERT OR REPLACE INTO vetores VALUES (?, ?)",
+                                        [(chaves[j], array.array("f", v).tobytes()) for j, v in zip(lote, novos)])
+            achados.update((chaves[j], v) for j, v in zip(lote, novos))
+            if len(faltam) > 1024:
+                logging.info("embeddings: %d/%d codificados (%d do cache)", i + len(lote), len(faltam), len(achados) - i - len(lote))
+        return [achados[c] for c in chaves]
 
 
 class EmbedderHash:

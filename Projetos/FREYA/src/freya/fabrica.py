@@ -12,6 +12,8 @@ from freya.config import Config
 from freya.graph.armazenamento import ArmazenamentoGrafo, GrafoMemoria, GrafoNeo4j
 from freya.hybrid.indices import EmbedderSentenceTransformers, IndiceElasticsearch, IndiceLexicalMemoria, IndiceQdrant
 from freya.hybrid.recuperador import RecuperadorHibrido
+from freya.estudo import EstudoDePersonagens
+from freya.intelligence_day import IntelligenceDay
 from freya.investigacao.orquestrador import Orquestrador, Repositorio
 from freya.llm.cliente import ModeloDeLinguagem, ModeloOpenAI
 from freya.prospectivo.motor import MotorProspectivo
@@ -23,6 +25,8 @@ class Componentes:
     grafo: ArmazenamentoGrafo
     modelo: ModeloDeLinguagem | None
     orquestrador: Orquestrador
+    intelligence_day: IntelligenceDay | None = None
+    estudo: EstudoDePersonagens | None = None
 
 
 def modelo_de(cfg: Config) -> ModeloDeLinguagem | None:
@@ -30,8 +34,10 @@ def modelo_de(cfg: Config) -> ModeloDeLinguagem | None:
     return ModeloOpenAI(chave, cfg.openai_model, cfg.openai_base_url) if chave else None
 
 
-def montar(cfg: Config, modo: str = "servicos", embedder=None, modelo: ModeloDeLinguagem | None = None, repo: Repositorio | None = None) -> Componentes:
-    embedder = embedder or EmbedderSentenceTransformers(cfg.embedding_model)
+def montar(cfg: Config, modo: str = "servicos", embedder=None, modelo: ModeloDeLinguagem | None = None, repo: Repositorio | None = None,
+           intelligence_day: bool = False) -> Componentes:
+    """`intelligence_day`: liga a leitura das notícias novas durante a análise (só a API liga; os testes, não)."""
+    embedder = embedder or EmbedderSentenceTransformers(cfg.embedding_model, cache="data/cache/embeddings.db")
     if modo == "servicos":
         if not cfg.neo4j_password:
             raise RuntimeError("NEO4J_PASSWORD não definida (veja .env.example).")
@@ -43,5 +49,11 @@ def montar(cfg: Config, modo: str = "servicos", embedder=None, modelo: ModeloDeL
     else:
         raise ValueError(f"modo desconhecido: {modo}")
     modelo = modelo if modelo is not None else modelo_de(cfg)
-    orq = Orquestrador(hib, grafo, MotorProspectivo(modelo), repo or Repositorio(cfg.freya_db_path))
-    return Componentes(hibrido=hib, grafo=grafo, modelo=modelo, orquestrador=orq)
+    intel, estudo = None, None
+    if intelligence_day:  # leitura de fontes na web durante a análise (notícias e estudo de personagens)
+        estudo = EstudoDePersonagens(hib, grafo)
+    if intelligence_day and cfg.intelligence_day:
+        intel = IntelligenceDay(hib, grafo, modelo, intervalo=cfg.coleta_intervalo, validade_horas=cfg.intelligence_day_horas,
+                                maximo=cfg.intelligence_day_maximo, trechos=cfg.intelligence_day_trechos)
+    orq = Orquestrador(hib, grafo, MotorProspectivo(modelo), repo or Repositorio(cfg.freya_db_path), intelligence_day=intel, estudo=estudo)
+    return Componentes(hibrido=hib, grafo=grafo, modelo=modelo, orquestrador=orq, intelligence_day=intel, estudo=estudo)

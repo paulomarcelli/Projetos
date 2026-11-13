@@ -62,34 +62,58 @@ export function buildPhone({ quality }) {
   const pcb = new THREE.MeshStandardMaterial({ color: '#0f1f1a', roughness: 0.55, metalness: 0.15 });
   const chip = new THREE.MeshStandardMaterial({ color: '#16171a', roughness: 0.5, metalness: 0.3 });
   const tampa = new THREE.MeshStandardMaterial({ color: '#9aa1a9', roughness: 0.35, metalness: 0.95 });
-  const anel = new THREE.MeshStandardMaterial({ color: '#c9d7e6', roughness: 0.22, metalness: 1 });
-  const vidroLente = new THREE.MeshPhysicalMaterial({ color: '#06080c', roughness: 0.05, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.02, iridescence: 0.6, iridescenceIOR: 1.6 });
+  // lentes no acabamento do S26 Ultra: anel de metal grafite polido, borda preta,
+  // os elementos ópticos aparecendo por dentro e uma cúpula de vidro escuro por cima
+  const anel = new THREE.MeshStandardMaterial({ color: '#3b3f46', roughness: 0.16, metalness: 1, side: THREE.DoubleSide }); // grafite polido, como no S26 Ultra
+  const bordaPreta = new THREE.MeshStandardMaterial({ color: '#07080a', roughness: 0.7, metalness: 0.1 });
+  const elemento = new THREE.MeshStandardMaterial({ color: '#141a24', roughness: 0.28, metalness: 0.85 });
+  const elementoAzul = new THREE.MeshStandardMaterial({ color: '#24324a', roughness: 0.18, metalness: 0.95, emissive: '#0a1226', emissiveIntensity: 0.6 });
+  const pupila = new THREE.MeshStandardMaterial({ color: '#020304', roughness: 0.35, metalness: 0.2 });
+  const cupula = new THREE.MeshPhysicalMaterial({ color: '#0c1424', roughness: 0.02, metalness: 0, clearcoat: 1, clearcoatRoughness: 0,
+    transparent: true, opacity: 0.32, depthWrite: false, iridescence: 0.55, iridescenceIOR: 1.5, envMapIntensity: 1.4 });
 
   const T = PHONE.t;
   // ---------- 1. vidro traseiro + câmeras (a traseira olha para baixo, y negativo)
   const back = add('traseira', new THREE.Mesh(slab(rrShape(PHONE.w - 0.6, PHONE.l - 0.6, PHONE.r - 0.3), 0.8, 0.25), azul));
   // texto discreto gravado na traseira (vê-se com o aparelho virado)
   const grav = add('traseira', new THREE.Mesh(new THREE.PlaneGeometry(40, 8),
-    new THREE.MeshStandardMaterial({ map: label('KAROL° · S26 ULTRA', 40, 8, { bg: '#a9c6e4', fg: '#7f9cbb', size: 46 }), roughness: 0.4 })), false);
+    new THREE.MeshStandardMaterial({ map: label('KAROL° · S26 ULTRA', 40, 8, { bg: '#a9c6e4', fg: '#7f9cbb', size: 38 }), roughness: 0.4 })), false);
   grav.rotation.x = Math.PI / 2; grav.rotation.z = Math.PI; grav.position.set(0, -0.01, PHONE.l / 2 - 22);
+  // uma lente: anel com aba chanfrada (perfil girado), borda preta, dois anéis de elementos, pupila e cúpula
+  const disco = (geo, mat, y) => { const m = new THREE.Mesh(geo, mat); m.rotation.x = Math.PI / 2; m.position.y = y; return m; };
+  function lente(r) {
+    const perfil = [[0.8, -0.15], [0.8, -1.02], [0.835, -1.2], [0.95, -1.26], [0.99, -1.16], [1, -0.96], [1, 0]]
+      .map(([k, y]) => new THREE.Vector2(r * k, y));
+    const ring = new THREE.Mesh(new THREE.LatheGeometry(perfil, 64), anel);
+    const borda = disco(new THREE.RingGeometry(r * 0.62, r * 0.8, 64), bordaPreta, -1.0);
+    const el1 = disco(new THREE.RingGeometry(r * 0.48, r * 0.62, 64), elemento, -0.94);
+    const inner = disco(new THREE.RingGeometry(r * 0.33, r * 0.42, 48), elementoAzul, -0.9);
+    const meio = disco(new THREE.RingGeometry(r * 0.42, r * 0.48, 48), pupila, -0.91);
+    const pup = disco(new THREE.CircleGeometry(r * 0.33, 48), pupila, -0.88);
+    // cúpula: calota esférica sobre a borda preta (raio da base 0,8 r, altura 0,2 mm)
+    const a = r * 0.8, h = 0.2, R = (a * a + h * h) / (2 * h);
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 8, 0, Math.PI * 2, 0, Math.asin(a / R)), cupula);
+    dome.rotation.x = Math.PI; dome.position.y = -1.03 - h + R; dome.renderOrder = 2;
+    const barrel = new THREE.Group(); barrel.add(ring, borda, el1, meio, inner, pup, dome);
+    for (const m of [ring, borda, el1, meio, inner, pup]) { m.castShadow = !low; meshes.push(m); }
+    meshes.push(dome);
+    return { barrel, inner };
+  }
   const lensGroups = [];
   for (const L of LENSES) {
     const g = new THREE.Group(); g.position.set(L.x, 0, L.z);
-    const ring = new THREE.Mesh(new THREE.CylinderGeometry(L.r, L.r, 1.6, 48, 1, true), anel); ring.position.y = -0.8;
-    const ringCap = new THREE.Mesh(new THREE.RingGeometry(L.r * 0.82, L.r, 48), anel); ringCap.rotation.x = Math.PI / 2; ringCap.position.y = -1.6;
-    const glass = new THREE.Mesh(new THREE.CircleGeometry(L.r * 0.82, 48), vidroLente); glass.rotation.x = Math.PI / 2; glass.position.y = -1.45;
-    const inner = new THREE.Mesh(new THREE.RingGeometry(L.r * 0.38, L.r * 0.46, 40), new THREE.MeshStandardMaterial({ color: '#2a3a52', roughness: 0.2, metalness: 0.9 }));
-    inner.rotation.x = Math.PI / 2; inner.position.y = -1.48;
-    // a lente principal tem um "tubo" que sai na seção da câmera
-    const barrel = new THREE.Group(); barrel.add(ring, ringCap, glass, inner);
-    g.add(barrel);
-    for (const m of [ring, ringCap, glass, inner]) { m.castShadow = !low; meshes.push(m); }
-    layers.traseira.add(g);
-    lensGroups.push({ L, g, barrel, inner });
+    const { barrel, inner } = lente(L.r);
+    g.add(barrel); layers.traseira.add(g);
+    lensGroups.push({ L, g, barrel, inner }); // a principal (a 1ª) é a que sai do corpo na seção da câmera
   }
-  for (const [p, mat] of [[FLASH, new THREE.MeshStandardMaterial({ color: '#f3efe2', emissive: '#4d4a40', roughness: 0.3 })], [LASER, chip]]) {
-    const m = add('traseira', new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r, 0.5, 24), mat), false);
-    m.position.set(p.x, -0.25, p.z);
+  // o foco a laser: mesmo acabamento das lentes menores
+  { const g = new THREE.Group(); g.position.set(LASER.x, 0, LASER.z); g.add(lente(LASER.r).barrel); layers.traseira.add(g); }
+  // o flash: aro fino de metal e o difusor amarelado
+  {
+    const g = new THREE.Group(); g.position.set(FLASH.x, 0, FLASH.z);
+    const aro = new THREE.Mesh(new THREE.LatheGeometry([[0.78, -0.05], [0.78, -0.42], [0.9, -0.5], [1, -0.4], [1, 0]].map(([k, y]) => new THREE.Vector2(FLASH.r * k, y)), 48), anel);
+    const luz = disco(new THREE.CircleGeometry(FLASH.r * 0.78, 40), new THREE.MeshStandardMaterial({ color: '#f4ead0', emissive: '#6b5f40', emissiveIntensity: 0.5, roughness: 0.45 }), -0.36);
+    g.add(aro, luz); layers.traseira.add(g); meshes.push(aro, luz);
   }
 
   // ---------- 2. bateria (embaixo da placa, ocupa o meio e o pé do aparelho)

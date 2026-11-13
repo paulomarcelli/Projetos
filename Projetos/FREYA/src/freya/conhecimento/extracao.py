@@ -92,7 +92,9 @@ def _prompt(texto: str, entidades: list[No]) -> str:
     return f"ENTIDADES:\n{lista}\n\nPREDICADOS PERMITIDOS:\n{preds}\n\nTEXTO:\n{texto}"
 
 
-def extrair(corpus: Corpus, docs: list[Documento], modelo: ModeloDeLinguagem, paralelo: int = 4) -> tuple[list[Fato], dict]:
+def extrair(corpus: Corpus, docs: list[Documento], modelo: ModeloDeLinguagem, paralelo: int = 4,
+            limite: int | None = None) -> tuple[list[Fato], dict]:
+    """`limite`: no máximo tantas chamadas ao modelo (os primeiros trechos com par de entidades)."""
     nos = [No(chave=e.chave, nome=e.nome, tipo=e.tipo.value, apelidos=e.apelidos) for e in corpus.entidades.values()
            if e.tipo.value in _TIPOS_NARRATIVOS]
     resolvedor = ResolvedorDeEntidades(nos)
@@ -108,6 +110,9 @@ def extrair(corpus: Corpus, docs: list[Documento], modelo: ModeloDeLinguagem, pa
                 rel["trechos_sem_par"] += 1
                 continue
             tarefas.append((d, ch, ents))
+    if limite is not None and len(tarefas) > limite:
+        rel["trechos_alem_do_limite"] = len(tarefas) - limite
+        tarefas = tarefas[:limite]
 
     def rodar(t):
         d, ch, ents = t

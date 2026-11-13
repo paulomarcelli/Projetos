@@ -84,10 +84,26 @@ class GrafoDaInvestigacao(BaseModel):
     focais: list[str]
 
 
+def eh_variante(a) -> bool:
+    """Aresta do estudo de personagens que liga uma variante ao personagem (RELATED_TO, "variante de …")."""
+    return a.predicado == "RELATED_TO" and (a.qualificador or "").startswith("variante")
+
+
+def entidades_da_analise(a: AnaliseProspectiva) -> set[str]:
+    """As entidades que a análise mobiliza (atores, relações, variáveis e o cenário)."""
+    return ({at.entidade for at in a.atores} | {e for r in a.relacoes_sistemicas for e in r.entidades}
+            | {e for v in a.variaveis for e in v.entidades} | {e for s in a.cenarios for e in s.entidades})
+
+
 def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva | None = None) -> GrafoDaInvestigacao:
     reg = dossie.registro
     focais = [n.chave for n in gr.entidades]
-    arestas = gr.subgrafo.arestas
+    # só as entidades da prospectiva: as focais e as que a análise usa (sem análise, as focais e as pontes dos caminhos)
+    manter = set(focais) | (entidades_da_analise(analise) if analise else {x for c in gr.caminhos for x in c.nos})
+    # as variantes estudadas de um personagem focal entram sempre: são outra pessoa, e a análise depende de qual é qual
+    manter |= {a.origem for a in gr.subgrafo.arestas.values() if eh_variante(a) and a.destino in focais}
+    nos_sub = {k: v for k, v in gr.subgrafo.nos.items() if k in manter}
+    arestas = {k: a for k, a in gr.subgrafo.arestas.items() if a.origem in nos_sub and a.destino in nos_sub}
     grau: dict[str, int] = {}
     for a in arestas.values():
         grau[a.origem] = grau.get(a.origem, 0) + 1
@@ -96,7 +112,7 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
     caminhos: list[CaminhoVisual] = []
     em_caminho_nos: set[str] = set()
     aresta_caminhos: dict[str, list[str]] = {}
-    for i, c in enumerate(gr.caminhos, 1):
+    for i, c in enumerate((c for c in gr.caminhos if all(a.id in arestas for a in c.arestas)), 1):
         cid = f"P{i}"
         caminhos.append(CaminhoVisual(id=cid, nos=c.nos, arestas=[a.id for a in c.arestas],
                                       descricao=" → ".join(dossie.nome(x) for x in c.nos)))
@@ -104,7 +120,7 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
         for a in c.arestas:
             aresta_caminhos.setdefault(a.id, []).append(cid)
 
-    trajetoria_nos = {a.destino for t in gr.trajetorias for a in t.momentos + t.aparicoes}
+    trajetoria_nos = {a.destino for t in gr.trajetorias for a in t.momentos + t.aparicoes if a.id in arestas}
     maior = max(grau.values(), default=1)
 
     def papel(ch: str) -> str:
@@ -122,7 +138,7 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
     cenarios: list[CenarioNoGrafo] = []
     if analise:
         for s in analise.cenarios:
-            nos_s = [x for x in s.entidades if x in gr.subgrafo.nos]
+            nos_s = [x for x in s.entidades if x in nos_sub]
             ar_s = [a.id for a in arestas.values() if a.origem in nos_s and a.destino in nos_s]
             for x in nos_s:
                 cenarios_por_no.setdefault(x, []).append(s.id)
@@ -133,7 +149,7 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
             cenarios_por_aresta.setdefault(aid, []).append(s.id)
 
     nos = []
-    for ch, n in gr.subgrafo.nos.items():
+    for ch, n in nos_sub.items():
         p = papel(ch)
         rel = round(min(1.0, peso_papel[p] + 0.25 * grau.get(ch, 0) / maior), 3)
         nos.append(NoVisual(id=ch, rotulo=n.nome, tipo=n.tipo, papel=p, relevancia=rel, grau=grau.get(ch, 0), descricao=n.descricao,
@@ -145,7 +161,7 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
         pred = Predicado(a.predicado) if a.predicado in Predicado._value2member_map_ else None
         peso = 1.0 if a.id in aresta_caminhos else (0.7 if a.origem in focais or a.destino in focais else 0.4)
         lista_arestas.append(ArestaVisual(id=a.id, origem=a.origem, destino=a.destino, predicado=a.predicado,
-                                          rotulo=ROTULOS_PT.get(pred, a.predicado.lower()) if pred else a.predicado.lower(),
+                                          rotulo="variante de" if eh_variante(a) else (ROTULOS_PT.get(pred, a.predicado.lower()) if pred else a.predicado.lower()),
                                           dirigida=pred not in SIMETRICOS if pred else True, peso=peso, evidencias=[eid], ordem=a.ordem, ano=a.ano,
                                           em_caminhos=aresta_caminhos.get(a.id, []), cenarios=cenarios_por_aresta.get(a.id, [])))
 
@@ -153,8 +169,8 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
     seq, mostrados_n, mostrados_a = [], set(), set()
 
     def passo(motivo, ns, ars):
-        ns = [x for x in dict.fromkeys(ns) if x not in mostrados_n and x in gr.subgrafo.nos]
-        ars = [x for x in dict.fromkeys(ars) if x not in mostrados_a]
+        ns = [x for x in dict.fromkeys(ns) if x not in mostrados_n and x in nos_sub]
+        ars = [x for x in dict.fromkeys(ars) if x not in mostrados_a and x in arestas]
         if ns or ars:
             seq.append(PassoDaSequencia(passo=len(seq), motivo=motivo, nos=ns, arestas=ars))
             mostrados_n.update(ns)
@@ -168,11 +184,11 @@ def montar_grafo(gr: ResultadoGrafo, dossie: Dossie, analise: AnaliseProspectiva
     for t in gr.trajetorias:
         ids = [a.id for a in t.momentos + t.aparicoes]
         passo(f"trajetória de {dossie.nome(t.personagem)}", [a.destino for a in t.momentos + t.aparicoes], ids)
-    passo("contexto", list(gr.subgrafo.nos), list(arestas))
+    passo("contexto", list(nos_sub), list(arestas))
 
     usadas = {e for a in lista_arestas for e in a.evidencias}
     if analise:
-        for campo in ("contexto", "tendencias_e_sinais"):
+        for campo in ("resposta", "contexto", "tendencias_e_sinais"):
             for af in getattr(analise, campo):
                 usadas.update(af.evidencias)
     tipos_no: dict[str, int] = {}

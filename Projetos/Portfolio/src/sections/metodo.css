@@ -1,0 +1,43 @@
+.metodo { position: relative; }
+.metodo__palco {
+  height: 100svh; display: flex; flex-direction: column; justify-content: center;
+  padding: 90px 0 48px; overflow: hidden;
+}
+.metodo__titulo {
+  font-size: var(--t-titulo-metodo); font-weight: var(--peso-normal); letter-spacing: -0.03em;
+  padding: 0 var(--margem); margin-bottom: clamp(20px, 4vh, 44px);
+}
+
+.metodo__janela { overflow: hidden; }
+.metodo__tira { display: flex; width: max-content; will-change: transform; }
+.metodo__quadro {
+  width: clamp(220px, 30vw, 460px); aspect-ratio: 3 / 4; overflow: hidden;
+  max-height: 58svh; max-width: calc(58svh * 3 / 4);
+  opacity: .72; transition: opacity .35s ease;
+}
+.metodo__quadro.is-ativo { opacity: 1; }
+.metodo__quadro img, .metodo__quadro svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* a régua */
+.metodo__regua { padding: clamp(22px, 4vh, 40px) var(--margem) 0; }
+.metodo__fio { height: 1px; background: var(--fio); position: relative; }
+.metodo__fio span { position: absolute; inset: 0; background: var(--texto); transform-origin: 0 50%; transform: scaleX(0); }
+.metodo__etapas { display: grid; grid-template-columns: repeat(4, 1fr); }
+.metodo__etapa { position: relative; padding-top: 14px; color: var(--secundario); font-size: var(--t-pequeno); transition: color .3s ease; }
+.metodo__etapa:last-child { text-align: right; }
+.metodo__marca { position: absolute; top: -5px; left: 0; width: 1px; height: 9px; background: var(--secundario); transition: height .3s ease, top .3s ease, background-color .3s ease; }
+.metodo__etapa:last-child .metodo__marca { left: auto; right: 0; }
+.metodo__frase { display: block; max-width: 22em; margin-top: 6px; color: var(--texto); opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
+.metodo__etapa:last-child .metodo__frase { margin-left: auto; }
+.metodo__etapa.is-ativa { color: var(--texto); }
+.metodo__etapa.is-ativa .metodo__marca { background: var(--texto); top: -9px; height: 17px; }
+.metodo__etapa.is-ativa .metodo__frase { opacity: 1; transform: none; }
+
+@media (max-width: 720px) {
+  .metodo__quadro { width: 62vw; }
+  .metodo__nome { font-size: 12px; }
+  .metodo__frase { position: absolute; left: 0; width: calc(100vw - 2 * var(--margem)); }
+  .metodo__etapa:nth-child(2) .metodo__frase { left: -25vw; }
+  .metodo__etapa:nth-child(3) .metodo__frase { left: -50vw; }
+  .metodo__etapa:last-child .metodo__frase { left: auto; right: 0; text-align: right; }
+}

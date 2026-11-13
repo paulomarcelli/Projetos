@@ -32,7 +32,7 @@ import type { CenarioId } from "../../types/cenario";
 import type { EventoTempo } from "../../types/evento";
 import { useResultado } from "../analysis/investigacao/contexto";
 import { LinhaDoTempo } from "./LinhaDoTempo";
-import { CATEGORIA, Letra } from "../analysis/investigacao/pecas";
+import { CATEGORIA, GlifoTempo, Letra } from "../analysis/investigacao/pecas";
 
 // ------------------------------------------------------------------ geometria
 
@@ -66,9 +66,6 @@ function useGeometria() {
     const primeiroAno = Math.min(...r.linhaDoTempo.map((e) => e.ano), inicio - 1);
     const ultimoAno = r.horizonte.fim;
     const anos = Array.from({ length: ultimoAno - primeiroAno + 1 }, (_, i) => primeiroAno + i);
-    const larguraAno = (L - MARGEM.esq - MARGEM.dir) / anos.length;
-    const x = (ano: number, fracao = 0) => MARGEM.esq + (ano - primeiroAno + fracao) * larguraAno;
-    const xHoje = x(inicio);
 
     // Cada evento vai para uma trilha; dentro de (trilha, ano), os eventos se espalham pela ordem.
     const trilhaDe = (e: EventoTempo): Trilha[] => (e.ano < inicio ? ["passado"] : e.cenarios?.length ? e.cenarios : ["comum"]);
@@ -78,6 +75,28 @@ function useGeometria() {
         const k = `${t}|${e.ano}`;
         grupos.set(k, [...(grupos.get(k) ?? []), e]);
       }
+
+    // Largura de cada ano pela densidade: um ano com muitos eventos numa trilha ganha espaço (até 2,6×), para os
+    // pontos não se amontoarem. O eixo diz isso: cada ano tem a sua faixa marcada, com o rótulo no meio.
+    const maisCheio = new Map<number, number>();
+    for (const [k, lista] of grupos) {
+      const ano = Number(k.split("|")[1]);
+      maisCheio.set(ano, Math.max(maisCheio.get(ano) ?? 0, lista.length));
+    }
+    const peso = (ano: number) => Math.min(2.6, Math.max(1, (maisCheio.get(ano) ?? 0) / 3));
+    const pesos = anos.map(peso);
+    const unidade = (L - MARGEM.esq - MARGEM.dir) / pesos.reduce((a, b) => a + b, 0);
+    const inicioDoAno = new Map<number, number>();
+    let acumulado = MARGEM.esq;
+    anos.forEach((a, i) => {
+      inicioDoAno.set(a, acumulado);
+      acumulado += pesos[i] * unidade;
+    });
+    const x = (ano: number, fracao = 0) => {
+      if (ano > ultimoAno) return L - MARGEM.dir + (ano - ultimoAno - 1 + fracao) * unidade;
+      return (inicioDoAno.get(ano) ?? MARGEM.esq) + fracao * peso(ano) * unidade;
+    };
+    const xHoje = x(inicio);
     const pontos: Ponto[] = [];
     for (const [k, lista] of grupos) {
       const [trilha, ano] = [k.split("|")[0] as Trilha, Number(k.split("|")[1])];
@@ -108,6 +127,90 @@ function Marca({ p, aceso, foco }: { p: Ponto; aceso: boolean; foco: boolean }) 
       )}
       {c === "projetado" && <circle cx={p.x} cy={p.y} r={r} fill="var(--color-abismo)" stroke="var(--color-ambar)" strokeWidth="1.6" />}
     </g>
+  );
+}
+
+// ------------------------------------------------------------------ marcos (leitura sem cursor)
+
+/**
+ * Os marcos da timeline em texto, em duas colunas: o que já aconteceu (antes do "Hoje") e o que vem pela frente (o
+ * calendário comum e, com um cenário escolhido, os marcos dele). Lê-se sem passar o cursor; passar o cursor ou focar
+ * um marco acende o ponto no gráfico (o mesmo estado da legenda), e clicar abre o evento no painel.
+ */
+function Marcos({ pontos, ativo, foco, aoFocar }: { pontos: Ponto[]; ativo: CenarioId | null; foco: Ponto | null; aoFocar: (p: Ponto) => void }) {
+  const { r, setVista, selecionar } = useResultado();
+  const passados = pontos.filter((p) => p.trilha === "passado");
+  const adiante = pontos.filter((p) => p.trilha === "comum" || (ativo && p.trilha === ativo));
+  const cenario = ativo ? r.cenarios.find((c) => c.id === ativo) : null;
+  const item = (p: Ponto) => {
+    const emFoco = foco?.ev.id === p.ev.id && foco.trilha === p.trilha;
+    const futuro = p.trilha !== "passado";
+    return (
+      <li key={`${p.trilha}-${p.ev.id}`}>
+        <button
+          type="button"
+          onMouseEnter={() => aoFocar(p)}
+          onFocus={() => aoFocar(p)}
+          onClick={() => selecionar({ tipo: "evento", id: p.ev.id })}
+          className={`grid w-full grid-cols-[6.75rem_1rem_minmax(0,1fr)] items-baseline gap-x-2.5 rounded-padrao px-2 py-1.5 text-left transition-colors duration-150 ${
+            emFoco ? "bg-ciano-suave" : "hover:bg-grafite"
+          }`}
+        >
+          <span className={`numeros font-dados text-micro whitespace-nowrap ${futuro ? "text-ambar" : "text-texto-2"}`}>{p.ev.data}</span>
+          <span className="translate-y-0.5 self-start">
+            <GlifoTempo c={p.ev.categoria} tamanho={12} />
+          </span>
+          <span className="flex min-w-0 flex-col gap-0.5">
+            <span className={`text-legenda ${futuro ? "text-texto-2 italic" : "text-texto"}`}>{p.ev.texto}</span>
+            {(p.ev.inflexao || p.trilha === "comum") && (
+              <span className="text-micro text-texto-3">
+                {p.ev.inflexao && <span className="text-ambar">ponto de inflexão</span>}
+                {p.ev.inflexao && p.trilha === "comum" && " · "}
+                {p.trilha === "comum" && "vale para todos os cenários"}
+              </span>
+            )}
+          </span>
+        </button>
+      </li>
+    );
+  };
+  return (
+    <div className="grid gap-8 border-t border-linha pt-6 md:grid-cols-2 md:gap-10">
+      <section aria-label="O que já aconteceu" className="flex min-w-0 flex-col gap-2">
+        <h3 id="t-marcos-passado" className="flex items-baseline justify-between gap-3 px-2">
+          <span className="text-legenda font-medium text-texto">O que já aconteceu</span>
+          <span className="numeros font-dados text-micro text-texto-3">até {r.horizonte.inicio - 1}</span>
+        </h3>
+        <ol className="m-0 flex list-none flex-col p-0">{passados.map(item)}</ol>
+      </section>
+      <section aria-label="O que vem pela frente" className="flex min-w-0 flex-col gap-2">
+        <h3 id="t-marcos-adiante" className="flex items-baseline justify-between gap-3 px-2">
+          <span className="flex items-center gap-2 text-legenda font-medium text-texto">
+            O que vem pela frente
+            {cenario && (
+              <span className="inline-flex items-center gap-1.5 font-normal text-texto-2">
+                · <Letra id={cenario.id} ativa /> {cenario.nome}
+              </span>
+            )}
+          </span>
+          <span className="numeros font-dados text-micro text-ambar">
+            {r.horizonte.inicio}–{r.horizonte.fim}
+          </span>
+        </h3>
+        <ol className="m-0 flex list-none flex-col p-0">{adiante.map(item)}</ol>
+        {!cenario && (
+          <p className="flex flex-wrap items-center gap-2 px-2 pt-1 text-micro text-texto-3">
+            Escolha um cenário para ver os marcos dele:
+            {r.cenarios.map((c) => (
+              <button key={c.id} type="button" onClick={() => setVista(c.id)} title={c.nome} aria-label={`Ver os marcos do cenário ${c.id}, ${c.nome}`}>
+                <Letra id={c.id} />
+              </button>
+            ))}
+          </p>
+        )}
+        <p className="px-2 pt-1 text-micro text-texto-3">Marcos projetados são hipóteses de desenvolvimento, não eventos confirmados nem datas previstas.</p>
+      </section>
+    </div>
   );
 }
 
@@ -207,8 +310,10 @@ export function TimelineProspectiva() {
               <svg viewBox={`0 0 ${L} ${ALT}`} className="block h-auto w-full min-w-[760px]" role="group" aria-label={`Timeline de ${g.anos[0]} a ${r.horizonte.fim}. Use Tab para percorrer os eventos.`}>
                 {/* Anos (eixo) e períodos do horizonte */}
                 <g aria-hidden="true">
-                  {g.anos.map((a) => (
+                  {g.anos.map((a, i) => (
                     <g key={a}>
+                      {/* faixas alternadas por ano: o olho acha o ano de cada ponto sem seguir linhas finas */}
+                      {i % 2 === 1 && <rect x={g.x(a)} y={44} width={g.x(a + 1) - g.x(a)} height={Y.eixo - 58} fill="var(--color-texto)" opacity={0.025} />}
                       <line x1={g.x(a)} y1={44} x2={g.x(a)} y2={Y.eixo - 14} stroke="var(--color-linha)" />
                       <text x={g.x(a, 0.5)} y={Y.eixo + 4} textAnchor="middle" fill="var(--color-texto-3)" style={{ font: "500 12px var(--font-dados)" }}>
                         {a}
@@ -301,6 +406,25 @@ export function TimelineProspectiva() {
                         className="cursor-pointer"
                         onClick={() => setVista(c.id)}
                       />
+                      {/* nome do cenário sobre a faixa, logo depois da abertura: lê-se a faixa sem decorar a letra */}
+                      <m.text
+                        x={g.xHoje + 78}
+                        y={y - 11}
+                        fill={ativo === c.id ? "var(--color-texto)" : "var(--color-texto-2)"}
+                        stroke="var(--color-abismo)"
+                        strokeWidth={4}
+                        paintOrder="stroke"
+                        className="cursor-pointer"
+                        onClick={() => setVista(c.id)}
+                        style={{ font: `${ativo === c.id ? 600 : 500} 12.5px var(--font-interface)`, transition: "opacity 240ms var(--ease-saida)" }}
+                        opacity={destacada ? 1 : 0.45}
+                        initial={inicial({ opacity: 0 })}
+                        animate={{ opacity: destacada ? 1 : 0.45 }}
+                        transition={{ duration: 0.4, delay: reduzir ? 0 : 1.2 }}
+                        aria-hidden="true"
+                      >
+                        {c.nome}
+                      </m.text>
                       <foreignObject x={g.xFim + 8} y={y - 14} width={MARGEM.dir - 10} height={28}>
                         <button
                           type="button"
@@ -389,6 +513,8 @@ export function TimelineProspectiva() {
                 <svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="var(--color-ambar)" strokeWidth="1.2" /><circle cx="7" cy="7" r="3" fill="var(--color-texto)" /></svg> Ponto de inflexão
               </li>
             </ul>
+
+            <Marcos pontos={g.pontos} ativo={ativo} foco={foco} aoFocar={(p) => percurso === null && setFoco(p)} />
           </>
         )}
       </section>

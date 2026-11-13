@@ -7,7 +7,9 @@
  * - textos neutros: enfraquece (texto-2), ambíguo (texto-2), neutro e obsoleta (texto-3).
  * O ouro não entra aqui: é estrutura (núcleo dos cenários, versão atual), não julgamento.
  */
+import type { Efeito } from "../types/cenario";
 import type { EfeitoNaPremissa, ImpactoNoCenario, TipoDeAcontecimento, TipoDeMudanca, Tendencia } from "../types/monitoramento";
+import type { Mudanca } from "../types/relacao";
 
 export interface Estado {
   rotulo: string;
@@ -65,4 +67,29 @@ export const TENDENCIA: Record<Tendencia, string> = {
   queda: "Em queda",
   estavel: "Estável",
   inconclusiva: "Inconclusiva",
+};
+
+/**
+ * O que um cenário faz com uma relação entre atores (Análise do Cenário, parte 4). Mesma gramática dos estados acima:
+ * o que surge ou se fortalece é ciano (conexão); o que muda de natureza é âmbar (exige atenção); o que perde força ou
+ * desaparece fica neutro. Vermelho não entra: nenhuma destas mudanças é erro.
+ */
+export const MUDANCA_NA_RELACAO: Record<Mudanca, Estado> = {
+  nova: { rotulo: "Nova", simbolo: "+", cor: "text-ciano-texto", fundo: "border-ciano/40 bg-ciano-suave", descricao: "Relação que não existe hoje e surge neste cenário." },
+  reforcada: { rotulo: "Reforçada", simbolo: "↑", cor: "text-ciano-texto", fundo: "border-ciano/40 bg-ciano-suave", descricao: "Relação que já existe e se fortalece neste cenário." },
+  transformada: { rotulo: "Transformada", simbolo: "↻", cor: "text-ambar", fundo: "border-ambar/45 bg-ambar-suave", descricao: "Relação que muda de natureza neste cenário." },
+  enfraquecida: { rotulo: "Enfraquecida", simbolo: "−", cor: "text-texto-2", fundo: "border-linha-forte bg-grafite/50", descricao: "Relação que perde força neste cenário." },
+  ausente: { rotulo: "Ausente", simbolo: "∅", cor: "text-texto-3", fundo: "border-linha bg-transparent", descricao: "Relação que deixa de existir ou não chega a se formar neste cenário." },
+  mantida: { rotulo: "Mantida", simbolo: "=", cor: "text-texto-3", fundo: "border-linha bg-transparent", descricao: "Relação que segue como no presente." },
+};
+
+/** Ordem de leitura das mudanças: o que surge, o que se fortalece, o que se transforma, o que perde força, o que some. */
+export const ORDEM_DAS_MUDANCAS: Mudanca[] = ["nova", "reforcada", "transformada", "enfraquecida", "ausente", "mantida"];
+
+/** Efeito de um cenário sobre uma região (Análise do Cenário, parte 5). */
+export const EFEITO_NA_REGIAO: Record<Efeito, Estado> = {
+  aproximacao: { rotulo: "Aproximação", simbolo: "+", cor: "text-ciano-texto", fundo: "border-ciano/40 bg-ciano-suave", descricao: "As relações com a região se aproximam neste cenário." },
+  atrito: { rotulo: "Atrito", simbolo: "!", cor: "text-ambar", fundo: "border-ambar/45 bg-ambar-suave", descricao: "O cenário cria atrito com a região." },
+  misto: { rotulo: "Misto", simbolo: "±", cor: "text-texto-2", fundo: "border-dashed border-linha-forte bg-transparent", descricao: "Ganhos e perdas ao mesmo tempo." },
+  neutro: { rotulo: "Sem mudança", simbolo: "=", cor: "text-texto-3", fundo: "border-linha bg-transparent", descricao: "Sem efeito identificável sobre a região." },
 };

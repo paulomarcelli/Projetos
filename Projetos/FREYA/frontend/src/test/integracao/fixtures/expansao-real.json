@@ -1,0 +1,261 @@
+{
+ "no": "character:loki",
+ "nos": [
+  {
+   "id": "character:hulk-bruce-banner",
+   "rotulo": "Hulk",
+   "tipo": "character",
+   "papel": "expansao",
+   "relevancia": 0.3,
+   "grau": 0,
+   "descricao": "Dr. Bruce Banner lives a life caught between the soft-spoken scientist he’s always been and the uncontrollable green monster powered by his rage.",
+   "atributos": {
+    "identidade": "Bruce Banner",
+    "blip": "No",
+    "estado": "Alive",
+    "nome_real": "David Bruce Banner",
+    "titulos": "Doctor Champion",
+    "wiki_revid": 2612825,
+    "url": "https://www.marvel.com/characters/hulk-bruce-banner/on-screen/profile",
+    "especie": "Human",
+    "cidadania": "American",
+    "wiki_titulo": "Hulk",
+    "nascimento": "December 18, 1969"
+   },
+   "cenarios": []
+  },
+  {
+   "id": "character:jane-foster",
+   "rotulo": "The Mighty Thor",
+   "tipo": "character",
+   "papel": "expansao",
+   "relevancia": 0.3,
+   "grau": 0,
+   "descricao": null,
+   "atributos": {
+    "blip": "No [ note 1 ]",
+    "estado": "Deceased",
+    "nome_real": "Jane Foster",
+    "titulos": "Doctor Consultant (formerly)",
+    "wiki_revid": 2602196,
+    "morte": "Fall 2025",
+    "especie": "Human",
+    "falecido": 1,
+    "cidadania": "American",
+    "wiki_titulo": "Mighty Thor"
+   },
+   "cenarios": []
+  },
+  {
+   "id": "character:ant-man-scott-lang",
+   "rotulo": "Ant-Man",
+   "tipo": "character",
+   "papel": "expansao",
+   "relevancia": 0.3,
+   "grau": 0,
+   "descricao": "Ex-con Scott Lang finds a new lease on life, and a chance to redeem himself in the eyes of his daughter, after taking over the mantle of Ant-Man.",
+   "atributos": {
+    "identidade": "Scott Lang",
+    "blip": "No",
+    "estado": "Alive",
+    "nome_real": "Scott Edward Harris Lang",
+    "titulos": "Baskin-Robbins ' Employee of the Century",
+    "wiki_revid": 2610033,
+    "url": "https://www.marvel.com/characters/ant-man-scott-lang/on-screen/profile",
+    "especie": "Human",
+    "cidadania": "American",
+    "wiki_titulo": "Ant-Man"
+   },
+   "cenarios": []
+  }
+ ],
+ "arestas": [
+  {
+   "id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-ragnarok:plot",
+   "origem": "character:thor-thor-odinson",
+   "destino": "character:loki",
+   "predicado": "ALLY_OF",
+   "rotulo": "aliado de",
+   "dirigida": false,
+   "tipo_epistemico": "confirmado",
+   "peso": 0.5,
+   "evidencias": [
+    "E178"
+   ],
+   "ordem": null,
+   "ano": 2017,
+   "em_caminhos": [],
+   "cenarios": []
+  },
+  {
+   "id": "character:hulk-bruce-banner|ALLY_OF|character:loki|marvel:character:hulk-bruce-banner:on-screen",
+   "origem": "character:hulk-bruce-banner",
+   "destino": "character:loki",
+   "predicado": "ALLY_OF",
+   "rotulo": "aliado de",
+   "dirigida": false,
+   "tipo_epistemico": "confirmado",
+   "peso": 0.5,
+   "evidencias": [
+    "E179"
+   ],
+   "ordem": null,
+   "ano": null,
+   "em_caminhos": [],
+   "cenarios": []
+  },
+  {
+   "id": "character:jane-foster|ALLY_OF|character:loki|wiki:character:jane-foster:perfil",
+   "origem": "character:jane-foster",
+   "destino": "character:loki",
+   "predicado": "ALLY_OF",
+   "rotulo": "aliado de",
+   "dirigida": false,
+   "tipo_epistemico": "confirmado",
+   "peso": 0.5,
+   "evidencias": [
+    "E180"
+   ],
+   "ordem": null,
+   "ano": null,
+   "em_caminhos": [],
+   "cenarios": []
+  },
+  {
+   "id": "character:ant-man-scott-lang|ALLY_OF|character:loki|marvel:character:ant-man-scott-lang:on-screen",
+   "origem": "character:ant-man-scott-lang",
+   "destino": "character:loki",
+   "predicado": "ALLY_OF",
+   "rotulo": "aliado de",
+   "dirigida": false,
+   "tipo_epistemico": "confirmado",
+   "peso": 0.5,
+   "evidencias": [
+    "E181"
+   ],
+   "ordem": null,
+   "ano": null,
+   "em_caminhos": [],
+   "cenarios": []
+  },
+  {
+   "id": "character:thor-thor-odinson|ALLY_OF|character:loki|marvel:character:thor-thor-odinson:on-screen",
+   "origem": "character:thor-thor-odinson",
+   "destino": "character:loki",
+   "predicado": "ALLY_OF",
+   "rotulo": "aliado de",
+   "dirigida": false,
+   "tipo_epistemico": "confirmado",
+   "peso": 0.5,
+   "evidencias": [
+    "E182"
+   ],
+   "ordem": null,
+   "ano": null,
+   "em_caminhos": [],
+   "cenarios": []
+  }
+ ],
+ "evidencias": {
+  "E178": {
+   "id": "E178",
+   "tipo": "relacao",
+   "texto": "Thor has Volstagg transport him and Loki to Earth to find the real Odin.",
+   "fonte": {
+    "doc_id": "wiki:film:thor-ragnarok:plot",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Thor:_Ragnarok",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|wiki:film:thor-ragnarok:plot",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E179": {
+   "id": "E179",
+   "tipo": "relacao",
+   "texto": "Connections › Allies: Loki",
+   "fonte": {
+    "doc_id": "marvel:character:hulk-bruce-banner:on-screen",
+    "url": "https://www.marvel.com/characters/hulk-bruce-banner/on-screen/profile",
+    "titulo": null,
+    "captura_id": "9893fdc4437abdbbdb0a4e89a66f0b4cadbc8dc61886f61ce3e50cbc9d652acd",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:hulk-bruce-banner|ALLY_OF|character:loki|marvel:character:hulk-bruce-banner:on-screen",
+   "entidades": [
+    "character:hulk-bruce-banner",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E180": {
+   "id": "E180",
+   "tipo": "relacao",
+   "texto": "Relationships › Allies: Loki † - Temporary Enemy and Savior",
+   "fonte": {
+    "doc_id": "wiki:character:jane-foster:perfil",
+    "url": "https://marvelcinematicuniverse.fandom.com/wiki/Mighty_Thor",
+    "titulo": null,
+    "captura_id": null,
+    "confiabilidade": "wiki_fas",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:jane-foster|ALLY_OF|character:loki|wiki:character:jane-foster:perfil",
+   "entidades": [
+    "character:jane-foster",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E181": {
+   "id": "E181",
+   "tipo": "relacao",
+   "texto": "Connections › Allies: Loki",
+   "fonte": {
+    "doc_id": "marvel:character:ant-man-scott-lang:on-screen",
+    "url": "https://www.marvel.com/characters/ant-man-scott-lang/on-screen/profile",
+    "titulo": null,
+    "captura_id": "208f584213df933894f0f8dcfe61ff7eb68ec42bfd4cac9131e9bbd912a529e1",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:ant-man-scott-lang|ALLY_OF|character:loki|marvel:character:ant-man-scott-lang:on-screen",
+   "entidades": [
+    "character:ant-man-scott-lang",
+    "character:loki"
+   ],
+   "nota": null
+  },
+  "E182": {
+   "id": "E182",
+   "tipo": "relacao",
+   "texto": "Connections › Allies: Loki",
+   "fonte": {
+    "doc_id": "marvel:character:thor-thor-odinson:on-screen",
+    "url": "https://www.marvel.com/characters/thor-thor-odinson/on-screen/profile",
+    "titulo": null,
+    "captura_id": "f585579bc4e3785a7c2bd4addf2201c7e147e6cfc2edde2996ca6f21fde4adff",
+    "confiabilidade": "oficial",
+    "licenca": null
+   },
+   "chunk_id": null,
+   "aresta_id": "character:thor-thor-odinson|ALLY_OF|character:loki|marvel:character:thor-thor-odinson:on-screen",
+   "entidades": [
+    "character:thor-thor-odinson",
+    "character:loki"
+   ],
+   "nota": null
+  }
+ }
+}

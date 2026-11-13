@@ -19,3 +19,10 @@ __pycache__/
 # corpora gerados a partir de marvel.com (unificado inclui o coletado)
 data/corpus/unificado/
 data/corpus/wikipedia/
+# gerados com a API no ar: cache de embeddings, estudos de personagens e notícias do Intelligence Day (marvel.com)
+data/cache/
+data/estudos/
+data/intelligence_day/
+# frontend
+frontend/node_modules/
+frontend/dist/

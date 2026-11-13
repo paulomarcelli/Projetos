@@ -64,8 +64,41 @@ class Investigacao(BaseModel):
     atualizada_em: datetime = Field(default_factory=agora)
 
 
+EM_ANDAMENTO = frozenset({Estado.PENDENTE, Estado.RECUPERANDO, Estado.ANALISANDO, Estado.VALIDANDO})
+
+
+class ResumoDeInvestigacao(BaseModel):
+    """Item do histórico: o bastante para listar sem abrir a análise inteira."""
+    id: str
+    questao: str
+    horizonte: str | None = None
+    estado: Estado
+    erro: str | None = None
+    guardada: bool = False
+    cenarios: int = 0
+    criada_em: datetime
+    atualizada_em: datetime
+
+
+def _iso(d: datetime) -> str:
+    """Instante em UTC com microssegundos fixos, para a ordem textual ser a ordem do tempo."""
+    if d.tzinfo is None:
+        d = d.replace(tzinfo=timezone.utc)
+    return d.astimezone(timezone.utc).isoformat(timespec="microseconds")
+
+
+# colunas de resumo acrescentadas ao esquema original (id, dados, atualizada_em)
+_COLUNAS_DE_RESUMO = {"questao": "TEXT", "horizonte": "TEXT", "estado": "TEXT", "erro": "TEXT",
+                      "cenarios": "INTEGER NOT NULL DEFAULT 0", "criada_em": "TEXT", "guardada": "INTEGER NOT NULL DEFAULT 0"}
+_SELECAO_DO_RESUMO = "id, questao, horizonte, estado, erro, guardada, cenarios, criada_em, atualizada_em"
+
+
 class Repositorio:
-    """Investigações em SQLite (um documento JSON por investigação)."""
+    """Investigações em SQLite: um documento JSON por investigação, mais colunas de resumo para o histórico.
+
+    `guardada` só existe na tabela (não no documento): salvar a investigação nunca a desfaz.
+    Bancos antigos, sem as colunas de resumo, são migrados ao abrir (ALTER TABLE e preenchimento a partir do JSON).
+    """
 
     def __init__(self, caminho: str):
         if caminho != ":memory:":
@@ -74,13 +107,35 @@ class Repositorio:
         self._trava = threading.Lock()
         with self._trava:
             self._con.execute("CREATE TABLE IF NOT EXISTS investigacoes (id TEXT PRIMARY KEY, dados TEXT NOT NULL, atualizada_em TEXT NOT NULL)")
+            self._migrar()
             self._con.commit()
+
+    def _migrar(self) -> None:
+        existentes = {r[1] for r in self._con.execute("PRAGMA table_info(investigacoes)")}
+        for nome, tipo in _COLUNAS_DE_RESUMO.items():
+            if nome not in existentes:
+                self._con.execute(f"ALTER TABLE investigacoes ADD COLUMN {nome} {tipo}")
+        pendentes = self._con.execute("SELECT id, dados FROM investigacoes WHERE questao IS NULL OR criada_em IS NULL OR estado IS NULL").fetchall()
+        for iid, dados in pendentes:  # uma vez só, ao migrar: lê o JSON para preencher o resumo
+            inv = Investigacao.model_validate_json(dados)
+            self._con.execute("UPDATE investigacoes SET questao = ?, horizonte = ?, estado = ?, erro = ?, cenarios = ?, criada_em = ? WHERE id = ?",
+                              (*self._resumo_de(inv)[:5], _iso(inv.criada_em), iid))
+        self._con.execute("CREATE INDEX IF NOT EXISTS investigacoes_criada_em ON investigacoes (criada_em DESC)")
+        self._con.execute("CREATE INDEX IF NOT EXISTS investigacoes_guardada ON investigacoes (guardada, criada_em DESC)")
+
+    @staticmethod
+    def _resumo_de(inv: Investigacao) -> tuple:
+        return (inv.questao, inv.horizonte, inv.estado.value, inv.erro, len(inv.analise.cenarios) if inv.analise else 0)
 
     def salvar(self, inv: Investigacao) -> None:
         inv.atualizada_em = agora()
         with self._trava:
-            self._con.execute("INSERT OR REPLACE INTO investigacoes (id, dados, atualizada_em) VALUES (?, ?, ?)",
-                              (inv.id, inv.model_dump_json(), inv.atualizada_em.isoformat()))
+            self._con.execute(
+                "INSERT INTO investigacoes (id, dados, atualizada_em, questao, horizonte, estado, erro, cenarios, criada_em) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET dados = excluded.dados, atualizada_em = excluded.atualizada_em, "
+                "questao = excluded.questao, horizonte = excluded.horizonte, estado = excluded.estado, erro = excluded.erro, "
+                "cenarios = excluded.cenarios, criada_em = excluded.criada_em",
+                (inv.id, inv.model_dump_json(), _iso(inv.atualizada_em), *self._resumo_de(inv), _iso(inv.criada_em)))
             self._con.commit()
 
     def obter(self, iid: str) -> Investigacao | None:
@@ -88,11 +143,45 @@ class Repositorio:
             row = self._con.execute("SELECT dados FROM investigacoes WHERE id = ?", (iid,)).fetchone()
         return Investigacao.model_validate_json(row[0]) if row else None
 
+    def resumo(self, iid: str) -> ResumoDeInvestigacao | None:
+        with self._trava:
+            row = self._con.execute(f"SELECT {_SELECAO_DO_RESUMO} FROM investigacoes WHERE id = ?", (iid,)).fetchone()
+        return self._linha(row) if row else None
+
+    def listar(self, guardadas: bool | None = None, limite: int = 100) -> list[ResumoDeInvestigacao]:
+        """Mais recentes primeiro. `guardadas` True/False filtra; None traz todas."""
+        limite = max(1, min(int(limite), 1000))
+        filtro, params = ("WHERE guardada = ?", (int(guardadas),)) if guardadas is not None else ("", ())
+        with self._trava:
+            rows = self._con.execute(f"SELECT {_SELECAO_DO_RESUMO} FROM investigacoes {filtro} ORDER BY criada_em DESC, id DESC LIMIT ?",
+                                     (*params, limite)).fetchall()
+        return [self._linha(r) for r in rows]
+
+    @staticmethod
+    def _linha(r) -> ResumoDeInvestigacao:
+        return ResumoDeInvestigacao(id=r[0], questao=r[1], horizonte=r[2], estado=Estado(r[3]), erro=r[4], guardada=bool(r[5]), cenarios=r[6] or 0,
+                                    criada_em=datetime.fromisoformat(r[7]), atualizada_em=datetime.fromisoformat(r[8]))
+
+    def remover(self, iid: str) -> bool:
+        with self._trava:
+            n = self._con.execute("DELETE FROM investigacoes WHERE id = ?", (iid,)).rowcount
+            self._con.commit()
+        return n > 0
+
+    def marcar_guardada(self, iid: str, valor: bool) -> bool:
+        with self._trava:
+            n = self._con.execute("UPDATE investigacoes SET guardada = ? WHERE id = ?", (int(valor), iid)).rowcount
+            self._con.commit()
+        return n > 0
+
 
 class Orquestrador:
-    def __init__(self, hibrido: RecuperadorHibrido, grafo: ArmazenamentoGrafo, motor: MotorProspectivo, repo: Repositorio):
+    def __init__(self, hibrido: RecuperadorHibrido, grafo: ArmazenamentoGrafo, motor: MotorProspectivo, repo: Repositorio,
+                 intelligence_day=None, estudo=None):
         self.hibrido, self.grafo, self.motor, self.repo = hibrido, grafo, motor, repo
         self.rec_grafo = RecuperadorGrafo(grafo)
+        self.intelligence_day = intelligence_day  # IntelligenceDay | None (desligado nos testes e no modo sem rede)
+        self.estudo = estudo  # EstudoDePersonagens | None
 
     def criar(self, questao: str, horizonte: str | None = None) -> Investigacao:
         q = " ".join(questao.split())
@@ -116,10 +205,21 @@ class Orquestrador:
         if inv is None:
             raise KeyError(iid)
         try:
+            if self.intelligence_day is not None:
+                e = self._etapa(inv, "intelligence_day", Estado.RECUPERANDO)
+                e.resumo = self._intelligence_day()
+                e.fim = agora()
+
+            if self.estudo is not None:
+                e = self._etapa(inv, "estudo_dos_personagens", Estado.RECUPERANDO)
+                e.resumo = self._estudar(inv.questao)
+                e.fim = agora()
+
             e = self._etapa(inv, "recuperacao", Estado.RECUPERANDO)
             hib = self.hibrido.buscar(inv.questao, k=8)
             extras = [r.chunk.entidade for r in hib[:3] if r.chunk.entidade]
             gr = self.rec_grafo.buscar(inv.questao, extras=extras)
+            hib = self._por_personagem(inv.questao, hib, gr)
             e.fim, e.resumo = agora(), {"trechos": len(hib), "entidades_focais": [n.chave for n in gr.entidades], "nos": len(gr.subgrafo.nos),
                                         "arestas": len(gr.subgrafo.arestas), "caminhos": len(gr.caminhos), "sem_caminho": len(gr.sem_caminho)}
 
@@ -143,6 +243,72 @@ class Orquestrador:
             self._falhou(inv, f"{type(ex).__name__}: {ex}")
         self.repo.salvar(inv)
         return inv
+
+    def _estudar(self, questao: str, maximo: int = 3) -> dict:
+        """Estuda (uma vez) os personagens citados na questão: variantes e enredo das séries."""
+        focais = [n for n in self.rec_grafo.resolvedor().reconhecer(questao).entidades if n.tipo == "character"]
+        feitos, novas = [], 0
+        for n in [n for n in focais if not self.estudo.estudado(n.chave)][:maximo]:
+            try:
+                r = self.estudo.estudar(n.chave, n.nome)
+            except Exception as ex:
+                log.warning("estudo de %s falhou: %s", n.chave, ex)
+                feitos.append({"personagem": n.chave, "erro": f"{type(ex).__name__}: {str(ex)[:150]}"})
+                continue
+            novas += r.get("entidades_novas", 0)
+            feitos.append(r)
+        if novas:
+            self.rec_grafo.recarregar()
+        return {"personagens": [n.chave for n in focais], "estudados_agora": feitos,
+                "ja_estudados": [n.chave for n in focais if n.chave not in {f["personagem"] for f in feitos}]}
+
+    def _por_personagem(self, questao: str, hib: list, gr, por_busca: int = 5, maximo: int = 40) -> list:
+        """A história de cada personagem focal, além da busca pela questão.
+
+        - documentos-chave: os últimos capítulos da biografia (onde ele está agora) e, se ele foi estudado, os das
+          variantes e o enredo das séries com o desfecho da mais recente; as variantes entram no subgrafo;
+        - uma busca pelo nome de cada personagem e de cada variante, junto da questão.
+        """
+        chave_docs: list[str] = []
+        for n in [n for n in gr.entidades if n.tipo == "character"][:4]:
+            chave_docs += self.hibrido.ultimos_capitulos(n.chave, 2)
+            ficha = self.estudo.ficha(n.chave) if self.estudo is not None else {}
+            for v in ficha.get("variantes", [])[:2]:
+                chave_docs += self.hibrido.ultimos_capitulos(v, 3)
+                no = self.grafo.no(v)
+                if no:
+                    gr.subgrafo.nos[v] = no
+                    gr.subgrafo.arestas.update({a.id: a for c in self.grafo.caminhos(v, n.chave, max_saltos=1, limite=5, incluir_catalogo=True)
+                                                for a in c.arestas if a.predicado == "RELATED_TO"})
+            chave_docs += ficha.get("enredos", [])
+        nomes = [n.nome for n in gr.entidades[:4]]
+        focais = {n.chave for n in gr.entidades}
+        nomes += [gr.subgrafo.nos[a.origem].nome for a in gr.subgrafo.arestas.values()
+                  if a.predicado == "RELATED_TO" and a.destino in focais and (a.qualificador or "").startswith("variante")
+                  and a.origem in gr.subgrafo.nos][:4]
+        vistos = {r.chunk.chunk_id for r in hib}
+        saida = list(hib)
+        for r in self.hibrido.trechos(chave_docs):
+            if r.chunk.chunk_id not in vistos:
+                vistos.add(r.chunk.chunk_id)
+                saida.append(r)
+        for nome in dict.fromkeys(nomes):
+            for r in self.hibrido.buscar(f"{nome} {questao}", k=por_busca):
+                if r.chunk.chunk_id not in vistos and len(saida) < maximo:
+                    vistos.add(r.chunk.chunk_id)
+                    saida.append(r)
+        return saida
+
+    def _intelligence_day(self) -> dict:
+        """Notícias novas no RAG e no grafo; uma falha aqui fica registrada na etapa e a análise segue com a base atual."""
+        try:
+            resumo = self.intelligence_day.atualizar()
+        except Exception as ex:
+            log.warning("intelligence day falhou: %s", ex)
+            return {"erro": f"{type(ex).__name__}: {str(ex)[:200]}"}
+        if resumo.get("entidades_novas"):
+            self.rec_grafo.recarregar()  # as obras novas passam a ser reconhecidas na questão
+        return resumo
 
     def _falhou(self, inv: Investigacao, msg: str) -> None:
         inv.estado, inv.erro = Estado.FALHOU, msg

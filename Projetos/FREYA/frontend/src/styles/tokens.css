@@ -1,0 +1,254 @@
+/*
+ * F.R.E.Y.A. — tokens do design system "Scarlet Reality".
+ *
+ * Três camadas:
+ *   1. primitivos (escala escarlate, neutros) — não usar direto nos componentes;
+ *   2. semânticos (--cor-*) — o que os componentes usam; cada tema redefine só esta camada;
+ *   3. mapeamento para utilitários do Tailwind — em globais.css (@theme inline).
+ *
+ * O contexto de preferências põe data-tema="claro|escuro" no <html>. :root sem atributo = claro.
+ *
+ * Contraste (WCAG 2.1, calculado; ver relatório do Agente 1):
+ *   claro  — texto 18.2:1 · texto-suave 8.4:1 · texto-fraco 5.4:1 · escarlate #C8102E 5.9:1 sobre branco,
+ *            5.4:1 sobre o fundo · branco sobre o botão primário 5.9:1
+ *   escuro — texto 15.9:1 · texto-suave 8.1:1 · texto-fraco 5.4:1 · escarlate #FF5468 6.0:1 sobre a superfície,
+ *            6.4:1 sobre o fundo · branco sobre o botão primário #D91B42 5.0:1
+ *   selos epistêmicos e de confiabilidade: ≥ 5.2:1 (claro) e ≥ 6.6:1 (escuro) sobre o próprio fundo tingido.
+ * Por que estes escarlates: #C8102E é o carmim clássico (o vermelho da Feiticeira Escarlate em luz do dia);
+ * no escuro ele perde contraste (3.0:1), então o acento sobe para #FF5468 — mesmo matiz, mais luz, um pouco
+ * menos saturação, para não vibrar sobre o preto. O preenchimento sólido no escuro fica em #D91B42 para
+ * manter o branco do rótulo acima de 4.5:1.
+ */
+
+:root {
+  /* ── 1. Primitivos ─────────────────────────────────────────────── */
+  --escarlate-50: #fff1f3;
+  --escarlate-100: #ffe0e5;
+  --escarlate-200: #ffc2cc;
+  --escarlate-300: #ff94a3;
+  --escarlate-400: #ff5468;
+  --escarlate-500: #ef2347;
+  --escarlate-600: #d91b42;
+  --escarlate-700: #c8102e;
+  --escarlate-800: #a30d25;
+  --escarlate-900: #7a0a1c;
+  --escarlate-950: #450510;
+
+  /* ── Tipografia ───────────────────────────────────────────────── */
+  /* --fonte-texto vem do contexto (Preferencias.tsx); este é só o valor antes da hidratação. */
+  --fonte-texto: "Outfit Variable", "Inter Variable", system-ui, sans-serif;
+  --fonte-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Escala em rem: o contexto muda o font-size do <html> e tudo acompanha. */
+  --texto-2xs: 0.6875rem; /* 11px — só rótulos de apoio curtos */
+  --texto-xs: 0.75rem; /* 12px */
+  --texto-sm: 0.875rem; /* 14px — padrão da interface (menu, botões) */
+  --texto-base: 1rem; /* 16px — texto corrido */
+  --texto-lg: 1.125rem; /* 18px */
+  --texto-xl: 1.375rem; /* 22px — títulos de cartão */
+  --texto-2xl: 1.75rem; /* 28px — título de página */
+  --texto-3xl: 2.25rem; /* 36px — saudação do painel */
+  --texto-4xl: 3rem; /* 48px — momentos raros */
+
+  --entrelinha-justa: 1.15;
+  --entrelinha-titulo: 1.25;
+  --entrelinha-texto: 1.55;
+
+  /* ── Espaço (múltiplos de 4px, em rem para acompanhar a escala) ── */
+  --espaco-1: 0.25rem;
+  --espaco-2: 0.5rem;
+  --espaco-3: 0.75rem;
+  --espaco-4: 1rem;
+  --espaco-5: 1.25rem;
+  --espaco-6: 1.5rem;
+  --espaco-8: 2rem;
+  --espaco-10: 2.5rem;
+  --espaco-12: 3rem;
+  --espaco-16: 4rem;
+
+  /* ── Raios (referência Genie/WeStud: cantos grandes) ──────────── */
+  --raio-xs: 6px;
+  --raio-sm: 8px;
+  --raio-md: 12px; /* itens do menu, campos, botões */
+  --raio-lg: 20px; /* cartões */
+  --raio-xl: 28px; /* cartões grandes do histórico */
+  --raio-2xl: 36px; /* painel de vidro (New Chat) */
+  --raio-pilula: 999px;
+
+  /* ── Camadas ──────────────────────────────────────────────────── */
+  --z-base: 0;
+  --z-elevado: 10;
+  --z-cabecalho: 20;
+  --z-menu: 30;
+  --z-gaveta: 40;
+  --z-dialogo: 50;
+  --z-dica: 60;
+  --z-realidade: 70; /* tela do Scarlet Reality Shift */
+
+  /* ── Movimento (Emil Kowalski; não inventar curvas) ───────────── */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --duracao-pressao: 160ms; /* botão pressionado */
+  --duracao-dica: 125ms; /* dicas */
+  --duracao-rapida: 150ms; /* hover, cor */
+  --duracao-media: 200ms; /* popovers, indicadores */
+  --duracao-lenta: 260ms; /* menu lateral, diálogos */
+  --duracao-gaveta: 400ms; /* gaveta do celular */
+
+  /* ── Medidas da estrutura ─────────────────────────────────────── */
+  --menu-largura: 17.5rem; /* 280px */
+  --menu-largura-recolhido: 5.5rem; /* 88px */
+  --cabecalho-altura: 4rem;
+  --alvo-minimo: 2.75rem; /* 44px — toque */
+}
+
+/* ── 2. Semânticos — tema claro (padrão) ──────────────────────────── */
+:root,
+:root[data-tema="claro"] {
+  color-scheme: light;
+
+  --cor-fundo: #f6f5f7;
+  --cor-superficie: #ffffff;
+  --cor-superficie-2: #f3f2f5; /* afundada: campos, trilhos */
+  --cor-superficie-3: #eae8ee; /* item ativo, hover forte */
+  --cor-sobreposicao: rgb(22 21 26 / 0.32); /* fundo de gaveta/diálogo */
+
+  --cor-texto: #16151a;
+  --cor-texto-suave: #4e4c56;
+  --cor-texto-fraco: #6a6772;
+  --cor-texto-invertido: #ffffff;
+
+  --cor-borda: rgb(22 21 26 / 0.08);
+  --cor-borda-forte: rgb(22 21 26 / 0.15);
+
+  --cor-escarlate: #c8102e; /* acento: texto, ícone, indicador */
+  --cor-escarlate-forte: #a30d25; /* hover/pressão, texto sobre tinta */
+  --cor-escarlate-solido: #c8102e; /* preenchimento do botão primário */
+  --cor-escarlate-solido-hover: #a30d25;
+  --cor-escarlate-tinta: #fdecef; /* fundo tingido (selo, item ativo) */
+  --cor-escarlate-brilho: rgb(200 16 46 / 0.22); /* halo, seleção */
+  --cor-sobre-escarlate: #ffffff;
+
+  --cor-sucesso: #1d6b3a;
+  --cor-sucesso-tinta: #e8f4ec;
+  --cor-aviso: #8f5506;
+  --cor-aviso-tinta: #fbf1e1;
+  --cor-perigo: #b3152f;
+  --cor-perigo-tinta: #fdecef;
+
+  /* Tipos epistêmicos: calmos e distintos — nenhum é vermelho */
+  --cor-confirmado: #0b6f63;
+  --cor-confirmado-tinta: #e7f3f1;
+  --cor-inferencia: #2d5ba3;
+  --cor-inferencia-tinta: #eaf0f8;
+  --cor-hipotese: #8f5506;
+  --cor-hipotese-tinta: #f9f0e3;
+
+  /* Confiabilidade da fonte */
+  --cor-oficial: #226b3d;
+  --cor-oficial-tinta: #e9f3ec;
+  --cor-enciclopedia: #4b5770;
+  --cor-enciclopedia-tinta: #eef0f4;
+  --cor-wiki: #7b3d84;
+  --cor-wiki-tinta: #f5edf6;
+
+  /* Vidro (painéis e menu) */
+  --vidro-fundo: rgb(255 255 255 / 0.62);
+  --vidro-fundo-forte: rgb(255 255 255 / 0.8);
+  --vidro-borda: rgb(255 255 255 / 0.75);
+  --vidro-contorno: rgb(22 21 26 / 0.06);
+  --vidro-brilho: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 0 0 1px rgb(255 255 255 / 0.35);
+  --vidro-desfoque: 24px;
+  --vidro-saturacao: 160%;
+
+  /* Sombras: muito suaves, como na referência */
+  --sombra-1: 0 1px 2px rgb(22 21 26 / 0.04), 0 1px 1px rgb(22 21 26 / 0.03);
+  --sombra-2: 0 2px 6px rgb(22 21 26 / 0.04), 0 8px 24px rgb(22 21 26 / 0.05);
+  --sombra-3: 0 4px 12px rgb(22 21 26 / 0.06), 0 24px 56px rgb(22 21 26 / 0.1);
+  --sombra-escarlate: 0 6px 20px rgb(200 16 46 / 0.22);
+
+  --anel-foco: 0 0 0 2px var(--cor-superficie), 0 0 0 4px var(--cor-escarlate);
+
+  /* Fundo ambiente: malha quase imperceptível, escarlate e neutra */
+  --ambiente-1: rgb(225 29 72 / 0.1);
+  --ambiente-2: rgb(255 168 150 / 0.2);
+  --ambiente-3: rgb(176 168 204 / 0.16);
+
+  /* Logo */
+  --logo-de: #8d0a22;
+  --logo-meio: #c8102e;
+  --logo-ate: #f0405c;
+}
+
+/* ── 2. Semânticos — tema escuro ──────────────────────────────────── */
+:root[data-tema="escuro"] {
+  color-scheme: dark;
+
+  --cor-fundo: #09090b;
+  --cor-superficie: #121215;
+  --cor-superficie-2: #19191e;
+  --cor-superficie-3: #222228;
+  --cor-sobreposicao: rgb(0 0 0 / 0.56);
+
+  --cor-texto: #edecf0;
+  --cor-texto-suave: #aba9b3;
+  --cor-texto-fraco: #8a8892;
+  --cor-texto-invertido: #16151a;
+
+  --cor-borda: rgb(255 255 255 / 0.08);
+  --cor-borda-forte: rgb(255 255 255 / 0.15);
+
+  --cor-escarlate: #ff5468;
+  --cor-escarlate-forte: #ff7a8a;
+  --cor-escarlate-solido: #d91b42;
+  --cor-escarlate-solido-hover: #ef2347;
+  --cor-escarlate-tinta: rgb(255 84 104 / 0.13);
+  --cor-escarlate-brilho: rgb(255 84 104 / 0.3);
+  --cor-sobre-escarlate: #ffffff;
+
+  --cor-sucesso: #7fcb93;
+  --cor-sucesso-tinta: rgb(127 203 147 / 0.13);
+  --cor-aviso: #e8b25c;
+  --cor-aviso-tinta: rgb(232 178 92 / 0.13);
+  --cor-perigo: #ff7a8a;
+  --cor-perigo-tinta: rgb(255 84 104 / 0.13);
+
+  --cor-confirmado: #5cc8b8;
+  --cor-confirmado-tinta: rgb(92 200 184 / 0.13);
+  --cor-inferencia: #8eaef0;
+  --cor-inferencia-tinta: rgb(142 174 240 / 0.13);
+  --cor-hipotese: #e8b25c;
+  --cor-hipotese-tinta: rgb(232 178 92 / 0.13);
+
+  --cor-oficial: #7fcb93;
+  --cor-oficial-tinta: rgb(127 203 147 / 0.13);
+  --cor-enciclopedia: #a9b4c8;
+  --cor-enciclopedia-tinta: rgb(169 180 200 / 0.13);
+  --cor-wiki: #d49ddc;
+  --cor-wiki-tinta: rgb(212 157 220 / 0.13);
+
+  --vidro-fundo: rgb(24 24 29 / 0.58);
+  --vidro-fundo-forte: rgb(24 24 29 / 0.82);
+  --vidro-borda: rgb(255 255 255 / 0.07);
+  --vidro-contorno: rgb(0 0 0 / 0.4);
+  --vidro-brilho: inset 0 1px 0 rgb(255 255 255 / 0.07), inset 0 0 0 1px rgb(255 255 255 / 0.03);
+  --vidro-desfoque: 28px;
+  --vidro-saturacao: 140%;
+
+  --sombra-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --sombra-2: 0 2px 8px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.3);
+  --sombra-3: 0 8px 24px rgb(0 0 0 / 0.45), 0 32px 72px rgb(0 0 0 / 0.5);
+  --sombra-escarlate: 0 6px 24px rgb(217 27 66 / 0.35);
+
+  --anel-foco: 0 0 0 2px var(--cor-fundo), 0 0 0 4px var(--cor-escarlate);
+
+  --ambiente-1: rgb(217 27 66 / 0.16);
+  --ambiente-2: rgb(140 12 36 / 0.24);
+  --ambiente-3: rgb(96 86 128 / 0.12);
+
+  --logo-de: #c8102e;
+  --logo-meio: #ff4d63;
+  --logo-ate: #ffb0a0;
+}

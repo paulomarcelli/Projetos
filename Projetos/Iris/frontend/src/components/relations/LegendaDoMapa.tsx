@@ -20,6 +20,8 @@ export function LegendaDoMapa({
   aoEscolherBloco,
   listaAberta,
   aoAlternarLista,
+  contagem,
+  empilhada = false,
 }: {
   presentes: typeof RELACOES;
   ocultas: Set<TipoRelacao>;
@@ -32,10 +34,14 @@ export function LegendaDoMapa({
   aoEscolherBloco: (b: Bloco) => void;
   listaAberta: boolean;
   aoAlternarLista: () => void;
+  /** Quantas relações de cada tipo estão visíveis nesta vista. */
+  contagem?: Map<TipoRelacao, number>;
+  /** Mapa com a leitura ao lado (coluna mais estreita): tipos numa linha, blocos e "Lista" na de baixo. */
+  empilhada?: boolean;
 }) {
   return (
-      <div className="flex flex-col gap-1.5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-4">
-        <div role="group" aria-label="Tipos de relação (clique para ocultar ou mostrar)" className="relative -mx-1 flex items-center gap-0.5 overflow-x-auto px-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+      <div className={empilhada ? "flex flex-col gap-1" : "flex flex-col gap-1.5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-4"}>
+        <div role="group" aria-label="Tipos de relação (clique para ocultar ou mostrar)" className={`relative -mx-1 flex items-center gap-0.5 px-1 lg:mx-0 lg:px-0 ${empilhada ? "flex-wrap" : "overflow-x-auto lg:flex-wrap lg:overflow-visible"}`}>
           {presentes.map((e) => {
             const ativa = !ocultas.has(e.tipo);
             return (
@@ -52,6 +58,11 @@ export function LegendaDoMapa({
                   {e.seta && <path d="M13 1 18 4 13 7" fill="none" stroke={e.cor} strokeWidth="1.5" />}
                 </svg>
                 {e.rotulo.split(" / ")[0]}
+                {contagem?.get(e.tipo) !== undefined && (
+                  <span className="numeros font-dados text-texto-3" aria-label={`${contagem.get(e.tipo)} nesta vista`}>
+                    {contagem.get(e.tipo)}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -70,9 +81,9 @@ export function LegendaDoMapa({
               </span>
             ))}
         </div>
-        <div className="flex min-w-0 items-center gap-2 lg:flex-1">
+        <div className={empilhada ? "flex min-w-0 items-center gap-2" : "flex min-w-0 items-center gap-2 lg:flex-1"}>
           {blocos.length > 0 && (
-            <div role="group" aria-label="Blocos: destacar os membros no mapa" className="relative -mx-1 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto px-1 lg:mx-0 lg:flex-none lg:px-0">
+            <div role="group" aria-label="Blocos: destacar os membros no mapa" className={`relative -mx-1 flex min-w-0 flex-1 items-center gap-1 px-1 lg:mx-0 lg:px-0 ${empilhada ? "flex-wrap" : "overflow-x-auto lg:flex-none"}`}>
               <span className="shrink-0 pr-0.5 text-micro text-texto-3">Blocos</span>
               {blocos.map((b) => {
                 const ativo = blocoAtivo === b.id;

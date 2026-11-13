@@ -852,3 +852,111 @@ O contrato com o servidor (o que o motor recupera para aprofundar, sem inventar)
 - Tema: só um ícone de sol/lua, no canto direito da barra do topo, à vista em toda página (com o menu aberto,
   recolhido ou na gaveta do celular). Gira um pouco no hover, encolhe ao pressionar e, ao trocar, o sol vira lua
   (disco mordido, raios somem) com um giro. Sem animação com "reduzir movimento".
+
+## Análise prospectiva refinada (nov/2026)
+
+Refinamento da seção "02 · Futuros possíveis" e da página Análise do Cenário, feito com as skills de design
+(Impeccable, taste-skill para telas de app, Emil Kowalski). A estrutura e os dados não mudaram; nada novo é estimado.
+
+**02 · Futuros possíveis**
+
+- Abre com uma frase que nomeia as escolhas que separam os futuros (lidas das incertezas críticas) e diz que nenhum
+  ramo tem peso ou chance. O rótulo "Núcleo prospectivo" saiu (nada de rótulo pequeno acima do título).
+- **Leque dos futuros** (`prospectiva/LequeDosFuturos.tsx`, a partir de telas médias): o presente à esquerda, em traço
+  sólido; as escolhas como losangos âmbar, cada uma numa coluna com o nome da incerteza no cabeçalho e uma guia
+  pontilhada; os ramos em âmbar tracejado até A, B e C no fim do horizonte, com o polo junto da chegada de cada ramo. A
+  árvore sai só de `posicao`: em cada passo abre a incerteza que divide os cenários em menos grupos, sem
+  "indiferente". Passar o cursor ou o foco por um cartão acende o caminho dele em ciano e apaga os outros. Os ramos se
+  revelam uma vez, do presente para o horizonte (`clip-path`, 600 ms, `--ease-saida`); com "reduzir movimento", aparecem
+  no lugar. É um desenho de leitura (`aria-hidden`): o conteúdo está nos cartões.
+- Cartões: arquétipo e horizonte, letra e nome, a ideia, o primeiro sinal a observar e as contagens (premissas ·
+  evidências · sinais).
+
+**Análise do Cenário**
+
+- Cabeçalho: trilha e "Voltar" na mesma linha; letra, nome e, logo abaixo, o impacto principal (o primeiro achado da
+  página). Uma ficha com arquétipo, horizonte, premissas, evidências e sinais (a favor/contra) e o botão "Ver sinais a
+  acompanhar". A pílula de troca mostra o nome só do cenário aberto.
+- A partir de `xl`, duas colunas: a leitura e um trilho fixo de 240 px com o índice das oito partes (traço ciano de
+  2 px que desliza até a parte lida, via IntersectionObserver) e "Onde este futuro fica" (o leque compacto com o
+  cenário aceso e o polo dele em cada escolha). Abaixo de `xl`, o índice é a faixa fixa de antes, agora com a parte
+  atual marcada e trazida para a vista. Nada mais estoura a largura.
+- Cada parte tem o nome como título ("1 Tese do cenário", número em mono) e a pergunta como linha de apoio; filete
+  entre partes.
+- Tese sem filete lateral: é o maior texto da página. Lógica como cadeia em três elos (Se → Porque → Então), com o tipo
+  epistêmico e as fontes no mecanismo. Condições como fichas.
+- Relações agrupadas pelo tipo de mudança, sempre símbolo + palavra (`MUDANCA_NA_RELACAO` em `config/semantica.ts`):
+
+| Mudança | Símbolo | Cor |
+|---|---|---|
+| Nova | + | ciano-texto |
+| Reforçada | ↑ | ciano-texto |
+| Transformada | ↻ | âmbar |
+| Enfraquecida | − | texto-2 |
+| Ausente | ∅ | texto-3 |
+
+- Consequências com a mesma etiqueta (`EFEITO_NA_REGIAO`). Pontos de inflexão em dois painéis: "acelerar" com `+`
+  ciano e "desviar ou invalidar" com `!` âmbar. **O vermelho saiu da página**: desviar e "onde o raciocínio pode
+  falhar" são atenção analítica, não erro.
+- Indicadores com resumo no topo (a favor · contra), os que favorecem primeiro, e a data como "Quando:" em mono.
+- Rodapé: os outros futuros como dois cartões (letra, arquétipo, nome, ideia).
+
+## Mapa de relações: leitura ao lado (nov/2026)
+
+O mapa mostrava as linhas, mas não dizia o que se lê nelas, e num cenário a lista "O que mudou" ficava num cartão sobre o
+mapa, cobrindo parte dele. Refinamento feito com as skills de design (taste-skill para telas de app, data-visualization,
+Impeccable); a gramática das linhas (§8) não mudou.
+
+- **Leitura do mapa** (`relations/LeituraDoMapa.tsx`): com 1000 px ou mais de largura **no próprio contêiner** (abrir o
+  painel lateral da página estreita o mapa e ele volta ao modo compacto), o mapa ganha uma coluna de 19rem ao lado, com a
+  mesma altura e rolagem própria:
+  - uma frase montada dos dados ("7 relações entre 7 atores. Mais conectado: EUA, com 4." / "3 mudanças em relação a
+    hoje: 1 nova, 1 muda de natureza e 1 reforçada.");
+  - num cenário, "O que mudou em relação a hoje" sempre aberto (a mesma `ListaDeMudancas` do cartão das telas estreitas,
+    com o realce da linha ao passar o cursor);
+  - **Mais conectados**: até 5 atores, com a contagem de relações visíveis naquela vista e uma barra fina. O painel diz
+    que é contagem, não força nem importância. Passar o cursor acende o ator e os vizinhos no mapa; clicar abre o ator;
+  - **De onde vêm as linhas**: documentadas por fonte, inferidas (◌) e hipóteses (◇), com os mesmos símbolos do mapa.
+- **Legenda com contagem**: cada tipo de relação mostra quantas há na vista ("Competição 4"); com a leitura ao lado, a
+  legenda empilha (tipos numa linha; blocos e "Lista" na de baixo) para não invadir a coluna.
+- **Enquadramento**: margem maior à esquerda (72 px), para rótulos ancorados à esquerda do nó (Colômbia, Argentina) não
+  serem cortados.
+- Abaixo de 1000 px (e no celular) nada muda: o cartão "O que mudou" continua sobre o mapa, recolhível.
+
+## Base científica mais elegante (nov/2026)
+
+Refinamento da tela "Base científica" (`/app/base-cientifica`) e do leitor de fonte, com as skills de design
+(Impeccable, taste-skill). Os dados e a honestidade dos números não mudaram.
+
+- **Cabeçalho** sem o rótulo "Presente" acima do título; a ação "Gestão do acervo" fica à direita.
+- **Números do acervo** numa faixa só, separados por filetes (sem cartões), em tipo grande e leve. "Com falha" só fica
+  em vermelho quando há falha real.
+- **Composição do acervo**: os três gráficos numa seção com um título e uma nota só (amostra e última ingestão), em
+  colunas separadas por filetes. Barras mais finas, em `texto-3`; no gráfico de anos, a maior faixa um tom acima.
+- **Procedência** (`GET /documents → total`, `publication_year`…) reunida em "De onde vêm os números", recolhível, em vez
+  de um código sob cada número e cada gráfico.
+- **Fontes como fichas de catálogo**: ícone do documento (com ou sem texto), título em destaque, autoria, uma linha
+  discreta com ano · páginas · idioma e, à direita, "Texto extraído" ou "Sem texto extraível" (âmbar, limitação). A linha
+  inteira leva ao leitor. A busca ficou maior, com a contagem dentro do campo.
+- **Leitor da fonte**: as páginas numa fileira acima do texto (não numa coluna estreita que quebrava a numeração) e a
+  página como uma folha (superfície própria, margem de leitura, entrelinha 1,8).
+
+## Troca de tema e timeline mais legível (nov/2026)
+
+Feito com as skills de design (Emil Kowalski / animate, Impeccable, data-visualization).
+
+**Troca de tema.** Pelo botão de sol e lua, o tema novo se espalha num círculo que nasce no centro do botão e cresce
+até cobrir a tela (View Transitions API: a tela antiga fica parada embaixo, a nova é revelada por `clip-path`, 560 ms,
+`cubic-bezier(0.23, 1, 0.32, 1)`). O gesto e a mudança ficam ligados: a cor nasce de onde se clicou. Nas Configurações
+e quando o sistema muda o tema, continua o esmaecimento da tela inteira (agora 280 ms). Sem a API ou com "reduzir
+movimento", a troca é direta. O ícone do astro mantém a sua própria transformação (sol ↔ lua).
+
+**Timeline.**
+- **Anos com largura pela densidade**: um ano com muitos eventos numa trilha ganha até 2,6× de largura, e os pontos de
+  2026 deixam de se amontoar. Cada ano tem a sua faixa (alternada, quase imperceptível) com o rótulo no meio.
+- **Nome do cenário sobre cada faixa**, logo depois da abertura no "Hoje" (a letra continua no fim da faixa como botão).
+  O cenário em foco fica em destaque, os outros em segundo plano.
+- **Marcos em texto, abaixo do gráfico**, em duas colunas: "O que já aconteceu" (até o ano anterior ao horizonte) e "O
+  que vem pela frente" (calendário comum e, com um cenário escolhido, os marcos dele). Data em mono, o glifo da categoria
+  e o texto; o futuro em âmbar e itálico. Lê-se sem passar o cursor; passar o cursor ou focar um marco acende o ponto
+  no gráfico e clicar abre o evento no painel. "Ver como lista" continua como alternativa completa.

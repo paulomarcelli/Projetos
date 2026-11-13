@@ -63,6 +63,12 @@ class TestSessao(unittest.TestCase):
             r = self.cliente.post("/voz/sessao", json={})
         self.assertEqual(r.status_code, 503)
 
+    def test_base_url_de_revenda_nao_usa_a_chave_no_realtime(self):
+        os.environ.pop("OPENAI_REALTIME_API_KEY")
+        with mock.patch.dict(os.environ, {"OPENAI_BASE_URL": "https://revenda.example/v1", "OPENAI_API_KEY": "x"}):
+            os.environ.pop("LUNA_OPENAI_URL", None)
+            self.assertFalse(voz_tempo_real.disponivel())
+
     def test_chave_recusada_vira_mensagem_clara(self):
         with mock.patch("httpx.post", lambda url, **kw: Resposta(401, {})):
             r = self.cliente.post("/voz/sessao", json={})

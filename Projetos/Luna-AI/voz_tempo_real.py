@@ -13,8 +13,8 @@ Como funciona:
 
 Configuração (.env):
   OPENAI_REALTIME_API_KEY   chave oficial da OpenAI com acesso ao Realtime.
-                            Sem ela, usa OPENAI_API_KEY, mas só quando LUNA_OPENAI_URL
-                            não aponta para outro serviço (chaves de revenda não têm Realtime).
+                            Sem ela, usa OPENAI_API_KEY, mas só quando LUNA_OPENAI_URL/OPENAI_BASE_URL
+                            não apontam para outro serviço (chaves de revenda não têm Realtime).
   LUNA_REALTIME_MODELO      padrão gpt-realtime-2.1
   LUNA_REALTIME_VOZ         padrão marin
   LUNA_VOZ_TEMPO_REAL=0     desliga a voz em tempo real (volta a voz do navegador)
@@ -51,7 +51,8 @@ def _chave():
     explicita = os.environ.get("OPENAI_REALTIME_API_KEY")
     if explicita:
         return explicita
-    if not os.environ.get("LUNA_OPENAI_URL"):          # OPENAI_API_KEY só vale se for da própria OpenAI
+    # OPENAI_API_KEY só vale se for da própria OpenAI (chaves de revenda não têm Realtime)
+    if luna.openai_url() == luna.OPENAI_URL_PADRAO:
         return os.environ.get("OPENAI_API_KEY")
     return None
 

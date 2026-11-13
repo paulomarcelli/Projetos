@@ -93,6 +93,18 @@ def _chamar_gemini(instrucoes, conteudos):
             time.sleep(ESPERAS_TEMPORARIAS[tentativa])
 
 
+def openai_url():
+    """Endereço do Chat Completions. Ordem: LUNA_OPENAI_URL (endereço completo),
+    OPENAI_BASE_URL (base terminando em /v1, mesmo padrão da FREYA e do SDK da OpenAI) e o padrão."""
+    completo = (os.environ.get("LUNA_OPENAI_URL") or "").strip()
+    if completo:
+        return completo
+    base = (os.environ.get("OPENAI_BASE_URL") or "").strip().rstrip("/")
+    if base:
+        return base if base.endswith("/chat/completions") else base + "/chat/completions"
+    return OPENAI_URL_PADRAO
+
+
 class ErroOpenAI(Exception):
     """Resposta de erro da OpenAI. `code` é o status HTTP, como nos erros do Gemini."""
 
@@ -110,8 +122,8 @@ def _chamar_openai(instrucoes, conteudos):
     ]
     try:
         r = httpx.post(
-            os.environ.get("LUNA_OPENAI_URL") or OPENAI_URL_PADRAO,
-            headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
+            openai_url(),
+            headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY'].strip()}"},
             json={
                 "model": os.environ.get("LUNA_OPENAI_MODELO") or OPENAI_MODELO_PADRAO,
                 "messages": mensagens,

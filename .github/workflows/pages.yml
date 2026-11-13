@@ -54,6 +54,9 @@ jobs:
           cp -a Projetos/Site-Karol-Sevilla/. _site/
           cp -a Projetos/Cenicienta/. _site/Projetos/Cenicienta/
           cp -a Projetos/Una-Noche-Mas/. _site/Projetos/Una-Noche-Mas/
+          # Aurora: só o jogo (jogo/), sem node_modules, testes e ferramentas
+          mkdir -p _site/Projetos/Aurora
+          cp -a Projetos/Aurora-Jogo/jogo/index.html Projetos/Aurora-Jogo/jogo/src Projetos/Aurora-Jogo/jogo/vendor Projetos/Aurora-Jogo/jogo/assets _site/Projetos/Aurora/
           mkdir -p _site/Projetos/Geometry-Heroes
           # Geometry Heroes: só o que o jogo precisa para rodar (sem testes, vídeo e documentação)
           cp -a Projetos/Tarefa-POO-JavaScript/index.html Projetos/Tarefa-POO-JavaScript/main.js Projetos/Tarefa-POO-JavaScript/style.css Projetos/Tarefa-POO-JavaScript/js Projetos/Tarefa-POO-JavaScript/assets _site/Projetos/Geometry-Heroes/

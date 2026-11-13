@@ -1,0 +1,15 @@
+{
+  "name": "aurora-jogo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aurora — O Dízimo da Lua: protótipo jogável (PixiJS 8)",
+  "scripts": {
+    "preparar": "node ferramentas/preparar.mjs",
+    "servir": "python3 -m http.server 8080",
+    "test": "node --test testes/*.test.mjs"
+  },
+  "dependencies": {
+    "pixi.js": "8.23.0"
+  },
+  "type": "module"
+}

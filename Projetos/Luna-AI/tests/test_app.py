@@ -299,3 +299,13 @@ class TestProvedores(unittest.TestCase):
         self.assertEqual(enviado["url"], "https://exemplo.test/v1/chat/completions")
         papeis = [m["role"] for m in enviado["json"]["messages"]]
         self.assertEqual(papeis, ["system", "user", "assistant"])
+
+    def test_openai_base_url_de_revendedor(self):
+        """OPENAI_BASE_URL (base terminando em /v1, com espaço sobrando) vira o endereço do Chat Completions."""
+        os.environ.pop("LUNA_OPENAI_URL", None)
+        os.environ["OPENAI_BASE_URL"] = "https://revenda.example/v1/ "
+        self.assertEqual(luna.openai_url(), "https://revenda.example/v1/chat/completions")
+        os.environ["LUNA_OPENAI_URL"] = "https://outro.example/v1/chat/completions"     # o endereço completo vence
+        self.assertEqual(luna.openai_url(), "https://outro.example/v1/chat/completions")
+        os.environ.pop("LUNA_OPENAI_URL"); os.environ.pop("OPENAI_BASE_URL")
+        self.assertEqual(luna.openai_url(), luna.OPENAI_URL_PADRAO)

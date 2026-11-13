@@ -112,9 +112,7 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
   };
 }
 // sentar → sentada (respira e pisca) → levantar: quadros do Gemini, montados em ferramentas/montar_folha.py
-// dano: a pose normal (o quadro 4) com o recuo, o clarão e as faíscas feitos por código (não a silhueta branca)
-// (a folha antiga tem 4 quadros de dano: 3 piscadas + a pose; a folha nova do Gemini terá os 3 quadros de reação)
-if (animacoes.dano.quadros.length === 4) animacoes.dano = { ...animacoes.dano, loop: false, texturas: [animacoes.dano.texturas[3]] };
+// dano: 3 quadros do Gemini (impacto, cambaleia, recupera); clarão, recuo e faíscas por código
 // animações desenhadas numa malha, para o cabelo seguir o vento e o movimento
 const quadros = new QuadrosVivos(animacoes.parada.texturas[0], animacoes.parada.mechas[0], BASE_CELULA, pesosFolha, 0.25);
 const escalaQuadros = ALTURA_VISUAL / ALTURA_QUADRO;

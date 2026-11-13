@@ -41,9 +41,11 @@ QUADROS = {
     'sentada': [f'aurora_sentada_{i:02d}.png' for i in range(1, 4)],
     # golpe de lâmina (folha G): guarda, passo com a lâmina à frente, passo armando, estocada longa
     'lamina':  [f'aurora_lamina_{i:02d}.png' for i in range(1, 5)],   # --separar 7 e 2 correções --dar
+    # dano (folha I): impacto, cambaleia para trás, recupera o equilíbrio
+    'dano':    [f'aurora_dano_{i:02d}.png' for i in range(1, 4)],
 }
 # Folhas em outras escalas (cabeça medida com régua, ponta da asa da tiara ao queixo):
-CABECA_POR_GRUPO = {'arco_preparar': 93, 'arco_atirar': 93, 'sentar': 103, 'sentada': 148, 'lamina': 95}
+CABECA_POR_GRUPO = {'arco_preparar': 93, 'arco_atirar': 93, 'sentar': 103, 'sentada': 148, 'lamina': 95, 'dano': 95}
 COLUNAS = 8          # quadros por linha na folha (as animações seguem em sequência)
 FLECHA_COMPRIMENTO = 150  # px no jogo, igual à flecha que a Aurora segura no arco
 
@@ -117,8 +119,8 @@ def tingir(img, cor, forca):
 
 def montar_animacoes():
     atq, vit, camb = (carregar(n) for n in ['ataque', 'vitoria', 'cambalhota'])
-    parada, corr, pulo, esq, arco1, arco2, sentar, sentada, lamina = (quadros(n) for n in [
-        'parada', 'correndo', 'pulo', 'esquiva', 'arco_preparar', 'arco_atirar', 'sentar', 'sentada', 'lamina'])
+    parada, corr, pulo, esq, arco1, arco2, sentar, sentada, lamina, dano = (quadros(n) for n in [
+        'parada', 'correndo', 'pulo', 'esquiva', 'arco_preparar', 'arco_atirar', 'sentar', 'sentada', 'lamina', 'dano'])
     anims = {}
     # vai e volta (1-2-3-4-5-4-3-2) para a respiração não "pular" ao recomeçar
     anims['parada'] = {'fps': 6, 'loop': True, 'quadros': [celula(q) for q in parada + parada[3:0:-1]]}
@@ -142,10 +144,8 @@ def montar_animacoes():
     anims['ataque_lamina'] = {'fps': 14, 'loop': False, 'quadros': [l1, l2, l3, l4, l4]}
     anims['cambalhota'] = {'fps': 16, 'loop': True, 'quadros': [
         celula(camb.rotate(-ang, resample=Image.BICUBIC, expand=True), 'centro') for ang in range(0, 360, 45)]}
-    branco = (255, 255, 255, 255)
-    anims['dano'] = {'fps': 12, 'loop': False, 'quadros': [
-        celula(silhueta(parada[0], branco), dx=-8), celula(tingir(parada[0], (230, 60, 70), 0.35), dx=-6),
-        celula(silhueta(parada[0], branco), dx=-4), celula(parada[0], dx=-2)]}
+    # 3 quadros em 0,33 s (a ação dano dura 0,34 s no jogo); clarão, recuo e faíscas são feitos por código
+    anims['dano'] = {'fps': 9, 'loop': False, 'quadros': [celula(q, 'tronco') for q in dano]}
     anims['vitoria'] = {'fps': 8, 'loop': True, 'quadros': [
         celula(vit), celula(esticar(vit, 1.03, 0.97)), celula(vit, dy=-10), celula(vit, dy=-4)]}
     return anims

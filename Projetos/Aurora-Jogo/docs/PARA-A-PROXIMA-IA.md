@@ -52,8 +52,11 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
   (segura 1 quadro). O acerto é na estocada (de 0,20 a 0,34 s depois de apertar). Fatiado com `--separar 7` e
   duas correções `--dar` (ponta da lâmina do quadro 2 e ponta do arco do quadro 4 encostavam no quadro 3).
   A 1ª versão da folha G (braço estendido, lâmina erguida) chegou só como visualização.
-- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): volta à guarda (H), dano (I), mão meio
-  fechada (F) e corrida maior (J).
+- **Dano (folha I):** 3 quadros (impacto, cambaleia, recupera com o arco) em 0,33 s, alinhados pelo tronco; clarão,
+  recuo, faíscas e vinheta continuam por código.
+- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): volta à guarda (H), mão meio fechada (F) e
+  corrida maior (J). Uma folha J chegou só como visualização, e os quadros 1 a 3 dela são quase os mesmos passos da
+  folha G (andando); falta o ciclo completo de corrida (8 quadros).
 
 - **Corpo "elástico" na corrida (corrigido):** com o desenho inteiro numa malha 30×30, os triângulos que cruzavam o
   contorno do rosto, da tiara e do pescoço puxavam o corpo junto com o cabelo. Agora a Aurora em movimento tem duas

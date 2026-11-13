@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=78 format=3]
+[gd_resource type="SpriteFrames" load_steps=77 format=3]
 
 [ext_resource type="Texture2D" path="res://arte/sprites/aurora_folha.png" id="1_folha"]
 
@@ -302,10 +302,6 @@ region = Rect2(1152, 2688, 384, 384)
 atlas = ExtResource("1_folha")
 region = Rect2(1536, 2688, 384, 384)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_76"]
-atlas = ExtResource("1_folha")
-region = Rect2(1920, 2688, 384, 384)
-
 [resource]
 animations = [{
 "frames": [{
@@ -586,15 +582,15 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_71")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_72")
 }],
 "loop": false,
 "name": &"dano",
-"speed": 12.0
+"speed": 9.0
 }, {
 "frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_72")
+}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_73")
 }, {
@@ -603,9 +599,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_75")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_76")
 }],
 "loop": true,
 "name": &"vitoria",

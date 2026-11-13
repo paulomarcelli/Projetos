@@ -85,10 +85,11 @@ Flecha com cerca de metade da altura dela, haste fina, penas cinza e prata.
 
 ## 3. Mãos mais naturais
 
-**Imagem E, "MÃOS" (folha de referência, 6 desenhos):**
+**Imagem E, "MÃOS" (folha de referência, 6 desenhos).** Anexe também `arte/referencias/aurora-referencia-maos.png`:
 ```
-Folha de referência das mãos da Aurora (luvas de couro marrom sem dedos e braçadeiras de couro com fivelas),
-no mesmo estilo e escala da personagem, vistas de perfil:
+Folha de referência das mãos da Aurora, no mesmo estilo e escala da personagem, vistas de perfil.
+Mãos SEM luva (pele clara), braçadeira prateada no braço de perto e manga de couro marrom no braço do arco,
+igual à imagem de referência:
 1. mão relaxada ao lado do corpo, dedos levemente curvados (não retos nem duros);
 2. mão meio fechada, descansando;
 3. mão fechada em punho;

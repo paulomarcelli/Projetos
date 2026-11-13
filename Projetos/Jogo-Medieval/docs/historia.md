@@ -1,8 +1,10 @@
 # A Coroa de Sal — história original
 
-> Fantasia medieval sombria, **inspirada no gênero** de *Game of Thrones* (intriga entre casas nobres,
-> alianças frágeis, escolhas com custo e ninguém totalmente seguro). Mundo, casas, personagens e
-> acontecimentos são **originais**: nada de Westeros, Stark, Lannister, Trono de Ferro, dragões da obra ou nomes dela.
+> Fantasia medieval com seres míticos, **inspirada no gênero** de *Game of Thrones* (intriga entre casas nobres,
+> alianças frágeis, escolhas com custo) e de *As Crônicas de Nárnia* (um mundo escondido, criaturas encantadas e o
+> deslumbramento de atravessar para lá). Mundo, casas, personagens e
+> acontecimentos são **originais**: nada de Westeros, Stark, Lannister, Trono de Ferro, Aslam, Feiticeira Branca,
+> guarda-roupa ou nomes dessas obras. As criaturas vêm de mitos e folclores antigos, de domínio público.
 
 ## O mundo: Aldemar
 
@@ -18,6 +20,37 @@ Ao mesmo tempo, do mar chega a **Maré Cinza**, uma névoa que avança um pouco 
 fica dentro dela esquece o caminho de casa, e as aldeias engolidas somem até dos mapas, como se
 nunca tivessem existido. Os nobres acham que é superstição de pescador. Os pescadores já não
 pescam.
+
+## O Ermo Velho e os seres míticos
+
+Os lugares engolidos pela Maré Cinza não são destruídos: eles **escorregam para o Ermo Velho**, um reino
+antigo por baixo de Aldemar, para onde as criaturas encantadas fugiram quando os humanos pararam de acreditar nelas.
+Lá é sempre fim de tarde, as árvores lembram nomes e os rios correm na direção que você precisar.
+
+**Como se entra:** quando Ilsa desenha uma porta num dos seus mapas e a pinta com tinta de sal,
+a porta se abre de verdade, no lugar do mundo que o mapa mostra. Cada mapa abre só uma vez.
+
+**A origem de tudo:** no fundo do mar dorme a **Baleia Antiga**, tão velha quanto o reino. O cristal
+da Coroa de Sal foi arrancado do coração dela há trezentos anos. A Maré Cinza é o luto dela: a névoa
+leva embora o que os humanos tiraram do mundo encantado.
+
+| Povo | Como é | Do que é capaz | Onde vive |
+|------|--------|----------------|-----------|
+| **Cervos-de-Luar** | Cervos brancos com galhada que brilha à noite | Guiam viajantes perdidos; não mentem nunca | Florestas do Ermo |
+| **Grifos das Falésias** | Metade águia, metade leão, orgulhosos e territoriais | Levam quem conquista o respeito deles pelos céus | Penhascos da Costa do Norte |
+| **Centauros do Vale Âmbar** | Arqueiros e astrônomos, leem o futuro nas estrelas | Sabem quando a Maré vai chegar; cobram promessas | Planícies do Ermo |
+| **Mouras do Poço** | Espíritos de água que guardam tesouros nos poços antigos | Trocam segredos por segredos | Poços e fontes |
+| **Gigantes Adormecidos** | Gigantes de pedra cobertos de musgo | Quando acordam, montanhas andam | Sob as minas dos Ferrabraz, que estão escavando em cima deles |
+| **Raposas-Rubras** | Raposas que falam, ladras e contadoras de histórias | Conhecem todos os atalhos entre os dois mundos | Em todo lugar |
+| **Serpente-de-Brasa** | Serpente de fogo, guardiã das matas | Queima quem derruba árvores do Ermo | Bosques de fronteira |
+| **Sereias Cinzentas** | Servas da Baleia Antiga | Falam pela névoa; são a voz da Maré | O mar e a própria névoa |
+
+**Aliada encantada de Ilsa:** **Fia**, uma Raposa-Rubra jovem e debochada que vive roubando os
+lápis de Ilsa. É a primeira criatura que ela conhece e a única que sabe andar entre os dois mundos sem mapa.
+
+**Conflito entre os mundos:** cada casa nobre quer algo do Ermo. Os Ferrabraz querem acordar os
+gigantes para usar na guerra, o Lírio-Rubro quer vender o ouro das Mouras e a Ordem do Farol quer
+fechar todas as portas para sempre. As criaturas não confiam em humanos, e têm motivo.
 
 ## As casas
 
@@ -54,14 +87,16 @@ pescam.
 conselho, descobre num mapa do palácio uma passagem que não deveria existir, a mesma por onde a
 Coroa de Sal saiu. Todas as casas a querem como aliada (ou calada).
 
-**Ato II: Alianças e traições.** Ilsa segue o rastro da Coroa por Aldemar: as minas dos
-Ferrabraz, os mercados do Lírio-Rubro, a ilha do Farol. A cada casa ela precisa decidir o que
+**Ato II: Dois mundos.** Fugindo da capital, Ilsa abre sem querer a primeira porta para o Ermo Velho
+e conhece Fia, a raposa. Segue o rastro da Coroa pelos dois mundos: as minas dos Ferrabraz (sobre os
+gigantes adormecidos), os mercados do Lírio-Rubro, a ilha do Farol, as florestas dos Cervos-de-Luar e o
+conselho dos Centauros. A cada casa ela precisa decidir o que
 contar, o que esconder e quem trair. Descobre que a Maré Cinza não é castigo: ela nasceu no dia
-em que alguém tirou o cristal da Coroa do fundo do mar, há trezentos anos.
+em que alguém arrancou o cristal do coração da Baleia Antiga, há trezentos anos.
 
 **Ato III: A Maré chega à capital.** A névoa engole Pedralva durante a coroação de um novo rei.
 Ilsa tem o único mapa capaz de trazer a cidade de volta e a Coroa nas mãos. Ela precisa escolher:
-- **Devolver a Coroa ao mar:** a Maré recua, Aldemar fica sem coroa e sem rei, e as casas entram em guerra aberta.
+- **Devolver a Coroa à Baleia Antiga:** a Maré recua e o Ermo Velho volta a se misturar com Aldemar, mas o reino fica sem coroa e as casas entram em guerra aberta.
 - **Coroar alguém:** a Maré continua avançando, mas o reino tem paz por mais um tempo. Quem usa a Coroa?
 - **Usar a Coroa ela mesma:** a Coroa vai escurecer na cabeça dela se mentir algum dia, e ela sabe quantas vezes já mentiu.
 
@@ -70,4 +105,5 @@ O final depende das alianças, das mentiras e das promessas feitas ao longo do j
 ## Temas
 - Verdade e poder: quem controla os mapas controla o que o reino lembra.
 - Lealdade de família contra o que é certo.
+- O que o mundo perde quando para de acreditar no encantado.
 - O preço de cada aliança: nenhuma escolha sai de graça.

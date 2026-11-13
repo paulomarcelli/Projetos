@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skills": {
+    "2d-games": {
+      "source": "benjaminasterA/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/game-development/2d-games/SKILL.md",
+      "computedHash": "958e34c070f744ebc0cf9708c6dca13243f68768e457e56c4bc583bf7286499a"
+    }
+  }
+}

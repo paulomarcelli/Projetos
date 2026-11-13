@@ -34,7 +34,13 @@ QUADROS = {
     'correndo': [f'aurora_correndo_{i:02d}.png' for i in range(1, 9)],
     'pulo':     [f'aurora_pulo_{i:02d}.png' for i in range(1, 6)],
     'esquiva':  [f'aurora_esquiva_{i:02d}.png' for i in range(1, 5)],
+    'arco_preparar': [f'aurora_arco_preparar_{i:02d}.png' for i in range(1, 5)],
+    'arco_atirar':   [f'aurora_arco_atirar_{i:02d}.png' for i in range(1, 5)],
 }
+# As folhas do arco vieram numa escala maior: cabeça ≈ 95 px (medida com régua).
+CABECA_POR_GRUPO = {'arco_preparar': 95, 'arco_atirar': 95}
+COLUNAS = 8          # quadros por linha na folha (as animações seguem em sequência)
+FLECHA_COMPRIMENTO = 150  # px no jogo, igual à flecha que a Aurora segura no arco
 
 
 def abrir(arquivo, cabeca):
@@ -48,7 +54,7 @@ def carregar(nome):
 
 
 def quadros(nome):
-    return [abrir(a, CABECA_FOLHAS) for a in QUADROS[nome]]
+    return [abrir(a, CABECA_POR_GRUPO.get(nome, CABECA_FOLHAS)) for a in QUADROS[nome]]
 
 
 def centro_dos_pes(img):
@@ -106,7 +112,7 @@ def tingir(img, cor, forca):
 
 def montar_animacoes():
     atq, vit, camb = (carregar(n) for n in ['ataque', 'vitoria', 'cambalhota'])
-    parada, corr, pulo, esq = (quadros(n) for n in ['parada', 'correndo', 'pulo', 'esquiva'])
+    parada, corr, pulo, esq, arco1, arco2 = (quadros(n) for n in ['parada', 'correndo', 'pulo', 'esquiva', 'arco_preparar', 'arco_atirar'])
     anims = {}
     # vai e volta (1-2-3-4-5-4-3-2) para a respiração não "pular" ao recomeçar
     anims['parada'] = {'fps': 6, 'loop': True, 'quadros': [celula(q) for q in parada + parada[3:0:-1]]}
@@ -115,6 +121,9 @@ def montar_animacoes():
     anims['queda'] = {'fps': 8, 'loop': True, 'quadros': [celula(pulo[3], 'tronco')]}
     anims['aterrissar'] = {'fps': 12, 'loop': False, 'quadros': [celula(pulo[4], 'tronco'), celula(parada[0])]}
     anims['esquiva'] = {'fps': 14, 'loop': False, 'quadros': [celula(q, 'caixa') for q in esq]}
+    anims['arco_preparar'] = {'fps': 10, 'loop': False, 'quadros': [celula(q) for q in arco1]}
+    # segura a mira um quadro a mais antes de soltar
+    anims['arco_atirar'] = {'fps': 12, 'loop': False, 'quadros': [celula(q) for q in [arco2[0], arco2[1], arco2[1], arco2[2], arco2[3]]]}
     anims['ataque_lamina'] = {'fps': 14, 'loop': False, 'quadros': [
         celula(esticar(atq, 0.96, 1.03), dx=-10), celula(atq), celula(atq, dx=6), celula(atq, dx=6)]}
     anims['cambalhota'] = {'fps': 16, 'loop': True, 'quadros': [
@@ -129,18 +138,32 @@ def montar_animacoes():
 
 
 def salvar(anims):
-    colunas = max(len(a['quadros']) for a in anims.values())
-    folha = Image.new('RGBA', (colunas * CEL, len(anims) * CEL), (0, 0, 0, 0))
+    total = sum(len(a['quadros']) for a in anims.values())
+    linhas = -(-total // COLUNAS)
+    folha = Image.new('RGBA', (COLUNAS * CEL, linhas * CEL), (0, 0, 0, 0))
     meta = {'celula': CEL, 'ancora': 'centro inferior (pés) em y=%d; cambalhota no centro' % BASE, 'animacoes': {}}
-    for lin, (nome, a) in enumerate(anims.items()):
+    i = 0
+    for nome, a in anims.items():
         regs = []
-        for col, q in enumerate(a['quadros']):
-            folha.paste(q, (col * CEL, lin * CEL), q)
-            regs.append([col * CEL, lin * CEL, CEL, CEL])
+        for q in a['quadros']:
+            x, y = (i % COLUNAS) * CEL, (i // COLUNAS) * CEL
+            folha.paste(q, (x, y), q)
+            regs.append([x, y, CEL, CEL])
+            i += 1
         meta['animacoes'][nome] = {'fps': a['fps'], 'loop': a['loop'], 'quadros': regs}
     folha.save(SAIDA / 'aurora_folha.png', optimize=True)
     (SAIDA / 'aurora_folha.json').write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding='utf-8')
     return folha, meta
+
+
+def salvar_flechas():
+    """Flecha como sprite separado (projétil), na escala da flecha que a Aurora segura."""
+    pasta = SAIDA / 'flecha'; pasta.mkdir(exist_ok=True)
+    base = Image.open(RECORTES / 'aurora_flecha_01.png').convert('RGBA')
+    s = FLECHA_COMPRIMENTO / base.width
+    for n, nome in enumerate(['flecha_voando', 'flecha_voando_rastro', 'flecha_cravada'], 1):
+        img = Image.open(RECORTES / f'aurora_flecha_{n:02d}.png').convert('RGBA')
+        img.resize((round(img.width * s), round(img.height * s)), Image.LANCZOS).save(pasta / f'{nome}.png')
 
 
 def godot_tres(meta):
@@ -173,5 +196,6 @@ if __name__ == '__main__':
     anims = montar_animacoes()
     folha, meta = salvar(anims)
     godot_tres(meta)
+    salvar_flechas()
     previas(anims)
     print('folha', folha.size, '| animações:', {k: len(v['quadros']) for k, v in anims.items()})

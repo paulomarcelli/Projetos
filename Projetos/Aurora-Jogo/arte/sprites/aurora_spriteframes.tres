@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=48 format=3]
+[gd_resource type="SpriteFrames" load_steps=57 format=3]
 
 [ext_resource type="Texture2D" path="res://arte/sprites/aurora_folha.png" id="1_folha"]
 
@@ -80,111 +80,147 @@ region = Rect2(768, 768, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_20"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 1152, 384, 384)
+region = Rect2(1152, 768, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_21"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 1536, 384, 384)
+region = Rect2(1536, 768, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_22"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 1536, 384, 384)
+region = Rect2(1920, 768, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_23"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 1920, 384, 384)
+region = Rect2(2304, 768, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_24"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 1920, 384, 384)
+region = Rect2(2688, 768, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_25"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 1920, 384, 384)
+region = Rect2(0, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_26"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 1920, 384, 384)
+region = Rect2(384, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_27"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 2304, 384, 384)
+region = Rect2(768, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_28"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 2304, 384, 384)
+region = Rect2(1152, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_29"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 2304, 384, 384)
+region = Rect2(1536, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_30"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 2304, 384, 384)
+region = Rect2(1920, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_31"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 2688, 384, 384)
+region = Rect2(2304, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_32"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 2688, 384, 384)
+region = Rect2(2688, 1152, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_33"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 2688, 384, 384)
+region = Rect2(0, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_34"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 2688, 384, 384)
+region = Rect2(384, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_35"]
 atlas = ExtResource("1_folha")
-region = Rect2(1536, 2688, 384, 384)
+region = Rect2(768, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_36"]
 atlas = ExtResource("1_folha")
-region = Rect2(1920, 2688, 384, 384)
+region = Rect2(1152, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_37"]
 atlas = ExtResource("1_folha")
-region = Rect2(2304, 2688, 384, 384)
+region = Rect2(1536, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_38"]
 atlas = ExtResource("1_folha")
-region = Rect2(2688, 2688, 384, 384)
+region = Rect2(1920, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_39"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 3072, 384, 384)
+region = Rect2(2304, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_40"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 3072, 384, 384)
+region = Rect2(2688, 1536, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_41"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 3072, 384, 384)
+region = Rect2(0, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_42"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 3072, 384, 384)
+region = Rect2(384, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_43"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 3456, 384, 384)
+region = Rect2(768, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_44"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 3456, 384, 384)
+region = Rect2(1152, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_45"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 3456, 384, 384)
+region = Rect2(1536, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_46"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 3456, 384, 384)
+region = Rect2(1920, 1920, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_47"]
+atlas = ExtResource("1_folha")
+region = Rect2(2304, 1920, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_48"]
+atlas = ExtResource("1_folha")
+region = Rect2(2688, 1920, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_49"]
+atlas = ExtResource("1_folha")
+region = Rect2(0, 2304, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_50"]
+atlas = ExtResource("1_folha")
+region = Rect2(384, 2304, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_51"]
+atlas = ExtResource("1_folha")
+region = Rect2(768, 2304, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_52"]
+atlas = ExtResource("1_folha")
+region = Rect2(1152, 2304, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_53"]
+atlas = ExtResource("1_folha")
+region = Rect2(1536, 2304, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_54"]
+atlas = ExtResource("1_folha")
+region = Rect2(1920, 2304, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_55"]
+atlas = ExtResource("1_folha")
+region = Rect2(2304, 2304, 384, 384)
 
 [resource]
 animations = [{
@@ -310,8 +346,8 @@ animations = [{
 "texture": SubResource("AtlasTexture_30")
 }],
 "loop": false,
-"name": &"ataque_lamina",
-"speed": 14.0
+"name": &"arco_preparar",
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -328,7 +364,12 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_35")
+}],
+"loop": false,
+"name": &"arco_atirar",
+"speed": 12.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_36")
 }, {
@@ -337,15 +378,15 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_38")
-}],
-"loop": true,
-"name": &"cambalhota",
-"speed": 16.0
 }, {
-"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_39")
+}],
+"loop": false,
+"name": &"ataque_lamina",
+"speed": 14.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_40")
 }, {
@@ -354,12 +395,7 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_42")
-}],
-"loop": false,
-"name": &"dano",
-"speed": 12.0
 }, {
-"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_43")
 }, {
@@ -371,6 +407,43 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_46")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_47")
+}],
+"loop": true,
+"name": &"cambalhota",
+"speed": 16.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_48")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_49")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_51")
+}],
+"loop": false,
+"name": &"dano",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_52")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_54")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_55")
 }],
 "loop": true,
 "name": &"vitoria",

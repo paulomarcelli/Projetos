@@ -66,6 +66,10 @@ def fatiar(caminho, linhas):
 
     contagem = [n for _, n in linhas]
     if [len(g) for g in ordem] != contagem:
+        if len(linhas) == 1:
+            # plano B: quadros encostados (cabelo ou flecha tocando o vizinho). Corta nos vales
+            # de menor tinta perto de onde cada divisão deveria estar.
+            return fatiar_por_vales(cor, alpha, linhas[0])
         raise SystemExit(f'{caminho}: esperava {contagem} quadros por linha, encontrei {[len(g) for g in ordem]}')
 
     quadros = []
@@ -76,6 +80,28 @@ def fatiar(caminho, linhas):
             a = np.where(m, alpha, 0.0)
             img = Image.fromarray(np.dstack([cor, a * 255]).astype(np.uint8), 'RGBA')
             quadros.append((f'{nome}_{n:02d}', img.crop(img.getbbox())))
+    return quadros
+
+
+def fatiar_por_vales(cor, alpha, linha):
+    nome, n = linha
+    ys, xs = np.nonzero(alpha > 0.5)
+    x0, x1 = xs.min(), xs.max() + 1
+    perfil = (alpha > 0.5).sum(axis=0).astype(float)
+    largura = (x1 - x0) / n
+    cortes = [x0]
+    for k in range(1, n):
+        alvo = int(x0 + k * largura)
+        janela = range(max(alvo - int(largura * 0.25), x0), min(alvo + int(largura * 0.25), x1))
+        cortes.append(min(janela, key=lambda x: perfil[x]))
+    cortes.append(x1)
+    quadros = []
+    for i in range(n):
+        a = np.zeros_like(alpha)
+        a[:, cortes[i]:cortes[i + 1]] = alpha[:, cortes[i]:cortes[i + 1]]
+        img = Image.fromarray(np.dstack([cor, a * 255]).astype(np.uint8), 'RGBA')
+        quadros.append((f'{nome}_{i + 1:02d}', img.crop(img.getbbox())))
+    print(f'(plano B: cortes em x = {cortes})')
     return quadros
 
 

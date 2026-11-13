@@ -62,9 +62,9 @@ export function buildPhone({ quality }) {
   const pcb = new THREE.MeshStandardMaterial({ color: '#0f1f1a', roughness: 0.55, metalness: 0.15 });
   const chip = new THREE.MeshStandardMaterial({ color: '#16171a', roughness: 0.5, metalness: 0.3 });
   const tampa = new THREE.MeshStandardMaterial({ color: '#9aa1a9', roughness: 0.35, metalness: 0.95 });
-  // lentes no acabamento dos Galaxy Ultra: anel de metal polido (da cor da moldura), borda preta,
+  // lentes no acabamento do S26 Ultra: anel de metal grafite polido, borda preta,
   // os elementos ópticos aparecendo por dentro e uma cúpula de vidro escuro por cima
-  const anel = new THREE.MeshStandardMaterial({ color: '#c3d3e4', roughness: 0.14, metalness: 1, side: THREE.DoubleSide });
+  const anel = new THREE.MeshStandardMaterial({ color: '#3b3f46', roughness: 0.16, metalness: 1, side: THREE.DoubleSide }); // grafite polido, como no S26 Ultra
   const bordaPreta = new THREE.MeshStandardMaterial({ color: '#07080a', roughness: 0.7, metalness: 0.1 });
   const elemento = new THREE.MeshStandardMaterial({ color: '#141a24', roughness: 0.28, metalness: 0.85 });
   const elementoAzul = new THREE.MeshStandardMaterial({ color: '#24324a', roughness: 0.18, metalness: 0.95, emissive: '#0a1226', emissiveIntensity: 0.6 });

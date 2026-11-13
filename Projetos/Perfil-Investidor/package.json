@@ -1,0 +1,9 @@
+{
+  "name": "perfil-investidor",
+  "version": "1.0.0",
+  "description": "Sistema especialista que identifica o perfil de investidor (atividade Expert System - FECAP)",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}

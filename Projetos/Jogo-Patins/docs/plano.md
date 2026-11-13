@@ -8,14 +8,15 @@
 A ideia nasce do clima de séries juvenis sobre patinação, música e amizade, mas o jogo é **original**:
 personagens, cidade, pista, músicas, nomes e logos são criados do zero. Não usamos nada de
 *Soy Luna* (nomes, rostos ou figurinos dos personagens, cenários da série, músicas, logo da Disney).
-Isso protege o projeto: dá para publicar, mostrar no portfólio e até vender sem risco de
+A protagonista se chama **Luna**, mas é uma personagem nossa: não é Luna Valente, não tem a história,
+o visual nem o figurino da série. Isso protege o projeto: dá para publicar, mostrar no portfólio e até vender sem risco de
 derrubarem o jogo por direitos autorais.
 
 ## 1. Conceito
 
-**Mel**, 16 anos, entrega encomendas de patins por **Porto Aurora**, uma cidade litorânea
+**Luna**, 16 anos, entrega encomendas de patins por **Porto Aurora**, uma cidade litorânea
 inventada com ladeiras, feiras e telhados coloridos. Ela sonha competir no **Festival da Pista
-Cometa**, o grande campeonato de patinação artística da cidade. A cada fase, Mel atravessa
+Cometa**, o grande campeonato de patinação artística da cidade. A cada fase, Luna atravessa
 um bairro de patins, faz manobras no ritmo da música e reúne a turma para o número final.
 
 - **Gênero:** plataforma 2D de rolagem lateral, com movimento de patins (embalo, rampas, trilhos).
@@ -65,7 +66,7 @@ combina com algo já aprendido e termina com uma pequena surpresa.
   plano), cada uma mais clara e menos detalhada quanto mais longe.
 - **Leitura de jogo:** tudo em que se pode pisar tem contorno mais escuro e topo claro; o
   fundo nunca compete com as plataformas.
-- **Personagens:** Mel e a turma (4 amigos originais), com silhuetas bem diferentes entre si
+- **Personagens:** Luna e a turma (4 amigos originais), com silhuetas bem diferentes entre si
   (cabelo, altura, figurino), legíveis em tamanho pequeno.
 
 ### Como produzir a arte (decidir)
@@ -95,7 +96,7 @@ Recomendação: **C para o protótipo jogável** (formas provisórias com cara d
 
 ## 6. Etapas
 
-1. **Protótipo do movimento (1 fase cinza):** só a Mel, rampas, trilhos e pulo. Ajustar até ficar gostoso.
+1. **Protótipo do movimento (1 fase cinza):** só a Luna, rampas, trilhos e pulo. Ajustar até ficar gostoso.
 2. **Alvo visual:** o Calçadão do Farol desenhado no estilo final e testado no jogo.
 3. **Fatia vertical:** fase 1 completa, com arte, som, menu, estrelas e checkpoint.
 4. **Produção:** fases 2 a 5, personagens da turma, cenas curtas entre fases.
@@ -107,4 +108,5 @@ Recomendação: **C para o protótipo jogável** (formas provisórias com cara d
 - [ ] Concorda com a versão original (sem personagens e cenários de *Soy Luna*)?
 - [ ] Motor: Phaser (web) ou Godot (Steam/console)?
 - [ ] Quem faz a arte final: desenho próprio, IA ou desenho em código?
-- [ ] Nome do jogo e da protagonista (Mel e *Ritmo sobre Rodas* são provisórios).
+- [x] Protagonista: **Luna** (personagem original: sem sobrenome, história, visual ou figurino da série).
+- [ ] Nome do jogo (*Ritmo sobre Rodas* é provisório; não pode usar "Soy Luna" nem marcas da série).

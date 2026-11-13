@@ -33,19 +33,19 @@
 ## Contrato técnico
 - Sprites em PNG com transparência real (conferir o canal alfa, não confiar no gerador).
 - Folhas de animação em grade de 256×256 por quadro, ponto de apoio nos pés (base central).
-- Animações da Mel: parada (4 quadros), patinando (8), pulo/subida (2), queda (2), grind (4), manobra (6), queda/tombo (4), comemoração (6).
-- Nomes: `mel_patinando_01.png`, `fase1_fundo_camada2.png`, etc.
+- Animações da Luna: parada (4 quadros), patinando (8), pulo/subida (2), queda (2), grind (4), manobra (6), queda/tombo (4), comemoração (6).
+- Nomes: `luna_patinando_01.png`, `fase1_fundo_camada2.png`, etc.
 - Filtro suave (não é pixel art).
 
 ## Alvo visual (a aprovar antes de produzir o resto)
-1. **Ficha da Mel:** frente, perfil patinando e 4 expressões, no estilo acima.
-2. **Cena de teste:** Mel no Calçadão do Farol, no tamanho real do jogo, sobre o cenário em camadas.
+1. **Ficha da Luna:** frente, perfil patinando e 4 expressões, no estilo acima.
+2. **Cena de teste:** Luna no Calçadão do Farol, no tamanho real do jogo, sobre o cenário em camadas.
 - Responsável pela aprovação: usuário.
 
 ## Prompt-base para gerar arte (se a escolha for IA)
 ```
 FINALIDADE: personagem jogável de um jogo de plataforma 2D
-ASSUNTO: Mel, garota de 16 anos, cabelo [cor/formato], jaqueta [cor], shorts, patins quad [cor]
+ASSUNTO: Luna, garota de 16 anos, cabelo [cor/formato], jaqueta [cor], shorts, patins quad [cor]
 VISTA: perfil lateral, voltada para a direita, de corpo inteiro, patinando
 DIREÇÃO DE ARTE: chibi, cabeça grande (~40% da altura), olhos enormes com dois brilhos, blush,
   contorno marrom-escuro com espessura variável, cel shading em 2 tons, cores quentes de fim de tarde

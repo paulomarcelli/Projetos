@@ -28,14 +28,15 @@ Três partes clássicas, cada uma em um arquivo:
 1. **Base de conhecimento** (`js/base-conhecimento.js`)
    - **Perguntas**, cada resposta gera um **fato** (ex.: `prazo = curto`, `reserva_emergencia = nao`) e **pontos de risco** (0 a 4).
    - **Regras SE → ENTÃO**, com nome e explicação em português. Exemplos:
-     - R01 — SE pontuação ≤ 15 ENTÃO perfil preliminar = conservador.
-     - R02 — SE pontuação entre 16 e 28 ENTÃO perfil preliminar = moderado.
-     - R03 — SE pontuação ≥ 29 ENTÃO perfil preliminar = arrojado.
+     - R01 — SE pontuação ≤ 12 (de 34) ENTÃO perfil preliminar = conservador.
+     - R02 — SE pontuação entre 13 e 23 ENTÃO perfil preliminar = moderado.
+     - R03 — SE pontuação ≥ 24 ENTÃO perfil preliminar = arrojado.
      - R10 — SE não tem reserva de emergência ENTÃO perfil máximo = conservador e recomendar montar a reserva primeiro.
      - R11 — SE precisa do dinheiro em menos de 1 ano ENTÃO perfil máximo = conservador.
      - R12 — SE venderia tudo numa queda de 10% ENTÃO perfil máximo = moderado.
      - R13 — SE tem dívidas com juros altos (cartão, cheque especial) ENTÃO recomendar quitar dívidas antes de investir.
-     - R20…R22 — carteira de exemplo para cada perfil (percentuais por tipo de investimento).
+     - R14 — SE a reserva está incompleta ENTÃO recomendar completá-la.
+     - R20 — perfil final = o menor entre o preliminar e o limite; R30…R32 — carteira de exemplo para cada perfil (percentuais por tipo de investimento).
 2. **Motor de inferência** (`js/motor.js`)
    - **Encadeamento para frente**: parte dos fatos, dispara as regras cujas condições são verdadeiras, adiciona novos fatos,
      repete até nenhuma regra nova disparar. Regras de **limite** (R10–R12) têm prioridade sobre o perfil preliminar.

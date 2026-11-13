@@ -18,23 +18,30 @@ export class Sombra {
   reiniciar() {
     this.x = this.inicio.x; this.dir = 1; this.vida = 30; this.viva = true;
     this.piscaDano = 0; this.morrendo = 0; this.t = Math.random() * 5;
+    this.vx = 0; this.atordoada = 0;   // empurrão do golpe e tempo atordoada (não anda)
     this.raiz.visible = true; this.raiz.alpha = 1;
   }
 
   get caixa() { return { x: this.x - 26, y: this.chaoY - 70, w: 52, h: 70 }; }
+  /** área que machuca a Aurora: só o miolo da criatura (a névoa das bordas não encosta) */
+  get caixaToque() { return { x: this.x - 16, y: this.chaoY - 60, w: 32, h: 60 }; }
 
   ferir(dano, direcao) {
     if (!this.viva) return false;
-    this.vida -= dano; this.piscaDano = 0.15; this.x += direcao * 14;
+    this.vida -= dano; this.piscaDano = 0.15;
+    this.vx = direcao * 420; this.atordoada = 0.4;   // é jogada para trás e fica um instante parada
     if (this.vida <= 0) { this.viva = false; this.morrendo = 0.6; return true; }
     return false;
   }
 
   atualizar(dt) {
     this.t += dt;
+    this.x += this.vx * dt; this.vx *= Math.pow(0.0025, dt);     // o empurrão freia rápido
     if (this.viva) {
-      this.x += this.dir * 55 * dt;
-      if (Math.abs(this.x - this.inicio.x) > this.inicio.limite) this.dir *= -1;
+      this.atordoada = Math.max(0, this.atordoada - dt);
+      if (this.atordoada <= 0) this.x += this.dir * 55 * dt;
+      const longe = this.x - this.inicio.x;
+      if (Math.abs(longe) > this.inicio.limite) { this.dir = -Math.sign(longe); this.x = this.inicio.x + Math.sign(longe) * this.inicio.limite; }
     } else if (this.morrendo > 0) {
       this.morrendo -= dt; this.raiz.alpha = Math.max(0, this.morrendo / 0.6);
       if (this.morrendo <= 0) this.raiz.visible = false;
@@ -48,6 +55,9 @@ export class Sombra {
       .fill({ color: cor, alpha: 0.92 }).stroke({ color: '#8f7cff', width: 2, alpha: 0.6 });
     const olho = this.dir > 0 ? 6 : -6;
     g.circle(olho - 7, -48, 4).fill('#c9b8ff').circle(olho + 7, -48, 4).fill('#c9b8ff');
-    this.raiz.position.set(this.x, this.chaoY + 2 * Math.sin(t * 2));
+    // atordoada: tremida e inclinada para trás
+    const treme = this.atordoada > 0 ? Math.sin(t * 70) * 2.5 * this.atordoada / 0.4 : 0;
+    this.raiz.rotation = this.atordoada > 0 ? -Math.sign(this.vx || 1) * 0.18 * this.atordoada / 0.4 : 0;
+    this.raiz.position.set(this.x + treme, this.chaoY + 2 * Math.sin(t * 2));
   }
 }

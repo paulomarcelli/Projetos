@@ -7,5 +7,6 @@ mkdirSync(raiz + 'vendor', { recursive: true });
 cpSync(raiz + 'node_modules/pixi.js/dist/pixi.min.mjs', raiz + 'vendor/pixi.min.mjs');
 cpSync(raiz + '../arte/sprites/aurora_folha.png', raiz + 'assets/sprites/aurora_folha.png');
 cpSync(raiz + '../arte/sprites/aurora_folha.json', raiz + 'assets/sprites/aurora_folha.json');
+cpSync(raiz + '../arte/sprites/aurora_folha_cabelo.png', raiz + 'assets/sprites/aurora_folha_cabelo.png'); // pesos do cabelo (ferramentas/pesos_cabelo.py)
 cpSync(raiz + '../arte/sprites/flecha', raiz + 'assets/sprites/flecha', { recursive: true });
 console.log('pronto: vendor/ e assets/');

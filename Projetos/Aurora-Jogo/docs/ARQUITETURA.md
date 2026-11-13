@@ -8,6 +8,8 @@ index.html
        ├─ progresso.js ...... atributos, custo de nível, salvar/carregar (puro, testado)
        ├─ aurora_viva.js .... Aurora parada: desenho único deformado por regiões + variações (olhos/mão)
        ├─ vento.js .......... Vento (brisa, rajadas, folhas em 2 camadas) e QuadrosVivos (animações numa malha)
+       ├─ pesos.js .......... pesos do cabelo (PNG → peso por vértice) e MolaCabelo (atraso e balanço do cabelo)
+       ├─ efeitos.js ........ faíscas, números de dano, vinheta vermelha, hit-stop e tremor de câmera
        ├─ fogueira.js ....... Fogueira Lunar (desenho em código, chama animada que reage ao vento)
        ├─ inimigos.js ....... Sombra (criatura provisória: patrulha, dano, morte, moedas)
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
@@ -27,15 +29,16 @@ index.html
 ## Duas formas de desenhar a Aurora
 | Situação | Como | Arquivo |
 |----------|------|---------|
-| **Parada** | Um desenho inteiro em alta resolução (482×953) numa `MeshPlane` 22×40, deformada por regiões: respiração (sobe acima da cintura), peito, cabeça, cabelo solto, tranças. Olhos e mão trocam por variações do **mesmo** desenho; a mão troca com transição suave (2 malhas sobrepostas). | `aurora_viva.js`, `assets/viva/` |
-| **Em movimento** | Quadros desenhados (folha 3072×2688, células 384×384) numa `MeshPlane` 14×18, cuja região do cabelo é empurrada pelo vento e pela corrida. | `vento.js` (`QuadrosVivos`), `assets/sprites/` |
+| **Parada** | Um desenho inteiro em alta resolução (482×953) numa `MeshPlane` 42×80, deformada por regiões (cabelo e tranças pelos pesos de `aurora_viva_cabelo.png`): respiração (sobe acima da cintura), peito, cabeça, cabelo solto, tranças. Olhos e mão trocam por variações do **mesmo** desenho; a mão troca com transição suave (2 malhas sobrepostas). | `aurora_viva.js`, `assets/viva/` |
+| **Em movimento** | Quadros desenhados (folha 3072×2688, células 384×384) numa `MeshPlane` 30×30; o cabelo (pesos de `aurora_folha_cabelo.png`, por quadro) é empurrado pelo vento e pela corrida através da `MolaCabelo`. | `vento.js` (`QuadrosVivos`), `assets/sprites/` |
 
 Ambas usam os **pés** como origem (y = base da célula) e são espelhadas com `scale.x = direção`.
 Altura visual na tela: 210 px (`ALTURA_VISUAL`).
 
 Estados de animação (`escolherAnimacao`): `boneco` (parada viva) · `correndo` · `pulo` · `queda` · `aterrissar` ·
 `esquiva` · `cambalhota` (Salto da Lua) · `ataque_lamina` · `arco_preparar` → `arco_atirar` (solta a flecha no
-quadro 3) · `dano` · `vitoria`. Sentada usa provisoriamente o 1º quadro de `aterrissar`.
+quadro 3) · `dano` · `vitoria` · `sentar` → `sentada` → `levantar` (montadas por código com quadros de `aterrissar`
+até chegarem as poses do Gemini).
 
 ## Física (fisica.js)
 | Constante | Valor | Origem |
@@ -76,6 +79,8 @@ Folhas: camada de trás (pequenas, parallax 0,5) e da frente (grandes, parallax 
 | `fatiar_folha.py` | separa os quadros de uma folha do Gemini por peças; se quadros se encostam, corta nos vales (plano B) |
 | `montar_folha.py` | iguala a escala **pela altura da cabeça** medida em cada fonte, alinha os pés, cria quadros extras por código, gera a folha, o JSON, o SpriteFrames do Godot (legado) e as prévias |
 | `compor_viva.py` | junta base + variações (olhos, mão) por máscaras de diferença e gera as combinações da Aurora parada |
+| `limpar_bordas.py` | tira a franja branca das bordas da folha (descontamina a cor e afina 1 px) |
+| `pesos_cabelo.py` | acha o cabelo pela cor e gera os pesos (zero no corpo) da Aurora parada e de cada quadro da folha |
 | `extrair_partes.py`, `texturas_corda.py`, `previa_montagem.py` | do experimento arquivado do boneco de peças |
 Detalhes de cada animação e origem: `arte/sprites/LEIA-ME.md`.
 

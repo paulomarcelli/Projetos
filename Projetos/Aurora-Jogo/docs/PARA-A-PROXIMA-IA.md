@@ -25,16 +25,35 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
 5. **Física com os números da skill `platformer`** (`.claude/skills/gamedev-skills`, `jump_tuner.py`). Não mude as
    constantes sem rodar o calculador de novo e os testes.
 
+## Rodada 2 de melhorias (pedidos do usuário) — o que foi feito
+- **Cabelo separado do corpo:** a deformação usava caixas, e o peito, as costas e a ombreira balançavam junto.
+  Agora `ferramentas/pesos_cabelo.py` acha o cabelo pela cor (prata sem saturação; o metal azulado e a pele
+  ficam de fora) e gera pesos que são **zero no corpo** (`jogo/assets/viva/aurora_viva_cabelo.png`,
+  `arte/sprites/aurora_folha_cabelo.png`). Rode de novo sempre que a folha de sprites mudar.
+- **Vento no cabelo:** `MolaCabelo` (`jogo/src/pesos.js`): mola amortecida (atrasa, passa do ponto e volta),
+  onda que desce da raiz à ponta e tremor nas pontas proporcional ao vento.
+- **Nitidez:** resolução da tela do aparelho (até 2×) e mipmaps nas texturas (`nitida()` em `aurora_viva.js`);
+  `ferramentas/limpar_bordas.py` tira a franja branca das bordas da folha. O resto do "pixelado" vem das folhas do
+  Gemini com quadros de ~250 px: os prompts novos pedem 3–4 quadros por imagem.
+- **Flecha:** escala 0,62 (~45% da altura dela).
+- **Dano:** clarão vermelho, recuo, faíscas, número, vinheta vermelha, tremor e hit-stop (`jogo/src/efeitos.js`).
+  A animação `dano` usa a pose normal (as silhuetas branca/vermelha da folha antiga não são mais usadas).
+- **Faca:** avanço de um passo no golpe, alcance de 140 px, criatura jogada para trás e atordoada, recuo dela; a
+  criatura só machuca pelo miolo (`caixaToque`).
+- **Sentar:** de pé → agachada com respiração e levantar ao contrário (provisório, com quadros que já existiam).
+- **Falta arte do Gemini** (prompts prontos em `docs/prompts-aurora-rodada2.md`): sentar e sentada, arco com a
+  pegada certa e o cabelo sobre o ombro, mãos, combo de lâmina com distância, dano e corrida em resolução maior.
+
 ## Provisório / incompleto (prioridade de cima para baixo)
-1. **Pose sentada na fogueira**: usa o 1º quadro de `aterrissar`. O usuário gerou a folha de sentar, mas ela chegou
-   só como visualização. Pedir de novo (prompt na conversa: "SENTANDO NO CHÃO" 3 quadros + "SENTADA" 2 quadros),
-   fatiar com `fatiar_folha.py --nomes sentar:3,sentada:2`, registrar em `montar_folha.py` e tocar em `main.js`
-   (sentar → sentada em loop; levantar = sentar ao contrário).
+1. **Pose sentada na fogueira**: hoje é de pé → agachada (quadros de `aterrissar`) com respiração. Prompts em
+   `docs/prompts-aurora-rodada2.md` (§1: "SENTANDO" 4 quadros + "SENTADA" 3 quadros). Fatiar com
+   `fatiar_folha.py --nomes sentar:4` e `--nomes sentada:3`, registrar em `montar_folha.py`; o `main.js` usa as da
+   folha automaticamente (`animacoes.sentar ??= …`).
 2. **Criaturas**: hoje são formas desenhadas em código (`inimigos.js`). A folha da "sombra de névoa" (4 quadros
    andando + 3 de dano/morte) também chegou só como visualização: pedir de novo e trocar o desenho por sprites.
 3. **Olhos fechados**: a Aurora parada só tem olhos semicerrados (piscar mais suave). Pedir ao Gemini a mesma
    imagem base com os olhos fechados e incluir em `compor_viva.py` (`FONTES`, novas combinações).
-4. **Mão meio fechada**: idem, para o gesto dos dedos ficar com 3 estados.
+4. **Mão meio fechada**: idem, para o gesto dos dedos ficar com 3 estados (prompt F em `prompts-aurora-rodada2.md`).
 5. **Fases do roteiro**: hoje há só uma fase de teste. Começar pelo Prólogo e pela Fase 1 (Floresta da Névoa),
    com a skill `level-design`. Montar os níveis em dados (JSON) em vez de no código.
 6. **Chefes** (Brakus, o Carneiro, é o primeiro), **diálogos e escolhas** (skill `dialogue-systems`), **som**
@@ -51,6 +70,10 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
   grandes (limite proporcional ao tamanho da imagem; menor nas folhas).
 - Texturas maiores que 4096 px quebram em muitos celulares: a folha de sprites usa 8 colunas (3072×2688).
 - Ao processar imagens novas, confira sempre o resultado **sobre fundo escuro** (é onde aparecem halos e sobras).
+- Ordem depois de mexer na folha: `montar_folha.py` → `limpar_bordas.py arte/sprites/aurora_folha.png` →
+  `pesos_cabelo.py` → `npm run preparar`. Os pesos dependem da folha final (posição de cada quadro).
+- Nos testes com Playwright, ponha a Aurora perto da fogueira (`__jogo.corpo.x = 270`) antes de apertar E:
+  sem save, ela começa a 168 px da fogueira, longe demais para sentar.
 
 ## Como verificar o que mudou
 ```bash

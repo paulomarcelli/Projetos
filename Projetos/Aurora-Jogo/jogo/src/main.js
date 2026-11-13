@@ -1,13 +1,15 @@
 /*
  * Aurora — protótipo jogável (PixiJS 8).
- * Parada: boneco articulado (src/boneco.js). Em movimento: quadros desenhados (assets/sprites).
+ * Parada: desenho inteiro deformado (src/aurora_viva.js). Em movimento: quadros desenhados (assets/sprites).
  * Física: src/fisica.js (passo fixo de 60 Hz).
  */
 import {
   Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture,
 } from '../vendor/pixi.min.mjs';
 import { CONST, criarCorpo, passo } from './fisica.js';
-import { carregarAuroraViva } from './aurora_viva.js';
+import { carregarAuroraViva, nitida } from './aurora_viva.js';
+import { Faiscas, Impacto, Numeros, Vinheta } from './efeitos.js';
+import { lerPesos } from './pesos.js';
 import { Fogueira } from './fogueira.js';
 import { Sombra } from './inimigos.js';
 import { MenuFogueira, Painel } from './hud.js';
@@ -19,7 +21,8 @@ const BASE_CELULA = 372;                   // linha dos pés nas células de 384
 const ALTURA_QUADRO = 314;                 // altura dela (em pé) dentro das células
 
 const app = new Application();
-await app.init({ resizeTo: window, background: '#1b1533', antialias: true });
+// resolução da tela do aparelho (até 2×): em celular e notebook com tela de alta densidade a Aurora fica nítida
+await app.init({ resizeTo: window, background: '#1b1533', antialias: true, resolution: Math.min(window.devicePixelRatio || 1, 2), autoDensity: true });
 document.getElementById('jogo').appendChild(app.canvas);
 
 // ---------- mundo de teste ----------
@@ -94,7 +97,8 @@ const boneco = await carregarAuroraViva();
 const escalaBoneco = ALTURA_VISUAL / boneco.altura;
 cena.addChild(boneco.raiz);
 
-const folha = await Assets.load('assets/sprites/aurora_folha.png');
+const folha = nitida(await Assets.load('assets/sprites/aurora_folha.png'));
+const pesosFolha = await lerPesos('assets/sprites/aurora_folha_cabelo.png');
 const meta = await (await fetch('assets/sprites/aurora_folha.json')).json();
 const animacoes = {};
 for (const [nome, a] of Object.entries(meta.animacoes)) {
@@ -103,13 +107,30 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
     texturas: a.quadros.map(([x, y, w, h]) => new Texture({ source: folha.source, frame: new Rectangle(x, y, w, h) })),
   };
 }
+// animações montadas por código a partir dos quadros que existem (até chegarem as poses do Gemini)
+// sentar: de pé → agachada (1º quadro de aterrissar), com respiração; levantar é o contrário
+const [agachada, dePe] = animacoes.aterrissar.texturas;
+animacoes.sentar ??= { fps: 7, loop: false, texturas: [dePe, agachada] };   // ??=: se a folha já tiver, usa a dela
+animacoes.sentada ??= { fps: 1, loop: true, texturas: [agachada] };
+animacoes.levantar ??= { fps: 8, loop: false, texturas: [...animacoes.sentar.texturas].reverse() };
+// dano: a pose normal (o quadro 4) com o recuo, o clarão e as faíscas feitos por código (não a silhueta branca)
+// (a folha antiga tem 4 quadros de dano: 3 piscadas + a pose; a folha nova do Gemini terá os 3 quadros de reação)
+if (animacoes.dano.quadros.length === 4) animacoes.dano = { ...animacoes.dano, loop: false, texturas: [animacoes.dano.texturas[3]] };
 // animações desenhadas numa malha, para o cabelo seguir o vento e o movimento
-const quadros = new QuadrosVivos(animacoes.parada.texturas[0], BASE_CELULA);
+const quadros = new QuadrosVivos(animacoes.parada.texturas[0], BASE_CELULA, pesosFolha, 0.25);
 const escalaQuadros = ALTURA_VISUAL / ALTURA_QUADRO;
 cena.addChild(quadros.raiz);
 
-const texFlecha = await Assets.load('assets/sprites/flecha/flecha_voando.png');
-const texFlechaCravada = await Assets.load('assets/sprites/flecha/flecha_cravada.png');
+const texFlecha = nitida(await Assets.load('assets/sprites/flecha/flecha_voando.png'));
+const texFlechaCravada = nitida(await Assets.load('assets/sprites/flecha/flecha_cravada.png'));
+// a flecha tem ~45% da altura dela (antes saía com 150 px, 71% da altura: parecia uma lança)
+const ESCALA_FLECHA = 0.62;
+const PONTA_FLECHA = (texFlecha.width / 2) * ESCALA_FLECHA;
+
+// efeitos de impacto
+const faiscas = new Faiscas(), numeros = new Numeros(), vinheta = new Vinheta(), impacto = new Impacto();
+cena.addChild(faiscas.raiz, numeros.raiz);
+let clarao = 0, recuo = 0;   // clarão vermelho na Aurora e inclinação para trás ao apanhar
 const flechas = [];
 
 // ---------- progresso (salvo no navegador) ----------
@@ -117,7 +138,7 @@ const CHAVE_SAVE = 'aurora_save';
 let progresso = (() => { try { return desserializar(localStorage.getItem(CHAVE_SAVE) || '') || novoProgresso(); } catch { return novoProgresso(); } })();
 function salvar() { try { localStorage.setItem(CHAVE_SAVE, serializar(progresso)); } catch { /* sem armazenamento: segue sem salvar */ } }
 let stats = derivados(progresso);
-let vida = stats.vidaMax, mana = stats.manaMax, invulneravel = 0, sentada = false;
+let vida = stats.vidaMax, mana = stats.manaMax, invulneravel = 0, sentada = false, levantando = 0;
 const CUSTO_SALTO_LUA = 12;
 const fogueiraInicial = fogueiras.find((f) => f.id === progresso.fogueira);
 const corpo = criarCorpo(fogueiraInicial ? fogueiraInicial.x + 60 : 60, 640 - CONST.ALTURA);
@@ -166,7 +187,7 @@ ajuda.position.set(16, 12);
 app.stage.addChild(ajuda);
 const painel = new Painel();
 const menu = new MenuFogueira();
-app.stage.addChild(painel.raiz, menu.raiz);
+app.stage.addChild(vinheta.g, painel.raiz, menu.raiz);
 
 // ---------- laço do jogo ----------
 let acumulado = 0, lupa = false, vxAntes = 0, vyAntes = 0;
@@ -188,7 +209,7 @@ function descansar(f) {
   menu.mostrar(progresso, stats, app.screen.width, app.screen.height);
 }
 
-function levantar() { sentada = false; menu.esconder(); }
+function levantar() { sentada = false; levantando = animacoes.levantar.texturas.length / animacoes.levantar.fps; menu.esconder(); }
 
 function morrer() {
   const f = fogueiras.find((x) => x.id === progresso.fogueira);
@@ -224,13 +245,15 @@ function passoFixo() {
   };
   if (apertou.has('lupa')) lupa = !lupa;
   if (!acao && corpo.noChao && corpo.esquiva === 0) {
-    if (apertou.has('lamina')) { acao = 'ataque_lamina'; tempoAcao = 0.32; golpeAcertou = false; }
+    // lâmina: ela avança um passo no golpe (antes golpeava parada, colada na criatura)
+    if (apertou.has('lamina')) { acao = 'ataque_lamina'; tempoAcao = 0.32; golpeAcertou = false; corpo.vx = corpo.direcao * 330; }
     else if (apertou.has('arco')) { acao = 'arco'; tempoAcao = 0.4 + 5 / 12; flechaSolta = false; }
     else if (apertou.has('dano')) { acao = 'dano'; tempoAcao = 0.34; }
     else if (apertou.has('vitoria')) { acao = 'vitoria'; tempoAcao = 2.0; }
   }
   apertou.clear();
-  if (acao) corpo.vx *= 0.7;
+  if (acao === 'ataque_lamina') corpo.vx *= 0.86;   // o avanço freia aos poucos
+  else if (acao) corpo.vx *= 0.7;
   passo(corpo, entrada, mundo);
   if (corpo.aterrissou) tempoAterrissar = 0.13;
   if (corpo.pulouNoAr) mana -= CUSTO_SALTO_LUA;
@@ -240,17 +263,25 @@ function passoFixo() {
   // golpe de lâmina: acerta na frente dela, uma vez por golpe
   if (acao === 'ataque_lamina' && tempoAcao < 0.22 && tempoAcao > 0.08 && !golpeAcertou) {
     const cx = corpo.x + CONST.LARGURA / 2;
-    const area = { x: corpo.direcao > 0 ? cx : cx - 110, y: corpo.y + 20, w: 110, h: CONST.ALTURA - 20 };
-    for (const s of sombras) if (s.viva && sobrepoe(area, s.caixa)) { golpeAcertou = true; if (s.ferir(stats.danoLamina, corpo.direcao)) ganhar(s); }
+    // alcance de 140 px na frente (cobre também a criatura encostada nela)
+    const area = { x: corpo.direcao > 0 ? cx - 10 : cx - 130, y: corpo.y + 20, w: 140, h: CONST.ALTURA - 20 };
+    for (const s of sombras) {
+      if (!s.viva || !sobrepoe(area, s.caixa)) continue;
+      golpeAcertou = true;
+      acertar(s, stats.danoLamina, corpo.direcao, 0.06, 5);
+      corpo.vx = -corpo.direcao * 120;                  // pequeno recuo dela: as duas se afastam
+    }
   }
   // toque de criatura: dano e empurrão
   const eu = { x: corpo.x, y: corpo.y, w: CONST.LARGURA, h: CONST.ALTURA };
   if (invulneravel <= 0 && corpo.esquiva === 0) {
     for (const s of sombras) {
-      if (!s.viva || !sobrepoe(eu, s.caixa)) continue;
+      if (!s.viva || !sobrepoe(eu, s.caixaToque)) continue;
+      const lado = corpo.x + CONST.LARGURA / 2 < s.x ? -1 : 1;
       vida -= 14; invulneravel = 1.0;
-      corpo.vx = (corpo.x + CONST.LARGURA / 2 < s.x ? -1 : 1) * 420; corpo.vy = -380;
+      corpo.vx = lado * 420; corpo.vy = -380;
       acao = 'dano'; tempoAcao = 0.34;
+      apanhar(14, corpo.x + CONST.LARGURA / 2 - lado * 18, corpo.y + CONST.ALTURA * 0.42, lado);
       if (vida <= 0) morrer();
       break;
     }
@@ -261,8 +292,34 @@ function passoFixo() {
   boneco.sentir(ax, ay, corpo.direcao);
 }
 
+/** golpe que acerta uma criatura: dano, faíscas, número, pausa e tremor */
+function acertar(s, dano, dir, pausa, tremor) {
+  const c = s.caixa;
+  faiscas.explodir(c.x + c.w / 2 - dir * 14, c.y + c.h * 0.45, 0xd9ccff, 12, dir);
+  numeros.mostrar(c.x + c.w / 2, c.y - 10, String(dano), '#efeaff');
+  impacto.golpe(pausa, tremor);
+  if (s.ferir(dano, dir)) { ganhar(s); faiscas.explodir(c.x + c.w / 2, c.y + c.h / 2, 0x8f7cff, 22); }
+}
+
+/** a Aurora apanha: clarão vermelho, recuo, faíscas, número, vinheta, pausa e tremor */
+function apanhar(dano, x, y, lado) {
+  clarao = 1; recuo = 1;
+  faiscas.explodir(x, y, 0xff5a6e, 16, lado);
+  numeros.mostrar(x, y - 70, '-' + dano, '#ff6b7d');
+  vinheta.piscar(1);
+  impacto.golpe(0.09, 9);
+}
+
 function escolherAnimacao(dt) {
-  if (sentada) { tocar('aterrissar'); quadros.parar(0); return; } // provisório até chegarem as poses sentada
+  if (sentada) {
+    // senta (de pé → agachada) e fica respirando; antes era um quadro congelado
+    if (estado !== 'sentar' && estado !== 'sentada') tocar('sentar');
+    if (estado === 'sentar' && quadros.currentFrame >= animacoes.sentar.texturas.length - 1 && quadros.t > animacoes.sentar.texturas.length / animacoes.sentar.fps) tocar('sentada');
+    quadros.respirar = Math.min(1, quadros.respirar + dt * 2);
+    return;
+  }
+  quadros.respirar = Math.max(0, quadros.respirar - dt * 4);
+  if (levantando > 0) { levantando -= dt; return tocar('levantar'); }
   if (acao) {
     tempoAcao -= dt;
     if (acao === 'arco') {
@@ -288,10 +345,10 @@ function escolherAnimacao(dt) {
 
 function atirar() {
   const s = new Sprite(texFlecha);
-  s.anchor.set(0.5);
+  s.anchor.set(0.5); s.scale.y = ESCALA_FLECHA;
   const pes = { x: corpo.x + CONST.LARGURA / 2, y: corpo.y + CONST.ALTURA };
   s.position.set(pes.x + corpo.direcao * 70, pes.y - ALTURA_VISUAL * 0.58);
-  s.scale.x = corpo.direcao;
+  s.scale.x = corpo.direcao * ESCALA_FLECHA;
   cena.addChild(s);
   flechas.push({ s, vx: corpo.direcao * 1150, vy: -40, vida: 4, cravada: false });
 }
@@ -303,11 +360,11 @@ function atualizarFlechas(dt) {
       f.vy += 380 * dt;
       f.s.x += f.vx * dt; f.s.y += f.vy * dt;
       f.s.rotation = Math.atan2(f.vy, Math.abs(f.vx)) * Math.sign(f.vx);
-      const ponta = { x: f.s.x + Math.sign(f.vx) * 70, y: f.s.y };
+      const ponta = { x: f.s.x + Math.sign(f.vx) * PONTA_FLECHA, y: f.s.y };
       const alvo = sombras.find((s) => s.viva && sobrepoe({ x: ponta.x - 4, y: ponta.y - 4, w: 8, h: 8 }, s.caixa));
-      if (alvo) { if (alvo.ferir(stats.danoFlecha, Math.sign(f.vx))) ganhar(alvo); f.vida = 0; continue; }
+      if (alvo) { acertar(alvo, stats.danoFlecha, Math.sign(f.vx), 0.04, 3); f.vida = 0; continue; }
       if (mundo.some((r) => ponta.x > r.x && ponta.x < r.x + r.w && ponta.y > r.y && ponta.y < r.y + r.h)) {
-        f.cravada = true; f.s.texture = texFlechaCravada; f.s.rotation = 0; f.s.scale.x = Math.sign(f.vx) > 0 ? 1 : -1;
+        f.cravada = true; f.s.texture = texFlechaCravada; f.s.rotation = 0; f.s.scale.set((Math.sign(f.vx) > 0 ? 1 : -1) * ESCALA_FLECHA, ESCALA_FLECHA);
       }
     }
     if (f.vida < 0.5) f.s.alpha = Math.max(0, f.vida / 0.5);
@@ -316,7 +373,10 @@ function atualizarFlechas(dt) {
 }
 
 app.ticker.add((ticker) => {
-  const dt = Math.min(ticker.deltaMS / 1000, 0.1);
+  const dtReal = Math.min(ticker.deltaMS / 1000, 0.1);
+  // hit-stop: no impacto o jogo para por um instante (os efeitos continuam)
+  const parado = impacto.atualizar(dtReal);
+  const dt = parado ? 0 : dtReal;
   acumulado += dt;
   while (acumulado >= CONST.DT) { passoFixo(); acumulado -= CONST.DT; }
 
@@ -332,9 +392,18 @@ app.ticker.add((ticker) => {
   // vento e movimento empurram o cabelo (no lado para onde ela olha)
   const ventoLocal = vento.forca * corpo.direcao;
   const corrida = Math.abs(corpo.vx) / CONST.VEL_CORRIDA;
-  quadros.atualizar(dt, ventoLocal * 9 - corrida * 7 - (corpo.vy < -100 ? 0 : 0));
+  quadros.atualizar(dt, ventoLocal * 9 - corrida * 7, Math.abs(vento.forca));
   boneco.atualizar(dt, ventoLocal);
   atualizarFlechas(dt);
+  faiscas.atualizar(dtReal); numeros.atualizar(dtReal);
+  vinheta.atualizar(dtReal, app.screen.width, app.screen.height, vida / stats.vidaMax);
+  // clarão vermelho que volta ao normal e recuo (inclina para trás e volta)
+  clarao = Math.max(0, clarao - dtReal * 3.2); recuo = Math.max(0, recuo - dtReal * 3.2);
+  const tint = clarao > 0 ? (0xff << 16) | (Math.round(255 - 165 * clarao) << 8) | Math.round(255 - 150 * clarao) : 0xffffff;
+  quadros.malha.tint = tint;
+  for (const m of boneco.raiz.children) m.tint = tint;
+  const inclina = -corpo.direcao * 0.12 * Math.sin(Math.min(1, recuo) * Math.PI) * (estado === 'boneco' ? 0 : 1);
+  quadros.raiz.rotation = inclina;
   const perto = fogueiraPerto();
   for (const f of fogueiras) f.atualizar(dt, f === perto, vento.forca);
   for (const s of sombras) s.atualizar(dt);
@@ -343,7 +412,8 @@ app.ticker.add((ticker) => {
   for (const x of textosFlutuantes) { x.vida -= dt; x.t.y -= 40 * dt; x.t.alpha = Math.max(0, x.vida); }
   for (let i = textosFlutuantes.length - 1; i >= 0; i--) if (textosFlutuantes[i].vida <= 0) { textosFlutuantes[i].t.destroy(); textosFlutuantes.splice(i, 1); }
   painel.atualizar(vida, stats.vidaMax, mana, stats.manaMax, progresso.moedas, progresso.nivel);
-  quadros.raiz.alpha = boneco.raiz.alpha = invulneravel > 0 && !sentada ? 0.55 + 0.45 * Math.sin(invulneravel * 40) : 1;
+  // invulnerável: pisca devagar (antes piscava rápido e "apagava" a Aurora)
+  quadros.raiz.alpha = boneco.raiz.alpha = invulneravel > 0 && !sentada && clarao <= 0 ? 0.72 + 0.28 * Math.cos(invulneravel * 22) : 1;
 
   // câmera: segue com suavidade e olha um pouco para a frente; a lupa aproxima
   const zoomAlvo = lupa ? 2.6 : 1;
@@ -354,7 +424,7 @@ app.ticker.add((ticker) => {
   camera.x += (alvoX - camera.x) * Math.min(1, dt * 5);
   camera.y += (alvoY - camera.y) * Math.min(1, dt * 4);
   cena.scale.set(camera.zoom);
-  cena.position.set(app.screen.width / 2 - camera.x * camera.zoom, app.screen.height * 0.55 - camera.y * camera.zoom);
+  cena.position.set(app.screen.width / 2 - camera.x * camera.zoom + impacto.dx, app.screen.height * 0.55 - camera.y * camera.zoom + impacto.dy);
   camada2.x = -camera.x * 0.15 % 360; camada3.x = -camera.x * 0.35 % 340;
   vento.atualizar(dt, app.screen.width, app.screen.height, (camera.x - (camera.xAntes ?? camera.x)) * camera.zoom);
   camera.xAntes = camera.x;
@@ -362,7 +432,7 @@ app.ticker.add((ticker) => {
 
 // ganchos para os testes automáticos
 window.__jogo = {
-  vento, quadros,
+  vento, quadros, impacto, faiscas,
   corpo, boneco, app, teclas, apertou, sombras, fogueiras,
   get estado() { return estado; }, get sentada() { return sentada; },
   get vida() { return vida; }, get mana() { return mana; }, get progresso() { return progresso; },

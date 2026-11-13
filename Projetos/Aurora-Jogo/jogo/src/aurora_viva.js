@@ -4,10 +4,13 @@
  *  - respiração: ombros e peito sobem e descem; a cabeça acompanha
  *  - piscar: olhos abertos → semicerrados → abertos (às vezes duas vezes)
  *  - dedos: a mão solta fecha e abre com transição suave (duas malhas sobrepostas)
- *  - cabelo solto e tranças: oscilam com a brisa, com o vento e com o movimento
+ *  - cabelo solto e tranças: oscilam com a brisa, com o vento e com o movimento, com atraso de mola
  * Regiões em px da imagem: assets/viva/aurora_viva.json (gerado por ferramentas/compor_viva.py).
+ * O que é cabelo vem de assets/viva/aurora_viva_cabelo.png (ferramentas/pesos_cabelo.py): o peso é zero no
+ * corpo, então o peito, as costas e a ombreira não balançam junto com o cabelo.
  */
 import { Assets, Container, MeshPlane } from '../vendor/pixi.min.mjs';
+import { MolaCabelo, amostrar, lerPesos } from './pesos.js';
 
 const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const dentro = (caixa, x, y, borda) =>
@@ -17,17 +20,26 @@ const dentro = (caixa, x, y, borda) =>
 export async function carregarAuroraViva() {
   const meta = await (await fetch('assets/viva/aurora_viva.json')).json();
   const tex = {};
-  await Promise.all(meta.texturas.map(async (n) => { tex[n] = await Assets.load(`assets/viva/aurora_${n}.png`); }));
-  return new AuroraViva(tex, meta);
+  await Promise.all(meta.texturas.map(async (n) => { tex[n] = nitida(await Assets.load(`assets/viva/aurora_${n}.png`)); }));
+  const pesos = await lerPesos('assets/viva/aurora_viva_cabelo.png');
+  return new AuroraViva(tex, meta, pesos);
+}
+
+/** Mipmaps: o desenho (953 px de altura) aparece com ~210 px; sem mipmaps ele serrilha ("pixelado"). */
+export function nitida(tex) {
+  const s = tex.source;
+  s.autoGenerateMipmaps = true; s.scaleMode = 'linear'; s.mipmapFilter = 'linear'; s.maxAnisotropy = 8;
+  s.updateMipmaps?.(); s.update?.();
+  return tex;
 }
 
 class AuroraViva {
-  constructor(tex, meta) {
+  constructor(tex, meta, pesos) {
     this.tex = tex; this.m = meta;
     this.altura = meta.altura;
     this.raiz = new Container();
     const malha = () => {
-      const m = new MeshPlane({ texture: tex.olhos_abertos_mao_aberta, verticesX: 22, verticesY: 40 });
+      const m = new MeshPlane({ texture: tex.olhos_abertos_mao_aberta, verticesX: 42, verticesY: 80 });
       m.position.set(-meta.pes[0], -meta.pes[1]);
       this.raiz.addChild(m);
       return m;
@@ -36,6 +48,14 @@ class AuroraViva {
     this.sobre = malha();              // camada para a transição suave da mão
     this.sobre.alpha = 0;
     this.orig = Float32Array.from(this.base.geometry.attributes.aPosition.buffer.data);
+    // pesos por vértice (a imagem de pesos tem metade da resolução do desenho)
+    const n = this.orig.length / 2;
+    this.wCabelo = new Float32Array(n); this.wTranca = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const x = this.orig[i * 2] / 2, y = this.orig[i * 2 + 1] / 2;
+      this.wCabelo[i] = amostrar(pesos, x, y, 0); this.wTranca[i] = amostrar(pesos, x, y, 1);
+    }
+    this.mola = new MolaCabelo(34, 0.3); this.molaTranca = new MolaCabelo(52, 0.38);
     this.t = 0; this.forca = 0;
     this.olhos = 'abertos'; this.mao = 'aberta'; this.maoAlvo = 'aberta'; this.fade = 1;
     this.proximaPiscada = 1.8; this.piscando = -1; this.duasVezes = false;
@@ -82,11 +102,16 @@ class AuroraViva {
     const resp = Math.sin((t / 3.6) * Math.PI * 2) * 0.5 + 0.5;          // 0..1
     const balanco = Math.sin(t * 0.9);
     this.forca *= 0.92;
-    const vento = 0.5 * Math.sin(t * 1.3) + 0.3 * Math.sin(t * 2.3) + this.forca * 60 + ventoLocal * 4.5;
+    // o cabelo vai para onde o vento e o movimento empurram, mas com atraso de mola (passa do ponto e volta)
+    const empurrao = this.forca * 60 + ventoLocal * 4.5;
+    const brisa = 0.5 * Math.sin(t * 1.3) + 0.3 * Math.sin(t * 2.3);
+    const cab = this.mola.atualizar(dt, (brisa + empurrao) * 9);
+    const tra = this.molaTranca.atualizar(dt, (brisa * 0.6 + empurrao) * 4.5);
+    const forcaVento = Math.min(1, Math.abs(ventoLocal) + Math.abs(this.forca) * 8);
     const bufs = [this.base.geometry.attributes.aPosition.buffer, this.sobre.geometry.attributes.aPosition.buffer];
     const d = bufs[0].data, o = this.orig;
     const alturaCabelo = M.cabelo[3] - M.cabelo[1];
-    for (let i = 0; i < d.length; i += 2) {
+    for (let i = 0, k = 0; i < d.length; i += 2, k++) {
       const x = o[i], y = o[i + 1];
       // respiração: acima da cintura sobe; mais forte nos ombros
       const acima = 1 - suave(M.ombro_y, M.cintura_y, y);
@@ -95,15 +120,21 @@ class AuroraViva {
       // cabeça: balanço leve em volta do pescoço
       const cabeca = 1 - suave(M.pescoco_y - 30, M.pescoco_y + 10, y);
       dx += 2.2 * balanco * cabeca * ((M.pescoco_y - y) / 120);
-      // cabelo solto atrás: mais solto embaixo
-      const c = dentro(M.cabelo, x, y, 40);
-      const desce = Math.min(1, Math.max(0, (y - M.cabelo[1]) / alturaCabelo));
-      dx += c * Math.pow(desce, 1.3) * (10 * Math.sin(t * 1.5 + desce * 3) + vento * 9);
-      dy += c * desce * 2.5 * Math.sin(t * 1.1 + x * 0.02);
-      // tranças na frente
-      const tr = dentro(M.tranca, x, y, 18);
-      const desceT = Math.min(1, Math.max(0, (y - M.tranca[1]) / (M.tranca[3] - M.tranca[1])));
-      dx += tr * desceT * (5 * Math.sin(t * 1.7 + 1.2) + vento * 4.5);
+      // cabelo solto: só onde o peso diz que é cabelo (zero no corpo), mais solto nas pontas
+      const wc = this.wCabelo[k];
+      if (wc > 0.002) {
+        const desce = Math.min(1, Math.max(0, (y - M.cabelo[1]) / alturaCabelo));
+        const m = this.mola.deslocamento(desce, forcaVento);
+        dx += wc * (m.dx + 6 * Math.sin(t * 1.5 + desce * 3) * desce);
+        dy += wc * (m.dy + desce * 2.5 * Math.sin(t * 1.1 + x * 0.02));
+      }
+      // tranças na frente (peso pequeno perto do peito, que fica parado)
+      const wt = this.wTranca[k];
+      if (wt > 0.002) {
+        const desceT = Math.min(1, Math.max(0, (y - M.tranca[1]) / (M.tranca[3] - M.tranca[1])));
+        const m = this.molaTranca.deslocamento(desceT, forcaVento);
+        dx += wt * (m.dx + 4 * Math.sin(t * 1.7 + 1.2) * desceT);
+      }
       d[i] = x + dx; d[i + 1] = y + dy;
     }
     bufs[1].data.set(d);

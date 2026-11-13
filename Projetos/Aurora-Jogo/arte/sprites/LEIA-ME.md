@@ -8,6 +8,7 @@
 | `previas/*.gif` | Prévias animadas sobre o fundo índigo do jogo |
 | `recortes/*.png` | Cada pose original recortada, com transparência |
 | `flecha/*.png` | Flecha como projétil separado: voando, voando com rastro, cravada |
+| `aurora_folha_cabelo.png` | Pesos do cabelo de cada quadro (1/4 da resolução; `ferramentas/pesos_cabelo.py`) |
 
 **Âncora:** pés no centro inferior da célula (y = 372); a cambalhota gira em torno do centro.
 **Escala:** igualada pela altura da cabeça (70 px no jogo).
@@ -44,6 +45,8 @@ python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_arco_preparar.web
 python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_arco_atirar.webp --nomes arco_atirar:4 --saida arte/sprites/recortes
 python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_flecha.png --nomes flecha:3 --saida arte/sprites/recortes
 python3 ferramentas/montar_folha.py
+python3 ferramentas/limpar_bordas.py arte/sprites/aurora_folha.png
+python3 ferramentas/pesos_cabelo.py
 ```
 Para adicionar uma pose nova: coloque a imagem em `arte/poses-originais/`, rode o recorte, meça a altura da
 cabeça (tiara ao queixo) e registre em `POSES` dentro de `ferramentas/montar_folha.py`.

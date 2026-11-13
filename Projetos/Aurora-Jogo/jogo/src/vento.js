@@ -4,6 +4,7 @@
  * `forca` vai de -1 (soprando para a esquerda) a 1 (para a direita).
  */
 import { Container, Graphics, MeshPlane } from '../vendor/pixi.min.mjs';
+import { MolaCabelo, amostrar } from './pesos.js';
 
 const CORES = ['#7c9a5a', '#a3b86c', '#c9a25a', '#8a6a9e', '#5f8a7a'];
 
@@ -76,9 +77,13 @@ export class Vento {
 const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
 export class QuadrosVivos {
-  constructor(texInicial, base) {
+  /**
+   * pesos: imagem de pesos do cabelo da folha inteira (ferramentas/pesos_cabelo.py), em `escalaPesos` da folha.
+   * Sem pesos, cai na região antiga (atrás da cabeça e das costas).
+   */
+  constructor(texInicial, base, pesos = null, escalaPesos = 0.25) {
     this.raiz = new Container();
-    this.malha = new MeshPlane({ texture: texInicial, verticesX: 14, verticesY: 18 });
+    this.malha = new MeshPlane({ texture: texInicial, verticesX: 30, verticesY: 30 });
     this.malha.position.set(-texInicial.width / 2, -base);
     this.raiz.addChild(this.malha);
     this.buf = this.malha.geometry.attributes.aPosition.buffer;
@@ -86,6 +91,9 @@ export class QuadrosVivos {
     this.w = texInicial.width; this.h = texInicial.height;
     this.texturas = [texInicial]; this.fps = 10; this.loop = true; this.velocidade = 1;
     this.t = 0; this.quadro = 0; this.tt = 0;
+    this.pesos = pesos; this.escalaPesos = escalaPesos; this.cache = new Map();
+    this.mola = new MolaCabelo(36, 0.3);
+    this.respirar = 0;                     // 0..1: respiração do tronco (sentada)
   }
   get currentFrame() { return this.quadro; }
   tocar(anim) {
@@ -95,8 +103,26 @@ export class QuadrosVivos {
   }
   parar(i) { this.parado = true; this.quadro = i; this.malha.texture = this.texturas[i]; }
 
-  /** cabeloX: deslocamento do cabelo em px da célula (negativo = para trás). */
-  atualizar(dt, cabeloX) {
+  /** Peso do cabelo em cada vértice para a textura atual (calculado uma vez por quadro e guardado). */
+  pesosDe(tex) {
+    let w = this.cache.get(tex);
+    if (w) return w;
+    const n = this.orig.length / 2, f = tex.frame, e = this.escalaPesos;
+    w = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const u = this.orig[i * 2] / this.w, v = this.orig[i * 2 + 1] / this.h;
+      w[i] = this.pesos ? amostrar(this.pesos, (f.x + u * f.width) * e, (f.y + v * f.height) * e, 0)
+        : (1 - suave(0.4, 0.55, u)) * suave(0.12, 0.3, v) * (1 - suave(0.58, 0.7, v));
+    }
+    this.cache.set(tex, w);
+    return w;
+  }
+
+  /**
+   * cabeloX: para onde o vento e o movimento empurram o cabelo, em px da célula (negativo = para trás).
+   * forcaVento: |vento| de 0 a 1 (faz as pontas tremularem).
+   */
+  atualizar(dt, cabeloX, forcaVento = 0) {
     this.tt += dt;
     if (!this.parado) {
       this.t += dt * this.velocidade;
@@ -105,14 +131,21 @@ export class QuadrosVivos {
       q = this.loop ? q % n : Math.min(q, n - 1);
       if (q !== this.quadro) { this.quadro = q; this.malha.texture = this.texturas[q]; }
     }
-    const d = this.buf.data, o = this.orig, W = this.w, H = this.h;
-    for (let i = 0; i < d.length; i += 2) {
-      const u = o[i] / W, v = o[i + 1] / H;
-      // cabelo: atrás da cabeça e das costas (lado esquerdo da célula, da nuca à cintura)
-      const peso = (1 - suave(0.4, 0.55, u)) * suave(0.12, 0.3, v) * (1 - suave(0.58, 0.7, v));
-      const desce = Math.min(1, Math.max(0, (v - 0.12) / 0.45));
-      d[i] = o[i] + peso * desce * (cabeloX + 1.5 * Math.sin(this.tt * 6 + v * 5) * Math.min(1, Math.abs(cabeloX) / 6));
-      d[i + 1] = o[i + 1] + peso * desce * 0.8 * Math.sin(this.tt * 4 + u * 6);
+    this.mola.atualizar(dt, cabeloX);
+    const w = this.pesosDe(this.malha.texture);
+    const resp = this.respirar * (Math.sin((this.tt / 3.4) * Math.PI * 2) * 0.5 + 0.5);
+    const d = this.buf.data, o = this.orig, H = this.h;
+    for (let i = 0, k = 0; i < d.length; i += 2, k++) {
+      const v = o[i + 1] / H;
+      let dx = 0, dy = 0;
+      if (w[k] > 0.002) {
+        const desce = Math.min(1, Math.max(0, (v - 0.12) / 0.45));
+        const m = this.mola.deslocamento(desce, forcaVento);
+        dx = w[k] * m.dx; dy = w[k] * (m.dy + 0.6 * Math.sin(this.tt * 4 + v * 6) * Math.min(1, Math.abs(this.mola.valor) / 6));
+      }
+      // respiração: o tronco sobe um pouco (mais nos ombros), as pernas ficam paradas
+      if (resp > 0) dy -= resp * 4 * (1 - suave(0.25, 0.62, v)) * suave(0.05, 0.2, v);
+      d[i] = o[i] + dx; d[i + 1] = o[i + 1] + dy;
     }
     this.buf.update();
   }

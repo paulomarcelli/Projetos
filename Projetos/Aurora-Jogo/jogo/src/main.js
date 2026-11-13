@@ -141,6 +141,7 @@ const fogueiraInicial = fogueiras.find((f) => f.id === progresso.fogueira);
 const corpo = criarCorpo(fogueiraInicial ? fogueiraInicial.x + 60 : 60, 640 - CONST.ALTURA);
 if (fogueiraInicial) fogueiraInicial.acesa = true;
 let estado = 'parada', acao = null, tempoAcao = 0, tempoAterrissar = 0, flechaSolta = false, golpeAcertou = false;
+let guarda = 0;   // depois do golpe de lâmina ela fica um instante em guarda (folha H); andar, pular ou golpear cancela
 const sobrepoe = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 const textosFlutuantes = [];
 function ganhar(s) {
@@ -321,9 +322,10 @@ function escolherAnimacao(dt) {
       tocar(tempoAcao > 5 / 12 ? 'arco_preparar' : 'arco_atirar');
       if (estado === 'arco_atirar' && quadros.currentFrame >= 3 && !flechaSolta) { flechaSolta = true; atirar(); }
     } else tocar(acao);
-    if (tempoAcao <= 0) acao = null;
+    if (tempoAcao <= 0) { guarda = acao === 'ataque_lamina' ? 0.45 : 0; acao = null; }
     return;
   }
+  if (corpo.esquiva > 0 || !corpo.noChao || Math.abs(corpo.vx) > 30) guarda = 0;
   if (corpo.esquiva > 0) return tocar('esquiva');
   if (!corpo.noChao) {
     if (corpo.saltoDuplo && corpo.vy < 200) return tocar('cambalhota');
@@ -335,6 +337,7 @@ function escolherAnimacao(dt) {
     quadros.velocidade = Math.max(0.5, Math.abs(corpo.vx) / CONST.VEL_CORRIDA);
     return;
   }
+  if (guarda > 0) { guarda -= dt; return tocar('lamina_guarda'); }
   tocar('boneco');
 }
 

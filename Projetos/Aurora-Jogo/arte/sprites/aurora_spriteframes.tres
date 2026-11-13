@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=77 format=3]
+[gd_resource type="SpriteFrames" load_steps=80 format=3]
 
 [ext_resource type="Texture2D" path="res://arte/sprites/aurora_folha.png" id="1_folha"]
 
@@ -252,55 +252,67 @@ region = Rect2(2688, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_63"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 2304, 384, 384)
+region = Rect2(2688, 1920, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_64"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 2304, 384, 384)
+region = Rect2(0, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_65"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 2304, 384, 384)
+region = Rect2(384, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_66"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 2304, 384, 384)
+region = Rect2(768, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_67"]
 atlas = ExtResource("1_folha")
-region = Rect2(1536, 2304, 384, 384)
+region = Rect2(1152, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_68"]
 atlas = ExtResource("1_folha")
-region = Rect2(1920, 2304, 384, 384)
+region = Rect2(1536, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_69"]
 atlas = ExtResource("1_folha")
-region = Rect2(2304, 2304, 384, 384)
+region = Rect2(1920, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_70"]
 atlas = ExtResource("1_folha")
-region = Rect2(2688, 2304, 384, 384)
+region = Rect2(2304, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_71"]
 atlas = ExtResource("1_folha")
-region = Rect2(0, 2688, 384, 384)
+region = Rect2(2688, 2304, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_72"]
 atlas = ExtResource("1_folha")
-region = Rect2(384, 2688, 384, 384)
+region = Rect2(0, 2688, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_73"]
 atlas = ExtResource("1_folha")
-region = Rect2(768, 2688, 384, 384)
+region = Rect2(384, 2688, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_74"]
 atlas = ExtResource("1_folha")
-region = Rect2(1152, 2688, 384, 384)
+region = Rect2(768, 2688, 384, 384)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_75"]
 atlas = ExtResource("1_folha")
+region = Rect2(1152, 2688, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_76"]
+atlas = ExtResource("1_folha")
 region = Rect2(1536, 2688, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_77"]
+atlas = ExtResource("1_folha")
+region = Rect2(1920, 2688, 384, 384)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78"]
+atlas = ExtResource("1_folha")
+region = Rect2(2304, 2688, 384, 384)
 
 [resource]
 animations = [{
@@ -553,7 +565,12 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_63")
+}],
+"loop": false,
+"name": &"lamina_guarda",
+"speed": 6.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_64")
 }, {
@@ -568,12 +585,7 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_68")
-}],
-"loop": true,
-"name": &"cambalhota",
-"speed": 16.0
 }, {
-"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_69")
 }, {
@@ -583,9 +595,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_71")
 }],
-"loop": false,
-"name": &"dano",
-"speed": 9.0
+"loop": true,
+"name": &"cambalhota",
+"speed": 16.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -596,9 +608,23 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_74")
+}],
+"loop": false,
+"name": &"dano",
+"speed": 9.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_75")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_76")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_77")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78")
 }],
 "loop": true,
 "name": &"vitoria",

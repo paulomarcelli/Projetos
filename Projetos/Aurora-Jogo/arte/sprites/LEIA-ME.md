@@ -28,6 +28,7 @@
 | `sentada` | 12 | 3 | sim | Folha "sentada" (3 quadros): inspira, expira e pisca, em sequência longa |
 | `levantar` | 4 | 7 | não | `sentar` ao contrário |
 | `ataque_lamina` | 5 | 14 | não | Folha G: guarda, passo com a lâmina, passo armando, estocada (2 quadros) |
+| `lamina_guarda` | 3 | 6 | não | Folha H: recolhe a lâmina e fica em guarda (depois do golpe) |
 | `cambalhota` | 8 | 16 | sim | 1 pose girada 360° (Salto da Lua) |
 | `dano` | 3 | 9 | não | Folha I: impacto, cambaleia para trás, recupera o equilíbrio |
 | `vitoria` | 4 | 8 | sim | 1 pose + pulinhos por código |
@@ -50,6 +51,7 @@ python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_sentar.webp --nom
 python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_sentada.webp --nomes sentada:3 --saida arte/sprites/recortes
 python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_lamina.webp --nomes lamina:4 --saida arte/sprites/recortes --separar 7 --dar 465,292,532,320:2 --dar 684,380,725,460:4
 python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_dano.webp --nomes dano:3 --saida arte/sprites/recortes
+python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_guarda.webp --nomes guarda:2 --saida arte/sprites/recortes
 python3 ferramentas/fatiar_sombra.py arte/poses-originais/folha_sombra.png   # criatura (arte/sprites/sombra/)
 python3 ferramentas/fatiar_folha.py arte/poses-originais/folha_flecha.png --nomes flecha:3 --saida arte/sprites/recortes
 python3 ferramentas/montar_folha.py

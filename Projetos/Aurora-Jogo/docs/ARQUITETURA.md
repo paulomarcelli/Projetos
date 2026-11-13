@@ -36,7 +36,7 @@ Ambas usam os **pés** como origem (y = base da célula) e são espelhadas com `
 Altura visual na tela: 210 px (`ALTURA_VISUAL`).
 
 Estados de animação (`escolherAnimacao`): `boneco` (parada viva) · `correndo` · `pulo` · `queda` · `aterrissar` ·
-`esquiva` · `cambalhota` (Salto da Lua) · `ataque_lamina` · `arco_preparar` → `arco_atirar` (solta a flecha no
+`esquiva` · `cambalhota` (Salto da Lua) · `ataque_lamina` → `lamina_guarda` · `arco_preparar` → `arco_atirar` (solta a flecha no
 quadro 3) · `dano` · `vitoria` · `sentar` → `sentada` → `levantar` (quadros do Gemini; quadros repetidos ocupam
 uma célula só na folha).
 

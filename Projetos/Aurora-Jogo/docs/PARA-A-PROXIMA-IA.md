@@ -54,8 +54,9 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
   A 1ª versão da folha G (braço estendido, lâmina erguida) chegou só como visualização.
 - **Dano (folha I):** 3 quadros (impacto, cambaleia, recupera com o arco) em 0,33 s, alinhados pelo tronco; clarão,
   recuo, faíscas e vinheta continuam por código.
-- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): volta à guarda (H), mão meio fechada (F) e
-  corrida maior (J). Uma folha J chegou só como visualização, e os quadros 1 a 3 dela são quase os mesmos passos da
+- **Volta à guarda (folha H):** depois do golpe de lâmina, `lamina_guarda` (recolhe a lâmina, fica em guarda) por 0,45 s
+  (variável `guarda` no `main.js`); andar, pular, esquivar ou golpear de novo cancela na hora.
+- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): mão meio fechada (F) e corrida maior (J). Uma folha J chegou só como visualização, e os quadros 1 a 3 dela são quase os mesmos passos da
   folha G (andando); falta o ciclo completo de corrida (8 quadros).
 
 - **Corpo "elástico" na corrida (corrigido):** com o desenho inteiro numa malha 30×30, os triângulos que cruzavam o
@@ -65,8 +66,8 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
   Gemini já respiram).
 
 ## Provisório / incompleto (prioridade de cima para baixo)
-1. **Combo de verdade**: hoje J faz sempre o mesmo golpe. Com a folha H (volta à guarda), dá para encadear
-   golpe 1 → golpe 2 ao apertar de novo durante a estocada.
+1. **Combo de verdade**: hoje J faz sempre o mesmo golpe (apertar J na guarda recomeça o golpe). Um 2º golpe
+   diferente (outra folha) deixaria encadear golpe 1 → golpe 2.
 2. **Criaturas**: só existe a sombra de névoa. Faltam as outras do roteiro e os chefes.
 3. **Olhos fechados**: a Aurora parada só tem olhos semicerrados (piscar mais suave). Pedir ao Gemini a mesma
    imagem base com os olhos fechados e incluir em `compor_viva.py` (`FONTES`, novas combinações).

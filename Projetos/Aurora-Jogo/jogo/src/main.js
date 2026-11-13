@@ -242,7 +242,7 @@ function passoFixo() {
   if (apertou.has('lupa')) lupa = !lupa;
   if (!acao && corpo.noChao && corpo.esquiva === 0) {
     // lâmina: ela avança um passo no golpe (antes golpeava parada, colada na criatura)
-    if (apertou.has('lamina')) { acao = 'ataque_lamina'; tempoAcao = 0.32; golpeAcertou = false; corpo.vx = corpo.direcao * 330; }
+    if (apertou.has('lamina')) { acao = 'ataque_lamina'; tempoAcao = 0.36; golpeAcertou = false; corpo.vx = corpo.direcao * 330; }
     else if (apertou.has('arco')) { acao = 'arco'; tempoAcao = 0.4 + 5 / 12; flechaSolta = false; }
     else if (apertou.has('dano')) { acao = 'dano'; tempoAcao = 0.34; }
     else if (apertou.has('vitoria')) { acao = 'vitoria'; tempoAcao = 2.0; }
@@ -257,7 +257,7 @@ function passoFixo() {
   invulneravel = Math.max(0, invulneravel - CONST.DT);
 
   // golpe de lâmina: acerta na frente dela, uma vez por golpe
-  if (acao === 'ataque_lamina' && tempoAcao < 0.22 && tempoAcao > 0.08 && !golpeAcertou) {
+  if (acao === 'ataque_lamina' && tempoAcao < 0.16 && tempoAcao > 0.02 && !golpeAcertou) {   // acerta na estocada (4º quadro, 0,21 s depois de apertar)
     const cx = corpo.x + CONST.LARGURA / 2;
     // alcance de 140 px na frente (cobre também a criatura encostada nela)
     const area = { x: corpo.direcao > 0 ? cx - 10 : cx - 130, y: corpo.y + 20, w: 140, h: CONST.ALTURA - 20 };

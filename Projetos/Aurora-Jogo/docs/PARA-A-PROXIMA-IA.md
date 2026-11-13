@@ -48,12 +48,16 @@ Leia junto com `README.md` (visão geral), `docs/ARQUITETURA.md` (código) e `do
 - **Criatura com arte:** a sombra de névoa usa a folha do Gemini (`ferramentas/fatiar_sombra.py`: transparência pela
   distância até o branco, para a fumaça não sumir): 4 quadros flutuando, o 1º de morte quando atordoada, os 3 de
   morte ao morrer, clarão do golpe com a mesma imagem somada por cima.
-- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): combo de lâmina (G chegou só como
-  visualização: pedir o arquivo), volta à guarda (H), dano (I), mão meio fechada (F) e corrida maior (J).
+- **Golpe de lâmina (folha G, 2ª versão):** guarda, passo com a lâmina à frente, passo armando, estocada longa
+  (segura 1 quadro). O acerto é na estocada (de 0,20 a 0,34 s depois de apertar). Fatiado com `--separar 7` e
+  duas correções `--dar` (ponta da lâmina do quadro 2 e ponta do arco do quadro 4 encostavam no quadro 3).
+  A 1ª versão da folha G (braço estendido, lâmina erguida) chegou só como visualização.
+- **Falta arte do Gemini** (prompts em `docs/prompts-aurora-rodada2.md`): volta à guarda (H), dano (I), mão meio
+  fechada (F) e corrida maior (J).
 
 ## Provisório / incompleto (prioridade de cima para baixo)
-1. **Combo de lâmina** (folha G, 4 quadros, cabeça ≈ 95 px): registrar como `ataque_lamina` em `montar_folha.py`
-   (hoje é 1 pose esticada por código) e ligar a área do golpe aos quadros 2–4 no `main.js`.
+1. **Combo de verdade**: hoje J faz sempre o mesmo golpe. Com a folha H (volta à guarda), dá para encadear
+   golpe 1 → golpe 2 ao apertar de novo durante a estocada.
 2. **Criaturas**: só existe a sombra de névoa. Faltam as outras do roteiro e os chefes.
 3. **Olhos fechados**: a Aurora parada só tem olhos semicerrados (piscar mais suave). Pedir ao Gemini a mesma
    imagem base com os olhos fechados e incluir em `compor_viva.py` (`FONTES`, novas combinações).

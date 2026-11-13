@@ -8,8 +8,8 @@ muito colado e personagem menos pixelada.
 tamanho da flecha, efeito de dano, avanço e alcance da faca, nitidez na tela (mipmaps e resolução da tela) e
 transição de sentar e levantar com respiração. O que depende de desenho novo está nos prompts abaixo.
 
-**Já chegaram e estão no jogo:** A (sentando), B (sentada), C (preparar o arco), D (mirar e atirar) e a sombra de
-névoa. A folha G (lâmina) e a E (mãos) chegaram só como visualização: mandar como arquivo.
+**Já chegaram e estão no jogo:** A (sentando), B (sentada), C (preparar o arco), D (mirar e atirar), G (lâmina) e a
+sombra de névoa. A E (mãos) chegou só como visualização (a versão certa é a sem luvas).
 
 ## Antes de gerar: regras para as imagens chegarem boas
 

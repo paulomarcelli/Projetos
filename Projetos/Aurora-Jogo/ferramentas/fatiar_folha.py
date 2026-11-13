@@ -86,7 +86,7 @@ def fatiar(caminho, linhas):
     return quadros
 
 
-def fatiar_separando(cor, alpha, linhas, raio):
+def fatiar_separando(cor, alpha, linhas, raio, dar=()):
     import cv2
     from scipy import ndimage
     opaco = alpha > 0.5
@@ -104,6 +104,11 @@ def fatiar_separando(cor, alpha, linhas, raio):
     ordem, resto = [], sorted(principais, key=lambda j: cy[j])
     for _, q in linhas:  # linhas de cima para baixo, cada uma da esquerda para a direita
         ordem.append(sorted(resto[:q], key=lambda j: caixas[j][1].start)); resto = resto[q:]
+    # correções manuais: um retângulo da folha (x0,y0,x1,y1) passa a ser do quadro N (1, 2, … na ordem de saída)
+    em_ordem = [j for g in ordem for j in g]
+    for (x0, y0, x1, y1), n_q in dar:
+        caixa = dono[y0:y1, x0:x1]
+        caixa[alpha[y0:y1, x0:x1] > 0] = em_ordem[n_q - 1]
     quadros = []
     for (nome, _), grupo in zip(linhas, ordem):
         for k, j in enumerate(grupo, 1):
@@ -142,12 +147,15 @@ def main():
     ap.add_argument('--nomes', required=True, help='linhas no formato nome:quantidade,nome:quantidade')
     ap.add_argument('--saida', required=True)
     ap.add_argument('--separar', type=int, default=0, help='plano C: afina a máscara N px para separar quadros que se tocam')
+    ap.add_argument('--dar', action='append', default=[], metavar='x0,y0,x1,y1:N',
+                    help='com --separar: o retângulo da folha passa a ser do quadro N (ex.: ponta de lâmina encostada no vizinho)')
     args = ap.parse_args()
     linhas = [(p.split(':')[0], int(p.split(':')[1])) for p in args.nomes.split(',')]
     saida = Path(args.saida); saida.mkdir(parents=True, exist_ok=True)
     if args.separar:
         cor, alpha = recorte_completo(args.folha)
-        lista = fatiar_separando(cor, alpha, linhas, args.separar)
+        dar = [(tuple(int(v) for v in r.split(':')[0].split(',')), int(r.split(':')[1])) for r in args.dar]
+        lista = fatiar_separando(cor, alpha, linhas, args.separar, dar)
     else:
         lista = fatiar(args.folha, linhas)
     for nome, img in lista:

@@ -16,15 +16,19 @@ de Helion acorrenta um deus. A história mistura **mitologia grega** (o tributo 
 Caronte, a Esfinge) com o clima de intriga e sobrevivência de grandes sagas de fantasia. Personagens, mundo e diálogos
 são **originais**. Roteiro completo, com 3 atos, 13 fases e 4 finais: [`docs/roteiro.md`](docs/roteiro.md).
 
-**Estado atual:** protótipo jogável numa fase de teste noturna.
+**Estado atual:** a **Fase 1 — A Floresta da Névoa** está jogável do começo ao fim (a caçada do roteiro, com
+2 fogueiras, sombras, alvos de palha, penhascos e a cena final). As animações da **Aurora criança** para o Prólogo já
+estão desenhadas e esperam a fase.
 
-| Já funciona | Provisório ou falta |
-|-------------|---------------------|
-| Correr, pular (com pulo variável, "pulo atrasado" e memória do botão), Salto da Lua (pulo duplo, gasta mana), esquiva, golpe de lâmina, arco com flecha que voa e crava | Fases do roteiro, chefes, diálogos e escolhas |
-| Aurora parada "viva": respiração, piscar, mão que abre e fecha, cabelo e tranças que balançam | Olhos totalmente fechados (só há semicerrados) |
-| Vento com rajadas e folhas em duas camadas (parallax); move o cabelo e a chama | Pose sentada (usa a pose agachada) |
-| Fogueira Lunar: sentar, recuperar vida e mana, salvar, criaturas voltam, menu de evolução | Arte das criaturas (hoje são formas desenhadas em código) |
-| Moedas de prata, 4 atributos, custo de nível crescente, salvamento versionado | Som e música, controles de toque, mais fases |
+| Já funciona | Falta |
+|-------------|-------|
+| Correr, pular (pulo variável, "pulo atrasado", memória do botão), Salto da Lua, esquiva, golpe de lâmina com volta à guarda, arco com flecha que voa e crava | Prólogo (castelo, furtividade, soldados), Fases 2 a 13, chefes |
+| Aurora parada "viva" (respira, pisca, mão abre e fecha) e em movimento com o cabelo separado do corpo, reagindo ao vento | Diálogos com escolhas, som e música |
+| Sentar na Fogueira Lunar (respirando), salvar, evoluir; dano em 3 quadros com clarão, recuo e hit-stop | Menu inicial e controles de toque |
+| Fase 1 em dados, com teste automático (jogador robô, alcance dos saltos e ritmo) | Patrulha imperial na Fase 1 (precisa de arte dos soldados) |
+| Sombra de névoa animada; cervo; neve, névoa e fundo de inverno | |
+
+Para a próxima IA: [`docs/PARA-A-PROXIMA-IA.md`](docs/PARA-A-PROXIMA-IA.md) (estado, decisões, próximos passos).
 
 ## Controles
 | Tecla | Ação |
@@ -34,7 +38,8 @@ são **originais**. Roteiro completo, com 3 atos, 13 fases e 4 finais: [`docs/ro
 | Shift (ou C) | esquivar rolando |
 | J (ou Z) | golpe de lâmina |
 | K (ou X) | atirar com o arco |
-| E | descansar na Fogueira Lunar / levantar |
+| E (ou Enter) | descansar na Fogueira Lunar / levantar · avançar as falas da cena final |
+| R | (no fim da fase) jogar de novo |
 | 1 2 3 4 | (na fogueira) evoluir Vigor, Foco, Força, Precisão |
 | L | lupa: aproxima a câmera para ver os detalhes da Aurora |
 | H / V | testar as animações de dano e de vitória |
@@ -45,17 +50,20 @@ Precisa de Node.js 18+ e Python 3.
 cd Projetos/Aurora-Jogo/jogo
 npm install
 npm run preparar     # copia o PixiJS e as artes para jogo/
-npm test             # 15 testes: física, progressão e salvamento
+npm test             # 21 testes: física, progressão, salvamento e a Fase 1 (jogador robô)
 python3 -m http.server 8080
 ```
 Abra `http://localhost:8080`. Precisa de um servidor (os módulos JavaScript não abrem com dois cliques em `file://`).
+Para só jogar, use o link publicado: <https://paulomarcelli.github.io/Projetos/Projetos/Aurora/>.
 
 ## Pastas
 ```text
 Aurora-Jogo/
 ├── jogo/                 o jogo (é isto que vai para o GitHub Pages)
 │   ├── index.html
-│   ├── src/              main.js, fisica.js, aurora_viva.js, vento.js, fogueira.js, inimigos.js, hud.js, progresso.js
+│   ├── src/              main.js, fisica.js, nivel.js, fase.js, aurora_viva.js, vento.js, fogueira.js, inimigos.js, hud.js, progresso.js
+│   ├── fases/            fase1.json (a fase em dados: plataformas, criaturas, fogueiras, ritmo, falas)
+│   ├── previa/           fogueira.html (prévia isolada da Fogueira Lunar)
 │   ├── assets/           sprites (folha de animações, flecha) e viva (Aurora parada em alta resolução)
 │   ├── vendor/           pixi.min.mjs (PixiJS 8.23, licença MIT)
 │   ├── testes/           testes com o testador do Node
@@ -75,4 +83,4 @@ Aurora-Jogo/
 - **PixiJS 8** (renderização 2D com malhas deformáveis) + JavaScript sem empacotador.
 - **Física própria** com os números da skill de plataforma (`gamedev-skills/platformer`, calculados com `jump_tuner.py`).
 - **Python + Pillow + NumPy** para o fluxo de arte (recorte, fatiamento, alinhamento, composição).
-- **Arte gerada com IA** (Google Gemini) pelo autor, a partir da ficha da Aurora. Declarar ao publicar em lojas.
+- **Arte gerada com IA** (Google Gemini, e a Aurora criança no gerador do Figma com o modelo Gemini) pelo autor, a partir da ficha da Aurora. Declarar ao publicar em lojas.

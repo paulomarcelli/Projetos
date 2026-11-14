@@ -164,6 +164,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 | [LUNA MIND](Projetos/Luna-AI) | Python · Flask · OpenAI · Gemini API | 🟢 Publicado |
 | [Aurora: O Dízimo da Lua](Projetos/Aurora-Jogo) · [jogar ↗](https://paulomarcelli.github.io/Projetos/Projetos/Aurora/) | JavaScript · PixiJS 8 · Python (ferramentas de arte) | 🟡 Em desenvolvimento (protótipo jogável) |
 
+> 🤖 **Para a próxima IA:** leia [`PARA-A-PROXIMA-IA.md`](PARA-A-PROXIMA-IA.md) (como o usuário trabalha, estado dos projetos e próximos passos).
+
 ## 📂 Estrutura
 
 A pasta `Projetos` é a área principal: cada projeto fica separado e documentado, para facilitar a navegação e a apresentação do portfólio.

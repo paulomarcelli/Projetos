@@ -4,7 +4,7 @@
  * `forca` vai de -1 (soprando para a esquerda) a 1 (para a direita).
  */
 import { Container, Graphics, MeshPlane, Sprite, Texture } from '../vendor/pixi.min.mjs';
-import { MolaCabelo, amostrar } from './pesos.js';
+import { CorrenteCabelo, amostrar } from './pesos.js';
 
 const CORES = ['#7c9a5a', '#a3b86c', '#c9a25a', '#8a6a9e', '#5f8a7a'];
 
@@ -152,7 +152,7 @@ export class QuadrosVivos {
     this.texturas = [texCorpo]; this.mechas = [texMecha]; this.fps = 10; this.loop = true; this.velocidade = 1;
     this.t = 0; this.quadro = 0; this.tt = 0;
     this.pesos = pesos; this.escalaPesos = escalaPesos; this.cache = new Map();
-    this.mola = new MolaCabelo(36, 0.3);
+    this.mola = new CorrenteCabelo({ rigidez: 36, amortecimento: 0.28, inercia: 0.05, comprimento: 190 });
   }
   get currentFrame() { return this.quadro; }
   set tint(cor) { this.malha.tint = cor; this.corpo.tint = cor; this.fantasma.tint = cor; }
@@ -174,6 +174,9 @@ export class QuadrosVivos {
   /** duração total de uma animação com duracoes (s) */
   static duracao(anim) { return anim.duracoes ? anim.duracoes.reduce((a, b) => a + b, 0) : anim.texturas.length / anim.fps; }
   parar(i) { this.parado = true; this.mostrar(i); }
+  /** inércia do corpo (px/s² no mundo, +x = para onde ela olha) e o chicote ao virar: ver CorrenteCabelo */
+  empurrar(ax, ay, dt) { this.mola.empurrar(ax, ay, dt); }
+  virar(forca) { this.mola.virar(forca); }
 
 /** Peso do cabelo em cada vértice para a textura atual (calculado uma vez por quadro e guardado). */
   pesosDe(tex) {

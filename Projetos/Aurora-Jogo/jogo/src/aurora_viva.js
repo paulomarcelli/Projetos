@@ -10,7 +10,7 @@
  * corpo, então o peito, as costas e a ombreira não balançam junto com o cabelo.
  */
 import { Assets, Container, MeshPlane } from '../vendor/pixi.min.mjs';
-import { MolaCabelo, amostrar, lerPesos } from './pesos.js';
+import { CorrenteCabelo, amostrar, lerPesos } from './pesos.js';
 
 const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const dentro = (caixa, x, y, borda) =>
@@ -55,7 +55,9 @@ class AuroraViva {
       const x = this.orig[i * 2] / 2, y = this.orig[i * 2 + 1] / 2;
       this.wCabelo[i] = amostrar(pesos, x, y, 0); this.wTranca[i] = amostrar(pesos, x, y, 1);
     }
-    this.mola = new MolaCabelo(34, 0.3); this.molaTranca = new MolaCabelo(52, 0.38);
+    // cabelo solto e tranças: correntes (onda que desce, inércia, chicote ao virar); as tranças são mais firmes
+    this.mola = new CorrenteCabelo({ rigidez: 32, amortecimento: 0.26, inercia: 0.06, comprimento: 300 });
+    this.molaTranca = new CorrenteCabelo({ nos: 6, rigidez: 50, amortecimento: 0.36, inercia: 0.035, comprimento: 160 });
     this.t = 0; this.forca = 0;
     this.olhos = 'abertos'; this.mao = 'aberta'; this.maoAlvo = 'aberta'; this.fade = 1;
     this.proximaPiscada = 1.8; this.piscando = -1; this.duasVezes = false;
@@ -64,7 +66,11 @@ class AuroraViva {
 
   textura(olhos, mao) { return this.tex[`olhos_${olhos === 'abertos' ? 'abertos' : 'semi'}_mao_${mao}`]; }
 
-  sentir(acelX, _acelY, direcao) { this.forca += -acelX * direcao * 0.00004; }
+  sentir(acelX, acelY, direcao, dt = 1 / 60) {
+    this.forca += -acelX * direcao * 0.00004;
+    this.mola.empurrar(acelX * direcao, acelY, dt); this.molaTranca.empurrar(acelX * direcao, acelY, dt);
+  }
+  virar(forca) { this.mola.virar(forca); this.molaTranca.virar(forca * 0.6); }
 
   /** ventoLocal: força do vento no lado para onde ela olha (-1..1). */
   atualizar(dt, ventoLocal = 0) {

@@ -194,7 +194,7 @@ const cenaFinal = new CenaFinal(fase);
 app.stage.addChild(vinheta.g, painel.raiz, menu.raiz, titulo.raiz, cenaFinal.raiz);
 
 // ---------- laço do jogo ----------
-let acumulado = 0, lupa = false, vxAntes = 0, vyAntes = 0, escalaTempo = 1;
+let acumulado = 0, lupa = false, vxAntes = 0, vyAntes = 0, escalaTempo = 1, direcaoAntes = 1;
 const camera = { x: corpo.x + CONST.LARGURA / 2 + 120, y: corpo.y + CONST.ALTURA - ALTURA_VISUAL * 0.9, zoom: 1 };   // já começa nela
 
 function fogueiraPerto() {
@@ -341,7 +341,14 @@ function passoFixo() {
 
   const ax = (corpo.vx - vxAntes) / CONST.DT, ay = (corpo.vy - vyAntes) / CONST.DT;
   vxAntes = corpo.vx; vyAntes = corpo.vy;
-  boneco.sentir(ax, ay, corpo.direcao);
+  boneco.sentir(ax, ay, corpo.direcao, CONST.DT);
+  // o cabelo sente a inércia do corpo (pulo, queda, pouso, arrancada) e chicoteia quando ela vira
+  quadros.empurrar(ax * corpo.direcao, ay, CONST.DT);
+  if (corpo.direcao !== direcaoAntes) {
+    const f = Math.min(1, 0.35 + Math.abs(corpo.vx) / CONST.VEL_CORRIDA);
+    quadros.virar(f); boneco.virar(f);
+    direcaoAntes = corpo.direcao;
+  }
 }
 
 /** detalhes do movimento: neve levantando, pegadas, amassar ao pousar e esticar ao pular */
@@ -507,7 +514,7 @@ app.ticker.add((ticker) => {
   const mostrarBoneco = estado === 'boneco';
   boneco.raiz.visible = mostrarBoneco;
   quadros.raiz.visible = !mostrarBoneco && estado !== 'figma';
-  sentar.atualizar(dt);
+  sentar.atualizar(dt, vento.forca * corpo.direcao * 9, Math.abs(vento.forca));   // o vento também mexe o cabelo dela sentada
   boneco.raiz.position.set(pes.x, pes.y);
   // amassa um pouco ao pousar e estica ao pular (volta rápido): dá peso ao movimento
   achatar += (0 - achatar) * Math.min(1, dt * 9);

@@ -12,6 +12,8 @@ import { Titulo } from './fase.js';
 import { VISAO, atualizarAlerta, atualizarGuarda, criarGuarda, enxerga, linhaDeVisao } from './furtividade.js';
 import { CaixaDialogo } from './dialogo.js';
 import { MapaDeLuz, texturasDeLuz } from './mapa_luz.js';
+import { QuadrosVivos } from './vento.js';
+import { lerPesos } from './pesos.js';
 
 const app = new Application();
 await app.init({ resizeTo: window, background: '#0e0b1c', antialias: true, resolution: Math.min(window.devicePixelRatio || 1, 2), autoDensity: true });
@@ -289,27 +291,28 @@ const mistura = (a, b, t) => {
 const soldados = fase.guardas.map((d) => new Soldado(d));
 
 // ---------- Aurora criança ----------
-const folha = nitida(await Assets.load('assets/sprites/crianca_folha.png'));
+// duas camadas (ferramentas/pesos_cabelo.py crianca): corpo fixo + cabelo que balança numa malha (física em pesos.js)
+const [folhaCorpo, folhaMecha] = await Promise.all(['corpo', 'mecha'].map(async (c) => nitida(await Assets.load(`assets/sprites/crianca_folha_${c}.webp`))));
+const pesosMenina = await lerPesos('assets/sprites/crianca_folha_cabelo.png');
 const metaC = await (await fetch('assets/sprites/crianca_folha.json')).json();
 const anims = {};
+const recorte = (fonte, [x, y, w, h], e = 1) => new Texture({ source: fonte.source, frame: new Rectangle(x * e, y * e, w * e, h * e) });
 for (const [nome, a] of Object.entries(metaC.animacoes)) {
-  anims[nome] = { ...a, texturas: a.quadros.map(([x, y, w, h]) => new Texture({ source: folha.source, frame: new Rectangle(x, y, w, h) })) };
+  anims[nome] = { ...a, texturas: a.quadros.map((q) => recorte(folhaCorpo, q)), mechas: a.quadros.map((q) => recorte(folhaMecha, q, 0.5)) };
 }
-const menina = new Sprite(anims.parada.texturas[0]);
-menina.anchor.set(0.5, metaC.base / metaC.celula);
+const menina = new QuadrosVivos(anims.parada.texturas[0], anims.parada.mechas[0], metaC.base, pesosMenina, 0.25);
 const ESCALA = P.altura_visual / metaC.altura_em_pe;
-meio.addChild(menina);
+meio.addChild(menina.raiz);
 // ela fica atrás dos esconderijos, mas na frente dos soldados quando não está escondida
-meio.setChildIndex(menina, meio.children.length - 1);
+meio.setChildIndex(menina.raiz, meio.children.length - 1);
+menina.tocar(anims.parada);
 
-let anim = 'parada', tAnim = 0, velAnim = 1;
-function tocar(nome, vel = 1) { if (anim !== nome) { anim = nome; tAnim = 0; } velAnim = vel; }
+let anim = 'parada', velAnim = 1;
+function tocar(nome, vel = 1) { if (anim !== nome) { anim = nome; menina.tocar(anims[nome]); } velAnim = vel; }
 function quadroAtual(dt) {
-  const a = anims[anim];
-  tAnim += dt * velAnim;
-  let i = Math.floor(tAnim * a.fps);
-  i = a.loop ? i % a.texturas.length : Math.min(i, a.texturas.length - 1);
-  menina.texture = a.texturas[i];
+  menina.velocidade = velAnim;
+  // dentro do castelo não venta: o cabelo vai para trás só com a corrida (e balança com a inércia)
+  menina.atualizar(dt, -Math.abs(corpo.vx) / P.velCorrida * 9, 0);
 }
 
 // um pouco de luz fria em volta da menina, para ela não sumir no escuro
@@ -451,7 +454,11 @@ function passoFixo() {
     lento: abaixada ? P.lento : 1,
   };
   apertou.clear();
+  const vxAntes = corpo.vx, vyAntes = corpo.vy, dirAntes = corpo.direcao;
   passo(corpo, entrada, mundo);
+  // o cabelo sente a inércia do corpo (arrancada, pulo, queda, pouso) e chicoteia quando ela vira
+  menina.empurrar(((corpo.vx - vxAntes) / CONST.DT) * corpo.direcao, (corpo.vy - vyAntes) / CONST.DT, CONST.DT);
+  if (corpo.direcao !== dirAntes) menina.virar(Math.min(1, 0.35 + Math.abs(corpo.vx) / P.velCorrida));
   if (corpo.aterrissou) ultimoAterrissar = 0.12;
 
   const cx = corpo.x + P.largura / 2;
@@ -511,10 +518,10 @@ app.ticker.add((ticker) => {
   escolherAnimacao(dt);
   quadroAtual(dt);
   const cx = corpo.x + P.largura / 2;
-  menina.position.set(cx, corpo.y + P.altura);
+  menina.raiz.position.set(cx, corpo.y + P.altura);
   const respira = anim === 'parada' ? 1 + Math.sin(t * 2.4) * 0.008 : 1;
-  menina.scale.set(ESCALA * corpo.direcao, ESCALA * respira);
-  menina.alpha = escondida ? 0.9 : 1;
+  menina.raiz.scale.set(ESCALA * corpo.direcao, ESCALA * respira);
+  menina.raiz.alpha = escondida ? 0.9 : 1;
   brilhoMenina.position.set(cx, corpo.y + P.altura * 0.5); brilhoMenina.alpha = escuridao * 0.8;
   altar.alpha += ((estado === 'final' ? 0.72 : 1) - altar.alpha) * Math.min(1, dt * 4);
   // no esconderijo dela, o objeto fica translúcido; na cena do altar o banco some (ficava na frente dos homens)
@@ -603,7 +610,7 @@ app.ticker.add((ticker) => {
 
 // ganchos para os testes automáticos (Playwright)
 window.__jogo = {
-  app, corpo, fase, soldados, velas, dialogo, teclas, apertou,
+  app, corpo, fase, soldados, velas, dialogo, teclas, apertou, menina,
   get estado() { return estado; }, get escondida() { return escondida; }, get abaixada() { return abaixada; },
   get retorno() { return retorno; }, get anim() { return anim; },
   /** leva a menina para x (testes), já no chão */

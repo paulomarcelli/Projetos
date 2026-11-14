@@ -1,4 +1,5 @@
 /* A folha cor de osso: cada seção é transparente e tem um furo; a sombra do furo pinta o resto de osso. */
 .folha > section { position: relative; overflow: hidden; isolation: isolate; }
 .furo { position: relative; z-index: 0; box-shadow: 0 0 0 300vmax var(--osso); }
-.folha > section > *:not(.furo), .folha .nota, .folha .filme, .folha .filmes__furo p { position: relative; z-index: 1; }
+/* Os contêineres que guardam o furo (janela e grade) ficam sem z-index: senão a sombra do furo cobre o texto que vem antes. */
+.folha > section > *:not(.furo):not(.manifesto__janela):not(.filmes__grade), .folha .nota, .folha .filme, .folha .filmes__furo p { position: relative; z-index: 1; }

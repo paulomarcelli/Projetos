@@ -1,11 +1,11 @@
 ---
 name: design-skills
-description: "Unified design toolkit (139 sub-skills, including Impeccable, Direção de Arte em português and SEO para o Google) for UI/UX design, art direction for landing pages, SEO (meta tags, schema, Core Web Vitals), visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
+description: "Unified design toolkit (140 sub-skills, including Claude–Figma MCP design workflow, Impeccable, Direção de Arte em português and SEO para o Google) for UI/UX design, art direction for landing pages, SEO (meta tags, schema, Core Web Vitals), visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
 ---
 
 # Design Skills (unified)
 
-This skill bundles 139 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
+This skill bundles 140 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
 
 ## How to use
 
@@ -17,6 +17,10 @@ This skill bundles 139 design sub-skills from several sources. Each sub-skill li
 6. Combine sub-skills when a task spans areas (e.g. `taste-skill` + `emil-design-eng` + `animate` for a polished, animated frontend).
 
 ## Index
+
+## Fluxo de design no Figma — Claude Code
+
+- **figma-design-workflow** — Conduza design iterativo no Figma via Claude Code e Figma MCP: inspecione arquivos, reutilize bibliotecas/tokens, planeje e crie telas editáveis, revise screenshots, itere e prepare handoff. Use ao criar ou melhorar designs diretamente no canvas do Figma. Requer conexão/autorização Figma MCP para leitura e escrita reais; para instalação consulte as instruções oficiais incluídas na skill.
 
 ## UI/UX Pro Max (nextlevelbuilder)
 

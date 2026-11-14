@@ -35,6 +35,9 @@ aqui.
 
 ## Regras aprendidas
 
+- **14/11/2026 · Pedido do Paulo: sempre a `design-skills`.** Toda tarefa, grande ou pequena, começa pela skill
+  `design-skills`; o relatório diz quais partes dela foram usadas.
+
 - **14/11/2026 · Furo e camadas (Lusco).** O furo é um bloco transparente com `box-shadow: 0 0 0 300vmax` cor de osso
   numa seção com `overflow: hidden; isolation: isolate`. **Nenhum contêiner que guarda o furo pode ter `z-index`**: senão
   ele vira outra camada e a sombra cobre o texto que vem antes. Isso deixou o manifesto e o título "Palco e estúdio"

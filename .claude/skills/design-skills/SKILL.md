@@ -1,11 +1,11 @@
 ---
 name: design-skills
-description: "Unified design toolkit (137 sub-skills, including Impeccable) for UI/UX design, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
+description: "Unified design toolkit (138 sub-skills, including Impeccable and Direção de Arte em português) for UI/UX design, art direction for landing pages, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
 ---
 
 # Design Skills (unified)
 
-This skill bundles 137 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
+This skill bundles 138 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
 
 ## How to use
 
@@ -13,7 +13,8 @@ This skill bundles 137 design sub-skills from several sources. Each sub-skill li
 2. Read `skills/<name>/SKILL.md` (relative to this file) and follow it as if it had been invoked directly.
 3. Relative paths in a sub-skill (`references/`, `scripts/`, `data/`, …) resolve from that sub-skill's own folder, `skills/<name>/`.
 4. When a sub-skill names a sibling skill (e.g. "use `color-system`"), that sibling is `skills/<that-name>/SKILL.md` in this bundle.
-5. Combine sub-skills when a task spans areas (e.g. `taste-skill` + `emil-design-eng` + `animate` for a polished, animated frontend).
+5. `direcao-de-arte` is the Portuguese (pt-BR) version of `taste-skill` and shares its folder: read `skills/taste-skill/SKILL.pt-BR.md` (its references are in `skills/taste-skill/references/pt-BR/`; scripts, library and assets are the same files). Prefer it when the user writes in Portuguese.
+6. Combine sub-skills when a task spans areas (e.g. `taste-skill` + `emil-design-eng` + `animate` for a polished, animated frontend).
 
 ## Index
 
@@ -52,6 +53,7 @@ This skill bundles 137 design sub-skills from several sources. Each sub-skill li
 ## Taste (Leonxlnx)
 
 - **taste-skill** — tasteskill v2, the anti-slop frontend skill. Art direction for websites, distilled from a study of 247 curated gallery sites (One Page Love, Awwwards Sites of the Day). Deals researched directions (idea, composition, type, palette, photographs, section blueprints) from a library, enforces a strict no-slop house style with a real-browser inspector, and runs a look-and-fix loop on screenshots. Use this whenever you build, design, redesign, restyle, polish or review a landing page, marketing site, portfolio, product page, one-pager, hero or any public-facing web page, in any stack (HTML/CSS, React, Next.js, Vue, Svelte, Astro, Tailwind) — also when the user says a page looks generic, templated, "AI-made", sloppy, or asks to make it look designed, premium, award-level or less like every other site. Also for app screens: dashboards, admin and analytics views, settings, inboxes and other screens people work in, with their own run and rules.
+- **direcao-de-arte** — Direção de Arte: a versão em português (pt-BR) do `taste-skill`, traduzida pela ProfitizeBuild (licença MIT do original de Leonxlnx). Mesma direção de arte de 247 sites (One Page Love, Awwwards), mesmo estilo da casa e mesmo ciclo de olhar e corrigir em capturas de tela, com o roteiro e as referências em português. Use para landing pages, sites, portfólios, heroes e telas de app quando o trabalho for em português, ou quando a página parecer genérica ou "feita por IA". Arquivo: `skills/taste-skill/SKILL.pt-BR.md` (os scripts são os do `taste-skill`).
 
 ## Designer skills (Owl-Listener) — design-ops
 

@@ -2,8 +2,11 @@
 
 ## Visão geral
 ```
-index.html
-  └─ src/main.js ............ cria o app PixiJS, o mundo, a câmera, a entrada e o laço do jogo
+index.html ................. escolhe a fase: ?fase=prologo | ?fase=1 (sem nada: Prólogo na 1ª vez, depois Fase 1)
+  ├─ src/prologo.js ......... Prólogo: castelo, Aurora criança, soldados, festa, altar e neve (ver seção Prólogo)
+  │    ├─ furtividade.js .... patrulha, cone de visão (bloqueado por paredes) e medidor de alerta — sem gráficos
+  │    └─ dialogo.js ........ caixa de diálogo letra a letra (nome, narração em itálico, E continuar)
+  └─ src/main.js ............ Fase 1: cria o app PixiJS, o mundo, a câmera, a entrada e o laço do jogo
        ├─ fisica.js ......... física de plataforma pura (sem gráficos), passo fixo de 60 Hz
        ├─ progresso.js ...... atributos, custo de nível, salvar/carregar (puro, testado)
        ├─ aurora_viva.js .... Aurora parada: desenho único deformado por regiões + variações (olhos/mão)
@@ -31,6 +34,29 @@ Cada fase é um JSON lido no começo do `main.js` (`fases/fase1.json` = Ato I, F
 `testes/fase1.test.mjs` (skill level-design) mede o pulo real (`ferramentas/medir_pulo.mjs`: 205 px de altura, 262 px
 de alcance), confere vãos ≤ 70% do alcance e subidas ≤ topo − meio bloco, faz um **jogador robô** pular cada trecho do
 caminho e dos retornos com a física do jogo, confere o ritmo e se tudo está sobre um chão. Rode depois de mexer na fase.
+
+## Prólogo (prologo.js + fases/prologo.json)
+Módulo separado do `main.js` de propósito: a Aurora criança não luta, não tem fogueira nem moedas, e a Fase 1 não muda.
+- **Corpo:** `criarCorpo(x, y, fase.personagem)` — colisor 32×122, `velCorrida` 300; segurando ↓ ela anda a 40%
+  (`entrada.lento`). Mesmo pulo da adulta (as constantes são as do `jump_tuner.py`).
+- **Sprite:** `assets/sprites/crianca_folha.png/json` (de `ferramentas/montar_folha_crianca.py`), escala pela altura em
+  pé (225 px na célula → 150 px na tela). Animações: parada, correndo, furtiva, escondida, escondida_medo, pulo, queda,
+  aterrissar.
+- **Estados da história:** `festa` (falas iniciais) → `livre` (segue o Elias) → `apagando` (em `apagar.x`) → `furtivo` →
+  `pega` (1,7 s, volta à última vela) → `final` (altar: falas de `fim`; `cena: "neve"` troca para a neve com o Bram e
+  `cena: "titulo"` mostra AURORA). No fim grava `aurora_prologo = feito` e E abre `?fase=1`.
+- **Furtividade (`furtividade.js`):** cada soldado anda entre `de` e `ate`, para `pausa` s em cada ponta e vira. Vê num
+  cone (alcance 420 px, ±0,45 rad, a partir da lanterna, 110 px acima dos pés); abaixada, só até 55% do alcance;
+  escondida (parada num esconderijo segurando ↓), nunca. Paredes bloqueiam a visão; a galeria (`umaVia`) não. Vista,
+  o alerta enche (mais rápido de perto) e esvazia fora da vista; cheio = pega. Correr perto (190 px) faz o soldado
+  ouvir e virar. Encostar num soldado sem estar escondida também conta.
+- **Camadas:** `atras` (parede, janelas, estandartes, chão) → `meio` (convidados, soldados, menina) → `frente`
+  (esconderijos e altar: ela fica atrás) e, por cima, `escuro` (véu da noite) e `luz` (somada: velas, luar, lanternas e
+  cones, um brilho fraco na menina).
+- **Dados:** além dos campos da Fase 1, `personagem`, `apagar`, `velas`, `esconderijos` (`cortina`, `mesa`, `coluna`,
+  `banco`), `guardas`, `altar`, `festa` e `fim` (falas). `testes/prologo.test.mjs` confere ritmo, chão sob tudo, patrulha
+  sobre chão, um esconderijo ou galeria para cada guarda, os degraus até a galeria (robô), a descida e as velas antes
+  de cada guarda.
 
 ## Laço do jogo (main.js)
 1. O `app.ticker` acumula o tempo real e chama `passoFixo()` a cada 1/60 s (física estável em qualquer taxa de quadros).

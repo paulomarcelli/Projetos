@@ -4,18 +4,18 @@
  * Física: src/fisica.js (passo fixo de 60 Hz).
  */
 import {
-  Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture,
+  Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture, TilingSprite,
 } from '../vendor/pixi.min.mjs';
 import { CONST, criarCorpo, passo } from './fisica.js';
 import { carregarAuroraViva, nitida } from './aurora_viva.js';
-import { Faiscas, Impacto, Numeros, Vinheta } from './efeitos.js';
+import { Faiscas, Impacto, NeveNosPes, Numeros, Vinheta } from './efeitos.js';
 import { lerPesos } from './pesos.js';
 import { Fogueira } from './fogueira.js';
 import { carregarSombras, Sombra } from './inimigos.js';
 import { MenuFogueira, Painel } from './hud.js';
 import { QuadrosVivos, Vento } from './vento.js';
 import { normalizar } from './nivel.js';
-import { Alvo, CenaFinal, Cervo, Nevoa, Titulo, criarPlaca, desenharCenario, desenharRastros, desenharTerreno } from './fase.js';
+import { Alvo, CenaFinal, Cervo, Nevoa, Titulo, carregarArteFloresta, criarPlaca, desenharCenario, desenharRastros, desenharTerreno } from './fase.js';
 import { derivados, desserializar, evoluir, novoProgresso, serializar } from './progresso.js';
 
 const ALTURA_VISUAL = 210;                 // altura da Aurora na tela, em px do mundo
@@ -31,44 +31,29 @@ document.getElementById('jogo').appendChild(app.canvas);
 const fase = normalizar(await (await fetch('fases/fase1.json')).json());
 const mundo = fase.solidos;
 
+// arte pintada (Figma): céu com lua e montanhas, faixa de floresta, terreno, pinheiros, placas, alvos, cervo
+const arte = await carregarArteFloresta();
 const fundo = new Container();
-const camada1 = new Graphics();                 // céu, lua e estrelas (quase parado)
-const camada2 = new Graphics();                 // montanhas distantes
-const camada3 = new Graphics();                 // árvores
+const camada1 = new Graphics();                 // degradê por baixo de tudo
+const camada2 = new Sprite(arte.ceu);           // céu, lua e montanhas: uma imagem só (não repete: a lua é única), quase parada
+const camada3 = new TilingSprite({ texture: arte.meio, width: 10, height: 10 });    // floresta ao longe
 const cena = new Container();                   // mundo jogável (segue a câmera)
 const vento = new Vento({ neve: fase.clima === 'neve' });
 app.stage.addChild(fundo, vento.atras, cena, vento.frente);
 fundo.addChild(camada1, camada2, camada3);
 
+const FOLGA_CEU = 420;                           // px que o céu desliza de uma ponta à outra da fase
 function desenharFundo() {
   const W = app.screen.width, H = app.screen.height;
   camada1.clear();
   const faixas = ['#120d26', '#1b1533', '#241c45', '#2e2456', '#3a2d66'];
   faixas.forEach((c, i) => camada1.rect(0, (H * i) / faixas.length, W, H / faixas.length + 1).fill(c));
-  camada1.circle(W * 0.78, H * 0.2, 70).fill({ color: '#e8e4ff', alpha: 0.12 });
-  camada1.circle(W * 0.78, H * 0.2, 46).fill('#f2efff');
-  for (let i = 0; i < 90; i++) {
-    const x = (i * 197) % W, y = (i * 113) % (H * 0.6);
-    camada1.circle(x, y, (i % 3) * 0.6 + 0.6).fill({ color: '#ffffff', alpha: 0.3 + (i % 5) * 0.12 });
-  }
-  camada2.clear();
-  for (let i = -1; i < 12; i++) {
-    const x = i * 360, topo = H * 0.42 + (i % 3) * 40;
-    camada2.poly([x, H, x + 180, topo, x + 360, H]).fill('#2a2150');
-    // neve no pico das montanhas
-    camada2.poly([x + 180, topo, x + 222, topo + 52, x + 196, topo + 44, x + 176, topo + 60, x + 154, topo + 46, x + 140, topo + 50]).fill({ color: '#d7dcf2', alpha: 0.55 });
-  }
-  camada2.rect(-400, H * 0.7, W + 800, H * 0.3).fill({ color: '#cfd4ee', alpha: 0.05 });   // névoa distante
-  camada3.clear();
-  for (let i = -1; i < 34; i++) {
-    // pinheiros ao longe, em silhueta, com a ponta nevada
-    const x = i * 150 + (i % 2) * 40, h = 170 + (i % 4) * 46, base = H;
-    for (let k = 0; k < 3; k++) {
-      const topo = base - h + k * h * 0.22, larg = 26 + k * 16;
-      camada3.poly([x, topo, x + larg, topo + h * 0.34, x - larg, topo + h * 0.34]).fill('#1b1d3c');
-    }
-    camada3.poly([x, base - h, x + 9, base - h + 20, x - 9, base - h + 20]).fill({ color: '#cfd6ee', alpha: 0.45 });
-  }
+  // céu: cobre a tela e sobra um pouco na largura para deslizar devagar (parallax) sem repetir
+  camada2.scale.set(Math.max(H / arte.ceu.height, (W + FOLGA_CEU) / arte.ceu.width));
+  // floresta: faixa na parte de baixo da tela, com névoa entre as árvores
+  const eMeio = (H * 0.62) / arte.meio.height;
+  camada3.width = W; camada3.height = H * 0.62; camada3.y = H * 0.4; camada3.tileScale.set(eMeio);
+  camada3.tint = 0xb9bcd8;
 }
 desenharFundo();
 window.addEventListener('resize', desenharFundo);
@@ -125,6 +110,11 @@ const PONTA_FLECHA = (texFlecha.width / 2) * ESCALA_FLECHA;
 // efeitos de impacto
 const faiscas = new Faiscas(), numeros = new Numeros(), vinheta = new Vinheta(), impacto = new Impacto();
 cena.addChild(faiscas.raiz, numeros.raiz);
+// neve que levanta nos passos, no pulo e na aterrissagem; pegadas no chão (atrás da Aurora)
+const neve = new NeveNosPes();
+cena.addChildAt(neve.pegadas, 3);
+cena.addChild(neve.raiz);
+let achatar = 0, passoT = 0, ladoPe = 0;   // achatar > 0: amassa ao pousar; < 0: estica ao pular
 const nevoa = new Nevoa(fase);
 cena.addChild(nevoa.raiz);
 let clarao = 0, recuo = 0;   // clarão vermelho na Aurora e inclinação para trás ao apanhar
@@ -275,6 +265,7 @@ function passoFixo() {
     if (vida <= 0) { morrer(); return; }
   }
   if (corpo.aterrissou) tempoAterrissar = 0.13;
+  pisarNaNeve();
   if (corpo.pulouNoAr) mana -= CUSTO_SALTO_LUA;
   mana = Math.min(stats.manaMax, mana + 2 * CONST.DT);
   invulneravel = Math.max(0, invulneravel - CONST.DT);
@@ -311,6 +302,33 @@ function passoFixo() {
   const ax = (corpo.vx - vxAntes) / CONST.DT, ay = (corpo.vy - vyAntes) / CONST.DT;
   vxAntes = corpo.vx; vyAntes = corpo.vy;
   boneco.sentir(ax, ay, corpo.direcao);
+}
+
+/** detalhes do movimento: neve levantando, pegadas, amassar ao pousar e esticar ao pular */
+function pisarNaNeve() {
+  const pe = { x: corpo.x + CONST.LARGURA / 2, y: corpo.y + CONST.ALTURA };
+  const chao = corpo.noChao ? mundo.find((s) => Math.abs(s.y - pe.y) < 1 && pe.x > s.x && pe.x < s.x + s.w) : null;
+  const fofa = chao && (chao.tipo === 'neve' || chao.tipo === 'rocha' || chao.tipo === 'tronco');   // galho tem pouca neve
+  if (corpo.aterrissou) {
+    const f = Math.min(1, Math.abs(vyAntes) / 950);
+    if (fofa) neve.levantar(pe.x, pe.y, 5 + Math.round(9 * f), 0, 0.55 + f * 0.6);
+    achatar = 0.35 + f * 0.65;
+  }
+  if (corpo.pulou) { if (fofa || !chao) neve.levantar(pe.x, pe.y, 6, corpo.direcao, 0.7); achatar = -0.7; }
+  if (corpo.pulouNoAr) achatar = -0.5;
+  if (corpo.esquiva > 0 && corpo.tick % 3 === 0 && fofa) neve.levantar(pe.x, pe.y, 2, corpo.direcao, 0.65);
+  const v = Math.abs(corpo.vx);
+  if (corpo.noChao && v > 150 && corpo.esquiva === 0) {
+    passoT -= CONST.DT;
+    if (passoT <= 0) {
+      passoT = 0.3 * (CONST.VEL_CORRIDA / v);           // um passo a cada ~0,3 s na corrida
+      ladoPe ^= 1;
+      if (fofa) {
+        neve.levantar(pe.x - corpo.direcao * 10, pe.y, 2, corpo.direcao, 0.4);
+        if (chao.tipo === 'neve') neve.marcar(pe.x - corpo.direcao * 6, pe.y + (ladoPe ? 2 : -1), corpo.direcao);
+      }
+    }
+  } else passoT = 0;
 }
 
 function quebrarAlvo(a, dir) {
@@ -426,16 +444,19 @@ app.ticker.add((ticker) => {
   boneco.raiz.visible = mostrarBoneco;
   quadros.raiz.visible = !mostrarBoneco;
   boneco.raiz.position.set(pes.x, pes.y);
-  boneco.raiz.scale.set(escalaBoneco * corpo.direcao, escalaBoneco);
+  // amassa um pouco ao pousar e estica ao pular (volta rápido): dá peso ao movimento
+  achatar += (0 - achatar) * Math.min(1, dt * 9);
+  const sy = 1 - 0.07 * achatar, sx = 1 + 0.05 * achatar;
+  boneco.raiz.scale.set(escalaBoneco * corpo.direcao * sx, escalaBoneco * sy);
   quadros.raiz.position.set(pes.x, pes.y);
-  quadros.raiz.scale.set(escalaQuadros * corpo.direcao, escalaQuadros);
+  quadros.raiz.scale.set(escalaQuadros * corpo.direcao * sx, escalaQuadros * sy);
   // vento e movimento empurram o cabelo (no lado para onde ela olha)
   const ventoLocal = vento.forca * corpo.direcao;
   const corrida = Math.abs(corpo.vx) / CONST.VEL_CORRIDA;
   quadros.atualizar(dt, ventoLocal * 9 - corrida * 7, Math.abs(vento.forca));
   boneco.atualizar(dt, ventoLocal);
   atualizarFlechas(dt);
-  faiscas.atualizar(dtReal); numeros.atualizar(dtReal);
+  faiscas.atualizar(dtReal); numeros.atualizar(dtReal); neve.atualizar(dt);
   vinheta.atualizar(dtReal, app.screen.width, app.screen.height, vida / stats.vidaMax);
   // clarão vermelho que volta ao normal e recuo (inclina para trás e volta)
   clarao = Math.max(0, clarao - dtReal * 3.2); recuo = Math.max(0, recuo - dtReal * 3.2);
@@ -471,7 +492,7 @@ app.ticker.add((ticker) => {
   camera.y += (alvoY - camera.y) * Math.min(1, dt * 4);
   cena.scale.set(camera.zoom);
   cena.position.set(app.screen.width / 2 - camera.x * camera.zoom + impacto.dx, app.screen.height * 0.55 - camera.y * camera.zoom + impacto.dy);
-  camada2.x = -camera.x * 0.15 % 360; camada3.x = -camera.x * 0.35 % 340;
+  camada2.x = -FOLGA_CEU * Math.min(1, Math.max(0, (camera.x - fase.inicio.x) / 9000)); camada3.tilePosition.x = -camera.x * 0.22;
   vento.atualizar(dt, app.screen.width, app.screen.height, (camera.x - (camera.xAntes ?? camera.x)) * camera.zoom);
   camera.xAntes = camera.x;
 });

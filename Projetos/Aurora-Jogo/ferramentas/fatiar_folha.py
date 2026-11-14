@@ -21,14 +21,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 from recortar import componentes, mascara_fundo, dilatar  # noqa: E402
 
 
-BURACO = 0.00022   # área branca fechada maior que esta fração da imagem também é fundo (vão entre arco e corda)
+BURACO = 0.00022
+ESTRITO = False   # --fundo-estrito: só o branco quase puro é fundo (toalhas e panos creme ou brancos acinzentados ficam)   # área branca fechada maior que esta fração da imagem também é fundo (vão entre arco e corda)
 
 
 def recorte_completo(caminho):
     rgb = np.asarray(Image.open(caminho).convert('RGB')).astype(np.float32)
     # folhas têm quadros pequenos: áreas brancas fechadas menores também são fundo.
     # Com --manter-brancos (BURACO = 1) nada fechado é apagado: para roupas brancas (capinha de pele, meias).
-    fundo = mascara_fundo(rgb.astype(np.uint8), fracao_buraco=BURACO)
+    fundo = mascara_fundo(rgb.astype(np.uint8), fracao_buraco=BURACO, **({'limiar': 247, 'espalho': 8} if ESTRITO else {}))
     alpha = np.where(fundo, 0.0, 1.0)
     faixa = dilatar(fundo, 2) & ~fundo
     alpha = np.where(faixa, np.minimum(alpha, np.clip((252.0 - rgb.min(axis=2)) / 100.0, 0, 1)), alpha)
@@ -152,11 +153,13 @@ def main():
     ap.add_argument('--saida', required=True)
     ap.add_argument('--manter-brancos', action='store_true',
                     help='não apaga áreas brancas fechadas (roupa branca); só o branco ligado à borda é fundo')
+    ap.add_argument('--fundo-estrito', action='store_true', help='só o branco quase puro é fundo (panos creme)')
     ap.add_argument('--separar', type=int, default=0, help='plano C: afina a máscara N px para separar quadros que se tocam')
     ap.add_argument('--dar', action='append', default=[], metavar='x0,y0,x1,y1:N',
                     help='com --separar: o retângulo da folha passa a ser do quadro N (ex.: ponta de lâmina encostada no vizinho)')
     args = ap.parse_args()
-    global BURACO
+    global BURACO, ESTRITO
+    ESTRITO = args.fundo_estrito
     if args.manter_brancos:
         BURACO = 1.0
     linhas = [(p.split(':')[0], int(p.split(':')[1])) for p in args.nomes.split(',')]

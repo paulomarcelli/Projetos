@@ -41,218 +41,141 @@ function desenharFundoTela() {
 desenharFundoTela();
 window.addEventListener('resize', desenharFundoTela);
 
-// ---------- castelo (desenhado por código, uma vez) ----------
-const X0 = -400, X1 = 6400;
-const salas = fase.batidas.map((b) => ({ nome: b.trecho, de: b.de, ate: b.ate }));
-const janelas = [];
-for (let x = 120; x < 5600; x += 560) if (x < 4650 || x > 4800) janelas.push(x);
-
-function desenharCastelo() {
-  const g = new Graphics();
-  // parede de pedra com juntas desencontradas
-  g.rect(X0, -200, X1 - X0, CHAO + 200).fill(COR.pedra);
-  for (let y = -200, linha = 0; y < CHAO - 100; y += 44, linha++) {
-    g.moveTo(X0, y).lineTo(X1, y).stroke({ width: 2, color: COR.junta, alpha: 0.7 });
-    for (let x = X0 + (linha % 2) * 46; x < X1; x += 92) g.moveTo(x, y).lineTo(x, y + 44).stroke({ width: 2, color: COR.junta, alpha: 0.6 });
-  }
-  // algumas pedras mais claras (variação, para não parecer papel de parede)
-  for (let i = 0; i < 260; i++) {
-    const x = X0 + ((i * 523) % (X1 - X0)), y = -200 + ((i * 131) % (CHAO - 100 + 200));
-    g.rect(x - (x % 92) + 3, y - (y % 44) + 3, 86, 38).fill({ color: COR.pedraClara, alpha: 0.35 });
-  }
-  // lambri de madeira embaixo
-  g.rect(X0, CHAO - 100, X1 - X0, 100).fill(0x2a1c14);
-  g.rect(X0, CHAO - 104, X1 - X0, 8).fill(0x4a3424);
-  for (let x = X0; x < X1; x += 120) g.rect(x + 10, CHAO - 86, 100, 72).stroke({ width: 2, color: 0x1a110c, alpha: 0.8 });
-  // janelas altas em arco, com o luar e a neve lá fora
-  for (const x of janelas) {
-    const w = 110, topo = 110, base = 430;
-    g.rect(x - w / 2 - 14, topo, w + 28, base - topo + 14).fill(0x1a1528);
-    g.rect(x - w / 2, topo + w / 2, w, base - topo - w / 2).fill(0x26305a);
-    g.circle(x, topo + w / 2, w / 2).fill(0x26305a);
-    g.rect(x - w / 2, base - 70, w, 70).fill({ color: 0x3a4a80, alpha: 0.6 });
-    for (let k = 0; k < 14; k++) g.circle(x - w / 2 + ((k * 37) % w), topo + 40 + ((k * 61) % (base - topo - 50)), 1.6).fill({ color: 0xffffff, alpha: 0.7 });
-    g.rect(x - 3, topo, 6, base - topo).fill(0x1a1528);
-    g.rect(x - w / 2, topo + 150, w, 6).fill(0x1a1528);
-    g.rect(x - w / 2 - 20, base, w + 40, 16).fill(0x3d3456);
-  }
-  // estandartes da Casa Selênia: violeta com a lua crescente de prata
-  for (let x = 400; x < 5500; x += 560) {
-    if (x > 4600 && x < 4800) continue;
-    g.rect(x - 4, 150, 8, 12).fill(COR.ouro);
-    g.poly([x - 38, 160, x + 38, 160, x + 38, 360, x, 390, x - 38, 360]).fill(COR.violeta);
-    g.poly([x - 38, 160, x + 38, 160, x + 38, 170, x - 38, 170]).fill(COR.ouro);
-    g.circle(x, 255, 26).fill(COR.prata);
-    g.circle(x + 11, 248, 23).fill(COR.violeta);
-  }
-  // arcos de pedra entre as salas
-  for (const s of salas.slice(1)) {
-    const x = s.de;
-    g.rect(x - 34, 180, 22, CHAO - 180).fill(0x3d3456);
-    g.rect(x + 12, 180, 22, CHAO - 180).fill(0x3d3456);
-    g.rect(x - 40, 160, 80, 28).fill(0x463c62);
-  }
-  // capela: rosácea violeta e prata por cima do altar
-  const rx = fase.altar.x, ry = 230;
-  g.circle(rx, ry, 92).fill(0x1a1528);
-  g.circle(rx, ry, 80).fill(0x3b2a6a);
-  for (let k = 0; k < 12; k++) {
-    const a = (k / 12) * Math.PI * 2;
-    g.moveTo(rx, ry).lineTo(rx + Math.cos(a) * 80, ry + Math.sin(a) * 80).stroke({ width: 4, color: 0x1a1528 });
-    g.circle(rx + Math.cos(a) * 52, ry + Math.sin(a) * 52, 12).fill({ color: k % 2 ? 0x7a62c8 : 0xb7b4e0, alpha: 0.8 });
-  }
-  g.circle(rx, ry, 24).fill(COR.prata); g.circle(rx + 9, ry - 4, 20).fill(0x3b2a6a);
-  return g;
+// ---------- arte do Prólogo (gerada no Figma, montada por ferramentas/montar_folha_figma.py) ----------
+const X0 = -400;
+const folhaP = nitida(await Assets.load('assets/sprites/prologo_folha.png'));
+const metaP = await (await fetch('assets/sprites/prologo_folha.json')).json();
+const texP = {};
+for (const [n, p] of Object.entries(metaP.pecas)) {
+  const [x, y, w, h] = p.quadro;
+  texP[n] = new Texture({ source: folhaP.source, frame: new Rectangle(x, y, w, h) });
+}
+/** sprite de uma peça da folha, com a âncora nos pés (x, y = onde os pés tocam o chão) */
+function peca(nome, x = 0, y = CHAO, { virar = false } = {}) {
+  const s = new Sprite(texP[nome]);
+  trocarPeca(s, nome);
+  const e = 1 / metaP.resolucao;
+  s.scale.set(virar ? -e : e, e); s.position.set(x, y);
+  return s;
+}
+function trocarPeca(s, nome) {
+  const p = metaP.pecas[nome];
+  s.texture = texP[nome];
+  s.anchor.set(p.ancora[0] / p.quadro[2], p.ancora[1] / p.quadro[3]);
 }
 
-function desenharChao() {
+// fundos pintados: um painel por sala. A linha do chão pintado (linha 730 de 768) fica no chão do jogo.
+const FUNDO_CHAO = 730 / 768, ALTURA_PAINEL = 900 / FUNDO_CHAO;
+const texFundo = Object.fromEntries(await Promise.all(['castelo_salao_festa', 'castelo_corredor', 'castelo_capela', 'cena_neve_bram']
+  .map(async (n) => [n, nitida(await Assets.load(`assets/fundos/${n}.jpg`))])));
+const LARGURA_PAINEL = ALTURA_PAINEL * texFundo.castelo_corredor.width / texFundo.castelo_corredor.height;
+function painel(nome, x, virar = false) {
+  const s = new Sprite(texFundo[nome]);
+  const e = ALTURA_PAINEL / s.texture.height;
+  s.anchor.set(virar ? 1 : 0, FUNDO_CHAO);
+  s.scale.set(virar ? -e : e, e);
+  s.position.set(x, CHAO);
+  return s;
+}
+// onde estão as janelas pintadas em cada painel (fração da largura): o luar entra por elas no escuro
+const JANELAS = { castelo_salao_festa: [0.17, 0.5, 0.82], castelo_corredor: [0.18, 0.5, 0.75], castelo_capela: [0.16, 0.5, 0.84] };
+const paineis = [
+  ['castelo_salao_festa', X0, false],
+  ['castelo_corredor', X0 + LARGURA_PAINEL, false],
+  ['castelo_corredor', X0 + 2 * LARGURA_PAINEL, true],
+  ['castelo_capela', fase.altar.x - LARGURA_PAINEL / 2, false],
+];
+const janelas = [];
+for (const [nome, x, virar] of paineis) {
+  for (const f of JANELAS[nome]) janelas.push(x + (virar ? 1 - f : f) * LARGURA_PAINEL);
+}
+
+function desenharChao(estruturas) {
   const g = new Graphics();
   for (const s of mundo) {
     if (s.tipo === 'invisivel') continue;
+    const piso = !s.umaVia && !s.tipo;
+    if (piso !== !estruturas) continue;
     if (s.umaVia) {
       // galeria de madeira: piso, balaústres e mãos-francesas na parede
-      g.rect(s.x, s.y, s.w, s.h).fill(COR.madeira);
-      g.rect(s.x, s.y, s.w, 5).fill(0x5a3c26);
-      g.rect(s.x, s.y - 56, s.w, 7).fill(0x5a3c26);
-      for (let x = s.x + 8; x < s.x + s.w; x += 24) g.rect(x, s.y - 50, 6, 50).fill(0x4a311f);
-      for (let x = s.x + 40; x < s.x + s.w; x += 160) g.poly([x, s.y + s.h, x + 14, s.y + s.h, x + 14, s.y + 90, x, s.y + s.h + 4]).fill(0x2e1e13);
+      g.rect(s.x, s.y, s.w, s.h).fill(0x4a2f1c);
+      g.rect(s.x, s.y, s.w, 6).fill(0x7a5234);
+      g.rect(s.x, s.y + s.h - 4, s.w, 4).fill(0x2a1a10);
+      g.rect(s.x, s.y - 58, s.w, 9).fill(0x7a5234);
+      g.rect(s.x, s.y - 50, s.w, 2).fill(0x2a1a10);
+      for (let x = s.x + 10; x < s.x + s.w - 6; x += 26) g.roundRect(x, s.y - 49, 8, 49, 3).fill(0x5e3d26).rect(x + 2, s.y - 47, 2, 45).fill({ color: 0x8a6244, alpha: 0.7 });
+      for (let x = s.x + 40; x < s.x + s.w; x += 160) g.poly([x, s.y + s.h, x + 16, s.y + s.h, x + 16, s.y + 96, x, s.y + s.h + 6]).fill(0x3a2414);
       continue;
     }
-    if (s.tipo === 'arco') {
-      g.rect(s.x - 30, s.y, s.w + 60, s.h).fill(0x463c62);
-      g.rect(s.x - 30, s.y + s.h - 14, s.w + 60, 14).fill(0x524774);
-      continue;
-    }
+    if (s.tipo === 'arco') continue;   // a coluna da emenda da capela já mostra a parede (ela só bloqueia a visão)
     if (s.tipo === 'degrau') {
-      g.rect(s.x, s.y, s.w, CHAO - s.y).fill(0x463c62);
-      g.rect(s.x, s.y, s.w, 5).fill(0x5d5284);
+      g.rect(s.x, s.y, s.w, CHAO - s.y).fill(0x625878);
+      g.rect(s.x, s.y, s.w, 6).fill(0x8a80a6);
+      for (let y = s.y + 30; y < CHAO; y += 30) g.moveTo(s.x, y).lineTo(s.x + s.w, y).stroke({ width: 2, color: 0x3e3654, alpha: 0.8 });
       continue;
     }
-    // piso de pedra em lajotas
-    g.rect(s.x, s.y, s.w, 460).fill(0x2f2745);
-    g.rect(s.x, s.y, s.w, 6).fill(0x51467a);
-    for (let x = s.x; x < s.x + s.w; x += 64) g.moveTo(x, s.y + 6).lineTo(x - 10, s.y + 60).stroke({ width: 2, color: 0x1e192e });
-    g.moveTo(s.x, s.y + 30).lineTo(s.x + s.w, s.y + 30).stroke({ width: 2, color: 0x1e192e, alpha: 0.7 });
+    // piso de pedra abaixo do chão pintado
+    g.rect(s.x, s.y + 40, s.w, 420).fill(0x2a2236);
+    for (let x = s.x; x < s.x + s.w; x += 96) g.moveTo(x, s.y + 44).lineTo(x - 14, s.y + 120).stroke({ width: 2, color: 0x1c1626, alpha: 0.8 });
   }
-  // tapete do salão da festa
-  g.rect(-220, CHAO + 2, 1080, 10).fill({ color: 0x6a2a4a, alpha: 0.9 });
   return g;
 }
 
-atras.addChild(desenharCastelo(), desenharChao());
-
-// lustres do salão: acesos durante a festa, apagam com as velas
-const lustres = [150, 520].map((x) => ({ x, y: 120 }));
-const gLustres = new Graphics();
-for (const l of lustres) {
-  gLustres.moveTo(l.x, -200).lineTo(l.x, l.y).stroke({ width: 3, color: 0x111 });
-  gLustres.ellipse(l.x, l.y + 10, 70, 10).stroke({ width: 5, color: COR.ouro });
-  for (let k = -3; k <= 3; k++) gLustres.rect(l.x + k * 20 - 2, l.y - 6, 4, 14).fill(0xf2ead2);
+atras.addChild(desenharChao(false));
+for (const [nome, x, virar] of paineis) atras.addChild(painel(nome, x, virar));
+// colunas de pedra escondem as emendas entre os painéis
+for (const x of [X0 + LARGURA_PAINEL, X0 + 2 * LARGURA_PAINEL, fase.altar.x - LARGURA_PAINEL / 2]) {
+  const c = peca('coluna', x); c.tint = 0xb8b4c8; atras.addChild(c);
 }
-atras.addChild(gLustres);
+// tapete do salão da festa
+atras.addChild(new Graphics().rect(-240, CHAO - 2, 1120, 12).fill({ color: 0x7a2a4a, alpha: 0.85 }).rect(-240, CHAO - 2, 1120, 2).fill({ color: COR.ouro, alpha: 0.7 }));
+atras.addChild(desenharChao(true));
 
-// ---------- mesa, convidados e Elias (a festa) ----------
-function pessoa(cor, altura, { saia = false, cabelo = null, cabeca = altura * 0.075 } = {}) {
-  const c = new Container(), g = new Graphics();
-  const ombro = -altura * 0.78;
-  if (saia) g.poly([-28, 0, 28, 0, 12, ombro, -12, ombro]).fill(cor);
-  else { g.rect(-14, ombro + 10, 28, -ombro - 50).fill(cor); g.rect(-12, -42, 9, 42).fill(0x1a1424); g.rect(3, -42, 9, 42).fill(0x1a1424); }
-  g.roundRect(-16, ombro - 2, 32, 30, 10).fill(cor);
-  g.circle(0, ombro - 18, cabeca).fill(0xd8c3b0);
-  if (cabelo) g.circle(-2, ombro - 22, cabeca * 1.07).fill(cabelo);
-  c.addChild(g);
-  return c;
-}
+// ---------- a festa: convidados, mesa e Elias ----------
 const convidados = [];
-const coresFesta = [0x5b3a7a, 0x7a3a4a, 0x2f4a6a, 0x6a5a2a, 0x4a2f5a, 0x3a5a4a];
-[60, 230, 330, 470, 610, 700].forEach((x, i) => {
-  const p = pessoa(coresFesta[i], 200 + (i % 3) * 14, { saia: i % 2 === 0, cabelo: i % 2 ? 0x2a1a12 : 0x5a3a22 });
-  p.position.set(x, CHAO); p.scale.x = i % 2 ? -1 : 1;
-  meio.addChild(p); convidados.push({ p, fase: i * 1.3 });
-});
-// Lady Ilaria: cabelo prateado e vestido violeta, perto da mesa
-const ilaria = pessoa(0x4b2f7a, 214, { saia: true, cabelo: 0xd9dcf0 });
-ilaria.position.set(-60, CHAO); meio.addChild(ilaria); convidados.push({ p: ilaria, fase: 0.4 });
-// mesa do banquete
-const mesaFesta = new Graphics()
-  .rect(380, CHAO - 72, 260, 12).fill(0x5a3c26).rect(392, CHAO - 60, 10, 60).fill(0x3a2618).rect(618, CHAO - 60, 10, 60).fill(0x3a2618)
-  .rect(380, CHAO - 76, 260, 6).fill(0xe8e0cc);
-meio.addChild(mesaFesta);
-// Elias, o irmão: corre na frente com a fita dela
-const elias = pessoa(0x2f4a6a, 132, { cabelo: 0x2a1a12 });
-const fita = new Graphics().rect(10, -100, 26, 4).fill(0x9b6bff);
-elias.addChild(fita);
-elias.position.set(260, CHAO); meio.addChild(elias);
+for (const [nome, x, virar] of [['convidada_idosa', 40, false], ['convidado_lorde', 220, true], ['convidada_vinho', 320, false], ['musico', 720, true]]) {
+  const p = peca(nome, x, CHAO, { virar }); meio.addChild(p); convidados.push({ p, fase: x * 0.013 });
+}
+const ilaria = peca('ilaria', -90); meio.addChild(ilaria); convidados.push({ p: ilaria, fase: 0.4 });
+const mesaFesta = peca('mesa', 530); mesaFesta.scale.set(mesaFesta.scale.x * 1.15); meio.addChild(mesaFesta);
+const elias = peca('elias', 260); meio.addChild(elias);
 let eliasSumiu = false;
 
 // ---------- esconderijos (na frente da menina: ela fica atrás) ----------
 const esconderijos = fase.esconderijos.map((e) => {
-  const g = new Graphics();
-  if (e.tipo === 'cortina') {
-    g.rect(e.x - 10, 120, e.w + 20, 10).fill(COR.ouro);
-    for (let k = 0; k < 5; k++) g.rect(e.x + k * (e.w / 5), 128, e.w / 5 + 1, CHAO - 128).fill(k % 2 ? 0x5a2340 : 0x6a2a4a);
-    g.rect(e.x, CHAO - 26, e.w, 26).fill(0x4a1c34);
-  } else if (e.tipo === 'mesa') {
-    g.rect(e.x - 10, CHAO - 80, e.w + 20, 10).fill(0x5a3c26);
-    g.rect(e.x - 10, CHAO - 72, e.w + 20, 64).fill(0xd8d0bc);
-    g.poly([e.x - 10, CHAO - 8, e.x + e.w + 10, CHAO - 8, e.x + e.w + 10, CHAO - 72, e.x - 10, CHAO - 72]).fill({ color: 0xcfc6b0, alpha: 1 });
-    g.rect(e.x - 10, CHAO - 74, e.w + 20, 4).fill(0xb9ae94);
-  } else if (e.tipo === 'coluna') {
-    g.rect(e.x, -200, e.w, CHAO + 200).fill(0x443a62);
-    g.rect(e.x + 8, -200, 10, CHAO + 200).fill({ color: 0x5a4f80, alpha: 0.6 });
-    g.rect(e.x - 10, CHAO - 30, e.w + 20, 30).fill(0x524774);
-  } else {
-    // banco da capela
-    g.rect(e.x - 10, CHAO - 96, e.w + 20, 70).fill(0x3a2618);
-    g.rect(e.x - 10, CHAO - 44, e.w + 20, 10).fill(0x5a3c26);
-    g.rect(e.x - 4, CHAO - 34, 8, 34).fill(0x2e1e13); g.rect(e.x + e.w - 4, CHAO - 34, 8, 34).fill(0x2e1e13);
-  }
+  const g = peca(e.tipo, e.x + e.w / 2);
   frente.addChild(g);
   return { ...e, g };
 });
 
 // altar da capela
-const altar = new Graphics()
-  .rect(fase.altar.x - 90, CHAO - 96, 180, 96).fill(0x3d3456)
-  .rect(fase.altar.x - 100, CHAO - 104, 200, 12).fill(0x524774)
-  .rect(fase.altar.x - 80, CHAO - 92, 160, 50).fill(0xe8e0cc)
-  .rect(fase.altar.x - 14, CHAO - 92, 28, 50).fill(0x4b2f7a);
+const altar = peca('altar', fase.altar.x);
 frente.addChild(altar);
 
 // a cena do altar: a mãe ajoelhada e os três homens (aparecem só no fim)
 const tableau = new Container(); tableau.visible = false;
 {
   const ax = fase.altar.x;
-  const mae = pessoa(0x5b3a8a, 130, { saia: true, cabelo: 0xd9dcf0, cabeca: 16 }); mae.scale.x = -1; mae.position.set(ax - 210, CHAO);   // ajoelhada
-  const caius = pessoa(0x4a3446, 236, { cabelo: 0x2a2a2a }); caius.scale.x = 1; caius.position.set(ax - 400, CHAO);
-  caius.addChild(new Graphics().rect(-16, -150, 32, 6).fill(COR.ouro));                        // faixa dourada do comandante
-  const carneiro = pessoa(0x5a5070, 250, {}); carneiro.position.set(ax - 520, CHAO);
-  const elmo = new Graphics().circle(0, -214, 19).fill(0x6a6084);
-  elmo.moveTo(-14, -228).arc(-22, -220, 11, -Math.PI * 0.3, Math.PI * 1.2, true).stroke({ width: 6, color: 0xc9b89a });
-  elmo.moveTo(14, -228).arc(22, -220, 11, Math.PI * 1.3, Math.PI * -0.2).stroke({ width: 6, color: 0xc9b89a });
-  carneiro.addChild(elmo);   // elmo com chifres de carneiro   // elmo com chifres de carneiro
-  const luvas = pessoa(0x4a4a5c, 228, { cabelo: 0x9a9a9a }); luvas.position.set(ax - 610, CHAO);
-  luvas.addChild(new Graphics().circle(-18, -96, 7).fill(0xf4f4f4).circle(18, -96, 7).fill(0xf4f4f4));   // luvas brancas
-  tableau.addChild(luvas, carneiro, caius, mae);
+  tableau.addChild(
+    peca('luvas_brancas', ax - 640, CHAO, { virar: true }),
+    peca('carneiro', ax - 530, CHAO, { virar: true }),
+    peca('caius', ax - 400, CHAO, { virar: true }),
+    peca('ilaria_ajoelhada', ax - 200, CHAO, { virar: true }),
+  );
 }
 meio.addChild(tableau);
-const luzAltar = new Graphics().circle(fase.altar.x - 300, CHAO - 120, 340).fill({ color: 0xffc46a, alpha: 0.06 })
-  .circle(fase.altar.x - 300, CHAO - 120, 180).fill({ color: 0xffd890, alpha: 0.06 });
+const luzAltar = new Graphics().circle(fase.altar.x - 320, CHAO - 120, 360).fill({ color: 0xffc46a, alpha: 0.07 })
+  .circle(fase.altar.x - 320, CHAO - 120, 190).fill({ color: 0xffd890, alpha: 0.07 });
 luzAltar.visible = false; luz.addChild(luzAltar);
 
 // ---------- velas (pontos de retorno) ----------
 const velas = fase.velas.map((v) => {
-  const g = new Graphics()
-    .rect(v.x - 2, CHAO - 76, 4, 76).fill(0x1b1724)
-    .rect(v.x - 16, CHAO - 4, 32, 4).fill(0x1b1724)
-    .rect(v.x - 12, CHAO - 80, 24, 6).fill(0x2a2433)
-    .rect(v.x - 5, CHAO - 108, 10, 28).fill(0xf0e6cc);
-  const chama = new Graphics().ellipse(0, 0, 4, 9).fill(0xffd27a).ellipse(0, 2, 2, 5).fill(0xfff4d0);
-  chama.position.set(v.x, CHAO - 116);
-  meio.addChild(g, chama);
+  meio.addChild(peca('castical', v.x));
+  const chama = new Graphics().ellipse(0, 0, 5, 9).fill({ color: 0xffd27a, alpha: 0.5 });
+  chama.position.set(v.x, CHAO - 118);
   const brilho = new Graphics().circle(0, 0, 90).fill({ color: 0xffb04a, alpha: 0.10 }).circle(0, 0, 40).fill({ color: 0xffc46a, alpha: 0.14 });
-  brilho.position.set(v.x, CHAO - 116);
-  luz.addChild(brilho);
+  brilho.position.set(v.x, CHAO - 118);
+  luz.addChild(brilho, chama);
   return { ...v, chama, brilho, alcancada: false, flare: 0 };
 });
 
@@ -266,49 +189,34 @@ for (const p of fase.placas) {
 
 // luar entrando pelas janelas (só aparece no escuro)
 const luar = new Graphics();
-for (const x of janelas) luar.poly([x - 55, 430, x + 55, 430, x + 160, CHAO, x + 20, CHAO]).fill({ color: 0x8fa6ff, alpha: 0.07 });
+for (const x of janelas) luar.poly([x - 50, 330, x + 50, 330, x + 170, CHAO, x + 30, CHAO]).fill({ color: 0x8fa6ff, alpha: 0.07 });
 luz.addChild(luar);
+// os lustres pintados no salão da festa brilham até as velas se apagarem
 const brilhoLustres = new Graphics();
-for (const l of lustres) brilhoLustres.circle(l.x, l.y + 10, 160).fill({ color: 0xffc46a, alpha: 0.08 }).circle(l.x, l.y + 10, 70).fill({ color: 0xffd890, alpha: 0.12 });
+for (const f of [0.2, 0.81]) {
+  const x = X0 + f * LARGURA_PAINEL;
+  brilhoLustres.circle(x, -70, 200).fill({ color: 0xffc46a, alpha: 0.07 }).circle(x, -70, 80).fill({ color: 0xffd890, alpha: 0.10 });
+}
 luz.addChild(brilhoLustres);
 
 // ---------- soldados da Lança Dourada ----------
+const PASSOS = [0, 1, 2, 3, 4, 5, 7];               // quadros da caminhada (o 7º da folha saiu sem a lança)
+const OLHAR = [0, 1, 1, 2, 2, 3, 3, 0];              // parado na ponta: ergue a lanterna, olha em volta, olha para trás
 class Soldado {
   constructor(dados) {
     this.dados = dados;
     this.g = criarGuarda(dados);
     this.alerta = 0;
-    this.raiz = new Container();
-    const corpo = new Graphics();
-    // lança (atrás), pernas, armadura, sobreveste dourada, elmo com penacho
-    corpo.rect(-24, -290, 5, 270).fill(0x5a3c26);
-    corpo.poly([-21.5, -318, -13, -292, -30, -292]).fill(COR.ouro);
-    this.pernaA = new Graphics().rect(-7, 0, 14, 104).fill(0x24202e).rect(-9, 92, 20, 12).fill(0x14111a);
-    this.pernaB = new Graphics().rect(-7, 0, 14, 104).fill(0x2c2738).rect(-9, 92, 20, 12).fill(0x14111a);
-    this.pernaA.position.set(-6, -104); this.pernaB.position.set(6, -104);
-    const tronco = new Graphics()
-      .poly([-26, -100, 26, -100, 22, -186, -22, -186]).fill(0x3b3550)
-      .poly([-16, -100, 16, -100, 14, -170, -14, -170]).fill(COR.ouro)
-      .poly([-16, -100, 16, -100, 14, -112, -14, -112]).fill(0x8a6a2a)
-      .circle(-24, -182, 12).fill(0x4a4462).circle(24, -182, 12).fill(0x4a4462)
-      .circle(0, -208, 18).fill(0x4a4462)
-      .rect(2, -212, 18, 5).fill(0x0c0a12)
-      .poly([-4, -226, 4, -226, -10, -250, -22, -244]).fill(COR.ouro);
-    this.braco = new Graphics().rect(-4, 0, 9, 62).fill(0x3b3550);
-    this.braco.position.set(18, -180);
-    this.lanterna = new Graphics().moveTo(0, 0).lineTo(0, 10).stroke({ width: 2, color: 0x111 })
-      .rect(-7, 10, 14, 18).fill(0x2a2433).rect(-5, 13, 10, 12).fill(0xffd27a);
-    this.lanterna.position.set(26, -128);
-    this.raiz.addChild(this.pernaB, corpo, tronco, this.pernaA, this.braco, this.lanterna);
+    this.spr = peca('soldado_parado_0', dados.x);
     this.marca = new Text({ text: '', style: { fill: '#ffd27a', fontSize: 34, fontFamily: fonte, fontWeight: '800', stroke: { color: '#120d26', width: 5 } } });
     this.marca.anchor.set(0.5, 1);
     this.cone = new Graphics();
-    meio.addChild(this.raiz); meio.addChild(this.marca); luz.addChild(this.cone);
+    meio.addChild(this.spr, this.marca); luz.addChild(this.cone);
     this.visivel = false;
   }
-  reiniciar() { Object.assign(this.g, criarGuarda(this.dados)); this.alerta = 0; }
-  set visivel(v) { this.raiz.visible = this.marca.visible = this.cone.visible = v; }
-  get visivel() { return this.raiz.visible; }
+  reiniciar() { Object.assign(this.g, criarGuarda(this.dados)); this.alerta = 0; this.pegou = false; this.olhando = false; }
+  set visivel(v) { this.spr.visible = this.marca.visible = this.cone.visible = v; }
+  get visivel() { return this.spr.visible; }
   /** ouviu passos correndo atrás dele: vira e fica olhando */
   ouvir(xMenina) {
     const g = this.g, lado = Math.sign(xMenina - g.x);
@@ -318,19 +226,23 @@ class Soldado {
   }
   desenhar(dt) {
     const g = this.g;
-    this.raiz.position.set(g.x, g.y);
-    this.raiz.scale.x = g.dir;
-    const passoAng = g.estado === 'andando' ? Math.sin(g.t * 6.2) * 0.32 : 0;
-    this.pernaA.rotation = passoAng; this.pernaB.rotation = -passoAng;
-    this.braco.rotation = -0.5 + passoAng * 0.3;
-    this.lanterna.rotation = -passoAng * 0.6;
-    this.lanterna.position.set(26 + Math.sin(-0.5) * -10, -128);
+    if (g.estado === 'olhando' && !this.olhando) { this.olhando = true; this.duracaoOlhar = Math.max(0.1, g.relogio); }
+    if (g.estado !== 'olhando') this.olhando = false;
+    let nome;
+    if (this.pegou) nome = 'soldado_parado_5';
+    else if (this.alerta > 0.45) nome = 'soldado_parado_4';
+    else if (g.estado === 'andando') nome = `soldado_andando_${PASSOS[Math.floor(g.t * 7.5) % PASSOS.length]}`;
+    else nome = `soldado_parado_${OLHAR[Math.min(OLHAR.length - 1, Math.floor((1 - g.relogio / this.duracaoOlhar) * OLHAR.length))]}`;
+    trocarPeca(this.spr, nome);
+    const e = 1 / metaP.resolucao;
+    this.spr.position.set(g.x, g.y);
+    this.spr.scale.set(e * g.dir, e);
     this.ouviuT = Math.max(0, (this.ouviuT ?? 0) - dt);
-    this.marca.text = this.alerta >= 1 ? '!' : this.alerta > 0.05 || this.ouviuT > 0 ? '?' : '';
+    this.marca.text = this.alerta >= 1 || this.pegou ? '!' : this.alerta > 0.05 || this.ouviuT > 0 ? '?' : '';
     this.marca.style.fill = this.alerta > 0.6 ? '#ff6b6b' : '#ffd27a';
-    this.marca.position.set(g.x, g.y - 262 - Math.abs(Math.sin(g.t * 8)) * 4 * Math.min(1, this.alerta * 3));
-    // cone da lanterna: o que ele enxerga (e, mais fraco, até onde vê a menina abaixada)
-    const ox = g.x, oy = g.y - VISAO.OLHOS, A = VISAO.ABERTURA;
+    this.marca.position.set(g.x, g.y - 300 - Math.abs(Math.sin(g.t * 8)) * 4 * Math.min(1, this.alerta * 3));
+    // cone da lanterna: o que ele enxerga (e, mais forte, até onde vê a menina abaixada)
+    const ox = g.x + 26 * g.dir, oy = g.y - VISAO.OLHOS, A = VISAO.ABERTURA;
     const cor = mistura(0xffe7a0, 0xff4a4a, Math.min(1, this.alerta * 1.3));
     const pontos = (R) => {
       const p = [ox, oy];
@@ -341,9 +253,9 @@ class Soldado {
       return p;
     };
     this.cone.clear()
-      .poly(pontos(VISAO.ALCANCE)).fill({ color: cor, alpha: 0.10 + this.alerta * 0.08 })
-      .poly(pontos(VISAO.ALCANCE * VISAO.AGACHADA)).fill({ color: cor, alpha: 0.09 })
-      .circle(g.x + 26 * g.dir, g.y - 108, 26).fill({ color: 0xffc46a, alpha: 0.25 });
+      .poly(pontos(VISAO.ALCANCE)).fill({ color: cor, alpha: 0.08 + this.alerta * 0.08 })
+      .poly(pontos(VISAO.ALCANCE * VISAO.AGACHADA)).fill({ color: cor, alpha: 0.07 })
+      .circle(ox, oy, 30).fill({ color: 0xffc46a, alpha: 0.22 });
   }
 }
 const mistura = (a, b, t) => {
@@ -417,30 +329,17 @@ const veu = new Graphics();                                  // vermelho quando 
 const neve = new Container(); neve.visible = false;          // última cena: a menina na neve, o Bram
 const tituloFinal = new Text({ text: 'AURORA', style: { ...estiloHud(84, '#f4f0ff', '700'), letterSpacing: 18, stroke: { color: '#120d26', width: 8 } } });
 tituloFinal.anchor.set(0.5); tituloFinal.visible = false;
-const fimTexto = new Text({ text: 'E  começar a Fase 1 · O Cervo Branco', style: estiloHud(16, '#cfc6f0') });
+const fimTexto = new Text({ text: 'E  começar a Fase 1 · A Floresta da Névoa', style: estiloHud(16, '#cfc6f0') });
 fimTexto.anchor.set(0.5); fimTexto.visible = false;
 const titulo = new Titulo(fase);
 const dialogo = new CaixaDialogo();
 hud.addChild(ajuda, objetivo, situacao, aviso, veu, neve, tituloFinal, fimTexto, titulo.raiz, dialogo.raiz);
 
-// cena da neve (desenhada na hora, ocupa a tela toda)
-const gNeve = new Graphics(), flocos = [];
-neve.addChild(gNeve);
+// cena da neve: a pintura do Figma (a menina coberta de cinzas e o Bram), com flocos caindo por cima
+const quadroNeve = new Sprite(texFundo.cena_neve_bram), flocos = [];
+quadroNeve.anchor.set(0.5);
+neve.addChild(quadroNeve);
 for (let i = 0; i < 140; i++) { const f = new Graphics().circle(0, 0, 1 + (i % 3)).fill({ color: 0xffffff, alpha: 0.8 }); neve.addChild(f); flocos.push({ f, x: Math.random(), y: Math.random(), v: 0.04 + Math.random() * 0.08 }); }
-function desenharNeve(W, H, t) {
-  gNeve.clear();
-  ['#2a3050', '#3a4268', '#525c86', '#7a84aa'].forEach((c, i) => gNeve.rect(0, (H * 0.62 * i) / 4, W, H * 0.62 / 4 + 1).fill(c));
-  gNeve.rect(0, H * 0.62, W, H * 0.38).fill(0xe6e9f6);
-  gNeve.poly([0, H * 0.62, W * 0.3, H * 0.57, W * 0.6, H * 0.63, W, H * 0.58, W, H * 0.66, 0, H * 0.66]).fill(0xd4d8ea);
-  for (let i = 0; i < 9; i++) { const x = (i / 8) * W, h = 120 + (i % 3) * 50; gNeve.poly([x, H * 0.62 - h, x + 34, H * 0.62, x - 34, H * 0.62]).fill(0x1e2440); }
-  // a menina (pequena, cabelo prateado, cinzas) e o Bram (grande, capa escura) que vem ao encontro dela
-  const chega = Math.min(1, t / 4);
-  const mx = W * 0.42, bx = W * (0.78 - chega * 0.26), y = H * 0.66;
-  gNeve.rect(mx - 9, y - 70, 18, 52).fill(0x5a5466).circle(mx, y - 82, 11).fill(0xd8c3b0).circle(mx - 2, y - 86, 12).fill(0xd9dcf0);
-  gNeve.rect(mx - 8, y - 18, 6, 18).fill(0x3a3446).rect(mx + 2, y - 18, 6, 18).fill(0x3a3446);
-  gNeve.poly([bx - 30, y, bx + 30, y, bx + 22, y - 150, bx - 22, y - 150]).fill(0x2a2230);
-  gNeve.circle(bx, y - 166, 17).fill(0xc9a890).poly([bx - 18, y - 160, bx + 18, y - 160, bx, y - 128]).fill(0x5a4030);
-}
 
 // ---------- estados da história ----------
 // 'festa' (falas no início) → 'livre' (anda na festa) → 'apagando' → 'furtivo' → 'pega' (volta à vela) → 'final'
@@ -459,7 +358,7 @@ function apagar() {
 
 function serPega(soldado) {
   if (estado !== 'furtivo') return;
-  soldado.alerta = 1;
+  soldado.alerta = 1; soldado.pegou = true;
   mudar('pega');
   avisar('Um soldado a viu!', 1.6);
 }
@@ -595,14 +494,15 @@ app.ticker.add((ticker) => {
   menina.alpha = escondida ? 0.9 : 1;
   brilhoMenina.position.set(cx, corpo.y + P.altura * 0.45); brilhoMenina.alpha = escuridao;
   altar.alpha += ((estado === 'final' ? 0.72 : 1) - altar.alpha) * Math.min(1, dt * 4);
-  for (const e of esconderijos) e.g.alpha += (((escondida && esconderijoAqui() === e) ? 0.7 : 1) - e.g.alpha) * Math.min(1, dt * 8);
+  // no esconderijo dela, o objeto fica translúcido; na cena do altar o banco some (ficava na frente dos homens)
+  for (const e of esconderijos) e.g.alpha += ((estado === 'final' && e.tipo === 'banco' ? 0 : (escondida && esconderijoAqui() === e) ? 0.7 : 1) - e.g.alpha) * Math.min(1, dt * 8);
 
   // a festa: convidados balançam; o Elias corre na frente com a fita até sumir pela porta
-  for (const c of convidados) c.p.rotation = Math.sin(t * 1.8 + c.fase) * 0.04;
+  for (const c of convidados) { c.p.skew.x = Math.sin(t * 1.6 + c.fase) * 0.025; }
   if (!eliasSumiu) {
     const alvoE = estado === 'festa' ? 260 : Math.min(fase.apagar.x + 60, Math.max(elias.x, cx + 190));
     elias.x += (alvoE - elias.x) * Math.min(1, dt * 3);
-    elias.rotation = Math.sin(t * 12) * 0.05 * Math.min(1, Math.abs(alvoE - elias.x) / 20);
+    elias.y = CHAO - Math.abs(Math.sin(t * 9)) * 6 * Math.min(1, Math.abs(alvoE - elias.x) / 20);   // pulinhos da corrida
     if (estado === 'apagando' || estado === 'furtivo') { elias.alpha -= dt * 2; if (elias.alpha <= 0) { eliasSumiu = true; elias.visible = false; } }
   }
 
@@ -610,7 +510,6 @@ app.ticker.add((ticker) => {
   const alvoEscuro = estado === 'festa' || estado === 'livre' ? 0 : 1;
   escuridao += (alvoEscuro - escuridao) * Math.min(1, dt * 1.6);
   escuro.clear().rect(0, 0, W, H).fill({ color: 0x05040c, alpha: 0.62 * escuridao });
-  gLustres.alpha = 1 - escuridao * 0.6;
   brilhoLustres.alpha = 1 - escuridao;
   luar.alpha = escuridao;
   for (const c of convidados) c.p.alpha = Math.max(0, 1 - escuridao * 1.4);
@@ -619,11 +518,11 @@ app.ticker.add((ticker) => {
   for (const v of velas) {
     v.flare = Math.max(0, v.flare - dt * 1.2);
     const tremula = 1 + Math.sin(t * 13 + v.x) * 0.08 + Math.sin(t * 7.3 + v.x * 0.3) * 0.06;
-    v.chama.scale.set(1, tremula * (1 + v.flare * 0.6));
+    v.chama.scale.set(1, tremula * (1 + v.flare * 0.6)); v.chama.alpha = 0.5 + escuridao * 0.5;
     v.brilho.scale.set(tremula * (1 + v.flare * 0.8));
     v.brilho.alpha = 0.6 + escuridao * 0.4 + v.flare * 0.5;
   }
-  for (const s of soldados) s.desenhar(dt);
+  for (const s of soldados) if (s.visivel) s.desenhar(dt);
 
   // dica de esconderijo (some depois que ela já se escondeu algumas vezes)
   const lugar = esconderijoAqui();
@@ -654,7 +553,9 @@ app.ticker.add((ticker) => {
   if (estado === 'final') veu.rect(0, 0, W, H).fill({ color: 0x05040c, alpha: Math.min(0.3, tEstado * 0.3) });
   neve.visible = cenaNeve;
   if (cenaNeve) {
-    desenharNeve(W, H, tEstado);
+    // cobre a tela e aproxima devagar
+    const e = Math.max(W / quadroNeve.texture.width, H / quadroNeve.texture.height) * (1.02 + Math.min(0.06, tEstado * 0.006));
+    quadroNeve.scale.set(e); quadroNeve.position.set(W / 2, H * 0.5);
     for (const f of flocos) { f.y += f.v * dt; f.x += Math.sin(t + f.v * 40) * 0.0008; if (f.y > 1) f.y -= 1; f.f.position.set(f.x * W, f.y * H); }
   }
   tituloFinal.visible = mostrarTitulo; fimTexto.visible = fimPronto;

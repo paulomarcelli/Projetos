@@ -16,10 +16,11 @@ from PIL import Image
 AREA_FRACAO_BURACO = 0.0006  # área branca fechada maior que 0,06% da imagem é fundo
 
 
-def mascara_fundo(rgb, fracao_buraco=None):
+def mascara_fundo(rgb, fracao_buraco=None, limiar=232, espalho=24):
+    """limiar/espalho: quão branco e cinza um pixel precisa ser para contar como fundo (estrito: 247/8, para toalhas creme)."""
     h, w, _ = rgb.shape
     mn, mx = rgb.min(axis=2), rgb.max(axis=2)
-    candidato = (mn >= 232) & ((mx - mn) <= 24)
+    candidato = (mn >= limiar) & ((mx - mn) <= espalho)
     fundo = np.zeros((h, w), bool)
     fila = deque()
     for x in range(w):

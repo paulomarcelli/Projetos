@@ -103,9 +103,10 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
 // (sentar/levantar na fogueira: ver src/sentar.js)
 // dano: 3 quadros do Gemini (impacto, cambaleia, recupera); clarão, recuo e faíscas por código
 // animações desenhadas numa malha, para o cabelo seguir o vento e o movimento
-const quadros = new QuadrosVivos(animacoes.parada.texturas[0], animacoes.parada.mechas[0], BASE_CELULA, pesosFolha, 0.25);
+const baseCelula = meta.base ?? BASE_CELULA;   // folha nova (Figma): células de 512 px, pés em y = 500
+const quadros = new QuadrosVivos(animacoes.parada.texturas[0], animacoes.parada.mechas[0], baseCelula, pesosFolha, 0.25);
 // sentar na fogueira: os desenhos dela (src/sentar.js), com o corpo encostado no chão
-const sentar = new Sentar(animacoes, pesosFolha, BASE_CELULA, ALTURA_VISUAL / ALTURA_QUADRO);
+const sentar = new Sentar(animacoes, pesosFolha, baseCelula, ALTURA_VISUAL / ALTURA_QUADRO, meta.versao ? 0 : null);
 cena.addChild(sentar.raiz);
 const escalaQuadros = ALTURA_VISUAL / ALTURA_QUADRO;
 cena.addChild(quadros.raiz);
@@ -450,14 +451,16 @@ function escolherAnimacao(dt) {
     return;
   }
   if (guarda > 0) { guarda -= dt; return tocar('lamina_guarda'); }
-  tocar('boneco');
+  // Aurora nova: parada com os quadros dela (respira e pisca); o desenho antigo deformado (aurora_viva) não é mais usado
+  tocar('parada');
 }
 
 function atirar() {
   const s = new Sprite(texFlecha);
   s.anchor.set(0.5); s.scale.y = ESCALA_FLECHA;
   const pes = { x: corpo.x + CONST.LARGURA / 2, y: corpo.y + CONST.ALTURA };
-  s.position.set(pes.x + corpo.direcao * 70, pes.y - ALTURA_VISUAL * 0.76);   // na altura da flecha do desenho (arco v2: corda no canto da boca)
+  // na altura e na ponta da flecha do desenho (puxada cheia: corda no canto da boca), medidas na folha nova
+  s.position.set(pes.x + corpo.direcao * (ALTURA_VISUAL * 0.405 - PONTA_FLECHA), pes.y - ALTURA_VISUAL * 0.854);
   s.scale.x = corpo.direcao * ESCALA_FLECHA;
   // rastro de luz atrás da flecha (some quando ela crava ou acerta)
   const rastro = new Sprite(arte.tex.fx_rastro);
@@ -537,7 +540,7 @@ app.ticker.add((ticker) => {
   if (acao !== 'arco' || flechaSolta) carga = Math.max(0, carga - dt * 8);
   orbeArco.visible = carga > 0.02;
   if (orbeArco.visible) {
-    orbeArco.position.set(pes.x + corpo.direcao * 62, pes.y - ALTURA_VISUAL * 0.76);
+    orbeArco.position.set(pes.x + corpo.direcao * ALTURA_VISUAL * 0.4, pes.y - ALTURA_VISUAL * 0.854);
     orbeArco.scale.set(0.12 + carga * 0.22 + Math.sin(performance.now() / 60) * 0.01);
     orbeArco.alpha = carga * 0.9; orbeArco.tint = 0xd8d0ff;
   }

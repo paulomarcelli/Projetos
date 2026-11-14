@@ -11,13 +11,15 @@
 import { QuadrosVivos } from './vento.js';
 
 // px (célula) que cada quadro desce: sentar = [em pé, agachada, mão no chão, sentando]; sentada = corpo sentado
-const DESLOC_SENTAR = [0, 0, 20, 25], DESLOC_SENTADA = 27;
+const DESLOC_SENTAR_V1 = [0, 0, 20, 25], DESLOC_SENTADA_V1 = 27;   // folha antiga (Gemini)
 const SENTADA = { normal: 0, pensativa: 2, olhosFechados: 11 };   // índices dos 3 desenhos dentro de animacoes.sentada
 
 export class Sentar {
   /** animacoes: as da Aurora (main.js); pesos/base: os da folha dela; escala: a dos quadros em movimento */
-  constructor(animacoes, pesos, base, escala) {
+  /** semDesloc: 0 = folha nova (Figma), já com o corpo no chão em todos os quadros */
+  constructor(animacoes, pesos, base, escala, semDesloc = null) {
     const a = animacoes;
+    const DESLOC_SENTAR = semDesloc === 0 ? [0, 0, 0, 0] : DESLOC_SENTAR_V1, DESLOC_SENTADA = semDesloc === 0 ? 0 : DESLOC_SENTADA_V1;
     this.descer = { ...a.sentar, duracoes: [0.16, 0.2, 0.17, 0.3], fundir: 0.1, desloc: DESLOC_SENTAR };
     this.subir = { ...a.levantar, duracoes: [0.14, 0.15, 0.16, 0.24], fundir: 0.09, desloc: [...DESLOC_SENTAR].reverse() };
     this.sentadaAnim = { ...a.sentada, fundir: 0.14, desloc: a.sentada.texturas.map(() => DESLOC_SENTADA) };

@@ -41,7 +41,7 @@ function desenharFundoTela() {
 desenharFundoTela();
 window.addEventListener('resize', desenharFundoTela);
 
-// ---------- arte do Prólogo (gerada no Figma, montada por ferramentas/montar_folha_prologo.py) ----------
+// ---------- arte do Prólogo (gerada no Figma, montada por ferramentas/montar_folha_figma.py) ----------
 const X0 = -400;
 const folhaP = nitida(await Assets.load('assets/sprites/prologo_folha.png'));
 const metaP = await (await fetch('assets/sprites/prologo_folha.json')).json();
@@ -329,7 +329,7 @@ const veu = new Graphics();                                  // vermelho quando 
 const neve = new Container(); neve.visible = false;          // última cena: a menina na neve, o Bram
 const tituloFinal = new Text({ text: 'AURORA', style: { ...estiloHud(84, '#f4f0ff', '700'), letterSpacing: 18, stroke: { color: '#120d26', width: 8 } } });
 tituloFinal.anchor.set(0.5); tituloFinal.visible = false;
-const fimTexto = new Text({ text: 'E  começar a Fase 1 · O Cervo Branco', style: estiloHud(16, '#cfc6f0') });
+const fimTexto = new Text({ text: 'E  começar a Fase 1 · A Floresta da Névoa', style: estiloHud(16, '#cfc6f0') });
 fimTexto.anchor.set(0.5); fimTexto.visible = false;
 const titulo = new Titulo(fase);
 const dialogo = new CaixaDialogo();

@@ -1,6 +1,9 @@
-"""Monta a folha de sprites do Prólogo com a arte gerada no Figma (arte/figma/recortes → arte/sprites/prologo_folha.*).
+"""Monta as folhas de sprites com a arte gerada no Figma (arte/figma/recortes → arte/sprites/<nome>_folha.*).
 
-Uso (na pasta Aurora-Jogo): python3 ferramentas/montar_folha_prologo.py
+Uso (na pasta Aurora-Jogo): python3 ferramentas/montar_folha_figma.py [prologo|floresta]   (sem nada: as duas)
+
+- prologo: alturas fixas no mundo (o Prólogo não muda o tamanho das peças).
+- floresta (Fase 1): cada peça na resolução original (o jogo escala: pinheiros pela altura `h`, galhos pela largura).
 
 - Cada peça é redimensionada para a altura que terá no mundo do jogo (px) × RESOLUCAO (nitidez com zoom e tela 2×).
 - Soldado: os quadros vêm de duas folhas com escalas diferentes. A escala é medida pelo CORPO (do topo do elmo aos pés),
@@ -8,6 +11,7 @@ Uso (na pasta Aurora-Jogo): python3 ferramentas/montar_folha_prologo.py
 - O JSON guarda, para cada peça, o retângulo na folha e a âncora (pés: centro dos pixels da base), em px da folha.
 """
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +35,9 @@ PECAS = {
     'cortina': ('cortina.png', 530), 'coluna': ('coluna.png', 800), 'mesa': ('mesa.png', 122),
     'banco': ('banco.png', 112), 'altar': ('altar.png', 152), 'castical': ('castical.png', 128),
 }
+# Fase 1: altura 0 = resolução original (dividida por RESOLUCAO, para a mesma conta no jogo)
+FLORESTA = {n: (f'{n}.png', 0) for n in ['pinheiro_grande', 'pinheiro_medio', 'pinheiro_pequeno', 'placa', 'alvo', 'arbusto', 'pedra',
+                                          'cervo_pastando', 'cervo_alerta', 'cervo_caido', 'galho', 'tronco_em_pe', 'tronco_caido']}
 
 
 def corpo(a):
@@ -47,12 +54,12 @@ def ancora(a):
     return float((xs.min() + xs.max()) / 2), float(base + 1)
 
 
-def main():
+def montar(tabela, nome_folha):
     pecas = []
-    for nome, (arq, altura) in PECAS.items():
+    for nome, (arq, altura) in tabela.items():
         im = Image.open(REC / arq).convert('RGBA')
         a = np.asarray(im)
-        escala = (SOLDADO_CORPO / corpo(a) if altura is None else altura / im.height) * RESOLUCAO
+        escala = 1.0 if altura == 0 else (SOLDADO_CORPO / corpo(a) if altura is None else altura / im.height) * RESOLUCAO
         im = im.resize((max(1, round(im.width * escala)), max(1, round(im.height * escala))), Image.LANCZOS)
         pecas.append((nome, im))
     # empacota em prateleiras (as mais altas primeiro)
@@ -68,15 +75,23 @@ def main():
     altura_folha = y + alt
     assert altura_folha <= 4096, f'folha alta demais: {altura_folha}'
     folha = Image.new('RGBA', (LARGURA_FOLHA, altura_folha))
-    meta = {'resolucao': RESOLUCAO, 'pecas': {}}
+    meta = {'resolucao': RESOLUCAO if nome_folha == 'prologo' else 1, 'pecas': {}}
     for nome, im in pecas:
         px, py = pos[nome]
         folha.paste(im, (px, py))
         ax, ay = ancora(np.asarray(im))
         meta['pecas'][nome] = {'quadro': [px, py, im.width, im.height], 'ancora': [round(ax, 1), round(ay, 1)]}
-    folha.save(SAIDA / 'prologo_folha.png', optimize=True)
-    (SAIDA / 'prologo_folha.json').write_text(json.dumps(meta, ensure_ascii=False, indent=1))
-    print('prologo_folha.png', folha.size, len(pecas), 'peças')
+    folha.save(SAIDA / f'{nome_folha}_folha.png', optimize=True)
+    (SAIDA / f'{nome_folha}_folha.json').write_text(json.dumps(meta, ensure_ascii=False, indent=1))
+    print(f'{nome_folha}_folha.png', folha.size, len(pecas), 'peças')
+
+
+def main():
+    qual = sys.argv[1] if len(sys.argv) > 1 else 'tudo'
+    if qual in ('prologo', 'tudo'):
+        montar(PECAS, 'prologo')
+    if qual in ('floresta', 'tudo'):
+        montar(FLORESTA, 'floresta')
 
 
 if __name__ == '__main__':

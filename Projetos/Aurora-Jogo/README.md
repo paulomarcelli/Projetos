@@ -25,7 +25,9 @@ alvos de palha, penhascos e a cena final).
 | Já funciona | Falta |
 |-------------|-------|
 | Correr, pular (pulo variável, "pulo atrasado", memória do botão), Salto da Lua, esquiva, golpe de lâmina com volta à guarda, arco com flecha que voa e crava | Fases 2 a 13, chefes |
-| Prólogo: furtividade (cone de visão, esconderijos, andar abaixada, ouvir passos), diálogos letra a letra, festa, altar e neve | Arte desenhada dos soldados, do castelo e dos personagens do Prólogo (hoje são formas em código) |
+| Prólogo: furtividade (cone de visão, esconderijos, andar abaixada, ouvir passos), diálogos letra a letra, festa, altar e neve | Mais quadros de animação para os personagens do Prólogo (hoje eles ficam parados) |
+| Arte pintada (gerada no Figma): castelo, soldados, personagens, cena da neve; na Fase 1, céu, floresta em camadas, chão, pinheiros, galhos, placas, alvos e cervo | |
+| Neve que levanta nos passos, no pulo e na aterrissagem, pegadas que somem, amassar ao pousar e esticar ao pular | |
 | Aurora parada "viva" (respira, pisca, mão abre e fecha) e em movimento com o cabelo separado do corpo, reagindo ao vento | Diálogos com escolhas, som e música |
 | Sentar na Fogueira Lunar (respirando), salvar, evoluir; dano em 3 quadros com clarão, recuo e hit-stop | Menu inicial e controles de toque |
 | Fase 1 em dados, com teste automático (jogador robô, alcance dos saltos e ritmo) | Patrulha imperial na Fase 1 (precisa de arte dos soldados) |

@@ -82,3 +82,45 @@ export class Impacto {
     return false;
   }
 }
+
+/**
+ * Neve que levanta: nuvenzinhas que sobem, se espalham e somem (passos, pulo, aterrissagem, esquiva)
+ * e pegadas que ficam na neve e desaparecem aos poucos.
+ */
+export class NeveNosPes {
+  constructor() {
+    this.raiz = new Container();
+    this.pegadas = new Container();   // atrás da Aurora (no chão)
+    this.lista = []; this.marcas = [];
+  }
+  /** n flocos saindo de (x, y); dir empurra para trás do movimento; forca 0..1 */
+  levantar(x, y, n = 6, dir = 0, forca = 1) {
+    for (let i = 0; i < n; i++) {
+      const g = new Graphics().circle(0, 0, 3 + Math.random() * 4 * forca).fill({ color: 0xeef2ff, alpha: 0.85 });
+      g.position.set(x + (Math.random() - 0.5) * 18, y - 2);
+      this.raiz.addChild(g);
+      const ang = -Math.PI / 2 + (Math.random() - 0.5) * 2.2 + dir * 0.6;
+      const vel = (60 + Math.random() * 120) * forca;
+      this.lista.push({ g, vx: Math.cos(ang) * vel - dir * 40 * forca, vy: Math.sin(ang) * vel, vida: 0.45 + Math.random() * 0.35, total: 0.8 });
+    }
+  }
+  /** pegada de uma bota (some em ~6 s) */
+  marcar(x, y, dir) {
+    const g = new Graphics().ellipse(0, 0, 7, 2.2).fill({ color: 0x7f8bb3, alpha: 0.55 }).ellipse(dir * 5, 0, 3, 1.6).fill({ color: 0x6a76a0, alpha: 0.5 });
+    g.position.set(x, y - 1);
+    this.pegadas.addChild(g);
+    this.marcas.push({ g, vida: 6 });
+    if (this.marcas.length > 60) { this.marcas[0].g.destroy(); this.marcas.shift(); }
+  }
+  atualizar(dt) {
+    for (const p of this.lista) {
+      p.vida -= dt; p.vy += 160 * dt; p.vx *= 0.94; p.vy *= 0.97;
+      p.g.x += p.vx * dt; p.g.y += p.vy * dt;
+      const t = 1 - p.vida / p.total;
+      p.g.scale.set(1 + t * 1.2); p.g.alpha = Math.max(0, p.vida / p.total) * 0.85;
+    }
+    for (let i = this.lista.length - 1; i >= 0; i--) if (this.lista[i].vida <= 0) { this.lista[i].g.destroy(); this.lista.splice(i, 1); }
+    for (const m of this.marcas) { m.vida -= dt; m.g.alpha = Math.min(1, m.vida / 2); }
+    for (let i = this.marcas.length - 1; i >= 0; i--) if (this.marcas[i].vida <= 0) { this.marcas[i].g.destroy(); this.marcas.splice(i, 1); }
+  }
+}

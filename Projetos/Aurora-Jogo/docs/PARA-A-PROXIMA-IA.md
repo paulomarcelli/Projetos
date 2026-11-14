@@ -50,6 +50,14 @@ impacto (hit-stop, tremor, faíscas, números, vinheta), vento com rajadas, neve
 
 **Criatura:** sombra de névoa (arte do Gemini): flutua, fica atordoada, morre em 3 quadros.
 
+**Arte nova (Figma, 14/11/2026):** o usuário achou os bonecos e cenários em código "horríveis" e pediu tudo desenhado.
+Gerei no Figma (modelo gemini-3.1-flash-image, mesmo estilo da Aurora) o castelo (3 painéis), a cena da neve com o Bram,
+o soldado (andando e parado), Ilaria, Elias, convidados, Caius, o do carneiro, o das luvas, os esconderijos e o altar;
+na Fase 1, céu com lua, floresta do meio, textura do chão, 3 pinheiros, arbusto, pedra, placa, alvo, cervo (3 poses),
+galho, tronco em pé e tronco caído. Fluxo em `docs/ARQUITETURA.md` (seção "Arte gerada no Figma"). Movimento: neve que
+levanta (passos, pulo, pouso, esquiva), pegadas que somem em 6 s, amassar ao pousar e esticar ao pular (`efeitos.js`,
+`NeveNosPes`; `main.js`, `pisarNaNeve`).
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo
@@ -81,9 +89,8 @@ O robô foi conferido: reprova vão de 400 px e subida de 260 px.
 3. **Menu inicial** (Novo jogo, Continuar, escolher fase) e **controles de toque** para celular (skill `game-ui-ux`).
 4. **Som e música** (skill `audio-design`): passos na neve, flecha, golpe, dano, fogueira, trilha da floresta.
 5. **Patrulha imperial na Fase 1** (o roteiro pede): reaproveitar `furtividade.js` e a classe `Soldado` do Prólogo.
-5b. **Arte do Prólogo** (hoje formas em código): soldados da Lança Dourada (andando, parados, olhando, com lanterna),
-   Lady Ilaria, Elias, Caius, o homem do elmo de carneiro, o das luvas brancas, Bram; cenário do castelo (salão, corredor,
-   capela, altar). Gere prompts para o Gemini como os de `docs/prompts-aurora-crianca.md`.
+5b. **Mais arte** (Figma, arquivo em `docs/ARQUITETURA.md`): quadros de animação para Ilaria, Elias (correndo) e
+   convidados; galeria e degraus pintados (hoje em código); fogueira pintada; soldado no Fase 1 (patrulha).
 6. **Fase 2 — A Tinta que Escorre** (roteiro) e o primeiro chefe (Brakus, o Carneiro).
 7. Arte opcional da adulta: mão meio fechada (prompt F), corrida em 8 quadros maiores, olhos totalmente fechados
    (prompts em `docs/prompts-aurora-rodada2.md`); combo de verdade (2º golpe diferente).

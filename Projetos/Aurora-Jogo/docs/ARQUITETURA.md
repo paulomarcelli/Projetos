@@ -114,6 +114,24 @@ Folhas: camada de trás (pequenas, parallax 0,5) e da frente (grandes, parallax 
 - `assets/viva/aurora_viva.json`: tamanho, ponto dos pés e regiões (cabelo, trança, peito, alturas do pescoço,
   ombro e cintura) em px da imagem. Gerado por `ferramentas/compor_viva.py`.
 
+## Arte gerada no Figma (cenários, soldados, personagens, objetos)
+Arquivo: <https://www.figma.com/design/Yv7xZtJvCSXvhYK7c1lrDA> (cada imagem é um quadro; os prompts usados seguem o
+mesmo bloco de estilo de `docs/prompts-personagens.md`: anime suave, contorno marrom-escuro, sombreamento em 2 tons).
+Originais em `arte/figma/*.png` (nunca edite: gere de novo). Fluxo:
+1. **Fundo branco** (soldados, personagens, objetos do castelo): `ferramentas/fatiar_folha.py FOLHA --nomes x:N
+   --saida arte/figma/recortes [--manter-brancos] [--fundo-estrito]`. `--fundo-estrito` só apaga o branco quase puro
+   (toalhas creme e panos brancos ficam). Folhas em 2 fileiras: recorte por retângulo (ver histórico do commit).
+2. **Fundo verde** (#00FF00; floresta, pinheiros, cervo, galhos): `ferramentas/recortar_verde.py FOLHA --saida PASTA
+   --nomes a,b,c` (peças) ou `--inteira NOME` (camada inteira). Tira o verde da borda (sem halo).
+3. `ferramentas/montar_folha_figma.py [prologo|floresta]` monta `arte/sprites/<nome>_folha.png/json` (quadro + âncora
+   nos pés). Prólogo: cada peça na altura do mundo × 1,6; soldado medido pelo corpo (sem a lança). Floresta: resolução
+   original (o jogo escala).
+4. Fundos pintados vão direto para `jogo/assets/fundos/` (JPEG; a floresta do meio em WebP com transparência). O céu
+   da Fase 1 **não repete** (a lua é única): é maior que a tela e só desliza um pouco. A floresta do meio e a textura
+   do chão são espelhadas (lado a lado / 2×2) para emendar sem costura.
+- No jogo: `prologo.js` (painéis por sala com a linha do chão pintado no chão do jogo, colunas nas emendas) e
+  `fase.js` (`carregarArteFloresta()`; sem ela, tudo volta a ser desenhado em código).
+
 ## Fluxo de arte (Python, pasta ferramentas/)
 | Ferramenta | Faz |
 |------------|-----|

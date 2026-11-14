@@ -4,8 +4,39 @@
  *   · objetos (placas, rastros, alvos, cervo) · primeiro plano (névoa) — e o HUD da fase (título e cena final).
  * Tudo desenhado em código (traço original do jogo). A lógica de colisão fica em fisica.js / nivel.js.
  */
-import { Container, Graphics, Sprite, Text, Texture } from '../vendor/pixi.min.mjs';
+import { Assets, Container, Graphics, NineSliceSprite, Rectangle, Sprite, Text, Texture, TilingSprite } from '../vendor/pixi.min.mjs';
 import { FUNDO } from './nivel.js';
+import { nitida } from './aurora_viva.js';
+
+/*
+ * Arte pintada da floresta (gerada no Figma; ferramentas/recortar_verde.py e montar_folha_figma.py floresta).
+ * Sem ela (carregarArteFloresta não chamada), tudo continua desenhado em código como antes.
+ */
+let arte = null;
+export async function carregarArteFloresta() {
+  const folha = nitida(await Assets.load('assets/sprites/floresta_folha.png'));
+  const meta = await (await fetch('assets/sprites/floresta_folha.json')).json();
+  const tex = {};
+  for (const [n, p] of Object.entries(meta.pecas)) {
+    const [x, y, w, h] = p.quadro;
+    tex[n] = new Texture({ source: folha.source, frame: new Rectangle(x, y, w, h) });
+  }
+  const [terra, ceu, meio] = await Promise.all(['floresta_terra.jpg', 'floresta_ceu.jpg', 'floresta_meio.webp'].map((f) => Assets.load('assets/fundos/' + f)));
+  arte = { folha, meta, tex, terra, ceu: nitida(ceu), meio: nitida(meio) };
+  return arte;
+}
+export const arteFloresta = () => arte;
+/** sprite de uma peça com a âncora nos pés */
+function peca(nome) {
+  const p = arte.meta.pecas[nome], s = new Sprite(arte.tex[nome]);
+  s.anchor.set(p.ancora[0] / p.quadro[2], p.ancora[1] / p.quadro[3]);
+  return s;
+}
+/** pedaço de uma peça (x, y, w, h em px da peça) */
+function pedaco(nome, x, y, w, h) {
+  const [qx, qy] = arte.meta.pecas[nome].quadro;
+  return new Texture({ source: arte.folha.source, frame: new Rectangle(qx + x, qy + y, w, h) });
+}
 
 const NEVE = '#e7edf9', NEVE_SOMBRA = '#b9c3de', CONTORNO = '#15102a';
 
@@ -37,6 +68,7 @@ function capaDeNeve(g, x, y, w, esp, sorte) {
 
 /** Terreno: um desenho para cada tipo de sólido. */
 export function desenharTerreno(fase) {
+  if (arte) return terrenoPintado(fase);
   const g = new Graphics();
   for (const s of fase.solidos) {
     if (s.tipo === 'invisivel') continue;   // limite da fase
@@ -80,6 +112,56 @@ export function desenharTerreno(fase) {
   return g;
 }
 
+/** Terreno com a arte pintada: textura de terra e pedras, tronco caído e galhos desenhados. */
+function terrenoPintado(fase) {
+  const raiz = new Container();
+  for (const s of fase.solidos) {
+    if (s.tipo === 'invisivel') continue;
+    const sorte = aleatorio(Math.round(s.x * 7 + s.y * 13));
+    const fundoY = Math.min(s.y + s.h, FUNDO + 200);
+    if (s.tipo === 'galho') {
+      // galho de pinheiro: a ponta grossa fica do lado do tronco que o segura
+      const tronco = (fase.troncos ?? []).reduce((m, t) => (!m || Math.abs(t.x - (s.x + s.w / 2)) < Math.abs(m.x - (s.x + s.w / 2)) ? t : m), null);
+      const grossoAEsquerda = !tronco || tronco.x < s.x + s.w / 2;
+      const spr = new Sprite(arte.tex.galho);
+      const sx = (s.w + 56) / spr.texture.width, sy = 72 / spr.texture.height;
+      spr.scale.set(grossoAEsquerda ? sx : -sx, sy);
+      spr.position.set(grossoAEsquerda ? s.x - 30 : s.x + s.w + 26, s.y - 6 - 60 * sy);
+      raiz.addChild(spr);
+      continue;
+    }
+    const g = new Graphics();
+    if (s.tipo === 'tronco') {
+      // tronco caído enorme: embaixo, terra escura; em cima, o tronco pintado
+      g.rect(s.x, s.y + 40, s.w, fundoY - s.y - 40).fill('#231d36');
+      raiz.addChild(g);
+      const spr = new Sprite(arte.tex.tronco_caido);
+      spr.scale.set((s.w + 50) / spr.texture.width, 120 / spr.texture.height);
+      spr.position.set(s.x - 18, s.y - 16);
+      raiz.addChild(spr);
+      continue;
+    }
+    // neve e rocha: textura de terra com pedras (alinhada ao mundo), contorno, sombra sob a neve e a capa de neve
+    const terra = new TilingSprite({ texture: arte.terra, width: s.w, height: fundoY - s.y });
+    terra.position.set(s.x, s.y);
+    terra.tileScale.set(0.5);
+    terra.tilePosition.set(-s.x, -s.y);
+    terra.tint = s.tipo === 'rocha' ? 0x9d97bf : 0x8a84aa;
+    raiz.addChild(terra);
+    g.rect(s.x, s.y, s.w, fundoY - s.y).stroke({ color: CONTORNO, width: 3 });
+    g.rect(s.x, s.y + 10, s.w, 26).fill({ color: '#0d0a1c', alpha: 0.32 });
+    if (s.tipo === 'rocha') {
+      for (let i = 0; i < 3; i++) {
+        const px = s.x + 20 + sorte() * (s.w - 40);
+        g.moveTo(px, s.y + 30).lineTo(px + 8, s.y + 60).lineTo(px - 4, s.y + 90).stroke({ color: '#221c3a', width: 2.5 });
+      }
+    }
+    if (s.y > -300) capaDeNeve(g, s.x, s.y, s.w, s.tipo === 'rocha' ? 9 : 14, sorte);
+    raiz.addChild(g);
+  }
+  return raiz;
+}
+
 function pinheiro(g, x, y, h, sorte) {
   g.rect(x - 7, y - h * 0.25, 14, h * 0.25).fill('#2a1f1b');
   const camadas = 4;
@@ -94,6 +176,7 @@ function pinheiro(g, x, y, h, sorte) {
 
 /** Cenário atrás da Aurora: pinheiros e os troncos que seguram os galhos. */
 export function desenharCenario(fase) {
+  if (arte) return cenarioPintado(fase);
   const g = new Graphics();
   const sorte = aleatorio(fase.id.length * 911);
   for (const p of fase.pinheiros ?? []) pinheiro(g, p.x, p.y, p.h, sorte);
@@ -103,6 +186,36 @@ export function desenharCenario(fase) {
     g.ellipse(t.x, t.topo + 4, 15, 7).fill(NEVE).stroke({ color: CONTORNO, width: 2 });
   }
   return g;
+}
+
+/** Cenário pintado: pinheiros (3 desenhos), arbustos e pedras no pé deles, troncos que seguram os galhos. */
+function cenarioPintado(fase) {
+  const raiz = new Container();
+  const sorte = aleatorio(fase.id.length * 911);
+  (fase.pinheiros ?? []).forEach((p, i) => {
+    const nome = p.h >= 320 ? 'pinheiro_grande' : ['pinheiro_medio', 'pinheiro_grande', 'pinheiro_medio'][i % 3];
+    const s = peca(nome);
+    const e = (p.h * 1.12) / s.texture.height;
+    s.scale.set(i % 2 ? -e : e, e);         // espelha um sim, um não: parecem árvores diferentes
+    s.position.set(p.x, p.y + 4);
+    s.tint = 0xd4d8ee;                      // um pouco mais apagado que o primeiro plano
+    raiz.addChild(s);
+    if (i % 3 !== 1) {
+      const enfeite = peca(i % 2 ? 'arbusto' : 'pedra');
+      const ee = (i % 2 ? 46 : 40) / enfeite.texture.height;
+      enfeite.scale.set(ee); enfeite.position.set(p.x + (sorte() < 0.5 ? -1 : 1) * (50 + sorte() * 30), p.y + 3);
+      raiz.addChild(enfeite);
+    }
+  });
+  const casca = pedaco('tronco_em_pe', 0, 40, arte.meta.pecas.tronco_em_pe.quadro[2], 240);
+  for (const t of fase.troncos ?? []) {
+    const ts = new TilingSprite({ texture: casca, width: 34, height: t.base - t.topo });
+    ts.tileScale.set(34 / casca.width);
+    ts.position.set(t.x - 17, t.topo);
+    raiz.addChild(ts);
+    raiz.addChild(new Graphics().ellipse(t.x, t.topo + 3, 17, 7).fill(NEVE).stroke({ color: CONTORNO, width: 2 }));
+  }
+  return raiz;
 }
 
 /** Pegadas do cervo na neve: pares de cascos a cada passo, levando para o caminho certo. */
@@ -121,6 +234,7 @@ export function desenharRastros(fase) {
 
 /** Placa de madeira com uma dica. */
 export function criarPlaca(p) {
+  if (arte) return placaPintada(p);
   const raiz = new Container();
   const texto = new Text({ text: p.texto, style: { fill: '#f1ecff', fontSize: 15, fontWeight: '600', fontFamily: 'system-ui, sans-serif',
     stroke: { color: '#1a1230', width: 4 } } });
@@ -137,11 +251,42 @@ export function criarPlaca(p) {
   return raiz;
 }
 
+/** Placa pintada: a tábua estica para caber o texto (9 partes: os cantos não deformam), o poste fica igual. */
+function placaPintada(p) {
+  const raiz = new Container();
+  const texto = new Text({ text: p.texto, style: { fill: '#fff6e6', fontSize: 15, fontWeight: '700', fontFamily: 'system-ui, sans-serif',
+    stroke: { color: '#3a2414', width: 4 } } });
+  texto.anchor.set(0.5);
+  const larg = arte.meta.pecas.placa.quadro[2];
+  const tabua = new NineSliceSprite({ texture: pedaco('placa', 0, 0, larg, 122), leftWidth: 20, rightWidth: 20, topHeight: 40, bottomHeight: 16 });
+  const E = 0.5;                                   // a tábua na metade da resolução da peça
+  tabua.scale.set(E);
+  tabua.width = (texto.width + 44) / E; tabua.height = 112;
+  tabua.position.set(-(texto.width + 44) / 2, -122);
+  const poste = new Sprite(pedaco('placa', larg / 2 - 11, 122, 22, 118));
+  poste.anchor.set(0.5, 1); poste.scale.set(0.6, 72 / 118);
+  texto.position.set(0, -122 + 56 * E + 8);
+  raiz.addChild(poste, tabua, texto);
+  raiz.position.set(p.x, p.y);
+  return raiz;
+}
+
 /** Alvo de palha num poste: some quando leva uma flecha ou um golpe. */
 export class Alvo {
   constructor(x, chaoY) {
     this.x = x; this.chaoY = chaoY; this.inteiro = true; this.queda = 0;
     this.raiz = new Container();
+    if (arte) {
+      // alvo pintado no tripé: a peça inteira cai e gira quando é acertada
+      this.disco = new Sprite(arte.tex.alvo);
+      this.disco.anchor.set(0.5);
+      const e = 120 / this.disco.texture.height;
+      this.disco.scale.set(e);
+      this.disco.position.set(0, -60);
+      this.raiz.addChild(this.disco);
+      this.raiz.position.set(x, chaoY);
+      return;
+    }
     const g = new Graphics();
     g.rect(-4, -70, 8, 70).fill('#4a3324').stroke({ color: CONTORNO, width: 2 });
     this.disco = new Graphics();
@@ -174,6 +319,19 @@ export class Cervo {
     this.x = x; this.chaoY = chaoY; this.vivo = true; this.t = 0; this.queda = 0;
     this.raiz = new Container();
     this.corpo = new Container();
+    if (arte) {
+      // cervo pintado (o desenho olha para a esquerda): pastando ↔ alerta, e caído
+      const e = 168 / arte.tex.cervo_alerta.height;
+      this.poses = {};
+      for (const n of ['pastando', 'alerta', 'caido']) {
+        const s = peca('cervo_' + n); s.scale.set(e); s.tint = 0xeee2d2; s.alpha = n === 'pastando' ? 1 : 0;   // cervo claro de inverno (a neve sob ele continua branca)
+        this.poses[n] = s; this.corpo.addChild(s);
+      }
+      this.raiz.addChild(this.corpo);
+      this.raiz.position.set(x, chaoY + 6);
+      this.raiz.scale.x = direcao < 0 ? 1 : -1;
+      return;
+    }
     const g = new Graphics();
     const pata = (px, inclina) => g.poly([px - 5, -62, px + 5, -62, px + 4 + inclina, -6, px + inclina, 0, px - 4 + inclina, -6])
       .fill('#5e4232').stroke({ color: CONTORNO, width: 2, join: 'round' });
@@ -205,6 +363,22 @@ export class Cervo {
   ferir() { if (!this.vivo) return false; this.vivo = false; this.queda = 0; return true; }
   atualizar(dt) {
     this.t += dt;
+    if (this.poses) {
+      const P = this.poses;
+      if (this.vivo) {
+        // pasta e levanta a cabeça para olhar em volta (troca suave entre os dois desenhos), respirando
+        const ciclo = (Math.sin(this.t * 0.7) + 1) / 2;
+        const alerta = Math.min(1, Math.max(0, (ciclo - 0.55) / 0.2));
+        P.alerta.alpha = alerta; P.pastando.alpha = 1 - alerta;
+        this.corpo.scale.y = 1 + 0.012 * Math.sin(this.t * 2.4);
+        return;
+      }
+      this.queda = Math.min(1, this.queda + dt * 2.2);
+      P.caido.alpha = this.queda; P.alerta.alpha = P.pastando.alpha = 0;
+      P.alerta.alpha = Math.max(0, 1 - this.queda * 2);
+      this.corpo.scale.y = 1;
+      return;
+    }
     if (this.vivo) {
       // pasta (cabeça baixa) e levanta para olhar em volta, respirando
       const ciclo = (Math.sin(this.t * 0.7) + 1) / 2;

@@ -3,7 +3,7 @@
  * (atrás do cenário, pequenas; na frente da câmera, grandes) para dar profundidade (parallax).
  * `forca` vai de -1 (soprando para a esquerda) a 1 (para a direita).
  */
-import { Container, Graphics, MeshPlane, Sprite, Texture } from '../vendor/pixi.min.mjs';
+import { Container, Graphics, Mesh, MeshPlane, Sprite, Texture } from '../vendor/pixi.min.mjs';
 import { CorrenteCabelo, amostrar } from './pesos.js';
 
 const CORES = ['#7c9a5a', '#a3b86c', '#c9a25a', '#8a6a9e', '#5f8a7a'];
@@ -140,13 +140,23 @@ export class QuadrosVivos {
     this.malha.scale.set(this.escalaMecha);
     this.malha.position.set(-this.w / 2, -base);
     this.base = base;
-    this.corpo = new Sprite(texCorpo);
+    // corpo numa malha leve: só a respiração a deforma (ombros e peito sobem; o resto fica firme)
+    this.corpo = new MeshPlane({ texture: texCorpo, verticesX: 6, verticesY: 18 });
     this.corpo.position.set(-this.w / 2, -base);
+    this.bufCorpo = this.corpo.geometry.attributes.aPosition.buffer;
+    this.origCorpo = Float32Array.from(this.bufCorpo.data);
+    // luz de contorno (luar): cópias do corpo e do cabelo, deslocadas e somadas ATRÁS deles — só a borda aparece
+    this.bordaCorpo = new Mesh({ geometry: this.corpo.geometry, texture: texCorpo });
+    this.bordaMecha = new Mesh({ geometry: this.malha.geometry, texture: texMecha });
+    for (const b of [this.bordaCorpo, this.bordaMecha]) { b.blendMode = 'add'; b.tint = 0x9fb2ff; b.alpha = 0; }
+    this.bordaMecha.scale.set(this.escalaMecha);
+    this.respirar = 0; this.alturaEmPe = 314; this.periodoResp = 3.4;
+    this.rimX = 0; this.rimY = 0;
     // "fantasma": o quadro anterior por cima, sumindo em `fundir` s — as poses se fundem em vez de pular
     this.fantasma = new Sprite(texCorpo);
     this.fantasma.position.set(-this.w / 2, -base); this.fantasma.alpha = 0;
     this.fundir = 0; this.fantasmaT = 0;
-    this.raiz.addChild(this.malha, this.corpo, this.fantasma);
+    this.raiz.addChild(this.bordaMecha, this.malha, this.bordaCorpo, this.corpo, this.fantasma);
     this.buf = this.malha.geometry.attributes.aPosition.buffer;
     this.orig = Float32Array.from(this.buf.data);
     this.wm = texMecha.width; this.hm = texMecha.height;
@@ -157,12 +167,28 @@ export class QuadrosVivos {
   }
   get currentFrame() { return this.quadro; }
   set tint(cor) { this.malha.tint = cor; this.corpo.tint = cor; this.fantasma.tint = cor; }
+  /** luz de contorno: deslocamento (px da célula, já no lado da luz) e força 0..1 */
+  contorno(dx, dy, forca, cor = 0x9fb2ff) {
+    this.rimX = dx; this.rimY = dy;
+    for (const b of [this.bordaCorpo, this.bordaMecha]) { b.alpha = forca; b.tint = cor; }
+    this.bordaCorpo.position.set(this.corpo.x + dx, this.corpo.y + dy);
+    this.bordaMecha.position.set(this.malha.x + dx, this.malha.y + dy);
+  }
+  /** deslocamento vertical da respiração num ponto (y em px da célula) */
+  folego(y, resp) {
+    if (this.respirar <= 0) return 0;
+    const frac = (this.base - y) / this.alturaEmPe;            // 0 nos pés, 1 no alto da cabeça
+    const peito = suave(0.44, 0.62, frac);                      // da cintura para cima
+    return -this.respirar * resp * peito * (1 - 0.35 * suave(0.82, 0.95, frac));
+  }
   mostrar(q) {
     const antes = this.corpo.texture, yAntes = this.corpo.y;
     this.quadro = q; this.corpo.texture = this.texturas[q]; this.malha.texture = this.mechas[q];
+    this.bordaCorpo.texture = this.texturas[q]; this.bordaMecha.texture = this.mechas[q];
     // desloc: px que o quadro desce na célula (ex.: sentada, o corpo encosta no chão e o arco deitado fica na frente)
     const dy = this.desloc ? this.desloc[q] : 0;
     this.corpo.y = -this.base + dy; this.malha.y = -this.base + dy;
+    this.bordaCorpo.y = this.corpo.y + this.rimY; this.bordaMecha.y = this.malha.y + this.rimY;
     if (this.fundir > 0 && antes !== this.corpo.texture) { this.fantasma.texture = antes; this.fantasma.y = yAntes; this.fantasma.alpha = 1; this.fantasmaT = this.fundir; }
   }
   /** anim: { texturas, mechas, fps, loop, duracoes?, fundir? }. duracoes (s por quadro) substitui o fps: dá ritmo
@@ -220,6 +246,19 @@ export class QuadrosVivos {
     }
     if (this.fantasmaT > 0) { this.fantasmaT = Math.max(0, this.fantasmaT - dt); this.fantasma.alpha = this.fantasmaT / this.fundir; }
     this.mola.atualizar(dt, cabeloX);
+    // respiração: inspira devagar, segura um instante, expira (curva assimétrica, não um seno puro)
+    const f = (this.tt % this.periodoResp) / this.periodoResp;
+    const resp = f < 0.42 ? suave(0, 0.42, f) : f < 0.52 ? 1 : 1 - suave(0.52, 1, f);
+    this.resp = resp;
+    if (this.respirar > 0 || this.respirava) {
+      const dc = this.bufCorpo.data, oc = this.origCorpo;
+      for (let i = 0; i < dc.length; i += 2) {
+        const dyR = this.folego(oc[i + 1], resp);
+        dc[i] = oc[i]; dc[i + 1] = oc[i + 1] + dyR;
+      }
+      this.bufCorpo.update();
+      this.respirava = this.respirar > 0;
+    }
     const w = this.pesosDe(this.corpo.texture);
     const d = this.buf.data, o = this.orig, H = this.hm, s = 1 / this.escalaMecha;   // px da célula → px da mecha
     for (let i = 0, k = 0; i < d.length; i += 2, k++) {
@@ -230,6 +269,8 @@ export class QuadrosVivos {
         const m = this.mola.deslocamento(desce, forcaVento);
         dx = w[k] * m.dx; dy = w[k] * (m.dy + 0.6 * Math.sin(this.tt * 4 + v * 6) * Math.min(1, Math.abs(this.mola.valor) / 6));
       }
+      // o cabelo acompanha os ombros na respiração
+      dy += this.folego(o[i + 1] * this.escalaMecha, resp) * (1 - w[k] * 0.5);
       d[i] = o[i] + dx * s; d[i + 1] = o[i + 1] + dy * s;
     }
     this.buf.update();

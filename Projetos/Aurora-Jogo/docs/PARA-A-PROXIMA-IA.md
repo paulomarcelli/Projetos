@@ -121,6 +121,26 @@ células de **512 px**, pés em y = 500 (`meta.base`; o arco erguido não cabia 
 - A Aurora criança do Prólogo continua no desenho antigo (Gemini): pode destoar da adulta nova; redesenhar se o
   usuário pedir.
 
+**Rodada "level design e detalhes" (skills level-design, game-feel, game-ai, 2d-games):**
+- Fase 1 redesenhada (`fases/fase1.json`, testes em `testes/fase1.test.mjs`): degrau R0 (primeiro pulo sem risco);
+  saliência A5 e galhos B4/G2 opcionais com **bolsas de moedas**, que ensinam o **Salto da Lua** (um teste garante
+  que estão fora do pulo normal e dentro do duplo); **ravina de verdade** (D1 → fundo D2 com sombras e bolsa → D3) e
+  **arco de pedra T1** como rota de cima (só com o Salto da Lua) com **pingentes** que tremem e caem — o gatilho
+  cresce com a velocidade dela, então o gelo cai na frente (ensina antes de cobrar); **ponte de corda** (PONTE, umaVia)
+  entre P2 e P3; cervo numa elevação (H2) sob um ponto de luar (`luzes`: guiar com luz, não com parede).
+- `src/mundo_vivo.js`: Bolsa, Pingente, Ponte (verlet; colisão continua reta), Particulas (neve dos galhos, cacos,
+  bafo frio), Sombra de contato. Galhos afundam com mola e soltam neve ao pousar (`galhosVisuais` em `fase.js`).
+- Aurora: corpo numa malha leve para a **respiração** de verdade (`QuadrosVivos.respirar`, curva assimétrica; mais
+  rápida depois de correr), **bafo** a cada expiração, **luz de contorno** (luar; violeta perto da fogueira),
+  **gestos** quando parada (dedos abrindo e fechando; prende a mecha atrás da orelha numa rajada), **cotovelo empurra o
+  cabelo** ao puxar a corda e ele chicoteia na soltura, **abas da túnica** balançam (pesos `pano` em
+  `pesos_cabelo.py aurora_nova`), flecha **vibra** ao cravar. Folha nova tem 64 quadros = 4096 px (limite; o
+  `montar_folha_nova.py` recusa passar disso).
+- Animais: cervo leva susto (pulo), foge e olha para trás, solta bafo, deixa pegadas de casco; lebres deixam pegadas,
+  chutam neve e soltam bafo; pássaros pulam, fogem **em bando** e derrubam neve dos galhos.
+- Luz da Fase 1: `MapaDeLuz` (ambiente `0xc3c7ea`), fogueiras e pontos de luar iluminam a cena.
+- Menina do Prólogo também respira (mais rápido quando está escondida com medo).
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo

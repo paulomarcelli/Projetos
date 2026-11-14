@@ -88,7 +88,7 @@ export function desenharTerreno(fase) {
   if (arte) return terrenoPintado(fase);
   const g = new Graphics();
   for (const s of fase.solidos) {
-    if (s.tipo === 'invisivel') continue;   // limite da fase
+    if (s.tipo === 'invisivel' || s.tipo === 'ponte') continue;   // limite da fase; a ponte tem desenho próprio
     const sorte = aleatorio(Math.round(s.x * 7 + s.y * 13));
     const fundoY = Math.min(s.y + s.h, FUNDO + 200);
     if (s.tipo === 'galho') {
@@ -130,10 +130,13 @@ export function desenharTerreno(fase) {
 }
 
 /** Terreno com a arte pintada: textura de terra e pedras, tronco caído e galhos desenhados. */
+/** galhos desenhados (por id do sólido): o jogo afunda e solta neve quando ela pousa (main.js) */
+export const galhosVisuais = new Map();
+
 function terrenoPintado(fase) {
   const raiz = new Container();
   for (const s of fase.solidos) {
-    if (s.tipo === 'invisivel') continue;
+    if (s.tipo === 'invisivel' || s.tipo === 'ponte') continue;   // a ponte é desenhada com física (mundo_vivo.js)
     const sorte = aleatorio(Math.round(s.x * 7 + s.y * 13));
     const fundoY = Math.min(s.y + s.h, FUNDO + 200);
     if (s.tipo === 'galho') {
@@ -145,6 +148,7 @@ function terrenoPintado(fase) {
       spr.scale.set(grossoAEsquerda ? sx : -sx, sy);
       spr.position.set(grossoAEsquerda ? s.x - 30 : s.x + s.w + 26, s.y - 6 - 60 * sy);
       raiz.addChild(spr);
+      galhosVisuais.set(s.id, { spr, y0: spr.y, desloc: 0, vel: 0 });
       // pingentes de gelo pendurados embaixo do galho
       const p = peca('pingentes'); p.anchor.set(0.5, 0.12);
       p.scale.set(0.12 * (sorte() < 0.5 ? -1 : 1), 0.12); p.position.set(s.x + s.w * (0.35 + sorte() * 0.3), s.y + s.h - 4);
@@ -378,6 +382,7 @@ export class Cervo {
       this.poses = true;
       this.x0 = x; this.dir = direcao < 0 ? -1 : 1;
       this.spr = peca('cervo_pastando'); this.corpo.addChild(this.spr);
+      this.minX = x - 150; this.maxX = x + 150; this.bafoT = 1.5; this.passoT = 0;
       this.caido = peca('cervo_caido'); this.caido.alpha = 0; this.corpo.addChild(this.caido);
       this.estado = 'pastando'; this.relogio = 2.5; this.alvoX = x; this.quadroT = 0;
       this.raiz.addChild(this.corpo);
@@ -425,11 +430,17 @@ export class Cervo {
   /** a Aurora: posição e velocidade (main.js chama a cada quadro) */
   perceber(x, vx) {
     if (!this.vivo || !this.poses) return;
-    const perto = Math.abs(x - this.x) < 430, correndo = Math.abs(vx) > 220;
-    if (perto && correndo && this.estado !== 'atento') {
+    const dist = Math.abs(x - this.x), correndo = Math.abs(vx) > 220;
+    if (dist < 260 && correndo && this.estado !== 'assustado' && this.estado !== 'fugindo') {
+      // susto: um pulo no lugar (pernas de corrida), depois se afasta e olha para trás
+      this.estado = 'assustado'; this.relogio = 0.45; this.quadroT = 0; this.dir = x < this.x ? 1 : -1;
+      this.alvoX = Math.max(this.minX, Math.min(this.maxX, this.x + this.dir * 160));
+    } else if (dist < 430 && correndo && this.estado !== 'atento' && this.estado !== 'assustado' && this.estado !== 'fugindo') {
       this.estado = 'atento'; this.relogio = 2.4; this.dir = x < this.x ? -1 : 1;
     }
   }
+  /** efeitos do mundo (main.js): partículas (bafo) e pegadas na neve */
+  efeitos(part, neve, limites) { this.part = part; this.neve = neve; if (limites) { this.minX = limites[0]; this.maxX = limites[1]; } }
   ferir() { if (!this.vivo) return false; this.vivo = false; this.queda = 0; return true; }
   atualizar(dt) {
     this.t += dt;
@@ -441,16 +452,46 @@ export class Cervo {
         return;
       }
       this.relogio -= dt; this.quadroT += dt;
-      if (this.relogio <= 0) {
+      if (this.relogio <= 0 && this.estado !== 'assustado' && this.estado !== 'fugindo') {
         // próxima vontade: andar um pouco, pastar, cheirar a neve ou olhar para trás
         const r = Math.random();
-        if (r < 0.4) { this.estado = 'andando'; this.alvoX = this.x0 + (Math.random() * 2 - 1) * 150; this.relogio = 6; }
+        if (r < 0.4) { this.estado = 'andando'; this.alvoX = Math.max(this.minX, Math.min(this.maxX, this.x0 + (Math.random() * 2 - 1) * 150)); this.relogio = 6; }
         else if (r < 0.7) { this.estado = 'pastando'; this.relogio = 2.5 + Math.random() * 2.5; }
         else if (r < 0.85) { this.estado = 'cheirando'; this.relogio = 1.6 + Math.random(); }
         else { this.estado = 'olhando'; this.relogio = 1.5 + Math.random(); }
         this.quadroT = 0;
       }
+      // bafo frio pelo focinho (no alto se está de cabeça erguida, embaixo se pasta)
+      this.bafoT -= dt;
+      if (this.bafoT <= 0 && this.part) {
+        const baixo = this.estado === 'pastando' || this.estado === 'cheirando';
+        this.part.bafo(this.x - this.dir * -1 * (baixo ? 78 : 62) * (this.dir < 0 ? 1 : 1), this.chaoY + (baixo ? -26 : -128), this.dir, 0.9);
+        this.bafoT = 2.2 + Math.random() * 1.2;
+      }
+      if (this.estado === 'assustado') {
+        // pula no lugar com as pernas de corrida
+        const f = Math.min(1, this.quadroT / 0.45);
+        this.mostrar('cervo_correr_' + Math.min(3, Math.floor(f * 4)));
+        this.corpo.y = -Math.sin(f * Math.PI) * 26;
+        if (this.relogio <= 0) { this.corpo.y = 0; this.estado = 'fugindo'; this.relogio = 3; this.quadroT = 0; }
+        this.raiz.x = this.x; this.raiz.scale.x = this.dir < 0 ? 1 : -1;
+        return;
+      }
+      if (this.estado === 'fugindo') {
+        const falta = this.alvoX - this.x;
+        if (Math.abs(falta) < 6 || this.relogio <= 0) { this.estado = 'olhando'; this.relogio = 1.8; this.dir = -this.dir; }
+        else {
+          this.x += Math.sign(falta) * 170 * dt;
+          this.mostrar('cervo_correr_' + (Math.floor(this.quadroT * 10) % 4));
+          this.passoT -= dt;
+          if (this.passoT <= 0 && this.neve) { this.neve.marcarBicho(this.x, this.chaoY, 'casco', this.dir); this.neve.levantar(this.x, this.chaoY, 2, -this.dir, 0.5); this.passoT = 0.14; }
+        }
+        this.raiz.x = this.x; this.raiz.scale.x = this.dir < 0 ? 1 : -1;
+        return;
+      }
       if (this.estado === 'andando') {
+        this.passoT -= dt;
+        if (this.passoT <= 0 && this.neve) { this.neve.marcarBicho(this.x - this.dir * 30, this.chaoY, 'casco', this.dir); this.passoT = 0.42; }
         const falta = this.alvoX - this.x;
         if (Math.abs(falta) < 4) { this.estado = 'pastando'; this.relogio = 2 + Math.random() * 2; }
         else {

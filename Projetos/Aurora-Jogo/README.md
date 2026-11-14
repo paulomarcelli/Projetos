@@ -27,6 +27,7 @@ alvos de palha, penhascos e a cena final).
 | Correr, pular (pulo variável, "pulo atrasado", memória do botão), Salto da Lua, esquiva, golpe de lâmina com volta à guarda, arco com flecha que voa e crava | Fases 2 a 13, chefes |
 | Prólogo: furtividade (cone de visão, esconderijos, andar abaixada, ouvir passos), diálogos letra a letra, festa, altar e neve | Mais quadros de animação para os personagens do Prólogo (hoje eles ficam parados) |
 | Aurora adulta redesenhada no Figma: todas as animações com a mesma personagem (arco com os dedos, corrida, golpe, sentar) | |
+| Fase 1 redesenhada: ravina com duas rotas, arco de pedra com pingentes que caem, ponte de corda, bolsas que ensinam o Salto da Lua; respiração, bafo frio, gestos, luz de contorno; animais com reações próprias | |
 | Arte pintada (gerada no Figma): castelo, soldados, personagens, cena da neve; na Fase 1, céu, floresta em camadas, chão, pinheiros, galhos, placas, alvos e cervo | |
 | Neve que levanta nos passos, no pulo e na aterrissagem, pegadas que somem, amassar ao pousar e esticar ao pular | |
 | Painel de vida e mana com moldura de prata, retrato e dano atrasado; arco de luz no golpe, impacto, luz juntando no arco, rastro da flecha | |

@@ -6,8 +6,8 @@ export function nav() {
   const el = document.querySelector('[data-nav]');
   const folha = document.querySelector('.folha');
   const aberturas = [...document.querySelectorAll('[data-aberta]')];
-  // texto das aberturas (sem a faixa de osso): some por marco ao chegar na altura da nav, volta ao descer
-  const sob = [...document.querySelectorAll('[data-aberta] h2, [data-aberta] li')];
+  // texto das aberturas e os cantos do hero (sem a faixa de osso): some por marco ao chegar na altura da nav, volta ao descer
+  const sob = [...document.querySelectorAll('[data-aberta] h2, [data-aberta] li, .hero__canto, .hero__reel')];
   let agora = null;
   const confere = () => {
     const meio = el.offsetHeight / 2;

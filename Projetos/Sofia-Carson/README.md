@@ -59,6 +59,18 @@ Tudo o que o site afirma foi conferido antes de entrar:
 
 **Fora do site até ter confirmação:** "SC2" e o single "Her". Em 14/11/2026 nenhuma fonte confiável confirmava os dois.
 
+## 🎨 Design system
+
+No Figma: [Sofia Carson · a voz — Design System](https://www.figma.com/design/41SYetZSfkGCyXrWKMkLl1). Tem as variáveis de cor e de medida (modos desktop e celular), os estilos de texto em Geist, os componentes (marca S◐FIA, pílulas, rótulo, nota, campo, quadro do filme, furo e nav) e as telas de desktop e de celular montadas com eles.
+
+## 📱 Responsivo
+
+Conferido em 320, 375, 600, 768, 900, 1024, 1280, 1920 e 2560 px e com o celular deitado (844 × 390), sem rolagem lateral:
+
+- **Nav:** no tablet, o "Ver a montagem" sai da nav e fica embaixo do nome; abaixo de 400 px, a pílula vira "Entrar".
+- **A voz:** até 1100 px, a janela ocupa a largura e as notas vão para baixo.
+- **Celular:** o furo vem antes dos retratos e as etapas empilham.
+
 ## 🧰 Como foi feito
 
 - **Vite sem framework**: HTML, CSS e JavaScript puros; um CSS por seção em `src/sections/` e o movimento em `src/motion/`.

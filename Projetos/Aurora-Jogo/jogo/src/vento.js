@@ -141,7 +141,11 @@ export class QuadrosVivos {
     this.malha.position.set(-this.w / 2, -base);
     this.corpo = new Sprite(texCorpo);
     this.corpo.position.set(-this.w / 2, -base);
-    this.raiz.addChild(this.malha, this.corpo);
+    // "fantasma": o quadro anterior por cima, sumindo em `fundir` s — as poses se fundem em vez de pular
+    this.fantasma = new Sprite(texCorpo);
+    this.fantasma.position.set(-this.w / 2, -base); this.fantasma.alpha = 0;
+    this.fundir = 0; this.fantasmaT = 0;
+    this.raiz.addChild(this.malha, this.corpo, this.fantasma);
     this.buf = this.malha.geometry.attributes.aPosition.buffer;
     this.orig = Float32Array.from(this.buf.data);
     this.wm = texMecha.width; this.hm = texMecha.height;
@@ -151,15 +155,24 @@ export class QuadrosVivos {
     this.mola = new MolaCabelo(36, 0.3);
   }
   get currentFrame() { return this.quadro; }
-  set tint(cor) { this.malha.tint = cor; this.corpo.tint = cor; }
+  set tint(cor) { this.malha.tint = cor; this.corpo.tint = cor; this.fantasma.tint = cor; }
   mostrar(q) {
+    const antes = this.corpo.texture;
     this.quadro = q; this.corpo.texture = this.texturas[q]; this.malha.texture = this.mechas[q];
+    if (this.fundir > 0 && antes !== this.corpo.texture) { this.fantasma.texture = antes; this.fantasma.alpha = 1; this.fantasmaT = this.fundir; }
   }
+  /** anim: { texturas, mechas, fps, loop, duracoes?, fundir? }. duracoes (s por quadro) substitui o fps: dá ritmo
+   *  (segura as poses-chave, passa rápido pelas intermediárias). fundir: tempo da fusão entre quadros. */
   tocar(anim) {
+    const fundirAntes = this.fundir;
     this.texturas = anim.texturas; this.mechas = anim.mechas; this.fps = anim.fps; this.loop = anim.loop;
+    this.duracoes = anim.duracoes ?? null; this.fundir = anim.fundir ?? 0;
     this.velocidade = 1; this.t = 0; this.parado = false;
+    if (this.fundir === 0 && fundirAntes > 0) { this.fantasma.alpha = 0; this.fantasmaT = 0; }
     this.mostrar(0);
   }
+  /** duração total de uma animação com duracoes (s) */
+  static duracao(anim) { return anim.duracoes ? anim.duracoes.reduce((a, b) => a + b, 0) : anim.texturas.length / anim.fps; }
   parar(i) { this.parado = true; this.mostrar(i); }
 
 /** Peso do cabelo em cada vértice para a textura atual (calculado uma vez por quadro e guardado). */
@@ -186,10 +199,19 @@ export class QuadrosVivos {
     if (!this.parado) {
       this.t += dt * this.velocidade;
       const n = this.texturas.length;
-      let q = Math.floor(this.t * this.fps);
-      q = this.loop ? q % n : Math.min(q, n - 1);
+      let q;
+      if (this.duracoes) {
+        const total = this.duracoes.reduce((a, b) => a + b, 0);
+        let t = this.loop ? this.t % total : this.t;
+        q = 0;
+        while (q < n - 1 && t >= this.duracoes[q]) { t -= this.duracoes[q]; q += 1; }
+      } else {
+        q = Math.floor(this.t * this.fps);
+        q = this.loop ? q % n : Math.min(q, n - 1);
+      }
       if (q !== this.quadro) this.mostrar(q);
     }
+    if (this.fantasmaT > 0) { this.fantasmaT = Math.max(0, this.fantasmaT - dt); this.fantasma.alpha = this.fantasmaT / this.fundir; }
     this.mola.atualizar(dt, cabeloX);
     const w = this.pesosDe(this.corpo.texture);
     const d = this.buf.data, o = this.orig, H = this.hm, s = 1 / this.escalaMecha;   // px da célula → px da mecha

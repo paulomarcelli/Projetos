@@ -1,11 +1,11 @@
 ---
 name: design-skills
-description: "Unified design toolkit (138 sub-skills, including Impeccable and Direção de Arte em português) for UI/UX design, art direction for landing pages, visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
+description: "Unified design toolkit (139 sub-skills, including Impeccable, Direção de Arte em português and SEO para o Google) for UI/UX design, art direction for landing pages, SEO (meta tags, schema, Core Web Vitals), visual design and taste, design systems and tokens, animation and motion (web, Apple-style, React Native/Expo, Lottie), interaction-design laws (Fitts, Hick, Gestalt…), visual critique, accessibility, UX research, UX strategy, prototyping and testing, design ops, branding, banners, slides and handoff. Use for any design, UI, UX, frontend polish, animation or design-research task."
 ---
 
 # Design Skills (unified)
 
-This skill bundles 138 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
+This skill bundles 139 design sub-skills from several sources. Each sub-skill lives in `skills/<name>/` inside this folder.
 
 ## How to use
 
@@ -200,3 +200,7 @@ This skill bundles 138 design sub-skills from several sources. Each sub-skill li
 ## Impeccable (pbakaus) — direção de design e detector de "AI slop"
 
 - **impeccable** — Use when the user wants to design, redesign, shape, critique, audit, polish, simplify, harden, animate, or otherwise improve a frontend interface (websites, landing pages, dashboards, product UI, components, forms, onboarding, empty states, native iOS/Android screens). One skill with sub-commands: `shape`, `init`, `document`, `extract`, `critique`, `audit`, `polish`, `bolder`, `quieter`, `distill`, `harden`, `onboard`, `animate`, `colorize`, `delight`, `layout`, `overdrive`, `typeset`, `adapt`, `clarify`, `optimize`, `live`, `generate`. Picks a design mode (Persuade, Operate, Read, Experience) and reads `reference/craft-floor.md` before any UI edit. In this bundle its base directory is `skills/impeccable/`: run `skills/impeccable/scripts/impeccable context` (a launcher that downloads a checksum-verified engine from the project's GitHub releases on first run); if it cannot run, read PRODUCT.md and DESIGN.md directly as the skill describes. Its four helper subagents are in `skills/impeccable/agents/` (copy them to `.claude/agents/` to enable them; without them the skill uses `reference/degraded/`). The optional per-edit design hook is not installed. Overlaps: for animation decisions also see `animate`/`emil-design-eng`; for heuristic reviews also see `design-critique`.
+
+## SEO (busca no Google)
+
+- **seo-google** — Especialista em SEO: pesquisa de palavras-chave, SEO on-page (title, meta description, cabeçalhos, URLs, imagens), qualidade de conteúdo (E-E-A-T), SEO técnico (schema/dados estruturados, robots.txt, sitemap, canonical), Core Web Vitals (LCP, INP, CLS), SEO mobile e local, links internos, clusters de conteúdo, featured snippets e monitoramento (Search Console, GA4, PageSpeed). Use ao otimizar páginas para a busca, auditar SEO, escrever meta tags ou planejar conteúdo para tráfego orgânico. Combina com `direcao-de-arte`/`taste-skill` (a página bonita) e `ux-writing` (o texto).

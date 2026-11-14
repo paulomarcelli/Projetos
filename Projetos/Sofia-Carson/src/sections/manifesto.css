@@ -7,10 +7,12 @@
 .nota .mono { color: var(--tinta-2); }
 .nota--esq { text-align: right; justify-self: end; max-width: 15ch; }
 .nota--dir { justify-self: start; max-width: 18ch; }
-@media (max-width: 720px) {
+@media (max-width: 1100px) {
   .manifesto { --janela: 100%; }
-  .manifesto__texto { width: auto; }
+  .manifesto__texto { width: auto; max-width: 30ch; margin-left: 0; }
   .manifesto__janela { grid-template-columns: 1fr 1fr; row-gap: 22px; }
-  .janela { grid-column: 1 / -1; grid-row: 1; aspect-ratio: 16 / 10; }
+  .janela { grid-column: 1 / -1; grid-row: 1; }
   .nota--esq { text-align: left; justify-self: start; }
+  .nota { max-width: 30ch; }
 }
+@media (max-width: 720px) { .janela { aspect-ratio: 16 / 10; } }

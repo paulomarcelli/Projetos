@@ -75,14 +75,21 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Karol-x-Samsung/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla%20x%20Samsung">Código</a>
     </td>
     <td width="50%" valign="top">
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/"><img src="docs/capas/sofia-carson.webp" alt="Sofia Carson · a voz: SOFIA em letras brancas, com o O de meia-luz, sobre um retrato dela em preto e branco"></a>
+      <h3>🎤 Sofia Carson · a voz</h3>
+      Fã-site em preto e branco: o filme fica preso atrás da página e aparece por furos na folha; o nome sob o holofote vira S◐FIA. Fatos com fonte, cadastro que não envia nada.<br>
+      <sub>Vite · JavaScript · Lenis · ffmpeg · projeto pessoal de fã</sub><br><br>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/"><b>Abrir site ↗</b></a> · <a href="Projetos/Sofia-Carson">Código</a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><img src="docs/capas/landing-karol.webp" alt="Landing Karol Sevilla: o nome KAROL com a tinta revelando letras infladas em azul-bebê"></a>
       <h3>💙 Landing page Karol Sevilla</h3>
       Atividade de Gestalt (Design, FECAP): passe o mouse no nome e a tinta revela as letras infladas, feitas em 3D no Blender.<br>
       <sub>Vite · GSAP · WebGL · projeto acadêmico fictício</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Landing-Page-Karol-Sevilla/"><b>Abrir site ↗</b></a> · <a href="Projetos/landing%20page%20Karol%20Sevilla">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/"><img src="docs/capas/site-karol.webp" alt="Site Karol Sevilla no estilo de um app de música, com a foto dela e a história em 3 capítulos"></a>
       <h3>🌐 Site Karol Sevilla</h3>
@@ -90,6 +97,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/"><b>Abrir site ↗</b></a> · <a href="https://paulomarcelli.github.io/Projetos/primeira-versao/">1ª versão</a> · <a href="Projetos/Site-Karol-Sevilla">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><img src="docs/capas/geometry-heroes.webp" alt="Tela inicial do Geometry Heroes com seis heróis em quadrinhos e o botão jogar"></a>
       <h3>🎮 Geometry Heroes</h3>
@@ -97,8 +106,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>JavaScript · Phaser 3 · Programação Orientada a Objetos</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/"><b>Jogar ↗</b></a> · <a href="Projetos/Tarefa-POO-JavaScript">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/"><img src="docs/capas/treta-em-brasilia.webp" alt="Treta em Brasília: Bolsonaro e Lula lutando na Avenida Paulista, com o balão IMBROCHÁVEL!, o telão PLANTÃO e o vira-lata caramelo"></a>
       <h3>🥊 Treta em Brasília</h3>
@@ -106,6 +113,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Godot 4.3 · GDScript · pixel art gerada das fotos · exportação Web</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Treta-em-Brasilia/"><b>Jogar ↗</b></a> · <a href="Projetos/Treta-em-Brasilia">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><img src="docs/capas/cenicienta.webp" alt="Site Cenicienta com o título em rosa neon sobre o clipe"></a>
       <h3>👠 Cenicienta</h3>
@@ -113,8 +122,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Cenicienta/"><b>Abrir site ↗</b></a> · <a href="Projetos/Cenicienta">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><img src="docs/capas/una-noche-mas.webp" alt="Site Una Noche Más com o título em rosa e a Karol em cena do clipe"></a>
       <h3>🌙 Una Noche Más</h3>
@@ -122,6 +129,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>HTML · CSS · JavaScript</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Una-Noche-Mas/"><b>Abrir site ↗</b></a> · <a href="Projetos/Una-Noche-Mas">Código</a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><img src="docs/capas/luna.webp" alt="LUNA MIND: tela de conversa num céu azul-noite com estrelas"></a>
       <h3>🌙 LUNA MIND</h3>
@@ -129,8 +138,6 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · Flask · OpenAI · Gemini API · Render</sub><br><br>
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Luna/"><b>Abrir a Luna ↗</b></a> · <a href="Projetos/Luna-AI">Código</a>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="Projetos/Joken-Po-Python"><img src="docs/capas/joken-po.webp" alt="Joken-Po: uma partida de pedra, papel e tesoura no terminal"></a>
       <h3>✊ Joken-Po em Python</h3>
@@ -138,6 +145,8 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <sub>Python · lógica de programação</sub><br><br>
       <a href="Projetos/Joken-Po-Python"><b>Ver o código ↗</b></a>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Aurora/"><img src="docs/capas/aurora.webp" alt="Aurora: guerreira de cabelo prateado e olhos violeta com arco, sob a lua, com o título AURORA O Dízimo da Lua"></a>
       <h3>🌙 Aurora: O Dízimo da Lua</h3>

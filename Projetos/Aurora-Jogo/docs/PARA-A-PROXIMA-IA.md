@@ -80,12 +80,14 @@ sentada, respira (escala), pisca e às vezes olha o fogo pensativa (`descansando
 fogueira tremulando nela; ao levantar, afunda, sobe e estica no fim.
 
 **Terceira rodada:**
-- Sentar: o usuário achou que ela "flutuava" — no quadro antigo o arco deitado era o ponto mais baixo e o encaixe nos
-  pés usa o mais baixo. Agora o sentar usa **8 quadros novos gerados no Figma** (`arte/figma/aurora_sentar_figma.png`,
-  `src/sentar.js`, folha `sentar_folha.*`): de pé → dobra → agacha pousando o arco → mão no chão → sentada (normal,
-  mãos nos joelhos, olhos fechados, pensativa), quadril e botas no chão. Alinhados pela **cabeça**
-  (`montar_folha_figma.py sentar`), escala 0,9 (o desenho tem cabeça maior que a Aurora do jogo). Recorte com
-  `fatiar_folha.py --buraco 0.0012` (apaga o vão do arco, mantém as listras das meias) + limpeza do vão do arco deitado.
+- Sentar: o usuário achou que ela "flutuava". Causa: nos desenhos de sentar o arco está deitado NA FRENTE dela (mais
+  perto da câmera), mais baixo que o corpo, e o encaixe usava a parte mais baixa (o arco). Tentamos quadros novos do
+  Figma, mas o usuário notou que **a Aurora sentada ficava diferente da personagem** (o gerador do Figma não aceita
+  a imagem dela como referência). Voltamos aos desenhos dela (folha do Gemini) e cada quadro desce o que precisa
+  (`DESLOC` em `src/sentar.js`; `QuadrosVivos` aceita `desloc` por quadro): quadril e botas no chão, arco na neve à
+  frente. **Regra: arte nova da Aurora só com a imagem dela de referência** (Gemini, ou Weave do Figma se o usuário
+  ligar a conta em app.weavy.ai). As ferramentas do sentar do Figma ficaram (`montar_folha_figma.py sentar`,
+  `pesos_cabelo.py sentar`), mas a arte não é usada no jogo.
 - Luz do Prólogo (`src/mapa_luz.js`, `MapaDeLuz`): mapa de luz que **multiplica** a cena (ambiente branco na festa,
   índigo `0x34325e` na noite). Luzes: velas (poças quentes), lanterna e cone de visão de cada soldado (o cone ilumina de
   verdade; fica vermelho com o alerta), janelas e feixes de luar inclinados, luz fria fraca na menina, velas do altar
@@ -98,7 +100,7 @@ ao desvio dos vizinhos → o movimento desce como onda e a ponta atrasa. Recebe 
 (`empurrar(ax, ay, dt)`: ao pular o cabelo fica para baixo, caindo sobe, ao pousar cai e quica, na arrancada fica para
 trás) e chicoteia ao virar (`virar(f)`); balança em arco. Ligada em: Aurora em movimento (`QuadrosVivos`), Aurora
 parada (`AuroraViva`, cabelo e tranças), **Aurora criança no Prólogo** (agora também em duas camadas: corpo + mecha) e
-no **sentar** (folha em células iguais). Pesos: `ferramentas/pesos_cabelo.py [aurora|crianca|sentar]`; para criança e
+no **sentar** (camada de cabelo da própria folha dela). Pesos: `ferramentas/pesos_cabelo.py [aurora|crianca|sentar]`; para criança e
 sentar o peso cresce da raiz para as pontas só atrás da cabeça (`pesos_pela_raiz`), sem a capinha branca; na criança o
 filtro de "metal" fica desligado (o prata do cabelo dela puxa para o azul). Precisa de `opencv-python-headless`.
 

@@ -17,7 +17,7 @@ import { QuadrosVivos, Vento } from './vento.js';
 import { normalizar } from './nivel.js';
 import { Fauna } from './animais.js';
 import { Luz } from './luz.js';
-import { Sentar, carregarSentar } from './sentar.js';
+import { Sentar } from './sentar.js';
 import { Alvo, CenaFinal, Cervo, Nevoa, Titulo, carregarArteFloresta, criarPlaca, desenharCenario, desenharRastros, desenharTerreno } from './fase.js';
 import { derivados, desserializar, evoluir, novoProgresso, serializar } from './progresso.js';
 
@@ -100,12 +100,12 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
     mechas: a.quadros.map((q) => recorte(folhaMecha, q, 0.5)),
   };
 }
-// (sentar/levantar na fogueira: ver src/sentar.js, arte do Figma)
+// (sentar/levantar na fogueira: ver src/sentar.js)
 // dano: 3 quadros do Gemini (impacto, cambaleia, recupera); clarão, recuo e faíscas por código
 // animações desenhadas numa malha, para o cabelo seguir o vento e o movimento
 const quadros = new QuadrosVivos(animacoes.parada.texturas[0], animacoes.parada.mechas[0], BASE_CELULA, pesosFolha, 0.25);
-// sentar na fogueira: quadros novos do Figma (src/sentar.js), com o corpo no chão
-const sentar = new Sentar(await carregarSentar(), ALTURA_VISUAL);
+// sentar na fogueira: os desenhos dela (src/sentar.js), com o corpo encostado no chão
+const sentar = new Sentar(animacoes, pesosFolha, BASE_CELULA, ALTURA_VISUAL / ALTURA_QUADRO);
 cena.addChild(sentar.raiz);
 const escalaQuadros = ALTURA_VISUAL / ALTURA_QUADRO;
 cena.addChild(quadros.raiz);
@@ -414,7 +414,7 @@ function apanhar(dano, x, y, lado) {
 }
 
 function escolherAnimacao(dt) {
-  // sentar/levantar: quadros do Figma no lugar da Aurora (src/sentar.js)
+  // sentar/levantar: src/sentar.js mostra os quadros no lugar da Aurora
   if (sentada && !sentar.ativo) {
     achatar = 0.3;                                         // antecipação: afunda antes de descer
     sentar.comecar(() => {
@@ -524,7 +524,7 @@ app.ticker.add((ticker) => {
   boneco.raiz.scale.set(escalaBoneco * corpo.direcao * sx, escalaBoneco * sy);
   quadros.raiz.position.set(pes.x, pes.y);
   quadros.raiz.scale.set(escalaQuadros * corpo.direcao * sx, escalaQuadros * sy);
-  sentar.posicionar(pes.x, pes.y + 2, corpo.direcao, sx, sy);
+  sentar.posicionar(pes.x, pes.y, corpo.direcao, sx, sy);
   // vento e movimento empurram o cabelo (no lado para onde ela olha)
   const ventoLocal = vento.forca * corpo.direcao;
   const corrida = Math.abs(corpo.vx) / CONST.VEL_CORRIDA;

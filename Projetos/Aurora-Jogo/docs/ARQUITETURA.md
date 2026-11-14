@@ -21,7 +21,7 @@ index.html ................. escolhe a fase: ?fase=prologo | ?fase=1 (sem nada: 
        │                      título e cena final)
        ├─ inimigos.js ....... Sombra de névoa (sprites do Gemini: patrulha, dano, morte, moedas)
        ├─ animais.js ........ fauna: lebres (sentam, limpam o rosto, pulam) e pássaros (bicam, voam) que fogem da Aurora
-       ├─ sentar.js ......... sentar na fogueira com os 8 quadros do Figma (fusão, piscar, olhar o fogo, levantar)
+       ├─ sentar.js ......... sentar na fogueira (desenhos dela, corpo no chão, fusão, piscar, olhar o fogo, levantar)
        ├─ luz.js ............ noite perto do chão, luz das fogueiras, raios de luar saindo da lua do céu, vinheta
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
 ```

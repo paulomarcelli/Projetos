@@ -13,4 +13,5 @@ cpSync(raiz + '../arte/sprites/flecha', raiz + 'assets/sprites/flecha', { recurs
 mkdirSync(raiz + 'assets/sprites/sombra', { recursive: true });   // criatura (ferramentas/fatiar_sombra.py)
 for (const f of ['sombra_folha.png', 'sombra_folha.json']) cpSync(raiz + '../arte/sprites/sombra/' + f, raiz + 'assets/sprites/sombra/' + f);
 for (const f of ['crianca_folha.png', 'crianca_folha.json']) cpSync(raiz + '../arte/sprites/' + f, raiz + 'assets/sprites/' + f);   // Aurora criança (ferramentas/montar_folha_crianca.py)
+for (const f of ['prologo_folha.png', 'prologo_folha.json']) cpSync(raiz + '../arte/sprites/' + f, raiz + 'assets/sprites/' + f);   // arte do Prólogo (Figma → ferramentas/montar_folha_prologo.py)
 console.log('pronto: vendor/ e assets/');

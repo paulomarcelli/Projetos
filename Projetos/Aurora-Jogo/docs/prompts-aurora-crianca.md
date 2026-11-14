@@ -9,6 +9,29 @@ bordadas em prata, capinha branca de pele presa com um broche de lua, meias bran
 O Prólogo (roteiro) pede: correr e pular pelo castelo e, depois que as luzes se apagam, chegar à capela **sem ser vista**
 (furtividade) e se esconder sob o altar. Animações necessárias abaixo.
 
+## Folhas já geradas (Figma, modelo Gemini 3.1 Flash Image)
+
+Arquivo do Figma "Aurora criança · Prólogo". Originais em `arte/poses-originais/` (1376×768, não editar):
+
+| Folha | Quadros | Arquivo |
+|---|---|---|
+| K1 parada (respira e pisca) | 3 | `crianca_parada.png` |
+| K2 correndo, 1ª metade | 4 | `crianca_correndo1.png` |
+| K2 correndo, 2ª metade | 4 | `crianca_correndo2.png` |
+| K3 pulo | 4 | `crianca_pulo.png` |
+| K4 andando escondida | 4 | `crianca_furtiva.png` |
+| K5 escondida | 3 | `crianca_escondida.png` |
+
+**Recorte:** a capinha de pele e as meias são brancas, e o recorte normal apaga áreas brancas fechadas (feito para o vão
+entre o arco e a corda). Use sempre `--manter-brancos` nessas folhas:
+
+```bash
+python3 ferramentas/fatiar_folha.py arte/poses-originais/crianca_correndo1.png --nomes c_correndo1:4 --saida arte/sprites/recortes --manter-brancos
+```
+
+O gerador do Figma só aceita texto (sem imagem de referência), então cada prompt repete a descrição completa da menina.
+Para refazer uma folha com a ficha anexada, use os prompts abaixo no Gemini.
+
 ## Como pedir ao Gemini
 
 1. Anexe `arte/referencias/aurora-crianca-01.png` em todo prompt.

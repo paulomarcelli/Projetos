@@ -1,0 +1,6 @@
+Atividade: Expert System - FECAP
+Projeto: Qual é o seu perfil de investidor? (sistema especialista)
+Aluno: Paulo Marcelli
+
+Link do projeto no GitHub:
+https://github.com/paulomarcelli/Projetos/tree/perfil-investidor/develop/Projetos/Perfil-Investidor

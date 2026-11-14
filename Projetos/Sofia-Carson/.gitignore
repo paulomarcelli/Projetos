@@ -1,2 +1,5 @@
 node_modules
 dist
+# material do modelo Lusco (pago): fica só com o dono, fora do repositório público
+referencia/
+CLAUDE.md

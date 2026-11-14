@@ -9,8 +9,8 @@ No ar: https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/
 
 Montado sobre o modelo **Lusco** (Profitize Build): um filme em preto e branco preso atrás da página, que
 aparece por "furos" numa folha cor de osso, e o nome gigante sob o holofote, que aqui vira **S◐FIA** (o O de
-meia-luz da marca Lusco). O guia do modelo está em `CLAUDE.md`; o prompt original e os prints de referência,
-em `referencia/`.
+meia-luz da marca Lusco). O guia, o prompt e os prints do modelo são material pago e ficam fora deste
+repositório público: para mexer no projeto com uma IA, copie o `CLAUDE.md` do `lusco.zip` para esta pasta.
 
 | Seção | Conteúdo |
 | --- | --- |
@@ -24,7 +24,7 @@ em `referencia/`.
 
 Não havia vídeo: o filme é uma montagem das fotos enviadas, com aproximação lenta, corte seco e preto e
 branco (`public/video/montagem.mp4`, 13 s, 1 MB; o pôster é o 1º quadro). Para trocar por vídeo de verdade,
-siga "Material da pessoa" no `CLAUDE.md`.
+siga "Material da pessoa" no `CLAUDE.md` do modelo.
 
 ## Fatos e fontes
 

@@ -1,58 +1,79 @@
-# Sofia Carson · a voz
+<div align="center">
 
-Fã-site sobre a voz da Sofia Carson, projeto pessoal e de portfólio. **Não é oficial** e não tem vínculo com a
-artista nem com a equipe dela; o cadastro de fã não envia nem guarda dados.
+# 🎤 Sofia Carson · a voz
 
-No ar: https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/
+**Um fã-site em preto e branco sobre a voz dela: o filme preso atrás da página e o nome sob o holofote.**
 
-## Como é
+[![Abrir o site](https://img.shields.io/badge/ABRIR_O_SITE-0a0a0a?style=for-the-badge&logo=githubpages&logoColor=ebe8e2)](https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/)
 
-Montado sobre o modelo **Lusco** (Profitize Build): um filme em preto e branco preso atrás da página, que
-aparece por "furos" numa folha cor de osso, e o nome gigante sob o holofote, que aqui vira **S◐FIA** (o O de
-meia-luz da marca Lusco). O guia, o prompt e os prints do modelo são material pago e ficam fora deste
-repositório público: para mexer no projeto com uma IA, copie o `CLAUDE.md` do `lusco.zip` para esta pasta.
+![Vite](https://img.shields.io/badge/Vite-1a1918?style=flat-square&logo=vite&logoColor=ebe8e2)
+![JavaScript](https://img.shields.io/badge/JavaScript-1a1918?style=flat-square&logo=javascript&logoColor=ebe8e2)
+![CSS3](https://img.shields.io/badge/CSS3-1a1918?style=flat-square&logo=css3&logoColor=ebe8e2)
+![Lenis](https://img.shields.io/badge/Lenis-1a1918?style=flat-square)
+![ffmpeg](https://img.shields.io/badge/ffmpeg-1a1918?style=flat-square&logo=ffmpeg&logoColor=ebe8e2)
 
-| Seção | Conteúdo |
-| --- | --- |
-| Hero | SOFIA sobre o filme; "Fã-site · a voz" e "Oscar 2023 · ‘Applause’, ao vivo" nos cantos |
-| A voz (`#voz`) | ‘Applause’ no 95º Oscar, com Diane Warren ao piano, e a janela cinemascope |
-| Palco (`#palco`) | estúdio e palco, com o furo "Só a voz e o palco" no meio |
-| Trajetória (`#trajetoria`) | Evie (Descendentes, 2015), Cassie (Purple Hearts, 2022) e ‘Come Back Home’ (MTV 2023) |
-| Fã-clube (`#fa-clube`) | raízes em Barranquilla, UNICEF e o cadastro sem envio; SOFIA vazado no rodapé |
+<br>
 
-## O filme do fundo
+<img src="docs/hero.webp" alt="Topo da página: SOFIA em letras brancas, com o O de meia-luz, sobre um retrato em preto e branco dela olhando por cima do ombro" width="860">
 
-Não havia vídeo: o filme é uma montagem das fotos enviadas, com aproximação lenta, corte seco e preto e
-branco (`public/video/montagem.mp4`, 13 s, 1 MB; o pôster é o 1º quadro). Para trocar por vídeo de verdade,
-siga "Material da pessoa" no `CLAUDE.md` do modelo.
+</div>
 
-## Fatos e fontes
+<br>
+
+> [!NOTE]
+> Projeto **pessoal e de fã**. Não é oficial e não tem vínculo com a Sofia Carson nem com a equipe dela. O cadastro de fã **não envia nem guarda** nenhum dado. As fotos são de campanhas e redes sociais da artista; os direitos são dos autores.
+
+## ✨ A ideia
+
+O filme fica **preso atrás da página inteira** e a página é uma folha cor de osso com **furos** por onde ele aparece: uma janela cinemascope, o quadro do meio da galeria e as letras do nome no rodapé. No topo, o nome gigante sob o holofote vira **S◐FIA**, com o O de meia-luz.
+
+Não havia vídeo dela para usar, então o filme é uma **montagem das fotos**: cinco planos com aproximação lenta, corte seco, preto e branco e grão de película, 13 s em 1 MB, montada com ffmpeg.
+
+A estrutura e as animações vêm do modelo **Lusco** (Profitize Build): primeiro montei a demo e conferi com os prints do modelo, depois troquei a marca, os textos, as imagens e o filme.
+
+## 🎬 O que acontece na página
+
+| # | Seção | O que se mexe |
+|---|---|---|
+| 00 | **Intro** | `[ Sofia Carson ]` e a porcentagem; uma coluna de fotos sobe pelo meio e a última cresce até virar o fundo, só com `transform` |
+| 01 | **Topo** | As letras de SOFIA sobem uma a uma sobre o filme; "Fã-site · a voz" e "Oscar 2023" nos cantos |
+| 02 | **A voz** | ‘Applause’ no 95º Oscar, com Diane Warren ao piano; o filme aparece pela janela cinemascope, parado enquanto a folha sobe |
+| 03 | **Palco e estúdio** | Dois retratos com película e grão; no meio, o furo com "Só a voz e o palco" |
+| 04 | **Trajetória** | A folha se abre de ponta a ponta: Evie (2015), Cassie (2022) e ‘Come Back Home’ (2023) |
+| 05 | **Fã-clube** | Raízes em Barranquilla e o UNICEF; o cadastro responde na hora e não envia nada; SOFIA vazado no rodapé, mostrando o filme |
+
+<img src="docs/palco.webp" alt="A seção Palco e estúdio: dois retratos em preto e branco e, no meio, o filme aparecendo pelo furo com a frase Só a voz e o palco" width="100%">
+
+<img src="docs/rodape.webp" alt="O rodapé: o nome SOFIA vazado na folha cor de osso, com o filme aparecendo pelas letras" width="100%">
+
+## 📚 Fatos e fontes
 
 Tudo o que o site afirma foi conferido antes de entrar:
 
-- ‘Applause’ no Oscar de 2023, com Diane Warren ao piano, e o pedido de aplausos para as mulheres:
-  [Variety](https://variety.com/2023/music/news/sofia-carson-diane-warren-applause-oscars-1235544444),
-  [Academia](https://press.oscars.org/news/sofia-carson-and-diane-warren-perform-oscarsr).
-- *Purple Hearts*: produtora executiva, coautora das quatro primeiras canções da trilha; ‘Come Back Home’ e o
-  MTV Movie & TV Awards 2023: [Newsweek](https://mag.newsweek.com/purple-hearts-sound-track-sofia-carson-1734888),
-  [Wikipedia](https://en.wikipedia.org/wiki/Purple_Hearts_(soundtrack)).
-- Barranquilla (a mãe, Laura Char, ex-rainha do Carnaval) e UNICEF (embaixadora desde 2020; visita ao Recife
-  em 2019): [El Heraldo](https://www.elheraldo.co/tendencias/2015/12/24/actriz-de-disney-sofia-carson-pasa-navidad-en-barranquilla-235329/),
-  [UNICEF Brasil](https://www.unicef.org/brazil/comunicados-de-imprensa/sofia-carson-conhece-projetos-do-unicef-em-pernambuco).
+| Fato | Fonte |
+|---|---|
+| ‘Applause’ no Oscar de 2023, com Diane Warren ao piano, e o pedido de aplausos para as mulheres | [Variety](https://variety.com/2023/music/news/sofia-carson-diane-warren-applause-oscars-1235544444), [Academia](https://press.oscars.org/news/sofia-carson-and-diane-warren-perform-oscarsr) |
+| *Purple Hearts*: produtora executiva e coautora das quatro primeiras canções; ‘Come Back Home’ no MTV Movie & TV Awards 2023 | [Newsweek](https://mag.newsweek.com/purple-hearts-sound-track-sofia-carson-1734888), [Wikipedia](https://en.wikipedia.org/wiki/Purple_Hearts_(soundtrack)) |
+| Barranquilla: a mãe, Laura Char, foi rainha do Carnaval da cidade | [El Heraldo](https://www.elheraldo.co/tendencias/2015/12/24/actriz-de-disney-sofia-carson-pasa-navidad-en-barranquilla-235329/) |
+| UNICEF: embaixadora desde 2020; visita a projetos no Recife em 2019 | [UNICEF Brasil](https://www.unicef.org/brazil/comunicados-de-imprensa/sofia-carson-conhece-projetos-do-unicef-em-pernambuco) |
 
-**Não entram sem confirmação:** "SC2" e o single "Her". Em 14/11/2026 nenhuma fonte confiável confirmava
-os dois.
+**Fora do site até ter confirmação:** "SC2" e o single "Her". Em 14/11/2026 nenhuma fonte confiável confirmava os dois.
 
-## Fotos
+## 🧰 Como foi feito
 
-As fotos são de campanhas e redes da artista; os direitos são dos autores. Duas fotos enviadas ficaram de fora
-por terem texto ou logotipo na imagem (capas de single).
+- **Vite sem framework**: HTML, CSS e JavaScript puros; um CSS por seção em `src/sections/` e o movimento em `src/motion/`.
+- **Furo**: um bloco transparente com `box-shadow: 0 0 0 300vmax` cor de osso numa seção com `overflow: hidden`; a sombra pinta o resto da seção e o filme só aparece pelo buraco.
+- **Rodapé vazado**: uma `<mask>` de SVG com as letras e o círculo do O furando a folha.
+- **Grão**: um PNG de ruído em `mix-blend-mode: overlay` que salta de posição com `steps(1)`.
+- **Rolagem** suave com Lenis; com "reduzir movimento" no sistema, não há intro nem rolagem suave e o filme fica parado.
 
-## Rodar
+O guia, o prompt e os prints do modelo Lusco são material pago e ficam fora deste repositório público. Para mexer no projeto com uma IA, copie o `CLAUDE.md` do `lusco.zip` para esta pasta.
+
+## ▶️ Rodar
 
 ```bash
 npm install
 npm run dev
 ```
 
-`npm run build` gera o `dist/` (caminhos relativos: funciona em qualquer pasta).
+`npm run build` gera o `dist/` com caminhos relativos (funciona em qualquer pasta). O GitHub Pages publica em `/Projetos/Projetos/Sofia-Carson/` pelo `.github/workflows/pages.yml`.

@@ -1,34 +1,37 @@
 <div align="center">
 
-# 🚀 Projetos
+<img src="docs/caos/banner.svg" alt="Projetos: sites, landing pages, jogos e IA" width="100%" />
 
 **Meu portfólio de desenvolvimento num lugar só: sites, landing pages animadas, jogos e IA.**
 
 Cada projeto tem a própria pasta, README e instruções de uso.<br>
 Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`.
 
-[![Abrir o portfólio](https://img.shields.io/badge/ABRIR_O_PORTF%C3%93LIO-0a0a0b?style=for-the-badge&logo=githubpages&logoColor=c8102e)](https://paulomarcelli.github.io/Projetos/Projetos/Portfolio/)
+[![Abrir o portfólio](https://img.shields.io/badge/ABRIR_O_PORTF%C3%93LIO-0a0204?style=for-the-badge&logo=githubpages&logoColor=ff1f3d)](https://paulomarcelli.github.io/Projetos/Projetos/Portfolio/)
+[![Perfil](https://img.shields.io/badge/PERFIL-0a0204?style=for-the-badge&logo=github&logoColor=ff1f3d)](https://github.com/paulomarcelli)
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![Three.js](https://img.shields.io/badge/Three.js-000000?style=flat-square&logo=threedotjs&logoColor=white)
-![GSAP](https://img.shields.io/badge/GSAP-0AE448?style=flat-square&logo=greensock&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
-![Phaser](https://img.shields.io/badge/Phaser_3-8B5CF6?style=flat-square&logoColor=white)
-![Godot](https://img.shields.io/badge/Godot-478CBF?style=flat-square&logo=godotengine&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-![Neo4j](https://img.shields.io/badge/Neo4j-4581C3?style=flat-square&logo=neo4j&logoColor=white)
-![Gemini](https://img.shields.io/badge/Gemini_API-4285F4?style=flat-square&logo=google&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-1a0508?style=flat-square&logo=html5&logoColor=ff1f3d&labelColor=0a0204)
+![CSS3](https://img.shields.io/badge/CSS3-1a0508?style=flat-square&logo=css3&logoColor=ff1f3d&labelColor=0a0204)
+![JavaScript](https://img.shields.io/badge/JavaScript-1a0508?style=flat-square&logo=javascript&logoColor=ff1f3d&labelColor=0a0204)
+![Three.js](https://img.shields.io/badge/Three.js-1a0508?style=flat-square&logo=threedotjs&logoColor=ff1f3d&labelColor=0a0204)
+![GSAP](https://img.shields.io/badge/GSAP-1a0508?style=flat-square&logo=greensock&logoColor=ff1f3d&labelColor=0a0204)
+![Vite](https://img.shields.io/badge/Vite-1a0508?style=flat-square&logo=vite&logoColor=ff1f3d&labelColor=0a0204)
+![Phaser](https://img.shields.io/badge/Phaser_3-1a0508?style=flat-square&labelColor=0a0204)
+![Godot](https://img.shields.io/badge/Godot-1a0508?style=flat-square&logo=godotengine&logoColor=ff1f3d&labelColor=0a0204)
+![React](https://img.shields.io/badge/React-1a0508?style=flat-square&logo=react&logoColor=ff1f3d&labelColor=0a0204)
+![TypeScript](https://img.shields.io/badge/TypeScript-1a0508?style=flat-square&logo=typescript&logoColor=ff1f3d&labelColor=0a0204)
+![Python](https://img.shields.io/badge/Python-1a0508?style=flat-square&logo=python&logoColor=ff1f3d&labelColor=0a0204)
+![FastAPI](https://img.shields.io/badge/FastAPI-1a0508?style=flat-square&logo=fastapi&logoColor=ff1f3d&labelColor=0a0204)
+![Neo4j](https://img.shields.io/badge/Neo4j-1a0508?style=flat-square&logo=neo4j&logoColor=ff1f3d&labelColor=0a0204)
+![Gemini](https://img.shields.io/badge/Gemini_API-1a0508?style=flat-square&logo=google&logoColor=ff1f3d&labelColor=0a0204)
+
+<img src="docs/caos/divisor.svg" alt="" width="100%" />
 
 </div>
 
 <br>
 
-## 🌐 Projetos
+<img src="docs/caos/grimorio.svg" alt="Grimório de projetos" height="56" />
 
 <table>
   <tr>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="64" viewBox="0 0 900 64" role="img" aria-label="Grimório de projetos">
+<style>
+.giro{animation:giro 60s linear infinite} .giro2{animation:giro 90s linear infinite reverse}
+@keyframes giro{to{transform:rotate(360deg)}}
+.fio{fill:none;stroke-linecap:round;stroke-dasharray:60 600;animation:fio 7s linear infinite;opacity:.0}
+@keyframes fio{0%{stroke-dashoffset:660;opacity:0}15%{opacity:.8}85%{opacity:.6}100%{stroke-dashoffset:0;opacity:0}}
+.faisca{animation:faisca 5s ease-in infinite;opacity:0}
+@keyframes faisca{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-140px);opacity:0}}
+.pulsa{animation:pulsa 4s ease-in-out infinite} @keyframes pulsa{50%{opacity:.55}}
+.tremor{animation:tremor 6s steps(1) infinite}
+@keyframes tremor{0%,88%,100%{transform:none;opacity:1}89%{transform:translate(3px,-1px) skewX(-6deg);opacity:.8}90%{transform:translate(-4px,1px);opacity:1}91%{transform:translate(2px,0) skewX(4deg)}92%{transform:none}}
+.rgb{animation:rgb 6s steps(1) infinite;opacity:0} @keyframes rgb{0%,88%,93%,100%{opacity:0}89%,91%{opacity:.7}}
+</style><defs>
+<radialGradient id="aura" cx="50%" cy="55%" r="60%"><stop offset="0" stop-color="#ff1f3d" stop-opacity=".45"/><stop offset=".45" stop-color="#7a0a1c" stop-opacity=".25"/><stop offset="1" stop-color="#0a0204" stop-opacity="0"/></radialGradient>
+<filter id="brilho" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="brilhoForte" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+<linearGradient id="letra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3e8"/><stop offset=".55" stop-color="#ff4d6d"/><stop offset="1" stop-color="#ff1f3d"/></linearGradient>
+</defs>
+<g opacity=".9"><g class="giro" style="transform-origin:34px 32.0px">
+<circle cx="34" cy="32.0" r="24" fill="none" stroke="#ff1f3d" stroke-width="2.2" opacity=".9"/>
+<circle cx="34" cy="32.0" r="19.68" fill="none" stroke="#ff1f3d" stroke-width="1.2" stroke-dasharray="2 6" opacity=".8"/>
+<g stroke="#ff4d6d" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".85">
+<path d="M57.2,31.6 L55.4,32.1 M55.2,33.3 L56.0,31.6 M55.0,30.8 L56.2,31.7" transform="rotate(0.0 55.8 32.0)"/>
+<path d="M52.2,46.2 L51.3,44.7 M52.6,45.9 L51.2,44.9 M53.1,45.2 L51.6,45.3" transform="rotate(36.0 51.7 44.8)"/>
+<path d="M40.2,54.1 L40.5,52.4 M39.5,53.5 L41.1,52.5 M41.7,51.7 L41.1,53.0" transform="rotate(72.0 40.7 52.8)"/>
+<path d="M27.8,51.4 L27.7,52.9 M26.3,53.9 L27.5,52.4 M27.2,54.2 L26.9,52.5" transform="rotate(108.0 27.3 52.8)"/>
+<path d="M15.3,45.8 L16.3,44.4 M14.9,44.5 L16.4,44.4 M15.0,45.4 L16.7,44.7" transform="rotate(144.0 16.3 44.8)"/>
+<path d="M11.3,30.8 L12.4,32.3 M11.0,32.8 L12.5,31.7 M13.4,31.2 L12.1,32.4" transform="rotate(180.0 12.2 32.0)"/>
+<path d="M15.6,20.4 L16.2,18.8 M15.9,20.5 L15.9,19.1 M14.9,19.1 L16.3,18.7" transform="rotate(216.0 16.3 19.2)"/>
+<path d="M26.9,9.8 L27.7,11.1 M28.6,11.8 L26.9,11.5 M28.2,10.1 L27.6,11.5" transform="rotate(252.0 27.3 11.2)"/>
+<path d="M42.2,11.5 L40.3,11.2 M39.6,12.2 L40.7,10.8 M39.6,12.1 L41.1,10.9" transform="rotate(288.0 40.7 11.2)"/>
+<path d="M52.3,17.9 L52.1,19.3 M51.2,20.5 L51.4,18.8 M51.0,20.5 L51.8,18.8" transform="rotate(324.0 51.7 19.2)"/>
+</g>
+<polygon points="34.0,13.3 50.2,41.4 17.8,41.4" fill="none" stroke="#ff1f3d" stroke-width="1.4" opacity=".7"/>
+<polygon points="50.2,22.6 34.0,50.7 17.8,22.6" fill="none" stroke="#ff1f3d" stroke-width="1.4" opacity=".7"/>
+<polygon points="34.0,21.9 38.4,41.1 26.1,25.7 43.8,34.2 24.2,34.2 41.9,25.7 29.6,41.1" fill="none" stroke="#ff4d6d" stroke-width="1.3" opacity=".9"/>
+<circle cx="34" cy="32.0" r="3.3600000000000003" fill="none" stroke="#ff1f3d" stroke-width="1.6"/>
+</g></g>
+<line x1="70" y1="32.0" x2="890" y2="32.0" stroke="#ff1f3d" stroke-opacity=".25"/>
+<text x="76" y="42.0" font-family="Georgia, 'Times New Roman', 'Liberation Serif', serif" font-size="28" font-weight="700" letter-spacing="3" fill="#ff1f3d" filter="url(#brilhoForte)" opacity=".7">Grimório de projetos</text>
+<text x="76" y="42.0" font-family="Georgia, 'Times New Roman', 'Liberation Serif', serif" font-size="28" font-weight="700" letter-spacing="3" fill="url(#letra)">Grimório de projetos</text>
+</svg>

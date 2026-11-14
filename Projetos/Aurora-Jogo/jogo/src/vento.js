@@ -139,6 +139,7 @@ export class QuadrosVivos {
     this.escalaMecha = this.w / texMecha.width;             // a mecha está em meia resolução
     this.malha.scale.set(this.escalaMecha);
     this.malha.position.set(-this.w / 2, -base);
+    this.base = base;
     this.corpo = new Sprite(texCorpo);
     this.corpo.position.set(-this.w / 2, -base);
     // "fantasma": o quadro anterior por cima, sumindo em `fundir` s — as poses se fundem em vez de pular
@@ -157,16 +158,19 @@ export class QuadrosVivos {
   get currentFrame() { return this.quadro; }
   set tint(cor) { this.malha.tint = cor; this.corpo.tint = cor; this.fantasma.tint = cor; }
   mostrar(q) {
-    const antes = this.corpo.texture;
+    const antes = this.corpo.texture, yAntes = this.corpo.y;
     this.quadro = q; this.corpo.texture = this.texturas[q]; this.malha.texture = this.mechas[q];
-    if (this.fundir > 0 && antes !== this.corpo.texture) { this.fantasma.texture = antes; this.fantasma.alpha = 1; this.fantasmaT = this.fundir; }
+    // desloc: px que o quadro desce na célula (ex.: sentada, o corpo encosta no chão e o arco deitado fica na frente)
+    const dy = this.desloc ? this.desloc[q] : 0;
+    this.corpo.y = -this.base + dy; this.malha.y = -this.base + dy;
+    if (this.fundir > 0 && antes !== this.corpo.texture) { this.fantasma.texture = antes; this.fantasma.y = yAntes; this.fantasma.alpha = 1; this.fantasmaT = this.fundir; }
   }
   /** anim: { texturas, mechas, fps, loop, duracoes?, fundir? }. duracoes (s por quadro) substitui o fps: dá ritmo
    *  (segura as poses-chave, passa rápido pelas intermediárias). fundir: tempo da fusão entre quadros. */
   tocar(anim) {
     const fundirAntes = this.fundir;
     this.texturas = anim.texturas; this.mechas = anim.mechas; this.fps = anim.fps; this.loop = anim.loop;
-    this.duracoes = anim.duracoes ?? null; this.fundir = anim.fundir ?? 0;
+    this.duracoes = anim.duracoes ?? null; this.fundir = anim.fundir ?? 0; this.desloc = anim.desloc ?? null;
     this.velocidade = 1; this.t = 0; this.parado = false;
     if (this.fundir === 0 && fundirAntes > 0) { this.fantasma.alpha = 0; this.fantasmaT = 0; }
     this.mostrar(0);

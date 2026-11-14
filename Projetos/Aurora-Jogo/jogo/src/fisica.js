@@ -28,9 +28,12 @@ export const CONST = {
 };
 const NUNCA = -1e9;
 
-export function criarCorpo(x, y) {
+/** opcoes: { largura, altura, velCorrida } — sem opções, é a Aurora adulta (CONST). */
+export function criarCorpo(x, y, opcoes = {}) {
   return {
     x, y, vx: 0, vy: 0, direcao: 1, noChao: false, tick: 0,
+    largura: opcoes.largura ?? CONST.LARGURA, altura: opcoes.altura ?? CONST.ALTURA,
+    velCorrida: opcoes.velCorrida ?? CONST.VEL_CORRIDA,
     ultimoChao: NUNCA, ultimoAperto: NUNCA, seguravaPulo: false,
     saltoDuplo: false, esquiva: 0, recargaEsquiva: 0,
     // eventos do último passo (para a animação)
@@ -39,14 +42,14 @@ export function criarCorpo(x, y) {
 }
 
 function sobrepoe(c, r) {
-  return c.x < r.x + r.w && c.x + CONST.LARGURA > r.x && c.y < r.y + r.h && c.y + CONST.ALTURA > r.y;
+  return c.x < r.x + r.w && c.x + c.largura > r.x && c.y < r.y + r.h && c.y + c.altura > r.y;
 }
 
 function moverX(c, dx, mundo) {
   c.x += dx;
   for (const r of mundo) {
     if (r.umaVia || !sobrepoe(c, r)) continue;   // galho (umaVia) não barra de lado
-    if (dx > 0) c.x = r.x - CONST.LARGURA; else if (dx < 0) c.x = r.x + r.w;
+    if (dx > 0) c.x = r.x - c.largura; else if (dx < 0) c.x = r.x + r.w;
     c.vx = 0;
   }
 }
@@ -57,14 +60,14 @@ function moverY(c, dy, mundo) {
   for (const r of mundo) {
     if (!sobrepoe(c, r)) continue;
     // galho (umaVia): só segura quem vem caindo e estava acima dele no passo anterior; por baixo, atravessa
-    if (r.umaVia && (dy <= 0 || c.y - dy + CONST.ALTURA > r.y + 0.5)) continue;
-    if (dy > 0) { c.y = r.y - CONST.ALTURA; pousou = true; } else if (dy < 0) c.y = r.y + r.h;
+    if (r.umaVia && (dy <= 0 || c.y - dy + c.altura > r.y + 0.5)) continue;
+    if (dy > 0) { c.y = r.y - c.altura; pousou = true; } else if (dy < 0) c.y = r.y + r.h;
     c.vy = 0;
   }
   return pousou;
 }
 
-/** Avança um tick. entrada: { esquerda, direita, pular (apertou agora), pularSegurado, esquiva, podeSaltoDuplo } */
+/** Avança um tick. entrada: { esquerda, direita, pular (apertou agora), pularSegurado, esquiva, podeSaltoDuplo, lento (0..1, andar escondida) } */
 export function passo(c, entrada, mundo) {
   const K = CONST, dt = K.DT;
   c.tick += 1;
@@ -83,7 +86,7 @@ export function passo(c, entrada, mundo) {
     c.vx = c.direcao * K.ESQUIVA_VEL;
     if (c.esquiva === 0) c.recargaEsquiva = K.ESQUIVA_RECARGA;
   } else {
-    const alvo = eixo * K.VEL_CORRIDA;
+    const alvo = eixo * c.velCorrida * (entrada.lento ?? 1);
     const acel = (eixo !== 0 ? K.ACEL_CHAO : K.DESACEL_CHAO) * (c.noChao ? 1 : K.CONTROLE_AR);
     const dif = alvo - c.vx;
     c.vx += Math.sign(dif) * Math.min(Math.abs(dif), acel * dt);

@@ -16,13 +16,16 @@ de Helion acorrenta um deus. A história mistura **mitologia grega** (o tributo 
 Caronte, a Esfinge) com o clima de intriga e sobrevivência de grandes sagas de fantasia. Personagens, mundo e diálogos
 são **originais**. Roteiro completo, com 3 atos, 13 fases e 4 finais: [`docs/roteiro.md`](docs/roteiro.md).
 
-**Estado atual:** a **Fase 1 — A Floresta da Névoa** está jogável do começo ao fim (a caçada do roteiro, com
-2 fogueiras, sombras, alvos de palha, penhascos e a cena final). As animações da **Aurora criança** para o Prólogo já
-estão desenhadas e esperam a fase.
+**Estado atual:** o **Prólogo — A Noite das Lanças** e a **Fase 1 — A Floresta da Névoa** estão jogáveis do começo
+ao fim. No Prólogo, a Aurora criança (sem armas) atravessa o castelo às escuras sem ser vista pelos soldados da Lança
+Dourada: anda abaixada, se esconde atrás de cortinas, mesas e colunas, sobe na galeria; as velas acesas são pontos de
+retorno. Termina no altar, na neve com o Bram e no título. Depois vem a Fase 1 (a caçada, com 2 fogueiras, sombras,
+alvos de palha, penhascos e a cena final).
 
 | Já funciona | Falta |
 |-------------|-------|
-| Correr, pular (pulo variável, "pulo atrasado", memória do botão), Salto da Lua, esquiva, golpe de lâmina com volta à guarda, arco com flecha que voa e crava | Prólogo (castelo, furtividade, soldados), Fases 2 a 13, chefes |
+| Correr, pular (pulo variável, "pulo atrasado", memória do botão), Salto da Lua, esquiva, golpe de lâmina com volta à guarda, arco com flecha que voa e crava | Fases 2 a 13, chefes |
+| Prólogo: furtividade (cone de visão, esconderijos, andar abaixada, ouvir passos), diálogos letra a letra, festa, altar e neve | Arte desenhada dos soldados, do castelo e dos personagens do Prólogo (hoje são formas em código) |
 | Aurora parada "viva" (respira, pisca, mão abre e fecha) e em movimento com o cabelo separado do corpo, reagindo ao vento | Diálogos com escolhas, som e música |
 | Sentar na Fogueira Lunar (respirando), salvar, evoluir; dano em 3 quadros com clarão, recuo e hit-stop | Menu inicial e controles de toque |
 | Fase 1 em dados, com teste automático (jogador robô, alcance dos saltos e ritmo) | Patrulha imperial na Fase 1 (precisa de arte dos soldados) |
@@ -31,6 +34,14 @@ estão desenhadas e esperam a fase.
 Para a próxima IA: [`docs/PARA-A-PROXIMA-IA.md`](docs/PARA-A-PROXIMA-IA.md) (estado, decisões, próximos passos).
 
 ## Controles
+Sem nada no endereço, o jogo abre no **Prólogo** na primeira vez e na **Fase 1** depois. Para escolher:
+`?fase=prologo` ou `?fase=1` no fim do link.
+
+**Prólogo (Aurora criança):** ← → andar · Espaço pular · segure ↓ andar abaixada (devagar, vista só de perto, sem
+barulho) · parada num esconderijo, segure ↓ para se esconder · E/Enter passar as falas · Tab pular o Prólogo.
+
+**Fase 1:**
+
 | Tecla | Ação |
 |-------|------|
 | ← → (ou A D) | andar |
@@ -50,7 +61,7 @@ Precisa de Node.js 18+ e Python 3.
 cd Projetos/Aurora-Jogo/jogo
 npm install
 npm run preparar     # copia o PixiJS e as artes para jogo/
-npm test             # 21 testes: física, progressão, salvamento e a Fase 1 (jogador robô)
+npm test             # 39 testes: física, progressão, salvamento, furtividade, a Fase 1 e o Prólogo
 python3 -m http.server 8080
 ```
 Abra `http://localhost:8080`. Precisa de um servidor (os módulos JavaScript não abrem com dois cliques em `file://`).

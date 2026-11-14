@@ -8,6 +8,13 @@
 </head>
 <body>
   <div id="jogo"></div>
-  <script type="module" src="src/main.js"></script>
+  <script type="module">
+    // ?fase=prologo ou ?fase=1. Sem nada: o Prólogo na primeira vez, a Fase 1 depois que ele foi visto.
+    const pedida = new URLSearchParams(location.search).get('fase');
+    let visto = false;
+    try { visto = localStorage.getItem('aurora_prologo') === 'feito'; } catch { /* sem armazenamento */ }
+    const fase = pedida ?? (visto ? '1' : 'prologo');
+    import(fase === 'prologo' ? './src/prologo.js' : './src/main.js');
+  </script>
 </body>
 </html>

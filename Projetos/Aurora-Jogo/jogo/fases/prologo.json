@@ -1,0 +1,329 @@
+{
+  "id": "prologo",
+  "titulo": "A Noite das Lanças",
+  "subtitulo": "Prólogo · nove anos antes",
+  "clima": "castelo",
+  "personagem": {
+    "altura_visual": 150,
+    "largura": 32,
+    "altura": 122,
+    "velCorrida": 300,
+    "lento": 0.4
+  },
+  "inicio": {
+    "x": 40,
+    "y": 640
+  },
+  "abismo": 1000,
+  "_unidades": "px; y cresce para baixo; cada sólido vai até o fundo (y = 1100) a menos que tenha h. umaVia = galeria: só segura por cima e não bloqueia a visão. tipo invisivel = limite da fase.",
+  "solidos": [
+    {
+      "id": "parede_esq",
+      "x": -260,
+      "y": -400,
+      "w": 60,
+      "h": 1500,
+      "tipo": "invisivel"
+    },
+    {
+      "id": "chao",
+      "x": -400,
+      "y": 640,
+      "w": 6800
+    },
+    {
+      "id": "degrau",
+      "x": 1990,
+      "y": 588,
+      "w": 100,
+      "tipo": "degrau"
+    },
+    {
+      "id": "degrau2",
+      "x": 2090,
+      "y": 480,
+      "w": 60,
+      "tipo": "degrau"
+    },
+    {
+      "id": "galeria",
+      "x": 2150,
+      "y": 370,
+      "w": 640,
+      "h": 26,
+      "umaVia": true,
+      "tipo": "galeria"
+    },
+    {
+      "id": "parede_capela",
+      "x": 4650,
+      "y": 260,
+      "w": 40,
+      "h": 250,
+      "tipo": "arco"
+    },
+    {
+      "id": "parede_dir",
+      "x": 5760,
+      "y": -400,
+      "w": 60,
+      "h": 1500,
+      "tipo": "invisivel"
+    }
+  ],
+  "caminho": [
+    "chao",
+    "degrau",
+    "degrau2",
+    "galeria"
+  ],
+  "retornos": [],
+  "batidas": [
+    {
+      "trecho": "salão da festa",
+      "tipo": "ensina",
+      "intensidade": 0.1,
+      "de": -200,
+      "ate": 900
+    },
+    {
+      "trecho": "corredor das cortinas",
+      "tipo": "ensina",
+      "intensidade": 0.4,
+      "de": 900,
+      "ate": 2000
+    },
+    {
+      "trecho": "galeria",
+      "tipo": "testa",
+      "intensidade": 0.5,
+      "de": 2000,
+      "ate": 2900
+    },
+    {
+      "trecho": "salão das colunas",
+      "tipo": "combina",
+      "intensidade": 0.8,
+      "de": 2900,
+      "ate": 4200
+    },
+    {
+      "trecho": "antessala",
+      "tipo": "descanso",
+      "intensidade": 0.2,
+      "de": 4200,
+      "ate": 4700
+    },
+    {
+      "trecho": "capela",
+      "tipo": "climax",
+      "intensidade": 0.7,
+      "de": 4700,
+      "ate": 5700
+    }
+  ],
+  "apagar": {
+    "x": 820,
+    "texto": "As velas se apagam. Gritos no salão."
+  },
+  "velas": [
+    {
+      "id": "v1",
+      "x": 960,
+      "y": 640
+    },
+    {
+      "id": "v2",
+      "x": 1940,
+      "y": 640
+    },
+    {
+      "id": "v3",
+      "x": 2950,
+      "y": 640
+    },
+    {
+      "id": "v4",
+      "x": 4320,
+      "y": 640
+    },
+    {
+      "id": "v5",
+      "x": 4760,
+      "y": 640
+    }
+  ],
+  "esconderijos": [
+    {
+      "x": 1130,
+      "y": 640,
+      "w": 90,
+      "tipo": "cortina"
+    },
+    {
+      "x": 1520,
+      "y": 640,
+      "w": 90,
+      "tipo": "cortina"
+    },
+    {
+      "x": 1880,
+      "y": 640,
+      "w": 90,
+      "tipo": "cortina"
+    },
+    {
+      "x": 2440,
+      "y": 640,
+      "w": 120,
+      "tipo": "mesa"
+    },
+    {
+      "x": 3160,
+      "y": 640,
+      "w": 80,
+      "tipo": "coluna"
+    },
+    {
+      "x": 3520,
+      "y": 640,
+      "w": 80,
+      "tipo": "coluna"
+    },
+    {
+      "x": 3880,
+      "y": 640,
+      "w": 80,
+      "tipo": "coluna"
+    },
+    {
+      "x": 5020,
+      "y": 640,
+      "w": 90,
+      "tipo": "banco"
+    }
+  ],
+  "guardas": [
+    {
+      "x": 1400,
+      "y": 640,
+      "de": 1240,
+      "ate": 1800,
+      "pausa": 2.4
+    },
+    {
+      "x": 2300,
+      "y": 640,
+      "de": 2180,
+      "ate": 2760,
+      "pausa": 2.0
+    },
+    {
+      "x": 3100,
+      "y": 640,
+      "de": 3000,
+      "ate": 3620,
+      "pausa": 1.8
+    },
+    {
+      "x": 3900,
+      "y": 640,
+      "de": 3560,
+      "ate": 4120,
+      "pausa": 1.8,
+      "dir": -1
+    },
+    {
+      "x": 5150,
+      "y": 640,
+      "de": 4900,
+      "ate": 5300,
+      "pausa": 3.0
+    }
+  ],
+  "altar": {
+    "x": 5520,
+    "y": 640
+  },
+  "placas": [
+    {
+      "x": 160,
+      "y": 640,
+      "texto": "← →  correr     Espaço  pular"
+    },
+    {
+      "x": 930,
+      "y": 640,
+      "texto": "Segure ↓  andar sem fazer barulho"
+    },
+    {
+      "x": 1240,
+      "y": 640,
+      "texto": "Pare atrás da cortina e segure ↓  esconder-se"
+    },
+    {
+      "x": 1990,
+      "y": 640,
+      "texto": "Suba na galeria: por cima dos guardas"
+    },
+    {
+      "x": 4330,
+      "y": 640,
+      "texto": "A capela fica logo adiante"
+    }
+  ],
+  "festa": [
+    {
+      "quem": "",
+      "fala": "Inverno no castelo da Casa Selênia. Música, risos e velas por toda parte."
+    },
+    {
+      "quem": "ELIAS",
+      "fala": "Se quiser a fita de volta, vai ter que me pegar, Aurora!"
+    },
+    {
+      "quem": "LADY ILARIA",
+      "fala": "Aurora... sem correr no salão. Hoje temos um convidado do Imperador."
+    }
+  ],
+  "fim": [
+    {
+      "quem": "",
+      "fala": "Escondida sob o altar, Aurora vê pelas frestas a mãe ajoelhada."
+    },
+    {
+      "quem": "LADY ILARIA",
+      "fala": "Vocês já levaram nossas terras. O que ainda falta?"
+    },
+    {
+      "quem": "CAIUS",
+      "fala": "O sangue, minha senhora. Só o sangue. Não é ódio. É prudência."
+    },
+    {
+      "quem": "",
+      "fala": "A mãe olha uma única vez na direção do altar. E não diz nada."
+    },
+    {
+      "quem": "",
+      "fala": "Neve. Uma menina de cabelo prateado, coberta de cinzas, caminha sozinha.",
+      "cena": "neve"
+    },
+    {
+      "quem": "BRAM",
+      "fala": "Que raio de bicho é você?"
+    },
+    {
+      "quem": "",
+      "fala": "Ela não responde. Ele tira a própria capa e a enrola nela."
+    },
+    {
+      "quem": "BRAM",
+      "fala": "Tá. Depois você me conta."
+    },
+    {
+      "quem": "",
+      "fala": "AURORA",
+      "cena": "titulo"
+    }
+  ]
+}

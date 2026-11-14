@@ -94,3 +94,18 @@ test('sem mana, o Salto da Lua não acontece', () => {
   assert.equal(c.saltoDuplo, false);
   assert.ok(c.vy >= vy);
 });
+
+test('corpo de outro tamanho (Aurora criança) pousa com os pés no chão', () => {
+  const c = criarCorpo(0, 300, { largura: 32, altura: 126 });
+  for (let i = 0; i < 120; i++) passo(c, nada, CHAO);
+  assert.equal(c.noChao, true);
+  assert.equal(Math.round(c.y + 126), 600);
+});
+
+test('velocidade própria do corpo e passo lento (andar escondida)', () => {
+  const c = criarCorpo(0, 600 - 126, { largura: 32, altura: 126, velCorrida: 300 });
+  for (let i = 0; i < 60; i++) passo(c, { ...nada, direita: true }, CHAO);
+  assert.ok(Math.abs(c.vx - 300) < 1, `vx ${c.vx}`);
+  for (let i = 0; i < 60; i++) passo(c, { ...nada, direita: true, lento: 0.4 }, CHAO);
+  assert.ok(Math.abs(c.vx - 120) < 1, `vx lento ${c.vx}`);
+});

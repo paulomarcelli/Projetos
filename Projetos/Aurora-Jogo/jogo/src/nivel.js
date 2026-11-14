@@ -50,7 +50,8 @@ export function tentarSalto(fase, idA, idB) {
     const centro = c.x + L / 2, alvo = B.x + B.w / 2;
     let entrada;
     if (!pulou) {
-      const chegou = dir > 0 ? frente >= impulso : frente <= impulso;
+      // pula na beirada — ou antes, se bater numa parede (um degrau em cima do próprio chão)
+      const chegou = (dir > 0 ? frente >= impulso : frente <= impulso) || (t > 5 && c.noChao && Math.abs(c.vx) < 1);
       entrada = { ...nada, direita: dir > 0, esquerda: dir < 0, pular: chegou, pularSegurado: chegou };
       if (chegou) pulou = true;
     } else {

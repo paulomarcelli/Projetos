@@ -8,8 +8,9 @@
 ## 1. Estado atual em uma frase
 Plataforma 2D em **PixiJS 8** no navegador, publicada no GitHub Pages
 (<https://paulomarcelli.github.io/Projetos/Projetos/Aurora/>), com a **Fase 1 (A Floresta da Névoa) jogável do começo ao
-fim**, a Aurora adulta toda animada com arte do Gemini e as **animações da Aurora criança (Prólogo) prontas, mas ainda
-fora do jogo**. 21 testes passando (`npm test`).
+fim**, a Aurora adulta toda animada com arte do Gemini e o **Prólogo jogável** (Aurora criança, furtividade no castelo,
+festa, altar, neve e título; soldados, castelo e personagens ainda desenhados em código, sem arte). 39 testes passando
+(`npm test`). `?fase=prologo` / `?fase=1` escolhe a fase.
 
 ## 2. Quem é o usuário e como ele trabalha
 - Fala **português**. Pede para **não perguntar permissão**: faça, verifique e publique (commit e push direto na `main`).
@@ -55,11 +56,16 @@ do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com som
 (clímax). Abater o cervo abre a cena final com as falas de Lia e Aurora; R recomeça. Galhos são plataformas de uma via;
 cair no abismo tira 15 de vida e volta ao último chão firme.
 
-**Aurora criança (Prólogo)** — arte pronta, **ainda não está no jogo**:
-- ficha: `arte/referencias/aurora-crianca-01.png` (comparação com a adulta conferida: mesmo traço e cores);
-- 6 folhas em `arte/poses-originais/crianca_*.png`: parada (3), correndo (8, em duas folhas), pulo (4), andando
-  escondida (4), escondida (3). Já testei o recorte: os 22 quadros saem limpos **com `--manter-brancos`** (a capinha de
-  pele e as meias são brancas e o recorte normal as apagava). Detalhes em `docs/prompts-aurora-crianca.md`.
+**Prólogo — A Noite das Lanças** (`jogo/src/prologo.js`, `jogo/fases/prologo.json`; detalhes em `docs/ARQUITETURA.md`):
+salão da festa (Lady Ilaria, convidados, Elias corre com a fita) → as velas se apagam → corredor das cortinas → galeria
+(sobe por 2 degraus, passa por cima do guarda) → salão das colunas (2 guardas) → antessala → capela (guarda da porta,
+bancos) → altar: a mãe, Caius e os dois homens; falas do roteiro → neve com o Bram → título AURORA → Fase 1.
+- Aurora criança: 22 quadros fatiados com `--manter-brancos` em `arte/sprites/recortes/aurora_c_*.png`, folha em
+  `arte/sprites/crianca_folha.png` por `ferramentas/montar_folha_crianca.py` (escala pela **altura em pé**, não pela
+  cabeça: pela cabeça ela ficaria do tamanho da adulta). Prévias em `arte/sprites/previas/crianca_*.gif`.
+- Furtividade em `src/furtividade.js` (9 testes); caixa de diálogo em `src/dialogo.js`.
+- `fisica.js`: `criarCorpo(x, y, { largura, altura, velCorrida })` (sem opções = adulta) e `entrada.lento`.
+- `nivel.js`: o robô agora também pula quando bate numa parede (degrau em cima do próprio chão).
 
 ## 5. Como a fase é verificada (rode depois de mexer em `fases/*.json`)
 `testes/fase1.test.mjs` (skill `level-design`): mede o pulo real (`ferramentas/medir_pulo.mjs`), confere vão ≤ 70% do
@@ -69,23 +75,15 @@ trechos intensos seguidos, descanso antes do clímax) e se fogueiras, criaturas,
 O robô foi conferido: reprova vão de 400 px e subida de 260 px.
 
 ## 6. Próximos passos (em ordem)
-1. **Prólogo — A Noite das Lanças** (`docs/roteiro.md`, seção PRÓLOGO). É o que o usuário está pedindo agora.
-   - Ligar a Aurora criança no jogo: fatiar as 6 folhas (`--manter-brancos`), criar uma folha de sprites própria
-     (ela é menor: medir a cabeça; ~4 cabeças de altura), colisor menor e **sem armas** (não ataca, não usa arco).
-   - Mecânica de **furtividade** (ela precisa chegar à capela sem ser vista): soldados patrulhando com campo de visão
-     (cone), esconderijos (atrás de cortinas, mesas, colunas) onde ela usa a pose "escondida", andar agachada mais lento e
-     silencioso; ser vista = recomeçar do último ponto. Use as skills `game-ai` (patrulha e percepção) e `level-design`.
-   - **Arte que falta:** soldados da Lança Dourada (andando, parados, olhando) e o cenário do castelo da Casa Selênia
-     (salão da festa de inverno, corredores, capela com altar). Gere no Figma (ou passe prompts para o Gemini).
-   - Cenas: a festa (Elias rouba a fita, Lady Ilaria), as luzes apagando, o altar (fala de Ilaria e Caius) e o corte
-     para a neve com Bram. Texto já está no roteiro; use uma caixa de diálogo (skill `dialogue-systems`).
-   - Fazer o Prólogo também em JSON (`fases/prologo.json`) com o mesmo tipo de teste da Fase 1, e um jeito de escolher a
-     fase (hoje o `main.js` carrega `fases/fase1.json` fixo).
-2. **Ouvir o teste do usuário na Fase 1** e ajustar: onde ficou perdido, salto que errou mais de 3 vezes, trecho chato
+1. **Ouvir o teste do usuário no Prólogo e na Fase 1** e ajustar (Prólogo: guardas justos? a dica de esconder é clara?
+   o tempo de alerta de 0,6 s é curto demais?). Fase 1: onde ficou perdido, salto que errou mais de 3 vezes, trecho chato
    ou injusto, tempo total.
 3. **Menu inicial** (Novo jogo, Continuar, escolher fase) e **controles de toque** para celular (skill `game-ui-ux`).
 4. **Som e música** (skill `audio-design`): passos na neve, flecha, golpe, dano, fogueira, trilha da floresta.
-5. **Patrulha imperial na Fase 1** (o roteiro pede): reaproveitar os soldados e a visão do Prólogo.
+5. **Patrulha imperial na Fase 1** (o roteiro pede): reaproveitar `furtividade.js` e a classe `Soldado` do Prólogo.
+5b. **Arte do Prólogo** (hoje formas em código): soldados da Lança Dourada (andando, parados, olhando, com lanterna),
+   Lady Ilaria, Elias, Caius, o homem do elmo de carneiro, o das luvas brancas, Bram; cenário do castelo (salão, corredor,
+   capela, altar). Gere prompts para o Gemini como os de `docs/prompts-aurora-crianca.md`.
 6. **Fase 2 — A Tinta que Escorre** (roteiro) e o primeiro chefe (Brakus, o Carneiro).
 7. Arte opcional da adulta: mão meio fechada (prompt F), corrida em 8 quadros maiores, olhos totalmente fechados
    (prompts em `docs/prompts-aurora-rodada2.md`); combo de verdade (2º golpe diferente).
@@ -119,7 +117,7 @@ Confira sempre o recorte **sobre fundo escuro** e meça a cabeça comparando com
 
 ## 9. Como verificar
 ```bash
-cd Projetos/Aurora-Jogo/jogo && npm install && npm run preparar && npm test     # 21 testes
+cd Projetos/Aurora-Jogo/jogo && npm install && npm run preparar && npm test     # 39 testes
 python3 -m http.server 8080
 ```
 `window.__jogo` expõe `corpo`, `estado`, `vida`, `mana`, `progresso`, `vento`, `sombras`, `fogueiras`, `fase`, `alvos`,

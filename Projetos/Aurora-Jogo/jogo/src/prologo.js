@@ -43,7 +43,7 @@ window.addEventListener('resize', desenharFundoTela);
 
 // ---------- arte do Prólogo (gerada no Figma, montada por ferramentas/montar_folha_figma.py) ----------
 const X0 = -400;
-const folhaP = nitida(await Assets.load('assets/sprites/prologo_folha.png'));
+const folhaP = nitida(await Assets.load('assets/sprites/prologo_folha.webp'));
 const metaP = await (await fetch('assets/sprites/prologo_folha.json')).json();
 const texP = {};
 for (const [n, p] of Object.entries(metaP.pecas)) {

@@ -14,18 +14,35 @@ import { nitida } from './aurora_viva.js';
  */
 let arte = null;
 export async function carregarArteFloresta() {
-  const folha = nitida(await Assets.load('assets/sprites/floresta_folha.png'));
+  const folha = nitida(await Assets.load('assets/sprites/floresta_folha.webp'));
   const meta = await (await fetch('assets/sprites/floresta_folha.json')).json();
   const tex = {};
   for (const [n, p] of Object.entries(meta.pecas)) {
     const [x, y, w, h] = p.quadro;
     tex[n] = new Texture({ source: folha.source, frame: new Rectangle(x, y, w, h) });
   }
-  const [terra, ceu, meio] = await Promise.all(['floresta_terra.jpg', 'floresta_ceu.jpg', 'floresta_meio.webp'].map((f) => Assets.load('assets/fundos/' + f)));
-  arte = { folha, meta, tex, terra, ceu: nitida(ceu), meio: nitida(meio) };
+  const [terra, ceu, meio, neve] = await Promise.all(['floresta_terra.jpg', 'floresta_ceu.jpg', 'floresta_meio.webp', 'floresta_neve_faixa.png']
+    .map((f) => Assets.load('assets/fundos/' + f)));
+  arte = { folha, meta, tex, terra, ceu: nitida(ceu), meio: nitida(meio), neve: nitida(neve), sombra: texturaSombra() };
   return arte;
 }
 export const arteFloresta = () => arte;
+/** degradê vertical transparente → escuro: a terra fica mais escura quanto mais fundo */
+function texturaSombra() {
+  const c = document.createElement('canvas'); c.width = 4; c.height = 256;
+  const g = c.getContext('2d');
+  const d = g.createLinearGradient(0, 0, 0, 256);
+  d.addColorStop(0, 'rgba(8,6,22,0)'); d.addColorStop(0.35, 'rgba(8,6,22,0.35)'); d.addColorStop(1, 'rgba(8,6,22,0.8)');
+  g.fillStyle = d; g.fillRect(0, 0, 4, 256);
+  return Texture.from(c);
+}
+/** troca a textura de um sprite por outra peça, com os pés no mesmo lugar */
+export function trocarPeca(s, nome) {
+  const p = arte.meta.pecas[nome];
+  s.texture = arte.tex[nome];
+  s.anchor.set(p.ancora[0] / p.quadro[2], p.ancora[1] / p.quadro[3]);
+}
+export const pecaFloresta = (nome) => peca(nome);
 /** sprite de uma peça com a âncora nos pés */
 function peca(nome) {
   const p = arte.meta.pecas[nome], s = new Sprite(arte.tex[nome]);
@@ -128,6 +145,10 @@ function terrenoPintado(fase) {
       spr.scale.set(grossoAEsquerda ? sx : -sx, sy);
       spr.position.set(grossoAEsquerda ? s.x - 30 : s.x + s.w + 26, s.y - 6 - 60 * sy);
       raiz.addChild(spr);
+      // pingentes de gelo pendurados embaixo do galho
+      const p = peca('pingentes'); p.anchor.set(0.5, 0.12);
+      p.scale.set(0.12 * (sorte() < 0.5 ? -1 : 1), 0.12); p.position.set(s.x + s.w * (0.35 + sorte() * 0.3), s.y + s.h - 4);
+      raiz.addChild(p);
       continue;
     }
     const g = new Graphics();
@@ -148,6 +169,10 @@ function terrenoPintado(fase) {
     terra.tilePosition.set(-s.x, -s.y);
     terra.tint = s.tipo === 'rocha' ? 0x9d97bf : 0x8a84aa;
     raiz.addChild(terra);
+    // a terra escurece para baixo
+    const sombra = new Sprite(arte.sombra);
+    sombra.position.set(s.x, s.y + 24); sombra.width = s.w; sombra.height = Math.max(10, Math.min(420, fundoY - s.y - 24));
+    raiz.addChild(sombra);
     g.rect(s.x, s.y, s.w, fundoY - s.y).stroke({ color: CONTORNO, width: 3 });
     g.rect(s.x, s.y + 10, s.w, 26).fill({ color: '#0d0a1c', alpha: 0.32 });
     if (s.tipo === 'rocha') {
@@ -156,8 +181,36 @@ function terrenoPintado(fase) {
         g.moveTo(px, s.y + 30).lineTo(px + 8, s.y + 60).lineTo(px - 4, s.y + 90).stroke({ color: '#221c3a', width: 2.5 });
       }
     }
-    if (s.y > -300) capaDeNeve(g, s.x, s.y, s.w, s.tipo === 'rocha' ? 9 : 14, sorte);
     raiz.addChild(g);
+    if (s.y > -300) {
+      // neve pintada por cima (faixa que repete sem emenda), passando um pouco das bordas
+      const alt = s.tipo === 'rocha' ? 30 : 38;
+      const capa = new TilingSprite({ texture: arte.neve, width: s.w + 12, height: alt });
+      capa.tileScale.set(alt / arte.neve.height); capa.tilePosition.x = -s.x * 0.7;
+      capa.position.set(s.x - 6, s.y - alt * 0.42);
+      raiz.addChild(capa);
+      // pingentes nas quinas dos blocos de rocha e dos altos
+      if (s.tipo === 'rocha' || s.h > 200) {
+        for (const [qx, lado] of [[s.x + 10, 1], [s.x + s.w - 10, -1]]) {
+          if (sorte() < 0.35) continue;
+          const p = peca('pingentes'); p.anchor.set(0.5, 0.1);
+          const e = 0.14 + sorte() * 0.08; p.scale.set(e * lado, e); p.position.set(qx + lado * 10, s.y + alt * 0.35);
+          raiz.addChild(p);
+        }
+      }
+      // capim, pedrinhas e samambaias aqui e ali (sempre os mesmos lugares: sorteio com semente)
+      if (s.w >= 160) {
+        for (let x = s.x + 60 + sorte() * 120; x < s.x + s.w - 50; x += 220 + sorte() * 260) {
+          const nome = ['capim', 'pedrinhas', 'samambaia', 'capim'][Math.floor(sorte() * 4)];
+          const d = peca(nome);
+          const h = { capim: 34, pedrinhas: 18, samambaia: 30 }[nome];
+          const e = h / d.texture.height;
+          d.scale.set(e * (sorte() < 0.5 ? -1 : 1), e); d.position.set(x, s.y + 4);
+          d.tint = 0xd6daf0;
+          raiz.addChild(d);
+        }
+      }
+    }
   }
   return raiz;
 }
@@ -320,16 +373,16 @@ export class Cervo {
     this.raiz = new Container();
     this.corpo = new Container();
     if (arte) {
-      // cervo pintado (o desenho olha para a esquerda): pastando ↔ alerta, e caído
-      const e = 168 / arte.tex.cervo_alerta.height;
-      this.poses = {};
-      for (const n of ['pastando', 'alerta', 'caido']) {
-        const s = peca('cervo_' + n); s.scale.set(e); s.tint = 0xeee2d2; s.alpha = n === 'pastando' ? 1 : 0;   // cervo claro de inverno (a neve sob ele continua branca)
-        this.poses[n] = s; this.corpo.addChild(s);
-      }
+      // cervo pintado (os desenhos olham para a esquerda): anda pela clareira, pasta, cheira a neve, olha em volta;
+      // se a Aurora corre por perto, para e encara; ao ser acertado, cai de lado
+      this.poses = true;
+      this.x0 = x; this.dir = direcao < 0 ? -1 : 1;
+      this.spr = peca('cervo_pastando'); this.corpo.addChild(this.spr);
+      this.caido = peca('cervo_caido'); this.caido.alpha = 0; this.corpo.addChild(this.caido);
+      this.estado = 'pastando'; this.relogio = 2.5; this.alvoX = x; this.quadroT = 0;
       this.raiz.addChild(this.corpo);
-      this.raiz.position.set(x, chaoY + 6);
-      this.raiz.scale.x = direcao < 0 ? 1 : -1;
+      this.raiz.position.set(x, chaoY + 4);
+      this.mostrar('cervo_pastando');
       return;
     }
     const g = new Graphics();
@@ -360,23 +413,59 @@ export class Cervo {
     this.raiz.scale.x = -direcao;   // o desenho olha para a direita; direcao -1 = olhando para a esquerda
   }
   get caixa() { return { x: this.x - 60, y: this.chaoY - 120, w: 120, h: 120 }; }
+  /** troca o desenho mantendo os pés no chão (cada folha tem sua escala: a dos quadros de andar é menor) */
+  mostrar(nome) {
+    const p = arte.meta.pecas[nome];
+    this.spr.texture = arte.tex[nome];
+    this.spr.anchor.set(p.ancora[0] / p.quadro[2], p.ancora[1] / p.quadro[3]);
+    const e = (nome.startsWith('cervo_andar') || nome.startsWith('cervo_correr') || nome === 'cervo_olhar' || nome === 'cervo_cheirar') ? 158 / 300 : 168 / 343;
+    this.spr.scale.set(e);
+    this.spr.tint = 0xf2e8da;
+  }
+  /** a Aurora: posição e velocidade (main.js chama a cada quadro) */
+  perceber(x, vx) {
+    if (!this.vivo || !this.poses) return;
+    const perto = Math.abs(x - this.x) < 430, correndo = Math.abs(vx) > 220;
+    if (perto && correndo && this.estado !== 'atento') {
+      this.estado = 'atento'; this.relogio = 2.4; this.dir = x < this.x ? -1 : 1;
+    }
+  }
   ferir() { if (!this.vivo) return false; this.vivo = false; this.queda = 0; return true; }
   atualizar(dt) {
     this.t += dt;
     if (this.poses) {
-      const P = this.poses;
-      if (this.vivo) {
-        // pasta e levanta a cabeça para olhar em volta (troca suave entre os dois desenhos), respirando
-        const ciclo = (Math.sin(this.t * 0.7) + 1) / 2;
-        const alerta = Math.min(1, Math.max(0, (ciclo - 0.55) / 0.2));
-        P.alerta.alpha = alerta; P.pastando.alpha = 1 - alerta;
-        this.corpo.scale.y = 1 + 0.012 * Math.sin(this.t * 2.4);
+      if (!this.vivo) {
+        this.queda = Math.min(1, this.queda + dt * 2.2);
+        this.caido.alpha = this.queda; this.spr.alpha = 1 - this.queda;
+        this.corpo.scale.y = 1;
         return;
       }
-      this.queda = Math.min(1, this.queda + dt * 2.2);
-      P.caido.alpha = this.queda; P.alerta.alpha = P.pastando.alpha = 0;
-      P.alerta.alpha = Math.max(0, 1 - this.queda * 2);
-      this.corpo.scale.y = 1;
+      this.relogio -= dt; this.quadroT += dt;
+      if (this.relogio <= 0) {
+        // próxima vontade: andar um pouco, pastar, cheirar a neve ou olhar para trás
+        const r = Math.random();
+        if (r < 0.4) { this.estado = 'andando'; this.alvoX = this.x0 + (Math.random() * 2 - 1) * 150; this.relogio = 6; }
+        else if (r < 0.7) { this.estado = 'pastando'; this.relogio = 2.5 + Math.random() * 2.5; }
+        else if (r < 0.85) { this.estado = 'cheirando'; this.relogio = 1.6 + Math.random(); }
+        else { this.estado = 'olhando'; this.relogio = 1.5 + Math.random(); }
+        this.quadroT = 0;
+      }
+      if (this.estado === 'andando') {
+        const falta = this.alvoX - this.x;
+        if (Math.abs(falta) < 4) { this.estado = 'pastando'; this.relogio = 2 + Math.random() * 2; }
+        else {
+          this.dir = Math.sign(falta);
+          this.x += this.dir * 46 * dt;
+          this.mostrar('cervo_andar_' + (Math.floor(this.quadroT * 7) % 6));
+        }
+      }
+      if (this.estado === 'pastando') this.mostrar(Math.floor(this.quadroT / 1.8) % 3 === 2 ? 'cervo_cheirar' : 'cervo_pastando');
+      if (this.estado === 'cheirando') this.mostrar('cervo_cheirar');
+      if (this.estado === 'olhando') this.mostrar('cervo_olhar');
+      if (this.estado === 'atento') this.mostrar('cervo_alerta');
+      this.raiz.x = this.x;
+      this.raiz.scale.x = this.dir < 0 ? 1 : -1;                // o desenho olha para a esquerda
+      this.corpo.scale.y = 1 + 0.012 * Math.sin(this.t * 2.4);  // respira
       return;
     }
     if (this.vivo) {

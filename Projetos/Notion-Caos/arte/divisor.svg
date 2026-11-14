@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="48" viewBox="0 0 1200 48" role="img" aria-label="Divisor">
+<style>
+.giro{animation:giro 70s linear infinite}.giroR{animation:giro 46s linear infinite reverse}.giroLento{animation:giro 120s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+.respira{animation:respira 5.5s ease-in-out infinite}@keyframes respira{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.82}}
+.aura{animation:aura 7s ease-in-out infinite}@keyframes aura{50%{opacity:.6}}
+.fio{fill:none;stroke-linecap:round;stroke-dasharray:14 86;animation:fio 6s linear infinite}
+@keyframes fio{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+.sobe1,.sobe2,.sobe3{opacity:0}
+.sobe1{animation:sobe1 7s ease-in infinite}.sobe2{animation:sobe2 9s ease-in infinite}.sobe3{animation:sobe3 6s ease-in infinite}
+@keyframes sobe1{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(-40px,-280px);opacity:0}}
+@keyframes sobe2{0%{transform:translate(0,0);opacity:0}20%{opacity:.9}100%{transform:translate(50px,-330px);opacity:0}}
+@keyframes sobe3{0%{transform:translate(0,0);opacity:0}10%{opacity:1}100%{transform:translate(8px,-220px);opacity:0}}
+.fumaca1{animation:fumaca1 26s ease-in-out infinite alternate}.fumaca2{animation:fumaca2 33s ease-in-out infinite alternate}
+@keyframes fumaca1{to{transform:translate(-120px,30px) scale(1.15)}}@keyframes fumaca2{to{transform:translate(90px,-40px) scale(.9)}}
+.estilhaco{animation:estilhaco 9s ease-in-out infinite alternate}@keyframes estilhaco{to{transform:translate(0,-14px) rotate(25deg)}}
+.onda{animation:onda 11s cubic-bezier(.3,0,.2,1) infinite}@keyframes onda{0%{transform:translateX(-700px)}38%,100%{transform:translateX(2300px)}}
+.tremor{animation:tremor 11s steps(1) infinite}
+@keyframes tremor{0%,3.5%,100%{transform:none}.5%{transform:translate(5px,-2px) skewX(-5deg)}1%{transform:translate(-6px,2px)}1.6%{transform:translate(3px,0) skewX(3deg)}2.2%{transform:translate(-2px,1px)}}
+.rgb{opacity:0;animation:rgb 11s steps(1) infinite}@keyframes rgb{0%,3.5%,100%{opacity:0}.4%,1.2%,2%{opacity:.75}.8%,1.6%{opacity:0}}
+.outra{opacity:0;animation:outra 11s ease-out infinite}@keyframes outra{0%{opacity:0}1%{opacity:.85}9%{opacity:0}100%{opacity:0}}
+.lampejo{opacity:0;animation:lampejo 11s ease-out infinite}@keyframes lampejo{0%{opacity:0}.6%{opacity:.5}5%{opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0s!important;animation-iteration-count:1!important}}
+</style>
+<defs>
+<radialGradient id="aura" cx="74%" cy="50%" r="55%"><stop offset="0" stop-color="#ff1f3d" stop-opacity=".55"/><stop offset=".4" stop-color="#7a0a1c" stop-opacity=".35"/><stop offset="1" stop-color="#07010a" stop-opacity="0"/></radialGradient>
+<radialGradient id="outraRealidade" cx="74%" cy="50%" r="70%"><stop offset="0" stop-color="#b04dff" stop-opacity=".55"/><stop offset=".5" stop-color="#3a0a6e" stop-opacity=".35"/><stop offset="1" stop-color="#05010a" stop-opacity="0"/></radialGradient>
+<radialGradient id="nucleo"><stop offset="0" stop-color="#ff4d6d" stop-opacity=".95"/><stop offset=".6" stop-color="#7a0a1c" stop-opacity=".6"/><stop offset="1" stop-color="#7a0a1c" stop-opacity="0"/></radialGradient>
+<linearGradient id="escuro" x1="0" x2="1"><stop offset="0" stop-color="#07010a" stop-opacity=".92"/><stop offset=".5" stop-color="#07010a" stop-opacity=".25"/><stop offset="1" stop-color="#07010a" stop-opacity="0"/></linearGradient>
+<linearGradient id="faixa" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<filter id="brilho" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="nevoa" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="48"/></filter>
+<filter id="grao"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 .12  0 0 0 0 .24  0 0 0 .55 0"/></filter>
+<filter id="energia" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="turbulence" baseFrequency=".012 .03" numOctaves="2" seed="3" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="22"/><feGaussianBlur stdDeviation="1.2"/></filter>
+<pattern id="hex" width="34.64" height="60" patternUnits="userSpaceOnUse"><path d="M17.32 0 L34.64 10 V30 L17.32 40 L0 30 V10 Z M17.32 40 V60" fill="none" stroke="#ff1f3d" stroke-width="1"/></pattern>
+<mask id="mascaraOnda"><rect width="1500" height="600" fill="#000"/><g class="onda"><rect x="0" y="0" width="520" height="600" fill="url(#faixa)"/></g></mask>
+</defs>
+<g filter="url(#brilho)">
+  <path d="M0 24 H1200" stroke="#7a0a1c" stroke-width="2"/>
+  <path class="fio" pathLength="100" d="M0 24 H1200" stroke="#ff1f3d" stroke-width="3" style="animation-duration:4s"/>
+  <path class="fio" pathLength="100" d="M1200 24 H0" stroke="#ff7a1a" stroke-width="2" style="animation-duration:6.5s"/>
+  <g stroke="#ff6b82" stroke-width="1.6" fill="none" stroke-linecap="round" class="aura"><path d="M40.0,17.0 L40.0,31.0 M36.5,26.4 L43.5,26.4 M36.1,26.7 l0.1,0 M40.0,27.9 L35.1,24.4"/><path d="M120.0,17.0 L120.0,31.0 M123.8,27.6 l0.1,0 M120.0,24.7 L115.1,21.2"/><path d="M200.0,17.0 L200.0,31.0 M200.0,23.1 L195.8,23.1 L195.8,26.2 M196.2,20.7 l0.1,0 M200.0,25.2 L204.2,25.2 L204.2,28.3"/><path d="M280.0,17.0 L280.0,31.0 M280.0,19.1 L275.8,19.1 L275.8,22.3"/><path d="M360.0,17.0 L360.0,31.0 M360.0,28.5 L355.8,28.5 L355.8,31.7"/><path d="M440.0,17.0 L440.0,31.0 M436.5,22.2 L443.5,22.2"/><path d="M520.0,17.0 L520.0,31.0 M520.0,20.9 L515.8,20.9 L515.8,24.0 M523.9,22.0 l0.1,0 M516.1,20.7 l0.1,0"/><path d="M600.0,17.0 L600.0,31.0 M600.0,22.4 L595.1,18.9 M596.5,19.7 L603.5,19.7"/><path d="M680.0,17.0 L680.0,31.0 M676.1,25.9 l0.1,0 M676.1,23.7 l0.1,0"/><path d="M760.0,17.0 L760.0,31.0 M756.5,28.7 L763.5,28.7"/><path d="M840.0,17.0 L840.0,31.0 M836.5,27.4 L843.5,27.4 M836.1,22.7 l0.1,0 M836.1,19.6 l0.1,0"/><path d="M920.0,17.0 L920.0,31.0 M920.0,20.3 L915.8,20.3 L915.8,23.4 M923.9,22.5 l0.1,0 M916.5,26.7 L923.5,26.7"/><path d="M1000.0,17.0 L1000.0,31.0 M996.5,27.5 L1003.5,27.5 M996.1,28.4 l0.1,0 M1000.0,22.4 L1004.2,22.4 L1004.2,25.6"/><path d="M1080.0,17.0 L1080.0,31.0 M1076.5,21.8 L1083.5,21.8"/><path d="M1160.0,17.0 L1160.0,31.0 M1156.5,22.1 L1163.5,22.1 M1160.0,26.2 L1164.2,26.2 L1164.2,29.3"/></g>
+  <polygon points="600.0,10.0 612.1,17.0 612.1,31.0 600.0,38.0 587.9,31.0 587.9,17.0" fill="#12030a" stroke="#ff1f3d" stroke-width="2" class="respira" style="transform-origin:600px 24px"/>
+</g>
+</svg>

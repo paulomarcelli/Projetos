@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feitiço de Foco</title>
+<meta name="description" content="Relógio de estudos para o Notion: um selo de runas que acende conforme o tempo passa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*
+ * Feitiço de Foco: relógio de estudos (substitui o Relógio de Estudos, com as mesmas funções).
+ * 60 runas em volta do selo; cada uma acende quando passa 1/60 do tempo. A energia gira mais rápido no fim.
+ * Ao terminar: onda de choque, faíscas, "Realidade alterada" e um sino (Web Audio, sem arquivo de som).
+ * Funções do relógio antigo: 30 min / Pausa 5 / Pausa 15, ?min=N na URL, barra de espaço, aviso a cada 5 min.
+ * Novo: continua contando se a página recarregar, e conta os feitiços concluídos no dia.
+ */
+:root { --cor: #ff1f3d; --cor2: #ff7a1a; --brilho: #ffd0d8; --fundo: #07010a; --texto: #fff1f3; --suave: rgba(255, 225, 230, .7); }
+body.pausa { --cor: #b04dff; --cor2: #ff2e88; --brilho: #f3d0ff; }
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: radial-gradient(ellipse at 50% 45%, #2a0410 0%, var(--fundo) 65%); color: var(--texto); font-family: Inter, system-ui, sans-serif; overflow: hidden;
+  display: grid; place-items: center; transition: background .6s; }
+body.pausa { background: radial-gradient(ellipse at 50% 45%, #1f0630 0%, #05010a 65%); }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+.centro { position: relative; z-index: 2; display: grid; justify-items: center; gap: clamp(8px, 1.6vh, 14px); text-align: center; padding: 12px; }
+.rotulo { font: 600 11px/1 Inter, sans-serif; letter-spacing: .28em; text-transform: uppercase; color: var(--cor); }
+.tempo { font: 700 clamp(46px, 13vmin, 110px)/1 Cinzel, serif; font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #fff, var(--brilho) 50%, var(--cor)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 20px color-mix(in srgb, var(--cor) 65%, transparent)); }
+.contagem { font-size: 12px; color: var(--suave); }
+.botoes, .tempos { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+button { font: 600 14px Inter, sans-serif; color: var(--texto); background: rgba(20, 3, 10, .6); border: 1px solid color-mix(in srgb, var(--cor) 45%, transparent);
+  border-radius: 999px; padding: 10px 18px; min-height: 44px; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
+button:hover, button:focus-visible { box-shadow: 0 0 0 1px var(--cor), 0 8px 26px -10px var(--cor); outline: none; transform: translateY(-1px); }
+button:active { transform: scale(.96); }
+button.principal { background: linear-gradient(135deg, var(--cor), color-mix(in srgb, var(--cor) 55%, #000)); border-color: transparent; min-width: 140px;
+  font-family: Cinzel, serif; letter-spacing: .08em; }
+.tempos button { font-size: 13px; min-height: 36px; padding: 6px 14px; }
+.tempos button[aria-pressed="true"] { background: color-mix(in srgb, var(--cor) 30%, transparent); border-color: var(--cor); }
+.alterada { position: fixed; z-index: 3; inset: 0; display: grid; place-items: center; pointer-events: none; opacity: 0;
+  font: 700 clamp(22px, 6vmin, 44px) Cinzel, serif; letter-spacing: .08em; text-shadow: 0 0 24px var(--cor), -3px 0 #2ef2ff, 3px 0 #ff2e88; }
+.fim .alterada { animation: alterada 2.6s ease-out forwards; }
+@keyframes alterada { 10% { opacity: 1; transform: scale(1.08); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+.vis { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-height: 330px) { .contagem, .rotulo { display: none; } }
+@media (prefers-reduced-motion: reduce) { .fim .alterada { animation-duration: .01s; } }
+</style>
+</head>
+<body>
+<canvas id="selo"></canvas>
+<div class="centro">
+  <div class="rotulo" id="rotulo">Feitiço de foco · 30 min</div>
+  <div class="tempo" id="tempo" aria-hidden="true">30:00</div>
+  <div class="botoes">
+    <button class="principal" id="iniciar" type="button">Conjurar</button>
+    <button id="reiniciar" type="button">Reiniciar</button>
+  </div>
+  <div class="tempos" role="group" aria-label="Duração">
+    <button type="button" data-min="30" aria-pressed="true">Foco 30</button>
+    <button type="button" data-min="5" aria-pressed="false">Pausa 5</button>
+    <button type="button" data-min="15" aria-pressed="false">Pausa 15</button>
+  </div>
+  <div class="contagem" id="contagem"></div>
+</div>
+<div class="alterada" aria-hidden="true">Realidade alterada ✦</div>
+<div class="vis" aria-live="polite" id="anuncio"></div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CHAVE = 'feitico-de-foco';
+  const salvo = (() => { try { return JSON.parse(localStorage.getItem(CHAVE)) || {}; } catch (e) { return {}; } })();
+  // guardado: { minutos, fim (timestamp ms) ou restante (s), dia, feitos }
+  const hoje = new Date().toLocaleDateString('sv');
+  const minURL = Number(params.get('min'));
+  const minutos = minURL ? Math.max(1, Math.min(180, Math.round(minURL))) : Math.max(1, Math.min(180, Number(salvo.minutos) || 30));
+  const estado = {
+    duracao: minutos * 60,
+    fim: salvo.minutos === minutos ? (salvo.fim || null) : null,
+    restante: salvo.minutos === minutos ? (salvo.restante ?? null) : null,
+    feitos: salvo.dia === hoje ? (salvo.feitos || 0) : 0,
+  };
+  const guardar = () => { try { localStorage.setItem(CHAVE, JSON.stringify({ minutos: estado.duracao / 60, fim: estado.fim, restante: estado.restante, dia: hoje, feitos: estado.feitos })); } catch (e) {} };
+  let rodando = !!(estado.fim && estado.fim > Date.now());
+  if (estado.fim && !rodando) { estado.fim = null; estado.restante = null; } // terminou com a página fechada
+  const restante = () => rodando ? Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000)) : (estado.restante ?? estado.duracao);
+  const ehPausa = () => estado.duracao <= 15 * 60;
+
+  function rotular() {
+    const m = estado.duracao / 60;
+    document.body.classList.toggle('pausa', ehPausa());
+    $('rotulo').textContent = `${ehPausa() ? 'Pausa' : 'Feitiço de foco'} · ${m} min`;
+    document.querySelectorAll('.tempos button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.min) === m)));
+    $('contagem').textContent = estado.feitos ? `${estado.feitos} ${estado.feitos === 1 ? 'feitiço concluído' : 'feitiços concluídos'} hoje` : 'Espaço começa e pausa';
+  }
+  function mostrar() {
+    const r = restante(), m = String(Math.floor(r / 60)).padStart(2, '0'), s = String(r % 60).padStart(2, '0');
+    $('tempo').textContent = `${m}:${s}`;
+    document.title = rodando ? `${m}:${s} · Feitiço de Foco` : 'Feitiço de Foco';
+    $('iniciar').textContent = rodando ? 'Pausar' : (r < estado.duracao ? 'Continuar' : 'Conjurar');
+  }
+  // sino: duas notas suaves com eco (Web Audio)
+  let audio;
+  function sino() {
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      const agora = audio.currentTime;
+      [[523.25, 0], [783.99, .18], [1046.5, .36]].forEach(([f, t]) => {
+        for (const [atraso, vol] of [[0, .22], [.28, .08], [.56, .03]]) {
+          const o = audio.createOscillator(), g = audio.createGain();
+          o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(audio.destination);
+          const t0 = agora + t + atraso; g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + 1.4);
+          o.start(t0); o.stop(t0 + 1.5);
+        }
+      });
+    } catch (e) {}
+  }
+  let ultimoAviso = null;
+  function concluir() {
+    rodando = false; estado.fim = null; estado.restante = null;
+    if (!ehPausa()) estado.feitos++;
+    guardar(); sino(); choque(1);
+    document.body.classList.remove('fim'); void document.body.offsetWidth; document.body.classList.add('fim');
+    $('anuncio').textContent = ehPausa() ? 'Pausa terminada. Hora de voltar.' : 'Feitiço concluído. Hora da pausa.';
+    rotular(); mostrar();
+  }
+  setInterval(() => {
+    if (!rodando) return;
+    const r = restante();
+    if (r <= 0) return concluir();
+    if (r % 300 === 0 && r !== ultimoAviso) { ultimoAviso = r; $('anuncio').textContent = `Faltam ${r / 60} minutos`; }
+    mostrar();
+  }, 250);
+  $('iniciar').addEventListener('click', () => {
+    if (audio && audio.state === 'suspended') audio.resume();
+    else if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (rodando) { estado.restante = restante(); estado.fim = null; rodando = false; }
+    else { estado.fim = Date.now() + restante() * 1000; estado.restante = null; rodando = true; choque(.35); }
+    guardar(); mostrar();
+  });
+  $('reiniciar').addEventListener('click', () => { rodando = false; estado.fim = null; estado.restante = null; guardar(); mostrar(); });
+  document.querySelectorAll('.tempos button').forEach((b) => b.addEventListener('click', () => {
+    rodando = false; estado.fim = null; estado.restante = null; estado.duracao = Number(b.dataset.min) * 60;
+    guardar(); rotular(); mostrar(); choque(.25);
+  }));
+  document.addEventListener('keydown', (e) => { if (e.code === 'Space' && (e.target === document.body || e.target.tagName === 'CANVAS')) { e.preventDefault(); $('iniciar').click(); } });
+
+  // ---- selo animado
+  const c = $('selo'), x = c.getContext('2d');
+  let W, H, D, R, cx, cy;
+  function tamanho() { D = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; c.width = W * D; c.height = H * D; x.setTransform(D, 0, 0, D, 0, 0);
+    cx = W / 2; cy = H / 2; R = Math.min(W, H) * .46; }
+  addEventListener('resize', tamanho); tamanho();
+  const RUNAS = Array.from({ length: 60 }, () => Array.from({ length: 1 + Math.floor(Math.random() * 3) }, () => [Math.random() * 1.4 - .7, Math.random() < .5 ? -1 : 1, Math.floor(Math.random() * 3)]));
+  function runa(s, tr) { x.beginPath(); x.moveTo(0, -s); x.lineTo(0, s); for (const [yy, l, t] of tr) { const y = yy * s; if (t === 0) { x.moveTo(0, y); x.lineTo(l * s * .7, y - s * .5); } else if (t === 1) { x.moveTo(0, y); x.lineTo(l * s * .6, y); x.lineTo(l * s * .6, y + s * .45); } else { x.moveTo(-s * .5, y); x.lineTo(s * .5, y); } } x.stroke(); }
+  let ondas = [], faiscas = [];
+  function choque(forca) {
+    if (calmo) return;
+    ondas.push({ r: R * .3, v: 1, f: forca });
+    for (let i = 0; i < 80 * forca; i++) { const a = Math.random() * 7, v = Math.random() * 5 + 1; faiscas.push({ x: cx + Math.cos(a) * R * .3, y: cy + Math.sin(a) * R * .3, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vida: 1 }); }
+  }
+  const css = (v) => getComputedStyle(document.body).getPropertyValue(v).trim();
+  let ultimo = performance.now();
+  function quadro(t) {
+    const dt = Math.min(50, t - ultimo); ultimo = t;
+    const cor = css('--cor'), cor2 = css('--cor2'), brilho = css('--brilho');
+    x.clearRect(0, 0, W, H); x.lineCap = 'round';
+    const prog = 1 - restante() / estado.duracao, acesas = Math.floor(prog * 60 + 1e-6), vel = rodando ? (1 + prog * 2.5) : .35;
+    x.save(); x.translate(cx, cy);
+    // aura
+    const g = x.createRadialGradient(0, 0, R * .2, 0, 0, R * 1.2); g.addColorStop(0, cor + '33'); g.addColorStop(1, cor + '00'); x.fillStyle = g; x.beginPath(); x.arc(0, 0, R * 1.2, 0, 7); x.fill();
+    x.shadowColor = cor; x.shadowBlur = 14;
+    // anel de runas: as que já passaram acendem
+    x.save(); x.rotate(-Math.PI / 2 + Math.PI / 60);
+    for (let i = 0; i < 60; i++) {
+      x.save(); x.rotate(i / 60 * Math.PI * 2); x.translate(R * .9, 0); x.rotate(Math.PI / 2);
+      const acesa = i < acesas, prox = i === acesas && rodando;
+      x.strokeStyle = acesa ? brilho : (prox ? cor : cor + '40'); x.lineWidth = acesa ? 1.8 : 1.2;
+      x.globalAlpha = prox ? .5 + .5 * Math.sin(t * .008) : 1;
+      runa(R * .035, RUNAS[i]); x.restore();
+    }
+    x.restore(); x.globalAlpha = 1;
+    // arco de progresso
+    x.strokeStyle = cor; x.lineWidth = 3; x.beginPath(); x.arc(0, 0, R * .8, -Math.PI / 2, -Math.PI / 2 + prog * Math.PI * 2); x.stroke();
+    x.strokeStyle = cor + '30'; x.lineWidth = 1; x.beginPath(); x.arc(0, 0, R * .8, 0, 7); x.stroke();
+    // hexagrama e heptágono girando (mais rápido perto do fim)
+    x.save(); x.rotate(t * .00012 * vel); x.strokeStyle = cor2; x.lineWidth = 1.3; x.globalAlpha = .7;
+    x.beginPath(); for (let k = 0; k <= 7; k++) { const a = k / 7 * Math.PI * 2; x.lineTo(Math.cos(a) * R * .72, Math.sin(a) * R * .72); } x.stroke(); x.restore();
+    x.save(); x.rotate(-t * .00008 * vel); x.strokeStyle = cor; x.lineWidth = 1.6; x.globalAlpha = .55;
+    for (const off of [-Math.PI / 2, Math.PI / 2]) { x.beginPath(); for (let k = 0; k <= 3; k++) { const a = off + k * Math.PI * 2 / 3; x.lineTo(Math.cos(a) * R * .62, Math.sin(a) * R * .62); } x.stroke(); }
+    x.restore(); x.globalAlpha = 1;
+    // energia orbitando
+    if (!calmo) { x.globalCompositeOperation = 'lighter'; for (let i = 0; i < 26; i++) { const a = t * .0006 * vel * (i % 2 ? 1 : -1.3) + i * 2.4, rr = R * (.66 + .2 * Math.sin(i + t * .0004)); x.fillStyle = i % 3 ? cor : brilho; x.globalAlpha = .5; x.beginPath(); x.arc(Math.cos(a) * rr, Math.sin(a) * rr, 1.6 + (i % 3), 0, 7); x.fill(); } x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; }
+    // ondas de choque
+    ondas = ondas.filter((o) => (o.v -= dt * .0011) > 0);
+    for (const o of ondas) { o.r += dt * .9 * o.f + dt * .3; x.strokeStyle = brilho; x.globalAlpha = o.v; x.lineWidth = 3 * o.v; x.beginPath(); x.arc(0, 0, o.r, 0, 7); x.stroke(); }
+    x.globalAlpha = 1; x.restore();
+    faiscas = faiscas.filter((f) => (f.vida -= dt * .0012) > 0);
+    x.globalCompositeOperation = 'lighter';
+    for (const f of faiscas) { f.x += f.vx; f.y += f.vy; f.vx *= .985; f.vy *= .985; x.fillStyle = f.vida > .5 ? brilho : cor; x.globalAlpha = f.vida; x.beginPath(); x.arc(f.x, f.y, 2 * f.vida + .5, 0, 7); x.fill(); }
+    x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(quadro);
+  }
+  rotular(); mostrar(); requestAnimationFrame(quadro);
+})();
+</script>
+</body>
+</html>

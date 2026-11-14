@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="600" viewBox="0 0 1500 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Capa: magia do caos (substack)">
+<style>
+.giro{animation:giro 70s linear infinite}.giroR{animation:giro 46s linear infinite reverse}.giroLento{animation:giro 120s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+.respira{animation:respira 5.5s ease-in-out infinite}@keyframes respira{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.82}}
+.aura{animation:aura 7s ease-in-out infinite}@keyframes aura{50%{opacity:.6}}
+.fio{fill:none;stroke-linecap:round;stroke-dasharray:14 86;animation:fio 6s linear infinite}
+@keyframes fio{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+.sobe1,.sobe2,.sobe3{opacity:0}
+.sobe1{animation:sobe1 7s ease-in infinite}.sobe2{animation:sobe2 9s ease-in infinite}.sobe3{animation:sobe3 6s ease-in infinite}
+@keyframes sobe1{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(-40px,-280px);opacity:0}}
+@keyframes sobe2{0%{transform:translate(0,0);opacity:0}20%{opacity:.9}100%{transform:translate(50px,-330px);opacity:0}}
+@keyframes sobe3{0%{transform:translate(0,0);opacity:0}10%{opacity:1}100%{transform:translate(8px,-220px);opacity:0}}
+.fumaca1{animation:fumaca1 26s ease-in-out infinite alternate}.fumaca2{animation:fumaca2 33s ease-in-out infinite alternate}
+@keyframes fumaca1{to{transform:translate(-120px,30px) scale(1.15)}}@keyframes fumaca2{to{transform:translate(90px,-40px) scale(.9)}}
+.estilhaco{animation:estilhaco 9s ease-in-out infinite alternate}@keyframes estilhaco{to{transform:translate(0,-14px) rotate(25deg)}}
+.onda{animation:onda 11s cubic-bezier(.3,0,.2,1) infinite}@keyframes onda{0%{transform:translateX(-700px)}38%,100%{transform:translateX(2300px)}}
+.tremor{animation:tremor 11s steps(1) infinite}
+@keyframes tremor{0%,3.5%,100%{transform:none}.5%{transform:translate(5px,-2px) skewX(-5deg)}1%{transform:translate(-6px,2px)}1.6%{transform:translate(3px,0) skewX(3deg)}2.2%{transform:translate(-2px,1px)}}
+.rgb{opacity:0;animation:rgb 11s steps(1) infinite}@keyframes rgb{0%,3.5%,100%{opacity:0}.4%,1.2%,2%{opacity:.75}.8%,1.6%{opacity:0}}
+.outra{opacity:0;animation:outra 11s ease-out infinite}@keyframes outra{0%{opacity:0}1%{opacity:.85}9%{opacity:0}100%{opacity:0}}
+.lampejo{opacity:0;animation:lampejo 11s ease-out infinite}@keyframes lampejo{0%{opacity:0}.6%{opacity:.5}5%{opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0s!important;animation-iteration-count:1!important}}
+</style>
+<defs>
+<radialGradient id="aura" cx="74%" cy="50%" r="55%"><stop offset="0" stop-color="#ff1f3d" stop-opacity=".55"/><stop offset=".4" stop-color="#7a0a1c" stop-opacity=".35"/><stop offset="1" stop-color="#07010a" stop-opacity="0"/></radialGradient>
+<radialGradient id="outraRealidade" cx="74%" cy="50%" r="70%"><stop offset="0" stop-color="#b04dff" stop-opacity=".55"/><stop offset=".5" stop-color="#3a0a6e" stop-opacity=".35"/><stop offset="1" stop-color="#05010a" stop-opacity="0"/></radialGradient>
+<radialGradient id="nucleo"><stop offset="0" stop-color="#ff4d6d" stop-opacity=".95"/><stop offset=".6" stop-color="#7a0a1c" stop-opacity=".6"/><stop offset="1" stop-color="#7a0a1c" stop-opacity="0"/></radialGradient>
+<linearGradient id="escuro" x1="0" x2="1"><stop offset="0" stop-color="#07010a" stop-opacity=".92"/><stop offset=".5" stop-color="#07010a" stop-opacity=".25"/><stop offset="1" stop-color="#07010a" stop-opacity="0"/></linearGradient>
+<linearGradient id="faixa" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<filter id="brilho" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="nevoa" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="48"/></filter>
+<filter id="grao"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 .12  0 0 0 0 .24  0 0 0 .55 0"/></filter>
+<filter id="energia" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="turbulence" baseFrequency=".012 .03" numOctaves="2" seed="3" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="22"/><feGaussianBlur stdDeviation="1.2"/></filter>
+<pattern id="hex" width="34.64" height="60" patternUnits="userSpaceOnUse"><path d="M17.32 0 L34.64 10 V30 L17.32 40 L0 30 V10 Z M17.32 40 V60" fill="none" stroke="#ff1f3d" stroke-width="1"/></pattern>
+<mask id="mascaraOnda"><rect width="1500" height="600" fill="#000"/><g class="onda"><rect x="0" y="0" width="520" height="600" fill="url(#faixa)"/></g></mask>
+</defs>
+<rect width="1500" height="600" fill="#07010a"/>
+<g filter="url(#nevoa)" opacity=".75">
+  <ellipse class="fumaca1" cx="1050" cy="260" rx="420" ry="230" fill="#7a0a1c"/>
+  <ellipse class="fumaca2" cx="520" cy="420" rx="380" ry="160" fill="#4a0612"/>
+  <ellipse class="fumaca1" cx="1300" cy="520" rx="260" ry="140" fill="#ff2e88" opacity=".35"/>
+  <ellipse class="fumaca2" cx="200" cy="120" rx="240" ry="120" fill="#2a0410"/>
+</g>
+<rect width="1500" height="600" fill="url(#aura)" class="aura"/>
+<rect width="1500" height="600" fill="url(#outraRealidade)" class="outra"/>
+<rect width="1500" height="600" fill="url(#hex)" opacity=".07"/>
+<rect width="1500" height="600" fill="url(#hex)" opacity=".55" mask="url(#mascaraOnda)"/>
+<g class="tremor">
+  <g filter="url(#energia)" opacity=".9"><path class="fio" pathLength="100" d="M1016,109 C1023,112 732,-48 774,-187" stroke="#ff2e88" stroke-width="1.8" style="animation-delay:-0.9s;animation-duration:5.4s"/><path class="fio" pathLength="100" d="M1096,512 C1022,418 1006,624 1075,677" stroke="#ff1f3d" stroke-width="2.3" style="animation-delay:-1.2s;animation-duration:4.7s"/><path class="fio" pathLength="100" d="M1172,503 C1137,559 1418,711 1297,735" stroke="#ff1f3d" stroke-width="1.4" style="animation-delay:-4.4s;animation-duration:7.1s"/><path class="fio" pathLength="100" d="M941,429 C877,529 691,684 557,602" stroke="#ff2e88" stroke-width="3.1" style="animation-delay:-1.4s;animation-duration:6.4s"/><path class="fio" pathLength="100" d="M1085,89 C1050,2 1071,-355 1020,-245" stroke="#ff1f3d" stroke-width="2.6" style="animation-delay:-0.0s;animation-duration:6.1s"/><path class="fio" pathLength="100" d="M899,327 C893,327 637,449 689,338" stroke="#ff1f3d" stroke-width="2.9" style="animation-delay:-5.3s;animation-duration:5.4s"/><path class="fio" pathLength="100" d="M1320,334 C1196,384 1562,260 1657,364" stroke="#ff2e88" stroke-width="1.8" style="animation-delay:-2.4s;animation-duration:7.1s"/><path class="fio" pathLength="100" d="M904,351 C961,242 493,442 610,389" stroke="#ff1f3d" stroke-width="2.7" style="animation-delay:-0.6s;animation-duration:4.7s"/><path class="fio" pathLength="100" d="M898,292 C743,277 326,166 416,282" stroke="#ff1f3d" stroke-width="1.5" style="animation-delay:-1.7s;animation-duration:6.1s"/><path class="fio" pathLength="100" d="M1272,438 C1393,482 1452,655 1625,613" stroke="#ff2e88" stroke-width="2.5" style="animation-delay:-0.1s;animation-duration:5.8s"/><path class="fio" pathLength="100" d="M988,126 C1125,143 661,-64 626,-193" stroke="#ff1f3d" stroke-width="1.6" style="animation-delay:-3.1s;animation-duration:4.7s"/><path class="fio" pathLength="100" d="M1143,90 C1050,17 1226,-119 1217,-189" stroke="#ff1f3d" stroke-width="1.5" style="animation-delay:-1.9s;animation-duration:6.3s"/><path class="fio" pathLength="100" d="M1095,512 C1167,621 1109,928 1053,877" stroke="#ff2e88" stroke-width="1.8" style="animation-delay:-3.0s;animation-duration:6.0s"/><path class="fio" pathLength="100" d="M900,329 C1011,246 701,459 718,338" stroke="#ff1f3d" stroke-width="2.2" style="animation-delay:-5.2s;animation-duration:5.4s"/></g>
+  <polygon class="estilhaco" points="1435,338 1443,354 1427,352" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:1435px 348px;animation-delay:-4.4s"/><polygon class="estilhaco" points="779,426 786,441 772,439" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:779px 435px;animation-delay:-2.5s"/><polygon class="estilhaco" points="962,562 973,583 952,581" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:962px 575px;animation-delay:-8.8s"/><polygon class="estilhaco" points="1432,122 1446,150 1420,146" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:1432px 139px;animation-delay:-7.2s"/><polygon class="estilhaco" points="847,203 855,219 840,217" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:847px 213px;animation-delay:-1.7s"/><polygon class="estilhaco" points="1146,-36 1152,-22 1140,-24" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:1146px -27px;animation-delay:-2.6s"/><polygon class="estilhaco" points="1390,428 1400,448 1381,446" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:1390px 441px;animation-delay:-4.3s"/><polygon class="estilhaco" points="905,504 916,527 895,524" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:905px 519px;animation-delay:-7.1s"/><polygon class="estilhaco" points="1418,426 1431,451 1407,448" fill="#7a0a1c" stroke="#ff1f3d" stroke-width="1.2" style="transform-origin:1418px 442px;animation-delay:-7.1s"/>
+  <g filter="url(#brilho)">
+<g class="giro" style="transform-origin:1110px 300px">
+  <circle cx="1110" cy="300" r="236" fill="none" stroke="#ff1f3d" stroke-width="2.4"/>
+  <circle cx="1110" cy="300" r="219.48000000000002" fill="none" stroke="#ff1f3d" stroke-width="1.0" stroke-dasharray="1 7" opacity=".9"/>
+  <g stroke="#ff6b82" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".95"><path d="M0.0,-7.1 L0.0,7.1 M0.0,-2.1 L4.2,-2.1 L4.2,1.1" transform="translate(1110.0,300.0) rotate(0.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,-0.1 l0.1,0 M-3.5,-1.5 L3.5,-1.5" transform="translate(1110.0,300.0) rotate(9.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,4.0 l0.1,0 M3.9,4.3 l0.1,0" transform="translate(1110.0,300.0) rotate(18.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,0.2 L-5.0,-3.3 M-3.5,-3.6 L3.5,-3.6" transform="translate(1110.0,300.0) rotate(27.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,4.5 L3.5,4.5 M0.0,0.5 L-4.2,0.5 L-4.2,3.7" transform="translate(1110.0,300.0) rotate(36.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,-3.3 L5.0,-6.8 M0.0,4.5 L4.2,4.5 L4.2,7.7" transform="translate(1110.0,300.0) rotate(45.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,-4.9 L3.5,-4.9 M0.0,-1.8 L-4.2,-1.8 L-4.2,1.4" transform="translate(1110.0,300.0) rotate(54.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,3.5 L-4.2,3.5 L-4.2,6.7 M3.9,2.3 l0.1,0 M-3.5,-2.4 L3.5,-2.4" transform="translate(1110.0,300.0) rotate(63.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,-2.4 L3.5,-2.4 M0.0,-1.3 L5.0,-4.9 M0.0,2.9 L5.0,-0.7" transform="translate(1110.0,300.0) rotate(72.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,-0.6 L3.5,-0.6 M3.9,-2.7 l0.1,0" transform="translate(1110.0,300.0) rotate(81.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,0.2 L-5.0,-3.4 M-3.5,-3.8 L3.5,-3.8" transform="translate(1110.0,300.0) rotate(90.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,-0.4 L-4.2,-0.4 L-4.2,2.7" transform="translate(1110.0,300.0) rotate(99.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,3.9 L3.5,3.9" transform="translate(1110.0,300.0) rotate(108.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,0.9 l0.1,0 M0.0,-1.6 L-5.0,-5.1" transform="translate(1110.0,300.0) rotate(117.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,2.9 L-4.2,2.9 L-4.2,6.1 M3.9,4.3 l0.1,0" transform="translate(1110.0,300.0) rotate(126.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,2.6 L3.5,2.6 M-3.9,-0.3 l0.1,0" transform="translate(1110.0,300.0) rotate(135.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,1.2 L-5.0,-2.3 M3.9,4.9 l0.1,0 M0.0,0.3 L-5.0,-3.2" transform="translate(1110.0,300.0) rotate(144.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,0.5 L5.0,-3.0 M-3.5,2.1 L3.5,2.1 M0.0,4.2 L-4.2,4.2 L-4.2,7.3" transform="translate(1110.0,300.0) rotate(153.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,-0.9 L4.2,-0.9 L4.2,2.2" transform="translate(1110.0,300.0) rotate(162.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M3.9,-0.6 l0.1,0" transform="translate(1110.0,300.0) rotate(171.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,2.0 l0.1,0 M-3.9,-3.9 l0.1,0" transform="translate(1110.0,300.0) rotate(180.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,1.5 L-4.2,1.5 L-4.2,4.7 M-3.5,-1.4 L3.5,-1.4" transform="translate(1110.0,300.0) rotate(189.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,-3.1 L3.5,-3.1 M-3.9,2.8 l0.1,0" transform="translate(1110.0,300.0) rotate(198.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,2.8 L-5.0,-0.7 M3.9,-0.0 l0.1,0" transform="translate(1110.0,300.0) rotate(207.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,-1.9 L3.5,-1.9 M0.0,1.1 L-5.0,-2.4" transform="translate(1110.0,300.0) rotate(216.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,3.4 L3.5,3.4 M0.0,4.7 L4.2,4.7 L4.2,7.9" transform="translate(1110.0,300.0) rotate(225.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,-4.9 l0.1,0 M0.0,1.6 L-5.0,-2.0" transform="translate(1110.0,300.0) rotate(234.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,0.9 L4.2,0.9 L4.2,4.1 M-3.5,0.1 L3.5,0.1" transform="translate(1110.0,300.0) rotate(243.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,-1.6 L-4.2,-1.6 L-4.2,1.6 M-3.9,-2.3 l0.1,0" transform="translate(1110.0,300.0) rotate(252.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,2.4 L3.5,2.4" transform="translate(1110.0,300.0) rotate(261.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,4.5 L3.5,4.5" transform="translate(1110.0,300.0) rotate(270.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,0.6 L5.0,-2.9 M-3.5,0.6 L3.5,0.6" transform="translate(1110.0,300.0) rotate(279.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,-4.9 l0.1,0 M0.0,1.0 L-5.0,-2.5 M0.0,3.0 L4.2,3.0 L4.2,6.2" transform="translate(1110.0,300.0) rotate(288.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.9,2.0 l0.1,0 M0.0,4.4 L-4.2,4.4 L-4.2,7.5" transform="translate(1110.0,300.0) rotate(297.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,4.2 L4.2,4.2 L4.2,7.3" transform="translate(1110.0,300.0) rotate(306.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M3.9,4.5 l0.1,0 M-3.5,-2.3 L3.5,-2.3" transform="translate(1110.0,300.0) rotate(315.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M3.9,4.4 l0.1,0 M0.0,-4.1 L4.2,-4.1 L4.2,-0.9" transform="translate(1110.0,300.0) rotate(324.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,-0.6 L-4.2,-0.6 L-4.2,2.6 M-3.5,-5.0 L3.5,-5.0 M0.0,0.9 L-4.2,0.9 L-4.2,4.1" transform="translate(1110.0,300.0) rotate(333.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M-3.5,-3.5 L3.5,-3.5" transform="translate(1110.0,300.0) rotate(342.00) translate(0,-227.7)"/>
+<path d="M0.0,-7.1 L0.0,7.1 M0.0,2.6 L-4.2,2.6 L-4.2,5.8 M0.0,-1.1 L4.2,-1.1 L4.2,2.1" transform="translate(1110.0,300.0) rotate(351.00) translate(0,-227.7)"/></g>
+</g>
+<g class="giroR" style="transform-origin:1110px 300px">
+  <circle cx="1110" cy="300" r="188.8" fill="none" stroke="#ff2e88" stroke-width="1.4" opacity=".85"/>
+  <polygon points="1110.0,111.2 1257.6,182.3 1294.1,342.0 1191.9,470.1 1028.1,470.1 925.9,342.0 962.4,182.3" fill="none" stroke="#ff1f3d" stroke-width="1.4" opacity=".75"/>
+  <g stroke="#ff2e88" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".8"><path d="M0.0,-6.6 L0.0,6.6 M3.6,3.0 l0.1,0 M-3.3,1.7 L3.3,1.7" transform="translate(1110.0,300.0) rotate(0.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,4.0 L4.0,4.0 L4.0,7.0 M0.0,1.3 L4.0,1.3 L4.0,4.3 M0.0,-1.6 L4.0,-1.6 L4.0,1.3" transform="translate(1110.0,300.0) rotate(15.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.6,0.8 l0.1,0 M0.0,1.4 L4.6,-1.9" transform="translate(1110.0,300.0) rotate(30.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.3,2.5 L3.3,2.5" transform="translate(1110.0,300.0) rotate(45.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-3.8 L-4.0,-3.8 L-4.0,-0.8" transform="translate(1110.0,300.0) rotate(60.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M3.6,2.0 l0.1,0" transform="translate(1110.0,300.0) rotate(75.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,2.5 L4.0,2.5 L4.0,5.5 M0.0,0.6 L4.6,-2.7 M-3.3,-1.9 L3.3,-1.9" transform="translate(1110.0,300.0) rotate(90.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,2.2 L4.0,2.2 L4.0,5.2 M0.0,1.8 L4.6,-1.5" transform="translate(1110.0,300.0) rotate(105.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.3,2.5 L3.3,2.5" transform="translate(1110.0,300.0) rotate(120.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.3,2.2 L3.3,2.2 M0.0,3.5 L4.0,3.5 L4.0,6.5 M3.6,-2.1 l0.1,0" transform="translate(1110.0,300.0) rotate(135.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.3,0.3 L3.3,0.3 M0.0,3.7 L-4.6,0.4 M0.0,0.4 L4.6,-2.9" transform="translate(1110.0,300.0) rotate(150.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.3,-0.9 L3.3,-0.9 M0.0,-1.4 L-4.0,-1.4 L-4.0,1.6 M0.0,-2.1 L-4.0,-2.1 L-4.0,0.9" transform="translate(1110.0,300.0) rotate(165.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-2.3 L-4.6,-5.6 M0.0,-0.2 L4.6,-3.5" transform="translate(1110.0,300.0) rotate(180.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-0.1 L-4.0,-0.1 L-4.0,2.9 M-3.6,-3.0 l0.1,0 M3.6,1.9 l0.1,0" transform="translate(1110.0,300.0) rotate(195.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,2.8 L4.0,2.8 L4.0,5.8 M0.0,-2.9 L-4.0,-2.9 L-4.0,0.1 M0.0,-1.8 L-4.0,-1.8 L-4.0,1.2" transform="translate(1110.0,300.0) rotate(210.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,4.6 L4.0,4.6 L4.0,7.6 M0.0,1.5 L4.6,-1.8" transform="translate(1110.0,300.0) rotate(225.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M3.6,3.1 l0.1,0 M-3.6,2.8 l0.1,0 M-3.6,0.5 l0.1,0" transform="translate(1110.0,300.0) rotate(240.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.6,-2.9 l0.1,0" transform="translate(1110.0,300.0) rotate(255.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-1.9 L-4.0,-1.9 L-4.0,1.1" transform="translate(1110.0,300.0) rotate(270.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-1.3 L4.0,-1.3 L4.0,1.7 M0.0,0.3 L4.6,-3.0" transform="translate(1110.0,300.0) rotate(285.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-3.2 L4.0,-3.2 L4.0,-0.2 M0.0,-3.9 L4.0,-3.9 L4.0,-0.9" transform="translate(1110.0,300.0) rotate(300.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,0.4 L4.0,0.4 L4.0,3.4" transform="translate(1110.0,300.0) rotate(315.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M0.0,-4.5 L4.6,-7.8 M0.0,-2.0 L4.0,-2.0 L4.0,1.0 M-3.3,-4.2 L3.3,-4.2" transform="translate(1110.0,300.0) rotate(330.00) translate(0,-165.2)"/>
+<path d="M0.0,-6.6 L0.0,6.6 M-3.6,-3.6 l0.1,0 M3.6,4.2 l0.1,0 M-3.3,1.4 L3.3,1.4" transform="translate(1110.0,300.0) rotate(345.00) translate(0,-165.2)"/></g>
+</g>
+<g class="giroLento" style="transform-origin:1110px 300px" opacity="1.0" fill="none" stroke="#ff1f3d" stroke-width="2.0" stroke-linejoin="round">
+  <polygon points="1110.0,163.1 1228.5,368.4 991.5,368.4"/><polygon points="1110.0,436.9 991.5,231.6 1228.5,231.6"/>
+  <circle cx="1110" cy="300" r="68.44" stroke-width="1.2" stroke-dasharray="4 5"/>
+</g>
+<g class="respira" style="transform-origin:1110px 300px">
+  <circle cx="1110" cy="300" r="67.96799999999999" fill="url(#nucleo)"/>
+  <path d="M82 12 C52 16 30 38 22 76 L16 92 M22 76 C40 70 62 56 74 34 M34 60 L52 55 M28 70 L44 67" transform="translate(1062.8,252.8) scale(0.9440)" fill="none" stroke="#ffe3e8" stroke-width="5.83" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g>
+  <g class="rgb" transform="translate(7,0)" opacity=".7" style="mix-blend-mode:screen"><g stroke="#2ef2ff" fill="none" stroke-width="2"><circle cx="1110" cy="300" r="236"/><polygon points="1110.0,163.1 1228.5,368.4 991.5,368.4"/><polygon points="1110.0,436.9 991.5,231.6 1228.5,231.6"/></g></g>
+  <g class="rgb" transform="translate(-7,0)" style="mix-blend-mode:screen"><g stroke="#ff2e88" fill="none" stroke-width="2"><circle cx="1110" cy="300" r="236"/><polygon points="1110.0,163.1 1228.5,368.4 991.5,368.4"/><polygon points="1110.0,436.9 991.5,231.6 1228.5,231.6"/></g></g>
+</g>
+<circle class="sobe1" cx="293" cy="454" r="1.8" fill="#ff2e88" style="animation-delay:-3.3s"/><circle class="sobe2" cx="970" cy="593" r="1.2" fill="#ffd0d8" style="animation-delay:-6.0s"/><circle class="sobe3" cx="1047" cy="464" r="3.1" fill="#ff1f3d" style="animation-delay:-0.8s"/><circle class="sobe1" cx="962" cy="477" r="2.8" fill="#ff2e88" style="animation-delay:-0.4s"/><circle class="sobe2" cx="191" cy="366" r="1.9" fill="#ff1f3d" style="animation-delay:-8.8s"/><circle class="sobe3" cx="712" cy="539" r="1.3" fill="#ffd0d8" style="animation-delay:-5.4s"/><circle class="sobe1" cx="644" cy="351" r="2.0" fill="#ff2e88" style="animation-delay:-6.4s"/><circle class="sobe2" cx="689" cy="437" r="2.8" fill="#ffd0d8" style="animation-delay:-7.5s"/><circle class="sobe3" cx="199" cy="385" r="1.3" fill="#ff6b82" style="animation-delay:-7.6s"/><circle class="sobe1" cx="678" cy="548" r="1.7" fill="#ff2e88" style="animation-delay:-3.7s"/><circle class="sobe2" cx="767" cy="562" r="2.6" fill="#ff1f3d" style="animation-delay:-2.3s"/><circle class="sobe3" cx="879" cy="618" r="2.3" fill="#ff1f3d" style="animation-delay:-8.0s"/><circle class="sobe1" cx="90" cy="595" r="2.1" fill="#ff2e88" style="animation-delay:-8.7s"/><circle class="sobe2" cx="1126" cy="488" r="2.2" fill="#ff6b82" style="animation-delay:-4.4s"/><circle class="sobe3" cx="1430" cy="476" r="2.0" fill="#ffd0d8" style="animation-delay:-5.2s"/><circle class="sobe1" cx="1168" cy="507" r="1.2" fill="#ff2e88" style="animation-delay:-3.6s"/><circle class="sobe2" cx="377" cy="546" r="1.4" fill="#ff1f3d" style="animation-delay:-1.7s"/><circle class="sobe3" cx="1119" cy="366" r="2.1" fill="#ff6b82" style="animation-delay:-0.6s"/><circle class="sobe1" cx="1180" cy="628" r="2.8" fill="#ff2e88" style="animation-delay:-7.6s"/><circle class="sobe2" cx="1424" cy="421" r="1.4" fill="#ff6b82" style="animation-delay:-4.7s"/><circle class="sobe3" cx="191" cy="479" r="1.3" fill="#ff1f3d" style="animation-delay:-1.6s"/><circle class="sobe1" cx="1303" cy="421" r="2.9" fill="#ff2e88" style="animation-delay:-4.4s"/><circle class="sobe2" cx="1110" cy="440" r="1.4" fill="#ff6b82" style="animation-delay:-0.6s"/><circle class="sobe3" cx="1416" cy="348" r="1.1" fill="#ff1f3d" style="animation-delay:-7.0s"/><circle class="sobe1" cx="104" cy="477" r="3.3" fill="#ff2e88" style="animation-delay:-0.8s"/><circle class="sobe2" cx="911" cy="488" r="3.4" fill="#ff6b82" style="animation-delay:-2.5s"/><circle class="sobe3" cx="697" cy="630" r="1.1" fill="#ff1f3d" style="animation-delay:-8.4s"/><circle class="sobe1" cx="667" cy="441" r="1.8" fill="#ff2e88" style="animation-delay:-6.4s"/><circle class="sobe2" cx="293" cy="502" r="2.9" fill="#ffd0d8" style="animation-delay:-1.9s"/><circle class="sobe3" cx="1108" cy="421" r="1.9" fill="#ffd0d8" style="animation-delay:-0.2s"/><circle class="sobe1" cx="1055" cy="583" r="1.1" fill="#ff2e88" style="animation-delay:-6.5s"/><circle class="sobe2" cx="1007" cy="541" r="1.4" fill="#ff1f3d" style="animation-delay:-5.7s"/><circle class="sobe3" cx="145" cy="500" r="1.6" fill="#ff1f3d" style="animation-delay:-1.5s"/><circle class="sobe1" cx="1009" cy="612" r="2.0" fill="#ff2e88" style="animation-delay:-4.8s"/><circle class="sobe2" cx="1468" cy="498" r="2.5" fill="#ff6b82" style="animation-delay:-2.9s"/><circle class="sobe3" cx="700" cy="537" r="3.2" fill="#ff1f3d" style="animation-delay:-7.5s"/><circle class="sobe1" cx="81" cy="419" r="1.7" fill="#ff2e88" style="animation-delay:-6.3s"/><circle class="sobe2" cx="991" cy="546" r="3.2" fill="#ffd0d8" style="animation-delay:-0.6s"/><circle class="sobe3" cx="1139" cy="490" r="3.1" fill="#ff1f3d" style="animation-delay:-5.6s"/><circle class="sobe1" cx="1180" cy="514" r="2.2" fill="#ff2e88" style="animation-delay:-8.1s"/><circle class="sobe2" cx="341" cy="611" r="3.2" fill="#ff6b82" style="animation-delay:-3.5s"/><circle class="sobe3" cx="1088" cy="368" r="3.0" fill="#ff1f3d" style="animation-delay:-4.9s"/><circle class="sobe1" cx="1053" cy="459" r="1.1" fill="#ff2e88" style="animation-delay:-6.8s"/><circle class="sobe2" cx="1108" cy="411" r="2.8" fill="#ff1f3d" style="animation-delay:-7.6s"/><circle class="sobe3" cx="394" cy="484" r="2.5" fill="#ff6b82" style="animation-delay:-4.6s"/><circle class="sobe1" cx="1407" cy="485" r="1.3" fill="#ff2e88" style="animation-delay:-4.9s"/>
+<rect width="1500" height="600" fill="url(#escuro)"/>
+<rect width="1500" height="600" filter="url(#grao)" opacity=".18"/>
+<rect width="1500" height="600" fill="#ffd0d8" class="lampejo"/>
+</svg>

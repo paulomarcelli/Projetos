@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal do Caos</title>
+<meta name="description" content="Widget para o Notion: relógio, saudação e portais animados com magia do caos e mudança de realidade.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*
+ * Portal do Caos: widget para incorporar no Notion (/embed). Arte e textos originais.
+ * Fundo: partículas que seguem um campo de fluxo, com rastro. Selo de runas à direita.
+ * A cada 16 s (ou com um clique no fundo) a "realidade muda": hexágonos se viram a partir do ponto clicado,
+ * a paleta troca e os textos tremem com cópias em vermelho e ciano.
+ * Parâmetros na URL: ?nome=Paulo  &auto=0 (sem mudança automática)
+ */
+:root {
+  --cor: #ff1f3d; --cor2: #ff7a1a; --brilho: #ffd0d8; --fundo: #07010a; --vidro: rgba(20, 3, 10, .55);
+  --texto: #fff1f3; --suave: rgba(255, 225, 230, .72);
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: var(--fundo); color: var(--texto); font-family: Inter, system-ui, sans-serif; overflow: hidden; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#hex { pointer-events: none; }
+.palco {
+  position: relative; z-index: 2; height: 100%; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center; gap: clamp(16px, 3vw, 40px); padding: clamp(16px, 4vw, 48px); pointer-events: none;
+}
+.palco a, .palco button { pointer-events: auto; }
+.rotulo { font: 600 11px/1 Inter, sans-serif; letter-spacing: .28em; text-transform: uppercase; color: var(--cor); display: flex; gap: 10px; align-items: center; }
+.rotulo i { width: 7px; height: 7px; border-radius: 50%; background: var(--cor); box-shadow: 0 0 12px var(--cor); animation: pisca 2.4s ease-in-out infinite; }
+@keyframes pisca { 50% { opacity: .3; } }
+h1 { font: 700 clamp(26px, 4.4vw, 52px)/1.05 Cinzel, serif; margin: 14px 0 6px; text-shadow: 0 0 24px color-mix(in srgb, var(--cor) 55%, transparent); }
+.data { color: var(--suave); font-size: clamp(13px, 1.4vw, 15px); }
+.relogio {
+  font: 500 clamp(40px, 7.2vw, 88px)/1 Cinzel, serif; font-variant-numeric: tabular-nums; letter-spacing: .02em; margin: 16px 0 10px;
+  background: linear-gradient(180deg, #fff 0%, var(--brilho) 45%, var(--cor) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--cor) 60%, transparent));
+}
+.relogio small { font-size: .38em; opacity: .8; }
+.frase { color: var(--suave); font-style: italic; font-size: clamp(13px, 1.4vw, 15px); max-width: 46ch; min-height: 2.6em; }
+.portais { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-content: center; }
+.portal {
+  --giro: 0deg; position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+  color: var(--texto); text-decoration: none; background: var(--vidro); backdrop-filter: blur(6px); isolation: isolate; overflow: hidden;
+  transition: transform .25s cubic-bezier(.2, 0, 0, 1), box-shadow .25s; min-height: 56px; outline: none;
+}
+.portal::before { /* borda de energia girando */
+  content: ""; position: absolute; inset: -60%; z-index: -2;
+  background: conic-gradient(from var(--giro), transparent 0 55%, var(--cor) 70%, var(--cor2) 78%, transparent 90%);
+  animation: borda 4s linear infinite; animation-delay: var(--atraso, 0s);
+}
+.portal::after { content: ""; position: absolute; inset: 1.5px; border-radius: 15px; background: rgba(12, 2, 7, .86); z-index: -1; }
+@property --giro { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes borda { to { --giro: 360deg; } }
+.portal img { width: 34px; height: 34px; flex: none; filter: drop-shadow(0 0 8px color-mix(in srgb, var(--cor) 70%, transparent)); }
+.portal b { font: 700 14px/1.1 Cinzel, serif; letter-spacing: .06em; display: block; }
+.portal span span { font-size: 12px; color: var(--suave); }
+.portal:hover, .portal:focus-visible { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px -8px var(--cor), 0 0 0 1px color-mix(in srgb, var(--cor) 60%, transparent); }
+.portal:hover::before, .portal:focus-visible::before { animation-duration: 1.2s; }
+.portal:active { transform: scale(.97); }
+.onda { position: absolute; border-radius: 50%; background: radial-gradient(circle, var(--brilho), transparent 70%); transform: translate(-50%, -50%) scale(0); animation: onda .7s ease-out forwards; pointer-events: none; z-index: 0; }
+@keyframes onda { to { transform: translate(-50%, -50%) scale(14); opacity: 0; } }
+/* mudança de realidade: tremor com cópias em vermelho e ciano */
+.glitch .tremer { animation: tremer .45s steps(2) 1; }
+@keyframes tremer {
+  0% { transform: translate(3px, -1px) skewX(-6deg); text-shadow: -4px 0 #2ef2ff, 4px 0 var(--cor); clip-path: inset(10% 0 40% 0); }
+  25% { transform: translate(-4px, 1px); text-shadow: 4px 0 #2ef2ff, -4px 0 #ff2e88; clip-path: inset(50% 0 5% 0); }
+  50% { transform: translate(2px, 0) skewX(4deg); clip-path: inset(0 0 70% 0); }
+  100% { transform: none; text-shadow: none; clip-path: none; }
+}
+.dica { position: fixed; right: 14px; bottom: 10px; z-index: 3; font-size: 11px; color: var(--suave); opacity: .55; pointer-events: none; }
+@media (max-width: 640px) {
+  .palco { grid-template-columns: 1fr; align-content: start; overflow-y: auto; }
+  .portais { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dica { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portal::before, .rotulo i { animation: none; }
+  .glitch .tremer { animation: none; }
+}
+</style>
+</head>
+<body>
+<canvas id="fundo"></canvas>
+<canvas id="hex"></canvas>
+<main class="palco">
+  <section>
+    <div class="rotulo tremer"><i></i><span id="realidade">Realidade nº 0001 · Escarlate</span></div>
+    <h1 class="tremer" id="saudacao">Boa noite</h1>
+    <div class="data tremer" id="data"></div>
+    <div class="relogio tremer" id="relogio" aria-live="off">00:00<small>:00</small></div>
+    <p class="frase" id="frase"></p>
+  </section>
+  <nav class="portais" id="portais" aria-label="Atalhos para as páginas"></nav>
+</main>
+<div class="dica">clique no fundo para mudar a realidade</div>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const nome = (params.get('nome') || 'Paulo').slice(0, 24);
+  const automatico = params.get('auto') !== '0';
+  const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ARTE = '../../arte/icones/';
+  const NOTION = (id) => `https://www.notion.so/${id}`;
+  const PORTAIS = [
+    ['Estudos', 'Aulas de hoje', 'estudos', 'f2bf9dd1501f83fbb78081853d7781b8'],
+    ['Planner', 'Semana e metas', 'planner', '2def9dd1501f83d6bc8b8176dcfff107'],
+    ['Treino', 'Seg · Qua · Sex', 'treino', '416f9dd1501f81c2a735e5edf528bbb4'],
+    ['Notes', 'Respira e lê', 'notes', '411f9dd1501f81e684b4f3b6eb9ad68a'],
+    ['Substack', 'Próximo post', 'substack', '416f9dd1501f815382fadf8825141b35'],
+    ['Vagas', 'Caçador de vagas', 'vagas', '416f9dd1501f8186960af8e359c4353b'],
+    ['Ideias', 'Projetos guardados', 'ideias', '417f9dd1501f8179b487f7bdb630f04b'],
+    ['Calma', 'Celular e foco', 'celular', '416f9dd1501f8144b015ef7891c67492'],
+  ];
+  // frases originais, uma por dia
+  const FRASES = [
+    'A realidade é rascunho. Hoje eu reescrevo uma linha.',
+    'Um feitiço por vez: 30 minutos de foco já mudam o dia.',
+    'O caos é só energia esperando uma direção.',
+    'Não preciso de permissão para começar de novo.',
+    'Pequenos selos todo dia viram um mundo inteiro.',
+    'O que eu construo fica comigo. O resto, eu solto.',
+    'Hoje a magia é terminar o que comecei ontem.',
+    'Cada pergunta respondida é uma runa acesa.',
+    'Respira. A realidade espera você decidir.',
+    'Força não é não sentir. É sentir e seguir mesmo assim.',
+    'Treino, estudo, descanso: os três lados do mesmo selo.',
+    'Se a cabeça apertar, volta para o básico: um passo.',
+  ];
+  const PALETAS = [
+    { nome: 'Escarlate', cor: '#ff1f3d', cor2: '#ff7a1a', brilho: '#ffd0d8', fundo: '#07010a', p: ['#ff1f3d', '#ff4d6d', '#ff7a1a', '#ffd0d8'] },
+    { nome: 'Hexa', cor: '#d01cff', cor2: '#ff2e88', brilho: '#f3d0ff', fundo: '#06010b', p: ['#d01cff', '#ff2e88', '#8a1cff', '#f3d0ff'] },
+    { nome: 'Brasa', cor: '#ff5a1f', cor2: '#ffb21a', brilho: '#ffe2c4', fundo: '#0a0402', p: ['#ff5a1f', '#ffb21a', '#ff1f3d', '#ffe2c4'] },
+    { nome: 'Eclipse', cor: '#ff1f3d', cor2: '#ffffff', brilho: '#ffffff', fundo: '#020103', p: ['#ff1f3d', '#ffffff', '#7a0a1c', '#ff6b82'] },
+  ];
+  let paleta = 0, numero = 1;
+
+  // ---- textos
+  const $ = (id) => document.getElementById(id);
+  const nav = $('portais');
+  PORTAIS.forEach(([titulo, sub, icone, id], i) => {
+    const a = document.createElement('a');
+    a.className = 'portal'; a.href = NOTION(id); a.target = '_blank'; a.rel = 'noopener';
+    a.style.setProperty('--atraso', `${-i * .5}s`);
+    a.innerHTML = `<img src="${ARTE}${icone}.svg" alt=""><span><b>${titulo}</b><span>${sub}</span></span>`;
+    a.addEventListener('pointerenter', () => explodir(a, 18));
+    a.addEventListener('click', (e) => { onda(a, e); explodir(a, 40); });
+    nav.append(a);
+  });
+  const hoje = new Date();
+  $('frase').textContent = FRASES[(Math.floor(hoje.getTime() / 864e5)) % FRASES.length];
+  const fmtData = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+  function tick() {
+    const d = new Date(), h = d.getHours();
+    $('saudacao').textContent = `${h < 5 ? 'Boa madrugada' : h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'}, ${nome}`;
+    $('data').textContent = fmtData.format(d).replace(/^./, (c) => c.toUpperCase());
+    const p2 = (n) => String(n).padStart(2, '0');
+    $('relogio').innerHTML = `${p2(h)}:${p2(d.getMinutes())}<small>:${p2(d.getSeconds())}</small>`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // ---- partículas
+  const fundo = $('fundo'), ctx = fundo.getContext('2d');
+  const hexC = $('hex'), hx = hexC.getContext('2d');
+  let W = 0, H = 0, DPR = 1, parts = [], selo = { x: 0, y: 0, r: 0 };
+  const mouse = { x: -9999, y: -9999 };
+  function tamanho() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    for (const c of [fundo, hexC]) { c.width = W * DPR; c.height = H * DPR; }
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); hx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const largo = W > 640;
+    selo = largo ? { x: W * .74, y: H * .5, r: Math.min(H * .42, W * .2) } : { x: W * .5, y: H * .3, r: Math.min(W, H) * .32 };
+    const n = Math.round(Math.min(900, (W * H) / (calmo ? 3000 : 1300)));
+    parts = Array.from({ length: n }, nova);
+    ctx.fillStyle = PALETAS[paleta].fundo; ctx.fillRect(0, 0, W, H);
+  }
+  function nova() { return { x: Math.random() * W, y: Math.random() * H, v: 0, vida: Math.random() * 400 + 100, c: Math.floor(Math.random() * 4), vx: 0, vy: 0 }; }
+  // campo de fluxo: soma de senos (barato e suave), girando em volta do selo
+  function campo(x, y, t) {
+    const a = Math.sin(x * .004 + t * .0003) * 1.6 + Math.cos(y * .005 - t * .0002) * 1.6 + Math.sin((x + y) * .002 + t * .0001);
+    const dx = x - selo.x, dy = y - selo.y, d = Math.hypot(dx, dy) + 1;
+    const orbita = Math.max(0, 1 - Math.abs(d - selo.r * 1.25) / (selo.r * 1.1));
+    return [Math.cos(a) * (1 - orbita) + (-dy / d) * orbita * 1.8, Math.sin(a) * (1 - orbita) + (dx / d) * orbita * 1.8];
+  }
+  // runas do selo (traços inventados), geradas uma vez
+  const RUNAS = Array.from({ length: 36 }, () => {
+    const t = []; for (let k = 0; k < 1 + Math.floor(Math.random() * 3); k++) t.push([Math.random() * 1.4 - .7, Math.random() < .5 ? -1 : 1, Math.floor(Math.random() * 3)]);
+    return t;
+  });
+  function desenhaRuna(c, s, tr) {
+    c.beginPath(); c.moveTo(0, -s); c.lineTo(0, s);
+    for (const [yy, lado, tipo] of tr) {
+      const y = yy * s;
+      if (tipo === 0) { c.moveTo(0, y); c.lineTo(lado * s * .7, y - s * .5); }
+      else if (tipo === 1) { c.moveTo(0, y); c.lineTo(lado * s * .6, y); c.lineTo(lado * s * .6, y + s * .45); }
+      else { c.moveTo(-s * .5, y); c.lineTo(s * .5, y); }
+    }
+    c.stroke();
+  }
+  function desenhaSelo(t) {
+    const P = PALETAS[paleta], { x, y, r } = selo;
+    ctx.save(); ctx.translate(x, y); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.shadowColor = P.cor; ctx.shadowBlur = 18;
+    // aura
+    const g = ctx.createRadialGradient(0, 0, r * .1, 0, 0, r * 1.5);
+    g.addColorStop(0, P.cor + '55'); g.addColorStop(1, P.cor + '00');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r * 1.5, 0, 7); ctx.fill();
+    ctx.strokeStyle = P.cor; ctx.lineWidth = 2.2;
+    ctx.save(); ctx.rotate(t * .00009);
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.stroke();
+    ctx.lineWidth = 1.4; ctx.strokeStyle = P.brilho;
+    RUNAS.forEach((ru, i) => { ctx.save(); ctx.rotate(i / RUNAS.length * Math.PI * 2); ctx.translate(0, -r * .93); desenhaRuna(ctx, r * .035, ru); ctx.restore(); });
+    ctx.restore();
+    ctx.save(); ctx.rotate(-t * .00014); ctx.strokeStyle = P.cor2; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(0, 0, r * .8, 0, 7); ctx.stroke();
+    ctx.beginPath(); for (let k = 0; k <= 7; k++) { const a = k / 7 * Math.PI * 2 - Math.PI / 2; ctx.lineTo(Math.cos(a) * r * .8, Math.sin(a) * r * .8); } ctx.stroke();
+    ctx.restore();
+    ctx.save(); ctx.rotate(t * .00005); ctx.strokeStyle = P.cor; ctx.lineWidth = 2;
+    for (const off of [-Math.PI / 2, Math.PI / 2]) { ctx.beginPath(); for (let k = 0; k <= 3; k++) { const a = off + k * Math.PI * 2 / 3; ctx.lineTo(Math.cos(a) * r * .58, Math.sin(a) * r * .58); } ctx.stroke(); }
+    ctx.restore();
+    // olho do caos no centro, respirando
+    const s = 1 + Math.sin(t * .0012) * .05; ctx.scale(s, s);
+    ctx.strokeStyle = P.brilho; ctx.lineWidth = 3; ctx.shadowBlur = 26;
+    ctx.beginPath(); ctx.moveTo(-r * .3, 0); ctx.quadraticCurveTo(0, -r * .3, r * .3, 0); ctx.quadraticCurveTo(0, r * .3, -r * .3, 0); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, r * .09, 0, 7); ctx.stroke();
+    ctx.fillStyle = P.cor; ctx.beginPath(); ctx.arc(0, 0, r * .035, 0, 7); ctx.fill();
+    ctx.restore();
+  }
+  let ultimo = performance.now(), parado = false;
+  function quadro(t) {
+    if (parado) return;
+    const dt = Math.min(50, t - ultimo); ultimo = t;
+    const P = PALETAS[paleta];
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = P.fundo + (calmo ? 'cc' : '22'); ctx.fillRect(0, 0, W, H); // rastro
+    ctx.globalCompositeOperation = 'lighter';
+    const vel = calmo ? .35 : 1;
+    for (const p of parts) {
+      const [fx, fy] = campo(p.x, p.y, t);
+      const mx = p.x - mouse.x, my = p.y - mouse.y, md = mx * mx + my * my;
+      if (md < 16000) { const f = (16000 - md) / 16000 * .9; p.vx += (mx / Math.sqrt(md + 1)) * f; p.vy += (my / Math.sqrt(md + 1)) * f; }
+      p.vx = p.vx * .92 + fx * .25 * vel; p.vy = p.vy * .92 + fy * .25 * vel;
+      const x0 = p.x, y0 = p.y; p.x += p.vx * dt * .06; p.y += p.vy * dt * .06; p.vida -= 1;
+      ctx.strokeStyle = P.p[p.c] + (p.c === 3 ? '66' : '99'); ctx.lineWidth = p.c === 3 ? .8 : 1.3;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(p.x, p.y); ctx.stroke();
+      if (p.vida < 0 || p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) Object.assign(p, nova());
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    desenhaSelo(t); desenhaFaiscas(dt); desenhaHex(t);
+    requestAnimationFrame(quadro);
+  }
+  // faíscas (botões e clique)
+  let faiscas = [];
+  function explodir(el, n) {
+    if (calmo) return;
+    const b = el.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+    for (let i = 0; i < n; i++) { const a = Math.random() * 7, v = Math.random() * 4 + 1; faiscas.push({ x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1, vida: 1 }); }
+  }
+  function desenhaFaiscas(dt) {
+    const P = PALETAS[paleta]; ctx.globalCompositeOperation = 'lighter';
+    faiscas = faiscas.filter((f) => (f.vida -= dt * .0016) > 0);
+    for (const f of faiscas) { f.x += f.vx; f.y += f.vy; f.vy += .05; ctx.fillStyle = (f.vida > .5 ? P.brilho : P.cor); ctx.globalAlpha = f.vida; ctx.beginPath(); ctx.arc(f.x, f.y, 2.2 * f.vida + .6, 0, 7); ctx.fill(); }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  }
+  function onda(el, e) {
+    const b = el.getBoundingClientRect(), o = document.createElement('i');
+    o.className = 'onda'; o.style.left = `${(e.clientX || b.left + b.width / 2) - b.left}px`; o.style.top = `${(e.clientY || b.top + b.height / 2) - b.top}px`; o.style.width = o.style.height = '20px';
+    el.append(o); setTimeout(() => o.remove(), 700);
+  }
+  // ---- mudança de realidade: hexágonos que viram a partir de um ponto
+  let virada = null;
+  function mudarRealidade(x = selo.x, y = selo.y) {
+    if (virada) return;
+    virada = { x, y, t0: performance.now(), trocou: false };
+    document.body.classList.remove('glitch'); void document.body.offsetWidth; document.body.classList.add('glitch');
+  }
+  function desenhaHex(t) {
+    hx.clearRect(0, 0, W, H);
+    if (!virada) return;
+    const P = PALETAS[paleta], e = t - virada.t0, R = 26, dur = 900, onda = Math.hypot(W, H);
+    const w = R * Math.sqrt(3);
+    for (let row = -1; row < H / (R * 1.5) + 1; row++) for (let col = -1; col < W / w + 1; col++) {
+      const cx = col * w + (row % 2 ? w / 2 : 0), cy = row * R * 1.5;
+      const d = Math.hypot(cx - virada.x, cy - virada.y), atraso = d / onda * 700;
+      const k = (e - atraso) / dur; if (k <= 0 || k >= 1) continue;
+      const s = Math.sin(k * Math.PI); // 0 → 1 → 0
+      hx.fillStyle = P.cor; hx.strokeStyle = k < .5 ? P.cor : P.brilho; hx.lineWidth = 1.2;
+      hx.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i + Math.PI / 6; hx.lineTo(cx + Math.cos(a) * R * s * .95, cy + Math.sin(a) * R * s * .95); } hx.closePath();
+      hx.globalAlpha = s * .22; hx.fill(); hx.globalAlpha = s * .85; hx.stroke();
+    }
+    hx.globalAlpha = 1;
+    if (!virada.trocou && e > 600) { virada.trocou = true; trocarPaleta(); }
+    if (e > 700 + dur + 50) { virada = null; document.body.classList.remove('glitch'); }
+  }
+  function trocarPaleta() {
+    paleta = (paleta + 1) % PALETAS.length; numero++;
+    const P = PALETAS[paleta], r = document.documentElement.style;
+    r.setProperty('--cor', P.cor); r.setProperty('--cor2', P.cor2); r.setProperty('--brilho', P.brilho); r.setProperty('--fundo', P.fundo);
+    $('realidade').textContent = `Realidade nº ${String(numero).padStart(4, '0')} · ${P.nome}`;
+  }
+  addEventListener('pointermove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  addEventListener('pointerleave', () => { mouse.x = mouse.y = -9999; });
+  addEventListener('pointerdown', (e) => { if (!e.target.closest('a')) mudarRealidade(e.clientX, e.clientY); });
+  addEventListener('resize', tamanho);
+  document.addEventListener('visibilitychange', () => { parado = document.hidden; if (!parado) { ultimo = performance.now(); requestAnimationFrame(quadro); } });
+  if (automatico && !calmo) setInterval(() => { if (!document.hidden) mudarRealidade(); }, 16000);
+  tamanho(); requestAnimationFrame(quadro);
+})();
+</script>
+</body>
+</html>

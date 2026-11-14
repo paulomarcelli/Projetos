@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notion · Magia do Caos</title>
+<meta name="description" content="Capas, ícones e widgets animados (arte original) para deixar o Notion no tema magia do caos.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --cor: #ff1f3d; }
+* { box-sizing: border-box; margin: 0; }
+body { background: #07010a; color: #fff1f3; font: 15px/1.6 Inter, system-ui, sans-serif; padding: clamp(16px, 4vw, 56px); }
+h1 { font: 700 clamp(28px, 5vw, 52px) Cinzel, serif; text-shadow: 0 0 24px rgba(255, 31, 61, .6); }
+h2 { font: 700 20px Cinzel, serif; margin: 40px 0 14px; color: var(--cor); letter-spacing: .06em; }
+p { color: rgba(255, 225, 230, .75); max-width: 70ch; }
+code { background: #1a0510; padding: 2px 6px; border-radius: 6px; font-size: 13px; word-break: break-all; }
+.grade { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+figure { background: #12030a; border: 1px solid #3a0a18; border-radius: 14px; overflow: hidden; }
+figure img { width: 100%; display: block; aspect-ratio: 5 / 2; object-fit: cover; }
+figcaption { padding: 8px 12px; font-size: 13px; }
+.icones { display: flex; flex-wrap: wrap; gap: 14px; }
+.icones figure { width: 110px; text-align: center; background: none; border: 0; }
+.icones img { width: 96px; aspect-ratio: 1; margin: 0 auto; }
+iframe { width: 100%; border: 1px solid #3a0a18; border-radius: 14px; background: #07010a; }
+</style>
+</head>
+<body>
+<h1>Notion · Magia do Caos</h1>
+<p>Capas, ícones e widgets animados para o Notion, todos com arte original (selos, runas e emblemas desenhados em código). Para usar: na página do Notion, troque a capa e o ícone por "Link" e cole o endereço da imagem; para os widgets, use <code>/embed</code> com o endereço do widget.</p>
+
+<h2>Widgets</h2>
+<p>Portal do Caos: <code>https://paulomarcelli.github.io/Projetos/Projetos/Notion-Caos/widgets/portal/</code> (aceita <code>?nome=</code> e <code>?auto=0</code>)</p>
+<iframe src="widgets/portal/" height="440" title="Portal do Caos"></iframe>
+<p style="margin-top:16px">Feitiço de Foco: <code>https://paulomarcelli.github.io/Projetos/Projetos/Notion-Caos/widgets/feitico/</code> (aceita <code>?min=</code>)</p>
+<iframe src="widgets/feitico/" height="420" title="Feitiço de Foco"></iframe>
+
+<h2>Capas</h2>
+<div class="grade" id="capas"></div>
+<h2>Ícones</h2>
+<div class="icones" id="icones"></div>
+<h2>Divisor</h2>
+<img src="arte/divisor.svg" alt="Divisor animado" style="width:100%">
+<script>
+const nomes = ['inicio', 'planner', 'trabalho', 'estudos', 'goals', 'notes', 'celular', 'substack', 'vagas', 'treino', 'ideias', 'objetivo'];
+document.getElementById('capas').innerHTML = nomes.map((n) => `<figure><img src="arte/capas/${n}.svg" alt="Capa ${n}" loading="lazy"><figcaption>${n}</figcaption></figure>`).join('');
+document.getElementById('icones').innerHTML = nomes.map((n) => `<figure><img src="arte/icones/${n}.svg" alt="Ícone ${n}"><figcaption>${n}</figcaption></figure>`).join('');
+</script>
+</body>
+</html>

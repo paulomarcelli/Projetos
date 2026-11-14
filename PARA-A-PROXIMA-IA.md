@@ -30,6 +30,8 @@ andamento (**Aurora**) tem uma passagem detalhada em
   lista de cópia desse workflow (já aconteceu: a pasta `fases/` da Aurora ficou de fora e foi corrigida).
 - `.claude/skills/`: skills instaladas no repositório. As de jogo são **`gamedev-skills`** (roteador com `level-design`,
   `platformer`, `pixijs-rendering` etc.) e **`2d-games`** (instalada nesta conversa, a pedido dele; `skills-lock.json`).
+- `.claude/agents/` e `agentes/`: o **time de agentes**. A **Sofia** (`.claude/agents/sofia.md`) é a designer: memória em
+  `agentes/memoria/sofia.md`, relatórios em `agentes/relatorios/sofia/`. Para criar outro agente, use a skill `criar-agente`.
 - `docs/capas/`: imagens de capa usadas no `README.md` da raiz e no perfil do GitHub.
 
 ## 3. O que foi feito nesta conversa (mais recente primeiro)

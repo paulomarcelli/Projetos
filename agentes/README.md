@@ -24,6 +24,7 @@ Um agente novo só aparece numa **sessão nova** do Claude Code.
 
 ## Como a Sofia trabalha
 
+0. **Sempre a `design-skills`:** toda tarefa começa por ela (a skill é carregada junto com a Sofia).
 1. **Plano** em tarefas antes de agir (em tarefa grande, ela espera o seu "ok").
 2. **Execução**, uma tarefa por vez, conferindo cada uma.
 3. **Revisão** com capturas de tela em vários tamanhos.

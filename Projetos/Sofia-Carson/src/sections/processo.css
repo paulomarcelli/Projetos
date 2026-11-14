@@ -1,0 +1,8 @@
+/* Como trabalhamos: sem folha, o filme de ponta a ponta; o texto no pé, em luz. */
+.processo { min-height: 118vh; min-height: 118svh; display: flex; align-items: flex-end; color: var(--luz); background: linear-gradient(transparent 35%, rgba(0, 0, 0, .55)); }
+.processo__pe { width: 100%; padding: 0 var(--margem) clamp(36px, 6vh, 64px); }
+.processo .titulo { max-width: 12ch; margin-bottom: clamp(28px, 5vh, 56px); }
+.processo__etapas { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 48px); }
+.processo__etapas li { display: grid; gap: 8px; max-width: 38ch; font-size: 14px; }
+.processo .is-sob { opacity: 0 !important; transition: opacity .3s linear !important; }
+@media (max-width: 720px) { .processo__etapas { grid-template-columns: 1fr; gap: 22px; } }

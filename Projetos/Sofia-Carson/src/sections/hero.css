@@ -1,0 +1,16 @@
+/* Hero: só o filme e o nome no centro; um texto pequeno em cada canto. */
+.hero { position: relative; height: 100vh; height: 100svh; color: var(--luz); }
+.hero__marca { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: var(--f-marca); font-weight: 800; }
+.hero__marca .marca { clip-path: inset(-.1em -.2em 0 -.2em); padding-bottom: .02em; }
+.hero__marca .marca b { display: inline-flex; align-items: baseline; font-weight: inherit; transform: translateY(1.2em); transition: transform 1.3s var(--entra) calc(var(--i, 0) * .07s); }
+html.is-pronto .hero__marca .marca b { transform: none; }
+.hero__canto { position: absolute; bottom: var(--margem); display: grid; gap: 6px; opacity: 0; transition: opacity 1s var(--entra) .6s; }
+html.is-pronto .hero__canto, html.is-pronto .hero__reel { opacity: 1; }
+.hero__canto--esq { left: var(--margem); }
+.hero__canto--dir { right: var(--margem); text-align: right; }
+.hero__canto p:last-child { font-size: 14px; }
+.hero__reel { display: none; }
+@media (max-width: 720px) {
+  .hero__canto--dir { display: none; }
+  .hero__reel { display: block; position: absolute; left: 50%; top: calc(50% + .62 * var(--f-marca)); transform: translateX(-50%); opacity: 0; transition: opacity 1s var(--entra) .8s; color: var(--luz); }
+}

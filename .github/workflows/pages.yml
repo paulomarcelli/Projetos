@@ -47,6 +47,11 @@ jobs:
         run: |
           npm ci
           npm run build
+      - name: Gerar o fã-site Sofia Carson · a voz (Vite)
+        working-directory: Projetos/Sofia-Carson
+        run: |
+          npm ci
+          npm run build
       - name: Montar os sites
         run: |
           rm -rf _site
@@ -89,6 +94,9 @@ jobs:
           # Relógio de Estudos: página única (relógio de placas de 30 min, incorporado no Notion)
           mkdir -p _site/Projetos/Relogio-de-Estudos
           cp -a Projetos/Relogio-de-Estudos/index.html _site/Projetos/Relogio-de-Estudos/
+          # Sofia Carson · a voz: só o resultado do build (dist/)
+          mkdir -p _site/Projetos/Sofia-Carson
+          cp -a Projetos/Sofia-Carson/dist/. _site/Projetos/Sofia-Carson/
           # Notion · Magia do Caos: capas e ícones animados (SVG) e os widgets incorporados no Notion (sem o backup)
           mkdir -p _site/Projetos/Notion-Caos
           cp -a Projetos/Notion-Caos/index.html Projetos/Notion-Caos/arte Projetos/Notion-Caos/widgets _site/Projetos/Notion-Caos/

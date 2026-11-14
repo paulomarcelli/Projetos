@@ -1,0 +1,25 @@
+/* O filme preso atrás da página: vídeo, trepidação de projetor, vinheta e grão. */
+.fundo { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--noite); }
+.fundo__video {
+  position: absolute; inset: -1%; width: 102%; height: 102%; max-width: none; object-fit: cover; object-position: 62% 50%;
+  filter: grayscale(1) contrast(1.14) brightness(.9); animation: trepida .9s steps(1) infinite;
+}
+@keyframes trepida {
+  0% { transform: translate(0, 0); } 20% { transform: translate(.4px, -.3px); } 40% { transform: translate(-.5px, .3px); }
+  60% { transform: translate(.3px, .6px); } 80% { transform: translate(-.3px, -.5px); }
+}
+.fundo__vinheta {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 95% at 55% 45%, transparent 45%, rgba(0, 0, 0, .55)),
+    linear-gradient(rgba(0, 0, 0, .28), transparent 22%, transparent 70%, rgba(0, 0, 0, .4));
+}
+.fundo__grao {
+  position: absolute; inset: -50%; background: url('/img/grao.png') 0 0 / 192px 192px repeat;
+  opacity: .16; mix-blend-mode: overlay; animation: grao .5s steps(1) infinite; pointer-events: none;
+}
+@keyframes grao {
+  0% { transform: translate(0, 0); } 16% { transform: translate(-7%, 4%); } 33% { transform: translate(5%, -6%); }
+  50% { transform: translate(-3%, -9%); } 66% { transform: translate(8%, 3%); } 83% { transform: translate(-6%, 7%); }
+}
+@media (prefers-reduced-motion: reduce) { .fundo__video, .fundo__grao { animation: none; } }

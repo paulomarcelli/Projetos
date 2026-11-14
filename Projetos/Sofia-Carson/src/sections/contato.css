@@ -1,0 +1,33 @@
+/* Contato e rodapé: folha lisa em cima e o nome com as letras furadas (máscara SVG). */
+.contato { color: var(--tinta); }
+.contato__topo, .rodape { background: var(--osso); }
+.contato__topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding: clamp(80px, 12vh, 140px) var(--margem) clamp(40px, 6vh, 70px); }
+.contato__dados { display: grid; justify-items: end; gap: 10px; font-size: 15px; }
+.contato__dados .pilula { --c: var(--tinta); --f: var(--osso); margin-top: 10px; }
+.contato__nome { width: 100%; height: auto; margin-top: -1px; }
+.contato__nome text { font-family: var(--sans); font-weight: 800; letter-spacing: -.035em; }
+.contato__folha { fill: var(--osso); }
+.rodape { display: flex; justify-content: space-between; gap: 16px; padding: clamp(16px, 2vh, 24px) var(--margem) clamp(20px, 3vh, 32px); color: var(--tinta-2); margin-top: -1px; }
+.rodape__redes { display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: flex-end; }
+@media (max-width: 720px) {
+  .contato__topo { flex-direction: column; }
+  .contato__dados { justify-items: start; }
+  .rodape { flex-direction: column; }
+}
+
+/* Fã-clube: texto à esquerda e o cadastro (sem envio) à direita */
+.contato__texto { display: grid; gap: clamp(18px, 3vh, 28px); max-width: 34rem; }
+.contato__raizes { font-size: var(--f-linha); color: var(--tinta); max-width: 46ch; }
+.cadastro { display: grid; gap: 14px; width: min(100%, 380px); }
+.campo { display: grid; gap: 6px; }
+.campo .mono { color: var(--tinta-2); }
+.campo input, .campo select {
+  font: 400 16px/1.3 var(--sans); color: var(--tinta); background: transparent; border: 0; border-bottom: 1px solid var(--tinta);
+  border-radius: 0; padding: 8px 0; appearance: none; -webkit-appearance: none; outline: none;
+}
+.campo select { background: linear-gradient(45deg, transparent 50%, var(--tinta) 50%) right 6px center / 6px 6px no-repeat; padding-right: 20px; cursor: pointer; }
+.campo input:focus-visible, .campo select:focus-visible { border-bottom-width: 2px; padding-bottom: 7px; }
+.cadastro .pilula { --c: var(--tinta); --f: var(--osso); justify-self: start; margin-top: 6px; }
+.cadastro__aviso { font-size: 13px; color: var(--tinta-2); }
+.cadastro__retorno { font-size: 15px; font-weight: 500; min-height: 1.4em; }
+@media (max-width: 720px) { .cadastro { width: 100%; } }

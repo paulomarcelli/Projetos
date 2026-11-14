@@ -1,0 +1,26 @@
+/* Tokens da página (tudo por variável). */
+:root {
+  --osso: #ebe8e2;
+  --tinta: #0a0a0a;
+  --tinta-2: #6b6863;
+  --luz: #f4f4f2;
+  --noite: #0a0a0a;
+
+  --sans: 'Geist Variable', system-ui, sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  --f-marca: clamp(84px, 13.2vw, 260px);
+  --f-manifesto: clamp(26px, 2.2vw + 10px, 50px);
+  --f-h2: clamp(44px, 3.4vw + 14px, 78px);
+  --f-furo: clamp(24px, 1.2vw + 12px, 34px);
+  --f-linha: clamp(15px, .2vw + 14px, 17px);
+  --f-nav: 14px;
+
+  --margem: clamp(16px, 2.8vw, 44px);
+  --topo: clamp(18px, 2.2vw, 30px);
+  --pilula: 40px;
+
+  --entra: cubic-bezier(.16, 1, .3, 1);
+  --sai: cubic-bezier(.55, 0, .75, .2);
+}
+@media (max-width: 720px) { :root { --pilula: 36px; --f-nav: 13px; } }

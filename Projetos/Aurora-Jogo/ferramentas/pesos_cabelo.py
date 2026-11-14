@@ -192,6 +192,8 @@ if __name__ == '__main__':
     if qual == 'aurora':
         viva()
         folha('aurora')
+    elif qual == 'aurora_nova':
+        folha('aurora', ate=0.62, pela_raiz=True)   # Aurora redesenhada (Figma)
     elif qual == 'crianca':
         folha('crianca', ate=0.66, pela_raiz=True, tirar_metal=False)   # criança: sem armadura; o prata do cabelo puxa para o azul
     elif qual == 'sentar':

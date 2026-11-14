@@ -1,9 +1,8 @@
 # Prompts para o Gemini: animações da Aurora adulta (rodada 3)
 
-O usuário quer animações melhores (arco, dedos, cabelo, corrida, golpe, sentar) **sem mudar a Aurora**. Testamos
-redesenhá-la no Figma (`arte/figma/aurora_nova/`), mas o gerador do Figma não aceita imagem de referência: saiu outra
-Aurora (mais velha, mais alta, outro rosto), e o usuário decidiu **manter a atual**. Por isso, estes prompts são para
-o Gemini, **sempre com a imagem dela anexada**.
+> **Atualização:** o usuário escolheu a Aurora redesenhada no Figma (`arte/figma/aurora_nova/`), e o jogo já usa
+> as animações novas. Estes prompts ficam como alternativa para o Gemini; nesse caso, anexe a **ficha nova**
+> (`arte/figma/aurora_nova/ficha.png`) como referência, não a imagem antiga.
 
 O que o código já faz sozinho (não precisa desenhar): física do cabelo (onda, inércia, chicote ao virar),
 respiração, piscar, fusão entre quadros, neve nos pés, efeitos de luz do golpe, da flecha e do arco carregando.

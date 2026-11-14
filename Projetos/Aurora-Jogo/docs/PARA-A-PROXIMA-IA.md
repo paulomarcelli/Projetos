@@ -104,11 +104,22 @@ no **sentar** (camada de cabelo da própria folha dela). Pesos: `ferramentas/pes
 sentar o peso cresce da raiz para as pontas só atrás da cabeça (`pesos_pela_raiz`), sem a capinha branca; na criança o
 filtro de "metal" fica desligado (o prata do cabelo dela puxa para o azul). Precisa de `opencv-python-headless`.
 
-**Redesenhar a Aurora adulta no Figma: testado e recusado.** O usuário sugeriu redesenhar a Aurora adulta inteira no
-Figma. A ficha e os testes (`arte/figma/aurora_nova/`: ficha, corrida, arco) saíram consistentes entre si, mas é
-**outra Aurora** (mais velha, ~5,5 cabeças, outro rosto). O usuário escolheu **manter a atual**. Animações novas dela:
-prompts para o Gemini com a imagem anexada em `docs/prompts-aurora-rodada3.md`. Dica para o Figma: "strict side view"
-não basta; o bloco "perfil puro, só um olho, nariz para a borda direita" funcionou.
+**A Aurora adulta foi REDESENHADA no Figma (14/11/2026, pedido do usuário):** todas as animações dela vêm agora de
+folhas geradas com a MESMA descrição (ficha em `arte/figma/aurora_nova/ficha.png`; prompts copiados nas chamadas do
+`generate_image`: bloco de personagem + bloco "perfil puro, só um olho, nariz para a borda direita"). Toda folha
+começa com uma pose de REFERÊNCIA em pé, usada para a escala (`ferramentas/montar_folha_nova.py`). Folha nova:
+células de **512 px**, pés em y = 500 (`meta.base`; o arco erguido não cabia em 384); `ALTURA_QUADRO` continua 314.
+- Animações: parada (respira e pisca; o desenho deformado `aurora_viva` não é mais mostrado), correndo (7), pulo,
+  queda, aterrissar, esquiva (rolamento), cambalhota (bola girando), arco_preparar (pega a flecha na aljava e encaixa),
+  arco_atirar (meia puxada, puxada cheia, soltura com os dedos abertos, acompanhamento), ataque_lamina, lamina_guarda,
+  dano, vitória, sentar/sentada/levantar (corpo no chão: `Sentar` recebe 0 = sem deslocamento).
+- Recorte: folhas em duas fileiras e arcos que se cruzam deram trabalho. `ferramentas/fatiar_por_corpos.py` (Voronoi
+  geodésico a partir dos corpos) ajuda; quando nem isso separa, gere de novo com 3 quadros bem espaçados.
+- Cuidado: o gerador às vezes troca a roupa (veio uma soltura com botas de metal) — confira e gere de novo.
+- Cabelo: `pesos_cabelo.py aurora_nova` (pesos da raiz para as pontas, atrás da cabeça). Retrato do painel recortado
+  da parada nova (`assets/hud/retrato.png`). Flecha sai a 0,854 da altura e 0,405 à frente (medido na puxada cheia).
+- A Aurora criança do Prólogo continua no desenho antigo (Gemini): pode destoar da adulta nova; redesenhar se o
+  usuário pedir.
 
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros

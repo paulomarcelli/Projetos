@@ -136,6 +136,11 @@ Originais em `arte/figma/*.png` (nunca edite: gere de novo). Fluxo:
 - No jogo: `prologo.js` (painéis por sala com a linha do chão pintado no chão do jogo, colunas nas emendas) e
   `fase.js` (`carregarArteFloresta()`; sem ela, tudo volta a ser desenhado em código).
 
+### Aurora adulta (Figma)
+`arte/figma/aurora_nova/*.png` (folhas) → `fatiar_folha.py` / `fatiar_por_corpos.py` → `recortes/aurora_<grupo>_NN.png`
+→ `montar_folha_nova.py` (escala pela pose de referência, células 512, base 500) → `pesos_cabelo.py aurora_nova`
+→ copiar `aurora_folha.json`, `_corpo.png`, `_mecha.png`, `_cabelo.png` para `jogo/assets/sprites/`.
+
 ## Fluxo de arte (Python, pasta ferramentas/)
 | Ferramenta | Faz |
 |------------|-----|

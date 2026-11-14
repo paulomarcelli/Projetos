@@ -153,6 +153,7 @@ def main():
     ap.add_argument('--saida', required=True)
     ap.add_argument('--manter-brancos', action='store_true',
                     help='não apaga áreas brancas fechadas (roupa branca); só o branco ligado à borda é fundo')
+    ap.add_argument('--buraco', type=float, default=None, help='área branca fechada (fração da folha) a partir da qual vira fundo; ex.: 0.0025 apaga o vão do arco e mantém listras brancas')
     ap.add_argument('--fundo-estrito', action='store_true', help='só o branco quase puro é fundo (panos creme)')
     ap.add_argument('--separar', type=int, default=0, help='plano C: afina a máscara N px para separar quadros que se tocam')
     ap.add_argument('--dar', action='append', default=[], metavar='x0,y0,x1,y1:N',
@@ -162,6 +163,8 @@ def main():
     ESTRITO = args.fundo_estrito
     if args.manter_brancos:
         BURACO = 1.0
+    if args.buraco is not None:
+        BURACO = args.buraco
     linhas = [(p.split(':')[0], int(p.split(':')[1])) for p in args.nomes.split(',')]
     saida = Path(args.saida); saida.mkdir(parents=True, exist_ok=True)
     if args.separar:

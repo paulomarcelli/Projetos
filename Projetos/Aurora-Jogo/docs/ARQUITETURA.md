@@ -5,7 +5,8 @@
 index.html ................. escolhe a fase: ?fase=prologo | ?fase=1 (sem nada: Prólogo na 1ª vez, depois Fase 1)
   ├─ src/prologo.js ......... Prólogo: castelo, Aurora criança, soldados, festa, altar e neve (ver seção Prólogo)
   │    ├─ furtividade.js .... patrulha, cone de visão (bloqueado por paredes) e medidor de alerta — sem gráficos
-  │    └─ dialogo.js ........ caixa de diálogo letra a letra (nome, narração em itálico, E continuar)
+  │    ├─ dialogo.js ........ caixa de diálogo letra a letra (nome, narração em itálico, E continuar)
+  │    └─ mapa_luz.js ....... mapa de luz que multiplica a cena (velas, lanternas, cones, luar) — noite sem apagar cores
   └─ src/main.js ............ Fase 1: cria o app PixiJS, o mundo, a câmera, a entrada e o laço do jogo
        ├─ fisica.js ......... física de plataforma pura (sem gráficos), passo fixo de 60 Hz
        ├─ progresso.js ...... atributos, custo de nível, salvar/carregar (puro, testado)
@@ -20,6 +21,7 @@ index.html ................. escolhe a fase: ?fase=prologo | ?fase=1 (sem nada: 
        │                      título e cena final)
        ├─ inimigos.js ....... Sombra de névoa (sprites do Gemini: patrulha, dano, morte, moedas)
        ├─ animais.js ........ fauna: lebres (sentam, limpam o rosto, pulam) e pássaros (bicam, voam) que fogem da Aurora
+       ├─ sentar.js ......... sentar na fogueira com os 8 quadros do Figma (fusão, piscar, olhar o fogo, levantar)
        ├─ luz.js ............ noite perto do chão, luz das fogueiras, raios de luar saindo da lua do céu, vinheta
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
 ```

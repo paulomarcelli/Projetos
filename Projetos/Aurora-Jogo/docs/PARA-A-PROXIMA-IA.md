@@ -79,6 +79,19 @@ levantar têm tempo por quadro (`duracoes`) e fusão entre quadros (`fundir`, o 
 sentada, respira (escala), pisca e às vezes olha o fogo pensativa (`descansando` em `main.js`), com a luz violeta da
 fogueira tremulando nela; ao levantar, afunda, sobe e estica no fim.
 
+**Terceira rodada:**
+- Sentar: o usuário achou que ela "flutuava" — no quadro antigo o arco deitado era o ponto mais baixo e o encaixe nos
+  pés usa o mais baixo. Agora o sentar usa **8 quadros novos gerados no Figma** (`arte/figma/aurora_sentar_figma.png`,
+  `src/sentar.js`, folha `sentar_folha.*`): de pé → dobra → agacha pousando o arco → mão no chão → sentada (normal,
+  mãos nos joelhos, olhos fechados, pensativa), quadril e botas no chão. Alinhados pela **cabeça**
+  (`montar_folha_figma.py sentar`), escala 0,9 (o desenho tem cabeça maior que a Aurora do jogo). Recorte com
+  `fatiar_folha.py --buraco 0.0012` (apaga o vão do arco, mantém as listras das meias) + limpeza do vão do arco deitado.
+- Luz do Prólogo (`src/mapa_luz.js`, `MapaDeLuz`): mapa de luz que **multiplica** a cena (ambiente branco na festa,
+  índigo `0x34325e` na noite). Luzes: velas (poças quentes), lanterna e cone de visão de cada soldado (o cone ilumina de
+  verdade; fica vermelho com o alerta), janelas e feixes de luar inclinados, luz fria fraca na menina, velas do altar
+  na cena final. Por cima, uma camada somada fraca (halo das chamas, véu do cone, poeira no luar). Armadilha: o
+  `resize` da RenderTexture não muda o alvo já usado — recriar a RenderTexture quando a tela muda de tamanho.
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo

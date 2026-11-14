@@ -1,6 +1,6 @@
 """Monta as folhas de sprites com a arte gerada no Figma (arte/figma/recortes → arte/sprites/<nome>_folha.*).
 
-Uso (na pasta Aurora-Jogo): python3 ferramentas/montar_folha_figma.py [prologo|floresta]   (sem nada: as duas)
+Uso (na pasta Aurora-Jogo): python3 ferramentas/montar_folha_figma.py [prologo|floresta|sentar]   (sem nada: as duas)
 
 - prologo: alturas fixas no mundo (o Prólogo não muda o tamanho das peças).
 - floresta (Fase 1): cada peça na resolução original (o jogo escala: pinheiros pela altura `h`, galhos pela largura).
@@ -42,6 +42,9 @@ FLORESTA = {n: (f'{n}.png', 0) for n in ['pinheiro_grande', 'pinheiro_medio', 'p
                                           'lebre_sentada', 'lebre_limpa', 'lebre_pulo_0', 'lebre_pulo_1', 'lebre_pulo_2',
                                           'passaro_parado', 'passaro_bica', 'passaro_voo_0', 'passaro_voo_1', 'passaro_voo_2',
                                           'pingentes', 'capim', 'pedrinhas', 'samambaia', 'cerca']}
+# sentar na fogueira (Figma): 4 quadros descendo + 4 sentada (normal, mãos nos joelhos, olhos fechados, pensativa)
+SENTAR = {**{f'sentar_{i}': (f'aurora_sentarfig_0{i + 1}.png', 0) for i in range(4)},
+          **{f'sentada_{i}': (f'aurora_sentadafig_0{i + 1}.png', 0) for i in range(4)}}
 # efeitos (fundo preto → alfa = brilho): golpe, impacto, rastro da flecha, brilhos e poeira de neve
 FLORESTA.update({f'fx_{n}': (f'fx_{n}.png', 0) for n in ['corte_0', 'corte_1', 'corte_2', 'impacto_0', 'impacto_1', 'impacto_2',
                                                        'rastro', 'orbe', 'brilho', 'poeira']})
@@ -52,6 +55,14 @@ def corpo(a):
     larg = (a[..., 3] > 128).sum(axis=1)
     linhas = np.nonzero(larg > 45)[0]
     return linhas.max() - linhas.min()
+
+
+def centro_cabeca(a):
+    """coluna média dos pixels da cabeça (faixa de 6% a 26% da altura do quadro)"""
+    h = a.shape[0]
+    m = a[int(h * 0.06):int(h * 0.26), :, 3] > 128
+    xs = np.nonzero(m)[1]
+    return float(xs.mean())
 
 
 def ancora(a):
@@ -87,6 +98,8 @@ def montar(tabela, nome_folha):
         px, py = pos[nome]
         folha.paste(im, (px, py))
         ax, ay = ancora(np.asarray(im))
+        if nome_folha == 'sentar':
+            ax = centro_cabeca(np.asarray(im))   # ao sentar a cabeça desce quase reta: alinhar por ela, não pelos pés
         meta['pecas'][nome] = {'quadro': [px, py, im.width, im.height], 'ancora': [round(ax, 1), round(ay, 1)]}
     folha.save(SAIDA / f'{nome_folha}_folha.png', optimize=True)
     folha.save(SAIDA / f'{nome_folha}_folha.webp', quality=90, method=6)   # o jogo carrega a WebP (bem mais leve)
@@ -100,6 +113,8 @@ def main():
         montar(PECAS, 'prologo')
     if qual in ('floresta', 'tudo'):
         montar(FLORESTA, 'floresta')
+    if qual in ('sentar', 'tudo'):
+        montar(SENTAR, 'sentar')
 
 
 if __name__ == '__main__':

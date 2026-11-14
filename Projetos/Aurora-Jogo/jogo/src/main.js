@@ -103,6 +103,14 @@ for (const [nome, a] of Object.entries(meta.animacoes)) {
 // dano: 3 quadros do Gemini (impacto, cambaleia, recupera); clarão, recuo e faíscas por código
 // animações desenhadas numa malha, para o cabelo seguir o vento e o movimento
 const quadros = new QuadrosVivos(animacoes.parada.texturas[0], animacoes.parada.mechas[0], BASE_CELULA, pesosFolha, 0.25);
+// sentar e levantar com ritmo (skill 2d-games: antecipação, segurar as poses-chave, continuação) e fusão entre quadros:
+// os 4 desenhos do Gemini têm saltos grandes de pose; com a fusão e os tempos certos, o corpo "desce" em vez de pular
+animacoes.sentar.duracoes = [0.16, 0.2, 0.17, 0.3];     // em pé (antecipa) → ajoelha → apoia a mão → senta
+animacoes.sentar.fundir = 0.1;
+animacoes.levantar.duracoes = [0.14, 0.15, 0.16, 0.24]; // sentada → apoia a mão → ajoelha → em pé
+animacoes.levantar.fundir = 0.09;
+animacoes.sentada.fundir = 0.14;                        // troca de expressão (piscar, olhar o fogo) sem estalo
+const SENTADA = { normal: 0, pensativa: 2, olhosFechados: 11 };   // índices dos 3 desenhos dentro de animacoes.sentada
 const escalaQuadros = ALTURA_VISUAL / ALTURA_QUADRO;
 cena.addChild(quadros.raiz);
 
@@ -133,6 +141,9 @@ let progresso = (() => { try { return desserializar(localStorage.getItem(CHAVE_S
 function salvar() { try { localStorage.setItem(CHAVE_SAVE, serializar(progresso)); } catch { /* sem armazenamento: segue sem salvar */ } }
 let stats = derivados(progresso);
 let vida = stats.vidaMax, mana = stats.manaMax, invulneravel = 0, sentada = false, levantando = 0;
+let indoSentar = null;            // { f, x }: andando até o lugar ao lado da fogueira antes de sentar
+let repouso = null;               // relógios da Aurora sentada: piscar, olhar o fogo
+let cabeloImpulso = 0;            // empurrão no cabelo (continuação do movimento ao sentar e levantar)
 const CUSTO_SALTO_LUA = 12;
 const fogueiraInicial = fogueiras.find((f) => f.id === progresso.fogueira);
 const corpo = criarCorpo(fogueiraInicial ? fogueiraInicial.x + 60 : fase.inicio.x, (fogueiraInicial ? fogueiraInicial.chaoY : fase.inicio.y) - CONST.ALTURA);
@@ -196,9 +207,18 @@ function fogueiraPerto() {
   return fogueiras.find((f) => Math.abs(f.x - cx) < 90 && Math.abs(f.chaoY - (corpo.y + CONST.ALTURA)) < 4 && corpo.noChao);
 }
 
+/** apertou E na fogueira: ela anda até o lugar dela (antes era teletransportada) e só então senta */
 function descansar(f) {
-  sentada = true; acao = null;
-  corpo.vx = 0; corpo.x = f.x + 100 - CONST.LARGURA / 2; corpo.direcao = -1;  // ao lado do fogo, olhando para ele (o arco deitado e os joelhos ficam fora da chama)
+  acao = null;
+  // senta do lado de onde chegou (não atravessa o fogo); o arco deitado e os joelhos ficam fora da chama
+  const lado = corpo.x + CONST.LARGURA / 2 >= f.x ? 1 : -1;
+  // do lado esquerdo fica a pedra da lua: ali ela senta mais longe, depois da pedra
+  indoSentar = { f, x: f.x + (lado > 0 ? 100 : -165) - CONST.LARGURA / 2, lado };
+}
+
+function sentarDeVez(f) {
+  corpo.vx = 0; corpo.direcao = -(indoSentar?.lado ?? 1);   // olhando para o fogo
+  sentada = true; indoSentar = null;
   f.acesa = true;
   progresso = { ...progresso, fogueira: f.id };
   stats = derivados(progresso);
@@ -207,7 +227,12 @@ function descansar(f) {
   menu.mostrar(progresso, stats, app.screen.width, app.screen.height);
 }
 
-function levantar() { sentada = false; levantando = animacoes.levantar.texturas.length / animacoes.levantar.fps; menu.esconder(); }
+function levantar() {
+  sentada = false; repouso = null; menu.esconder();
+  levantando = QuadrosVivos.duracao(animacoes.levantar);
+  achatar = 0.45;           // antecipação: afunda um pouco antes de empurrar o chão
+  cabeloImpulso = -9;       // o cabelo fica para trás quando ela sobe
+}
 
 function morrer() {
   const f = fogueiras.find((x) => x.id === progresso.fogueira);
@@ -239,6 +264,14 @@ function passoFixo() {
     apertou.clear();
     corpo.vx = 0;
     passo(corpo, { esquerda: false, direita: false, pular: false, pularSegurado: false, esquiva: false }, mundo);
+    return;
+  }
+  if (indoSentar) {
+    // anda devagar até o lugar; chegando, para e senta (os controles esperam)
+    const falta = indoSentar.x - corpo.x;
+    apertou.clear();
+    if (Math.abs(falta) < 5 && corpo.noChao) { corpo.x = indoSentar.x; sentarDeVez(indoSentar.f); return; }
+    passo(corpo, { esquerda: falta < 0, direita: falta > 0, pular: false, pularSegurado: false, esquiva: false, lento: Math.min(0.5, 0.18 + Math.abs(falta) / 200) }, mundo);
     return;
   }
   if (apertou.has('interagir') && !acao) { const f = fogueiraPerto(); if (f) { apertou.clear(); descansar(f); return; } }
@@ -378,14 +411,33 @@ function apanhar(dano, x, y, lado) {
   impacto.golpe(0.09, 9);
 }
 
+/** Sentada: respira (no laço), pisca de vez em quando e às vezes fica olhando o fogo, pensativa. */
+function descansando(dt) {
+  const r = repouso; if (!r) return;
+  r.t += dt; r.piscar -= dt; r.pensar -= dt;
+  if (r.rosto && r.t >= r.ate) { r.rosto = null; quadros.parar(SENTADA.normal); }
+  if (!r.rosto && r.piscar <= 0) { r.rosto = 'piscar'; r.ate = r.t + 0.16; r.piscar = 2.8 + Math.random() * 3; quadros.parar(SENTADA.olhosFechados); }
+  if (!r.rosto && r.pensar <= 0) { r.rosto = 'pensar'; r.ate = r.t + 2.6 + Math.random() * 1.5; r.pensar = 9 + Math.random() * 6; quadros.parar(SENTADA.pensativa); }
+}
+
 function escolherAnimacao(dt) {
   if (sentada) {
-    // senta (de pé → agachada) e fica respirando; antes era um quadro congelado
-    if (estado !== 'sentar' && estado !== 'sentada') tocar('sentar');
-    if (estado === 'sentar' && quadros.currentFrame >= animacoes.sentar.texturas.length - 1 && quadros.t > animacoes.sentar.texturas.length / animacoes.sentar.fps) tocar('sentada');
+    // senta: antecipa (afunda um pouco), desce com os tempos de cada pose e, ao pousar, quica de leve
+    if (estado !== 'sentar' && estado !== 'sentada') { tocar('sentar'); achatar = 0.3; }
+    if (estado === 'sentar' && quadros.t >= QuadrosVivos.duracao(animacoes.sentar)) {
+      tocar('sentada'); quadros.parar(SENTADA.normal);
+      achatar = 0.75; cabeloImpulso = 11;                  // continuação: o corpo assenta e o cabelo cai por último
+      neve.levantar(corpo.x + CONST.LARGURA / 2, corpo.y + CONST.ALTURA, 7, 0, 0.45);
+      repouso = { t: 0, piscar: 2.5 + Math.random() * 2, pensar: 6 + Math.random() * 5, rosto: null, ate: 0 };
+    }
+    if (estado === 'sentada') descansando(dt);
     return;
   }
-  if (levantando > 0) { levantando -= dt; return tocar('levantar'); }
+  if (levantando > 0) {
+    levantando -= dt;
+    if (levantando <= 0) achatar = -0.55;                  // termina esticando e volta ao normal (continuação)
+    return tocar('levantar');
+  }
   if (acao) {
     tempoAcao -= dt;
     if (acao === 'arco') {
@@ -476,14 +528,17 @@ app.ticker.add((ticker) => {
   boneco.raiz.position.set(pes.x, pes.y);
   // amassa um pouco ao pousar e estica ao pular (volta rápido): dá peso ao movimento
   achatar += (0 - achatar) * Math.min(1, dt * 9);
-  const sy = 1 - 0.07 * achatar, sx = 1 + 0.05 * achatar;
+  // sentada: respira devagar (o peito sobe e o corpo afina um pouco)
+  const resp = estado === 'sentada' ? Math.sin(performance.now() / 1000 * 1.7) * 0.011 : 0;
+  const sy = (1 - 0.07 * achatar) * (1 + resp), sx = (1 + 0.05 * achatar) * (1 - resp * 0.35);
   boneco.raiz.scale.set(escalaBoneco * corpo.direcao * sx, escalaBoneco * sy);
   quadros.raiz.position.set(pes.x, pes.y);
   quadros.raiz.scale.set(escalaQuadros * corpo.direcao * sx, escalaQuadros * sy);
   // vento e movimento empurram o cabelo (no lado para onde ela olha)
   const ventoLocal = vento.forca * corpo.direcao;
   const corrida = Math.abs(corpo.vx) / CONST.VEL_CORRIDA;
-  quadros.atualizar(dt, ventoLocal * 9 - corrida * 7, Math.abs(vento.forca));
+  cabeloImpulso += (0 - cabeloImpulso) * Math.min(1, dt * 2.5);
+  quadros.atualizar(dt, ventoLocal * 9 - corrida * 7 + cabeloImpulso, Math.abs(vento.forca));
   boneco.atualizar(dt, ventoLocal);
   atualizarFlechas(dt);
   faiscas.atualizar(dtReal); numeros.atualizar(dtReal); neve.atualizar(dt); brilhos.atualizar(dtReal);
@@ -499,7 +554,14 @@ app.ticker.add((ticker) => {
   // clarão vermelho que volta ao normal e recuo (inclina para trás e volta)
   clarao = Math.max(0, clarao - dtReal * 3.2); recuo = Math.max(0, recuo - dtReal * 3.2);
   const tint = clarao > 0 ? (0xff << 16) | (Math.round(255 - 165 * clarao) << 8) | Math.round(255 - 150 * clarao) : 0xffffff;
-  quadros.tint = tint;
+  // perto da Fogueira Lunar, a luz violeta tremula nela (luz natural)
+  const fogoPerto = fogueiras.find((f) => f.acesa && Math.abs(f.x - pes.x) < 280);
+  if (clarao <= 0 && fogoPerto) {
+    const perto = 1 - Math.abs(fogoPerto.x - pes.x) / 280;
+    const tr = 0.5 + 0.3 * Math.sin(performance.now() / 90) + 0.2 * Math.sin(performance.now() / 37);
+    const k = perto * (0.10 + 0.07 * tr);
+    quadros.tint = (Math.round(255 - 30 * k * 2) << 16) | (Math.round(255 - 50 * k * 2) << 8) | 255;
+  } else quadros.tint = tint;
   for (const m of boneco.raiz.children) m.tint = tint;
   const inclina = -corpo.direcao * 0.12 * Math.sin(Math.min(1, recuo) * Math.PI) * (estado === 'boneco' ? 0 : 1);
   quadros.raiz.rotation = inclina;
@@ -514,7 +576,7 @@ app.ticker.add((ticker) => {
   titulo.atualizar(dtReal, app.screen.width, app.screen.height);
   if (fimDaFase >= 0) { fimDaFase += dtReal; if (fimDaFase > 1.4 && !cenaFinal.ativa) cenaFinal.comecar(); }
   cenaFinal.atualizar(dtReal, app.screen.width, app.screen.height);
-  aviso.visible = !!perto && !sentada;
+  aviso.visible = !!perto && !sentada && !indoSentar;
   if (perto) aviso.position.set(perto.x, perto.chaoY - 150);
   for (const x of textosFlutuantes) { x.vida -= dt; x.t.y -= 40 * dt; x.t.alpha = Math.max(0, x.vida); }
   for (let i = textosFlutuantes.length - 1; i >= 0; i--) if (textosFlutuantes[i].vida <= 0) { textosFlutuantes[i].t.destroy(); textosFlutuantes.splice(i, 1); }
@@ -546,7 +608,7 @@ window.__jogo = {
   vento, quadros, impacto, faiscas,
   corpo, boneco, app, teclas, apertou, sombras, fogueiras, fase, alvos, cervo, cenaFinal, brilhos, fauna,
   set escalaTempo(v) { escalaTempo = v; },
-  get estado() { return estado; }, get sentada() { return sentada; },
+  get estado() { return estado; }, get sentada() { return sentada; }, get indoSentar() { return indoSentar; },
   get vida() { return vida; }, get mana() { return mana; }, get progresso() { return progresso; },
   darMoedas(n) { progresso = { ...progresso, moedas: progresso.moedas + n }; },
 };

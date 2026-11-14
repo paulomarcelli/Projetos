@@ -72,6 +72,13 @@ levanta (passos, pulo, pouso, esquiva), pegadas que somem em 6 s, amassar ao pou
 - `window.__jogo.escalaTempo = 0.08` deixa o jogo em câmera lenta para fotografar efeitos no Playwright.
 - As folhas de sprites do Figma vão para o jogo em WebP (`*_folha.webp`, ~1 MB cada).
 
+**Sentar na fogueira (skill 2d-games: antecipação, segurar as poses-chave, continuação, achatar/esticar):**
+ela anda até o lugar (do lado de onde veio; à esquerda, depois da pedra da lua) em vez de ser teletransportada; sentar e
+levantar têm tempo por quadro (`duracoes`) e fusão entre quadros (`fundir`, o quadro anterior some por cima —
+`QuadrosVivos` em `vento.js`); afunda antes de sentar, quica ao pousar e o cabelo cai por último (`cabeloImpulso`);
+sentada, respira (escala), pisca e às vezes olha o fogo pensativa (`descansando` em `main.js`), com a luz violeta da
+fogueira tremulando nela; ao levantar, afunda, sobe e estica no fim.
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo

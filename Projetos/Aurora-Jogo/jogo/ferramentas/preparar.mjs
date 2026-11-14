@@ -14,6 +14,6 @@ mkdirSync(raiz + 'assets/sprites/sombra', { recursive: true });   // criatura (f
 for (const f of ['sombra_folha.png', 'sombra_folha.json']) cpSync(raiz + '../arte/sprites/sombra/' + f, raiz + 'assets/sprites/sombra/' + f);
 for (const f of ['crianca_folha.png', 'crianca_folha.json']) cpSync(raiz + '../arte/sprites/' + f, raiz + 'assets/sprites/' + f);   // Aurora criança (ferramentas/montar_folha_crianca.py)
 for (const f of ['prologo_folha.webp', 'prologo_folha.json']) cpSync(raiz + '../arte/sprites/' + f, raiz + 'assets/sprites/' + f);   // arte do Prólogo (Figma → ferramentas/montar_folha_figma.py)
-for (const f of ['floresta_folha.webp', 'floresta_folha.json']) cpSync(raiz + '../arte/sprites/' + f, raiz + 'assets/sprites/' + f);   // arte da Fase 1 (Figma)
+for (const f of ['floresta_folha.webp', 'floresta_folha.json', 'sentar_folha.webp', 'sentar_folha.json']) cpSync(raiz + '../arte/sprites/' + f, raiz + 'assets/sprites/' + f);   // arte da Fase 1 (Figma)
 // os fundos pintados (assets/fundos) já ficam em jogo/: são gerados de arte/figma (ver docs/ARQUITETURA.md)
 console.log('pronto: vendor/ e assets/');

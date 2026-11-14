@@ -11,6 +11,7 @@ import { normalizar } from './nivel.js';
 import { Titulo } from './fase.js';
 import { VISAO, atualizarAlerta, atualizarGuarda, criarGuarda, enxerga, linhaDeVisao } from './furtividade.js';
 import { CaixaDialogo } from './dialogo.js';
+import { MapaDeLuz, texturasDeLuz } from './mapa_luz.js';
 
 const app = new Application();
 await app.init({ resizeTo: window, background: '#0e0b1c', antialias: true, resolution: Math.min(window.devicePixelRatio || 1, 2), autoDensity: true });
@@ -28,10 +29,17 @@ const fundo = new Graphics();                       // degradê atrás de tudo
 const cena = new Container();                       // mundo (segue a câmera)
 const atras = new Container(), meio = new Container(), frente = new Container();
 cena.addChild(atras, meio, frente);
-const escuro = new Graphics();                      // a noite cai sobre o salão depois que as velas se apagam
-const luz = new Container(); luz.blendMode = 'add'; // luzes somadas por cima do escuro (mesma câmera do mundo)
+const mapa = new MapaDeLuz(app);                    // a noite: o mapa de luz multiplica a cena (src/mapa_luz.js)
+const luz = new Container(); luz.blendMode = 'add'; // brilho no ar por cima (halo das chamas, poeira no luar)
 const hud = new Container();
-app.stage.addChild(fundo, cena, escuro, luz, hud);
+app.stage.addChild(fundo, cena, mapa.sprite, luz, hud);
+const TL = texturasDeLuz(VISAO.ABERTURA);
+/** brilho suave no ar (camada somada por cima do mapa de luz) */
+function halo(x, y, cor, alfa, escala, tex = 'radial') {
+  const s = new Sprite(TL[tex]); s.anchor.set(0.5); s.position.set(x, y); s.tint = cor; s.alpha = alfa; s.scale.set(escala);
+  luz.addChild(s); return s;
+}
+const NOITE = 0x34325e;                             // cor do ambiente no escuro (índigo: o luar dá o tom)
 
 function desenharFundoTela() {
   const W = app.screen.width, H = app.screen.height;
@@ -164,19 +172,16 @@ const tableau = new Container(); tableau.visible = false;
   );
 }
 meio.addChild(tableau);
-const luzAltar = new Graphics().circle(fase.altar.x - 320, CHAO - 120, 360).fill({ color: 0xffc46a, alpha: 0.07 })
-  .circle(fase.altar.x - 320, CHAO - 120, 190).fill({ color: 0xffd890, alpha: 0.07 });
-luzAltar.visible = false; luz.addChild(luzAltar);
+// na cena do altar, as velas da capela iluminam a mãe e os três homens
+const luzAltar = mapa.luz('radial', fase.altar.x - 300, CHAO - 140, { cor: 0xffc27a, escala: [4.2, 2.6], alfa: 0 });
 
 // ---------- velas (pontos de retorno) ----------
 const velas = fase.velas.map((v) => {
   meio.addChild(peca('castical', v.x));
-  const chama = new Graphics().ellipse(0, 0, 5, 9).fill({ color: 0xffd27a, alpha: 0.5 });
-  chama.position.set(v.x, CHAO - 118);
-  const brilho = new Graphics().circle(0, 0, 90).fill({ color: 0xffb04a, alpha: 0.10 }).circle(0, 0, 40).fill({ color: 0xffc46a, alpha: 0.14 });
-  brilho.position.set(v.x, CHAO - 118);
-  luz.addChild(brilho, chama);
-  return { ...v, chama, brilho, alcancada: false, flare: 0 };
+  const chama = halo(v.x, CHAO - 120, 0xffd27a, 0.55, 0.13);           // halo pequeno e forte na chama
+  const brilho = halo(v.x, CHAO - 118, 0xffa850, 0.16, 0.9);           // brilho largo no ar
+  const ilumina = mapa.luz('radial', v.x, CHAO - 100, { cor: 0xffb878, escala: 2.6 });   // ilumina parede e chão
+  return { ...v, chama, brilho, ilumina, alcancada: false, flare: 0 };
 });
 
 // placas (texto de ajuda pintado na parede)
@@ -187,15 +192,29 @@ for (const p of fase.placas) {
   frente.addChild(t);
 }
 
-// luar entrando pelas janelas (só aparece no escuro)
-const luar = new Graphics();
-for (const x of janelas) luar.poly([x - 50, 330, x + 50, 330, x + 170, CHAO, x + 30, CHAO]).fill({ color: 0x8fa6ff, alpha: 0.07 });
+// luar: cada janela pintada brilha e joga um feixe inclinado até o chão (no mapa de luz e, fraco, no ar)
+const luar = new Container();       // feixes no ar
+const luzesLuar = [];
+for (const x of janelas) {
+  luzesLuar.push(mapa.luz('radial', x, 200, { cor: 0x8a9cff, escala: [1.6, 2.2], alfa: 0.9 }));
+  const f = mapa.luz('feixe', x + 40, 300, { cor: 0x8796ff, escala: [2.2, 0.72], ancora: [0.5, 0], alfa: 0.8 }); f.skew.x = -0.32;
+  luzesLuar.push(f);
+  const ar = new Sprite(TL.feixe); ar.anchor.set(0.5, 0); ar.position.set(x + 40, 300); ar.scale.set(2.2, 0.72); ar.skew.x = -0.32;
+  ar.tint = 0xb8c4ff; ar.alpha = 0.09; luar.addChild(ar);
+}
 luz.addChild(luar);
+// poeira dançando no luar
+const poeira = [];
+for (const x of janelas) for (let i = 0; i < 6; i++) {
+  const p = halo(x + Math.random() * 140 - 30, 330 + Math.random() * 280, 0xdfe6ff, 0, 0.02 + Math.random() * 0.02);
+  poeira.push({ p, x0: p.x, y0: p.y, fase: Math.random() * 6, vel: 0.2 + Math.random() * 0.4 });
+}
 // os lustres pintados no salão da festa brilham até as velas se apagarem
-const brilhoLustres = new Graphics();
+const brilhoLustres = new Container();
 for (const f of [0.2, 0.81]) {
   const x = X0 + f * LARGURA_PAINEL;
-  brilhoLustres.circle(x, -70, 200).fill({ color: 0xffc46a, alpha: 0.07 }).circle(x, -70, 80).fill({ color: 0xffd890, alpha: 0.10 });
+  const h = new Sprite(TL.radial); h.anchor.set(0.5); h.position.set(x, -70); h.tint = 0xffc46a; h.alpha = 0.28; h.scale.set(2.2);
+  brilhoLustres.addChild(h);
 }
 luz.addChild(brilhoLustres);
 
@@ -210,12 +229,19 @@ class Soldado {
     this.spr = peca('soldado_parado_0', dados.x);
     this.marca = new Text({ text: '', style: { fill: '#ffd27a', fontSize: 34, fontFamily: fonte, fontWeight: '800', stroke: { color: '#120d26', width: 5 } } });
     this.marca.anchor.set(0.5, 1);
-    this.cone = new Graphics();
+    // a lanterna ilumina (mapa de luz) e o cone de visão é a luz dela; no ar, um véu fraco mostra o alcance
+    this.coneLuz = mapa.luz('cone', dados.x, dados.y - VISAO.OLHOS, { ancora: [0, 0.5], cor: 0xffd9a0 });
+    this.lampada = mapa.luz('radial', dados.x, dados.y - VISAO.OLHOS, { cor: 0xffc070, escala: 1.5 });
+    this.cone = new Container();
+    this.coneAr = new Sprite(TL.cone); this.coneAr.anchor.set(0, 0.5);
+    this.coneAbaixada = new Sprite(TL.cone); this.coneAbaixada.anchor.set(0, 0.5);
+    this.chamaAr = new Sprite(TL.radial); this.chamaAr.anchor.set(0.5);
+    this.cone.addChild(this.coneAr, this.coneAbaixada, this.chamaAr);
     meio.addChild(this.spr, this.marca); luz.addChild(this.cone);
     this.visivel = false;
   }
   reiniciar() { Object.assign(this.g, criarGuarda(this.dados)); this.alerta = 0; this.pegou = false; this.olhando = false; }
-  set visivel(v) { this.spr.visible = this.marca.visible = this.cone.visible = v; }
+  set visivel(v) { this.spr.visible = this.marca.visible = this.cone.visible = this.coneLuz.visible = this.lampada.visible = v; }
   get visivel() { return this.spr.visible; }
   /** ouviu passos correndo atrás dele: vira e fica olhando */
   ouvir(xMenina) {
@@ -242,20 +268,17 @@ class Soldado {
     this.marca.style.fill = this.alerta > 0.6 ? '#ff6b6b' : '#ffd27a';
     this.marca.position.set(g.x, g.y - 300 - Math.abs(Math.sin(g.t * 8)) * 4 * Math.min(1, this.alerta * 3));
     // cone da lanterna: o que ele enxerga (e, mais forte, até onde vê a menina abaixada)
-    const ox = g.x + 26 * g.dir, oy = g.y - VISAO.OLHOS, A = VISAO.ABERTURA;
-    const cor = mistura(0xffe7a0, 0xff4a4a, Math.min(1, this.alerta * 1.3));
-    const pontos = (R) => {
-      const p = [ox, oy];
-      for (let k = 0; k <= 14; k++) {
-        const a = -A + (2 * A * k) / 14;
-        p.push(ox + Math.cos(a) * R * g.dir, Math.min(CHAO, oy + Math.sin(a) * R));
-      }
-      return p;
-    };
-    this.cone.clear()
-      .poly(pontos(VISAO.ALCANCE)).fill({ color: cor, alpha: 0.08 + this.alerta * 0.08 })
-      .poly(pontos(VISAO.ALCANCE * VISAO.AGACHADA)).fill({ color: cor, alpha: 0.07 })
-      .circle(ox, oy, 30).fill({ color: 0xffc46a, alpha: 0.22 });
+    const ox = g.x + 26 * g.dir, oy = g.y - VISAO.OLHOS;
+    const cor = mistura(0xffe0a0, 0xff3a3a, Math.min(1, this.alerta * 1.3));
+    const tremula = 0.92 + 0.08 * Math.sin(g.t * 11 + this.dados.x);
+    const R = VISAO.ALCANCE / 500;                     // a fatia da textura tem raio 500 px
+    this.coneLuz.position.set(ox, oy); this.coneLuz.scale.set(R * g.dir, R); this.coneLuz.tint = cor; this.coneLuz.alpha = (0.85 + this.alerta * 0.15) * tremula;
+    this.lampada.position.set(ox, oy); this.lampada.tint = cor; this.lampada.alpha = tremula;
+    this.coneAr.position.set(ox, oy); this.coneAr.scale.set(R * g.dir, R); this.coneAr.tint = cor; this.coneAr.alpha = 0.07 + this.alerta * 0.1;
+    // a parte de dentro (até onde vê a menina abaixada), um pouco mais forte
+    const r = R * VISAO.AGACHADA;
+    this.coneAbaixada.position.set(ox, oy); this.coneAbaixada.scale.set(r * g.dir, r); this.coneAbaixada.tint = cor; this.coneAbaixada.alpha = 0.06;
+    this.chamaAr.position.set(ox, oy); this.chamaAr.tint = 0xffc46a; this.chamaAr.scale.set(0.3); this.chamaAr.alpha = 0.55 * tremula;
   }
 }
 const mistura = (a, b, t) => {
@@ -289,8 +312,8 @@ function quadroAtual(dt) {
   menina.texture = a.texturas[i];
 }
 
-const brilhoMenina = new Graphics().circle(0, 0, 120).fill({ color: 0x9fb0ff, alpha: 0.05 }).circle(0, 0, 60).fill({ color: 0xc8d0ff, alpha: 0.05 });
-luz.addChild(brilhoMenina);
+// um pouco de luz fria em volta da menina, para ela não sumir no escuro
+const brilhoMenina = mapa.luz('radial', 0, 0, { cor: 0x7076b8, escala: 1.5, alfa: 0 });
 const corpo = criarCorpo(fase.inicio.x, fase.inicio.y - P.altura, P);
 let retorno = { x: corpo.x, y: corpo.y };
 
@@ -374,7 +397,7 @@ function chegarNoAltar() {
   objetivo.text = '';
   corpo.vx = 0;
   corpo.x = fase.altar.x - P.largura / 2; corpo.direcao = -1;
-  tableau.visible = luzAltar.visible = true;
+  tableau.visible = true;
   for (const s of soldados) s.visivel = false;
   dialogo.comecar(fase.fim, {
     aoMostrar: (f) => {
@@ -492,7 +515,7 @@ app.ticker.add((ticker) => {
   const respira = anim === 'parada' ? 1 + Math.sin(t * 2.4) * 0.008 : 1;
   menina.scale.set(ESCALA * corpo.direcao, ESCALA * respira);
   menina.alpha = escondida ? 0.9 : 1;
-  brilhoMenina.position.set(cx, corpo.y + P.altura * 0.45); brilhoMenina.alpha = escuridao;
+  brilhoMenina.position.set(cx, corpo.y + P.altura * 0.5); brilhoMenina.alpha = escuridao * 0.8;
   altar.alpha += ((estado === 'final' ? 0.72 : 1) - altar.alpha) * Math.min(1, dt * 4);
   // no esconderijo dela, o objeto fica translúcido; na cena do altar o banco some (ficava na frente dos homens)
   for (const e of esconderijos) e.g.alpha += ((estado === 'final' && e.tipo === 'banco' ? 0 : (escondida && esconderijoAqui() === e) ? 0.7 : 1) - e.g.alpha) * Math.min(1, dt * 8);
@@ -509,18 +532,26 @@ app.ticker.add((ticker) => {
   // escuridão: depois do apagar, o salão escurece e os convidados fogem
   const alvoEscuro = estado === 'festa' || estado === 'livre' ? 0 : 1;
   escuridao += (alvoEscuro - escuridao) * Math.min(1, dt * 1.6);
-  escuro.clear().rect(0, 0, W, H).fill({ color: 0x05040c, alpha: 0.62 * escuridao });
+  // ambiente: branco na festa (sem efeito), índigo na noite; mais fundo ainda no altar
+  const ambiente = estado === 'final' ? 0x262448 : NOITE;
+  mapa.ambiente = mistura(0xffffff, ambiente, escuridao);
   brilhoLustres.alpha = 1 - escuridao;
   luar.alpha = escuridao;
+  for (const l of luzesLuar) l.visible = escuridao > 0.02;
+  for (const p of poeira) {
+    p.p.x = p.x0 + Math.sin(t * p.vel + p.fase) * 18; p.p.y = p.y0 + Math.sin(t * p.vel * 0.7 + p.fase * 2) * 24;
+    p.p.alpha = escuridao * (0.25 + 0.25 * Math.sin(t * 1.3 + p.fase));
+  }
+  luzAltar.alpha = estado === 'final' ? Math.min(1, tEstado * 0.8) : 0;
   for (const c of convidados) c.p.alpha = Math.max(0, 1 - escuridao * 1.4);
   mesaFesta.alpha = 1;
 
   for (const v of velas) {
     v.flare = Math.max(0, v.flare - dt * 1.2);
     const tremula = 1 + Math.sin(t * 13 + v.x) * 0.08 + Math.sin(t * 7.3 + v.x * 0.3) * 0.06;
-    v.chama.scale.set(1, tremula * (1 + v.flare * 0.6)); v.chama.alpha = 0.5 + escuridao * 0.5;
-    v.brilho.scale.set(tremula * (1 + v.flare * 0.8));
-    v.brilho.alpha = 0.6 + escuridao * 0.4 + v.flare * 0.5;
+    v.chama.scale.set(0.11 * tremula, 0.16 * tremula * (1 + v.flare * 0.6)); v.chama.alpha = 0.5 + escuridao * 0.4;
+    v.brilho.scale.set(0.9 * tremula * (1 + v.flare * 0.8)); v.brilho.alpha = 0.08 + escuridao * 0.1 + v.flare * 0.3;
+    v.ilumina.scale.set(2.6 * tremula * (1 + v.flare * 0.5)); v.ilumina.alpha = 0.95;
   }
   for (const s of soldados) if (s.visivel) s.desenhar(dt);
 
@@ -541,6 +572,7 @@ app.ticker.add((ticker) => {
   const camX = Math.min(Math.max(camera.x, X0 + 140 + meiaTela), fase.porId.parede_dir.x + 60 - meiaTela);
   cena.position.set(W / 2 - camX * zoom, H * 0.58 - camera.y * zoom);
   luz.position.copyFrom(cena.position);
+  mapa.atualizar(W, H, cena);
 
   // avisos, véu (vermelho ao ser pega), cena da neve e título
   avisoT = Math.max(0, avisoT - dt);

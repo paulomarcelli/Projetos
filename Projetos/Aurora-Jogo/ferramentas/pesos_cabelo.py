@@ -13,7 +13,7 @@ Saídas (PNG, um canal por tipo de cabelo):
   arte/sprites/aurora_folha_corpo.png       folha sem o cabelo que balança (camada fixa do jogo)
   arte/sprites/aurora_folha_mecha.png       só o cabelo que balança, 1/2 da resolução (camada da malha)
 
-Uso (na pasta Aurora-Jogo):  python3 ferramentas/pesos_cabelo.py
+Uso (na pasta Aurora-Jogo):  python3 ferramentas/pesos_cabelo.py [aurora|crianca|sentar]   (sem nada: aurora)
 """
 import json
 from pathlib import Path
@@ -30,14 +30,14 @@ def suave(a, b, x):
     return t * t * (3 - 2 * t)
 
 
-def mascara_cabelo(rgba, area_min):
+def mascara_cabelo(rgba, area_min, tirar_metal=True):
     """Cabelo: opaco, saturação baixa e valor médio/alto. Fecha os traços pretos de dentro e tira sobras."""
     a = rgba[..., 3] > 128
     hsv = cv2.cvtColor(np.ascontiguousarray(rgba[..., :3]), cv2.COLOR_RGB2HSV).astype(np.float32)
     h, s, v = hsv[..., 0] * 2, hsv[..., 1] / 255, hsv[..., 2] / 255
     # o prata da armadura puxa para o azul (matiz 170–265°); o cabelo puxa para o rosa/lilás
     metal = (h > 170) & (h < 265) & (s > 0.035)
-    cab = (a & (s < 0.17) & (v > 0.36) & ~metal).astype(np.uint8)
+    cab = (a & (s < 0.17) & (v > 0.36) & (~metal if tirar_metal else True)).astype(np.uint8)
     k = max(3, int(round(min(rgba.shape[:2]) * 0.008)) | 1)
     cab = cv2.morphologyEx(cab, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))) & a
     n, rot, est, _ = cv2.connectedComponentsWithStats(cab, 8)
@@ -62,6 +62,40 @@ def pesos(rgba, folga_px, borda_px, area_min, ate_y=None):
     return cv2.GaussianBlur(w, (0, 0), max(1.0, borda_px * 0.25)), cab
 
 
+def pesos_pela_raiz(rgba, cel, sem_branco=True, tirar_metal=True):
+    """Variante para desenhos em que o cabelo cai rente ao corpo (Aurora criança, sentar do Figma): o peso cresce
+    da raiz (alto da cabeça, peso 0) para as pontas, só no cabelo ATRÁS da cabeça (os desenhos olham para a direita),
+    e cai perto do corpo só um pouco (as mechas das costas, coladas no vestido, ainda balançam).
+    sem_branco: tira o branco quase puro (capinha de pele, pele branca) que tem a mesma cor do cabelo."""
+    a = rgba[..., 3] > 128
+    if not a.any():
+        return np.zeros(rgba.shape[:2], np.float32)
+    cab, opaco = mascara_cabelo(rgba, area_min=cel * cel * 0.002, tirar_metal=tirar_metal)
+    if sem_branco:
+        hsv = cv2.cvtColor(np.ascontiguousarray(rgba[..., :3]), cv2.COLOR_RGB2HSV).astype(np.float32)
+        branco = (hsv[..., 1] / 255 < 0.05) & (hsv[..., 2] / 255 > 0.86)
+        branco = cv2.dilate(branco.astype(np.uint8), np.ones((5, 5), np.uint8)).astype(bool)
+        cab &= ~branco
+    ys = np.nonzero(a.any(axis=1))[0]
+    topo, base = ys[0], ys[-1]
+    alt = base - topo
+    faixa = a[topo:topo + max(2, int(alt * 0.12))]
+    cx = np.nonzero(faixa)[1].mean()                   # meio da cabeça
+    H, W = a.shape
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    desce = np.clip((yy - (topo + alt * 0.10)) / (alt * 0.42), 0, 1) ** 1.1
+    atras = suave(cx + cel * 0.02, cx - cel * 0.10, xx)     # 1 atrás da cabeça, 0 na frente (rosto)
+    corpo = opaco & ~cab
+    dist = cv2.distanceTransform((~corpo).astype(np.uint8), cv2.DIST_L2, 5)
+    perto = cv2.dilate(cab.astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(cel * 0.05) * 2 + 1,) * 2)).astype(bool)
+    regiao = (perto & ~corpo).astype(np.float32)
+    w = regiao * desce * atras * (0.35 + 0.65 * suave(1.0, cel * 0.03, dist))
+    w = cv2.GaussianBlur(w, (0, 0), max(1.0, cel * 0.008))
+    nz = w[w > 0.02]
+    m = np.percentile(nz, 90) if nz.size > 50 else w.max()
+    return np.clip(w * (0.9 / m), 0, 1) if m > 0.02 else w        # cada quadro com as pontas soltas de verdade
+
+
 def viva():
     pasta = RAIZ / 'jogo/assets/viva'
     meta = json.loads((pasta / 'aurora_viva.json').read_text(encoding='utf-8'))
@@ -84,33 +118,44 @@ def viva():
     print('viva:', pasta / 'aurora_viva_cabelo.png', f'cabelo {cab.mean():.1%} da imagem')
 
 
-def folha():
-    meta = json.loads((RAIZ / 'arte/sprites/aurora_folha.json').read_text(encoding='utf-8'))
-    sheet = np.array(Image.open(RAIZ / 'arte/sprites/aurora_folha.png').convert('RGBA'))
+def quadros_da_folha(meta):
+    """retângulos dos quadros: folhas de animação (animacoes) ou de peças (pecas)"""
+    if 'animacoes' in meta:
+        return [q for a in meta['animacoes'].values() for q in a['quadros']]
+    return [p['quadro'] for p in meta['pecas'].values()]
+
+
+def folha(nome='aurora', ate=0.6, pela_raiz=False, tirar_metal=True):
+    """nome: aurora (adulta), crianca (Prólogo) ou sentar (Figma). ate: até que fração da altura há cabelo."""
+    meta = json.loads((RAIZ / f'arte/sprites/{nome}_folha.json').read_text(encoding='utf-8'))
+    sheet = np.array(Image.open(RAIZ / f'arte/sprites/{nome}_folha.png').convert('RGBA'))
     saida = np.zeros(sheet.shape[:2], np.float32)
-    cel = meta['celula']
-    for anim in meta['animacoes'].values():
-        for x, y, w, h in anim['quadros']:
-            rgba = sheet[y:y + h, x:x + w]
-            if rgba[..., 3].max() == 0:
-                continue
-            ys = np.nonzero(rgba[..., 3].max(axis=1) > 128)[0]
-            topo, base = ys[0], ys[-1]
+    cel = meta['celula'] if isinstance(meta['celula'], int) else meta['celula'][1]
+    for x, y, w, h in quadros_da_folha(meta):
+        rgba = sheet[y:y + h, x:x + w]
+        if rgba[..., 3].max() == 0:
+            continue
+        ys = np.nonzero(rgba[..., 3].max(axis=1) > 128)[0]
+        topo, base = ys[0], ys[-1]
+        if pela_raiz:
+            p = pesos_pela_raiz(rgba, cel, tirar_metal=tirar_metal)
+            p[int(topo + (base - topo) * ate):] = 0
+        else:
             p, _ = pesos(rgba, folga_px=cel * 0.05, borda_px=cel * 0.04, area_min=cel * cel * 0.002,
-                         ate_y=topo + (base - topo) * 0.6)
-            saida[y:y + h, x:x + w] = np.maximum(saida[y:y + h, x:x + w], p)
+                         ate_y=topo + (base - topo) * ate)
+        saida[y:y + h, x:x + w] = np.maximum(saida[y:y + h, x:x + w], p)
     H, W = saida.shape
     img = np.zeros((H, W, 3), np.uint8)
     img[..., 0] = np.clip(saida * 255, 0, 255)
-    Image.fromarray(img).resize((W // 4, H // 4), Image.BILINEAR).save(RAIZ / 'arte/sprites/aurora_folha_cabelo.png')
-    print('folha:', RAIZ / 'arte/sprites/aurora_folha_cabelo.png')
-    camadas(sheet, saida)
+    Image.fromarray(img).resize((W // 4, H // 4), Image.BILINEAR).save(RAIZ / f'arte/sprites/{nome}_folha_cabelo.png')
+    print('folha:', RAIZ / f'arte/sprites/{nome}_folha_cabelo.png')
+    camadas(sheet, saida, nome)
 
 
 LIMIAR_MECHA = 0.12   # peso a partir do qual o pixel de cabelo vai para a camada que balança
 
 
-def camadas(sheet, peso):
+def camadas(sheet, peso, nome='aurora'):
     """Separa a folha em duas camadas para o jogo (o corpo nunca é deformado pela malha do cabelo):
       aurora_folha_corpo.png  folha inteira SEM o cabelo que balança (imagem fixa, por cima)
       aurora_folha_mecha.png  só o cabelo que balança, em meia resolução (malha deformada, por baixo do corpo);
@@ -131,16 +176,23 @@ def camadas(sheet, peso):
     corpo = sheet.copy()
     corpo[..., 3] = np.clip(a * (1 - m_suave) * 255, 0, 255).astype(np.uint8)
     corpo[corpo[..., 3] == 0, :3] = 0
-    Image.fromarray(corpo).save(RAIZ / 'arte/sprites/aurora_folha_corpo.png', optimize=True)
+    Image.fromarray(corpo).save(RAIZ / f'arte/sprites/{nome}_folha_corpo.png', optimize=True)
     largo = cv2.dilate(mecha.astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (13, 13))).astype(bool)
     cab = sheet.copy()
     cab[..., 3] = np.where(largo, sheet[..., 3], 0)
     cab[cab[..., 3] == 0, :3] = 0
     H, W = a.shape
-    Image.fromarray(cab).resize((W // 2, H // 2), Image.LANCZOS).save(RAIZ / 'arte/sprites/aurora_folha_mecha.png', optimize=True)
+    Image.fromarray(cab).resize((W // 2, H // 2), Image.LANCZOS).save(RAIZ / f'arte/sprites/{nome}_folha_mecha.png', optimize=True)
     print('camadas: aurora_folha_corpo.png (fixa) + aurora_folha_mecha.png (cabelo, 1/2)')
 
 
 if __name__ == '__main__':
-    viva()
-    folha()
+    import sys
+    qual = sys.argv[1] if len(sys.argv) > 1 else 'aurora'
+    if qual == 'aurora':
+        viva()
+        folha('aurora')
+    elif qual == 'crianca':
+        folha('crianca', ate=0.66, pela_raiz=True, tirar_metal=False)   # criança: sem armadura; o prata do cabelo puxa para o azul
+    elif qual == 'sentar':
+        folha('sentar', ate=0.8, pela_raiz=True)       # sentar na fogueira (Figma)

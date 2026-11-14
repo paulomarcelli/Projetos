@@ -92,6 +92,16 @@ fogueira tremulando nela; ao levantar, afunda, sobe e estica no fim.
   na cena final. Por cima, uma camada somada fraca (halo das chamas, véu do cone, poeira no luar). Armadilha: o
   `resize` da RenderTexture não muda o alvo já usado — recriar a RenderTexture quando a tela muda de tamanho.
 
+**Física do cabelo (pedido do usuário: "melhore a física do cabelo"):** `CorrenteCabelo` em `src/pesos.js` (testes em
+`testes/cabelo.test.mjs`) substitui a mola única. São 8 pontos da raiz à ponta, cada um preso à pose (firme na raiz) e
+ao desvio dos vizinhos → o movimento desce como onda e a ponta atrasa. Recebe a inércia do corpo
+(`empurrar(ax, ay, dt)`: ao pular o cabelo fica para baixo, caindo sobe, ao pousar cai e quica, na arrancada fica para
+trás) e chicoteia ao virar (`virar(f)`); balança em arco. Ligada em: Aurora em movimento (`QuadrosVivos`), Aurora
+parada (`AuroraViva`, cabelo e tranças), **Aurora criança no Prólogo** (agora também em duas camadas: corpo + mecha) e
+no **sentar** (folha em células iguais). Pesos: `ferramentas/pesos_cabelo.py [aurora|crianca|sentar]`; para criança e
+sentar o peso cresce da raiz para as pontas só atrás da cabeça (`pesos_pela_raiz`), sem a capinha branca; na criança o
+filtro de "metal" fica desligado (o prata do cabelo dela puxa para o azul). Precisa de `opencv-python-headless`.
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo

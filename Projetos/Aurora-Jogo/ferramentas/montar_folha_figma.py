@@ -107,6 +107,27 @@ def montar(tabela, nome_folha):
     print(f'{nome_folha}_folha.png', folha.size, len(pecas), 'peças')
 
 
+def montar_celulas(tabela, nome_folha, cel=(540, 380), base=376):
+    """Folha em células iguais (para a malha do cabelo, que precisa de quadros do mesmo tamanho). Cada quadro é
+    colocado com a âncora (cabeça na horizontal, base na vertical) no ponto (meio da célula, base)."""
+    W, H = cel
+    nomes = list(tabela)
+    folha = Image.new('RGBA', (W * len(nomes), H))
+    meta = {'resolucao': 1, 'celula': [W, H], 'base': base, 'pecas': {}}
+    for i, nome in enumerate(nomes):
+        im = Image.open(REC / tabela[nome][0]).convert('RGBA')
+        a = np.asarray(im)
+        ax = centro_cabeca(a)
+        _, ay = ancora(a)
+        x0, y0 = int(round(W / 2 - ax)) + i * W, int(round(base - ay))
+        assert x0 >= i * W and x0 + im.width <= (i + 1) * W and y0 >= 0, f'{nome} não cabe na célula'
+        folha.paste(im, (x0, y0))
+        meta['pecas'][nome] = {'quadro': [i * W, 0, W, H], 'ancora': [W / 2, base]}
+    folha.save(SAIDA / f'{nome_folha}_folha.png', optimize=True)
+    (SAIDA / f'{nome_folha}_folha.json').write_text(json.dumps(meta, ensure_ascii=False, indent=1))
+    print(f'{nome_folha}_folha.png', folha.size, len(nomes), 'células')
+
+
 def main():
     qual = sys.argv[1] if len(sys.argv) > 1 else 'tudo'
     if qual in ('prologo', 'tudo'):
@@ -114,7 +135,7 @@ def main():
     if qual in ('floresta', 'tudo'):
         montar(FLORESTA, 'floresta')
     if qual in ('sentar', 'tudo'):
-        montar(SENTAR, 'sentar')
+        montar_celulas(SENTAR, 'sentar')
 
 
 if __name__ == '__main__':

@@ -104,6 +104,12 @@ no **sentar** (camada de cabelo da própria folha dela). Pesos: `ferramentas/pes
 sentar o peso cresce da raiz para as pontas só atrás da cabeça (`pesos_pela_raiz`), sem a capinha branca; na criança o
 filtro de "metal" fica desligado (o prata do cabelo dela puxa para o azul). Precisa de `opencv-python-headless`.
 
+**Redesenhar a Aurora adulta no Figma: testado e recusado.** O usuário sugeriu redesenhar a Aurora adulta inteira no
+Figma. A ficha e os testes (`arte/figma/aurora_nova/`: ficha, corrida, arco) saíram consistentes entre si, mas é
+**outra Aurora** (mais velha, ~5,5 cabeças, outro rosto). O usuário escolheu **manter a atual**. Animações novas dela:
+prompts para o Gemini com a imagem anexada em `docs/prompts-aurora-rodada3.md`. Dica para o Figma: "strict side view"
+não basta; o bloco "perfil puro, só um olho, nariz para a borda direita" funcionou.
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo

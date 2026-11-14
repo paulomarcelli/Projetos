@@ -58,6 +58,20 @@ galho, tronco em pé e tronco caído. Fluxo em `docs/ARQUITETURA.md` (seção "A
 levanta (passos, pulo, pouso, esquiva), pegadas que somem em 6 s, amassar ao pousar e esticar ao pular (`efeitos.js`,
 `NeveNosPes`; `main.js`, `pisarNaNeve`).
 
+**Segunda rodada (pedido: "melhore a barra de vida e mana, os movimentos de ataque, os animais, iluminação, neve, chão"):**
+- Painel (`hud.js`): moldura de prata do Figma (`assets/hud/moldura.png`), retrato da Aurora no medalhão, barras com
+  degradê e reflexo, dano atrasado (a parte perdida fica clara e escorre), tremor ao apanhar, pulso vermelho com pouca
+  vida, números, nível e moedas. Dica de controles foi para o pé da tela.
+- Ataques (`efeitos.js`, `Brilhos`; folha da floresta, peças `fx_*` de fundo preto, mistura somada): arco de luz na
+  estocada da lâmina, explosão de impacto nos acertos, luz juntando na ponta da flecha enquanto ela puxa a corda,
+  estrela e tremor curto ao soltar, rastro de luz atrás da flecha, poeira ao cravar.
+- Animais: cervo com 12 quadros novos (andar, correr, olhar, cheirar), vagueia ±150 px, pasta e encara se ela corre
+  perto (`perceber`); lebres e pássaros (`animais.js`) que fogem e voltam quando ela está longe.
+- Luz (`luz.js`), neve em 3 profundidades com cintilar (`vento.js`), chão com neve pintada, sombra que escurece a terra,
+  pingentes nas quinas e nos galhos, capim, pedrinhas e samambaias (`fase.js`, `terrenoPintado`).
+- `window.__jogo.escalaTempo = 0.08` deixa o jogo em câmera lenta para fotografar efeitos no Playwright.
+- As folhas de sprites do Figma vão para o jogo em WebP (`*_folha.webp`, ~1 MB cada).
+
 **Fase 1 — A Floresta da Névoa** (`jogo/fases/fase1.json`): a caçada do roteiro em 10 trechos — clareira (ensina
 andar) → primeiro salto (vala rasa, sem perigo) → alvos de palha (ensina o arco) → subida pelos galhos → mirante (rastros
 do cervo) → ravina com sombras → penhascos sobre o abismo → galhos com sombras → 2ª fogueira → clareira do cervo

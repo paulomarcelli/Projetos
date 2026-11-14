@@ -37,7 +37,14 @@ PECAS = {
 }
 # Fase 1: altura 0 = resolução original (dividida por RESOLUCAO, para a mesma conta no jogo)
 FLORESTA = {n: (f'{n}.png', 0) for n in ['pinheiro_grande', 'pinheiro_medio', 'pinheiro_pequeno', 'placa', 'alvo', 'arbusto', 'pedra',
-                                          'cervo_pastando', 'cervo_alerta', 'cervo_caido', 'galho', 'tronco_em_pe', 'tronco_caido']}
+                                          'cervo_pastando', 'cervo_alerta', 'cervo_caido', 'galho', 'tronco_em_pe', 'tronco_caido',
+                                          *[f'cervo_andar_{i}' for i in range(6)], *[f'cervo_correr_{i}' for i in range(4)], 'cervo_olhar', 'cervo_cheirar',
+                                          'lebre_sentada', 'lebre_limpa', 'lebre_pulo_0', 'lebre_pulo_1', 'lebre_pulo_2',
+                                          'passaro_parado', 'passaro_bica', 'passaro_voo_0', 'passaro_voo_1', 'passaro_voo_2',
+                                          'pingentes', 'capim', 'pedrinhas', 'samambaia', 'cerca']}
+# efeitos (fundo preto → alfa = brilho): golpe, impacto, rastro da flecha, brilhos e poeira de neve
+FLORESTA.update({f'fx_{n}': (f'fx_{n}.png', 0) for n in ['corte_0', 'corte_1', 'corte_2', 'impacto_0', 'impacto_1', 'impacto_2',
+                                                       'rastro', 'orbe', 'brilho', 'poeira']})
 
 
 def corpo(a):
@@ -82,6 +89,7 @@ def montar(tabela, nome_folha):
         ax, ay = ancora(np.asarray(im))
         meta['pecas'][nome] = {'quadro': [px, py, im.width, im.height], 'ancora': [round(ax, 1), round(ay, 1)]}
     folha.save(SAIDA / f'{nome_folha}_folha.png', optimize=True)
+    folha.save(SAIDA / f'{nome_folha}_folha.webp', quality=90, method=6)   # o jogo carrega a WebP (bem mais leve)
     (SAIDA / f'{nome_folha}_folha.json').write_text(json.dumps(meta, ensure_ascii=False, indent=1))
     print(f'{nome_folha}_folha.png', folha.size, len(pecas), 'peças')
 

@@ -28,6 +28,8 @@ alvos de palha, penhascos e a cena final).
 | Prólogo: furtividade (cone de visão, esconderijos, andar abaixada, ouvir passos), diálogos letra a letra, festa, altar e neve | Mais quadros de animação para os personagens do Prólogo (hoje eles ficam parados) |
 | Arte pintada (gerada no Figma): castelo, soldados, personagens, cena da neve; na Fase 1, céu, floresta em camadas, chão, pinheiros, galhos, placas, alvos e cervo | |
 | Neve que levanta nos passos, no pulo e na aterrissagem, pegadas que somem, amassar ao pousar e esticar ao pular | |
+| Painel de vida e mana com moldura de prata, retrato e dano atrasado; arco de luz no golpe, impacto, luz juntando no arco, rastro da flecha | |
+| Cervo que anda, pasta, cheira e encara; lebres e pássaros que fogem; luar, luz das fogueiras, neve em 3 profundidades, neve pintada e pingentes no chão | |
 | Aurora parada "viva" (respira, pisca, mão abre e fecha) e em movimento com o cabelo separado do corpo, reagindo ao vento | Diálogos com escolhas, som e música |
 | Sentar na Fogueira Lunar (respirando), salvar, evoluir; dano em 3 quadros com clarão, recuo e hit-stop | Menu inicial e controles de toque |
 | Fase 1 em dados, com teste automático (jogador robô, alcance dos saltos e ritmo) | Patrulha imperial na Fase 1 (precisa de arte dos soldados) |

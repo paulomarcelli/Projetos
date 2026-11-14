@@ -5,7 +5,7 @@
  *  - Vinheta: as bordas da tela piscam em vermelho quando a Aurora apanha
  *  - Impacto: pausa curta (hit-stop) e tremor de câmera, para o golpe ter peso
  */
-import { Container, Graphics, Text } from '../vendor/pixi.min.mjs';
+import { Container, Graphics, Sprite, Text } from '../vendor/pixi.min.mjs';
 
 export class Faiscas {
   constructor() { this.raiz = new Container(); this.lista = []; }
@@ -122,5 +122,41 @@ export class NeveNosPes {
     for (let i = this.lista.length - 1; i >= 0; i--) if (this.lista[i].vida <= 0) { this.lista[i].g.destroy(); this.lista.splice(i, 1); }
     for (const m of this.marcas) { m.vida -= dt; m.g.alpha = Math.min(1, m.vida / 2); }
     for (let i = this.marcas.length - 1; i >= 0; i--) if (this.marcas[i].vida <= 0) { this.marcas[i].g.destroy(); this.marcas.splice(i, 1); }
+  }
+}
+
+/**
+ * Efeitos pintados (arte do Figma, fundo preto → mistura somada): corte da lâmina em 3 quadros, explosão de impacto,
+ * brilho da estrela, orbe de luz e poeira de neve. tex = texturas da folha da floresta (fase.js, arteFloresta().tex).
+ */
+export class Brilhos {
+  constructor(tex) {
+    this.tex = tex;
+    this.raiz = new Container();
+    this.raiz.blendMode = 'add';
+    this.lista = [];
+  }
+  /** anima uma sequência de quadros num ponto. dir vira na horizontal; escala; dura (s) */
+  tocar(quadros, x, y, { dir = 1, escala = 0.5, dura = 0.22, rot = 0, tint = 0xffffff, alpha = 1, sobe = 0 } = {}) {
+    const s = new Sprite(this.tex[quadros[0]]);
+    s.anchor.set(0.5); s.position.set(x, y); s.scale.set(escala * dir, escala); s.rotation = rot; s.tint = tint; s.alpha = alpha;
+    this.raiz.addChild(s);
+    this.lista.push({ s, quadros, t: 0, dura, alpha, sobe, escala, dir });
+    return s;
+  }
+  corte(x, y, dir) { this.tocar(['fx_corte_0', 'fx_corte_1', 'fx_corte_2'], x, y, { dir, escala: 0.62, dura: 0.2, tint: 0xe9e2ff }); }
+  impacto(x, y, escala = 0.5) { this.tocar(['fx_impacto_0', 'fx_impacto_1', 'fx_impacto_2'], x, y, { escala, dura: 0.24 }); }
+  estrela(x, y, escala = 0.45) { this.tocar(['fx_brilho'], x, y, { escala, dura: 0.35, rot: Math.random() }); }
+  poeira(x, y, dir = 1) { this.tocar(['fx_poeira'], x, y, { dir, escala: 0.28, dura: 0.5, alpha: 0.7, sobe: -30 }); }
+  atualizar(dt) {
+    for (const e of this.lista) {
+      e.t += dt;
+      const f = Math.min(1, e.t / e.dura);
+      e.s.texture = this.tex[e.quadros[Math.min(e.quadros.length - 1, Math.floor(f * e.quadros.length))]];
+      if (e.quadros.length === 1) { e.s.scale.set(e.escala * e.dir * (0.7 + f * 0.6), e.escala * (0.7 + f * 0.6)); e.s.rotation += dt * 2; }
+      e.s.alpha = e.alpha * (f < 0.7 ? 1 : (1 - f) / 0.3);
+      e.s.y += e.sobe * dt;
+    }
+    for (let i = this.lista.length - 1; i >= 0; i--) if (this.lista[i].t >= this.lista[i].dura) { this.lista[i].s.destroy(); this.lista.splice(i, 1); }
   }
 }

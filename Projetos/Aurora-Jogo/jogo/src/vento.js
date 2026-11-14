@@ -3,7 +3,7 @@
  * (atrás do cenário, pequenas; na frente da câmera, grandes) para dar profundidade (parallax).
  * `forca` vai de -1 (soprando para a esquerda) a 1 (para a direita).
  */
-import { Container, Graphics, MeshPlane, Sprite } from '../vendor/pixi.min.mjs';
+import { Container, Graphics, MeshPlane, Sprite, Texture } from '../vendor/pixi.min.mjs';
 import { MolaCabelo, amostrar } from './pesos.js';
 
 const CORES = ['#7c9a5a', '#a3b86c', '#c9a25a', '#8a6a9e', '#5f8a7a'];
@@ -40,7 +40,7 @@ export class Vento {
 
     // folhas: muitas durante a rajada, poucas na brisa
     const intensidade = Math.abs(rajada);
-    const taxa = this.neve ? 22 + intensidade * 30 : 2 + intensidade * 38;
+    const taxa = this.neve ? 34 + intensidade * 40 : 2 + intensidade * 38;
     if (Math.random() < taxa * dt) this.criarFolha(Math.random() < 0.4 ? 'frente' : 'atras', largura, altura);
     for (const f of this.folhas) {
       f.vida -= dt;
@@ -49,6 +49,7 @@ export class Vento {
       f.g.y += (f.queda + 30 * Math.sin(this.t * 3 + f.fase)) * dt;
       f.g.rotation += f.giro * dt * (0.5 + intensidade);
       if (!this.neve) f.g.scale.y = f.esc * Math.abs(Math.sin(this.t * f.vira + f.fase));
+      else if (f.brilha) f.g.alpha = f.alfa * (0.55 + 0.45 * Math.max(0, Math.sin(this.t * 5 + f.fase * 3)));
       if (f.g.x < -80 || f.g.x > largura + 80 || f.g.y > altura + 60) f.vida = 0;
     }
     for (let i = this.folhas.length - 1; i >= 0; i--) {
@@ -76,19 +77,46 @@ export class Vento {
   }
 }
 
+// textura de floco: miolo claro e borda suave (os flocos de perto ficam desfocados, como fora de foco na câmera)
+let texFloco = null;
+function floco() {
+  if (texFloco) return texFloco;
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const d = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  d.addColorStop(0, 'rgba(255,255,255,1)'); d.addColorStop(0.35, 'rgba(255,255,255,0.85)'); d.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = d; g.fillRect(0, 0, 64, 64);
+  texFloco = Texture.from(c);
+  return texFloco;
+}
+
+/**
+ * Neve em 3 profundidades: longe (miúda, lenta, atrás do mundo), meio (atrás) e perto (grande, desfocada, rápida,
+ * na frente da câmera). Alguns flocos cintilam ao pegar o luar. O parallax segue a profundidade.
+ */
 Vento.prototype.criarFloco = function criarFloco(camada, largura, altura) {
-  const frente = camada === 'frente';
-  const g = new Graphics();
-  const r = frente ? 2.2 + Math.random() * 2.2 : 0.9 + Math.random() * 1.2;
-  g.circle(0, 0, r).fill({ color: '#f4f6ff', alpha: frente ? 0.85 : 0.6 });
+  const r = Math.random();
+  const prof = camada === 'frente' ? (r < 0.35 ? 'perto' : 'meio') : (r < 0.6 ? 'longe' : 'meio');
+  const P = {
+    longe: { tam: [3, 6], alfa: 0.45, vel: 70, queda: [28, 45], parallax: 0.35, alvo: this.atras },
+    meio: { tam: [6, 11], alfa: 0.75, vel: 150, queda: [55, 85], parallax: 0.8, alvo: camada === 'frente' ? this.frente : this.atras },
+    perto: { tam: [16, 30], alfa: 0.38, vel: 300, queda: [120, 170], parallax: 1.6, alvo: this.frente },
+  }[prof];
+  const g = new Sprite(floco());
+  g.anchor.set(0.5);
+  const tam = P.tam[0] + Math.random() * (P.tam[1] - P.tam[0]);
+  g.width = g.height = tam;
+  g.alpha = P.alfa * (0.7 + Math.random() * 0.3);
+  g.tint = Math.random() < 0.3 ? 0xdfe6ff : 0xffffff;
   // nasce em cima, em qualquer ponto; na rajada também entra pelo lado de onde o vento vem
   const deLado = Math.abs(this.forca) > 0.4 && Math.random() < 0.5;
   g.x = deLado ? (this.forca >= 0 ? -20 : largura + 20) : Math.random() * largura;
-  g.y = deLado ? Math.random() * altura * 0.8 : -10;
-  (frente ? this.frente : this.atras).addChild(g);
+  g.y = deLado ? Math.random() * altura * 0.8 : -20;
+  P.alvo.addChild(g);
   this.folhas.push({
-    g, vida: 14, vel: (frente ? 260 : 120) + Math.random() * 80, queda: (frente ? 90 : 45) + Math.random() * 40,
-    giro: 0, vira: 0, fase: Math.random() * 6, esc: 1, parallax: frente ? 1.35 : 0.5,
+    g, vida: 16, vel: P.vel + Math.random() * 60, queda: P.queda[0] + Math.random() * (P.queda[1] - P.queda[0]),
+    giro: 0, vira: 0, fase: Math.random() * 6, esc: 1, parallax: P.parallax,
+    brilha: prof !== 'longe' && Math.random() < 0.18, alfa: g.alpha,
   });
 };
 

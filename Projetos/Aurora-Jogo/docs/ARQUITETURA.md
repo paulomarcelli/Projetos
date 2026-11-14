@@ -19,6 +19,8 @@ index.html ................. escolhe a fase: ?fase=prologo | ?fase=1 (sem nada: 
        ├─ fase.js ........... desenho da fase em camadas (terreno, pinheiros, placas, rastros, alvos, cervo, névoa,
        │                      título e cena final)
        ├─ inimigos.js ....... Sombra de névoa (sprites do Gemini: patrulha, dano, morte, moedas)
+       ├─ animais.js ........ fauna: lebres (sentam, limpam o rosto, pulam) e pássaros (bicam, voam) que fogem da Aurora
+       ├─ luz.js ............ noite perto do chão, luz das fogueiras, raios de luar saindo da lua do céu, vinheta
        └─ hud.js ............ Painel (vida, mana, moedas, nível) e MenuFogueira (evolução)
 ```
 `fisica.js` e `progresso.js` não importam nada gráfico: rodam no Node e têm testes em `testes/`.

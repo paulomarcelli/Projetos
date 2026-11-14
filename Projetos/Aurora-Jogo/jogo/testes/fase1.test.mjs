@@ -58,3 +58,21 @@ test('galho (umaVia): atravessa subindo e segura caindo', () => {
   assert.ok(passou, 'não atravessou o galho por baixo');
   assert.equal(Math.round(c.y + CONST.ALTURA), 450, 'não ficou em pé no galho');
 });
+
+test('bolsas de moedas em cima de um chão e pingentes presos embaixo de uma rocha', () => {
+  const temChao = (x, y) => fase.solidos.some((s) => Math.abs(s.y - y) < 1 && x >= s.x && x <= s.x + s.w);
+  for (const b of fase.bolsas ?? []) assert.ok(temChao(b.x, b.y), `bolsa em ${b.x}`);
+  for (const p of fase.pingentes ?? []) {
+    assert.ok(fase.solidos.some((s) => Math.abs(s.y + s.h - p.y) < 1 && p.x >= s.x && p.x <= s.x + s.w), `pingente em ${p.x} sem teto`);
+  }
+});
+
+test('rotas altas ensinam o Salto da Lua: fora do pulo normal, dentro do pulo duplo', () => {
+  // saliência A5 (acima de A3) e arco T1 (acima de D1): altura maior que o pulo normal e menor que os dois pulos somados
+  const duplo = PULO.altura * (1 + CONST.PULO_DUPLO * CONST.PULO_DUPLO) * 0.9;
+  for (const [de, para] of [['A3', 'A5'], ['D1', 'T1']]) {
+    const subida = fase.porId[de].y - fase.porId[para].y;
+    assert.ok(subida > PULO.altura - CONST.BLOCO / 2, `${para} dá para alcançar sem o Salto da Lua (${subida} px)`);
+    assert.ok(subida < duplo, `${para} alto demais até para o Salto da Lua (${subida} px, máx ${duplo.toFixed(0)})`);
+  }
+});

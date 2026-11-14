@@ -76,6 +76,12 @@ def montar_animacoes():
     an['sentada'] = {'fps': 3, 'loop': True, 'quadros': [aberta, aberta, pensa, aberta, aberta, expira, aberta, aberta,
                                                          expira, aberta, aberta, fechada]}
     an['levantar'] = {'fps': 7, 'loop': False, 'quadros': sen[::-1]}
+    # parada, de vez em quando: mexe os dedos (abre, fecha, estica) e, com vento forte, prende a mecha atrás da orelha
+    G = grupo('gesto'); Hc = grupo('cabelo')
+    g2, g3, g4, g5 = (t(q) for q in G[1:])          # começa e termina na própria pose parada (folha ≤ 64 quadros = 4096 px)
+    an['gesto'] = {'fps': 5, 'loop': False, 'quadros': [p1, g2, g3, g3, g4, g5, p1]}
+    h2, h3, h4, h5 = (t(q) for q in Hc[1:])
+    an['arrumar_cabelo'] = {'fps': 6, 'loop': False, 'quadros': [p1, h2, h2, h3, h4, h4, h5, p1]}
     return an
 
 
@@ -92,6 +98,7 @@ def salvar(anims):
         lugar[id(q)] = [x, y, CEL, CEL]
     for nome, a in anims.items():
         meta['animacoes'][nome] = {'fps': a['fps'], 'loop': a['loop'], 'quadros': [lugar[id(q)] for q in a['quadros']]}
+    assert folha.height <= 4096, f'folha com {folha.height} px de altura: placas de vídeo aceitam até 4096'
     folha.save(SAIDA / 'aurora_folha.png', optimize=True)
     (SAIDA / 'aurora_folha.json').write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding='utf-8')
     print('aurora_folha.png', folha.size, len(unicos), 'quadros únicos')

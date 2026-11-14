@@ -160,3 +160,15 @@ export class Brilhos {
     for (let i = this.lista.length - 1; i >= 0; i--) if (this.lista[i].t >= this.lista[i].dura) { this.lista[i].s.destroy(); this.lista.splice(i, 1); }
   }
 }
+
+/** pegadas de bicho: cascos do cervo (dois traços em V) e patas da lebre (quatro pontinhos) */
+NeveNosPes.prototype.marcarBicho = function marcarBicho(x, y, tipo, dir) {
+  const g = new Graphics();
+  if (tipo === 'casco') g.ellipse(-2, 0, 2.2, 1.4).fill({ color: 0x6a76a0, alpha: 0.6 }).ellipse(2, 0, 2.2, 1.4).fill({ color: 0x6a76a0, alpha: 0.6 });
+  else g.circle(0, 0, 1.6).fill({ color: 0x6a76a0, alpha: 0.55 }).circle(dir * 5, -1, 1.6).fill({ color: 0x6a76a0, alpha: 0.55 })
+    .ellipse(dir * 11, 0, 3, 1.4).fill({ color: 0x6a76a0, alpha: 0.55 }).ellipse(dir * 11, 3, 3, 1.4).fill({ color: 0x6a76a0, alpha: 0.55 });
+  g.position.set(x, y - 1);
+  this.pegadas.addChild(g);
+  this.marcas.push({ g, vida: 8 });
+  if (this.marcas.length > 90) { this.marcas[0].g.destroy(); this.marcas.shift(); }
+};

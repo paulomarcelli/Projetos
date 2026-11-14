@@ -311,6 +311,10 @@ let anim = 'parada', velAnim = 1;
 function tocar(nome, vel = 1) { if (anim !== nome) { anim = nome; menina.tocar(anims[nome]); } velAnim = vel; }
 function quadroAtual(dt) {
   menina.velocidade = velAnim;
+  // respiração da menina parada (o peito sobe; mais fundo quando ela está com medo, escondida)
+  menina.alturaEmPe = 225;
+  menina.respirar = anim === 'parada' ? 1.6 : anim.startsWith('escondida') ? 2.2 : 0;
+  menina.periodoResp = anim === 'escondida_medo' ? 1.6 : 3.2;
   // dentro do castelo não venta: o cabelo vai para trás só com a corrida (e balança com a inércia)
   menina.atualizar(dt, -Math.abs(corpo.vx) / P.velCorrida * 9, 0);
 }

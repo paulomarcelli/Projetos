@@ -62,7 +62,7 @@ def pesos(rgba, folga_px, borda_px, area_min, ate_y=None):
     return cv2.GaussianBlur(w, (0, 0), max(1.0, borda_px * 0.25)), cab
 
 
-def pesos_pela_raiz(rgba, cel, sem_branco=True, tirar_metal=True):
+def pesos_pela_raiz(rgba, cel, sem_branco=True, tirar_metal=True, pano=False):
     """Variante para desenhos em que o cabelo cai rente ao corpo (Aurora criança, sentar do Figma): o peso cresce
     da raiz (alto da cabeça, peso 0) para as pontas, só no cabelo ATRÁS da cabeça (os desenhos olham para a direita),
     e cai perto do corpo só um pouco (as mechas das costas, coladas no vestido, ainda balançam).
@@ -91,6 +91,19 @@ def pesos_pela_raiz(rgba, cel, sem_branco=True, tirar_metal=True):
     regiao = (perto & ~corpo).astype(np.float32)
     w = regiao * desce * atras * (0.35 + 0.65 * suave(1.0, cel * 0.03, dist))
     w = cv2.GaussianBlur(w, (0, 0), max(1.0, cel * 0.008))
+    nz = w[w > 0.02]
+    m = np.percentile(nz, 90) if nz.size > 50 else w.max()
+    w = np.clip(w * (0.9 / m), 0, 1) if m > 0.02 else w
+    if pano:
+        # abas da túnica (verde-azulado, abaixo da cintura, atrás do corpo): balançam com o vento, bem menos que o cabelo
+        hsv = cv2.cvtColor(np.ascontiguousarray(rgba[..., :3]), cv2.COLOR_RGB2HSV).astype(np.float32)
+        hh, ss, vv = hsv[..., 0] * 2, hsv[..., 1] / 255, hsv[..., 2] / 255
+        teal = a & (hh > 160) & (hh < 205) & (ss > 0.3) & (vv > 0.2)
+        abaixo = suave(topo + alt * 0.48, topo + alt * 0.62, yy)
+        tras = suave(cx + cel * 0.03, cx - cel * 0.06, xx)
+        pw = cv2.GaussianBlur((teal * abaixo * tras).astype(np.float32), (0, 0), 2.0) * 0.45
+        w = np.maximum(w, pw)
+    return w
     nz = w[w > 0.02]
     m = np.percentile(nz, 90) if nz.size > 50 else w.max()
     return np.clip(w * (0.9 / m), 0, 1) if m > 0.02 else w        # cada quadro com as pontas soltas de verdade
@@ -125,7 +138,7 @@ def quadros_da_folha(meta):
     return [p['quadro'] for p in meta['pecas'].values()]
 
 
-def folha(nome='aurora', ate=0.6, pela_raiz=False, tirar_metal=True):
+def folha(nome='aurora', ate=0.6, pela_raiz=False, tirar_metal=True, pano=False):
     """nome: aurora (adulta), crianca (Prólogo) ou sentar (Figma). ate: até que fração da altura há cabelo."""
     meta = json.loads((RAIZ / f'arte/sprites/{nome}_folha.json').read_text(encoding='utf-8'))
     sheet = np.array(Image.open(RAIZ / f'arte/sprites/{nome}_folha.png').convert('RGBA'))
@@ -138,8 +151,9 @@ def folha(nome='aurora', ate=0.6, pela_raiz=False, tirar_metal=True):
         ys = np.nonzero(rgba[..., 3].max(axis=1) > 128)[0]
         topo, base = ys[0], ys[-1]
         if pela_raiz:
-            p = pesos_pela_raiz(rgba, cel, tirar_metal=tirar_metal)
-            p[int(topo + (base - topo) * ate):] = 0
+            p = pesos_pela_raiz(rgba, cel, tirar_metal=tirar_metal, pano=pano)
+            if not pano:
+                p[int(topo + (base - topo) * ate):] = 0
         else:
             p, _ = pesos(rgba, folga_px=cel * 0.05, borda_px=cel * 0.04, area_min=cel * cel * 0.002,
                          ate_y=topo + (base - topo) * ate)
@@ -193,7 +207,7 @@ if __name__ == '__main__':
         viva()
         folha('aurora')
     elif qual == 'aurora_nova':
-        folha('aurora', ate=0.62, pela_raiz=True)   # Aurora redesenhada (Figma)
+        folha('aurora', ate=0.62, pela_raiz=True, pano=True)   # Aurora redesenhada (Figma): cabelo + abas da túnica
     elif qual == 'crianca':
         folha('crianca', ate=0.66, pela_raiz=True, tirar_metal=False)   # criança: sem armadura; o prata do cabelo puxa para o azul
     elif qual == 'sentar':

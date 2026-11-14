@@ -1,0 +1,21 @@
+/* Filmes recentes: dois quadros com película (os únicos com cor) e um furo no meio com a frase. */
+.filmes { padding: clamp(60px, 9vh, 110px) var(--margem) clamp(90px, 13vh, 150px); color: var(--tinta); }
+.filmes__topo { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: clamp(24px, 3.4vh, 40px); }
+.filmes .pilula { --c: var(--tinta); --f: var(--osso); }
+.filmes__grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(6px, .5vw, 10px); align-items: start; }
+.filme figcaption { display: grid; gap: 4px; margin-top: 10px; font-size: 14px; }
+.filme figcaption .mono { color: var(--tinta-2); }
+.filme__quadro { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #1a1714; }
+.filme__quadro img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.08) saturate(.86) brightness(.97) sepia(.06); transition: transform 1.4s var(--entra); }
+.filme__quadro::before { content: ""; position: absolute; inset: 0; z-index: 1; background: rgb(30, 24, 20); mix-blend-mode: lighten; pointer-events: none; }
+.filme__quadro::after { content: ""; position: absolute; inset: 0; z-index: 2; background: radial-gradient(closest-side, transparent 55%, rgba(0, 0, 0, .45)); pointer-events: none; }
+.filme__grao { position: absolute; inset: -50%; z-index: 3; background: url('/img/grao.png') 0 0 / 160px 160px repeat; opacity: .24; mix-blend-mode: overlay; animation: grao .5s steps(1) infinite; pointer-events: none; }
+@media (hover: hover) { html:not(.is-scrolling) .filme:hover img { transform: scale(1.035); } }
+.filmes__furo { aspect-ratio: 4 / 5; display: grid; place-items: center; padding: 10%; background: rgba(10, 10, 10, .26); }
+.filmes__furo p { color: var(--luz); font-size: var(--f-furo); font-weight: 650; line-height: 1.12; letter-spacing: -.02em; text-align: center; max-width: 13ch; }
+@media (max-width: 720px) {
+  .filmes__topo { flex-direction: column; align-items: flex-start; }
+  .filmes__grade { grid-template-columns: 1fr; gap: 22px; }
+  .filmes__furo { order: -1; aspect-ratio: 4 / 3; }
+}
+@media (prefers-reduced-motion: reduce) { .filme__grao { animation: none; } }

@@ -1,0 +1,24 @@
+/* Intro: rótulos, coluna de quadros que sobe e o último que cresce até a tela (carga.js). */
+.carga { position: fixed; inset: 0; z-index: 100; background: var(--noite); color: var(--luz); overflow: hidden; }
+.carga.is-abrindo { background: transparent; }
+.carga.is-fora { display: none; }
+.carga__rotulos {
+  position: absolute; left: 50%; top: 50%; z-index: 2; width: 30em; transform: translate(-50%, -50%); gap: 2em;
+  display: flex; justify-content: space-between; white-space: nowrap;
+  transition: width .9s var(--entra), opacity .3s linear;
+}
+.carga__rotulos b { font-weight: inherit; display: inline-block; min-width: 2.2ch; text-align: right; }
+.carga.is-abre .carga__rotulos { width: calc(100vw - 2 * var(--margem)); }
+.carga.is-crescendo .carga__rotulos { opacity: 0; }
+.carga__coluna {
+  position: absolute; top: 100%; left: 50%; transform: translate(-50%, 0);
+  width: min(28vw, 50svh); display: flex; flex-direction: column; gap: clamp(8px, .8vw, 14px); will-change: transform;
+}
+.carga__coluna img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #151515; }
+.carga__coluna .carga__ultimo { aspect-ratio: var(--tela, 16 / 9); object-position: 62% 50%; filter: grayscale(1) contrast(1.14) brightness(.9); }
+.carga__ultimo.is-solto {
+  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; aspect-ratio: auto; transform-origin: 0 0;
+  object-fit: cover; object-position: 62% 50%; filter: grayscale(1) contrast(1.14) brightness(.9); will-change: transform;
+}
+@media (max-width: 720px) { .carga__coluna { width: 62vw; } }
+@media (prefers-reduced-motion: reduce) { .carga { display: none; } }

@@ -1,0 +1,16 @@
+/* Estúdio: manifesto e a janela cinemascope (um furo 2,39:1). */
+.manifesto { --janela: min(980px, 66vw); padding: clamp(110px, 16vh, 190px) var(--margem) clamp(110px, 15vh, 180px); color: var(--tinta); }
+.manifesto__texto { width: var(--janela); margin: 0 auto clamp(48px, 7vh, 80px); font-size: var(--f-manifesto); font-weight: 330; line-height: 1.14; letter-spacing: -.02em; }
+.manifesto__janela { display: grid; grid-template-columns: 1fr var(--janela) 1fr; align-items: center; gap: clamp(16px, 2vw, 32px); }
+.janela { aspect-ratio: 2.39 / 1; }
+.nota { display: grid; gap: 6px; font-size: 14px; }
+.nota .mono { color: var(--tinta-2); }
+.nota--esq { text-align: right; justify-self: end; max-width: 15ch; }
+.nota--dir { justify-self: start; max-width: 18ch; }
+@media (max-width: 720px) {
+  .manifesto { --janela: 100%; }
+  .manifesto__texto { width: auto; }
+  .manifesto__janela { grid-template-columns: 1fr 1fr; row-gap: 22px; }
+  .janela { grid-column: 1 / -1; grid-row: 1; aspect-ratio: 16 / 10; }
+  .nota--esq { text-align: left; justify-self: start; }
+}

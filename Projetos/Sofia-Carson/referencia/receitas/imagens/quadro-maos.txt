@@ -1,0 +1,8 @@
+Generate one image with your image generation tool.
+
+The attached image (quadro-cinegrafista) is another shot from the SAME film shoot: match its look exactly (black-and-white, thick patchy haze, one strong backlight shining toward the lens with uneven diffuse rays, deep blacks, pure silhouettes with thin rim light, real film grain, imperfect handheld documentary feel, slight softness, not too clean). This is a DIFFERENT shot of the same night, part of a fast montage of moments on a film set.
+
+A cinematic black-and-white photograph, 16:9 landscape (1672x941), no text, no logo, no interface, no watermark, no frame. Pure monochrome, no color. It must look like a single frame grabbed from real footage, not a posed or perfect AI image: slightly off-center, uneven exposure, a bit of glare.
+
+SHOT: extreme close-up of the camera operator's hands on a professional cinema lens. His right hand fingertips turn the focus ring (geared ring, engraved distance marks blurred and unreadable). The lens barrel crosses the frame diagonally from lower left to the middle; part of the camera body and matte box edge out of focus on the left. The backlight sits behind, upper right, and blows out through the haze around the fingers and the lens edge, so the hands are almost black silhouettes with a bright rim on the knuckles and fingernails. Very shallow depth of field, 85mm macro feel.
+

@@ -1,0 +1,18 @@
+/* Nav fixa em três colunas: clara sobre o filme, faixa cor de osso quando a folha passa por baixo. */
+.nav {
+  position: fixed; z-index: 50; top: 0; left: 0; right: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: var(--topo) var(--margem); color: var(--luz); font-size: var(--f-nav);
+  transition: background-color .35s var(--entra), color .35s var(--entra), opacity .6s var(--entra), padding .35s var(--entra);
+}
+html:not(.is-pronto) .nav { opacity: 0; pointer-events: none; }
+.nav__links { display: flex; gap: clamp(14px, 1.6vw, 26px); }
+.nav__marca { font-size: 17px; font-weight: 650; letter-spacing: .16em; opacity: 0; transition: opacity .4s var(--entra); }
+.nav__acoes { display: flex; gap: 8px; justify-content: flex-end; }
+.nav.is-clara { background: var(--osso); color: var(--tinta); padding-block: calc(var(--topo) * .55); }
+.nav.is-clara .nav__marca { opacity: 1; }
+.nav.is-clara .pilula { --c: var(--tinta); --f: var(--osso); }
+@media (max-width: 720px) {
+  .nav { grid-template-columns: 1fr auto; padding-block: 14px; }
+  .nav__marca, .nav__reel, .nav .pilula__seta { display: none; }
+  .nav.is-clara { padding-block: 10px; }
+}

@@ -1,0 +1,8 @@
+Generate one image with your image generation tool.
+
+The attached image (quadro-cinegrafista) is another shot from the SAME film shoot: match its look exactly (black-and-white, thick patchy haze, one strong backlight shining toward the lens with uneven diffuse rays, deep blacks, pure silhouettes with thin rim light, real film grain, imperfect handheld documentary feel, slight softness, not too clean). This is a DIFFERENT shot of the same night, part of a fast montage of moments on a film set.
+
+A cinematic black-and-white photograph, 16:9 landscape (1672x941), no text, no logo, no interface, no watermark, no frame. Pure monochrome, no color. It must look like a single frame grabbed from real footage, not a posed or perfect AI image: slightly off-center, uneven exposure, a bit of glare.
+
+SHOT: from behind and slightly to the side, the director (a man with short hair and a light jacket) stands bent forward, one hand on his chin, watching a small field monitor mounted on a C-stand in front of him. The monitor screen glows white-grey (its image unreadable, just a bright blurred picture), lighting the edge of his face and fingers. Beyond him, deep in the haze, the strong backlight of the set shines toward the lens with uneven rays, and far away the soft silhouettes of crew and a camera on a dolly. He is a silhouette in the right half of the frame, the left side falls into black. Medium shot, from the waist up.
+

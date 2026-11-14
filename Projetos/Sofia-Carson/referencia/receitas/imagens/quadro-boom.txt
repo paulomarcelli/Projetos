@@ -1,0 +1,8 @@
+Generate one image with your image generation tool.
+
+The attached image (quadro-cinegrafista) is another shot from the SAME film shoot: match its look exactly (black-and-white, thick patchy haze, one strong backlight shining toward the lens with uneven diffuse rays, deep blacks, pure silhouettes with thin rim light, real film grain, imperfect handheld documentary feel, slight softness, not too clean). This is a DIFFERENT shot of the same night, part of a fast montage of moments on a film set.
+
+A cinematic black-and-white photograph, 16:9 landscape (1672x941), no text, no logo, no interface, no watermark, no frame. Pure monochrome, no color. It must look like a single frame grabbed from real footage, not a posed or perfect AI image: slightly off-center, uneven exposure, a bit of glare.
+
+SHOT: a boom operator in silhouette, wearing headphones, arms raised overhead holding a long boom pole with a furry windscreen microphone at its tip. The pole crosses the upper part of the frame diagonally from right to left, the microphone in the upper left over dark haze. He stands in the right third, seen in profile, cut at the waist by the bottom edge, facing left. Behind him a tall bright rectangle of light (a huge diffusion frame / window of light) blasts toward the lens through thick haze, cutting his silhouette and the pole sharply; uneven rays spill out from its edges.
+

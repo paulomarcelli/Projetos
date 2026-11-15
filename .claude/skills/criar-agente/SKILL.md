@@ -10,8 +10,8 @@ fazer nada no meio. Esta skill monta um agente do Claude Code em **7 passos**. E
 pergunte só o que não dá para descobrir no repositório; o que faltar fica marcado como `[preencher]` e entra na lista do
 fim.
 
-Agentes que já existem neste repositório: veja `agentes/README.md` (o time) antes de criar um novo, para não repetir
-papel.
+Agentes que já existem neste repositório: veja `agentes/README.md` (o time) e `agentes/PROTOCOLO.md` antes de criar
+um novo, para não repetir papel. Novo agente segue o protocolo da equipe (plano, execução, revisão, bloco ENTREGA).
 
 ## Passo 1 · O documento do agente
 
@@ -68,6 +68,12 @@ Confira que existem:
 
 Salve o arquivo do Passo 2 e acrescente o agente à tabela do time em `agentes/README.md` (nome, papel, como acionar).
 
+**No Escritório do Paulo** (`Projetos/Escritorio-do-Paulo/`), o agente novo aparece sozinho numa mesa livre. Para ele
+ganhar identidade, acrescente a entrada dele em `equipe.json` (nome, papel, inspiração, cor, `avatar`, `tela` do
+monitor, personalidade e ferramentas) e o desenho da figurinha em `web/js/avatares.js`, no mesmo estilo dos outros.
+Se ele implementa interface, marque `"exigeDesignSystem": true`: o escritório prende as tarefas dele no Design System
+da Sofia. Leia `agentes/PROTOCOLO.md` e ponha o novo papel na tabela "Quem faz o quê".
+
 ## Passo 6 · A memória
 
 Crie `agentes/memoria/<nome>.md` com:
@@ -84,6 +90,8 @@ dados, por exemplo), mas comece com um `.md`.
 ## Passo 7 · Acionar e monitorar
 
 - **Acionar:** "Sofia, …", "use o agente <nome> para…", ou `@<nome>` no Claude Code.
+- **No Escritório do Paulo:** dê uma tarefa ao agente pelo painel e confira que a figurinha dele muda de estado; a
+  gaveta mostra concluídas, erros, tempo médio e custo de cada um.
 - **Monitorar:** a cada tarefa o agente registra na memória uma linha com a data, o pedido, o resultado (**perfeito**,
   **com ajustes** ou **falhou**), o tempo, o custo aproximado quando souber e o que melhorar. De tempos em tempos, leia
   o registro e pergunte:

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escritório do Paulo</title>
+  <meta name="description" content="O escritório da equipe de agentes de IA do Paulo: quem está fazendo o quê, as tarefas e as entregas, nesta máquina.">
+  <meta name="theme-color" content="#0a0d13">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fontes/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fontes/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topo">
+      <div class="marca">
+        <svg viewBox="0 0 26 26" aria-hidden="true" focusable="false">
+          <rect x="6.500" y="3" width="16" height="12" rx="2.500" fill="none" stroke="#e23636" stroke-width="2.600"/>
+          <path d="M6.500 3v20" stroke="#e23636" stroke-width="2.600" stroke-linecap="round"/>
+          <path d="M11 9h7" stroke="#e9edf5" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h1 class="marca__nome">Escritório do Paulo</h1>
+      </div>
+      <p class="topo__achado" id="achado" aria-live="polite">Abrindo o escritório…</p>
+      <div class="topo__sistema" id="sistema"></div>
+      <div class="topo__acoes">
+        <button class="botao" type="button" id="abre-tarefa">Nova tarefa</button>
+        <button class="botao botao--principal" type="button" id="abre-pedido">Novo pedido</button>
+      </div>
+    </header>
+    <div id="faixas"></div>
+
+    <main class="salao">
+      <section class="piso" id="piso" aria-label="O escritório">
+        <div class="parede" id="parede" aria-label="Números de hoje"></div>
+        <section class="mapa" id="mapa" aria-label="O escritório visto de cima. Clique no crachá de um agente para ver o que ele está fazendo."></section>
+        <section class="mesa" id="mesa" aria-label="Mesa de projeto"></section>
+      </section>
+
+      <aside class="lateral">
+        <section class="bloco bloco--tarefas" aria-labelledby="t-tarefas">
+          <div class="bloco__topo"><h2 id="t-tarefas">Tarefas</h2><span id="conta-tarefas"></span></div>
+          <div class="bloco__corpo" id="tarefas"></div>
+        </section>
+        <section class="bloco bloco--atividade" aria-labelledby="t-atividade">
+          <div class="bloco__topo"><h2 id="t-atividade">Atividade</h2><span>mais recente primeiro</span></div>
+          <div class="bloco__corpo" id="atividade"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <aside class="gaveta" id="gaveta" aria-label="Agente" aria-hidden="true"></aside>
+
+  <dialog id="dlg-pedido" aria-labelledby="dp-titulo">
+    <form class="dialogo" method="dialog" id="form-pedido">
+      <div class="dialogo__topo">
+        <div><h2 id="dp-titulo">Novo pedido</h2><p>Diga o que você quer. A equipe divide em tarefas e cada um faz a sua parte.</p></div>
+        <button class="icone-botao" type="button" data-fecha aria-label="Fechar"></button>
+      </div>
+      <div class="dialogo__corpo">
+        <label class="campo"><span>O pedido</span><textarea name="pedido" required placeholder="Ex.: uma página de inscrição para o meu curso, com formulário e versão para celular"></textarea></label>
+        <fieldset class="opcoes">
+          <legend>Quem monta o plano</legend>
+          <label class="opcao"><input type="radio" name="modo" value="steve" checked><div><b>O Steve planeja</b><span>O coordenador lê o pedido e decide as tarefas e a ordem.</span></div></label>
+          <div id="opcoes-fluxo"></div>
+        </fieldset>
+        <label class="campo" id="campo-projeto" hidden><span>Nome do projeto</span><input name="projeto" maxlength="80" placeholder="Ex.: Página do curso"></label>
+        <label class="marcar"><input type="checkbox" name="auto" checked><span>Executar sozinho: cada tarefa começa quando a anterior termina. Sem isso, você inicia uma a uma.</span></label>
+        <p class="erro-form" data-erro hidden></p>
+      </div>
+      <div class="dialogo__pe">
+        <button class="botao" type="button" data-fecha>Cancelar</button>
+        <button class="botao botao--principal" type="submit">Enviar pedido</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-tarefa" aria-labelledby="dt-titulo">
+    <form class="dialogo" method="dialog" id="form-tarefa">
+      <div class="dialogo__topo">
+        <div><h2 id="dt-titulo">Nova tarefa</h2><p>Uma tarefa para um agente, com ou sem dependências.</p></div>
+        <button class="icone-botao" type="button" data-fecha aria-label="Fechar"></button>
+      </div>
+      <div class="dialogo__corpo">
+        <label class="campo"><span>Título</span><input name="titulo" required maxlength="160" placeholder="Ex.: Revisar o responsivo da página inicial"></label>
+        <label class="campo"><span>O que fazer</span><textarea name="descricao" placeholder="O que precisa ser feito e como saber que acabou."></textarea></label>
+        <div class="dupla">
+          <label class="campo"><span>Agente</span><select name="agente" required></select></label>
+          <label class="campo"><span>Tipo</span><select name="tipo"><option value="entrega">Entrega (produz algo)</option><option value="revisao">Revisão (confere o trabalho de outro)</option></select></label>
+        </div>
+        <div class="dupla">
+          <label class="campo"><span>Projeto</span><input name="projeto" maxlength="80" list="lista-projetos" placeholder="Opcional"><datalist id="lista-projetos"></datalist></label>
+          <label class="campo"><span>Depende de</span><select name="dependeDe" multiple></select><small>Segure Ctrl (ou ⌘) para marcar mais de uma.</small></label>
+        </div>
+        <p class="erro-form" data-erro hidden></p>
+      </div>
+      <div class="dialogo__pe">
+        <button class="botao" type="button" data-fecha>Cancelar</button>
+        <button class="botao" type="submit" value="criar">Criar</button>
+        <button class="botao botao--principal" type="submit" value="iniciar">Criar e iniciar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-detalhe" aria-labelledby="dd-titulo"><div class="dialogo" id="detalhe"></div></dialog>
+
+  <div class="aviso-flutuante" id="aviso" role="alert" hidden></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

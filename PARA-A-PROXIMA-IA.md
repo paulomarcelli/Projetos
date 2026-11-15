@@ -30,8 +30,12 @@ andamento (**Aurora**) tem uma passagem detalhada em
   lista de cópia desse workflow (já aconteceu: a pasta `fases/` da Aurora ficou de fora e foi corrigida).
 - `.claude/skills/`: skills instaladas no repositório. As de jogo são **`gamedev-skills`** (roteador com `level-design`,
   `platformer`, `pixijs-rendering` etc.) e **`2d-games`** (instalada nesta conversa, a pedido dele; `skills-lock.json`).
-- `.claude/agents/` e `agentes/`: o **time de agentes**. A **Sofia** (`.claude/agents/sofia.md`) é a designer: memória em
-  `agentes/memoria/sofia.md`, relatórios em `agentes/relatorios/sofia/`. Para criar outro agente, use a skill `criar-agente`.
+- `.claude/agents/` e `agentes/`: o **time de agentes** (Steve, Sofia, Tony, Stephen, Peter, Bruce, Wanda, Natasha), com
+  memórias em `agentes/memoria/` e o protocolo em `agentes/PROTOCOLO.md`. A **Sofia** é a designer: todo projeto de
+  interface começa com o Design System dela no Figma. Para criar outro agente, use a skill `criar-agente`.
+- `Projetos/Escritorio-do-Paulo/`: o **Escritório do Paulo**, painel local da equipe (roda só na máquina dele:
+  `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar`). `.claude/settings.json` tem os ganchos que avisam o
+  escritório; se ele estiver fechado, os ganchos não fazem nada. Design System no Figma: `JFyZCMHbS1ASDzSdbGu6pC`.
 - `docs/capas/`: imagens de capa usadas no `README.md` da raiz e no perfil do GitHub.
 
 ## 3. O que foi feito nesta conversa (mais recente primeiro)

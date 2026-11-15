@@ -1,47 +1,124 @@
 // O mapa do escritório: visto de cima, em pixel art desenhada por código (nenhuma imagem pronta).
-// Três ambientes: a sala da equipe (uma mesa por agente), a copa e a sala de
-// reunião (onde o coordenador monta os planos). Os personagens são as figurinhas da equipe (avatares.js), por cima
-// do cenário. Cada agente tem a sua mesa; o lugar e o movimento de cada um saem do estado real:
-//   disponível                                  → na própria mesa, parado, monitor apagado
-//   trabalhando, pensando, pesquisando, revisão → na própria mesa, se mexendo, com o monitor aceso
-//   aguardando, concluído, com erro             → na mesa, monitor com o sinal do estado e o balão
-//   coordenador montando um plano               → vai até a sala de reunião e volta quando termina
-//   agente sem mesa (do nono em diante)         → fica na copa
-// Ninguém anda ou digita sem uma mudança de estado vinda do servidor.
+// Três ambientes: a sala da equipe (uma mesa por agente), a copa e a sala de reunião. Os personagens são as
+// figurinhas da equipe (avatares.js), por cima do cenário, e andam por uma rede de caminhos (corredores e portas).
+// O que cada um faz sai do estado real:
+//   disponível ou concluído          → passeia: café, geladeira, tapete da copa, quadro da sala de reunião, a mesa de
+//                                      um colega, e volta para a própria mesa de vez em quando
+//   acabou de entregar uma tarefa    → antes de passear, leva a entrega até a mesa de quem continua o trabalho
+//   trabalhando, pensando, pesquisando, em revisão, aguardando, com erro
+//                                    → volta andando (mais rápido) para a própria mesa e fica lá; monitor aceso
+//   coordenador montando um plano    → vai para a sala de reunião
+//   agente sem mesa (do nono em diante) → mora na copa
+// Ninguém aparece trabalhando sem uma execução real: passear é só de quem está livre.
 import { ROTULOS, ICONES, ESTADOS_ATIVOS } from './telas.js';
 
 export const LARGURA = 336;
 export const ALTURA = 176;
-const VELOCIDADE = 96; // pixels do mapa por segundo
-const ESPINHA = 111; // corredor entre os ambientes da esquerda e a sala da equipe
+const PASSEIO = 30; // pixels do mapa por segundo, andando à toa
+const PRESSA = 78; // indo trabalhar
 
 const COR_ESTADO = {
   disponivel: '#7f8a9c', trabalhando: '#4c9aff', pensando: '#b39dff', pesquisando: '#35c9c0',
   aguardando: '#f2b544', revisao: '#ff8f5a', concluido: '#4cc38a', erro: '#ff5d5d',
 };
 
-// ---------- lugares ----------
+// ---------- lugares e caminhos ----------
 const MESAS = [0, 1, 2, 3].map(i => ({ x: 120 + i * 54, y: 25, fileira: 0 })).concat([0, 1, 2, 3].map(i => ({ x: 120 + i * 54, y: 108, fileira: 1 })));
-const assento = mesa => ({ x: mesa.x + 24, y: mesa.y + 45 }); // os pés da figurinha, logo à frente da mesa
-const CORREDOR = [84, 166]; // por onde se chega a cada fileira de mesas
-const COPA = [[22, 140], [52, 140], [82, 140], [22, 160], [52, 160], [82, 160], [37, 174], [67, 174]];
-const REUNIAO = [[22, 62], [84, 62], [22, 80], [84, 80]];
-const PORTA = { copa: 132, reuniao: 49 };
+const COLUNAS = [144, 198, 252, 306]; // o centro de cada mesa
 
-function lugarDe(indice, tipo) {
-  if (tipo === 'mesa' && MESAS[indice]) {
-    const mesa = MESAS[indice];
-    const a = assento(mesa);
-    const y = CORREDOR[mesa.fileira];
-    return { tipo, x: a.x, y: a.y, acesso: [[ESPINHA, y], [a.x, y]] };
-  }
-  if (tipo === 'reuniao') {
-    const [x, y] = REUNIAO[indice % REUNIAO.length];
-    return { tipo, x, y, acesso: [[ESPINHA, PORTA.reuniao], [96, PORTA.reuniao], [x, PORTA.reuniao]] };
-  }
-  const [x, y] = COPA[indice % COPA.length];
-  return { tipo: 'copa', x, y, acesso: [[ESPINHA, PORTA.copa], [96, PORTA.copa], [x, PORTA.copa]] };
+// Pontos por onde dá para andar (x, y são os pés da figurinha) e as ligações entre eles.
+const PONTOS = {
+  'espinha-reuniao': [111, 49], 'espinha-fileira0': [111, 84], 'espinha-copa': [111, 132], 'espinha-fileira1': [111, 166],
+  'porta-reuniao': [96, 49], 'reuniao-1': [84, 64], 'reuniao-2': [84, 80], 'quadro': [52, 27],
+  'porta-copa': [96, 132], 'copa-centro': [58, 132], 'cafe': [17, 124], 'geladeira': [78, 122], 'tapete-1': [34, 152], 'tapete-2': [66, 160],
+  'meio': [225, 84], 'planta-esq': [168, 171], 'planta-dir': [282, 171],
+};
+const LIGACOES = [
+  ['espinha-reuniao', 'espinha-fileira0'], ['espinha-fileira0', 'espinha-copa'], ['espinha-copa', 'espinha-fileira1'],
+  ['espinha-reuniao', 'porta-reuniao'], ['porta-reuniao', 'reuniao-1'], ['reuniao-1', 'reuniao-2'], ['porta-reuniao', 'quadro'],
+  ['espinha-copa', 'porta-copa'], ['porta-copa', 'copa-centro'], ['copa-centro', 'cafe'], ['copa-centro', 'geladeira'],
+  ['copa-centro', 'tapete-1'], ['tapete-1', 'tapete-2'], ['copa-centro', 'tapete-2'],
+  ['espinha-fileira0', 'corredor0-0'], ['corredor0-0', 'corredor0-1'], ['corredor0-1', 'meio'], ['meio', 'corredor0-2'], ['corredor0-2', 'corredor0-3'],
+  ['espinha-fileira1', 'corredor1-0'], ['corredor1-0', 'planta-esq'], ['planta-esq', 'corredor1-1'], ['corredor1-1', 'corredor1-2'],
+  ['corredor1-2', 'planta-dir'], ['planta-dir', 'corredor1-3'],
+];
+COLUNAS.forEach((x, i) => {
+  PONTOS[`corredor0-${i}`] = [x, 84];
+  PONTOS[`corredor1-${i}`] = [x, 166];
+  PONTOS[`mesa-${i}`] = [x, 70];
+  PONTOS[`mesa-${i + 4}`] = [x, 153];
+  LIGACOES.push([`corredor0-${i}`, `mesa-${i}`], [`corredor1-${i}`, `mesa-${i + 4}`]);
+  // ao lado de cada mesa: onde um colega para para conversar ou entregar um trabalho
+  const lado = i === 3 ? x - 24 : x + 24;
+  PONTOS[`lado-${i}`] = [lado, 66];
+  PONTOS[`lado-${i + 4}`] = [lado, 150];
+  LIGACOES.push([`corredor0-${i}`, `lado-${i}`], [`corredor1-${i}`, `lado-${i + 4}`]);
+});
+const COPA_MORADIA = ['tapete-1', 'tapete-2', 'cafe', 'geladeira', 'copa-centro'];
+// Para onde quem está livre gosta de ir (as mesas dos colegas entram na hora do sorteio).
+const PASSEIOS = ['cafe', 'geladeira', 'tapete-1', 'tapete-2', 'quadro', 'meio', 'planta-esq', 'planta-dir', 'reuniao-2'];
+
+const VIZINHOS = {};
+for (const [a, b] of LIGACOES) {
+  (VIZINHOS[a] ||= []).push(b);
+  (VIZINHOS[b] ||= []).push(a);
 }
+const distancia = (a, b) => Math.hypot(PONTOS[a][0] - PONTOS[b][0], PONTOS[a][1] - PONTOS[b][1]);
+
+// Menor caminho entre dois pontos da rede (Dijkstra; a rede é pequena).
+function rota(de, para) {
+  const custo = { [de]: 0 };
+  const veio = {};
+  const abertos = new Set([de]);
+  while (abertos.size) {
+    let atual = null;
+    for (const n of abertos) if (atual === null || custo[n] < custo[atual]) atual = n;
+    abertos.delete(atual);
+    if (atual === para) break;
+    for (const v of VIZINHOS[atual] || []) {
+      const c = custo[atual] + distancia(atual, v);
+      if (custo[v] === undefined || c < custo[v]) {
+        custo[v] = c;
+        veio[v] = atual;
+        abertos.add(v);
+      }
+    }
+  }
+  const caminho = [para];
+  while (caminho[0] !== de && veio[caminho[0]]) caminho.unshift(veio[caminho[0]]);
+  return caminho[0] === de ? caminho : [de, para];
+}
+function pontoMaisPerto(x, y) {
+  let melhor = null;
+  let menor = Infinity;
+  for (const [nome, [px, py]] of Object.entries(PONTOS)) {
+    const d = Math.hypot(px - x, py - y);
+    if (d < menor) {
+      menor = d;
+      melhor = nome;
+    }
+  }
+  return melhor;
+}
+const casaDe = indice => (MESAS[indice] ? `mesa-${indice}` : COPA_MORADIA[(indice - MESAS.length) % COPA_MORADIA.length]);
+const frenteDaMesa = indice => (MESAS[indice] ? `lado-${indice}` : 'copa-centro');
+const sorteio = (min, max) => min + Math.random() * (max - min);
+
+// O que a figurinha livre está fazendo onde parou (balãozinho). 16 px, traço de 1,6.
+const svg = d => `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const AFAZERES = {
+  cafe: svg('<path d="M3 6h8v4a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M11 7h1.5a1.5 1.5 0 0 1 0 3H11M5.5 2.5v1.500M8.5 2.5v1.500"/>'),
+  geladeira: svg('<rect x="4" y="2" width="8" height="12" rx="1.5"/><path d="M4 7h8M6 4.5v1M6 9v2"/>'),
+  quadro: svg('<path d="M3 13l1-3.500 7-7 2.500 2.500-7 7z"/><path d="M9.500 4l2.500 2.500"/>'),
+  'tapete-1': svg('<path d="M2.500 8.500c0-3 2.500-5 5.500-5s5.500 2 5.500 5-2.500 4-5.500 4c-.8 0-1.600-.1-2.300-.3L3 13.500l.8-2.300c-.8-.7-1.300-1.700-1.300-2.700z"/>'),
+  'tapete-2': svg('<path d="M8 3v6M5.500 6.500 8 9l2.500-2.500"/><path d="M3 12.500h10"/>'),
+  'planta-esq': svg('<path d="M8 14V7M8 9C8 5.500 5.500 4 3 4c0 3 2 5 5 5zM8 8c0-3 2-4.500 5-4.500 0 3-2 4.500-5 4.500z"/>'),
+  'planta-dir': svg('<path d="M8 14V7M8 9C8 5.500 5.500 4 3 4c0 3 2 5 5 5zM8 8c0-3 2-4.500 5-4.500 0 3-2 4.500-5 4.500z"/>'),
+  meio: svg('<circle cx="8" cy="8" r="5.500"/><path d="M8 5v3l2 1.500"/>'),
+  'reuniao-2': svg('<rect x="2.500" y="3" width="11" height="8" rx="1"/><path d="M5 13.500h6M8 11v2.500"/>'),
+  conversa: svg('<path d="M2.500 4.500a1.500 1.500 0 0 1 1.500-1.500h6a1.500 1.500 0 0 1 1.500 1.500v3.500a1.500 1.500 0 0 1-1.500 1.500H6.500L4 11.500V9.500a1.500 1.500 0 0 1-1.500-1.500z"/><path d="M11.500 6h1a1.500 1.500 0 0 1 1.500 1.500V11l-1.800-1.300H9"/>'),
+  entrega: svg('<path d="M4 2.500h5.500L12 5v8.500H4z"/><path d="M9.500 2.500V5H12M6 8h4M6 10.500h4"/>'),
+};
 
 // ---------- cenário (desenhado uma vez) ----------
 function desenharCenario(c) {
@@ -181,24 +258,48 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
   }
   new ResizeObserver(ajustarTamanho).observe(canvas);
 
-  function irPara(f, destino) {
-    if (f.lugar && f.lugar.tipo === destino.tipo && f.lugar.x === destino.x && f.lugar.y === destino.y) return;
-    const saida = f.lugar ? [...f.lugar.acesso].reverse() : [];
-    f.lugar = destino;
+  // Leva a figurinha até um ponto da rede, pelo menor caminho. "pressa" é para quando ela vai trabalhar.
+  function irPara(f, destino, { pressa = false, parar = 0 } = {}) {
+    f.destino = destino;
+    f.velocidade = pressa ? PRESSA : PASSEIO;
+    f.ate = 0;
+    f.pausa = parar;
     if (!f.posicionado || parado.matches) {
-      f.x = destino.x;
-      f.y = destino.y;
+      [f.x, f.y] = PONTOS[destino];
       f.caminho = [];
       f.posicionado = true;
+      f.noPonto = destino;
       return;
     }
-    // Se já estava andando, corta direto para o corredor; senão sai pelo acesso do lugar onde estava.
-    const inicio = f.caminho.length ? [[ESPINHA, f.y]] : saida;
-    f.caminho = [...inicio, ...destino.acesso, [destino.x, destino.y]];
+    if (f.noPonto === destino && !f.caminho.length) return;
+    const origem = f.caminho.length ? pontoMaisPerto(f.x, f.y) : f.noPonto || pontoMaisPerto(f.x, f.y);
+    f.noPonto = null;
+    f.caminho = rota(origem, destino).map(n => PONTOS[n]);
   }
 
+  // Quem está livre escolhe o próximo lugar: às vezes a própria mesa, às vezes a mesa de um colega, às vezes um
+  // canto do escritório. Dois não escolhem o mesmo lugar ao mesmo tempo.
+  function proximoPasseio(f) {
+    const ocupados = new Set([...figuras.values()].filter(o => o !== f).map(o => o.destino));
+    if (Math.random() < 0.3) return casaDe(f.indice);
+    const colegas = [...figuras.values()].filter(o => o !== f && MESAS[o.indice]).map(o => frenteDaMesa(o.indice));
+    const opcoes = [...PASSEIOS, ...colegas.slice(0, 3)].filter(n => !ocupados.has(n) && n !== f.noPonto);
+    return opcoes[Math.floor(Math.random() * opcoes.length)] || casaDe(f.indice);
+  }
+
+  const situacaoAntes = new Map(); // tarefa -> situação na última atualização
   function atualizar(equipe, tarefas) {
     ordem = equipe.map(a => a.id);
+    // Quem acabou de entregar leva a entrega até a mesa de quem continua (as tarefas que dependiam da dela).
+    const primeiraVez = situacaoAntes.size === 0;
+    for (const t of tarefas) {
+      const antes = situacaoAntes.get(t.id);
+      situacaoAntes.set(t.id, t.status);
+      if (primeiraVez || antes === t.status || t.status !== 'concluida' || !t.agente) continue;
+      const seguinte = tarefas.find(o => o.dependeDe.includes(t.id) && o.agente && o.agente !== t.agente);
+      const quem = figuras.get(t.agente);
+      if (seguinte && quem) quem.entrega = seguinte.agente;
+    }
     for (const id of [...figuras.keys()]) {
       if (!ordem.includes(id)) {
         figuras.get(id).cracha.remove();
@@ -232,7 +333,6 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
       const est = a.estado.estado;
       const tarefa = a.estado.tarefaId ? tarefas.find(t => t.id === a.estado.tarefaId) : null;
       const ativo = ESTADOS_ATIVOS.includes(est);
-      const tipo = !MESAS[indice] ? 'copa' : ativo && tarefa?.tipo === 'plano' ? 'reuniao' : 'mesa';
       if (f.estado && f.estado !== est) {
         f.boneco.classList.remove('acabou-de-mudar');
         void f.boneco.offsetWidth;
@@ -240,12 +340,26 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
       }
       f.estado = est;
       f.boneco.dataset.estado = est;
-      f.boneco.querySelector('.boneco__balao').innerHTML = est === 'disponivel' ? '' : ICONES[est] || '';
+      f.balao = null; // o desenhar refaz o balão
       f.ativo = ativo;
       f.esperando = a.estado.esperandoAgora || [];
       f.tela = a.tela;
       f.indice = indice;
-      irPara(f, lugarDe(indice, tipo));
+      // Onde ela tem de estar agora
+      const livre = est === 'disponivel' || est === 'concluido';
+      const presa = ativo && tarefa?.tipo === 'plano' ? 'reuniao-1' : casaDe(indice);
+      if (!livre || parado.matches) {
+        f.modo = 'posto';
+        f.entrega = null;
+        f.levando = false;
+        irPara(f, presa, { pressa: true });
+      } else {
+        if (!f.posicionado) irPara(f, casaDe(indice)); // aparece na própria mesa
+        if (f.modo !== 'livre') {
+          f.modo = 'livre';
+          f.ate = performance.now() + (f.entrega ? 300 : sorteio(1200, 4500));
+        }
+      }
       f.cracha.dataset.estado = est;
       f.cracha.querySelector('.cracha__nome').textContent = a.nome;
       f.cracha.querySelector('.cracha__estado').textContent = est === 'disponivel' ? '' : ROTULOS[est];
@@ -260,7 +374,7 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
   }
 
   function mover(f, dt) {
-    let resta = VELOCIDADE * dt;
+    let resta = (f.velocidade || PASSEIO) * dt;
     while (resta > 0 && f.caminho.length) {
       const [ax, ay] = f.caminho[0];
       const dx = ax - f.x;
@@ -271,6 +385,10 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
         f.y = ay;
         f.caminho.shift();
         resta -= d;
+        if (!f.caminho.length) {
+          f.noPonto = f.destino;
+          if (f.modo === 'livre') f.ate = performance.now() + (f.pausa || sorteio(3500, 9000));
+        }
       } else {
         f.x += (dx / d) * resta;
         f.y += (dy / d) * resta;
@@ -322,7 +440,7 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
     q.drawImage(cenario, 0, 0);
     const lista = [...figuras.values()];
     for (const f of lista) {
-      const naMesa = f.lugar?.tipo === 'mesa' && !f.caminho.length;
+      const naMesa = MESAS[f.indice] && f.noPonto === casaDe(f.indice) && !f.caminho.length;
       if (naMesa && f.ativo) tela(f, MESAS[f.indice]);
       else if (naMesa && (f.estado === 'erro' || f.estado === 'concluido' || f.estado === 'aguardando')) {
         const m = MESAS[f.indice];
@@ -343,6 +461,21 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
       f.cracha.style.top = `${((f.y - 34) / ALTURA) * 100}%`;
       f.cracha.style.zIndex = String(400 + Math.round(f.y));
       f.boneco.toggleAttribute('data-andando', andando);
+      f.boneco.toggleAttribute('data-fora', !andando && f.noPonto !== casaDe(f.indice) && f.modo === 'livre');
+      f.boneco.dataset.lugar = andando ? '' : f.noPonto || '';
+      // Balão: o estado, quando há um; para quem está livre, o que está fazendo onde parou.
+      let balao = f.estado === 'disponivel' ? '' : ICONES[f.estado] || '';
+      if (f.modo === 'livre' && f.estado === 'disponivel') {
+        if (f.levando) balao = AFAZERES.entrega;
+        else if (!andando && f.noPonto && f.noPonto !== casaDe(f.indice)) balao = AFAZERES[f.noPonto] || (f.noPonto.startsWith('lado-') ? AFAZERES.conversa : '');
+      } else if (f.modo === 'livre' && f.levando) {
+        balao = AFAZERES.entrega;
+      }
+      if (f.balao !== balao) {
+        f.balao = balao;
+        f.boneco.querySelector('.boneco__balao').innerHTML = balao;
+        f.boneco.toggleAttribute('data-afazer', Boolean(balao) && f.modo === 'livre' && (f.estado === 'disponivel' || f.levando));
+      }
       f.boneco.toggleAttribute('data-esquerda', andando && Boolean(f.paraEsquerda));
     }
   }
@@ -352,6 +485,17 @@ export function criarMapa(moldura, { aoAbrir, figura }) {
     ultimo = agora;
     let andando = false;
     for (const f of figuras.values()) {
+      if (f.modo === 'livre' && !f.caminho.length && f.ate && agora >= f.ate && !parado.matches) {
+        if (f.entrega && figuras.has(f.entrega)) {
+          // leva a entrega: para na frente da mesa do colega um pouco mais
+          irPara(f, frenteDaMesa(figuras.get(f.entrega).indice), { parar: 2600 });
+          f.levando = true;
+          f.entrega = null;
+        } else {
+          f.levando = false;
+          irPara(f, proximoPasseio(f));
+        }
+      }
       if (f.caminho.length) {
         mover(f, dt);
         andando = true;

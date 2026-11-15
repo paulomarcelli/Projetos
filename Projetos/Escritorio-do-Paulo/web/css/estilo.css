@@ -106,7 +106,7 @@ ul, ol { list-style: none; }
   position: absolute; transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
   padding: 3px 10px 3px 8px; border-radius: 999px; background: #20242f; color: #f6f8fb; border: 1px solid #353b4b;
   font-size: clamp(10px, calc(var(--escala) * 3.7px), 15px); font-weight: 500; line-height: 1.25; cursor: pointer;
-  box-shadow: 0 2px 0 rgba(10, 13, 19, .35); transition: left 60ms linear, top 60ms linear;
+  box-shadow: 0 2px 0 rgba(10, 13, 19, .35); transition: background-color var(--tempo-rapido), color var(--tempo-rapido);
   --estado: var(--estado-disponivel);
 }
 .cracha::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 8px; height: 8px; background: inherit; border: inherit; border-top: 0; border-left: 0; transform: translateX(-50%) rotate(45deg); }
@@ -130,7 +130,7 @@ ul, ol { list-style: none; }
 /* Figurinhas no mapa: o movimento acompanha o estado real; parado quando disponível. */
 .boneco {
   position: absolute; transform: translate(-50%, -100%); height: calc(var(--escala) * 32px); aspect-ratio: 120 / 140;
-  cursor: pointer; transition: left 60ms linear, top 60ms linear;
+  cursor: pointer;
 }
 .boneco__corpo { display: block; width: 100%; height: 100%; transform-origin: 50% 100%; }
 .boneco__corpo .av, .boneco__corpo img {
@@ -153,7 +153,10 @@ ul, ol { list-style: none; }
 .boneco[data-estado="revisao"] { --estado: var(--estado-revisao); }
 .boneco[data-estado="concluido"] { --estado: var(--estado-concluido); }
 .boneco[data-estado="erro"] { --estado: var(--estado-erro); }
-.boneco[data-andando] .boneco__corpo { animation: passo .32s ease-in-out infinite; }
+.boneco[data-andando] .boneco__corpo { animation: passo .42s ease-in-out infinite; }
+.boneco:not([data-andando])[data-estado="disponivel"] .boneco__corpo,
+.boneco:not([data-andando])[data-estado="concluido"]:not(.acabou-de-mudar) .boneco__corpo { animation: respira 3.2s ease-in-out infinite; }
+.boneco[data-afazer] .boneco__balao { --estado: #6b7a90; }
 .boneco:not([data-andando])[data-estado="trabalhando"] .boneco__corpo,
 .boneco:not([data-andando])[data-estado="revisao"] .boneco__corpo { animation: digitando .5s ease-in-out infinite; }
 .boneco:not([data-andando])[data-estado="pensando"] .boneco__corpo { animation: pensando 2.6s ease-in-out infinite; }
@@ -171,6 +174,7 @@ ul, ol { list-style: none; }
 .boneco[data-estado="trabalhando"] .av-magia, .boneco[data-estado="pensando"] .av-magia, .boneco[data-estado="pesquisando"] .av-magia { animation: luz 1.2s ease-in-out infinite; }
 .boneco[data-estado="trabalhando"] .av-luz, .boneco[data-estado="pensando"] .av-luz, .boneco[data-estado="pesquisando"] .av-luz, .boneco[data-estado="revisao"] .av-luz { animation: luz 1.6s ease-in-out infinite; }
 @keyframes passo { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-6%) rotate(3deg); } }
+@keyframes respira { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, .975); } }
 @keyframes procurando { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 @keyframes digitando { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3%); } }
 @keyframes pensando { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(3.5deg); } }

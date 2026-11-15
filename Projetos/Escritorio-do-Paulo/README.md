@@ -30,9 +30,11 @@ Os agentes de IA trabalham escondidos no terminal. Aqui eles ganham um escritór
 figurinha e um crachá com o estado. Quando a Sofia está no Figma, o monitor dela acende e ela se mexe; quando o Peter
 espera o Design System, ele fica com a ampulheta e um fio tracejado até a mesa dela.
 
-**Nada se mexe à toa.** Um agente só aparece trabalhando, pensando ou pesquisando enquanto existe uma execução real
-dele no Claude Code. Sem execução, ele está disponível; esperando outra tarefa, aguardando; quando termina, concluído;
-quando falha, com erro.
+**O escritório é vivo, mas não finge.** Quem está disponível passeia: toma café, abre a geladeira, para no quadro da
+sala de reunião, visita a mesa de um colega e volta para a sua. Quando termina uma tarefa, leva a entrega andando até
+quem continua o trabalho. Mas um agente só aparece trabalhando, pensando ou pesquisando enquanto existe uma execução
+real dele no Claude Code: nessa hora ele larga o que estava fazendo e volta para a mesa. Esperando outra tarefa, fica
+na mesa aguardando; quando falha, com erro.
 
 ## 🦸 A equipe
 

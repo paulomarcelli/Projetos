@@ -67,6 +67,17 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/Projetos/Escritorio-do-Paulo/ganchos/iniciar.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }

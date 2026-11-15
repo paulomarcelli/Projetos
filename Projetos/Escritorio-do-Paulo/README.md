@@ -81,6 +81,16 @@ Precisa do **Node 20 ou mais novo** e do **Claude Code** instalado e com a conta
 node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar --abrir
 ```
 
+Para ele **abrir sozinho** (uma vez só, no seu computador):
+
+```bash
+node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs autoiniciar instalar
+```
+
+A partir daí o Escritório abre quando o computador liga (Mac, Windows ou Linux) e volta se cair. Além disso, quando você
+abre o Claude Code neste repositório e ele estiver fechado, o próprio Claude Code o abre em segundo plano (gancho de
+início de sessão; nas sessões na nuvem, nada acontece). Para desligar: `autoiniciar remover`.
+
 Abre em <http://127.0.0.1:4310>. Com ele aberto, o **endereço online** também funciona nesse computador:
 <https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/>. Na primeira vez, o Chrome pergunta se o site
 pode acessar dispositivos da rede local: clique em **Permitir** (é assim que a página encontra o escritório). A página

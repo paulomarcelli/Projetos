@@ -113,8 +113,8 @@
       <p class="rotulo">Escritório do Paulo · endereço online</p>
       <h2 id="fechado-titulo">O escritório está fechado</h2>
       <p>Esta página mostra, ao vivo, o Escritório que roda no seu computador: as tarefas e o que cada agente está fazendo no Claude Code. Ele não está respondendo em <span class="mono">127.0.0.1:<span id="fechado-porta">4310</span></span>.</p>
-      <p>Abra no computador onde estão os agentes:</p>
-      <pre class="fechado__comando">node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar</pre>
+      <p>No computador onde estão os agentes, ligue o início automático uma vez (ele passa a abrir sozinho quando o computador liga e quando você abre o Claude Code):</p>
+      <pre class="fechado__comando">node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs autoiniciar instalar</pre>
       <p>Se o navegador perguntar se este site pode <b>acessar dispositivos da rede local</b>, clique em <b>Permitir</b>: é assim que a página encontra o Escritório no seu computador. Se você já tiver bloqueado, libere no cadeado ao lado do endereço.</p>
       <p class="fechado__nota">Funciona no Chrome, no Edge e no Firefox do mesmo computador em que os agentes rodam. Em outro aparelho, o escritório aparece fechado: os agentes rodam só na sua máquina.</p>
       <button class="botao botao--principal" type="button" id="fechado-tentar">Tentar de novo</button>

@@ -66,6 +66,19 @@ aqui.
   confiável fica de fora (ex.: "SC2" e o single "Her" da Sofia Carson, em 14/11/2026).
 - **Material pago** (guias, prompts e prints de modelos comprados, como o Lusco) fica fora do repositório público
   (`.gitignore` do projeto).
+- **15/11/2026 · Texto sobre filme: medir em vários planos.** Uma captura só engana: o contraste do texto claro sobre o
+  filme muda a cada plano. Esconda o texto, recorte a tela atrás dele e meça a luminância em 6 momentos (script em
+  `agentes/relatorios/sofia/2026-11-15-sofia-carson/captura.cjs`). No fã-site da Sofia Carson a nav caiu a 3,5:1 e a
+  pílula de contorno a 2,4:1 no plano claro.
+- **15/11/2026 · Filme de fundo pede pausa.** Vídeo em loop sem controle reprova a WCAG 2.2.2. Todo Design System com
+  filme de fundo já nasce com o componente "Pausar o filme".
+- **15/11/2026 · Foco em cada superfície.** Anel de foco em `currentColor` some quando a pílula cheia fica sobre o
+  filme escuro. Teste o Tab com captura sobre o filme e sobre a folha.
+- **15/11/2026 · Capturas pelo painel.** O Playwright fica em `/opt/node-tools` e abre o site no ar sem configuração
+  extra; o vídeo toca. Escreva os scripts com a ferramenta de arquivos (o terminal bloqueia heredoc e `$(...)`). PNG
+  de revisão pesa: 114 capturas deram 38 MB; converta ou suba só as folhas de contato.
+- **15/11/2026 · Sofia Carson sem `docs/design-system.md`.** O Design System está só no Figma e no README. Criar o
+  documento quando o Figma estiver autorizado.
 
 ## Registro de tarefas
 
@@ -75,3 +88,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 |---|---|---|---|---|---|
 | 14/11/2026 | (criação da Sofia; nenhuma tarefa ainda) | — | — | — | — |
 | 15/11/2026 | Design System do Escritório do Paulo no Figma (feito seguindo este arquivo, antes da Sofia rodar como agente) | com ajustes (cartões e rótulos cortados na primeira captura, corrigidos) | — | — | Conferir a captura de cada página antes de entregar; auto-layout com largura fixa corta texto. |
+| 15/11/2026 | T-0001 · Análise de design do fã-site Sofia Carson · a voz (só análise, com capturas do site no ar) | aguardando o retorno do Paulo | cerca de 1 h | — | Figma sem autorização: não deu para comparar com o Design System. Faltou Safari, Firefox e aparelho de verdade. |

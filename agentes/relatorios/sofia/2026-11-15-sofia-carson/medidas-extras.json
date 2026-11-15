@@ -1,0 +1,217 @@
+{
+ "tab": [
+  {
+   "quem": "a.linha",
+   "texto": "A voz",
+   "naTela": true,
+   "topo": 38,
+   "contorno": "solid 1px rgb(244, 244, 242)",
+   "bordaDeBaixo": "0px",
+   "y": 0,
+   "x": 36,
+   "w": 35,
+   "h": 21
+  },
+  {
+   "quem": "a.linha",
+   "texto": "Palco",
+   "naTela": true,
+   "topo": 38,
+   "contorno": "solid 1px rgb(244, 244, 242)",
+   "bordaDeBaixo": "0px",
+   "y": 0,
+   "x": 92,
+   "w": 36,
+   "h": 21
+  },
+  {
+   "quem": "a.linha",
+   "texto": "Fã-clube",
+   "naTela": true,
+   "topo": 38,
+   "contorno": "solid 1px rgb(244, 244, 242)",
+   "bordaDeBaixo": "0px",
+   "y": 0,
+   "x": 148,
+   "w": 57,
+   "h": 21
+  },
+  {
+   "quem": "a.nav__marca marca",
+   "texto": "S FIA",
+   "naTela": true,
+   "topo": 40,
+   "contorno": "solid 1px rgb(244, 244, 242)",
+   "bordaDeBaixo": "0px",
+   "y": 0,
+   "x": 609,
+   "w": 62,
+   "h": 17
+  },
+  {
+   "quem": "button.pilula pilula--contorno nav__reel",
+   "texto": "▶ Ver a montagem",
+   "naTela": true,
+   "topo": 28,
+   "contorno": "solid 1px rgb(244, 244, 242)",
+   "bordaDeBaixo": "1px",
+   "y": 0,
+   "x": 898,
+   "w": 161,
+   "h": 40
+  },
+  {
+   "quem": "a.pilula pilula--cheia",
+   "texto": "Entrar no fã-clube →",
+   "naTela": true,
+   "topo": 28,
+   "contorno": "solid 1px rgb(10, 10, 10)",
+   "bordaDeBaixo": "1px",
+   "y": 0,
+   "x": 1067,
+   "w": 177,
+   "h": 40
+  },
+  {
+   "quem": "a.pilula pilula--contorno entra is-in",
+   "texto": "Ouvir no Apple Music →",
+   "naTela": true,
+   "topo": 354,
+   "contorno": "solid 1px rgb(10, 10, 10)",
+   "bordaDeBaixo": "1px",
+   "y": 1369,
+   "x": 1047,
+   "w": 197,
+   "h": 40
+  },
+  {
+   "quem": "input.",
+   "texto": "nome",
+   "naTela": true,
+   "topo": 355,
+   "contorno": "none 3px rgb(10, 10, 10)",
+   "bordaDeBaixo": "2px",
+   "y": 3149,
+   "x": 864,
+   "w": 380,
+   "h": 38
+  },
+  {
+   "quem": "input.",
+   "texto": "email",
+   "naTela": true,
+   "topo": 428,
+   "contorno": "none 3px rgb(10, 10, 10)",
+   "bordaDeBaixo": "2px",
+   "y": 3149,
+   "x": 864,
+   "w": 380,
+   "h": 38
+  },
+  {
+   "quem": "select.",
+   "texto": "Applause Come Back Home Fool’s Gold Outr",
+   "naTela": true,
+   "topo": 501,
+   "contorno": "none 3px rgb(10, 10, 10)",
+   "bordaDeBaixo": "2px",
+   "y": 3149,
+   "x": 864,
+   "w": 380,
+   "h": 38
+  },
+  {
+   "quem": "button.pilula pilula--cheia",
+   "texto": "Entrar no fã-clube →",
+   "naTela": true,
+   "topo": 559,
+   "contorno": "solid 1px rgb(235, 232, 226)",
+   "bordaDeBaixo": "1px",
+   "y": 3149,
+   "x": 864,
+   "w": 177,
+   "h": 40
+  },
+  {
+   "quem": "a.linha",
+   "texto": "APPLE MUSIC",
+   "naTela": true,
+   "topo": 759,
+   "contorno": "solid 1px rgb(107, 104, 99)",
+   "bordaDeBaixo": "0px",
+   "y": 3495,
+   "x": 1152,
+   "w": 92,
+   "h": 16
+  },
+  null,
+  {
+   "quem": "a.linha",
+   "texto": "A voz",
+   "naTela": true,
+   "topo": 25,
+   "contorno": "solid 1px rgb(10, 10, 10)",
+   "bordaDeBaixo": "0px",
+   "y": 3495,
+   "x": 36,
+   "w": 35,
+   "h": 21
+  },
+  {
+   "quem": "a.linha",
+   "texto": "Palco",
+   "naTela": true,
+   "topo": 25,
+   "contorno": "solid 1px rgb(10, 10, 10)",
+   "bordaDeBaixo": "0px",
+   "y": 3495,
+   "x": 92,
+   "w": 36,
+   "h": 21
+  },
+  {
+   "quem": "a.linha",
+   "texto": "Fã-clube",
+   "naTela": true,
+   "topo": 25,
+   "contorno": "solid 1px rgb(10, 10, 10)",
+   "bordaDeBaixo": "0px",
+   "y": 3495,
+   "x": 148,
+   "w": 57,
+   "h": 21
+  }
+ ],
+ "cadastro": {
+  "retorno": "Pronto, Paulo! Você entrou no fã-clube com ‘Applause’ na cabeça. Nada foi enviado.",
+  "invalidos": 0
+ },
+ "reel": {
+  "aberto": true,
+  "controles": false,
+  "tocando": true,
+  "focoEm": "pilula reel__fecha",
+  "fechouComEsc": true
+ },
+ "deitado844": {
+  "sobraLateral": 0,
+  "alvos": [
+   "A voz 35x21",
+   "Palco 36x21",
+   "Fã-clube 57x21",
+   "S\nFIA 62x17",
+   "Entrar no fã-clube\n→ 177x40",
+   "▶ VER A MONTAGEM 134x15"
+  ]
+ },
+ "c320": {
+  "sobraLateral": 0,
+  "alvos": [
+   "A voz 33x20",
+   "Palco 33x20",
+   "Fã-clube 53x20",
+   "Entrar 70x36",
+   "▶ VER A MONTAGEM 134x15"
+  ]
+ }
+}

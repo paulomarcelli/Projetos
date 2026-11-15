@@ -22,6 +22,10 @@ aqui.
 
 ## Regras aprendidas
 
+### Pedido do Paulo
+- **Sempre a superpowers (2026-11-15).** O Paulo deu a skill `superpowers` para a Karol: toda tarefa começa por ela
+  (ver a regra número 1 do `.claude/agents/karol.md`), e o relatório diz quais partes foram usadas.
+
 ### Do que era arquitetura
 - **Padrão do repositório.** Vite sem framework, `base: './'` (o Pages publica em subpasta), dependências com versão
   travada.

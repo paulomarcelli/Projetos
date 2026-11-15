@@ -34,6 +34,8 @@ aqui.
 | Escritório do Paulo | `Projetos/Escritorio-do-Paulo/` | Escritório escuro com a cor nos estados; mapa em pixel art visto de cima e figurinhas da equipe no estilo sticker (cabeça grande, contorno branco). Barlow Condensed, Geist e Geist Mono. Design System no Figma: arquivo `JFyZCMHbS1ASDzSdbGu6pC` (Capa, Fundamentos, Componentes, Ambiente e personagens, Telas); documento em `docs/design-system.md`. |
 | Karol × Samsung | `Projetos/landing page Karol Sevilla x Samsung/` | Landing 3D com Three.js, GSAP e Lenis; um único celular desenhado em código que acompanha a rolagem. |
 
+**Referência de estilos:** a folha [Referências · Design systems](https://www.figma.com/design/tQ7hPXebEj84uV385CQ37X) (Figma `tQ7hPXebEj84uV385CQ37X`) tem cinco estilos (inspirados em Anthropic, Duolingo, Vercel, Notion e Linear), a comparação com "use quando…" e a coleção de variáveis **Tema**, com um modo por estilo. Consulte antes de propor a direção de um projeto novo. Relatório: `agentes/relatorios/sofia/2026-11-15-referencias-design-systems.md`.
+
 ## Regras aprendidas
 
 - **14/11/2026 · Pedido do Paulo: Figma primeiro e Design System obrigatório.** O Figma é a ferramenta principal. Todo
@@ -80,6 +82,16 @@ aqui.
 - **15/11/2026 · Sofia Carson sem `docs/design-system.md`.** O Design System está só no Figma e no README. Criar o
   documento quando o Figma estiver autorizado.
 
+- **15/11/2026 · Figma: `createAutoLayout` nasce com fundo branco.** Todo quadro interno (campo, linha de botões) precisa de
+  `fills = []`, senão aparece um retângulo branco no tema escuro. Escondeu o botão secundário no modo Linear.
+- **15/11/2026 · Figma: fonte por variável funciona.** Variáveis STRING com escopo `FONT_FAMILY` e `FONT_STYLE` trocam
+  a fonte junto com o modo, desde que o estilo (ex.: "Medium") exista em todas as famílias dos modos e todas estejam
+  carregadas.
+- **15/11/2026 · Arquivos de design system se contradizem.** Compare a seção Componentes com Fundos e Faça antes de
+  desenhar (cartão branco × cor da página, contorno de 1 × 2 px) e registre a escolha no relatório.
+- **15/11/2026 · `query()` do Figma não aceita acento no seletor.** `[name=Ações]` dá erro: filtre por `children` e
+  `name ===`.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -89,3 +101,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 14/11/2026 | (criação da Sofia; nenhuma tarefa ainda) | — | — | — | — |
 | 15/11/2026 | Design System do Escritório do Paulo no Figma (feito seguindo este arquivo, antes da Sofia rodar como agente) | com ajustes (cartões e rótulos cortados na primeira captura, corrigidos) | — | — | Conferir a captura de cada página antes de entregar; auto-layout com largura fixa corta texto. |
 | 15/11/2026 | T-0001 · Análise de design do fã-site Sofia Carson · a voz (só análise, com capturas do site no ar) | aguardando o retorno do Paulo | cerca de 1 h | — | Figma sem autorização: não deu para comparar com o Design System. Faltou Safari, Firefox e aparelho de verdade. |
+| 15/11/2026 | Folha Figma "Referências · Design systems" com 5 estilos, comparação e coleção Tema (5 modos) | aguardando o retorno do Paulo | cerca de 1 h | sem créditos de IA | Primeira captura do teste de tema mostrou fundo branco nos quadros internos; já criar quadros com `fills = []`. |

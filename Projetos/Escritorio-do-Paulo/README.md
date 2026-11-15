@@ -98,8 +98,16 @@ porta, modelo, modo de permissão, comandos liberados para os agentes e quantos 
 
 ### Figurinhas pessoais
 
-Para usar imagens suas no lugar dos desenhos, ponha `steve.png`, `tony.png`, `peter.png` (o nome é o do agente) em
-`web/avatares/pessoais/`. A pasta fica fora do git e o escritório usa a imagem quando ela existe.
+As figurinhas no estilo sticker (as sete da folha que escolhi e a da Sofia, feita no mesmo estilo) ficam fora do
+repositório, que é público. Para usar, instale o pacote `figurinhas-pessoais.zip` uma vez:
+
+```bash
+node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs figurinhas caminho/para/figurinhas-pessoais.zip
+```
+
+Elas vão para `web/avatares/pessoais/` (fora do git) e aparecem no mapa e na gaveta. Também dá para apontar uma pasta
+com arquivos `steve.png`, `sofia.png`, `tony.png`… (o nome é o do agente). Sem elas, o escritório usa os desenhos de
+`web/js/avatares.js`, no mesmo jeito de figurinha.
 
 ### Agente novo
 

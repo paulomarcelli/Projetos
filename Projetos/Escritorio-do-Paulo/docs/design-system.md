@@ -84,7 +84,9 @@ As fontes ficam em `web/fontes/` (licença OFL) para o escritório funcionar sem
   suavização. Sala da equipe (duas fileiras de quatro mesas), copa e sala de reunião.
 - **Figurinhas** (`web/js/avatares.js`): desenhos originais em SVG, no estilo de figurinha (cabeça grande, olhos
   grandes, contorno branco), inspirados nos heróis de cada agente; a Sofia tem identidade própria, de designer.
-  Imagens pessoais podem substituir os desenhos em `web/avatares/pessoais/<id>.png` (pasta fora do git).
+  As figurinhas do Paulo (sete heróis da folha dele e a Sofia, feita no mesmo estilo) substituem os desenhos quando
+  estão em `web/avatares/pessoais/<id>.png` (pasta fora do git; instale com `bin/escritorio.mjs figurinhas <zip>`).
+  No Figma, o componente Figurinha já usa essas imagens.
 - **Lugar**: cada agente fica na própria mesa. O Steve vai para a sala de reunião enquanto monta um plano. A copa é
   para quem não tem mesa (do nono agente em diante).
 

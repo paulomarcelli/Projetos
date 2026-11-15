@@ -4,8 +4,8 @@ Uso (na pasta Aurora-Jogo):
   python3 ferramentas/montar_folha_nova.py          # folha + json
   python3 ferramentas/pesos_cabelo.py aurora_nova    # camadas corpo/mecha e pesos do cabelo
 
-Recortes em arte/figma/aurora_nova/recortes/aurora_<grupo>_NN.png (fatiar_folha.py; corrida e sentar, que vieram em
-duas fileiras, separados por peças). Toda folha do Figma começa com uma pose de REFERÊNCIA em pé (quadro 1): a escala
+Recortes em arte/figma/aurora_nova/recortes/aurora_<grupo>_NN.png (fatiar_folha.py; o sentar, que veio em duas
+fileiras, separado por peças; a corrida por ferramentas/fatiar_correr2.py, que também iguala a escala das fileiras). Toda folha do Figma começa com uma pose de REFERÊNCIA em pé (quadro 1): a escala
 da folha inteira sai dela (altura da cabeça aos pés = ALTURA_EM_PE), então todas as folhas ficam do mesmo tamanho.
 """
 import json
@@ -97,7 +97,10 @@ def salvar(anims):
         folha.paste(q, (x, y), q)
         lugar[id(q)] = [x, y, CEL, CEL]
     for nome, a in anims.items():
-        meta['animacoes'][nome] = {'fps': a['fps'], 'loop': a['loop'], 'quadros': [lugar[id(q)] for q in a['quadros']]}
+        # topo do desenho em cada quadro (y na célula): testes/folha.test.mjs confere que ela não "diminui" ao correr
+        topos = [q.getchannel('A').point(lambda v: 255 if v > 60 else 0).getbbox()[1] for q in a['quadros']]
+        meta['animacoes'][nome] = {'fps': a['fps'], 'loop': a['loop'], 'quadros': [lugar[id(q)] for q in a['quadros']],
+                                   'topos': topos}
     assert folha.height <= 4096, f'folha com {folha.height} px de altura: placas de vídeo aceitam até 4096'
     folha.save(SAIDA / 'aurora_folha.png', optimize=True)
     (SAIDA / 'aurora_folha.json').write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding='utf-8')

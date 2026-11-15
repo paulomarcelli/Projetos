@@ -141,7 +141,7 @@ No plano do microfone o nome fica sobre a boca e a mão; no plano de olhos fecha
 Não há som, nem trecho, nem vídeo: só um link para o Apple Music. A página também é curta (5,4 telas em 1280) e tem
 duas fotos.
 **Mudar:** cada item da Trajetória ganha um link para o vídeo ou a faixa oficial. Os links precisam da checagem do
-Stephen antes de entrar.
+Sabrina antes de entrar.
 
 ### Prioridade 3 · acabamento
 
@@ -230,10 +230,10 @@ Tudo em `agentes/relatorios/sofia/2026-11-15-sofia-carson/`:
 | 1 | Paulo decide a ação principal: opção A (ouvir + cadastro como brincadeira) ou B (sem cadastro) | conteúdo | Paulo |
 | 2 | Autorizar o Figma, conferir o site contra o Design System e criar `docs/design-system.md` | design | Sofia |
 | 3 | Acrescentar ao Design System: proteção do texto sobre o filme, pílula "Pausar o filme", anel de foco de 2 px, escala de texto revista, grade única de três colunas | design | Sofia |
-| 4 | Implementar os itens 1, 2 e 4 (contraste, pausa, foco) | código | Peter |
-| 5 | Intro só na primeira visita da sessão e rótulos fora das fotos no celular | código | Peter |
+| 4 | Implementar os itens 1, 2 e 4 (contraste, pausa, foco) | código | Karol |
+| 5 | Intro só na primeira visita da sessão e rótulos fora das fotos no celular | código | Karol |
 | 6 | Reenquadrar os dois planos em que o nome cobre o rosto e escurecer o plano da janela | montagem | Sofia |
-| 7 | Fã-clube: bloco "Raízes" com título próprio e alinhamento na grade | design + código | Sofia, Peter |
-| 8 | Links oficiais de vídeo ou faixa para os três itens da Trajetória, com fonte | conteúdo | Stephen |
-| 9 | Acabamento: itens 11 a 18 | código | Peter |
-| 10 | Conferir a tela pronta contra o Design System, com Safari e aparelho de verdade | QA | Natasha |
+| 7 | Fã-clube: bloco "Raízes" com título próprio e alinhamento na grade | design + código | Sofia, Karol |
+| 8 | Links oficiais de vídeo ou faixa para os três itens da Trajetória, com fonte | conteúdo | Sabrina |
+| 9 | Acabamento: itens 11 a 18 | código | Karol |
+| 10 | Conferir a tela pronta contra o Design System, com Safari e aparelho de verdade | QA | Sabrina |

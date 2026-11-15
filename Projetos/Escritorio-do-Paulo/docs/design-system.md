@@ -10,7 +10,8 @@ Figma (`cor/fundo` no Figma é `--cor-fundo` no CSS). Quem mexer na interface us
 ## A ideia
 
 O escritório é escuro e calmo; a cor mora nos **estados dos agentes**, nunca no entorno. O mapa é a exceção clara: um
-escritório visto de cima, em pixel art, com as figurinhas da equipe por cima. Nada se mexe sem uma execução real.
+escritório visto de cima, em pixel art, com as figurinhas da equipe por cima. Quem está livre passeia; quem tem uma
+execução real está na mesa, trabalhando. Ninguém finge trabalho.
 
 ## Tokens
 
@@ -87,14 +88,17 @@ As fontes ficam em `web/fontes/` (licença OFL) para o escritório funcionar sem
   As figurinhas do Paulo (sete heróis da folha dele e a Sofia, feita no mesmo estilo) substituem os desenhos quando
   estão em `web/avatares/pessoais/<id>.png` (pasta fora do git; instale com `bin/escritorio.mjs figurinhas <zip>`).
   No Figma, o componente Figurinha já usa essas imagens.
-- **Lugar**: cada agente fica na própria mesa. O Steve vai para a sala de reunião enquanto monta um plano. A copa é
-  para quem não tem mesa (do nono agente em diante).
+- **Lugar e passeio**: cada agente tem a sua mesa. Quem está disponível (ou acabou de concluir) passeia por uma rede de
+  caminhos: café e geladeira na copa, tapete, quadro e janela da sala de reunião, plantas, e a mesa de um colega para
+  conversar; volta para a própria mesa de vez em quando. Ao concluir uma tarefa, leva a entrega até o lado da mesa de
+  quem continua o trabalho. Quando uma execução começa, volta andando rápido para a mesa e fica lá. O Steve vai para a
+  sala de reunião enquanto monta um plano. A copa é a casa de quem não tem mesa (do nono agente em diante).
 
 ## Animações
 
 | Estado | Movimento | Tempo |
 |---|---|---|
-| Disponível | parado, monitor apagado | — |
+| Disponível | passeia devagar pelo escritório; parado, respira; balão do que está fazendo (café, conversa…) | 3,2 s |
 | Trabalhando | balança como quem digita; monitor aceso | 0,5 s |
 | Pensando | inclina devagar; balão com três pontos | 2,6 s |
 | Pesquisando | olha de um lado para o outro; lupa no balão | 1,8 s |
@@ -102,7 +106,8 @@ As fontes ficam em `web/fontes/` (licença OFL) para o escritório funcionar sem
 | Em revisão | como trabalhando, com o balão de revisão | 0,5 s |
 | Concluído | dois pulinhos ao terminar | 0,6 s × 2 |
 | Com erro | treme duas vezes ao falhar | 0,4 s × 2 |
-| Andando | passo saltitado, só quando o lugar muda | 0,32 s |
+| Andando | passo saltitado e vira para o lado em que anda; devagar quando passeia, rápido quando vai trabalhar | 0,42 s |
+| Levando entrega | anda até o lado da mesa de quem continua, com o balão de documento, e espera um pouco | 2,6 s parado |
 
 Curva `cubic-bezier(.2, .8, .2, 1)`. Anima só `transform` e `opacity`. Com "reduzir movimento", nada se mexe e o estado
 continua legível.

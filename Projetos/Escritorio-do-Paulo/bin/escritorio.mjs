@@ -6,9 +6,11 @@
 //   node bin/escritorio.mjs pedido "O que você quer" [--auto]   manda o pedido para o Steve planejar
 //   node bin/escritorio.mjs plano arquivo.json [--auto]         cria as tarefas de um plano
 //   node bin/escritorio.mjs ganchos instalar|remover|estado     liga o Claude Code ao escritório
+//   node bin/escritorio.mjs figurinhas <arquivo.zip | pasta>   instala as suas figurinhas (ficam fora do git)
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import zlib from 'node:zlib';
 import { criarServidor, lerConfig, acharRaiz, PASTA_PROJETO } from '../servidor/index.mjs';
 
 const [, , comando = 'iniciar', ...resto] = process.argv;
@@ -68,6 +70,35 @@ function semOsNossos(ajustes) {
     if (!hooks[evento].length) delete hooks[evento];
   }
   return hooks;
+}
+
+
+// Lê um .zip sem dependências: diretório central, cabeçalho local, dados guardados ou comprimidos (deflate).
+function lerZip(arquivo) {
+  const b = fs.readFileSync(arquivo);
+  let fim = -1;
+  for (let i = b.length - 22; i >= Math.max(0, b.length - 65_557); i -= 1) if (b.readUInt32LE(i) === 0x06054b50) { fim = i; break; }
+  if (fim < 0) throw new Error('Não parece um arquivo .zip.');
+  const total = b.readUInt16LE(fim + 10);
+  let p = b.readUInt32LE(fim + 16);
+  const saida = [];
+  for (let n = 0; n < total; n += 1) {
+    if (b.readUInt32LE(p) !== 0x02014b50) throw new Error('Zip corrompido.');
+    const metodo = b.readUInt16LE(p + 10);
+    const comprimido = b.readUInt32LE(p + 20);
+    const tamNome = b.readUInt16LE(p + 28);
+    const tamExtra = b.readUInt16LE(p + 30);
+    const tamComent = b.readUInt16LE(p + 32);
+    const local = b.readUInt32LE(p + 42);
+    const nome = b.slice(p + 46, p + 46 + tamNome).toString('utf8');
+    p += 46 + tamNome + tamExtra + tamComent;
+    if (nome.endsWith('/')) continue;
+    const ini = local + 30 + b.readUInt16LE(local + 26) + b.readUInt16LE(local + 28);
+    const dados = b.slice(ini, ini + comprimido);
+    if (metodo !== 0 && metodo !== 8) continue;
+    saida.push({ nome, dados: metodo === 8 ? zlib.inflateRawSync(dados) : dados });
+  }
+  return saida;
 }
 
 async function principal() {
@@ -167,7 +198,37 @@ async function principal() {
     return console.log(acao === 'instalar' ? `Ganchos instalados em ${arquivo}. Valem a partir da próxima sessão do Claude Code.` : `Ganchos removidos de ${arquivo}.`);
   }
 
-  console.error('Comandos: iniciar, tarefas, tarefa, pedido, plano, ganchos');
+  if (comando === 'figurinhas') {
+    const origem = livres[0];
+    if (!origem) return console.error('Informe o .zip das figurinhas (ou a pasta com elas): figurinhas figurinhas-pessoais.zip');
+    const destino = path.join(PASTA_PROJETO, 'web', 'avatares', 'pessoais');
+    fs.mkdirSync(destino, { recursive: true });
+    const ids = JSON.parse(fs.readFileSync(path.join(PASTA_PROJETO, 'equipe.json'), 'utf8')).ordem;
+    if (!fs.existsSync(origem)) return console.error(`Não achei "${origem}". Confira o caminho do zip (ou da pasta) das figurinhas.`);
+    let arquivos;
+    try {
+      arquivos = fs.statSync(origem).isDirectory()
+        ? fs.readdirSync(origem).map(nome => ({ nome, dados: fs.readFileSync(path.join(origem, nome)) }))
+        : lerZip(origem);
+    } catch (erro) {
+      return console.error(`Não consegui ler "${origem}": ${erro.message}`);
+    }
+    const instaladas = [];
+    for (const { nome, dados } of arquivos) {
+      const base = path.basename(nome).toLowerCase();
+      const m = /^([a-z0-9-]+)\.(png|jpe?g|webp)$/.exec(base);
+      if (!m || !ids.includes(m[1])) continue;
+      for (const ext of ['png', 'jpg', 'jpeg', 'webp']) fs.rmSync(path.join(destino, `${m[1]}.${ext}`), { force: true });
+      fs.writeFileSync(path.join(destino, base), dados);
+      instaladas.push(m[1]);
+    }
+    if (!instaladas.length) return console.error(`Nenhuma figurinha reconhecida. Os arquivos precisam ter o nome do agente: ${ids.map(i => `${i}.png`).join(', ')}.`);
+    const faltam = ids.filter(i => !instaladas.includes(i));
+    console.log(`Figurinhas instaladas: ${instaladas.join(', ')}.${faltam.length ? ` Sem figurinha (fica o desenho): ${faltam.join(', ')}.` : ''}`);
+    return console.log('Recarregue a página do Escritório. A pasta web/avatares/pessoais/ fica fora do git.');
+  }
+
+  console.error('Comandos: iniciar, tarefas, tarefa, pedido, plano, ganchos, figurinhas');
   process.exit(1);
 }
 

@@ -1,0 +1,64 @@
+/* Tokens do Design System do Escritório do Paulo.
+   Os nomes são os mesmos das variáveis do Figma (coleções Cor, Estado, Agente, Medida). Mude aqui e lá juntos. */
+
+@font-face { font-family: "Geist"; src: url("../fontes/geist-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("../fontes/geist-mono-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fontes/barlow-condensed-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fontes/barlow-condensed-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fontes/barlow-condensed-latin-700-italic.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: swap; }
+
+:root {
+  /* Cor: superfícies chapadas, separadas por fio ou degrau de tom. Nada de gradiente nem brilho no entorno. */
+  --cor-fundo: #0a0d13;        /* a noite vista da torre: fundo da página */
+  --cor-piso: #0d1119;         /* o chão do escritório */
+  --cor-superficie: #121824;   /* painéis, estações, cartões */
+  --cor-elevada: #19202e;      /* o que fica por cima: diálogos, itens em foco */
+  --cor-borda: #263043;        /* contorno de painel e de controle */
+  --cor-fio: #1a2231;          /* divisória dentro de um painel */
+  --cor-texto: #e9edf5;
+  --cor-texto-2: #9aa5b8;      /* apoio */
+  --cor-texto-3: #66718a;      /* rótulos e horários */
+  --cor-acao: #e9edf5;         /* o único botão principal: claro sobre o escuro */
+  --cor-acao-texto: #0a0d13;
+  --cor-marca: #e23636;        /* escarlate: só no símbolo do produto */
+
+  /* Estado: a cor da tela mora aqui, nos dados. Cada estado tem também ícone e rótulo. */
+  --estado-disponivel: #7f8a9c;
+  --estado-trabalhando: #4c9aff;
+  --estado-pensando: #b39dff;
+  --estado-pesquisando: #35c9c0;
+  --estado-aguardando: #f2b544;
+  --estado-revisao: #ff8f5a;
+  --estado-concluido: #4cc38a;
+  --estado-erro: #ff5d5d;
+
+  /* Medida */
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 24px;
+  --espaco-6: 32px;
+  --raio-controle: 6px;
+  --raio-cartao: 8px;
+  --raio-estacao: 10px;
+  --altura-controle: 32px;
+  --altura-topo: 52px;
+  --largura-lateral: 372px;
+
+  /* Tipografia */
+  --fonte-texto: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fonte-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --fonte-titulo: "Barlow Condensed", "Geist", system-ui, sans-serif;
+  --texto-rotulo: 11px;
+  --texto-pequeno: 12px;
+  --texto-corpo: 14px;
+  --texto-secao: 16px;
+  --texto-nome: 22px;
+  --texto-titulo: 26px;
+
+  /* Movimento */
+  --tempo-rapido: 160ms;
+  --tempo-medio: 320ms;
+  --curva: cubic-bezier(.2, .8, .2, 1);
+}

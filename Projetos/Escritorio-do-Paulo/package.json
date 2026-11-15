@@ -1,0 +1,14 @@
+{
+  "name": "escritorio-do-paulo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Escritório do Paulo: painel local da equipe de agentes de IA, sincronizado com as execuções reais do Claude Code.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "bin": { "escritorio": "bin/escritorio.mjs" },
+  "scripts": {
+    "start": "node bin/escritorio.mjs iniciar",
+    "abrir": "node bin/escritorio.mjs iniciar --abrir",
+    "test": "node --test testes/escritorio.test.mjs"
+  }
+}

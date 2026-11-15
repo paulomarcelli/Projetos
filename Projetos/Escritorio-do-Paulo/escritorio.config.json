@@ -1,0 +1,19 @@
+{
+  "porta": 4310,
+  "modelo": null,
+  "permissao": "acceptEdits",
+  "ferramentasPermitidas": [
+    "Bash(npm run *)",
+    "Bash(npm test*)",
+    "Bash(node *)",
+    "Bash(npx vite *)",
+    "Bash(git status*)",
+    "Bash(git diff*)",
+    "Bash(git log*)",
+    "Bash(ls *)"
+  ],
+  "paralelas": 2,
+  "tempoMaximoMin": 30,
+  "concluidoPorMin": 10,
+  "semSinalMin": 15
+}

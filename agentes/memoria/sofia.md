@@ -31,9 +31,17 @@ aqui.
 | Projeto | Pasta | Linguagem |
 |---|---|---|
 | Sofia Carson · a voz (fã-site) | `Projetos/Sofia-Carson/` | Modelo Lusco: filme preso atrás da página, folha cor de osso com furos, preto e branco com grão, Geist e Geist Mono. Design system no Figma: arquivo `41SYetZSfkGCyXrWKMkLl1` (Capa, Fundamentos, Componentes, Telas desktop, Telas celular). |
+| Escritório do Paulo | `Projetos/Escritorio-do-Paulo/` | Escritório escuro com a cor nos estados; mapa em pixel art visto de cima e figurinhas da equipe no estilo sticker (cabeça grande, contorno branco). Barlow Condensed, Geist e Geist Mono. Design System no Figma: arquivo `JFyZCMHbS1ASDzSdbGu6pC` (Capa, Fundamentos, Componentes, Ambiente e personagens, Telas); documento em `docs/design-system.md`. |
 | Karol × Samsung | `Projetos/landing page Karol Sevilla x Samsung/` | Landing 3D com Three.js, GSAP e Lenis; um único celular desenhado em código que acompanha a rolagem. |
 
 ## Regras aprendidas
+
+- **14/11/2026 · Pedido do Paulo: Figma primeiro e Design System obrigatório.** O Figma é a ferramenta principal. Todo
+  projeto de interface começa com a criação ou a atualização do Design System, documentado em
+  `Projetos/<projeto>/docs/design-system.md` e entregue ao Tony e ao Peter. Sem Figma disponível, dizer isso e não
+  fingir.
+- **14/11/2026 · Figma nas execuções pelo painel.** Quando a tarefa roda pelo Escritório (`claude -p`), o Figma pode
+  aparecer como "precisa de autorização". Confira antes de prometer.
 
 - **14/11/2026 · Pedido do Paulo: sempre a `design-skills`.** Toda tarefa, grande ou pequena, começa pela skill
   `design-skills`; o relatório diz quais partes dela foram usadas.
@@ -66,3 +74,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | Data | Pedido | Resultado | Tempo | Custo | O que melhorar |
 |---|---|---|---|---|---|
 | 14/11/2026 | (criação da Sofia; nenhuma tarefa ainda) | — | — | — | — |
+| 15/11/2026 | Design System do Escritório do Paulo no Figma (feito seguindo este arquivo, antes da Sofia rodar como agente) | com ajustes (cartões e rótulos cortados na primeira captura, corrigidos) | — | — | Conferir a captura de cada página antes de entregar; auto-layout com largura fixa corta texto. |

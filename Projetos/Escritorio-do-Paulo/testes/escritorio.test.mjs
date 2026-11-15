@@ -579,3 +579,21 @@ test('página online: sem ninguém publicando, o escritório fica aberto com a e
   assert.ok(folga.equipe.every(a => a.estado.estado === 'disponivel'));
   assert.equal(folga.tarefas.length, 0);
 });
+
+test('ganchos: agente que já trabalhava quando o escritório abriu aparece no primeiro passo', async () => {
+  const { escritorio, api } = await abrir();
+  try {
+    // o SubagentStart se perdeu (o escritório abriu depois); chega direto uma ferramenta dela
+    await api('POST', '/api/ganchos', { hook_event_name: 'PreToolUse', session_id: 's', agent_id: 'tardia', agent_type: 'sofia', tool_name: 'mcp__Figma__use_figma' });
+    let r = (await api('GET', '/api/estado')).dados;
+    assert.equal(r.equipe.find(a => a.id === 'sofia').estado.estado, 'trabalhando');
+    await api('POST', '/api/ganchos', { hook_event_name: 'SubagentStop', session_id: 's', agent_id: 'tardia', agent_type: 'sofia', last_assistant_message: 'ok' });
+    r = (await api('GET', '/api/estado')).dados;
+    assert.equal(r.equipe.find(a => a.id === 'sofia').estado.estado, 'concluido');
+    // de quem não é da equipe continua ignorado
+    await api('POST', '/api/ganchos', { hook_event_name: 'PreToolUse', session_id: 's', agent_id: 'x', agent_type: 'Explore', tool_name: 'Read' });
+    assert.equal((await api('GET', '/api/estado')).dados.tarefas.length, 1);
+  } finally {
+    await escritorio.fechar();
+  }
+});

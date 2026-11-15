@@ -1,0 +1,1091 @@
+{
+ "nome": "d1280",
+ "largura": 1280,
+ "altura": 800,
+ "celular": false,
+ "reduzido": false,
+ "intro": [
+  {
+   "arq": "intro/d1280-intro-00-468ms.png",
+   "ms": 468,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-01-1010ms.png",
+   "ms": 1010,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-02-1413ms.png",
+   "ms": 1413,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-03-1786ms.png",
+   "ms": 1786,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-04-2156ms.png",
+   "ms": 2156,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-05-2517ms.png",
+   "ms": 2517,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-06-2897ms.png",
+   "ms": 2897,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-07-3301ms.png",
+   "ms": 3301,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-08-3711ms.png",
+   "ms": 3711,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-09-4109ms.png",
+   "ms": 4109,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-10-4518ms.png",
+   "ms": 4518,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-11-4934ms.png",
+   "ms": 4934,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-12-5406ms.png",
+   "ms": 5406,
+   "pronto": false
+  },
+  {
+   "arq": "intro/d1280-intro-13-6042ms.png",
+   "ms": 6042,
+   "pronto": true
+  },
+  {
+   "fimDaIntroMs": 6042
+  }
+ ],
+ "video": {
+  "readyState": 4,
+  "paused": false,
+  "tempo": 3.998973,
+  "duracao": 13,
+  "erro": null,
+  "tamanho": "1280x720"
+ },
+ "paradas": [
+  {
+   "arq": "d1280-01-y680.png",
+   "y": 680
+  },
+  {
+   "arq": "d1280-02-y1360.png",
+   "y": 1360
+  },
+  {
+   "arq": "d1280-03-y2040.png",
+   "y": 2040
+  },
+  {
+   "arq": "d1280-04-y2720.png",
+   "y": 2720
+  },
+  {
+   "arq": "d1280-05-y3400.png",
+   "y": 3400
+  },
+  {
+   "arq": "d1280-06-y3495.png",
+   "y": 3495
+  }
+ ],
+ "medidas": {
+  "largura": 1280,
+  "alturaDaPagina": 4295,
+  "sobraLateral": 0,
+  "cls": 0.0016,
+  "lcp": {
+   "t": 13944,
+   "el": "IMG.",
+   "url": "https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/img/filme-estudio.webp"
+  },
+  "textos": [
+   {
+    "quem": "a.linha",
+    "texto": "A voz",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 35,
+    "linhas": 1,
+    "caracteresPorLinha": 5
+   },
+   {
+    "quem": "a.linha",
+    "texto": "Palco",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 36,
+    "linhas": 1,
+    "caracteresPorLinha": 5
+   },
+   {
+    "quem": "a.linha",
+    "texto": "Fã-clube",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 57,
+    "linhas": 1,
+    "caracteresPorLinha": 8
+   },
+   {
+    "quem": "a.nav__marca.marca",
+    "texto": "S FIA",
+    "px": 17,
+    "peso": "650",
+    "entrelinha": "17px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 62,
+    "linhas": 1,
+    "caracteresPorLinha": 5
+   },
+   {
+    "quem": "button.pilula.pilula--contorno.nav__reel",
+    "texto": "▶ Ver a montagem",
+    "px": 14,
+    "peso": "450",
+    "entrelinha": "14px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 161,
+    "linhas": 3,
+    "caracteresPorLinha": 5
+   },
+   {
+    "quem": "a.pilula.pilula--cheia",
+    "texto": "Entrar no fã-clube →",
+    "px": 14,
+    "peso": "450",
+    "entrelinha": "14px",
+    "cor": "rgb(235, 232, 226)",
+    "largura": 177,
+    "linhas": 3,
+    "caracteresPorLinha": 7
+   },
+   {
+    "quem": "h1.hero__marca",
+    "texto": "S F I A",
+    "px": 169,
+    "peso": "800",
+    "entrelinha": "244.992px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 502,
+    "linhas": 1,
+    "caracteresPorLinha": 7
+   },
+   {
+    "quem": "p.mono",
+    "texto": "FÃ-SITE · A VOZ",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 179,
+    "linhas": 1,
+    "caracteresPorLinha": 15
+   },
+   {
+    "quem": "p",
+    "texto": "Atriz, cantora e compositora",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 179,
+    "linhas": 1,
+    "caracteresPorLinha": 28
+   },
+   {
+    "quem": "p.mono",
+    "texto": "OSCAR 2023",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 117,
+    "linhas": 1,
+    "caracteresPorLinha": 10
+   },
+   {
+    "quem": "p",
+    "texto": "‘Applause’, ao vivo",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 117,
+    "linhas": 1,
+    "caracteresPorLinha": 19
+   },
+   {
+    "quem": "p.manifesto__texto.entra.is-in",
+    "texto": "No Oscar de 2023, com Diane Warren ao piano, ela cantou ‘App",
+    "px": 38.2,
+    "peso": "330",
+    "entrelinha": "43.5024px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 845,
+    "linhas": 3,
+    "caracteresPorLinha": 20
+   },
+   {
+    "quem": "p.mono",
+    "texto": "A CANÇÃO",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 139,
+    "linhas": 1,
+    "caracteresPorLinha": 8
+   },
+   {
+    "quem": "p",
+    "texto": "Da trilha de Tell It Like a Woman",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 139,
+    "linhas": 2,
+    "caracteresPorLinha": 17
+   },
+   {
+    "quem": "p.mono",
+    "texto": "A INDICAÇÃO",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 156,
+    "linhas": 1,
+    "caracteresPorLinha": 11
+   },
+   {
+    "quem": "p",
+    "texto": "Melhor Canção Original, 95º Oscar",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 156,
+    "linhas": 2,
+    "caracteresPorLinha": 17
+   },
+   {
+    "quem": "h2.titulo.entra.is-in",
+    "texto": "Palco e estúdio",
+    "px": 57.5,
+    "peso": "750",
+    "entrelinha": "51.768px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 240,
+    "linhas": 2,
+    "caracteresPorLinha": 8
+   },
+   {
+    "quem": "a.pilula.pilula--contorno.entra.is-in",
+    "texto": "Ouvir no Apple Music →",
+    "px": 14,
+    "peso": "450",
+    "entrelinha": "14px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 197,
+    "linhas": 3,
+    "caracteresPorLinha": 7
+   },
+   {
+    "quem": "p",
+    "texto": "No estúdio",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 399,
+    "linhas": 1,
+    "caracteresPorLinha": 10
+   },
+   {
+    "quem": "p.mono",
+    "texto": "RETRATO · P&B",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 399,
+    "linhas": 1,
+    "caracteresPorLinha": 13
+   },
+   {
+    "quem": "p",
+    "texto": "Só a voz e o palco",
+    "px": 27.4,
+    "peso": "650",
+    "entrelinha": "30.6432px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 227,
+    "linhas": 1,
+    "caracteresPorLinha": 18
+   },
+   {
+    "quem": "p",
+    "texto": "Contra a luz",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 399,
+    "linhas": 1,
+    "caracteresPorLinha": 12
+   },
+   {
+    "quem": "p.mono",
+    "texto": "RETRATO · P&B",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 399,
+    "linhas": 1,
+    "caracteresPorLinha": 13
+   },
+   {
+    "quem": "h2.titulo.entra.is-in.is-sob",
+    "texto": "De Evie a Cassie, sempre cantando.",
+    "px": 57.5,
+    "peso": "750",
+    "entrelinha": "51.768px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 482,
+    "linhas": 2,
+    "caracteresPorLinha": 17
+   },
+   {
+    "quem": "p.mono",
+    "texto": "2015 · DESCENDENTES",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 353,
+    "linhas": 1,
+    "caracteresPorLinha": 19
+   },
+   {
+    "quem": "p",
+    "texto": "Evie, no filme do Disney Channel, cantando com o elenco.",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 353,
+    "linhas": 2,
+    "caracteresPorLinha": 28
+   },
+   {
+    "quem": "p.mono",
+    "texto": "2022 · PURPLE HEARTS",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 353,
+    "linhas": 1,
+    "caracteresPorLinha": 20
+   },
+   {
+    "quem": "p",
+    "texto": "Cassie, na Netflix. Foi produtora executiva e coescreveu qua",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 353,
+    "linhas": 2,
+    "caracteresPorLinha": 30
+   },
+   {
+    "quem": "p.mono",
+    "texto": "2023 · COME BACK HOME",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 353,
+    "linhas": 1,
+    "caracteresPorLinha": 21
+   },
+   {
+    "quem": "p",
+    "texto": "A canção do filme venceu Melhor Momento Musical no MTV Movie",
+    "px": 14,
+    "peso": "400",
+    "entrelinha": "20.3px",
+    "cor": "rgb(244, 244, 242)",
+    "largura": 353,
+    "linhas": 2,
+    "caracteresPorLinha": 30
+   },
+   {
+    "quem": "h2.titulo.entra.is-in",
+    "texto": "Entre para o fã-clube",
+    "px": 57.5,
+    "peso": "750",
+    "entrelinha": "51.768px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 505,
+    "linhas": 2,
+    "caracteresPorLinha": 11
+   },
+   {
+    "quem": "p.contato__raizes.entra.is-in",
+    "texto": "As raízes dela estão em Barranquilla, na Colômbia: a mãe, La",
+    "px": 16.6,
+    "peso": "400",
+    "entrelinha": "24.012px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 505,
+    "linhas": 3,
+    "caracteresPorLinha": 20
+   },
+   {
+    "quem": "span.mono",
+    "texto": "SEU NOME",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 380,
+    "linhas": 1,
+    "caracteresPorLinha": 8
+   },
+   {
+    "quem": "input",
+    "texto": "",
+    "px": 16,
+    "peso": "400",
+    "entrelinha": "20.8px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 380,
+    "linhas": 2,
+    "caracteresPorLinha": 0
+   },
+   {
+    "quem": "span.mono",
+    "texto": "E-MAIL",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 380,
+    "linhas": 1,
+    "caracteresPorLinha": 6
+   },
+   {
+    "quem": "input",
+    "texto": "",
+    "px": 16,
+    "peso": "400",
+    "entrelinha": "20.8px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 380,
+    "linhas": 2,
+    "caracteresPorLinha": 0
+   },
+   {
+    "quem": "span.mono",
+    "texto": "CANÇÃO PREFERIDA",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 380,
+    "linhas": 1,
+    "caracteresPorLinha": 16
+   },
+   {
+    "quem": "select",
+    "texto": "Applause Come Back Home Fool’s Gold Outra",
+    "px": 16,
+    "peso": "400",
+    "entrelinha": "20.8px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 380,
+    "linhas": 2,
+    "caracteresPorLinha": 21
+   },
+   {
+    "quem": "button.pilula.pilula--cheia",
+    "texto": "Entrar no fã-clube →",
+    "px": 14,
+    "peso": "450",
+    "entrelinha": "14px",
+    "cor": "rgb(235, 232, 226)",
+    "largura": 177,
+    "linhas": 3,
+    "caracteresPorLinha": 7
+   },
+   {
+    "quem": "p.cadastro__aviso",
+    "texto": "Nada é enviado: este é um fã-site, e o cadastro não sai dest",
+    "px": 13,
+    "peso": "400",
+    "entrelinha": "18.85px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 380,
+    "linhas": 2,
+    "caracteresPorLinha": 30
+   },
+   {
+    "quem": "p.cadastro__retorno",
+    "texto": "",
+    "px": 15,
+    "peso": "500",
+    "entrelinha": "21.75px",
+    "cor": "rgb(10, 10, 10)",
+    "largura": 380,
+    "linhas": 1,
+    "caracteresPorLinha": 0
+   },
+   {
+    "quem": "span",
+    "texto": "© 2026 · FÃ-SITE NÃO OFICIAL, SEM VÍNCULO COM SOFIA CARSON O",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 627,
+    "linhas": 1,
+    "caracteresPorLinha": 60
+   },
+   {
+    "quem": "span.rodape__redes",
+    "texto": "FOTOS: DIREITOS DOS AUTORES APPLE MUSIC",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 340,
+    "linhas": 1,
+    "caracteresPorLinha": 39
+   },
+   {
+    "quem": "span",
+    "texto": "FOTOS: DIREITOS DOS AUTORES",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 226,
+    "linhas": 1,
+    "caracteresPorLinha": 27
+   },
+   {
+    "quem": "a.linha",
+    "texto": "APPLE MUSIC",
+    "px": 11,
+    "peso": "450",
+    "entrelinha": "15.4px",
+    "cor": "rgb(107, 104, 99)",
+    "largura": 92,
+    "linhas": 1,
+    "caracteresPorLinha": 11
+   }
+  ],
+  "alvos": [
+   {
+    "quem": "a.linha",
+    "texto": "A voz",
+    "w": 35,
+    "h": 21
+   },
+   {
+    "quem": "a.linha",
+    "texto": "Palco",
+    "w": 36,
+    "h": 21
+   },
+   {
+    "quem": "a.linha",
+    "texto": "Fã-clube",
+    "w": 57,
+    "h": 21
+   },
+   {
+    "quem": "a.nav__marca marca",
+    "texto": "S FIA",
+    "w": 62,
+    "h": 17
+   },
+   {
+    "quem": "button.pilula pilula--contorno nav__reel",
+    "texto": "▶ Ver a montagem",
+    "w": 161,
+    "h": 40
+   },
+   {
+    "quem": "a.pilula pilula--cheia",
+    "texto": "Entrar no fã-clube →",
+    "w": 177,
+    "h": 40
+   },
+   {
+    "quem": "a.pilula pilula--contorno entra is-in",
+    "texto": "Ouvir no Apple Music →",
+    "w": 197,
+    "h": 40
+   },
+   {
+    "quem": "input.",
+    "texto": "nome",
+    "w": 380,
+    "h": 38
+   },
+   {
+    "quem": "input.",
+    "texto": "email",
+    "w": 380,
+    "h": 38
+   },
+   {
+    "quem": "select.",
+    "texto": "Applause Come Back Home Fool’s Gold Outra",
+    "w": 380,
+    "h": 38
+   },
+   {
+    "quem": "button.pilula pilula--cheia",
+    "texto": "Entrar no fã-clube →",
+    "w": 177,
+    "h": 40
+   },
+   {
+    "quem": "a.linha",
+    "texto": "APPLE MUSIC",
+    "w": 92,
+    "h": 16
+   }
+  ],
+  "bordasEsquerdas": {
+   "36": 11,
+   "53": 2,
+   "218": 1,
+   "389": 1,
+   "451": 2,
+   "526": 1,
+   "846": 3,
+   "864": 6,
+   "867": 2,
+   "1047": 1,
+   "1088": 2,
+   "1127": 2
+  },
+  "titulos": [
+   "H1: S F I A",
+   "H2: Palco e estúdio",
+   "H2: De Evie a Cassie, sempre cantando.",
+   "H2: Entre para o fã-clube"
+  ],
+  "imagens": [
+   {
+    "src": "./img/filme-estudio.webp",
+    "alt": "Sofia Carson num estúdio de música, diante da mesa de som e das caixas de retorno"
+   },
+   {
+    "src": "./img/filme-luz.webp",
+    "alt": "Sofia Carson de roupa preta, olhando por cima do ombro, contra uma luz branca"
+   }
+  ],
+  "recursos": [
+   {
+    "url": "video/montagem.jpg",
+    "kb": 46,
+    "tipo": "link"
+   },
+   {
+    "url": "assets/index-CbQp6v6F.css",
+    "kb": 5,
+    "tipo": "link"
+   },
+   {
+    "url": "assets/index-C603mRhW.js",
+    "kb": 8,
+    "tipo": "script"
+   },
+   {
+    "url": "intro/q02.webp",
+    "kb": 5,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/filme-luz.webp",
+    "kb": 5,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q01.webp",
+    "kb": 7,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q03.webp",
+    "kb": 4,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q04.webp",
+    "kb": 9,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q05.webp",
+    "kb": 8,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/filme-estudio.webp",
+    "kb": 10,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q07.webp",
+    "kb": 8,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q08.webp",
+    "kb": 10,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q06.webp",
+    "kb": 30,
+    "tipo": "img"
+   },
+   {
+    "url": "intro/q09.webp",
+    "kb": 5,
+    "tipo": "img"
+   },
+   {
+    "url": "video/montagem.mp4",
+    "kb": 1138,
+    "tipo": "video"
+   },
+   {
+    "url": "assets/geist-mono-latin-wght-normal-XN7g48iV.woff2",
+    "kb": 23,
+    "tipo": "css"
+   },
+   {
+    "url": "img/grao.png",
+    "kb": 7,
+    "tipo": "css"
+   },
+   {
+    "url": "assets/geist-latin-wght-normal-BgDaEnEv.woff2",
+    "kb": 29,
+    "tipo": "css"
+   },
+   {
+    "url": "img/filme-estudio.webp",
+    "kb": 73,
+    "tipo": "img"
+   },
+   {
+    "url": "img/filme-luz.webp",
+    "kb": 41,
+    "tipo": "img"
+   }
+  ],
+  "pesoTotalKb": 1471,
+  "fontes": [
+   "Geist Variable 100 900",
+   "Geist Mono Variable 100 900"
+  ]
+ },
+ "fundo": [
+  {
+   "nome": "nav: links sobre o filme (topo)",
+   "piorMedio": 3.52,
+   "piorP95": 2.35,
+   "amostras": [
+    {
+     "contrasteMedio": 10.86,
+     "contrasteP95": 4.25
+    },
+    {
+     "contrasteMedio": 6.23,
+     "contrasteP95": 2.38
+    },
+    {
+     "contrasteMedio": 12.72,
+     "contrasteP95": 11.15
+    },
+    {
+     "contrasteMedio": 3.52,
+     "contrasteP95": 2.35
+    },
+    {
+     "contrasteMedio": 3.62,
+     "contrasteP95": 2.38
+    },
+    {
+     "contrasteMedio": 11.54,
+     "contrasteP95": 2.9
+    }
+   ]
+  },
+  {
+   "nome": "nav: pilula contorno sobre o filme (topo)",
+   "piorMedio": 2.4,
+   "piorP95": 2.11,
+   "amostras": [
+    {
+     "contrasteMedio": 19.07,
+     "contrasteP95": 19.08
+    },
+    {
+     "contrasteMedio": 15.38,
+     "contrasteP95": 7.44
+    },
+    {
+     "contrasteMedio": 2.4,
+     "contrasteP95": 2.11
+    },
+    {
+     "contrasteMedio": 19.07,
+     "contrasteP95": 19.08
+    },
+    {
+     "contrasteMedio": 14.83,
+     "contrasteP95": 4.25
+    },
+    {
+     "contrasteMedio": 14.41,
+     "contrasteP95": 13.57
+    }
+   ]
+  },
+  {
+   "nome": "hero: canto esquerdo",
+   "piorMedio": 5.16,
+   "piorP95": 3.69,
+   "amostras": [
+    {
+     "contrasteMedio": 16.06,
+     "contrasteP95": 15.32
+    },
+    {
+     "contrasteMedio": 5.16,
+     "contrasteP95": 3.69
+    },
+    {
+     "contrasteMedio": 14.04,
+     "contrasteP95": 7.68
+    },
+    {
+     "contrasteMedio": 14.55,
+     "contrasteP95": 13.75
+    },
+    {
+     "contrasteMedio": 5.76,
+     "contrasteP95": 4.57
+    },
+    {
+     "contrasteMedio": 5.6,
+     "contrasteP95": 4.43
+    }
+   ]
+  },
+  {
+   "nome": "hero: canto direito",
+   "piorMedio": 3.54,
+   "piorP95": 2.9,
+   "amostras": [
+    {
+     "contrasteMedio": 8.22,
+     "contrasteP95": 5.14
+    },
+    {
+     "contrasteMedio": 18.37,
+     "contrasteP95": 16.29
+    },
+    {
+     "contrasteMedio": 15.78,
+     "contrasteP95": 15.15
+    },
+    {
+     "contrasteMedio": 3.63,
+     "contrasteP95": 2.94
+    },
+    {
+     "contrasteMedio": 3.54,
+     "contrasteP95": 2.9
+    },
+    {
+     "contrasteMedio": 19.07,
+     "contrasteP95": 19.08
+    }
+   ]
+  },
+  {
+   "nome": "hero: ver a montagem (celular/tablet)",
+   "ausente": true
+  },
+  {
+   "nome": "furo: So a voz e o palco",
+   "piorMedio": 5.42,
+   "piorP95": 2.53,
+   "amostras": [
+    {
+     "contrasteMedio": 17.28,
+     "contrasteP95": 13.93
+    },
+    {
+     "contrasteMedio": 14.92,
+     "contrasteP95": 8.31
+    },
+    {
+     "contrasteMedio": 6.85,
+     "contrasteP95": 3.02
+    },
+    {
+     "contrasteMedio": 6.71,
+     "contrasteP95": 3.02
+    },
+    {
+     "contrasteMedio": 5.42,
+     "contrasteP95": 2.53
+    },
+    {
+     "contrasteMedio": 18.74,
+     "contrasteP95": 18.74
+    }
+   ]
+  },
+  {
+   "nome": "trajetoria: titulo",
+   "piorMedio": 5.4,
+   "piorP95": 4.07,
+   "amostras": [
+    {
+     "contrasteMedio": 13.58,
+     "contrasteP95": 9.13
+    },
+    {
+     "contrasteMedio": 5.4,
+     "contrasteP95": 4.07
+    },
+    {
+     "contrasteMedio": 13.52,
+     "contrasteP95": 12.51
+    },
+    {
+     "contrasteMedio": 13.65,
+     "contrasteP95": 12.51
+    },
+    {
+     "contrasteMedio": 7.5,
+     "contrasteP95": 4.77
+    },
+    {
+     "contrasteMedio": 17.63,
+     "contrasteP95": 11.65
+    }
+   ]
+  },
+  {
+   "nome": "trajetoria: etapas",
+   "piorMedio": 8.76,
+   "piorP95": 5.3,
+   "amostras": [
+    {
+     "contrasteMedio": 8.76,
+     "contrasteP95": 5.3
+    },
+    {
+     "contrasteMedio": 14.72,
+     "contrasteP95": 5.98
+    },
+    {
+     "contrasteMedio": 11.13,
+     "contrasteP95": 6.57
+    },
+    {
+     "contrasteMedio": 11.04,
+     "contrasteP95": 6.46
+    },
+    {
+     "contrasteMedio": 17.96,
+     "contrasteP95": 13.4
+    },
+    {
+     "contrasteMedio": 15.79,
+     "contrasteP95": 11.31
+    }
+   ]
+  },
+  {
+   "nome": "nav: links sobre o filme (na trajetoria)",
+   "piorMedio": 3.9,
+   "piorP95": 2.62,
+   "amostras": [
+    {
+     "contrasteMedio": 13.24,
+     "contrasteP95": 11.65
+    },
+    {
+     "contrasteMedio": 3.9,
+     "contrasteP95": 2.62
+    },
+    {
+     "contrasteMedio": 13.27,
+     "contrasteP95": 4.57
+    },
+    {
+     "contrasteMedio": 12.58,
+     "contrasteP95": 7.93
+    },
+    {
+     "contrasteMedio": 6.94,
+     "contrasteP95": 2.72
+    },
+    {
+     "contrasteMedio": 6.63,
+     "contrasteP95": 2.62
+    }
+   ]
+  }
+ ],
+ "console": [],
+ "falhasDeRede": []
+}

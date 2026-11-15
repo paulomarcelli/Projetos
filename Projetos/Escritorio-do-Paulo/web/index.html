@@ -7,6 +7,7 @@
   <meta name="description" content="O escritório da equipe de agentes de IA do Paulo: quem está fazendo o quê, as tarefas e as entregas, nesta máquina.">
   <meta name="theme-color" content="#0a0d13">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/">
   <link rel="preload" href="fontes/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fontes/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
@@ -106,6 +107,19 @@
   </dialog>
 
   <dialog id="dlg-detalhe" aria-labelledby="dd-titulo"><div class="dialogo" id="detalhe"></div></dialog>
+
+  <section class="fechado" id="fechado" hidden aria-labelledby="fechado-titulo">
+    <div class="fechado__caixa">
+      <p class="rotulo">Escritório do Paulo · endereço online</p>
+      <h2 id="fechado-titulo">O escritório está fechado</h2>
+      <p>Esta página mostra, ao vivo, o Escritório que roda no seu computador: as tarefas e o que cada agente está fazendo no Claude Code. Ele não está respondendo em <span class="mono">127.0.0.1:<span id="fechado-porta">4310</span></span>.</p>
+      <p>Abra no computador onde estão os agentes:</p>
+      <pre class="fechado__comando">node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar</pre>
+      <p>Se o navegador perguntar se este site pode <b>acessar dispositivos da rede local</b>, clique em <b>Permitir</b>: é assim que a página encontra o Escritório no seu computador. Se você já tiver bloqueado, libere no cadeado ao lado do endereço.</p>
+      <p class="fechado__nota">Funciona no Chrome, no Edge e no Firefox do mesmo computador em que os agentes rodam. Em outro aparelho, o escritório aparece fechado: os agentes rodam só na sua máquina.</p>
+      <button class="botao botao--principal" type="button" id="fechado-tentar">Tentar de novo</button>
+    </div>
+  </section>
 
   <div class="aviso-flutuante" id="aviso" role="alert" hidden></div>
 

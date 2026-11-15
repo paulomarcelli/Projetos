@@ -114,7 +114,9 @@ async function principal() {
     }
     const endereco = `http://127.0.0.1:${portaReal}`;
     const r = escritorio.motor.retrato();
-    console.log(`\n  Escritório do Paulo aberto em ${endereco}\n`);
+    console.log(`\n  Escritório do Paulo aberto em ${endereco}`);
+    if (config.enderecoOnline) console.log(`  Também pelo endereço online (neste computador): ${config.enderecoOnline}${portaReal !== 4310 ? `?porta=${portaReal}` : ''}`);
+    console.log('');
     console.log(`  Equipe: ${r.equipe.map(a => a.nome).join(', ') || 'nenhum agente em .claude/agents'}`);
     console.log(`  Claude Code: ${r.sistema.executor.disponivel ? r.sistema.executor.versao : `não encontrado (${r.sistema.executor.motivo || 'instale e entre na conta'})`}`);
     console.log(`  Ganchos: ${r.sistema.ganchos.instalados ? 'instalados' : 'não instalados (rode: ganchos instalar)'}`);

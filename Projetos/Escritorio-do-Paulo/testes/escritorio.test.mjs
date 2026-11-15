@@ -432,3 +432,29 @@ test('segurança: só atende esta máquina, exige JSON e não sai da pasta da in
     await escritorio.fechar();
   }
 });
+
+test('página online: só o endereço configurado lê o estado e cria tarefas', async () => {
+  const { escritorio, porta } = await abrir({ origensPermitidas: ['https://paulomarcelli.github.io'] });
+  const base = `http://127.0.0.1:${porta}`;
+  try {
+    const online = 'https://paulomarcelli.github.io';
+    const pre = await fetch(`${base}/api/tarefas`, { method: 'OPTIONS', headers: { Origin: online, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Private-Network': 'true' } });
+    assert.equal(pre.status, 204);
+    assert.equal(pre.headers.get('access-control-allow-origin'), online);
+    assert.equal(pre.headers.get('access-control-allow-private-network'), 'true');
+
+    const leitura = await fetch(`${base}/api/estado`, { headers: { Origin: online } });
+    assert.equal(leitura.headers.get('access-control-allow-origin'), online);
+    const criada = await fetch(`${base}/api/tarefas`, { method: 'POST', headers: { Origin: online, 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: 'Pela página online', agente: 'stephen' }) });
+    assert.equal(criada.status, 201);
+    assert.equal(criada.headers.get('access-control-allow-origin'), online);
+
+    const intruso = 'https://site-qualquer.example';
+    const lida = await fetch(`${base}/api/estado`, { headers: { Origin: intruso } });
+    assert.equal(lida.headers.get('access-control-allow-origin'), null, 'o navegador não deixa outro site ler o estado');
+    assert.equal((await fetch(`${base}/api/tarefas`, { method: 'OPTIONS', headers: { Origin: intruso } })).status, 403);
+    assert.equal((await fetch(`${base}/api/tarefas`, { method: 'POST', headers: { Origin: intruso, 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: 'x' }) })).status, 403);
+  } finally {
+    await escritorio.fechar();
+  }
+});

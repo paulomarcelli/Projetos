@@ -21,8 +21,8 @@
 <br>
 
 > [!NOTE]
-> O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/) mostra, ao vivo, o
-> escritório aberto no seu computador. Com a **nuvem** ligada, ele mostra também de qualquer aparelho, inclusive o
+> O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/) fica sempre aberto:
+> sem ninguém trabalhando, mostra a equipe no lazer; com o escritório aberto no seu computador, mostra ele ao vivo. Com a **nuvem** ligada, ele mostra também de qualquer aparelho, inclusive o
 > que as agentes fazem nas sessões do Claude na nuvem (veja a seção "Ver de qualquer lugar", mais abaixo). As agentes
 > são três personagens minhas (Sofia, Karol e Sabrina), desenhadas em pixel art a partir dos retratos delas. As capturas
 > desta página usam o Claude de simulação dos testes, por isso aparece a faixa "Simulação".
@@ -33,7 +33,7 @@ Os agentes de IA trabalham escondidos no terminal. Aqui eles ganham um escritór
 personagem em pixel art e um crachá com o estado. Quando a Sofia está no Figma, o monitor dela acende; quando a Karol
 espera o Design System, ela fica com a ampulheta e um fio tracejado até a mesa dela.
 
-**O escritório é vivo, mas não finge.** Quem está disponível se diverte: joga pingue-pongue em dupla, senta no sofá
+**O escritório é vivo, mas não finge.** Quem está disponível fica no lazer (nunca parada na mesa à toa) e se diverte: joga pingue-pongue em dupla, senta no sofá
 para jogar videogame, joga fliperama, lê no lounge, toma café na copa, rega as plantas e passeia no jardim. Quando termina uma tarefa, leva a entrega andando até
 quem continua o trabalho. Mas um agente só aparece trabalhando, pensando ou pesquisando enquanto existe uma execução
 real dele no Claude Code: nessa hora ele larga o que estava fazendo e volta para a mesa. Esperando outra tarefa, fica

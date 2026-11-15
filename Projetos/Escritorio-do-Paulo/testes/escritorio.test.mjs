@@ -565,3 +565,17 @@ test('nuvem: o espelho respeita o limite do ntfy e a página escolhe o escritór
   assert.equal(P.escolher(new Map([['pc', ocioso], ['nv', ativo], ['x', fechado], ['v', velho]]), agora), ativo);
   assert.equal(P.escolher(new Map([['x', fechado], ['v', velho]]), agora), null);
 });
+
+test('página online: sem ninguém publicando, o escritório fica aberto com a equipe de verdade no lazer', async () => {
+  const { EQUIPE_PADRAO } = await import('../web/js/equipe-padrao.js');
+  const identidade = JSON.parse(fs.readFileSync(path.join(pastaProjeto, 'equipe.json'), 'utf8'));
+  assert.deepEqual(EQUIPE_PADRAO.map(a => a.id), identidade.ordem, 'a equipe padrão da página é a do equipe.json');
+  for (const a of EQUIPE_PADRAO) {
+    const real = identidade.agentes[a.id];
+    assert.deepEqual([a.nome, a.papel, a.cor], [real.nome, real.papel, real.cor], `${a.id} igual ao equipe.json`);
+  }
+  const folga = P.retratoDeFolga();
+  assert.equal(folga.nuvem.folga, true);
+  assert.ok(folga.equipe.every(a => a.estado.estado === 'disponivel'));
+  assert.equal(folga.tarefas.length, 0);
+});

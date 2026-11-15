@@ -3,7 +3,7 @@
 import { quadroDe } from './sprites.js';
 import { ICONES, ROTULOS, ESTADOS_ATIVOS } from './telas.js';
 import { criarMapa } from './mapa.js';
-import { topicoDaPagina, ligarNuvem } from './nuvem.js';
+import { topicoDaPagina, ligarNuvem, retratoDeFolga } from './nuvem.js';
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 const $$ = (seletor, raiz = document) => [...raiz.querySelectorAll(seletor)];
@@ -93,6 +93,11 @@ function renderSistema() {
   document.body.dataset.modo = modo;
   if (modo === 'nuvem') {
     const n = E.nuvem || {};
+    if (n.folga) {
+      $('#sistema').innerHTML = `<span class="sinal" data-ok="sim" title="${TOPICO ? 'A página está ligada na nuvem e mostra quem começar a trabalhar' : 'A página mostra o escritório do computador quando ele está aberto'}"><i></i>${TOPICO ? 'Nuvem ao vivo' : 'Aberto'}</span>`;
+      $('#faixas').innerHTML = `<p class="faixa">${ICONES.disponivel || ''}<span>Ninguém da equipe está trabalhando agora: elas estão no lazer. Quando uma começar uma tarefa, ela volta para a mesa e a página mostra na hora.</span></p>`;
+      return;
+    }
     const deOnde = n.origem === 'nuvem' ? 'de uma sessão do Claude na nuvem' : 'do seu computador';
     $('#sistema').innerHTML = `
       <span class="sinal" data-ok="${ao ? 'sim' : 'aviso'}" title="Ligação com o ntfy.sh, que retransmite o escritório"><i></i>${ao ? 'Nuvem ao vivo' : 'Reconectando…'}</span>
@@ -180,7 +185,7 @@ function renderMesa() {
   const p = projetoEmFoco();
   if (!p) {
     mesa.innerHTML = `<div class="mesa__topo"><span class="rotulo">Mesa de projeto</span></div>
-      <p class="vazio"><b>Nenhum projeto ainda.</b> Faça um pedido e a equipe monta as tarefas aqui, na ordem em que uma depende da outra.</p>`;
+      <p class="vazio"><b>Nenhum projeto ainda.</b> ${modo === 'nuvem' ? 'Quando houver um projeto, as tarefas aparecem aqui' : 'Faça um pedido e a equipe monta as tarefas aqui'}, na ordem em que uma depende da outra.</p>`;
     return;
   }
   const tarefas = p.ids.map(tarefaPorId).filter(Boolean);
@@ -297,7 +302,9 @@ function renderTarefas() {
     html += `<div class="grupo"><p class="grupo__titulo"><span>Encerradas</span><span>${feitas.length}</span></p>${visiveis.map(linhaDaTarefa).join('')}
       ${feitas.length > 4 ? `<button class="botao botao--pequeno" type="button" data-acao="alternar-concluidas" style="margin-top:8px">${mostrarConcluidas ? 'Mostrar menos' : `Ver todas (${feitas.length})`}</button>` : ''}</div>`;
   }
-  if (!todas.length) html = `<p class="vazio"><b>Nenhuma tarefa.</b> Use "Novo pedido" para a equipe planejar, ou "Nova tarefa" para dar um trabalho direto a um agente.</p>`;
+  if (!todas.length) html = modo === 'nuvem'
+    ? '<p class="vazio"><b>Nenhuma tarefa agora.</b> Quando a equipe começar um trabalho, ele aparece aqui.</p>'
+    : `<p class="vazio"><b>Nenhuma tarefa.</b> Use "Novo pedido" para a equipe planejar, ou "Nova tarefa" para dar um trabalho direto a um agente.</p>`;
   $('#tarefas').innerHTML = html;
 }
 
@@ -568,25 +575,33 @@ function receber(retrato) {
   renderTudo();
 }
 
+// Online, o escritório nunca fecha: sem ninguém publicando, mostra a equipe no lazer (só leitura).
+function mostrarFolga(forcar = false) {
+  if (modo === 'local' && E && conexao === 'ao-vivo' && !E.nuvem) return;
+  if (!forcar && modo === 'nuvem' && E && !E.nuvem?.folga) return; // já tem um escritório de verdade na tela
+  modo = 'nuvem';
+  conexao = 'ao-vivo';
+  $('#fechado').hidden = true;
+  receber(retratoDeFolga());
+}
+
 // Sem o escritório no computador, cai para a nuvem (se houver tópico). Se o computador voltar, ele tem prioridade.
 function usarNuvem() {
   if (!TOPICO || pararNuvem) return;
   pararNuvem = ligarNuvem(TOPICO, {
     aoReceber: retrato => {
-      if (modo === 'local' && E && conexao === 'ao-vivo') return;
+      if (modo === 'local' && E && conexao === 'ao-vivo' && !E.nuvem) return;
       modo = 'nuvem';
       conexao = 'ao-vivo';
       $('#fechado').hidden = true;
       receber(retrato);
     },
     aoSituacao: situacao => {
-      if (modo === 'local' && E) return;
+      if (modo === 'local' && E && !E.nuvem) return;
       if (situacao === 'vazio') {
-        modo = 'local';
-        E = null;
-        $('#fechado-titulo').textContent = 'Ninguém da equipe está no escritório agora';
-        $('#fechado-nuvem').hidden = false;
-        $('#fechado').hidden = false;
+        mostrarFolga(true); // quem publicava fechou ou sumiu: a equipe volta para o lazer
+      } else if (situacao === 'sem-rede' && !E) {
+        mostrarFolga();
       } else if (modo === 'nuvem') {
         conexao = situacao === 'ao-vivo' ? 'ao-vivo' : 'reconectando';
         if (E) renderSistema();
@@ -609,9 +624,10 @@ function ligar() {
   });
   fonte.onerror = () => {
     if (modo === 'nuvem') return; // o computador não responde, mas a nuvem segue mostrando
-    if (TOPICO && !LOCAL) {
-      usarNuvem();
-      if (!E) $('#achado').textContent = 'Procurando o escritório na nuvem…';
+    if (!LOCAL) {
+      if (TOPICO) usarNuvem();
+      // enquanto a nuvem não responde (ou sem link da nuvem), a equipe aparece no lazer em vez de "fechado"
+      if (!E) setTimeout(() => !E && mostrarFolga(), TOPICO ? 2500 : 0);
       return;
     }
     conexao = 'reconectando';

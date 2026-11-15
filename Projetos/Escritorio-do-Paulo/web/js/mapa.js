@@ -420,15 +420,10 @@ export function criarMapa(moldura, { aoAbrir }) {
     }
   }
 
-  // Quem está livre escolhe o próximo lugar: diversão (às vezes em dupla), a mesa de um colega ou a própria mesa.
-  // Dois não escolhem o mesmo lugar ao mesmo tempo.
+  // Quem está livre fica no lazer: vai de uma diversão para outra (às vezes em dupla, no pingue-pongue) e só volta
+  // para a mesa quando tem trabalho. Dois não escolhem o mesmo lugar ao mesmo tempo.
   function proximoPasseio(f) {
     const ocupados = new Set([...figuras.values()].filter(o => o !== f).map(o => o.destino));
-    if (Math.random() < 0.15) return { destino: casaDe(f.indice) };
-    if (Math.random() < 0.12) {
-      const colegas = [...figuras.values()].filter(o => o !== f && MESAS[o.indice] && !ocupados.has(frenteDaMesa(o.indice)));
-      if (colegas.length) return { destino: frenteDaMesa(colegas[Math.floor(Math.random() * colegas.length)].indice), parar: sorteio(4000, 8000) };
-    }
     // pingue-pongue: só com um parceiro livre e parado
     if (!ocupados.has('pong-a') && !ocupados.has('pong-b') && Math.random() < 0.4) {
       const parceiros = [...figuras.values()].filter(o => o !== f && o.modo === 'livre' && !o.par && !o.levando && !o.entrega);
@@ -441,7 +436,7 @@ export function criarMapa(moldura, { aoAbrir }) {
       }
     }
     const opcoes = DIVERSAO.filter(n => n !== 'pong-a' && !ocupados.has(n) && n !== f.noPonto);
-    const destino = opcoes[Math.floor(Math.random() * opcoes.length)] || casaDe(f.indice);
+    const destino = opcoes[Math.floor(Math.random() * opcoes.length)] || f.noPonto || DIVERSAO[0];
     const lazer = LAZER[destino];
     return { destino, parar: lazer ? sorteio(...lazer.tempo) * 1000 : 0 };
   }
@@ -511,7 +506,13 @@ export function criarMapa(moldura, { aoAbrir }) {
         f.levando = false;
         irPara(f, presa, { pressa: true });
       } else {
-        if (!f.posicionado) irPara(f, casaDe(indice)); // aparece na própria mesa
+        if (!f.posicionado) {
+          // quem chega livre já aparece no lazer, fazendo alguma coisa
+          f.modo = 'livre';
+          const { destino, parar } = proximoPasseio(f);
+          irPara(f, destino);
+          f.ate = performance.now() + (parar || sorteio(6000, 14000));
+        }
         if (f.modo !== 'livre') {
           f.modo = 'livre';
           f.ate = performance.now() + (f.entrega ? 300 : sorteio(1500, 5000));

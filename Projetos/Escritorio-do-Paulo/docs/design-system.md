@@ -94,7 +94,7 @@ As fontes ficam em `web/fontes/` (licença OFL) para o escritório funcionar sem
   Nenhuma é ruiva: as cores de cabelo seguem as ilustrações. Agente sem visual próprio ganha um visual padrão.
 - **Retratos**: na gaveta aparece o retrato animado da agente quando está em `web/avatares/pessoais/<id>.webp` (pasta
   fora do git; instale com `bin/escritorio.mjs figurinhas <zip>`). Sem ele, a gaveta mostra o sprite ampliado.
-- **Lugar e diversão**: cada agente tem a sua mesa. Quem está disponível (ou acabou de concluir) vai se divertir pelo
+- **Lugar e diversão**: cada agente tem a sua mesa. Quem está disponível (ou acabou de concluir) fica no lazer e só volta para a mesa com trabalho; já aparece numa diversão e vai de uma para outra pelo
   caminho mais curto: pingue-pongue em dupla (com a bolinha indo e voltando), videogame no pufe, fliperama, leitura no
   sofá, café na copa, água no bebedouro, passeio e banco no jardim, regar o canteiro. Cada atividade tem lugar, pose,
   direção, ícone no balão e duração. Ao concluir uma tarefa, leva a entrega até o lado da mesa de quem continua. Quando

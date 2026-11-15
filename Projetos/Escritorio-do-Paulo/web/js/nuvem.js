@@ -35,6 +35,16 @@ export function esquecerTopico() {
   }
 }
 
+import { EQUIPE_PADRAO } from './equipe-padrao.js';
+
+// Ninguém publicando (computador desligado, nenhuma sessão na nuvem): o escritório fica aberto com a equipe no lazer.
+export function retratoDeFolga() {
+  const eq = Object.fromEntries(EQUIPE_PADRAO.map(a => [a.id, ['disponivel', null, '', null, [], a.nome, a.papel, a.cor]]));
+  const r = remontar({ v: 1, o: 'folga', i: 'folga', t: Date.now(), eq, tf: [], h: [], hj: [0, null] });
+  r.nuvem.folga = true;
+  return r;
+}
+
 const METRICAS_VAZIAS = { execucoes: 0, concluidas: 0, erros: 0, tempoMedioMs: null, custoUsd: null };
 
 // Resumo (v1, servidor/nuvem.mjs) → retrato no formato do servidor local.

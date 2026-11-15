@@ -4,6 +4,13 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { traduzirFerramenta, ehChamadaDeAgente, resumirIntegracoes } from './atividade.mjs';
 
+// Cada execução é uma sessão nova do Claude Code: não herda as variáveis de uma sessão que tenha aberto o Escritório.
+function semSessao(env) {
+  const limpo = { ...env };
+  for (const chave of ['CLAUDECODE', 'CLAUDE_CODE_ENTRYPOINT', 'CLAUDE_CODE_SSE_PORT', 'CLAUDE_PROJECT_DIR']) delete limpo[chave];
+  return limpo;
+}
+
 export function criarExecutor({ raizRepo, config, aoEvento }) {
   const binario = process.env.ESCRITORIO_CLAUDE_BIN || 'claude';
   const simulacao = Boolean(process.env.ESCRITORIO_CLAUDE_BIN);
@@ -30,7 +37,7 @@ export function criarExecutor({ raizRepo, config, aoEvento }) {
 
     const processo = spawn(binario, args, {
       cwd: raizRepo,
-      env: { ...process.env, ESCRITORIO_EXEC_ID: execId, ESCRITORIO_TAREFA: tarefaId || '' },
+      env: { ...semSessao(process.env), ESCRITORIO_EXEC_ID: execId, ESCRITORIO_TAREFA: tarefaId || '' },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     const registro = { processo, agente, tarefaId, encerrada: false };

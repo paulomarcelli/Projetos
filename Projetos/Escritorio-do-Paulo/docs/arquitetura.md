@@ -83,6 +83,19 @@ node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar --abrir
 
 Testes: `npm test` dentro da pasta (23 testes; usam um Claude de simulação, `testes/claude-falso.mjs`).
 
+## Início automático
+
+- `bin/escritorio.mjs autoiniciar instalar` registra o escritório no sistema: LaunchAgent no macOS
+  (`~/Library/LaunchAgents/com.paulomarcelli.escritorio.plist`, reinicia se cair), atalho na pasta Inicializar do
+  Windows (`Escritorio do Paulo.vbs`, sem janela) ou serviço do usuário no systemd (Linux, `Restart=on-failure`). Grava
+  o caminho do Node e o `PATH` da hora da instalação, para o escritório achar o comando `claude`. Registro em
+  `dados/escritorio.log`.
+- O gancho `SessionStart` (`ganchos/iniciar.mjs`) abre o escritório em segundo plano quando uma sessão do Claude Code
+  começa neste computador e ele está fechado. Não escreve nada na conversa e não faz nada em sessões na nuvem
+  (`CLAUDE_CODE_REMOTE=true`).
+- `iniciar` com o escritório já aberto sai sem erro; as variáveis da sessão que o abriu (`CLAUDECODE`…) não passam para
+  ele nem para as execuções dos agentes.
+
 ## Riscos e limites
 
 - Execuções pelo painel rodam com `--permission-mode acceptEdits` e uma lista curta de comandos liberados

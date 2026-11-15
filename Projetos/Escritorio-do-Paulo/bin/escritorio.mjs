@@ -7,10 +7,13 @@
 //   node bin/escritorio.mjs plano arquivo.json [--auto]         cria as tarefas de um plano
 //   node bin/escritorio.mjs ganchos instalar|remover|estado     liga o Claude Code ao escritório
 //   node bin/escritorio.mjs figurinhas <arquivo.zip | pasta>   instala as suas figurinhas (ficam fora do git)
+//   node bin/escritorio.mjs autoiniciar instalar|remover|estado  abre o escritório sozinho quando o computador liga
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import zlib from 'node:zlib';
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
 import { criarServidor, lerConfig, acharRaiz, PASTA_PROJETO } from '../servidor/index.mjs';
 
 const [, , comando = 'iniciar', ...resto] = process.argv;
@@ -50,6 +53,7 @@ async function api(metodo, caminho, corpo) {
 
 const EVENTOS = ['UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'SubagentStart', 'SubagentStop', 'Stop'];
 const MARCA = 'ganchos/enviar.mjs';
+const NOSSOS = /ganchos\/(enviar|iniciar)\.mjs/;
 
 function arquivoDeGanchos() {
   return path.join(acharRaiz(), '.claude', 'settings.json');
@@ -65,7 +69,7 @@ function semOsNossos(ajustes) {
   const hooks = { ...(ajustes.hooks || {}) };
   for (const evento of Object.keys(hooks)) {
     hooks[evento] = (hooks[evento] || [])
-      .map(grupo => ({ ...grupo, hooks: (grupo.hooks || []).filter(h => !String(h.command || '').includes(MARCA)) }))
+      .map(grupo => ({ ...grupo, hooks: (grupo.hooks || []).filter(h => !NOSSOS.test(String(h.command || ''))) }))
       .filter(grupo => grupo.hooks.length);
     if (!hooks[evento].length) delete hooks[evento];
   }
@@ -101,6 +105,70 @@ function lerZip(arquivo) {
   return saida;
 }
 
+// ---------- início automático com o computador ----------
+const ROTULO = 'com.paulomarcelli.escritorio';
+function planoDeAutoinicio() {
+  const casa = os.homedir();
+  const no = process.execPath; // caminho absoluto do Node que está rodando agora
+  const bin = path.join(PASTA_PROJETO, 'bin', 'escritorio.mjs');
+  const registro = path.join(PASTA_PROJETO, 'dados', 'escritorio.log');
+  const caminhos = process.env.PATH || ''; // para o escritório achar o comando "claude" depois
+  if (process.platform === 'darwin') {
+    const arquivo = path.join(casa, 'Library', 'LaunchAgents', `${ROTULO}.plist`);
+    const xml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const conteudo = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>${ROTULO}</string>
+  <key>ProgramArguments</key><array><string>${xml(no)}</string><string>${xml(bin)}</string><string>iniciar</string></array>
+  <key>WorkingDirectory</key><string>${xml(PASTA_PROJETO)}</string>
+  <key>EnvironmentVariables</key><dict><key>PATH</key><string>${xml(caminhos)}</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
+  <key>StandardOutPath</key><string>${xml(registro)}</string>
+  <key>StandardErrorPath</key><string>${xml(registro)}</string>
+</dict>
+</plist>
+`;
+    return {
+      sistema: 'macOS (LaunchAgent)', arquivo, conteudo,
+      ligar: () => { spawnSync('launchctl', ['unload', arquivo], { stdio: 'ignore' }); return spawnSync('launchctl', ['load', '-w', arquivo], { encoding: 'utf8' }); },
+      desligar: () => spawnSync('launchctl', ['unload', '-w', arquivo], { encoding: 'utf8' }),
+    };
+  }
+  if (process.platform === 'win32') {
+    const pastaInicio = path.join(process.env.APPDATA || path.join(casa, 'AppData', 'Roaming'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup');
+    const arquivo = path.join(pastaInicio, 'Escritorio do Paulo.vbs');
+    const aspas = s => String(s).replace(/"/g, '""');
+    const conteudo = `' Abre o Escritorio do Paulo quando o Windows inicia, sem janela.\r\nSet s = CreateObject("WScript.Shell")\r\ns.CurrentDirectory = "${aspas(PASTA_PROJETO)}"\r\ns.Run """${aspas(no)}"" ""${aspas(bin)}"" iniciar", 0, False\r\n`;
+    return {
+      sistema: 'Windows (pasta Inicializar)', arquivo, conteudo,
+      ligar: () => spawnSync('wscript', [arquivo], { encoding: 'utf8' }),
+      desligar: () => ({ status: 0 }),
+    };
+  }
+  const arquivo = path.join(casa, '.config', 'systemd', 'user', 'escritorio-do-paulo.service');
+  const conteudo = `[Unit]
+Description=Escritório do Paulo (painel local dos agentes)
+
+[Service]
+WorkingDirectory=${PASTA_PROJETO}
+Environment=PATH=${caminhos}
+ExecStart="${no}" "${bin}" iniciar
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+`;
+  return {
+    sistema: 'Linux (systemd do usuário)', arquivo, conteudo,
+    ligar: () => { spawnSync('systemctl', ['--user', 'daemon-reload'], { stdio: 'ignore' }); return spawnSync('systemctl', ['--user', 'enable', '--now', 'escritorio-do-paulo.service'], { encoding: 'utf8' }); },
+    desligar: () => spawnSync('systemctl', ['--user', 'disable', '--now', 'escritorio-do-paulo.service'], { encoding: 'utf8' }),
+  };
+}
+
 async function principal() {
   if (comando === 'iniciar') {
     const escritorio = criarServidor(opcoes.porta ? { config: { porta } } : {});
@@ -108,8 +176,15 @@ async function principal() {
     try {
       portaReal = await escritorio.ouvir(porta);
     } catch (erro) {
-      if (erro.code === 'EADDRINUSE') console.error(`A porta ${porta} já está em uso. O Escritório já está aberto? Veja ${base} ou use --porta.`);
-      else console.error(erro.message);
+      if (erro.code === 'EADDRINUSE') {
+        // Se quem está na porta é o próprio Escritório, está tudo certo (o início automático pode chamar duas vezes).
+        const ja = await fetch(`${base}/api/estado`).then(r => r.json()).catch(() => null);
+        if (ja?.sistema?.nome === 'Escritório do Paulo') {
+          console.log(`O Escritório já está aberto em ${base}.`);
+          process.exit(0);
+        }
+        console.error(`A porta ${porta} está em uso por outro programa. Use --porta ou mude "porta" no escritorio.config.json.`);
+      } else console.error(erro.message);
       process.exit(1);
     }
     const endereco = `http://127.0.0.1:${portaReal}`;
@@ -190,6 +265,9 @@ async function principal() {
         const grupo = evento === 'PreToolUse' || evento === 'PostToolUse' ? { matcher: '*', hooks: [nosso] } : { hooks: [nosso] };
         hooks[evento] = [...(hooks[evento] || []), grupo];
       }
+      // Ao abrir o Claude Code neste computador, abre o escritório se ele estiver fechado (nunca na nuvem).
+      const abre = { type: 'command', command: `node "$CLAUDE_PROJECT_DIR/${relativo.replace('enviar.mjs', 'iniciar.mjs')}"`, timeout: 5 };
+      hooks.SessionStart = [...(hooks.SessionStart || []), { hooks: [abre] }];
     } else if (acao !== 'remover') {
       return console.error('Use: ganchos instalar | remover | estado');
     }
@@ -230,7 +308,36 @@ async function principal() {
     return console.log('Recarregue a página do Escritório. A pasta web/avatares/pessoais/ fica fora do git.');
   }
 
-  console.error('Comandos: iniciar, tarefas, tarefa, pedido, plano, ganchos, figurinhas');
+  if (comando === 'autoiniciar') {
+    const acao = livres[0] || 'estado';
+    const plano = planoDeAutoinicio();
+    const existe = fs.existsSync(plano.arquivo);
+    if (acao === 'estado') return console.log(existe ? `Início automático ligado (${plano.sistema}): ${plano.arquivo}` : 'Início automático desligado.');
+    if (acao === 'remover') {
+      if (existe) {
+        plano.desligar();
+        fs.rmSync(plano.arquivo, { force: true });
+      }
+      return console.log('Início automático desligado. O Escritório não abre mais sozinho quando o computador liga.');
+    }
+    if (acao !== 'instalar') return console.error('Use: autoiniciar instalar | remover | estado');
+    if (process.env.CLAUDE_CODE_REMOTE === 'true') return console.error('Isto é uma sessão do Claude na nuvem: instale o início automático no seu computador.');
+    fs.mkdirSync(path.dirname(plano.arquivo), { recursive: true });
+    fs.mkdirSync(path.join(PASTA_PROJETO, 'dados'), { recursive: true });
+    // No Windows o .vbs vai em UTF-16 com BOM, para caminhos com acento (ex.: "Área de Trabalho") funcionarem.
+    if (process.platform === 'win32') fs.writeFileSync(plano.arquivo, `\ufeff${plano.conteudo}`, 'utf16le');
+    else fs.writeFileSync(plano.arquivo, plano.conteudo);
+    const r = plano.ligar();
+    if (r && r.status && r.status !== 0) {
+      console.error(`Arquivo criado em ${plano.arquivo}, mas não consegui ligar agora: ${(r.stderr || r.error?.message || '').trim()}`);
+      return console.error('Ele vale a partir do próximo início do computador. Para abrir agora: node bin/escritorio.mjs iniciar');
+    }
+    console.log(`Início automático ligado (${plano.sistema}).`);
+    console.log(`O Escritório abre sozinho quando o computador liga e volta se cair. Registro: ${path.join(PASTA_PROJETO, 'dados', 'escritorio.log')}`);
+    return console.log(`Endereço: http://127.0.0.1:${porta} · online: ${config.enderecoOnline || ''}`);
+  }
+
+  console.error('Comandos: iniciar, tarefas, tarefa, pedido, plano, ganchos, figurinhas, autoiniciar');
   process.exit(1);
 }
 

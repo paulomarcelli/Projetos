@@ -93,7 +93,7 @@ ul, ol { list-style: none; }
 .mapa { position: relative; z-index: 1; border-radius: 14px; background: #bfdcf2; padding: 10px; overflow-x: auto; }
 .mapa__tela {
   position: relative; margin: 0 auto; border-radius: 10px; overflow: hidden; border: 3px solid #f6f8fb;
-  width: min(100%, calc((100vh - 300px) * 336 / 176)); min-width: 300px; aspect-ratio: 336 / 176;
+  width: min(100%, calc((100vh - 300px) * 480 / 272)); min-width: 300px; aspect-ratio: 480 / 272;
   --escala: 3;
 }
 .mapa__canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
@@ -129,17 +129,13 @@ ul, ol { list-style: none; }
 
 /* Figurinhas no mapa: o movimento acompanha o estado real; parado quando disponível. */
 .boneco {
-  position: absolute; transform: translate(-50%, -100%); height: calc(var(--escala) * 32px); aspect-ratio: 120 / 140;
+  /* o bonequinho é desenhado no canvas (sprites.js); aqui fica só a área de clique e o balão */
+  position: absolute; transform: translate(-50%, -100%); height: calc(var(--escala) * 22px); aspect-ratio: 14 / 22;
   cursor: pointer;
 }
-.boneco__corpo { display: block; width: 100%; height: 100%; transform-origin: 50% 100%; }
-.boneco__corpo .av, .boneco__corpo img {
-  display: block; width: 100%; height: 100%; object-fit: contain;
-  filter: drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff) drop-shadow(0 2px 1px rgba(20, 24, 34, .3));
-}
-.boneco[data-esquerda] .boneco__corpo { scale: -1 1; }
+.boneco__corpo { display: none; }
 .boneco__balao {
-  position: absolute; right: -14%; top: 4%; width: calc(var(--escala) * 7px); height: calc(var(--escala) * 7px); min-width: 18px; min-height: 18px;
+  position: absolute; right: -70%; top: -10%; width: calc(var(--escala) * 7px); height: calc(var(--escala) * 7px); min-width: 18px; min-height: 18px;
   display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--estado); border: 1.5px solid var(--estado);
   box-shadow: 0 2px 0 rgba(20, 24, 34, .25);
 }
@@ -153,35 +149,12 @@ ul, ol { list-style: none; }
 .boneco[data-estado="revisao"] { --estado: var(--estado-revisao); }
 .boneco[data-estado="concluido"] { --estado: var(--estado-concluido); }
 .boneco[data-estado="erro"] { --estado: var(--estado-erro); }
-.boneco[data-andando] .boneco__corpo { animation: passo .42s ease-in-out infinite; }
-.boneco:not([data-andando])[data-estado="disponivel"] .boneco__corpo,
-.boneco:not([data-andando])[data-estado="concluido"]:not(.acabou-de-mudar) .boneco__corpo { animation: respira 3.2s ease-in-out infinite; }
 .boneco[data-afazer] .boneco__balao { --estado: #6b7a90; }
-.boneco:not([data-andando])[data-estado="trabalhando"] .boneco__corpo,
-.boneco:not([data-andando])[data-estado="revisao"] .boneco__corpo { animation: digitando .5s ease-in-out infinite; }
-.boneco:not([data-andando])[data-estado="pensando"] .boneco__corpo { animation: pensando 2.6s ease-in-out infinite; }
-.boneco:not([data-andando])[data-estado="pesquisando"] .boneco__corpo { animation: procurando 1.8s ease-in-out infinite; }
-.boneco:not([data-andando])[data-estado="aguardando"] .boneco__corpo { animation: esperando 3.6s ease-in-out infinite; }
-.boneco[data-estado="concluido"].acabou-de-mudar .boneco__corpo { animation: salto .6s var(--curva) 2; }
-.boneco[data-estado="erro"].acabou-de-mudar .boneco__corpo { animation: treme .4s linear 2; }
 .boneco[data-estado="pensando"] .boneco__balao circle { animation: pontos 1.2s ease-in-out infinite; }
 .boneco[data-estado="pensando"] .boneco__balao circle:nth-child(2) { animation-delay: .15s; }
 .boneco[data-estado="pensando"] .boneco__balao circle:nth-child(3) { animation-delay: .3s; }
 .boneco[data-estado="aguardando"] .boneco__balao svg { animation: ampulheta 3s var(--curva) infinite; }
 .boneco[data-estado="pesquisando"] .boneco__balao svg { animation: procura 1.8s ease-in-out infinite; }
-.boneco[data-estado="disponivel"] .boneco__corpo { filter: saturate(.8); }
-.av-magia { transform-box: fill-box; transform-origin: center; }
-.boneco[data-estado="trabalhando"] .av-magia, .boneco[data-estado="pensando"] .av-magia, .boneco[data-estado="pesquisando"] .av-magia { animation: luz 1.2s ease-in-out infinite; }
-.boneco[data-estado="trabalhando"] .av-luz, .boneco[data-estado="pensando"] .av-luz, .boneco[data-estado="pesquisando"] .av-luz, .boneco[data-estado="revisao"] .av-luz { animation: luz 1.6s ease-in-out infinite; }
-@keyframes passo { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-6%) rotate(3deg); } }
-@keyframes respira { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, .975); } }
-@keyframes procurando { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-@keyframes digitando { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3%); } }
-@keyframes pensando { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(3.5deg); } }
-@keyframes esperando { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(1%) rotate(1.5deg); } }
-@keyframes salto { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-12%); } }
-@keyframes treme { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6%); } 75% { transform: translateX(6%); } }
-@keyframes luz { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
 @keyframes pulsa { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
 @keyframes corre { to { stroke-dashoffset: -12; } }
 @keyframes pontos { 0%, 100% { transform: translateY(0); opacity: .5; } 40% { transform: translateY(-2px); opacity: 1; } }
@@ -269,6 +242,7 @@ ul, ol { list-style: none; }
 .gaveta__topo { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: var(--espaco-3); padding: var(--espaco-4); border-bottom: 1px solid var(--cor-fio); align-items: center; }
 .gaveta__avatar { width: 84px; height: 92px; border-radius: var(--raio-cartao); background: var(--cor-fundo); border: 1px solid var(--cor-borda); overflow: hidden; }
 .gaveta__avatar .av, .gaveta__avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.gaveta__avatar img.av-pixel { object-fit: contain; image-rendering: pixelated; padding: 8%; }
 .gaveta__nome { font: 700 var(--texto-titulo)/1 var(--fonte-titulo); text-transform: uppercase; }
 .gaveta__papel { color: var(--cor-texto-2); }
 .gaveta__inspira { color: var(--cor-texto-3); font-size: var(--texto-pequeno); }

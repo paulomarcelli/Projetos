@@ -155,7 +155,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Aurora/"><b>Jogar o protótipo ↗</b></a> · <a href="Projetos/Aurora-Jogo">Código e documentação</a>
     </td>
     <td width="50%" valign="top">
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/"><img src="docs/capas/escritorio.webp" alt="Escritório do Paulo: um escritório em pixel art visto de cima, com oito figurinhas dos agentes nas mesas e crachás com o estado de cada um"></a>
+      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/"><img src="docs/capas/escritorio.webp" alt="Escritório do Paulo: um escritório em pixel art visto de cima, com salas, sala de jogos e jardim, as três agentes em pixel art e crachás com o estado de cada uma"></a>
       <h3>🏢 Escritório do Paulo</h3>
       O escritório da minha equipe de agentes de IA: cada figurinha mostra o que o seu agente está fazendo de verdade no Claude Code, com tarefas, dependências, entregas e custo.<br>
       <sub>Node sem dependências · Claude Code (agentes, ganchos) · Figma · roda localmente</sub><br><br>

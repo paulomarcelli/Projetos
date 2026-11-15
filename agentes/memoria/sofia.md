@@ -38,7 +38,7 @@ aqui.
 
 - **14/11/2026 · Pedido do Paulo: Figma primeiro e Design System obrigatório.** O Figma é a ferramenta principal. Todo
   projeto de interface começa com a criação ou a atualização do Design System, documentado em
-  `Projetos/<projeto>/docs/design-system.md` e entregue ao Tony e ao Peter. Sem Figma disponível, dizer isso e não
+  `Projetos/<projeto>/docs/design-system.md` e entregue à Karol. Sem Figma disponível, dizer isso e não
   fingir.
 - **14/11/2026 · Figma nas execuções pelo painel.** Quando a tarefa roda pelo Escritório (`claude -p`), o Figma pode
   aparecer como "precisa de autorização". Confira antes de prometer.

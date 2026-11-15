@@ -5,32 +5,26 @@ critério de qualidade e colaboração), uma memória em `memoria/` e entrega re
 comuns estão no [protocolo da equipe](PROTOCOLO.md). Para criar outro, peça "crie um agente…": a skill `criar-agente`
 (`.claude/skills/criar-agente/`) faz os 7 passos.
 
-| Agente | Papel | Inspiração | Arquivo | Memória |
-|---|---|---|---|---|
-| 🛡️ **Steve** | Coordenação: plano em tarefas, ordem e dependências | Capitão América | [`steve.md`](../.claude/agents/steve.md) | [`steve.md`](memoria/steve.md) |
-| 🎨 **Sofia** | Design: Design System no Figma, layouts, revisão visual | identidade própria | [`sofia.md`](../.claude/agents/sofia.md) | [`sofia.md`](memoria/sofia.md) |
-| ⚙️ **Tony** | Arquitetura: estrutura, tecnologias, publicação | Homem de Ferro | [`tony.md`](../.claude/agents/tony.md) | [`tony.md`](memoria/tony.md) |
-| 🔮 **Stephen** | Pesquisa e análise com fontes | Doutor Estranho | [`stephen.md`](../.claude/agents/stephen.md) | [`stephen.md`](memoria/stephen.md) |
-| 🕸️ **Peter** | Front-end a partir do Design System | Homem-Aranha | [`peter.md`](../.claude/agents/peter.md) | [`peter.md`](memoria/peter.md) |
-| 🧪 **Bruce** | Back-end e dados | Hulk | [`bruce.md`](../.claude/agents/bruce.md) | [`bruce.md`](memoria/bruce.md) |
-| ✨ **Wanda** | Engenharia de IA | Feiticeira Escarlate | [`wanda.md`](../.claude/agents/wanda.md) | [`wanda.md`](memoria/wanda.md) |
-| 🕵️ **Natasha** | QA e segurança | Viúva Negra | [`natasha.md`](../.claude/agents/natasha.md) | [`natasha.md`](memoria/natasha.md) |
+| Agente | Papel | Arquivo | Memória |
+|---|---|---|---|
+| 🎤 **Sabrina** | Coordenação (plano em tarefas, ordem e dependências), pesquisa com fontes, QA e segurança | [`sabrina.md`](../.claude/agents/sabrina.md) | [`sabrina.md`](memoria/sabrina.md) |
+| 🎨 **Sofia** | Design: Design System no Figma, layouts, revisão visual | [`sofia.md`](../.claude/agents/sofia.md) | [`sofia.md`](memoria/sofia.md) |
+| 💻 **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, IA, publicação | [`karol.md`](../.claude/agents/karol.md) | [`karol.md`](memoria/karol.md) |
 
-Por que essas oito e não mais: back-end e dados ficaram juntos com o Bruce (neste repositório o servidor e os dados de
-um projeto quase sempre são a mesma peça), e QA e segurança ficaram juntos com a Natasha (as duas revisões olham as
-mesmas coisas: entradas, erros, o que vai para o ar).
+Por que três: o Paulo quis uma equipe pequena, só com elas. Quem desenha (Sofia) fica separada de quem constrói (Karol)
+e de quem planeja e confere (Sabrina): assim ninguém revisa o próprio trabalho.
 
 ## Como acionar
 
-Pelo **Escritório do Paulo** (`Projetos/Escritorio-do-Paulo/`): "Novo pedido" manda para o Steve planejar; "Nova
-tarefa" dá um trabalho direto a um agente. Ou numa conversa do Claude Code, pelo nome:
+Pelo **Escritório do Paulo** (`Projetos/Escritorio-do-Paulo/`): "Novo pedido" manda para a Sabrina planejar; "Nova
+tarefa" dá um trabalho direto a uma agente. Ou numa conversa do Claude Code, pelo nome:
 
 ```text
 Sofia, revise o responsivo do fã-site da Sofia Carson e me traga os prints.
 ```
 
 ```text
-@steve monte o plano para uma página de inscrição do meu curso.
+@sabrina monte o plano para uma página de inscrição do meu curso.
 ```
 
 Um agente novo só aparece numa **sessão nova** do Claude Code.

@@ -30,9 +30,13 @@ andamento (**Aurora**) tem uma passagem detalhada em
   lista de cópia desse workflow (já aconteceu: a pasta `fases/` da Aurora ficou de fora e foi corrigida).
 - `.claude/skills/`: skills instaladas no repositório. As de jogo são **`gamedev-skills`** (roteador com `level-design`,
   `platformer`, `pixijs-rendering` etc.) e **`2d-games`** (instalada nesta conversa, a pedido dele; `skills-lock.json`).
-- `.claude/agents/` e `agentes/`: o **time de agentes** (Steve, Sofia, Tony, Stephen, Peter, Bruce, Wanda, Natasha), com
-  memórias em `agentes/memoria/` e o protocolo em `agentes/PROTOCOLO.md`. A **Sofia** é a designer: todo projeto de
-  interface começa com o Design System dela no Figma. Para criar outro agente, use a skill `criar-agente`.
+- `.claude/agents/` e `agentes/`: o **time de agentes**, que são **só três** (o Paulo apagou os heróis antigos):
+  **Sofia** (agente 2, designer: todo projeto de interface começa com o Design System dela no Figma), **Karol**
+  (agente 1, desenvolvimento: arquitetura, front, back, dados e IA) e **Sabrina** (agente 3, coordenação, pesquisa e
+  QA; é quem monta os planos). Memórias em `agentes/memoria/` e protocolo em `agentes/PROTOCOLO.md`. No escritório
+  elas aparecem em pixel art com o visual dos retratos do Paulo: Sofia morena, Karol loira-mel, Sabrina loira clara.
+  **Nenhuma é ruiva** (o Paulo corrigiu isso). Os retratos animados ficam fora do git (`web/avatares/pessoais/`).
+  Para criar outro agente, use a skill `criar-agente`.
 - `Projetos/Escritorio-do-Paulo/`: o **Escritório do Paulo**, painel local da equipe (roda só na máquina dele:
   `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar`). `.claude/settings.json` tem os ganchos que avisam o
   escritório; se ele estiver fechado, os ganchos não fazem nada. Design System no Figma: `JFyZCMHbS1ASDzSdbGu6pC`.

@@ -77,22 +77,29 @@ As fontes ficam em `web/fontes/` (licença OFL) para o escritório funcionar sem
 | Tarefa | Situação (Andamento, Aguardando, Pronta, Concluída, Erro) | lista lateral |
 | Nó da mesa | Situação (5) | mesa de projeto, em colunas de dependência |
 | Marco | — | números do dia na parede |
-| Figurinha | Agente (8) | mapa e gaveta |
+| Personagem | Agente (3) | mapa (sprite) e gaveta (retrato) |
 
 ## Ambiente e personagens
 
-- **Mapa** (`web/js/mapa.js`): cenário em pixel art desenhado por código, 336 × 176 pixels ampliados sem
-  suavização. Sala da equipe (duas fileiras de quatro mesas), copa e sala de reunião.
-- **Figurinhas** (`web/js/avatares.js`): desenhos originais em SVG, no estilo de figurinha (cabeça grande, olhos
-  grandes, contorno branco), inspirados nos heróis de cada agente; a Sofia tem identidade própria, de designer.
-  As figurinhas do Paulo (sete heróis da folha dele e a Sofia, feita no mesmo estilo) substituem os desenhos quando
-  estão em `web/avatares/pessoais/<id>.png` (pasta fora do git; instale com `bin/escritorio.mjs figurinhas <zip>`).
-  No Figma, o componente Figurinha já usa essas imagens.
-- **Lugar e passeio**: cada agente tem a sua mesa. Quem está disponível (ou acabou de concluir) passeia por uma rede de
-  caminhos: café e geladeira na copa, tapete, quadro e janela da sala de reunião, plantas, e a mesa de um colega para
-  conversar; volta para a própria mesa de vez em quando. Ao concluir uma tarefa, leva a entrega até o lado da mesa de
-  quem continua o trabalho. Quando uma execução começa, volta andando rápido para a mesa e fica lá. O Steve vai para a
-  sala de reunião enquanto monta um plano. A copa é a casa de quem não tem mesa (do nono agente em diante).
+- **Mapa** (`web/js/mapa.js`): cenário em pixel art desenhado por código, 480 × 272 pixels ampliados sem suavização,
+  visto de cima. Seis salas e um jardim: **equipe** (duas fileiras de quatro mesas), **lounge** (sofá, estante, tapete,
+  luminária), **reunião** (mesa com seis cadeiras e quadro), **jogos** (pingue-pongue, TV com videogame e pufes,
+  fliperama), **estúdio** (quatro mesas e mural) e **copa** (máquina de café, pia, geladeira, bebedouro, mesa redonda);
+  à direita, o **jardim** com árvores, banco, canteiro e laguinho.
+- **Personagens** (`web/js/sprites.js`): sprites de 12 × 20 pixels com contorno de 1 pixel, quatro direções (frente,
+  costas, lado e lado espelhado), dois passos de caminhada e pose sentada. Cada agente tem o visual do retrato dela:
+  - **Sofia**: cabelo castanho-escuro comprido, vestido preto de alça;
+  - **Karol**: loira-mel de cabelo comprido, blusa cinza com flor laranja, jaqueta verde, short coral e bota amarela;
+  - **Sabrina**: loira clara de cabelo comprido com franja e laço preto, blusa preta.
+  Nenhuma é ruiva: as cores de cabelo seguem as ilustrações. Agente sem visual próprio ganha um visual padrão.
+- **Retratos**: na gaveta aparece o retrato animado da agente quando está em `web/avatares/pessoais/<id>.webp` (pasta
+  fora do git; instale com `bin/escritorio.mjs figurinhas <zip>`). Sem ele, a gaveta mostra o sprite ampliado.
+- **Lugar e diversão**: cada agente tem a sua mesa. Quem está disponível (ou acabou de concluir) vai se divertir pelo
+  caminho mais curto: pingue-pongue em dupla (com a bolinha indo e voltando), videogame no pufe, fliperama, leitura no
+  sofá, café na copa, água no bebedouro, passeio e banco no jardim, regar o canteiro. Cada atividade tem lugar, pose,
+  direção, ícone no balão e duração. Ao concluir uma tarefa, leva a entrega até o lado da mesa de quem continua. Quando
+  uma execução começa, larga o que estava fazendo e volta rápido para a mesa. A coordenadora (Sabrina) vai para a sala
+  de reunião enquanto monta um plano.
 
 ## Animações
 
@@ -115,8 +122,8 @@ continua legível.
 ## Padrões de interação
 
 - Uma ação principal por tela: **Novo pedido**.
-- Clique no crachá ou na figurinha abre a gaveta do agente; Esc fecha.
-- Pedido → plano do Steve → tarefas; a regra do Design System prende o front-end na tarefa da Sofia.
+- Clique no crachá ou na personagem abre a gaveta do agente; Esc fecha.
+- Pedido → plano da Sabrina → tarefas; a regra do Design System prende o front-end na tarefa da Sofia.
 - "Executar projeto" faz cada tarefa começar quando as anteriores terminam; "Pausar" devolve à fila.
 - Erro não some sozinho: fica até "Marcar como visto" ou "Tentar de novo".
 

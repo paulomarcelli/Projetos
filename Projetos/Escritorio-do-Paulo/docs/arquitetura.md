@@ -46,9 +46,9 @@ flowchart LR
 
 ## Contratos
 
-- **Plano** (resposta do Steve, `POST /api/planos`, `escritorio.mjs plano`):
+- **Plano** (resposta da Sabrina, a agente com `"coordena": true` no `equipe.json`; `POST /api/planos`, `escritorio.mjs plano`):
   `{ "projeto": "…", "tarefas": [{ "chave", "agente", "titulo", "descricao", "dependeDe": [chaves], "tipo": "entrega" | "revisao" }] }`.
-  Se alguma tarefa é de quem exige Design System (Peter) e não depende de uma tarefa da Sofia, o servidor acrescenta
+  Se alguma tarefa é de quem exige Design System (Karol) e não depende de uma tarefa da Sofia, o servidor acrescenta
   ou liga a tarefa da Sofia e registra o aviso no histórico.
 - **Pedido ao agente**: o prompt leva o número da tarefa (`T-0000`), o que fazer e as entregas completas das tarefas
   de que ela depende. A resposta termina com o bloco `ENTREGA` do `agentes/PROTOCOLO.md`; o texto inteiro fica em

@@ -487,12 +487,13 @@ export function criarMotor({ raizRepo, pastaProjeto, pastaDados, config }) {
       notificar();
       return tarefa;
     },
-    // Pedido ao coordenador: vira uma tarefa de plano para o Steve, que devolve as tarefas da equipe.
+    // Pedido à coordenação: vira uma tarefa de plano para quem coordena (em equipe.json, "coordena": true), que devolve
+    // as tarefas da equipe.
     pedido({ pedido, auto }) {
       const texto = String(pedido || '').trim();
       if (!texto) throw new T.ErroDeTarefa('Escreva o pedido.');
-      const coordenador = agentePorId('steve') ? 'steve' : null;
-      if (!coordenador) throw new T.ErroDeTarefa('Não há coordenador (agente "steve") na equipe. Crie as tarefas direto ou use um fluxo.');
+      const coordenador = equipe.find(a => a.coordena)?.id || null;
+      if (!coordenador) throw new T.ErroDeTarefa('Ninguém na equipe coordena ("coordena": true em equipe.json). Crie as tarefas direto ou use um fluxo.');
       const tarefa = T.criarTarefa(estado, { titulo: `Planejar: ${curto(texto.split('\n')[0], 110)}`, descricao: texto, agente: coordenador, tipo: 'plano', origem: 'painel' }, idsAgentes());
       tarefa.planoAuto = Boolean(auto);
       salvarTarefas();

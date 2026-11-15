@@ -1,6 +1,6 @@
 // Interface do Escritório do Paulo. Recebe do servidor local o retrato da equipe (estados, tarefas, histórico) e
 // desenha o escritório. Nada aqui decide o estado de um agente: a tela só mostra o que o servidor informou.
-import { avatar } from './avatares.js';
+import { quadroDe } from './sprites.js';
 import { ICONES, ROTULOS, ESTADOS_ATIVOS } from './telas.js';
 import { criarMapa } from './mapa.js';
 
@@ -43,7 +43,7 @@ const listar = nomes => (nomes.length <= 1 ? nomes.join('') : `${nomes.slice(0, 
 const chip = estado => `<span class="chip" data-estado="${estado}">${ICONES[estado] || ''}${ROTULOS[estado] || estado}</span>`;
 const situacaoDaTarefa = t => (t.status === 'fila' ? (t.bloqueadaPor.length ? 'espera' : 'pronta') : t.status);
 const NOME_SITUACAO = { andamento: 'Em andamento', espera: 'Aguardando outra tarefa', pronta: 'Pronta para começar', concluida: 'Concluída', erro: 'Com erro', cancelada: 'Cancelada' };
-const ORIGEM = { painel: 'criada no painel', coordenador: 'plano do Steve', fluxo: 'fluxo pronto', plano: 'plano enviado', terminal: 'criada pelo terminal', 'claude-code': 'conversa no Claude Code' };
+const ORIGEM = { painel: 'criada no painel', coordenador: 'plano da Sabrina', fluxo: 'fluxo pronto', plano: 'plano enviado', terminal: 'criada pelo terminal', 'claude-code': 'conversa no Claude Code' };
 
 async function api(metodo, caminho, corpo) {
   const resposta = await fetch(BASE + caminho, { method: metodo, headers: corpo ? { 'Content-Type': 'application/json' } : undefined, body: corpo ? JSON.stringify(corpo) : undefined });
@@ -69,7 +69,15 @@ const tentar = async (acao, ...args) => {
   }
 };
 
-const imagemDoAgente = a => (a.avatarPessoal ? `<img src="${esc(`${BASE ? `${BASE}/` : ''}${a.avatarPessoal}`)}" alt="${esc(a.nome)}">` : avatar(a.avatar, esc(a.nome)));
+// O retrato: a imagem pessoal dela (web/avatares/pessoais/, fora do git) ou, sem ela, o bonequinho do mapa ampliado.
+const retratos = new Map();
+function retratoPixel(a) {
+  if (!retratos.has(a.id)) retratos.set(a.id, quadroDe(a, 'frente').toDataURL());
+  return retratos.get(a.id);
+}
+const imagemDoAgente = a => (a.avatarPessoal
+  ? `<img src="${esc(`${BASE ? `${BASE}/` : ''}${a.avatarPessoal}`)}" alt="${esc(a.nome)}">`
+  : `<img class="av-pixel" src="${retratoPixel(a)}" alt="${esc(a.nome)}">`);
 
 // ---------- topo ----------
 function renderSistema() {
@@ -128,7 +136,6 @@ function renderParede() {
 
 // ---------- o mapa ----------
 const mapa = criarMapa($('#mapa'), {
-  figura: imagemDoAgente,
   aoAbrir(id) {
     agenteAberto = agenteAberto === id ? null : id;
     renderEstacoes();
@@ -406,8 +413,8 @@ function prepararFormularios() {
   const formPedido = $('#form-pedido');
   formPedido.addEventListener('change', () => {
     const modo = new FormData(formPedido).get('modo');
-    $('#campo-projeto').hidden = modo === 'steve';
-    formPedido.elements.projeto.required = modo !== 'steve';
+    $('#campo-projeto').hidden = modo === 'coordena';
+    formPedido.elements.projeto.required = modo !== 'coordena';
   });
   formPedido.addEventListener('submit', async evento => {
     evento.preventDefault();
@@ -416,7 +423,7 @@ function prepararFormularios() {
     erro.hidden = true;
     try {
       const modo = dados.get('modo');
-      if (modo === 'steve') await api('POST', '/api/pedidos', { pedido: dados.get('pedido'), auto: dados.has('auto') });
+      if (modo === 'coordena') await api('POST', '/api/pedidos', { pedido: dados.get('pedido'), auto: dados.has('auto') });
       else {
         await api('POST', '/api/fluxos', { fluxo: modo, projeto: dados.get('projeto'), pedido: dados.get('pedido'), auto: dados.has('auto') });
         projetoFoco = String(dados.get('projeto')).trim();

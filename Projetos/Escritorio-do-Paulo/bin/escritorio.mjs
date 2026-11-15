@@ -2,8 +2,8 @@
 // Comando do Escritório do Paulo.
 //   node bin/escritorio.mjs iniciar [--abrir] [--porta 4310]   abre o escritório nesta máquina
 //   node bin/escritorio.mjs tarefas                             lista as tarefas
-//   node bin/escritorio.mjs tarefa "Título" --agente peter [--descricao "…"] [--depende T-0001,T-0002] [--projeto "Nome"] [--iniciar]
-//   node bin/escritorio.mjs pedido "O que você quer" [--auto]   manda o pedido para o Steve planejar
+//   node bin/escritorio.mjs tarefa "Título" --agente karol [--descricao "…"] [--depende T-0001,T-0002] [--projeto "Nome"] [--iniciar]
+//   node bin/escritorio.mjs pedido "O que você quer" [--auto]   manda o pedido para a Sabrina planejar
 //   node bin/escritorio.mjs plano arquivo.json [--auto]         cria as tarefas de um plano
 //   node bin/escritorio.mjs ganchos instalar|remover|estado     liga o Claude Code ao escritório
 //   node bin/escritorio.mjs figurinhas <arquivo.zip | pasta>   instala as suas figurinhas (ficam fora do git)

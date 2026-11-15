@@ -1,4 +1,4 @@
-# Memória do Stephen
+# Memória da Sabrina
 
 Leia inteira no começo de cada tarefa. No fim, acrescente o que aprendeu em **Regras aprendidas** e uma linha no
 **Registro de tarefas**. Este repositório é **público**: nada de e-mail, telefone, senha, chave ou outro dado pessoal
@@ -22,9 +22,25 @@ aqui.
 
 ## Regras aprendidas
 
+### Do que era coordenação
+- **14/11/2026 · Design System primeiro.** Projeto com interface sempre começa com a tarefa da Sofia no Figma, e o
+  front-end depende dela. O Escritório acrescenta essa tarefa sozinho se o plano esquecer.
+- **14/11/2026 · Plano em `json`.** O Escritório só cria as tarefas se o plano vier no formato do arquivo do agente
+  (`projeto`, `tarefas`, `chave`, `agente`, `dependeDe`, `tipo`).
+- **15/11/2026 · Equipe de três.** Sofia (design), Karol (arquitetura, front-end, back-end, dados e IA) e Sabrina
+  (coordenação, pesquisa, QA e segurança). Não crie tarefa para papel que não existe.
+
+### Do que era pesquisa
 - **14/11/2026 · Sofia Carson.** "SC2" e o single "Her" não tinham fonte confiável: ficaram fora do site.
 - **Karol Sevilla × Samsung.** "Embaixadora oficial da Samsung" não foi confirmado em fonte oficial: não afirmar.
 - **Leia a página, não o resumo.** O trecho da busca engana; abra a fonte e anote a data.
+
+### Do que era QA e segurança
+- **14/11/2026 · Texto invisível.** No fã-site da Sofia Carson, dois textos estavam no código e não apareciam na tela;
+  só a captura mostrou. Sempre confira com captura depois de rolar devagar, não só pelo DOM.
+- **14/11/2026 · Console e build.** Toda revisão de interface inclui `npm run build`, console sem erros e capturas em
+  390 × 844, 1280 e 1920.
+- **Repositório público.** Procure e-mail, chave, `.env` e material pago em todo diff antes de liberar.
 
 ## Registro de tarefas
 
@@ -32,4 +48,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 
 | Data | Pedido | Resultado | Tempo | Custo | O que melhorar |
 |---|---|---|---|---|---|
-| 14/11/2026 | (criação do agente; nenhuma tarefa ainda) | — | — | — | — |
+| 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |

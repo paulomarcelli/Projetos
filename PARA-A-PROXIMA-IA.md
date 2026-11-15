@@ -40,6 +40,9 @@ andamento (**Aurora**) tem uma passagem detalhada em
 - `Projetos/Escritorio-do-Paulo/`: o **Escritório do Paulo**, painel local da equipe (roda só na máquina dele:
   `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar`). `.claude/settings.json` tem os ganchos que avisam o
   escritório; se ele estiver fechado, os ganchos não fazem nada. Design System no Figma: `JFyZCMHbS1ASDzSdbGu6pC`.
+  **Nuvem:** o Paulo escolheu espelhar o escritório no ntfy.sh (tópico secreto) para a página online acompanhar de
+  qualquer lugar, inclusive as sessões na nuvem: com a variável `ESCRITORIO_NUVEM` no ambiente, o gancho de início
+  abre o escritório dentro da sessão e ele publica. Nunca ponha o tópico no repositório (é público) nem num commit.
 - `docs/capas/`: imagens de capa usadas no `README.md` da raiz e no perfil do GitHub.
 
 ## 3. O que foi feito nesta conversa (mais recente primeiro)

@@ -3,6 +3,7 @@
 import { quadroDe } from './sprites.js';
 import { ICONES, ROTULOS, ESTADOS_ATIVOS } from './telas.js';
 import { criarMapa } from './mapa.js';
+import { topicoDaPagina, ligarNuvem } from './nuvem.js';
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 const $$ = (seletor, raiz = document) => [...raiz.querySelectorAll(seletor)];
@@ -14,6 +15,10 @@ const esc = texto => String(texto ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;
 const LOCAL = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const PORTA = new URLSearchParams(location.search).get('porta') || '4310';
 const BASE = LOCAL ? '' : `http://127.0.0.1:${PORTA}`;
+// Longe do computador, a página acompanha pela nuvem (ntfy.sh) se o link trouxe o tópico (#nuvem=…).
+const TOPICO = LOCAL ? null : topicoDaPagina();
+let modo = 'local'; // 'local' (servidor no computador) ou 'nuvem' (só acompanhamento)
+let pararNuvem = null;
 
 let E = null; // último retrato recebido
 let desvio = 0; // relógio do servidor menos o do navegador
@@ -46,6 +51,7 @@ const NOME_SITUACAO = { andamento: 'Em andamento', espera: 'Aguardando outra tar
 const ORIGEM = { painel: 'criada no painel', coordenador: 'plano da Sabrina', fluxo: 'fluxo pronto', plano: 'plano enviado', terminal: 'criada pelo terminal', 'claude-code': 'conversa no Claude Code' };
 
 async function api(metodo, caminho, corpo) {
+  if (modo === 'nuvem') throw new Error('Pela nuvem a página só acompanha a equipe. Para pedir tarefas, abra o escritório no computador.');
   const resposta = await fetch(BASE + caminho, { method: metodo, headers: corpo ? { 'Content-Type': 'application/json' } : undefined, body: corpo ? JSON.stringify(corpo) : undefined });
   const dados = await resposta.json().catch(() => ({}));
   if (!resposta.ok) throw new Error(dados.erro || 'O Escritório não conseguiu fazer isso.');
@@ -84,6 +90,16 @@ function renderSistema() {
   const s = E.sistema;
   const ao = conexao === 'ao-vivo';
   const exec = s.executor;
+  document.body.dataset.modo = modo;
+  if (modo === 'nuvem') {
+    const n = E.nuvem || {};
+    const deOnde = n.origem === 'nuvem' ? 'de uma sessão do Claude na nuvem' : 'do seu computador';
+    $('#sistema').innerHTML = `
+      <span class="sinal" data-ok="${ao ? 'sim' : 'aviso'}" title="Ligação com o ntfy.sh, que retransmite o escritório"><i></i>${ao ? 'Nuvem ao vivo' : 'Reconectando…'}</span>
+      <span class="sinal" data-ok="sim" title="Quem está publicando o escritório"><i></i>${n.origem === 'nuvem' ? 'Claude na nuvem' : 'Computador'}</span>`;
+    $('#faixas').innerHTML = `<p class="faixa">${ICONES.revisao || ''}<span>Acompanhando pela nuvem o escritório ${deOnde} · atualizado <span data-desde="${n.publicadoEm || ''}">${ha(n.publicadoEm)}</span>. Daqui só dá para ver; pedidos e tarefas se fazem no computador.</span></p>`;
+    return;
+  }
   $('#sistema').innerHTML = `
     <span class="sinal" data-ok="${ao ? 'sim' : 'aviso'}" title="Ligação com o servidor local"><i></i>${ao ? 'Ao vivo' : 'Reconectando…'}</span>
     <span class="sinal" data-ok="${exec.disponivel ? 'sim' : 'nao'}" title="${esc(exec.disponivel ? 'É o Claude Code que executa os agentes' : exec.motivo || '')}"><i></i>${exec.disponivel ? `Claude Code ${esc((exec.versao || '').split(' ')[0])}` : 'Claude Code ausente'}</span>
@@ -552,14 +568,52 @@ function receber(retrato) {
   renderTudo();
 }
 
+// Sem o escritório no computador, cai para a nuvem (se houver tópico). Se o computador voltar, ele tem prioridade.
+function usarNuvem() {
+  if (!TOPICO || pararNuvem) return;
+  pararNuvem = ligarNuvem(TOPICO, {
+    aoReceber: retrato => {
+      if (modo === 'local' && E && conexao === 'ao-vivo') return;
+      modo = 'nuvem';
+      conexao = 'ao-vivo';
+      $('#fechado').hidden = true;
+      receber(retrato);
+    },
+    aoSituacao: situacao => {
+      if (modo === 'local' && E) return;
+      if (situacao === 'vazio') {
+        modo = 'local';
+        E = null;
+        $('#fechado-titulo').textContent = 'Ninguém da equipe está no escritório agora';
+        $('#fechado-nuvem').hidden = false;
+        $('#fechado').hidden = false;
+      } else if (modo === 'nuvem') {
+        conexao = situacao === 'ao-vivo' ? 'ao-vivo' : 'reconectando';
+        if (E) renderSistema();
+      }
+    },
+  });
+}
+
 function ligar() {
   const fonte = new EventSource(`${BASE}/api/eventos`);
   fonte.addEventListener('estado', evento => {
+    if (pararNuvem) {
+      pararNuvem();
+      pararNuvem = null;
+    }
+    modo = 'local';
     conexao = 'ao-vivo';
     $('#fechado').hidden = true;
     receber(JSON.parse(evento.data));
   });
   fonte.onerror = () => {
+    if (modo === 'nuvem') return; // o computador não responde, mas a nuvem segue mostrando
+    if (TOPICO && !LOCAL) {
+      usarNuvem();
+      if (!E) $('#achado').textContent = 'Procurando o escritório na nuvem…';
+      return;
+    }
     conexao = 'reconectando';
     if (E) renderSistema();
     else if (LOCAL) $('#achado').textContent = 'Sem resposta do servidor local. Confira se o Escritório está aberto no terminal.';
@@ -581,7 +635,7 @@ setInterval(() => {
   for (const el of $$('[data-desde]')) if (el.dataset.desde) el.textContent = ha(Number(el.dataset.desde));
 }, 1000);
 setInterval(() => {
-  if (conexao === 'ao-vivo') fetch(`${BASE}/api/estado`).then(r => r.json()).then(receber).catch(() => {});
+  if (conexao === 'ao-vivo' && modo === 'local') fetch(`${BASE}/api/estado`).then(r => r.json()).then(receber).catch(() => {});
 }, 30_000);
 addEventListener('resize', () => E && renderMesa());
 

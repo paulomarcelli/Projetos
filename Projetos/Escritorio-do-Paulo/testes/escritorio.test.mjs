@@ -458,3 +458,110 @@ test('página online: só o endereço configurado lê o estado e cria tarefas', 
     await escritorio.fechar();
   }
 });
+
+// ---------- espelho na nuvem (ntfy.sh) ----------
+const N = await import('../servidor/nuvem.mjs');
+const P = await import('../web/js/nuvem.js');
+
+function retratoDeTeste(extra = {}) {
+  const agora = Date.now();
+  return {
+    agora,
+    hoje: { concluidas: 2, custoUsd: 0.12 },
+    equipe: [
+      { id: 'sofia', nome: 'Sofia', papel: 'Design', cor: '#e45c8f', descricao: 'x'.repeat(900), estado: { estado: 'trabalhando', desde: agora - 5000, atividade: 'Trabalhando no Figma', tarefaId: 'T-0001', esperando: [] } },
+      { id: 'karol', nome: 'Karol', papel: 'Desenvolvimento', cor: '#2f9a7a', estado: { estado: 'aguardando', desde: agora - 4000, atividade: 'Espera T-0001 (Sofia)', tarefaId: 'T-0002', esperando: ['sofia'], esperandoAgora: ['sofia'] } },
+      { id: 'sabrina', nome: 'Sabrina', papel: 'Coordenação', cor: '#f2b544', estado: { estado: 'disponivel', desde: null, atividade: null, tarefaId: null, esperando: [] } },
+    ],
+    tarefas: [
+      { id: 'T-0001', agente: 'sofia', titulo: 'Design System', status: 'andamento', projeto: 'Vitrine', dependeDe: [], tipo: 'entrega', criadaEm: agora - 9000, iniciadaEm: agora - 5000, descricao: 'segredo da descrição' },
+      { id: 'T-0002', agente: 'karol', titulo: 'Tela', status: 'fila', projeto: 'Vitrine', dependeDe: ['T-0001'], tipo: 'entrega', criadaEm: agora - 9000 },
+    ],
+    historico: [{ quando: agora - 5000, tipo: 'inicio', agente: 'sofia', texto: 'Sofia começou T-0001' }],
+    ...extra,
+  };
+}
+
+test('nuvem: o resumo cabe numa mensagem, não leva descrição nem entrega e volta ao formato da página', () => {
+  const r = retratoDeTeste();
+  const resumo = N.resumir(r, { origem: 'nuvem', instancia: 'abc' });
+  const texto = JSON.stringify(resumo);
+  assert.ok(Buffer.byteLength(texto) <= N.LIMITE_BYTES);
+  assert.ok(!texto.includes('segredo da descrição') && !texto.includes('xxxx'), 'nada além do estado e das tarefas');
+  const volta = P.remontar(resumo);
+  assert.deepEqual(volta.equipe.map(a => [a.id, a.estado.estado]), [['sofia', 'trabalhando'], ['karol', 'aguardando'], ['sabrina', 'disponivel']]);
+  assert.deepEqual(volta.tarefas.find(t => t.id === 'T-0002').bloqueadaPor, ['T-0001']);
+  assert.equal(volta.projetos[0].nome, 'Vitrine');
+  assert.equal(volta.nuvem.origem, 'nuvem');
+
+  // muitas tarefas e textos longos: corta até caber
+  const grande = retratoDeTeste({
+    tarefas: Array.from({ length: 80 }, (_, i) => ({ id: `T-${String(i).padStart(4, '0')}`, agente: 'karol', titulo: 'título comprido '.repeat(10), status: i % 2 ? 'fila' : 'concluida', projeto: 'Projeto com nome comprido demais', dependeDe: [], tipo: 'entrega', criadaEm: i, concluidaEm: i })),
+    historico: Array.from({ length: 50 }, (_, i) => ({ quando: i, tipo: 'x', agente: 'karol', texto: 'linha '.repeat(30) })),
+  });
+  assert.ok(Buffer.byteLength(JSON.stringify(N.resumir(grande, { origem: 'pc', instancia: 'b' }))) <= N.LIMITE_BYTES);
+});
+
+test('nuvem: o espelho só publica quando algo importante muda, e espera o intervalo entre envios', async () => {
+  let r = retratoDeTeste();
+  const enviados = [];
+  const espelho = N.criarEspelho({ topico: 'teste-escritorio-0123456789', retrato: () => r, intervaloMs: 120, enviar: async corpo => { enviados.push(JSON.parse(corpo)); return { ok: true }; } });
+  await espelho.abrir();
+  assert.equal(enviados.length, 1);
+  espelho.mudou();
+  await espera(30);
+  assert.equal(enviados.length, 1, 'mesma situação não sai de novo');
+  r = retratoDeTeste();
+  r.equipe[0].estado = { ...r.equipe[0].estado, estado: 'pesquisando', atividade: 'Outra frase' };
+  espelho.mudou();
+  await espera(200);
+  assert.equal(enviados.length, 1, 'trocar de pesquisando para trabalhando ou mudar a frase não gasta mensagem na hora');
+  r.equipe[0].estado = { ...r.equipe[0].estado, estado: 'concluido' };
+  espelho.mudou();
+  await espera(20);
+  assert.equal(enviados.length, 2, 'passado o intervalo, a mudança sai na hora');
+  r.equipe[2].estado = { ...r.equipe[2].estado, estado: 'trabalhando' };
+  espelho.mudou();
+  r.equipe[1].estado = { ...r.equipe[1].estado, estado: 'trabalhando' };
+  espelho.mudou();
+  await espera(30);
+  assert.equal(enviados.length, 2, 'dentro do intervalo espera');
+  await espera(200);
+  assert.equal(enviados.length, 3, 'as duas mudanças da espera saem numa mensagem só');
+  assert.equal(enviados[2].eq.sabrina[0], 'trabalhando');
+  assert.equal(enviados[2].eq.karol[0], 'trabalhando');
+  await espelho.fechar();
+  assert.equal(enviados.at(-1).fim, true);
+
+  // o refresco: a frase nova sai sozinha depois de frescorMs
+  let r2 = retratoDeTeste();
+  const env2 = [];
+  const e2 = N.criarEspelho({ topico: 'teste-escritorio-0123456789', retrato: () => r2, intervaloMs: 10, frescorMs: 150, enviar: async c => { env2.push(JSON.parse(c)); return { ok: true }; } });
+  await e2.abrir();
+  r2 = retratoDeTeste();
+  r2.equipe[0].estado = { ...r2.equipe[0].estado, atividade: 'Editando mapa.js' };
+  e2.mudou();
+  await espera(40);
+  assert.equal(env2.length, 1);
+  await espera(220);
+  assert.equal(env2.length, 2, 'o refresco levou a frase nova');
+  assert.equal(env2[1].eq.sofia[2], 'Editando mapa.js');
+  assert.throws(() => N.criarEspelho({ topico: 'curto', retrato: () => r }), /inválido/);
+});
+
+test('nuvem: o espelho respeita o limite do ntfy e a página escolhe o escritório em atividade', async () => {
+  let chamadas = 0;
+  const espelho = N.criarEspelho({ topico: 'teste-escritorio-0123456789', retrato: () => retratoDeTeste(), intervaloMs: 10, enviar: async () => { chamadas += 1; return { limite: 3600 }; }, registrar: () => {} });
+  await espelho.abrir();
+  assert.ok(espelho.situacao().pausadaAte > Date.now());
+  await espelho.abrir();
+  assert.equal(chamadas, 1, 'durante a pausa não tenta de novo');
+
+  const agora = Date.now();
+  const ocioso = { v: 1, i: 'pc', t: agora - 1000, eq: { sofia: ['disponivel'] } };
+  const ativo = { v: 1, i: 'nv', t: agora - 60_000, eq: { sofia: ['trabalhando'] } };
+  const fechado = { v: 1, i: 'x', t: agora, fim: true };
+  const velho = { v: 1, i: 'v', t: agora - 3_600_000, eq: { sofia: ['trabalhando'] } };
+  assert.equal(P.escolher(new Map([['pc', ocioso], ['nv', ativo], ['x', fechado], ['v', velho]]), agora), ativo);
+  assert.equal(P.escolher(new Map([['x', fechado], ['v', velho]]), agora), null);
+});

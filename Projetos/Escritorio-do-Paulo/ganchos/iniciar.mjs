@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Gancho de início de sessão do Claude Code: se o Escritório não estiver aberto neste computador, abre em segundo
 // plano. Regras: nunca atrapalhar a sessão. Não escreve nada na tela (o que um gancho de início escreve vai para a
-// conversa), sai sempre com código 0 e não faz nada em sessões do Claude na nuvem (lá não é o computador do Paulo).
+// conversa) e sai sempre com código 0. Numa sessão do Claude na nuvem só abre se o espelho estiver configurado
+// (variável ESCRITORIO_NUVEM no ambiente): aí o escritório roda dentro da sessão e a página online acompanha pelo ntfy.
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -13,7 +14,8 @@ setTimeout(sair, 2500).unref();
 process.stdin.resume();
 process.stdin.on('data', () => {});
 
-if (process.env.CLAUDE_CODE_REMOTE === 'true' || process.env.ESCRITORIO_SEM_AUTOINICIO) sair();
+const naNuvem = process.env.CLAUDE_CODE_REMOTE === 'true';
+if (process.env.ESCRITORIO_SEM_AUTOINICIO || (naNuvem && !process.env.ESCRITORIO_NUVEM)) sair();
 
 const aqui = path.dirname(fileURLToPath(import.meta.url));
 const pasta = path.resolve(aqui, '..');
@@ -44,7 +46,8 @@ req.on('error', () => {
       cwd: pasta,
       detached: true,
       stdio: ['ignore', registro, registro],
-      env: semSessao(process.env),
+      // Na nuvem a saída para a internet passa por um proxy: o fetch do Node só o usa com NODE_USE_ENV_PROXY.
+      env: { ...semSessao(process.env), ...(process.env.HTTPS_PROXY ? { NODE_USE_ENV_PROXY: '1', NODE_NO_WARNINGS: '1' } : {}) },
       windowsHide: true,
     });
     filho.unref();

@@ -347,3 +347,9 @@ dialog::backdrop { background: rgba(4, 6, 10, .72); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Pela nuvem a página só acompanha: some o que cria ou altera tarefas (abrir e fechar continuam) */
+body[data-modo="nuvem"] #abre-tarefa,
+body[data-modo="nuvem"] #abre-pedido,
+body[data-modo="nuvem"] :is([data-acao="cancelar"], [data-acao="excluir"], [data-acao="iniciar"], [data-acao="projeto"],
+  [data-acao="situacao"], [data-acao="tarefa-para"], [data-acao="visto"], [data-acao="entrega-inteira"]) { display: none; }

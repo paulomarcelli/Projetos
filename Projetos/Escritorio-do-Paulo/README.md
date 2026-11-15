@@ -21,8 +21,9 @@
 <br>
 
 > [!NOTE]
-> Os agentes rodam **só no seu computador**. O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/)
-> mostra, ao vivo, o escritório aberto nesse mesmo computador; sem ele, a página avisa que está fechado. As agentes
+> O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/) mostra, ao vivo, o
+> escritório aberto no seu computador. Com a **nuvem** ligada, ele mostra também de qualquer aparelho, inclusive o
+> que as agentes fazem nas sessões do Claude na nuvem (veja a seção "Ver de qualquer lugar", mais abaixo). As agentes
 > são três personagens minhas (Sofia, Karol e Sabrina), desenhadas em pixel art a partir dos retratos delas. As capturas
 > desta página usam o Claude de simulação dos testes, por isso aparece a faixa "Simulação".
 
@@ -108,6 +109,32 @@ node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs pedido "Uma página de insc
 As tarefas, o histórico e as entregas ficam em `dados/` (fora do git). Os ajustes ficam em `escritorio.config.json`:
 porta, modelo, modo de permissão, comandos liberados para os agentes e quantos rodam ao mesmo tempo.
 
+### ☁️ Ver de qualquer lugar (nuvem)
+
+Os agentes podem trabalhar no seu computador ou numa sessão do Claude na nuvem (claude.ai/code, app). Para a página
+online acompanhar os dois, de qualquer aparelho, o escritório espelha um resumo num tópico do
+[ntfy.sh](https://ntfy.sh) (serviço gratuito de retransmissão, sem conta). Ligue uma vez no computador:
+
+```bash
+node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs nuvem ligar
+```
+
+Ele cria um tópico secreto (guardado em `dados/nuvem.json`, fora do git) e mostra o link da página, do jeito
+`…/Escritorio-do-Paulo/#nuvem=<tópico>`. Abra esse link uma vez em cada aparelho: a página guarda o tópico e tira ele
+do endereço. Para as sessões na nuvem, coloque o mesmo tópico na variável `ESCRITORIO_NUVEM` do ambiente da nuvem
+(Settings do Claude Code na web → o ambiente → variáveis): a cada sessão nova, o gancho de início abre o escritório
+dentro da sessão e ele passa a publicar. `nuvem link` mostra o link de novo; `nuvem desligar` desliga.
+
+- **O que sai:** o estado de cada agente (com a frase curta do que está fazendo, como "Editando mapa.js"), as tarefas
+  (título, dona, situação) e as últimas linhas do histórico. **Não saem** o texto das conversas, as descrições das
+  tarefas, as entregas nem o conteúdo de arquivos.
+- **Quem vê:** quem tiver o link. O tópico é a chave: não publique o link.
+- **Só acompanhamento:** pela nuvem a página não cria nem altera tarefas; isso continua no escritório do computador.
+  Se o escritório do computador estiver aberto, ele tem prioridade.
+- **Limite:** o ntfy.sh gratuito aceita 250 mensagens por dia por endereço de internet (e o da nuvem é compartilhado).
+  Por isso o espelho só publica quando alguém começa, passa a esperar, termina ou falha, no máximo uma vez a cada
+  20 s, e a frase do que está fazendo atualiza a cada 3 min. Um projeto de três tarefas gasta umas 5 mensagens.
+
 ### Figurinhas pessoais
 
 Os retratos animados das três (as ilustrações originais, com respiração, cabeça e cabelo em movimento) ficam fora do
@@ -134,6 +161,9 @@ livre, com um visual padrão; para dar cor e papel, acrescente a entrada dele em
 - **Ganchos do Claude Code:** `ganchos/enviar.mjs` repassa os eventos das conversas comuns (`SubagentStart`,
   `PreToolUse`, `SubagentStop`…) para o servidor e sai em menos de meio segundo; nunca atrapalha a conversa.
 - **Servidor Node sem dependências:** HTTP só em 127.0.0.1, eventos por SSE, dados em JSON com gravação atômica.
+- **Espelho na nuvem:** `servidor/nuvem.mjs` resume o retrato (até 3,9 KB) e publica no ntfy.sh só quando algo
+  importante muda; `web/js/nuvem.js` ouve o tópico (histórico das últimas horas + SSE) e remonta o retrato que a
+  página já sabe desenhar.
 - **Mapa em pixel art desenhado por código** (canvas de 480 × 272 ampliado sem suavização): seis salas e um jardim,
   caminhos ligados num grafo (as agentes andam pelo caminho mais curto, Dijkstra) e uma tabela de atividades de lazer
   (onde, em que pose, virada para onde e por quanto tempo). As personagens são sprites de 12 × 20 pixels com contorno,
@@ -142,5 +172,5 @@ livre, com um visual padrão; para dar cor e papel, acrescente a entrada dele em
   (botão, chip de estado, crachá, tarefa, nó da mesa, marco, figurinha), animações e padrões de interação. Os tokens do
   CSS têm os mesmos nomes. Detalhes em [`docs/design-system.md`](docs/design-system.md).
 - **Arquitetura:** [`docs/arquitetura.md`](docs/arquitetura.md).
-- **Testes:** `npm test` (23 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
-  persistência e segurança). Conferido também com execuções reais do Claude Code, pelo painel e por uma conversa comum.
+- **Testes:** `npm test` (26 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
+  persistência, segurança e o espelho na nuvem). Conferido também com execuções reais do Claude Code, pelo painel e por uma conversa comum.

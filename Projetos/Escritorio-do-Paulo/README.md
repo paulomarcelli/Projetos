@@ -4,6 +4,7 @@
 
 **O escritório da minha equipe de agentes de IA: cada figurinha mostra o que o seu agente está fazendo de verdade.**
 
+[![Abrir o escritório](https://img.shields.io/badge/ABRIR_O_ESCRIT%C3%93RIO-0a0d13?style=for-the-badge&logo=githubpages&logoColor=e9edf5)](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/)
 [![Design System no Figma](https://img.shields.io/badge/DESIGN_SYSTEM-0a0d13?style=for-the-badge&logo=figma&logoColor=e9edf5)](https://www.figma.com/design/JFyZCMHbS1ASDzSdbGu6pC)
 
 ![Node](https://img.shields.io/badge/Node_sem_depend%C3%AAncias-121824?style=flat-square&logo=nodedotjs&logoColor=e9edf5)
@@ -20,7 +21,8 @@
 <br>
 
 > [!NOTE]
-> Roda **só na sua máquina** (127.0.0.1), não tem versão publicada. As figurinhas são desenhos originais inspirados nos
+> Os agentes rodam **só no seu computador**. O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/)
+> mostra, ao vivo, o escritório aberto nesse mesmo computador; sem ele, a página avisa que está fechado. As figurinhas são desenhos originais inspirados nos
 > Vingadores, feitos para este projeto pessoal; a Sofia tem identidade própria. As capturas desta página usam o Claude de
 > simulação dos testes, por isso aparece a faixa "Simulação".
 
@@ -79,7 +81,10 @@ Precisa do **Node 20 ou mais novo** e do **Claude Code** instalado e com a conta
 node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar --abrir
 ```
 
-Abre em <http://127.0.0.1:4310>. Para o escritório acompanhar também as conversas do Claude Code (uma vez só):
+Abre em <http://127.0.0.1:4310>. Com ele aberto, o **endereço online** também funciona nesse computador:
+<https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/>. Na primeira vez, o Chrome pergunta se o site
+pode acessar dispositivos da rede local: clique em **Permitir** (é assim que a página encontra o escritório). A página
+online só lê e mexe no escritório da sua máquina; nenhum outro site consegue, e nada sai do computador. Para o escritório acompanhar também as conversas do Claude Code (uma vez só):
 
 ```bash
 node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs ganchos instalar
@@ -128,5 +133,5 @@ livre; para dar cor, figurinha e papel, acrescente a entrada dele em `equipe.jso
   (botão, chip de estado, crachá, tarefa, nó da mesa, marco, figurinha), animações e padrões de interação. Os tokens do
   CSS têm os mesmos nomes. Detalhes em [`docs/design-system.md`](docs/design-system.md).
 - **Arquitetura:** [`docs/arquitetura.md`](docs/arquitetura.md).
-- **Testes:** `npm test` (22 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
+- **Testes:** `npm test` (23 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
   persistência e segurança). Conferido também com execuções reais do Claude Code, pelo painel e por uma conversa comum.

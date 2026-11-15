@@ -69,6 +69,11 @@ flowchart LR
 - **Ganchos** para as conversas comuns: o escritório acompanha os agentes mesmo quando o Paulo não usa o painel.
 - **Só 127.0.0.1**, recusa `Host` de fora, exige JSON e origem local para mudar estado: um site aberto em outra aba não
   consegue criar nem iniciar tarefas.
+- **Endereço online** (GitHub Pages, só a pasta `web/`): a página detecta que não está em 127.0.0.1 e conversa com
+  `http://127.0.0.1:4310` (ou `?porta=`). O servidor libera essa origem, e só ela (`origensPermitidas` no
+  `escritorio.config.json`), com CORS e o pré-voo de acesso à rede local (`Access-Control-Allow-Private-Network`). O
+  Chrome pede a permissão "acessar dispositivos da rede local" na primeira vez. Sem o escritório aberto, a página mostra
+  que está fechado; ela nunca mostra dados de exemplo.
 
 ## Como rodar
 
@@ -76,7 +81,7 @@ flowchart LR
 node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar --abrir
 ```
 
-Testes: `npm test` dentro da pasta (22 testes; usam um Claude de simulação, `testes/claude-falso.mjs`).
+Testes: `npm test` dentro da pasta (23 testes; usam um Claude de simulação, `testes/claude-falso.mjs`).
 
 ## Riscos e limites
 

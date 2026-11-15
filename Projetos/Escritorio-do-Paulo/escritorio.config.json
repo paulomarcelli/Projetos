@@ -15,5 +15,9 @@
   "paralelas": 2,
   "tempoMaximoMin": 30,
   "concluidoPorMin": 10,
-  "semSinalMin": 15
+  "semSinalMin": 15,
+  "origensPermitidas": [
+    "https://paulomarcelli.github.io"
+  ],
+  "enderecoOnline": "https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/"
 }

@@ -72,24 +72,32 @@ export function criarServidor(opcoes = {}) {
   const pastaWeb = path.join(pastaProjeto, 'web');
   const motor = criarMotor({ raizRepo, pastaProjeto, pastaDados, config });
 
-  const responder = (res, status, corpo) => {
-    const texto = JSON.stringify(corpo);
-    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-    res.end(texto);
-  };
-
   // Proteções de um servidor local: só aceita pedidos endereçados a esta máquina, e só altera estado com JSON
-  // vindo da própria página (um site aberto em outra aba não consegue criar nem iniciar tarefas).
+  // vindo da própria página ou do endereço online do escritório (config "origensPermitidas"). Um site qualquer
+  // aberto em outra aba não lê o estado nem cria ou inicia tarefas.
   const hostLocal = host => /^(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/i.test(String(host || ''));
+  const origensOnline = new Set((config.origensPermitidas || []).map(o => String(o).replace(/\/+$/, '')));
   function origemPermitida(req) {
     const origem = req.headers.origin;
     if (!origem) return true;
+    if (origensOnline.has(origem)) return true;
     try {
       return hostLocal(new URL(origem).host);
     } catch {
       return false;
     }
   }
+  // Cabeçalhos para a página online (GitHub Pages) conversar com o escritório nesta máquina.
+  function cabecalhosOrigem(req) {
+    const origem = req.headers.origin;
+    if (!origem || !origensOnline.has(origem)) return {};
+    return { 'Access-Control-Allow-Origin': origem, Vary: 'Origin' };
+  }
+  const responder = (res, status, corpo) => {
+    const texto = JSON.stringify(corpo);
+    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...cabecalhosOrigem(res.req) });
+    res.end(texto);
+  };
 
   async function rotas(req, res) {
     const url = new URL(req.url, 'http://local');
@@ -97,6 +105,23 @@ export function criarServidor(opcoes = {}) {
     const metodo = req.method;
 
     if (!hostLocal(req.headers.host)) return responder(res, 403, { erro: 'O Escritório só atende nesta máquina.' });
+
+    // Pré-voo do navegador (CORS e acesso à rede local) para a página online
+    if (metodo === 'OPTIONS' && caminho.startsWith('/api/')) {
+      const origem = req.headers.origin;
+      if (!origem || !origensOnline.has(origem)) {
+        res.writeHead(403);
+        return res.end();
+      }
+      res.writeHead(204, {
+        ...cabecalhosOrigem(req),
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Private-Network': 'true',
+        'Access-Control-Max-Age': '600',
+      });
+      return res.end();
+    }
 
     if (caminho.startsWith('/api/')) {
       if (metodo !== 'GET') {
@@ -109,7 +134,7 @@ export function criarServidor(opcoes = {}) {
       if (metodo === 'GET' && caminho === '/api/estado') return responder(res, 200, motor.retrato());
 
       if (metodo === 'GET' && caminho === '/api/eventos') {
-        res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store', Connection: 'keep-alive', 'X-Accel-Buffering': 'no' });
+        res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store', Connection: 'keep-alive', 'X-Accel-Buffering': 'no', ...cabecalhosOrigem(req) });
         res.write(`retry: 2000\nevent: estado\ndata: ${JSON.stringify(motor.retrato())}\n\n`);
         const sair = motor.assinar(dados => res.write(dados));
         const pulso = setInterval(() => res.write(': pulso\n\n'), 20_000);

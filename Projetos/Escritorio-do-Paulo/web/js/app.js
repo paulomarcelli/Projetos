@@ -9,6 +9,12 @@ const $$ = (seletor, raiz = document) => [...raiz.querySelectorAll(seletor)];
 // Todo texto que vem de fora (títulos, entregas, mensagens dos agentes) passa por aqui antes de virar HTML.
 const esc = texto => String(texto ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
+// Aberta pelo endereço online (GitHub Pages), a página conversa com o Escritório que roda no computador do Paulo
+// (127.0.0.1). Aberta pelo próprio servidor local, usa caminhos relativos.
+const LOCAL = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
+const PORTA = new URLSearchParams(location.search).get('porta') || '4310';
+const BASE = LOCAL ? '' : `http://127.0.0.1:${PORTA}`;
+
 let E = null; // último retrato recebido
 let desvio = 0; // relógio do servidor menos o do navegador
 let conexao = 'abrindo';
@@ -40,7 +46,7 @@ const NOME_SITUACAO = { andamento: 'Em andamento', espera: 'Aguardando outra tar
 const ORIGEM = { painel: 'criada no painel', coordenador: 'plano do Steve', fluxo: 'fluxo pronto', plano: 'plano enviado', terminal: 'criada pelo terminal', 'claude-code': 'conversa no Claude Code' };
 
 async function api(metodo, caminho, corpo) {
-  const resposta = await fetch(caminho, { method: metodo, headers: corpo ? { 'Content-Type': 'application/json' } : undefined, body: corpo ? JSON.stringify(corpo) : undefined });
+  const resposta = await fetch(BASE + caminho, { method: metodo, headers: corpo ? { 'Content-Type': 'application/json' } : undefined, body: corpo ? JSON.stringify(corpo) : undefined });
   const dados = await resposta.json().catch(() => ({}));
   if (!resposta.ok) throw new Error(dados.erro || 'O Escritório não conseguiu fazer isso.');
   return dados;
@@ -63,7 +69,7 @@ const tentar = async (acao, ...args) => {
   }
 };
 
-const imagemDoAgente = a => (a.avatarPessoal ? `<img src="${esc(a.avatarPessoal)}" alt="${esc(a.nome)}">` : avatar(a.avatar, esc(a.nome)));
+const imagemDoAgente = a => (a.avatarPessoal ? `<img src="${esc(`${BASE ? `${BASE}/` : ''}${a.avatarPessoal}`)}" alt="${esc(a.nome)}">` : avatar(a.avatar, esc(a.nome)));
 
 // ---------- topo ----------
 function renderSistema() {
@@ -444,12 +450,13 @@ function prepararFormularios() {
   });
 
   $('#abre-pedido').addEventListener('click', () => {
+    if (!E) return avisar('O escritório ainda não está conectado. Abra-o no seu computador.');
     $('#opcoes-fluxo').innerHTML = E.sistema.fluxos.map(f => `<label class="opcao" style="margin-top:6px"><input type="radio" name="modo" value="${esc(f.id)}"><div><b>Fluxo pronto: ${esc(f.nome)}</b><span>${esc(f.resumo)}</span></div></label>`).join('');
     $('[data-erro]', formPedido).hidden = true;
     $('#dlg-pedido').showModal();
     formPedido.elements.pedido.focus();
   });
-  $('#abre-tarefa').addEventListener('click', () => abrirNovaTarefa());
+  $('#abre-tarefa').addEventListener('click', () => (E ? abrirNovaTarefa() : avisar('O escritório ainda não está conectado. Abra-o no seu computador.')));
 }
 function abrirNovaTarefa(agente = '') {
   const form = $('#form-tarefa');
@@ -539,16 +546,25 @@ function receber(retrato) {
 }
 
 function ligar() {
-  const fonte = new EventSource('/api/eventos');
+  const fonte = new EventSource(`${BASE}/api/eventos`);
   fonte.addEventListener('estado', evento => {
     conexao = 'ao-vivo';
+    $('#fechado').hidden = true;
     receber(JSON.parse(evento.data));
   });
   fonte.onerror = () => {
     conexao = 'reconectando';
     if (E) renderSistema();
-    else $('#achado').textContent = 'Sem resposta do servidor local. Confira se o Escritório está aberto no terminal.';
+    else if (LOCAL) $('#achado').textContent = 'Sem resposta do servidor local. Confira se o Escritório está aberto no terminal.';
+    else {
+      $('#achado').textContent = 'Procurando o Escritório no seu computador…';
+      $('#fechado').hidden = false;
+    }
   };
+}
+if (!LOCAL) {
+  $('#fechado-porta').textContent = PORTA;
+  $('#fechado-tentar').addEventListener('click', () => location.reload());
 }
 
 // Relógios ("há 2 min") andam sozinhos; o retrato inteiro é pedido de novo de tempos em tempos, porque um
@@ -558,7 +574,7 @@ setInterval(() => {
   for (const el of $$('[data-desde]')) if (el.dataset.desde) el.textContent = ha(Number(el.dataset.desde));
 }, 1000);
 setInterval(() => {
-  if (conexao === 'ao-vivo') fetch('/api/estado').then(r => r.json()).then(receber).catch(() => {});
+  if (conexao === 'ao-vivo') fetch(`${BASE}/api/estado`).then(r => r.json()).then(receber).catch(() => {});
 }, 30_000);
 addEventListener('resize', () => E && renderMesa());
 

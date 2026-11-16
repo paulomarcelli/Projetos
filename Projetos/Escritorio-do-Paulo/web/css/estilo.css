@@ -90,12 +90,21 @@ ul, ol { list-style: none; }
 
 
 /* ---------- O mapa (pixel art, visto de cima) ---------- */
-.mapa { position: relative; z-index: 1; border-radius: 14px; background: #bfdcf2; padding: 10px; overflow-x: auto; }
+.mapa { position: relative; z-index: 1; border-radius: 14px; background: var(--fundo-mapa, #bfdcf2); padding: 10px; overflow-x: auto; }
 .mapa__tela {
   position: relative; margin: 0 auto; border-radius: 10px; overflow: hidden; border: 3px solid #f6f8fb;
   width: min(100%, calc((100vh - 300px) * 480 / 272)); min-width: 300px; aspect-ratio: 480 / 272;
   --escala: 3;
 }
+.mapa__temas {
+  display: flex; gap: 2px; width: fit-content; margin: 0 0 8px auto; padding: 2px; border-radius: 999px; background: rgba(20, 24, 34, .18);
+}
+.mapa__temas button {
+  border: 0; border-radius: 999px; padding: 4px 12px; background: transparent; color: #20242f; font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
+  transition: background-color var(--tempo-rapido), color var(--tempo-rapido);
+}
+.mapa__temas button[aria-pressed="true"] { background: #20242f; color: #f6f8fb; }
+.mapa__temas button:focus-visible { outline: 2px solid #20242f; outline-offset: 2px; }
 .mapa__canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
 .mapa__sobre { position: absolute; inset: 0; }
 .mapa__zona {

@@ -2,7 +2,7 @@
 // desenha o escritório. Nada aqui decide o estado de um agente: a tela só mostra o que o servidor informou.
 import { quadroDe } from './sprites.js';
 import { ICONES, ROTULOS, ESTADOS_ATIVOS } from './telas.js';
-import { criarMapa } from './mapa.js';
+import { criarMapa, TEMAS, TEMA_PADRAO } from './mapa.js';
 import { topicoDaPagina, ligarNuvem, retratoDeFolga } from './nuvem.js';
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
@@ -156,13 +156,33 @@ function renderParede() {
 }
 
 // ---------- o mapa ----------
+// O cenário (apartamento ou escritório) fica guardado neste navegador; sem armazenamento, vale o padrão.
+const CHAVE_TEMA = 'escritorio:tema';
+const lerTema = () => { try { return localStorage.getItem(CHAVE_TEMA); } catch { return null; } };
+const guardarTema = id => { try { localStorage.setItem(CHAVE_TEMA, id); } catch { /* sem armazenamento: só nesta visita */ } };
+const temaInicial = TEMAS[lerTema()] ? lerTema() : TEMA_PADRAO;
 const mapa = criarMapa($('#mapa'), {
+  tema: temaInicial,
   aoAbrir(id) {
     agenteAberto = agenteAberto === id ? null : id;
     renderEstacoes();
     renderGaveta();
   },
 });
+const trocaDeTema = document.createElement('div');
+trocaDeTema.className = 'mapa__temas';
+trocaDeTema.setAttribute('role', 'group');
+trocaDeTema.setAttribute('aria-label', 'Cenário');
+trocaDeTema.innerHTML = Object.values(TEMAS)
+  .map(t => `<button type="button" data-tema="${t.id}" aria-pressed="${t.id === temaInicial}">${t.nome}</button>`).join('');
+trocaDeTema.addEventListener('click', ev => {
+  const botao = ev.target.closest('[data-tema]');
+  if (!botao) return;
+  mapa.trocarTema(botao.dataset.tema);
+  guardarTema(botao.dataset.tema);
+  for (const b of trocaDeTema.querySelectorAll('[data-tema]')) b.setAttribute('aria-pressed', String(b === botao));
+});
+$('#mapa').prepend(trocaDeTema);
 function renderEstacoes() {
   mapa.atualizar(E.equipe, E.tarefas);
   mapa.marcarAberto(agenteAberto);

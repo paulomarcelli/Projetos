@@ -69,6 +69,15 @@ e o [protocolo da equipe](../../agentes/PROTOCOLO.md). Foram criados com a skill
 
 <img src="docs/mapa.webp" alt="O mapa do escritório em pixel art: sala da equipe, lounge, reunião, sala de jogos com pingue-pongue, videogame e fliperama, estúdio, copa e jardim, com as três agentes" width="100%">
 
+**Dois cenários.** O botão no canto do mapa troca entre o **Apartamento** (o padrão: um apartamento de Nova York com
+paredes lilás, porta roxa com a moldura amarela no olho mágico, cozinha aberta, mesa de jantar, sala com sofá, varanda,
+dois quartos e banheiro, inspirado num sitcom dos anos 90, desenhado do zero e sem nomes nem personagens da série) e o
+**Escritório** de sempre. No apartamento elas trabalham no notebook da mesa de jantar e do balcão e nas escrivaninhas
+dos quartos; no lazer, cozinham, tomam café, espiam pelo olho mágico, jogam cartas na mesa de centro, veem TV, põem um
+disco na vitrola e vão para a varanda. A escolha fica guardada no navegador.
+
+<img src="docs/apartamento.webp" alt="O apartamento em pixel art visto de cima: cozinha aberta com balcão, mesa de jantar com notebooks, sala com sofá, tapete azul e TV, varanda com vista para os prédios, dois quartos e banheiro, com as três agentes" width="100%">
+
 ## ▶️ Rodar
 
 Precisa do **Node 20 ou mais novo** e do **Claude Code** instalado e com a conta conectada.
@@ -164,7 +173,9 @@ livre, com um visual padrão; para dar cor e papel, acrescente a entrada dele em
 - **Espelho na nuvem:** `servidor/nuvem.mjs` resume o retrato (até 3,9 KB) e publica no ntfy.sh só quando algo
   importante muda; `web/js/nuvem.js` ouve o tópico (histórico das últimas horas + SSE) e remonta o retrato que a
   página já sabe desenhar.
-- **Mapa em pixel art desenhado por código** (canvas de 480 × 272 ampliado sem suavização): seis salas e um jardim,
+- **Mapa em pixel art desenhado por código** (canvas de 480 × 272 ampliado sem suavização), em **temas** trocáveis ao
+  vivo (`web/js/temas/`: `apartamento.js` e `escritorio.js`; cada um traz as salas, as mesas, a rede de caminhos, os
+  lugares de lazer, o desenho do cenário e o que se mexe nele). No escritório: seis salas e um jardim,
   caminhos ligados num grafo (as agentes andam pelo caminho mais curto, Dijkstra) e uma tabela de atividades de lazer
   (onde, em que pose, virada para onde e por quanto tempo). As personagens são sprites de 12 × 20 pixels com contorno,
   quatro direções, passos e pose sentada, desenhados por código em `web/js/sprites.js`.
@@ -172,5 +183,5 @@ livre, com um visual padrão; para dar cor e papel, acrescente a entrada dele em
   (botão, chip de estado, crachá, tarefa, nó da mesa, marco, figurinha), animações e padrões de interação. Os tokens do
   CSS têm os mesmos nomes. Detalhes em [`docs/design-system.md`](docs/design-system.md).
 - **Arquitetura:** [`docs/arquitetura.md`](docs/arquitetura.md).
-- **Testes:** `npm test` (26 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
+- **Testes:** `npm test` (28 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
   persistência, segurança e o espelho na nuvem). Conferido também com execuções reais do Claude Code, pelo painel e por uma conversa comum.

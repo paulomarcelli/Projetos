@@ -39,6 +39,7 @@ Numa sessão do Claude na nuvem, o mesmo servidor roda dentro da sessão (o ganc
 | `web/js/nuvem.js` | lado da página: guarda o tópico do link, ouve o ntfy e remonta o retrato (só leitura) |
 | `ganchos/enviar.mjs` | gancho do Claude Code: repassa o evento ao servidor e sai em menos de meio segundo |
 | `web/` | a interface (HTML, CSS e JS sem build): mapa, figurinhas, tarefas, gaveta, diálogos |
+| `web/js/temas/` | os cenários do mapa (apartamento e escritório): salas, mesas, caminhos, lazer e desenho; `mapa.js` só anda, senta e desenha o que o tema manda |
 
 ## De onde vem cada estado
 

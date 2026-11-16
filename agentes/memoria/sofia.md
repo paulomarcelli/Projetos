@@ -92,6 +92,14 @@ aqui.
 - **15/11/2026 · `query()` do Figma não aceita acento no seletor.** `[name=Ações]` dá erro: filtre por `children` e
   `name ===`.
 
+- **16/11/2026 · Planta de referência: alinhar antes de medir.** Para copiar uma planta (ou layout) em outra escala,
+  alinhe a imagem nova sobre a de referência com OpenCV (SIFT + `estimateAffinePartial2D`) e meça nas coordenadas do
+  arquivo. Depois compare o cenário com a planta lado a lado e em mistura (50%), e desenhe a rede de caminhos por
+  cima para ver móvel no caminho. No mapa do Escritório, o canvas capturado muda de escala (3× ou 5×): use
+  `largura / 480`.
+- **16/11/2026 · Mapa do Escritório.** Ponto de lazer = pés da agente; ela ocupa 14 × 22 px acima do ponto. Móvel que
+  muda de lugar leva junto o ponto de lazer. O vão de porta precisa de piso, senão aparece o fundo da cidade.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -102,3 +110,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 15/11/2026 | Design System do Escritório do Paulo no Figma (feito seguindo este arquivo, antes da Sofia rodar como agente) | com ajustes (cartões e rótulos cortados na primeira captura, corrigidos) | — | — | Conferir a captura de cada página antes de entregar; auto-layout com largura fixa corta texto. |
 | 15/11/2026 | T-0001 · Análise de design do fã-site Sofia Carson · a voz (só análise, com capturas do site no ar) | aguardando o retorno do Paulo | cerca de 1 h | — | Figma sem autorização: não deu para comparar com o Design System. Faltou Safari, Firefox e aparelho de verdade. |
 | 15/11/2026 | Folha Figma "Referências · Design systems" com 5 estilos, comparação e coleção Tema (5 modos) | aguardando o retorno do Paulo | cerca de 1 h | sem créditos de IA | Primeira captura do teste de tema mostrou fundo branco nos quadros internos; já criar quadros com `fills = []`. |
+| 16/11/2026 | Corrigir o apartamento da Monica e da Rachel no mapa (paredes, cozinha, móveis, caminhos) a partir da planta | aguardando o retorno do Paulo | cerca de 1 h 30 | — | Alinhar a planta com OpenCV logo no começo: medir no olho custou tempo. |

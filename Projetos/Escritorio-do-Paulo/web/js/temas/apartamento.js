@@ -13,10 +13,10 @@ const P = (X, Y) => [px(X), py(Y)];
 
 // ---------- lugares de trabalho (na planta) ----------
 const MESAS_PLANTA = [
-  { X: 370, Y: 192, cadeira: 204 },                                      // mesa redonda da Monica
+  { X: 373, Y: 190, cadeira: 201 },                                      // mesa redonda da Monica (cadeira de baixo, à esquerda)
   { X: 66, Y: 242, cadeira: 236, dir: 'frente', telaY: 244 },            // escrivaninha do Chandler
-  { X: 437, Y: 105, cadeira: 121 },                                      // mesinha do banco da janela
-  { X: 540, Y: 232, cadeira: 227, dir: 'frente', telaY: 234 },           // escrivaninha da Rachel
+  { X: 437, Y: 110, cadeira: 121 },                                      // mesinha do banco da janela (cadeira rosa)
+  { X: 537, Y: 232, cadeira: 230, dir: 'frente', telaY: 234 },           // escrivaninha da Rachel (cadeira verde)
 ];
 const MESAS = MESAS_PLANTA.map(m => ({
   x: px(m.X), y: py(m.Y), cadeira: py(m.cadeira), tipo: 'notebook', ...(m.dir ? { dir: m.dir, telaY: py(m.telaY) } : {}),
@@ -36,19 +36,21 @@ const PLANTA = {
   // quarto do Joey
   'jo-porta': [122, 269], 'jo-dentro': [106, 276], 'cama-j': [84, 282],
   // Monica e Rachel: entrada, cozinha, mesa redonda
-  porta: [322, 214], 'm-foyer': [345, 228], 'm-centro': [386, 220], 'm-meio': [398, 160], 'm-norte': [395, 141],
-  geladeira: [367, 159], pia: [344, 158], cozinhar: [340, 181], 'reuniao-1': [388, 204], 'r-1': [388, 216],
-  vinil: [386, 230], 'm-sul': [400, 236],
+  porta: [321, 224], 'm-foyer': [346, 231], 'm-centro': [384, 218], 'm-passagem': [399, 210], 'm-meio': [399, 165], 'm-norte': [396, 141],
+  geladeira: [369, 161], pia: [341, 157], cozinhar: [342, 190], 'k-meio': [357, 187], 'k-sul': [358, 214], 'reuniao-1': [390, 202], 'r-1': [391, 214],
+  vinil: [387, 227], 'm-sul': [399, 232],
+  // banheiro (pela porta do corredorzinho)
+  'b-porta': [383, 112], 'pia-banho': [366, 104],
   // sala
-  'l-sofa': [429, 190], 'sofa-1': [419, 180], 'sofa-2': [419, 202], poltrona: [436, 156], 'l-centro': [442, 212],
-  'l-sul': [432, 234], 'poltrona-2': [452, 226], 'l-leste': [458, 180], 'l-ne': [456, 145],
+  'l-sul': [426, 230], 'l-centro': [437, 206], 'l-sofa': [428, 199], 'sofa-1': [416, 184], 'sofa-2': [416, 201],
+  'poltrona-2': [451, 222], 'poltrona-rosa': [461, 232], 'l-leste': [459, 190], 'l-ne': [459, 160], poltrona: [436, 154],
   // canto do banco da janela, corredorzinho do armário "?" e varanda
-  'n-entrada': [424, 132], banco: [459, 104], 'poltrona-amarela': [412, 124],
-  'm-hall': [395, 120], armario: [394, 66], 'v-janela': [400, 74], 'v-fora': [418, 74], espreguicadeira: [446, 70], parapeito: [466, 50],
+  'n-entrada': [424, 132], 'n-leste': [460, 126], banco: [459, 102], 'poltrona-amarela': [414, 121],
+  'm-hall': [394, 120], armario: [393, 68], 'v-janela': [403, 76], 'v-fora': [420, 70], espreguicadeira: [440, 73], parapeito: [452, 52],
   // quarto da Monica
-  'mo-porta': [467, 118], 'mo-dentro': [482, 120], 'mo-pe': [510, 140], 'cama-1': [527, 140], penteadeira: [492, 158],
+  'mo-porta': [477, 127], 'mo-dentro': [489, 128], 'cama-1': [520, 124], penteadeira: [490, 159],
   // quarto da Rachel
-  'ra-porta': [469, 184], 'ra-dentro': [486, 192], 'ra-meio': [505, 208], 'cama-2': [541, 214], 'poltrona-ra': [503, 234],
+  'ra-porta': [475, 188], 'ra-dentro': [487, 190], 'ra-meio': [492, 208], 'ra-sul': [517, 214], 'cama-2': [532, 207], 'poltrona-ra': [496, 239],
 };
 const LIGACOES = [
   ['h-19', 'h-meio'], ['h-meio', 'h-20'], ['h-meio', 'h-norte'], ['h-norte', 'escada'], ['h-meio', 'h-sul'],
@@ -58,17 +60,18 @@ const LIGACOES = [
   ['j-centro', 'reclinavel-1'], ['reclinavel-1', 'reclinavel-2'], ['j-centro', 'j-oeste'], ['j-oeste', 'sofa-j1'], ['j-oeste', 'j-so'],
   ['j-oeste', 'c-porta'], ['c-porta', 'c-dentro'], ['c-dentro', 'c-sul'], ['c-sul', 'cama-c'],
   ['j-so', 'jo-porta'], ['jo-porta', 'jo-dentro'], ['jo-dentro', 'cama-j'], ['j-so', 'reclinavel-2'],
-  ['porta', 'm-foyer'], ['m-foyer', 'm-centro'], ['m-centro', 'm-meio'], ['m-meio', 'm-norte'], ['m-meio', 'geladeira'],
-  ['geladeira', 'pia'], ['pia', 'cozinhar'], ['m-centro', 'r-1'], ['r-1', 'reuniao-1'], ['m-centro', 'm-sul'], ['m-sul', 'vinil'],
-  ['m-sul', 'l-sul'], ['l-sul', 'l-centro'], ['l-centro', 'l-sofa'], ['l-sofa', 'sofa-1'], ['l-sofa', 'sofa-2'], ['l-centro', 'poltrona-2'],
-  ['l-centro', 'l-leste'], ['l-leste', 'l-ne'], ['l-ne', 'poltrona'], ['l-ne', 'n-entrada'], ['n-entrada', 'm-norte'],
-  ['n-entrada', 'banco'], ['n-entrada', 'poltrona-amarela'], ['m-norte', 'm-hall'], ['m-hall', 'armario'], ['m-hall', 'v-janela'],
-  ['v-janela', 'v-fora'], ['v-fora', 'espreguicadeira'], ['v-fora', 'parapeito'],
-  ['l-ne', 'mo-porta'], ['mo-porta', 'mo-dentro'], ['mo-dentro', 'mo-pe'], ['mo-pe', 'cama-1'], ['mo-dentro', 'penteadeira'],
-  ['l-leste', 'ra-porta'], ['ra-porta', 'ra-dentro'], ['ra-dentro', 'ra-meio'], ['ra-meio', 'cama-2'], ['ra-meio', 'poltrona-ra'],
+  ['porta', 'm-foyer'], ['m-foyer', 'm-centro'], ['m-centro', 'm-passagem'], ['m-passagem', 'm-meio'], ['m-meio', 'm-norte'],
+  ['m-meio', 'geladeira'], ['geladeira', 'pia'], ['cozinhar', 'k-meio'], ['k-meio', 'k-sul'], ['k-sul', 'm-centro'], ['k-sul', 'm-foyer'], ['m-centro', 'r-1'], ['r-1', 'reuniao-1'],
+  ['m-centro', 'm-sul'], ['m-sul', 'vinil'], ['m-sul', 'l-sul'], ['l-sul', 'l-centro'], ['l-centro', 'l-sofa'], ['l-sofa', 'sofa-1'],
+  ['l-sofa', 'sofa-2'], ['l-centro', 'poltrona-2'], ['l-sul', 'poltrona-rosa'], ['l-centro', 'l-leste'], ['l-leste', 'l-ne'],
+  ['l-ne', 'poltrona'], ['l-ne', 'n-leste'], ['n-leste', 'n-entrada'], ['n-entrada', 'm-norte'], ['n-leste', 'banco'],
+  ['n-entrada', 'poltrona-amarela'], ['m-norte', 'm-hall'], ['m-hall', 'b-porta'], ['b-porta', 'pia-banho'], ['m-hall', 'armario'],
+  ['m-hall', 'v-janela'], ['v-janela', 'v-fora'], ['v-fora', 'espreguicadeira'], ['v-fora', 'parapeito'],
+  ['n-leste', 'mo-porta'], ['mo-porta', 'mo-dentro'], ['mo-dentro', 'cama-1'], ['mo-dentro', 'penteadeira'],
+  ['l-leste', 'ra-porta'], ['ra-porta', 'ra-dentro'], ['ra-dentro', 'ra-meio'], ['ra-meio', 'ra-sul'], ['ra-sul', 'cama-2'], ['ra-meio', 'poltrona-ra'],
 ];
 // cada cadeira de trabalho liga ao corredor atrás dela
-const LADOS = [[370, 216, 'm-centro'], [58, 224, 'c-sul'], [437, 132, 'n-entrada'], [520, 220, 'ra-meio']];
+const LADOS = [[372, 214, 'm-centro'], [58, 224, 'c-sul'], [437, 132, 'n-entrada'], [522, 222, 'ra-sul']];
 MESAS_PLANTA.forEach((m, i) => {
   PLANTA[`mesa-${i}`] = [m.X, m.cadeira];
   PLANTA[`lado-${i}`] = LADOS[i].slice(0, 2);
@@ -96,10 +99,12 @@ const LAZER = {
   pia: { dir: 'costas', icone: 'cafe', tempo: [5, 10] },
   cozinhar: { dir: 'lado', esquerda: true, icone: 'panela', tempo: [10, 18] },
   vinil: { dir: 'frente', icone: 'musica', tempo: [8, 14] },
+  'pia-banho': { dir: 'costas', icone: 'espelho', tempo: [4, 8] },
   'sofa-1': { pose: 'sentado', dir: 'lado', icone: 'conversa', tempo: [12, 22] },
   'sofa-2': { pose: 'sentado', dir: 'lado', icone: 'conversa', tempo: [12, 22] },
   poltrona: { pose: 'sentado', dir: 'frente', icone: 'livro', tempo: [10, 18] },
   'poltrona-2': { pose: 'sentado', dir: 'lado', esquerda: true, icone: 'conversa', tempo: [10, 18] },
+  'poltrona-rosa': { pose: 'sentado', dir: 'lado', esquerda: true, icone: 'conversa', tempo: [10, 18] },
   banco: { pose: 'sentado', dir: 'frente', icone: 'janela', tempo: [8, 14] },
   'poltrona-amarela': { pose: 'sentado', dir: 'lado', icone: 'livro', tempo: [10, 18] },
   armario: { dir: 'costas', icone: 'olho', tempo: [3, 6] },
@@ -136,6 +141,16 @@ function desenhar(c) {
   const criado = (X, Y) => { Q(X, Y, 7, 7, '#9a6a3a'); O(X + 3.5, Y + 3.5, 2, 2, '#f6dc8a'); };
   const algarismos = { 1: ['010', '110', '010', '010', '111'], 9: ['111', '101', '111', '001', '111'], 2: ['111', '001', '111', '100', '111'], 0: ['111', '101', '101', '101', '111'] };
   const numero = (texto, x, y, cor) => [...texto].forEach((d, k) => algarismos[d].forEach((l, j) => [...l].forEach((p, i) => p === '1' && R(x + k * 4 + i, y + j, 1, 1, cor))));
+  // retângulo girado (graus) pixel a pixel, sem borrar: carrinho, pia do canto, poltronas tortas
+  const girado = (Xc, Yc, W, H, graus, cor) => {
+    const a = graus * Math.PI / 180, cs = Math.cos(a), sn = Math.sin(a), r = Math.hypot(W, H) / 2 + 1;
+    c.fillStyle = cor;
+    for (let y = py(Yc - r); y <= py(Yc + r); y += 1) for (let x = px(Xc - r); x <= px(Xc + r); x += 1) {
+      const dX = (x + 0.5) / SX + 25 - Xc, dY = y + 0.5 + 30 - Yc;
+      if (Math.abs(dX * cs + dY * sn) <= W / 2 && Math.abs(-dX * sn + dY * cs) <= H / 2) c.fillRect(x, y, 1, 1);
+    }
+  };
+  const interrogacao = (x, y, cor) => ['111', '001', '011', '000', '010'].forEach((l, j) => [...l].forEach((p, i) => p === '1' && R(x + i, y + j, 1, 1, cor)));
 
   // ----- lá fora: a cidade vista de cima -----
   R(0, 0, LARGURA, ALTURA, '#4d5567');
@@ -154,15 +169,17 @@ function desenhar(c) {
   for (let X = 203; X < 260; X += 5) Q(X, 143, 3, 48, '#d8cfbe');
   Q(199, 165, 64, 3, '#a89c88'); Q(228, 143, 6, 48, '#a89c88');
   // Monica e Rachel
-  piso(316, 139, 152, 106, '#f0dcd2', '#e5cbbf');            // sala, cozinha e jantar
-  piso(406, 89, 60, 50, '#f0dcd2', '#e5cbbf');               // canto do banco da janela
-  piso(380, 57, 27, 82, '#f0dcd2', '#e5cbbf');               // corredorzinho do armário
-  piso(316, 218, 64, 38, '#f0dcd2', '#e5cbbf');              // entrada
-  piso(380, 32, 27, 24, '#cdb39a', '#c0a48a');               // o armário "?"
-  xadrez(336, 88, 43, 50, 4, '#f6f6f6', '#2b2b33');          // banheiro xadrez
-  piso(469, 86, 93, 81, '#ecd6d6', '#e0c4c4');               // quarto da Monica
-  piso(471, 170, 91, 77, '#e9dccb', '#ddccb6');              // quarto da Rachel
-  xadrez(410, 39, 67, 48, 5, '#d8d3ca', '#cbc5ba');          // varanda
+  piso(315, 141, 163, 104, '#f0dcd2', '#e5cbbf');            // cozinha, jantar e sala
+  piso(408, 91, 70, 50, '#f0dcd2', '#e5cbbf');               // canto do banco da janela
+  piso(380, 61, 28, 81, '#f0dcd2', '#e5cbbf');               // corredorzinho do armário
+  piso(315, 209, 66, 46, '#f0dcd2', '#e5cbbf');              // entrada
+  Q(381, 137, 85, 1, '#dcc2b4');                             // degrau entre o canto da janela e a sala
+  piso(381, 34, 27, 27, '#cdb39a', '#c0a48a');               // o armário "?"
+  xadrez(343, 91, 34, 28, 4, '#f6f6f6', '#4a4a56');          // banheiro xadrez
+  xadrez(343, 119, 34, 18, 4, '#d8c8e8', '#a88ac4');         // e o lilás em volta da banheira
+  piso(476, 169, 84, 77, '#e9dccb', '#ddccb6');              // quarto da Rachel
+  piso(479, 91, 81, 85, '#ecd6d6', '#e0c4c4');               // quarto da Monica (com o canto da penteadeira)
+  xadrez(415, 44, 57, 42, 5, '#d8d3ca', '#cbc5ba');          // varanda
 
   // ----- paredes (escuras, como na planta) -----
   // Joey e Chandler
@@ -176,21 +193,30 @@ function desenhar(c) {
   // corredor do prédio: parede do fundo
   parede(262, 136, 52, 4);
   // Monica e Rachel
-  parede(309, 140, 9, 65); parede(309, 224, 9, 38); parede(313, 255, 70, 4); parede(378, 243, 4, 16);
-  parede(380, 243, 92, 4);
-  for (let k = 0; k < 6; k += 1) parede(318 + k * 3, 140 - k * 2, 4, 4);
-  parede(333, 84, 4, 56); parede(333, 84, 49, 4); parede(337, 137, 43, 4); parede(378, 28, 4, 92); parede(378, 132, 4, 9);
-  parede(378, 28, 32, 4); parede(406, 28, 4, 38); parede(406, 80, 4, 11); parede(382, 55, 6, 3); parede(400, 55, 6, 3);
-  parede(406, 87, 63, 4); janela(412, 87, 52, 3); janela(406, 66, 3, 14);
-  parede(465, 82, 4, 28); parede(465, 126, 4, 50); parede(465, 192, 4, 55); parede(465, 82, 100, 4); parede(561, 82, 4, 168);
-  parede(469, 166, 92, 4); parede(465, 246, 100, 4);
-  janela(561, 120, 3, 18); janela(561, 196, 3, 18); janela(334, 98, 3, 12);
+  // cozinha: parede grossa da esquerda e a quina em diagonal, com janela
+  parede(309, 140, 13, 74);
+  for (let Y = 140; Y < 158; Y += 1) {
+    const xe = px(338 - (Y - 140)); R(px(309), py(Y), xe - px(309), 1, PAREDE);
+    if (Y >= 142 && Y < 156) { R(xe - 4, py(Y), 1, 1, '#f3efe6'); R(xe - 3, py(Y), 2, 1, '#8fc6e8'); }
+  }
+  parede(309, 234, 6, 24); parede(309, 253, 72, 5); parede(377, 228, 4, 30);                        // entrada
+  parede(380, 242, 96, 5); parede(472, 245, 93, 5);                                                   // fundo da sala e da Rachel
+  parede(335, 87, 8, 55); parede(335, 87, 46, 4); parede(343, 137, 38, 5); janela(335, 105, 4, 13);    // banheiro
+  parede(377, 26, 4, 78); parede(377, 119, 4, 26); Q(377, 104, 4, 15, '#ebd3c8'); Q(377, 145, 3, 12, '#9a6a3a');   // porta do banheiro e batente
+  parede(374, 26, 41, 8); parede(408, 26, 7, 45); janela(408, 71, 7, 11); parede(408, 82, 11, 21);    // armário e corredorzinho
+  parede(398, 60, 10, 4); Q(382, 60, 16, 2, '#9a6a3a');                                              // porta do armário
+  parede(415, 86, 50, 5); janela(419, 86, 41, 4);                                                    // janela do banco
+  parede(465, 79, 15, 24); parede(480, 85, 23, 17); parede(503, 85, 62, 6); parede(560, 85, 5, 165);
+  janela(561, 131, 4, 18); janela(561, 201, 4, 18);
+  parede(475, 103, 4, 16); parede(475, 134, 4, 45); parede(475, 175, 30, 4);                        // quarto da Monica: porta e canto
+  parede(501, 165, 59, 4); parede(501, 165, 5, 14); parede(501, 179, 2, 22);                        // entre os quartos
+  parede(472, 196, 4, 51);                                                                            // quarto da Rachel: porta acima
   // grade da varanda e escada de incêndio
-  Q(410, 37, 68, 1.5, '#1f2430'); Q(476, 37, 1.5, 51, '#1f2430'); Q(414, 38, 10, 12, '#3a3f4f'); for (let Y = 40; Y < 50; Y += 3) Q(414, Y, 10, 1, '#6b7184');
+  Q(415, 43, 58, 1.5, '#1f2430'); Q(471.5, 43, 1.5, 43, '#1f2430'); Q(423, 39, 9, 12, '#3a3f4f'); for (let Y = 41; Y < 51; Y += 3) Q(423, Y, 9, 1, '#6b7184');
 
   // portas 19 e 20 (abertas, com o número do lado de fora)
   Q(262, 220, 4, 18, '#6e3aa8'); numero('19', px(266) + 1, py(240), '#f2c230');
-  Q(309, 205, 9, 19, '#6e3aa8'); Q(312, 212, 3, 4, '#f2c230'); Q(313, 213, 1, 2, '#2a1a3a'); numero('20', px(298), py(226), '#f2c230');
+  Q(309, 214, 6, 20, '#6e3aa8'); Q(311, 221, 2.5, 4, '#f2c230'); Q(312, 222, 1, 2, '#2a1a3a'); numero('20', px(298), py(226), '#f2c230');
 
   // ----- Joey e Chandler: móveis -----
   // sofá amarelo encostado na parede de cima, mesinha, luminária
@@ -224,53 +250,96 @@ function desenhar(c) {
   cama(36, 266, 40, 26, '#e88a4a', false); Q(57, 260, 40, 6, '#9a5a34'); O(108, 288, 6, 5, '#e0703a'); Q(108, 264, 10, 14, '#b98654');
 
   // ----- Monica e Rachel: móveis -----
-  // cozinha no canto em ângulo: bancada laranja, geladeira, fogão na bancada turquesa da parede
-  Q(336, 141, 40, 9, '#d98a3a'); Q(338, 142, 10, 6, '#a9b4c2'); Q(339, 143, 8, 4, '#d6e8f4');
-  Q(360, 137, 15, 14, '#fbf5e6'); Q(361, 138, 13, 5, '#ffffff'); Q(372, 140, 1, 8, '#a89f8a');
-  Q(318, 150, 12, 52, '#5fc4cf'); Q(318, 150, 12, 2, '#86d8e0'); Q(320, 172, 9, 14, '#3a3a44');
-  for (const Y of [175, 182]) { O(322, Y, 1.6, 1.6, '#202028'); O(327, Y, 1.6, 1.6, '#202028'); }
-  Q(318, 200, 34, 8, '#5fc4cf'); Q(318, 200, 34, 2, '#86d8e0'); Q(335, 202, 8, 4, '#ffffff');
-  Q(336, 153, 10, 6, '#9fd2e8');
-  // mesa redonda com tapete redondo e quatro cadeiras
-  O(379, 187, 22, 19, '#f6efe6'); O(379, 187, 21, 18, '#efe2d4');
-  for (const [X, Y] of [[367, 176], [391, 176], [370, 202], [388, 202]]) O(X, Y, 4, 4, '#e8b4b4');
-  O(379, 187, 12, 11, '#d98a3a'); O(379, 187, 10, 9, '#e8a050'); O(379, 187, 2, 2, '#4a9fb0');
-  // sofá claro (virado para a direita) com almofadas, mesinha, banquinho turquesa, tapete
-  Q(426, 158, 36, 70, '#f3ecf4'); Q(427, 159, 34, 68, '#ebe0f0');
-  for (let Y = 162; Y < 226; Y += 8) for (let X = 430; X < 460; X += 8) Q(X, Y, 1, 1, '#bfe2f4');
-  Q(404, 160, 6, 48, '#d9d0e2'); Q(410, 162, 12, 44, '#ece6f2'); Q(404, 160, 18, 3, '#d9d0e2'); Q(404, 205, 18, 3, '#d9d0e2');
-  Q(412, 168, 6, 7, '#e8564f'); Q(412, 196, 6, 7, '#9a6ad0');
-  Q(407, 152, 12, 7, '#c86a4a'); Q(407, 211, 13, 13, '#5fc4cf'); Q(409, 213, 9, 9, '#9fe0e6');
-  Q(433, 176, 18, 19, '#d9a23a'); Q(434, 177, 16, 17, '#f2c84b'); Q(438, 184, 2, 2, '#5a3a24'); Q(444, 188, 2, 2, '#5a3a24');
-  // poltrona virada para baixo, cadeira verde e rosa, cômoda baixa, vitrola
-  Q(427, 138, 18, 15, '#e9dcc4'); Q(430, 141, 12, 9, '#f6efe0'); Q(447, 140, 6, 8, '#c86a4a');
-  O(452, 224, 7, 6, '#4aa86a'); O(462, 234, 7, 6, '#f0a0a8');
-  Q(432, 236, 22, 7, '#d9a23a'); O(386, 236, 5, 4, '#2b2b33'); O(386, 236, 1.5, 1.5, '#e8564f');
-  planta(458, 140, 1); planta(420, 240, 0.9);
-  // entrada: tapete, aparador e duas cadeiras
-  Q(322, 222, 30, 18, '#e6f0f0'); Q(324, 224, 26, 14, '#d2e6e8'); Q(337, 244, 24, 8, '#ffffff'); Q(339, 246, 6, 3, '#2b2b33');
-  O(327, 247, 4, 4, '#e8b4b4'); O(369, 247, 4, 4, '#e8b4b4');
-  // canto do banco da janela: banco com almofadas, mesinha com cadeira rosa, poltrona amarela, tapete
-  Q(410, 91, 56, 10, '#b8a6d4'); for (let X = 412; X < 464; X += 9) Q(X, 92, 7, 7, ['#9a6ad0', '#f2c84b', '#e8564f', '#7fbf6a', '#ffffff', '#9a6ad0'][((X - 412) / 9) % 6]);
-  Q(424, 102, 26, 8, '#d9a23a'); Q(425, 103, 24, 6, '#f2c06a'); O(437, 116, 5, 4, '#e0407a');
-  O(412, 116, 7, 8, '#f2d25a'); O(413, 117, 5, 6, '#fbe48a');
-  // corredorzinho do armário: estante verde, planta
-  Q(383, 66, 8, 22, '#6fbf8a'); Q(384, 67, 6, 20, '#8fd8a8'); planta(402, 62, 0.8);
-  // banheiro xadrez: banheira oval, vaso, pia, toalha
-  O(356, 128, 16, 7, '#ffffff'); O(356, 128, 13, 5, '#bfe2f4'); Q(341, 91, 8, 9, '#ffffff'); O(345, 101, 4, 3, '#f2f6f8');
-  Q(360, 90, 10, 8, '#ffffff'); Q(361, 91, 8, 5, '#d6e8f4'); O(347, 115, 3, 3, '#f2c230');
-  // varanda: espreguiçadeira e vasos
-  Q(434, 66, 26, 7, '#e9dcc4'); Q(436, 67, 22, 5, '#ffffff'); Q(434, 66, 4, 7, '#c8b896');
-  planta(470, 82, 0.9); planta(416, 82, 0.8);
-  // quarto da Monica: cama rosa, criados, banco ao pé da cama, cômoda, poltrona rosa
-  cama(507, 89, 40, 40, '#f0b8d8'); criado(498, 89); criado(548, 89); Q(518, 131, 18, 6, '#f2d25a');
-  Q(513, 152, 32, 12, '#9a6a3a'); O(522, 158, 3, 3, '#ffffff'); O(535, 158, 3, 3, '#ffffff');
-  O(492, 160, 6, 5, '#e0407a'); Q(470, 150, 8, 16, '#9a6a3a'); planta(478, 155, 0.8); planta(554, 158, 0.8);
-  // quarto da Rachel: cama, criado, poltrona redonda, cômoda, escrivaninha com cadeira verde
-  cama(524, 172, 34, 34, '#f6efe0'); Q(525, 173, 32, 8, '#c8d890'); criado(514, 172);
-  O(503, 230, 9, 8, '#f6efe0'); O(503, 230, 6, 5, '#e8e0c8'); Q(474, 212, 10, 26, '#e2b24a'); Q(476, 214, 6, 22, '#f2c84b');
-  Q(522, 234, 36, 10, '#9a6a3a'); Q(523, 235, 34, 8, '#c8905a'); O(540, 226, 4, 3, '#a8c840');
-  O(496, 184, 5, 5, '#2b2b33');
+  // cozinha em ângulo: bancada laranja com a pia no canto, armário e geladeira; bancada turquesa com o fogão; carrinho branco
+  for (let Y = 142; Y < 181; Y += 1) {
+    const ini = Y < 158 ? Math.max(322, 338 - (Y - 140)) : Y < 160 ? 323 : 330;
+    const fim = Y < 150 ? 350 : Y < 158 ? 350 - (Y - 150) * 1.75 : 336;
+    Q(ini, Y, fim - ini, 1, '#d98a3a');
+  }
+  girado(334, 153, 8, 8, 45, '#a9b4c2'); girado(334, 153, 6, 6, 45, '#d6e8f4');
+  Q(350, 142, 10, 12, '#9a6a3a'); Q(352, 144, 6, 7, '#4a4650');
+  Q(361, 142, 16, 15, '#c9c2b0'); Q(362, 142, 14, 14, '#fbf8f0'); Q(362, 146, 14, 1, '#d8d0bc');
+  Q(323, 160, 7, 40, '#5fc4cf'); Q(323, 160, 2, 40, '#86d8e0');
+  Q(323, 200, 29, 9, '#5fc4cf'); Q(323, 200, 29, 2, '#86d8e0'); O(327, 205, 2.4, 2.4, '#ffffff'); O(327, 205, 1.2, 1.2, '#a9b4c2');
+  Q(332, 203, 1.5, 3, '#ffffff'); Q(335, 203, 1.5, 3, '#ffffff');
+  Q(330, 183, 7, 15, '#3a3a44'); for (const Y of [186, 194]) { O(332, Y, 1.5, 1.5, '#15151c'); O(335.5, Y, 1.5, 1.5, '#15151c'); }
+  girado(346, 167, 10, 10, 30, '#c9cfd8'); girado(346, 167, 8, 8, 30, '#f6f8fb');
+  O(386, 146, 4, 6.5, '#d9b23a'); O(386, 146, 3, 5.5, '#f2d25a');                     // pufe amarelo
+  // mesa redonda com tapete redondo e quatro cadeiras em X
+  O(382, 187, 22, 20, '#f6efe6'); O(382, 187, 21, 19, '#efe2d4');
+  for (const [X, Y] of [[367, 175], [390, 175], [370, 197], [391, 196]]) { O(X, Y, 4, 4, '#c89a9a'); O(X, Y, 3, 3, '#f0c8c4'); }
+  O(380, 187, 10, 9, '#d98a3a'); O(380, 187, 8.5, 7.5, '#e8a050'); O(380, 187, 2, 2, '#4a9fb0');
+  // sala: tapete grande, sofá virado para a direita com almofadas, mesinha com abajur, banquinho turquesa, mesa de centro
+  Q(413, 150, 51, 80, '#f6f0f6'); Q(414, 151, 49, 78, '#ece2f0');
+  for (let Y = 156; Y < 228; Y += 8) for (let X = 418; X < 462; X += 8) Q(X, Y, 1, 1, '#bfe2f4');
+  Q(404, 164, 19, 43, '#d9d0e2'); Q(409, 167, 13, 37, '#f3eef7'); Q(409, 185, 13, 1, '#d9d0e2');
+  Q(411, 168, 6, 6, '#9a6ad0'); Q(411, 175, 6, 6, '#e0407a'); Q(411, 197, 6, 6, '#9a6ad0');
+  Q(407, 156, 13, 8, '#c86a4a'); O(413.5, 160, 2.5, 2.5, '#f6efe0');
+  Q(407, 210, 14, 14, '#5fc4cf'); Q(409, 212, 10, 10, '#9fe0e6');
+  Q(432, 176, 19, 19, '#d9a23a'); Q(433, 177, 17, 17, '#f2c84b'); O(437, 181, 2, 2, '#ffffff'); Q(440, 188, 2, 2, '#5a3a24'); Q(444, 190, 2, 2, '#5a3a24');
+  // poltrona de cima com a mesinha, armário com planta, cadeiras verde e rosa, mesinha redonda, aparador, vitrola
+  Q(427, 136, 20, 19, '#d9c8a8'); Q(428, 137, 18, 17, '#efe4cc'); Q(431, 140, 12, 11, '#f8f2e4'); Q(435, 143, 5, 4, '#9a6ad0');
+  Q(448, 140, 7, 11, '#c86a4a'); O(451.5, 144, 1.5, 1.5, '#f6dc8a');
+  Q(466, 143, 9, 29, '#7a5232'); Q(467, 144, 7, 27, '#9a6a3a'); Q(468, 158, 5, 8, '#5a5f6e'); planta(470.5, 139, 0.9);
+  O(451, 218, 6.5, 6.5, '#2f8a52'); O(451, 218, 5.5, 5.5, '#4aa86a');
+  O(461, 228, 8, 8, '#d88890'); O(461, 228, 7, 7, '#f0a0a8');
+  O(466, 208, 3.5, 3.5, '#7a5232'); O(466, 208, 2.5, 2.5, '#9a6a3a');
+  Q(432, 236, 19, 7, '#d9a23a'); Q(433, 237, 17, 5, '#f2c06a'); Q(453, 240, 11, 2, '#a9b0bc'); O(467, 240, 2, 2, '#f2d25a');
+  O(386, 234, 5, 4.5, '#2b2b33'); O(386, 234, 1.5, 1.5, '#e8564f');
+  planta(419, 238, 0.9);
+  // entrada: tapete, aparador branco e duas cadeiras
+  Q(334, 220, 27, 23, '#cfe2e4'); Q(335, 221, 25, 21, '#e6f2f2'); O(347.5, 231.5, 6, 6, '#bcd8dc'); O(347.5, 231.5, 5, 5, '#e6f2f2');
+  Q(336, 243, 25, 9, '#c9c2b0'); Q(337, 243, 23, 8, '#ffffff'); O(342, 247, 2.5, 2.5, '#2b2b33'); O(342, 247, 1, 1, '#ffffff');
+  Q(350, 246, 2, 2, '#a9b4c2'); Q(353, 246, 2, 2, '#a9b4c2');
+  for (const X of [326.5, 368.5]) { O(X, 247.5, 4, 4, '#c89a9a'); O(X, 247.5, 3, 3, '#f0c8c4'); }
+  // banheiro: vaso, pia, tapetinho e a banheira oval
+  Q(347, 91, 9, 4, '#dde8ee'); Q(348, 91, 7, 3, '#ffffff'); O(351.5, 99, 4, 4.5, '#ffffff'); O(351.5, 99.5, 2.5, 3, '#dde8ee');
+  Q(361, 91, 10, 8, '#ffffff'); Q(362, 92, 8, 5, '#d6e8f4');
+  O(348.5, 117.5, 3.7, 3.7, '#f2c230');
+  O(360, 129, 15, 6.5, '#ffffff'); O(360, 129, 12.5, 4.6, '#bfe2f4');
+  // corredorzinho: passadeira, baú verde, planta, caixinha e o armário "?"
+  Q(387, 69, 14, 64, '#e2d6dc'); Q(388, 70, 12, 62, '#fbf7f2'); for (let Y = 74; Y < 130; Y += 6) Q(393, Y, 2, 1, '#e8c8d4');
+  Q(381, 72, 8, 23, '#3f8f6a'); Q(382, 73, 6, 21, '#7fd4ac'); for (const Y of [77, 83, 89]) Q(384, Y, 2, 1, '#2f6a50');
+  planta(402.5, 69, 0.8); Q(381, 126, 6, 6, '#b8582a'); Q(382, 127, 4, 4, '#d9703a');
+  interrogacao(px(394) - 1, py(38), '#d8403a');
+  // canto do banco da janela: tapete, banco com almofadas, mesinha com cadeira rosa, poltrona amarela, banquinho
+  Q(414, 108, 52, 26, '#e8dccc'); Q(415, 109, 50, 24, '#f8f2e6'); O(440, 121, 18, 9, '#ead8c0'); O(440, 121, 17, 8, '#f8f2e6');
+  Q(415, 91, 50, 12, '#b8c47a'); Q(416, 92, 48, 10, '#e4ecc0');
+  Q(416, 93, 8, 7, '#9a6ad0'); Q(442, 93, 5, 4, '#9a6ad0'); Q(441, 97, 10, 4, '#e0407a'); Q(455, 93, 8, 7, '#b38ae0');
+  Q(425, 103, 26, 11, '#d9a23a'); Q(426, 104, 24, 9, '#f2c06a');
+  O(437, 118, 5, 4.5, '#b82a5a'); O(437, 118, 4, 3.5, '#e0407a');
+  girado(413, 116, 13, 15, -30, '#d9a23a'); girado(413, 116, 9, 11, -30, '#fbe48a');
+  O(470.5, 109.5, 3.5, 4, '#7a5232'); O(470.5, 109.5, 2.5, 3, '#9a6a3a');
+  // varanda: a mesinha comprida
+  Q(428, 76, 24, 5, '#b8a890'); Q(429, 77, 22, 3, '#e9dcc4');
+  // quarto da Monica: tapete, cama rosa, criados, banco ao pé, escrivaninha, cômoda, poltrona rosa, penteadeira, plantas
+  Q(505, 104, 49, 46, '#e8c8dc'); Q(506, 105, 47, 44, '#faf2f6');
+  for (const [X, Y] of [[508, 107], [550, 107], [508, 146], [550, 146]]) Q(X, Y, 2, 1, '#c890b8');
+  cama(516, 93, 27, 38, '#f0b8d8'); Q(526, 100, 7, 4, '#e0407a');
+  for (const [X, Y] of [[521, 110], [533, 115], [525, 122], [538, 106], [530, 127]]) Q(X, Y, 1, 1, '#c87aa8');
+  criado(506, 91); criado(545, 91);
+  Q(522, 132, 15, 9, '#d9b23a'); Q(523, 133, 13, 7, '#f2d25a'); Q(523, 136, 13, 1, '#d9b23a');
+  Q(482, 103, 17, 9, '#7a5232'); Q(483, 104, 15, 7, '#c8905a'); Q(486, 106, 3, 2, '#f6efe0'); Q(492, 106, 4, 1, '#5a3a24');
+  Q(513, 153, 33, 12, '#b8b0a4'); Q(514, 154, 31, 10, '#ece8e2'); O(522, 159, 3, 3, '#b8b0a4'); O(522, 159, 2, 2, '#ffffff');
+  O(535, 159, 3, 3, '#b8b0a4'); O(535, 159, 2, 2, '#ffffff');
+  O(552, 159, 4, 4, '#c8602a'); O(552, 159, 3, 3, '#e8803a');
+  planta(507, 159, 0.9);
+  O(490, 155, 5, 5.5, '#b82a5a'); O(490, 155, 4, 4.5, '#e0407a');
+  O(483, 143, 2, 2, '#f2d25a');
+  Q(481, 164, 17, 11, '#8fb4c4'); Q(482, 165, 15, 9, '#cdeaf2'); Q(485, 166, 1, 3, '#ffffff'); Q(488, 169, 1, 3, '#ffffff');
+  // quarto da Rachel: tapete, cama, criado, abajur, mesinha redonda, cadeira amarela, cômodas, poltrona redonda com pufe, escrivaninha
+  Q(494, 203, 60, 41, '#d8dcb8'); Q(495, 204, 58, 39, '#eef0d8');
+  cama(523, 169, 28, 40, '#f6efe0'); Q(524, 170, 26, 8, '#c8d890'); Q(526, 171, 9, 5, '#a8c840'); Q(539, 171, 9, 5, '#a8c840');
+  Q(552, 173, 5, 7, '#d9a23a'); O(555, 195, 3, 3, '#d9b23a'); O(555, 195, 1.5, 1.5, '#fbe48a');
+  O(514.5, 174.5, 4.5, 4.5, '#2b2b33'); O(514.5, 174.5, 1.5, 1.5, '#e8e0c8');
+  Q(503, 183, 10, 13, '#d9a23a'); Q(504, 184, 8, 11, '#f2c84b');
+  Q(493, 183, 8, 13, '#c8b896'); Q(494, 184, 6, 11, '#efe2c8');
+  Q(476, 214, 10, 25, '#d9a23a'); Q(477, 215, 8, 23, '#f2c84b');
+  girado(505, 226, 8, 8, 20, '#c8c0b0'); girado(505, 226, 6, 6, 20, '#f6f2ea');
+  O(496, 236, 6.5, 6.5, '#c8c0b0'); O(496, 236, 5.5, 5.5, '#f6efe0'); O(496, 237, 3.5, 3, '#c8d890');
+  Q(524, 233, 26, 10, '#7a5232'); Q(525, 234, 24, 8, '#c8905a');
+  O(536.5, 228.5, 4.5, 4, '#7a9a30'); O(536.5, 228.5, 3.5, 3, '#a8c840');
+  O(554, 238, 3, 3, '#c8c0b0'); O(554, 238, 2, 2, '#ffffff');
   // notebooks e monitores nos lugares de trabalho (a tela acende por cima, em mapa.js)
   MESAS.forEach(m => {
     const ty = m.telaY ?? m.y - 8;
@@ -302,10 +371,10 @@ function animar(q, { figuras, tique }) {
     R(px(392), py(228) - (tique % 6), 1, 1, '#f2c84b');
   }
   if (em('cozinhar')) {
-    R(px(321), py(174), 2, 2, tique % 2 ? '#ff8f3a' : '#ffd25a'); R(px(326), py(181), 2, 2, tique % 2 ? '#ffd25a' : '#ff8f3a');
-    R(px(324) + (tique % 3), py(168) - (tique % 4), 1, 2, '#ffffffaa');
+    R(px(332), py(185), 2, 2, tique % 2 ? '#ff8f3a' : '#ffd25a'); R(px(335.5), py(193), 2, 2, tique % 2 ? '#ffd25a' : '#ff8f3a');
+    R(px(333) + (tique % 3), py(181) - (tique % 4), 1, 2, '#ffffffaa');
   }
-  if (em('pia') || em('pia-j')) R(px(em('pia') ? 343 : 237) + (tique % 2), py(em('pia') ? 140 : 195) - (tique % 3), 1, 2, '#ffffffaa');
+  if (em('pia') || em('pia-j')) R(px(em('pia') ? 334 : 237) + (tique % 2), py(em('pia') ? 150 : 195) - (tique % 3), 1, 2, '#ffffffaa');
 }
 
 export default {

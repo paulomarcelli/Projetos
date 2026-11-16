@@ -76,18 +76,18 @@ andamento (**Aurora**) tem uma passagem detalhada em
 ## 5. Pendências que dependem do usuário
 - **Aurora:** ele jogar a Fase 1 e contar onde se perdeu, que salto errou mais de 3 vezes, que trecho foi chato ou
   injusto e quanto tempo levou.
-- **Landing da Sofia Carson** (ideia guardada no Notion, em "IDEIAS DE PROJETOS"): ele escolheu o modelo **Lusco**
-  (Profitize AI) e vai mandar o prompt do Lusco, o `.zip` e as fotos.
 - **Landing da Estela Marangoni** (sobre os ensinamentos dela, com ênfase no desapego): modelo **Sinal** recomendado;
   falta o prompt/`.zip` do Sinal e o conteúdo dela (transcrições ou frases).
-- **Radar de Leads:** falta a chave da API do Google, a cidade, o nome e o preço.
 
 ## 6. Próximos passos sugeridos (em ordem)
 1. **Aurora · Prólogo (A Noite das Lanças):** ligar a Aurora criança no jogo, criar a furtividade (soldados com campo
    de visão e esconderijos), gerar a arte dos soldados da Lança Dourada e do castelo, e montar as cenas do roteiro.
    O passo a passo está na passagem da Aurora (§6).
 2. Aurora: menu inicial, controles de toque, som e música; depois a Fase 2 (A Tinta que Escorre).
-3. Retomar as landings (Sofia Carson e Estela Marangoni) assim que ele mandar os materiais.
+3. Landing da Estela Marangoni assim que ele mandar os materiais (a da Sofia Carson está pronta e publicada).
+
+**Projetos descartados (não retomar nem sugerir):** Radar de Leads e Caçador de Vagas. Ele tirou os dois; o Caçador
+saiu do repositório e do README do perfil.
 
 ## 7. Verificação rápida antes de publicar
 ```bash

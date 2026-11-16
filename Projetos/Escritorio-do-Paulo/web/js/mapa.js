@@ -341,7 +341,8 @@ export function criarMapa(moldura, { aoAbrir, tema = TEMA_PADRAO }) {
   function pose(f) {
     if (f.caminho.length) return { pose: 'em-pe', dir: f.dir, esquerda: f.esquerda, passo: Math.floor(f.andou / 3) % 4 };
     const lugar = f.noPonto || '';
-    if (lugar.startsWith('mesa-') || T.reuniao.includes(lugar)) return { pose: 'sentado', dir: 'costas' };
+    if (lugar.startsWith('mesa-')) return { pose: 'sentado', dir: MESAS[Number(lugar.slice(5))]?.dir || 'costas' };
+    if (T.reuniao.includes(lugar)) return { pose: 'sentado', dir: 'costas' };
     if (lugar.startsWith('lado-')) return { pose: 'em-pe', dir: 'costas' };
     const l = LAZER[lugar];
     if (l) return { pose: l.pose || 'em-pe', dir: l.dir, esquerda: Boolean(l.esquerda) };
@@ -351,7 +352,7 @@ export function criarMapa(moldura, { aoAbrir, tema = TEMA_PADRAO }) {
   // monitor da mesa, a TV do videogame e o fliperama
   function tela(f, mesa) {
     const x0 = mesa.x - 7;
-    const y0 = mesa.y - 8;
+    const y0 = mesa.telaY ?? mesa.y - 8;   // telaY: mesas em que a pessoa senta de frente, com a tela abaixo dela
     const cor = COR_ESTADO[f.estado];
     q.fillStyle = '#0d1320';
     q.fillRect(x0, y0, 14, 8);
@@ -412,9 +413,10 @@ export function criarMapa(moldura, { aoAbrir, tema = TEMA_PADRAO }) {
       else if (naMesa && (f.estado === 'erro' || f.estado === 'concluido' || f.estado === 'aguardando')) {
         const m = MESAS[f.indice];
         q.fillStyle = '#0d1320';
-        q.fillRect(m.x - 7, m.y - 8, 14, 8);
+        const ty = m.telaY ?? m.y - 8;
+        q.fillRect(m.x - 7, ty, 14, 8);
         q.fillStyle = COR_ESTADO[f.estado];
-        q.fillRect(m.x - 1, m.y - 5, 3, 3);
+        q.fillRect(m.x - 1, ty + 3, 3, 3);
       }
     }
     T.animar?.(q, { figuras: [...figuras.values()], tique, relogio });

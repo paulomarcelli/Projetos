@@ -69,14 +69,16 @@ e o [protocolo da equipe](../../agentes/PROTOCOLO.md). Foram criados com a skill
 
 <img src="docs/mapa.webp" alt="O mapa do escritório em pixel art: sala da equipe, lounge, reunião, sala de jogos com pingue-pongue, videogame e fliperama, estúdio, copa e jardim, com as três agentes" width="100%">
 
-**Dois cenários.** O botão no canto do mapa troca entre o **Apartamento** (o padrão: um apartamento de Nova York com
-paredes lilás, porta roxa com a moldura amarela no olho mágico, cozinha aberta, mesa de jantar, sala com sofá, varanda,
-dois quartos e banheiro, inspirado num sitcom dos anos 90, desenhado do zero e sem nomes nem personagens da série) e o
-**Escritório** de sempre. No apartamento elas trabalham no notebook da mesa de jantar e do balcão e nas escrivaninhas
-dos quartos; no lazer, cozinham, tomam café, espiam pelo olho mágico, jogam cartas na mesa de centro, veem TV, põem um
-disco na vitrola e vão para a varanda. A escolha fica guardada no navegador.
+**Dois cenários.** O botão no canto do mapa troca entre o **Apartamento da Monica** (o padrão) e o **Escritório** de
+sempre. O apartamento é a planta do set do sitcom redesenhada em pixel art, como homenagem de fã: a porta roxa com a
+moldura amarela no olho mágico na parede do fundo, a cozinha à esquerda, a mesa de jantar de cadeiras coloridas no
+meio, a sala à direita com o sofá virado para a TV, o janelão com a varanda do lado de fora, as portas dos dois quartos
+e do banheiro na parede da direita e, lá fora, o corredor do prédio com a porta 19 em frente. Elas trabalham no
+notebook da mesa de jantar e do balcão e nas escrivaninhas dos quartos; no lazer, cozinham, tomam café, espiam pelo
+olho mágico, atendem o telefone da secretária eletrônica, jogam cartas, veem TV, põem um disco e vão para a varanda. A
+escolha fica guardada no navegador.
 
-<img src="docs/apartamento.webp" alt="O apartamento em pixel art visto de cima: cozinha aberta com balcão, mesa de jantar com notebooks, sala com sofá, tapete azul e TV, varanda com vista para os prédios, dois quartos e banheiro, com as três agentes" width="100%">
+<img src="docs/apartamento.webp" alt="O apartamento da Monica em pixel art visto de cima: corredor do prédio com a porta 19, porta roxa com moldura amarela, cozinha com balcão, mesa de jantar com notebooks, sala com sofá e TV, varanda pelo janelão, dois quartos e banheiro, com as três agentes" width="100%">
 
 ## ▶️ Rodar
 

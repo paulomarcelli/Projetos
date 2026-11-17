@@ -10,6 +10,7 @@ junto com a própria memória (`agentes/memoria/<nome>.md`).
 | **Sabrina** | Coordenação (pedido → tarefas, ordem e acompanhamento), pesquisa com fontes, QA e segurança | Paulo, Karol | toda a equipe |
 | **Sofia** | Design: Design System no Figma, layouts, protótipos e revisão visual | Sabrina | Karol |
 | **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, IA, build e publicação | Sabrina, Sofia | Sabrina |
+| **Gabriela** | Conteúdo: escolhe e escreve os posts da semana (TikTok, LinkedIn, Substack) pelos números e cuida do calendário no Notion | Paulo | Sofia (artes), Sabrina (fatos dos roteiros) |
 
 Cada uma fica na sua especialidade. Se a tarefa pede outra, **não improvise**: devolva para a Sabrina dizendo quem deve
 assumir.

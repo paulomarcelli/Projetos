@@ -41,8 +41,8 @@ async function abrir(config = {}) {
   return { escritorio, base, api, ate, pastaDados, porta };
 }
 
-test('a equipe tem as três agentes reais, cada um com identidade no escritório', () => {
-  assert.deepEqual(ids, ['sofia', 'karol', 'sabrina']);
+test('a equipe tem as quatro agentes reais, cada um com identidade no escritório', () => {
+  assert.deepEqual(ids, ['sofia', 'karol', 'sabrina', 'gabriela']);
   for (const a of equipeReal) {
     assert.ok(a.descricao.length > 40, `${a.id} tem descrição`);
     assert.equal(a.semIdentidade, false, `${a.id} tem identidade no equipe.json`);
@@ -51,6 +51,7 @@ test('a equipe tem as três agentes reais, cada um com identidade no escritório
   assert.deepEqual(equipeReal.find(a => a.id === 'sofia').skills, ['design-skills']);
   assert.equal(equipeReal.find(a => a.id === 'sabrina').coordena, true);
   assert.equal(equipeReal.find(a => a.id === 'karol').exigeDesignSystem, true);
+  assert.deepEqual(equipeReal.find(a => a.id === 'gabriela').skills, ['content-strategy', 'social', 'copy-editing', 'humanizer', 'viral-hooks', 'viral-tiktok-content', 'viral-short-form-ideas', 'linkedin-post-writer', 'linkedin-content-planner', 'linkedin-repurposer', 'substack-ghostwriting']);
 });
 
 test('o cabeçalho do agente aceita aspas, dois-pontos e aspas escapadas', () => {

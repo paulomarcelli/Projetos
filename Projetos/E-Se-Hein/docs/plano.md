@@ -62,3 +62,18 @@ Fonte: `docs/design-system.md` (seção "O que muda no código atual"), `docs/to
    (círculo laranja nascendo da Lua). Rótulos com entrada e saída dos tokens de movimento, no máximo 3 na tela.
 5. **Cenas** — reescrever as 7 cenas pelo storyboard; sem abertura (começa no Q1); passagem de 45 quadros.
 6. **Conferência** — folha de contato comparada ao storyboard, testes, lint, render em `lua-v2.mp4`, LUFS e sincronia.
+
+## Realismo (17/11/2026, pedido do Paulo)
+
+Feito: texturas PBR do Poly Haven no chão, na areia e no asfalto; água e areia molhada refletindo o céu HDRI do modo;
+Lua e Terra com as fotos da NASA (Terra com atmosfera); pós-processamento com brilho, tone mapping neutro, vinheta e
+SMAA. Dois cuidados que custaram tempo:
+
+- **O canvas só nasce com as texturas prontas.** O Remotion desenha o canvas quando ele é criado e a cada quadro; se a
+  cena completa chega depois, o quadro sai vazio.
+- **O EffectComposer monta depois do primeiro desenho.** O componente `Redesenhar` (em `Mundo.tsx`) desenha o quadro
+  de novo depois que tudo montou e segura o render com `delayRender` até isso acontecer. Sem ele, o quadro sai vazio.
+
+Ajustes de enquadramento pela folha de contato contra o storyboard: laje com 9 andares (a Lua aparece inteira no Q1),
+boneco inteiro no Q2, régua no quadro no Q3, maré mais baixa no Q4 (caranguejos na areia), espuma fina e a câmera do
+Q7 passando por cima do "você" na ida até a Lua.

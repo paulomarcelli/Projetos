@@ -86,6 +86,8 @@ aqui.
   de revisão pesa: 114 capturas deram 38 MB; converta ou suba só as folhas de contato.
 - **15/11/2026 · Sofia Carson sem `docs/design-system.md`.** O Design System está só no Figma e no README. Criar o
   documento quando o Figma estiver autorizado.
+<<<<<<< HEAD
+=======
 
 - **15/11/2026 · Figma: `createAutoLayout` nasce com fundo branco.** Todo quadro interno (campo, linha de botões) precisa de
   `fills = []`, senão aparece um retângulo branco no tema escuro. Escondeu o botão secundário no modo Linear.
@@ -118,6 +120,7 @@ aqui.
   1420 a 1920, direita x 900 a 1080 entre y 700 e 1420. Legenda de uma palavra precisa encolher pela largura real:
   em 112 px, palavras com mais de 11 letras passam de 720 px.
 - **17/11/2026 · Verde de rótulo.** `#2FB24A` com texto branco dá 2,8:1; `#1A8F3F` dá 4,2:1.
+>>>>>>> origin/main
 
 ## Registro de tarefas
 
@@ -128,6 +131,9 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 14/11/2026 | (criação da Sofia; nenhuma tarefa ainda) | — | — | — | — |
 | 15/11/2026 | Design System do Escritório do Paulo no Figma (feito seguindo este arquivo, antes da Sofia rodar como agente) | com ajustes (cartões e rótulos cortados na primeira captura, corrigidos) | — | — | Conferir a captura de cada página antes de entregar; auto-layout com largura fixa corta texto. |
 | 15/11/2026 | T-0001 · Análise de design do fã-site Sofia Carson · a voz (só análise, com capturas do site no ar) | aguardando o retorno do Paulo | cerca de 1 h | — | Figma sem autorização: não deu para comparar com o Design System. Faltou Safari, Firefox e aparelho de verdade. |
+<<<<<<< HEAD
+=======
 | 15/11/2026 | Folha Figma "Referências · Design systems" com 5 estilos, comparação e coleção Tema (5 modos) | aguardando o retorno do Paulo | cerca de 1 h | sem créditos de IA | Primeira captura do teste de tema mostrou fundo branco nos quadros internos; já criar quadros com `fills = []`. |
 | 16/11/2026 | Corrigir o apartamento da Monica e da Rachel no mapa (paredes, cozinha, móveis, caminhos) a partir da planta | aguardando o retorno do Paulo | cerca de 1 h 30 | — | Alinhar a planta com OpenCV logo no começo: medir no olho custou tempo. |
 | 17/11/2026 | Design System dos vídeos do E Se, Hein? no Figma (tokens em 3 modos, legenda, zonas seguras, rótulos, personagem, fechamento, storyboard da Lua) + `docs/design-system.md` e logo definitiva no arquivo da logo | aguardando o retorno do Paulo | cerca de 3 h (com uma pausa por limite de uso) | sem créditos de IA | Conferir a ordem dos argumentos dos helpers antes de desenhar 8 quadros; 4 defeitos vieram de opacidade e traço. |
+>>>>>>> origin/main

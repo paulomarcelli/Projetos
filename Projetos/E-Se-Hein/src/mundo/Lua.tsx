@@ -1,59 +1,55 @@
 import { useMemo } from "react";
 import * as THREE from "three";
-import { corMundo } from "./paleta";
 
-// Lua redonda e lisa, com crateras simples e um halo escuro, como no storyboard.
-// É um disco que sempre olha para a câmera (de longe, uma esfera emissiva é um disco).
-function texturaLua() {
+// Lua com a textura real da NASA (mapa LROC), numa esfera sem luz própria: vista da Terra, a Lua cheia é
+// toda iluminada. Atrás dela, o halo do storyboard. A esfera gira para mostrar a face visível para a câmera.
+function texturaHalo() {
   const c = document.createElement("canvas");
-  c.width = c.height = 512;
+  c.width = c.height = 256;
   const g = c.getContext("2d")!;
-  const modo = { dia: 0, noite: 1, breu: 0 };
-  // Halo
-  g.fillStyle = "rgba(170,185,230,0.16)";
-  g.beginPath();
-  g.arc(256, 256, 250, 0, Math.PI * 2);
-  g.fill();
-  // Disco
-  g.fillStyle = corMundo("mundo/lua/superficie", modo);
-  g.beginPath();
-  g.arc(256, 256, 165, 0, Math.PI * 2);
-  g.fill();
-  // Crateras
-  g.fillStyle = corMundo("mundo/lua/cratera", modo);
-  for (const [x, y, r] of [
-    [205, 205, 30],
-    [300, 290, 40],
-    [215, 318, 18],
-    [312, 196, 14],
-  ]) {
-    g.beginPath();
-    g.arc(x, y, r, 0, Math.PI * 2);
-    g.fill();
-  }
+  const r = g.createRadialGradient(128, 128, 60, 128, 128, 128);
+  r.addColorStop(0, "rgba(190,205,245,0.42)");
+  r.addColorStop(0.45, "rgba(170,185,230,0.16)");
+  r.addColorStop(1, "rgba(170,185,230,0)");
+  g.fillStyle = r;
+  g.fillRect(0, 0, 256, 256);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
   return t;
 }
 
-let textura: THREE.CanvasTexture | null = null;
-const pegarTextura = () => (textura ??= texturaLua());
+let halo: THREE.CanvasTexture | null = null;
+const pegarHalo = () => (halo ??= texturaHalo());
 
-/** Disco da Lua de diâmetro `diametro` (o halo ocupa 1,5×). */
-export const DiscoLua: React.FC<{ position: [number, number, number]; diametro: number; opacidade?: number; escala?: number }> = ({
+/** Brilho da superfície: o mapa LROC é albedo (cinza escuro); a Lua no céu parece quase branca. */
+const BRILHO_LUA = 1.9;
+
+/** Lua de diâmetro `diametro` (o halo ocupa 2,2×). `mapa` é a textura da NASA. */
+export const DiscoLua: React.FC<{ position: [number, number, number]; diametro: number; mapa: THREE.Texture; opacidade?: number; escala?: number }> = ({
   position,
   diametro,
+  mapa,
   opacidade = 1,
   escala = 1,
 }) => {
-  const mapa = useMemo(pegarTextura, []);
+  const texHalo = useMemo(pegarHalo, []);
+  const material = useMemo(
+    () => new THREE.MeshBasicMaterial({ map: mapa, color: new THREE.Color(BRILHO_LUA, BRILHO_LUA, BRILHO_LUA * 1.03), transparent: true, fog: false, toneMapped: false }),
+    [mapa],
+  );
   if (opacidade <= 0.001) return null;
-  const lado = diametro * (512 / 330) * escala;
+  material.opacity = opacidade;
+  const raio = (diametro / 2) * escala;
   return (
-    <sprite position={position} scale={[lado, lado, 1]}>
-      <spriteMaterial map={mapa} transparent opacity={opacidade} depthWrite={false} fog={false} toneMapped={false} />
-    </sprite>
+    <group position={position}>
+      <sprite scale={[raio * 4.4, raio * 4.4, 1]} renderOrder={-5}>
+        <spriteMaterial map={texHalo} transparent opacity={opacidade} depthWrite={false} fog={false} toneMapped={false} />
+      </sprite>
+      {/* u = 0,5 do mapa (face visível) aponta para +x; girar -90° a vira para +z, onde fica a câmera. */}
+      <mesh material={material} scale={raio} rotation={[0.12, -Math.PI / 2, 0]}>
+        <sphereGeometry args={[1, 64, 32]} />
+      </mesh>
+    </group>
   );
 };
 
@@ -61,6 +57,6 @@ export const POSICAO_LUA: [number, number, number] = [-90, 300, -1100];
 export const DIAMETRO_LUA = 230;
 
 /** A Lua do céu. Some com `mov/lua-some`: escala 100% para 96% e opacidade para 0. */
-export const LuaNoCeu: React.FC<{ visivel: number }> = ({ visivel }) => (
-  <DiscoLua position={POSICAO_LUA} diametro={DIAMETRO_LUA} opacidade={visivel} escala={0.96 + 0.04 * visivel} />
+export const LuaNoCeu: React.FC<{ visivel: number; mapa: THREE.Texture }> = ({ visivel, mapa }) => (
+  <DiscoLua position={POSICAO_LUA} diametro={DIAMETRO_LUA} mapa={mapa} opacidade={visivel} escala={0.96 + 0.04 * visivel} />
 );

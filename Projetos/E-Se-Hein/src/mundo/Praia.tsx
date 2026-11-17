@@ -63,9 +63,17 @@ const Rampa: React.FC<{ zIni: number; zFim: number; acima: number; material: THR
   );
 };
 
-type Props = { tempo: number; centro: number; amp: number; regua: number; normaisAgua: THREE.Texture };
+type Props = {
+  tempo: number;
+  centro: number;
+  amp: number;
+  regua: number;
+  normaisAgua: THREE.Texture;
+  /** Céu real refletido na água (HDRI do modo). */
+  reflexo: { hdri: THREE.Texture; intensidade: number };
+};
 
-export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua, normaisAgua }) => {
+export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua, normaisAgua, reflexo }) => {
   const geo = useMemo(geometriaMar, []);
   const base = useMemo(() => Float32Array.from(geo.getAttribute("position").array as Float32Array), [geo]);
   useEffect(() => () => geo.dispose(), [geo]);
@@ -74,7 +82,13 @@ export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua, normaisAgua 
     () => new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.14, metalness: 0.15, normalMap: normaisAgua, normalScale: new THREE.Vector2(0.6, 0.6), envMapIntensity: 1.3 }),
     [normaisAgua],
   );
+  const matEspuma = useMemo(() => new THREE.MeshStandardMaterial({ color: corToken("mundo/agua/espuma"), transparent: true, opacity: 0.55, roughness: 0.6, depthWrite: false }), []);
   normaisAgua.offset.set(tempo * 0.018, tempo * 0.011);
+  matMar.envMap = reflexo.hdri;
+  matMar.envMapIntensity = reflexo.intensidade;
+  const molhada = mat("mundo/areia/molhada");
+  molhada.envMap = reflexo.hdri;
+  molhada.envMapIntensity = reflexo.intensidade * 0.1;
 
   // Ondas e cor (raso perto da areia, fundo longe), guiadas pelo tempo do vídeo.
   const nivel = nivelAgua(tempo, centro, amp);
@@ -108,8 +122,8 @@ export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua, normaisAgua 
       </mesh>
       <mesh geometry={geo} material={matMar} receiveShadow />
       {/* Espuma na linha da água */}
-      <mesh position={[0, nivel + 0.12, zLinha - 0.4]} rotation={[-Math.PI / 2, 0, 0]} material={mat("mundo/agua/espuma")}>
-        <planeGeometry args={[3000, 1.3]} />
+      <mesh position={[0, nivel + 0.08, zLinha - 0.2]} rotation={[-Math.PI / 2, 0, 0]} material={matEspuma}>
+        <planeGeometry args={[3000, 0.5]} />
       </mesh>
       {regua > 0.01 ? (
         <group position={[REGUA[0], 0, REGUA[2]]} scale={[1, regua, 1]}>

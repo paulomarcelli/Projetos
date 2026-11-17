@@ -271,7 +271,7 @@ Imagem: `storyboard-lua.png` (entregue à parte; no Figma, página Storyboard ·
 |---|---|---|---|---|---|---|
 | Q1 · A Lua some | 0,0 a 9,6 s | Noite | Atrás do "você" (costas), numa laje; Lua cheia grande no centro | Contexto "HOJE À NOITE"; pílula vermelha "SEM EXPLOSÃO" | desaparecesse? | Tilt para o céu vazio, Noite para Breu |
 | Q2 · Noite preta | 10,2 a 16,9 s | Breu | De lado, num morro fora da cidade; muitas estrelas | Contexto "LONGE DA CIDADE"; texto preso "CIDADE" no domo de luz; pílula "SEM LUAR" | **pretas** | Desce a encosta até o mar; amanhece (Breu para Dia) |
-| Q3 · Marés | 17,3 a 26,2 s | Dia | Corte lateral da praia com régua de maré | Contexto "MARÉS"; cartão Antes e depois; pílulas "COM LUA" e "SEM LUA: 1/3" nas faixas | **terço** | Dolly para baixo até a areia molhada |
+| Q3 · Marés | 17,3 a 26,2 s | Dia | Corte lateral da praia com régua de maré | Contexto "MARÉS"; cartão Antes e depois; pílulas "COM LUA" e "SEM LUA: ~METADE" nas faixas | **metade** | Dolly para baixo até a areia molhada |
 | Q4 · Costa | 26,5 a 37,3 s | Dia | Rente à areia, travelling lateral | Contexto "LITORAL"; textos presos "CARANGUEJO" e "CORAIS"; pílula "SEM RITMO" | **ritmo** | Crane rápido pelas nuvens até o espaço |
 | Q5 · O eixo | 37,8 a 49,4 s | espaço | Terra grande no centro, eixo inclinado 23,4° | Contexto Tempo "MILHÕES DE ANOS"; texto preso "EIXO" e seta curva; pílulas "COM LUA: 22° A 24,5°" e "SEM LUA: BALANÇA MAIS"; em "extremas", cartão Dois Sol "VERÃO" / Floco "INVERNO" | balançar (e **extremas**) | Dolly out até a Lua entrar no quadro |
 | Q6 · Terra e Lua | 49,7 a 54,3 s | espaço | Terra embaixo à esquerda, Lua no alto à direita (Lua com 27% do diâmetro da Terra) | Contexto "TERRA E LUA"; textos presos "LUA" e "TERRA"; pílula verde "SEGURA O EIXO" e seta curva verde | **lugar** | Mergulho de volta à laje do Q1, à noite |
@@ -281,7 +281,8 @@ Imagem: `storyboard-lua.png` (entregue à parte; no Figma, página Storyboard ·
 Em negrito, a palavra em destaque amarelo de cada trecho.
 
 Fatos usados nos rótulos (a Sabrina confere antes de publicar): sem a Lua sobra a maré do Sol, com cerca de 46% da
-força da maré lunar, por isso "um terço" do total de hoje; com a Lua a inclinação do eixo varia entre cerca de 22,1° e
+força da maré lunar, por isso a maré fica com **menos da metade** do tamanho de hoje (correção da Sabrina em
+17/11/2026; o "um terço" do primeiro roteiro só valia contra a maré de lua cheia e nova); com a Lua a inclinação do eixo varia entre cerca de 22,1° e
 24,5° num ciclo de uns 41 mil anos; sem ela a variação seria maior, mas os estudos discordam de quanto, por isso o
 rótulo vermelho não tem número; a desova de muitos corais acompanha as fases da Lua. A distância Terra–Lua do Q6 não
 está em escala.
@@ -292,8 +293,12 @@ está em escala.
 2. **Cores pelo modo, não pela luz.** As cores dos materiais vêm do token do modo ativo (Dia, Noite ou Breu) e se
    misturam na transição (`mov/modo-cor`). A luz fica fixa e neutra (hemisférica + direcional suave), só para dar
    volume. Assim a tela fica igual ao Figma. Janelas acesas e a Lua são emissivas.
-3. **Brinquedo.** Low-poly com `flatShading`, sem textura, sem brilho especular, sombra suave. Nuvens são grupos de 3
-   ou 4 esferas achatadas com a barriga mais escura (`mundo/nuvem/sombra`).
+3. **Brinquedo, com toque real (versão 2).** Low-poly com `flatShading` nos prédios, no boneco e nos bichos, sombra
+   suave. Nuvens são grupos de 3 ou 4 esferas achatadas com a barriga mais escura (`mundo/nuvem/sombra`). A pedido do
+   Paulo (17/11/2026, "mais realista"), entram texturas reais sem trocar as cores dos tokens: relevo PBR do Poly Haven
+   no chão, na areia e no asfalto (a textura só varia o tom da cor do token), água com reflexo do céu (HDRI), Lua e
+   Terra com as fotos da NASA, e pós-processamento leve (brilho nas luzes fortes, tone mapping neutro e vinheta). O
+   tone mapping é o **neutro**: o ACES lavava as cores (o céu azul do Dia virava cinza).
 4. **Texto nas zonas.** Nada de texto ou rótulo fora de x 72 a 900, y 210 a 1420. A legenda só na faixa dela.
 5. **Rótulos presos de verdade.** Texto preso e pílulas seguem o objeto pela projeção da câmera, quadro a quadro.
 6. **Um rótulo por fala.** Entra na palavra que o nomeia; no máximo 3 ao mesmo tempo.

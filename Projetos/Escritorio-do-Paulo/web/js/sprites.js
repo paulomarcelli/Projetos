@@ -20,6 +20,8 @@ const VISUAIS = {
   karol: { pele: '#f9cfb2', cabelo: ['longo', '#dcc070'], roupa: '#c4c1bb', manga: '#2e7d74', calca: '#f07a50', perna: '#f9cfb2', sapato: '#f2c02a', detalhe: '#f07a3a', acessorio: 'jaqueta' },
   // Sabrina (agente 3): loira com franja e laço preto, regata preta
   sabrina: { pele: '#f8d0b8', cabelo: ['longo', '#f0d38a'], roupa: '#1b1b22', manga: '#f8d0b8', calca: '#2a2a33', perna: '#f8d0b8', sapato: '#1b1b22', detalhe: '#1b1b22', acessorio: 'laco' },
+  // Gabriela (agente 4, conteúdo): cabelo castanho na altura do ombro, óculos, blusa lilás e calça escura
+  gabriela: { pele: '#eabf9f', cabelo: ['ombro', '#5a3424'], roupa: '#8b6fe0', manga: '#8b6fe0', calca: '#2a2a33', sapato: '#1b1b22', detalhe: '#f2f4f8', acessorio: 'oculos' },
 };
 
 // Agente sem visual próprio: cabelo e roupa saem da cor dele, para cada um ser diferente.

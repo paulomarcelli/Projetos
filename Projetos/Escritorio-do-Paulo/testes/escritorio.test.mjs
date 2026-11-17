@@ -41,15 +41,16 @@ async function abrir(config = {}) {
   return { escritorio, base, api, ate, pastaDados, porta };
 }
 
-test('a equipe tem os oito agentes reais, cada um com identidade no escritório', () => {
-  assert.deepEqual(ids, ['steve', 'sofia', 'tony', 'stephen', 'peter', 'bruce', 'wanda', 'natasha']);
+test('a equipe tem as três agentes reais, cada um com identidade no escritório', () => {
+  assert.deepEqual(ids, ['sofia', 'karol', 'sabrina']);
   for (const a of equipeReal) {
     assert.ok(a.descricao.length > 40, `${a.id} tem descrição`);
     assert.equal(a.semIdentidade, false, `${a.id} tem identidade no equipe.json`);
     assert.match(a.cor, /^#[0-9a-f]{6}$/i);
   }
   assert.deepEqual(equipeReal.find(a => a.id === 'sofia').skills, ['design-skills']);
-  assert.ok(equipeReal.find(a => a.id === 'stephen').ferramentasDeclaradas.includes('WebSearch'));
+  assert.equal(equipeReal.find(a => a.id === 'sabrina').coordena, true);
+  assert.equal(equipeReal.find(a => a.id === 'karol').exigeDesignSystem, true);
 });
 
 test('o cabeçalho do agente aceita aspas, dois-pontos e aspas escapadas', () => {
@@ -62,7 +63,7 @@ test('o cabeçalho do agente aceita aspas, dois-pontos e aspas escapadas', () =>
 test('tarefas: dependência inexistente, ciclo e exclusão com dependentes são recusados', () => {
   const e = { tarefas: [], seq: 0 };
   const a = T.criarTarefa(e, { titulo: 'A', agente: 'sofia' }, ids);
-  const b = T.criarTarefa(e, { titulo: 'B', agente: 'peter', dependeDe: [a.id] }, ids);
+  const b = T.criarTarefa(e, { titulo: 'B', agente: 'karol', dependeDe: [a.id] }, ids);
   assert.equal(a.id, 'T-0001');
   assert.equal(T.pronta(e, a), true);
   assert.equal(T.pronta(e, b), false);
@@ -77,18 +78,18 @@ test('tarefas: dependência inexistente, ciclo e exclusão com dependentes são 
 
 test('plano: a regra do Design System acrescenta a Sofia e prende o front-end nela', () => {
   const e = { tarefas: [], seq: 0 };
-  const r = T.aplicarPlano(e, { projeto: 'Loja', tarefas: [{ chave: 'front', agente: 'peter', titulo: 'Tela' }, { chave: 'qa', agente: 'natasha', titulo: 'Testar', dependeDe: ['front'], tipo: 'revisao' }] }, equipeReal);
+  const r = T.aplicarPlano(e, { projeto: 'Loja', tarefas: [{ chave: 'front', agente: 'karol', titulo: 'Tela' }, { chave: 'qa', agente: 'sabrina', titulo: 'Testar', dependeDe: ['front'], tipo: 'revisao' }] }, equipeReal);
   const sofia = r.tarefas.find(t => t.agente === 'sofia');
-  const peter = r.tarefas.find(t => t.agente === 'peter');
+  const karol = r.tarefas.find(t => t.agente === 'karol');
   assert.ok(sofia, 'a tarefa da Sofia foi criada');
-  assert.ok(peter.dependeDe.includes(sofia.id));
+  assert.ok(karol.dependeDe.includes(sofia.id));
   assert.equal(r.avisos.length, 2);
-  assert.equal(r.tarefas.find(t => t.agente === 'natasha').tipo, 'revisao');
+  assert.equal(r.tarefas.find(t => t.agente === 'sabrina').tipo, 'revisao');
 });
 
 test('plano: se o front já depende da Sofia por outro caminho, nada é acrescentado', () => {
   const e = { tarefas: [], seq: 0 };
-  const r = T.aplicarPlano(e, { projeto: 'P', tarefas: [{ chave: 'ds', agente: 'sofia', titulo: 'DS' }, { chave: 'arq', agente: 'tony', titulo: 'Arq', dependeDe: ['ds'] }, { chave: 'f', agente: 'peter', titulo: 'Tela', dependeDe: ['arq'] }] }, equipeReal);
+  const r = T.aplicarPlano(e, { projeto: 'P', tarefas: [{ chave: 'ds', agente: 'sofia', titulo: 'DS' }, { chave: 'arq', agente: 'karol', titulo: 'Arq', dependeDe: ['ds'] }, { chave: 'f', agente: 'karol', titulo: 'Tela', dependeDe: ['arq'] }] }, equipeReal);
   assert.equal(r.avisos.length, 0);
   assert.equal(r.tarefas.length, 3);
 });
@@ -96,9 +97,9 @@ test('plano: se o front já depende da Sofia por outro caminho, nada é acrescen
 test('plano: agente desconhecido, chave repetida, dependência solta e ciclo são recusados', () => {
   const novo = () => ({ tarefas: [], seq: 0 });
   assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'thor', titulo: 'x' }] }, equipeReal), /não existe na equipe/);
-  assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'tony', titulo: 'x' }, { chave: 'a', agente: 'tony', titulo: 'y' }] }, equipeReal), /repete/);
-  assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'tony', titulo: 'x', dependeDe: ['z'] }] }, equipeReal), /não está no plano/);
-  assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'tony', titulo: 'x', dependeDe: ['b'] }, { chave: 'b', agente: 'bruce', titulo: 'y', dependeDe: ['a'] }] }, equipeReal), /ciclo/);
+  assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'karol', titulo: 'x' }, { chave: 'a', agente: 'karol', titulo: 'y' }] }, equipeReal), /repete/);
+  assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'karol', titulo: 'x', dependeDe: ['z'] }] }, equipeReal), /não está no plano/);
+  assert.throws(() => T.aplicarPlano(novo(), { tarefas: [{ chave: 'a', agente: 'karol', titulo: 'x', dependeDe: ['b'] }, { chave: 'b', agente: 'karol', titulo: 'y', dependeDe: ['a'] }] }, equipeReal), /ciclo/);
   assert.throws(() => T.aplicarPlano(novo(), { tarefas: [] }, equipeReal), /não tem tarefas/);
 });
 
@@ -123,7 +124,7 @@ test('cada ferramenta vira o estado certo', () => {
   assert.equal(resumirIntegracoes([]).figma, 'ausente');
 });
 
-test('fluxo de interface: Sofia trabalha primeiro, Peter aguarda, e a equipe conclui em ordem', async () => {
+test('fluxo de interface: Sofia trabalha primeiro, Karol aguarda, e a equipe conclui em ordem', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
     const inicio = await api('GET', '/api/estado');
@@ -132,7 +133,7 @@ test('fluxo de interface: Sofia trabalha primeiro, Peter aguarda, e a equipe con
 
     const criado = await api('POST', '/api/fluxos', { fluxo: 'interface', projeto: 'Vitrine', pedido: 'Uma vitrine de produtos', auto: true });
     assert.equal(criado.status, 201);
-    assert.equal(criado.dados.tarefas.length, 4);
+    assert.equal(criado.dados.tarefas.length, 3);
 
     const vistos = {};
     const fim = await ate(r => {
@@ -141,13 +142,12 @@ test('fluxo de interface: Sofia trabalha primeiro, Peter aguarda, e a equipe con
     });
 
     assert.ok(vistos.sofia.has('pesquisando') || vistos.sofia.has('trabalhando') || vistos.sofia.has('pensando'), 'Sofia apareceu em atividade');
-    assert.ok(vistos.peter.has('aguardando'), 'Peter aguardou as tarefas anteriores');
-    assert.ok(vistos.natasha.has('aguardando'), 'Natasha aguardou o front-end');
-    assert.ok(!vistos.bruce.has('trabalhando') && !vistos.wanda.has('trabalhando'), 'quem não tem tarefa não aparece trabalhando');
+    assert.ok(vistos.karol.has('aguardando'), 'Karol aguardou o Design System');
+    assert.ok(vistos.sabrina.has('aguardando'), 'Sabrina aguardou o front-end');
 
     const ordem = fim.tarefas.map(t => t.concluidaEm);
-    assert.ok(ordem[0] <= ordem[1] && ordem[1] <= ordem[2] && ordem[2] <= ordem[3], 'as tarefas terminaram na ordem das dependências');
-    assert.equal(fim.projetos[0].concluidas, 4);
+    assert.ok(ordem[0] <= ordem[1] && ordem[1] <= ordem[2], 'as tarefas terminaram na ordem das dependências');
+    assert.equal(fim.projetos[0].concluidas, 3);
     const sofia = fim.equipe.find(a => a.id === 'sofia');
     assert.equal(sofia.estado.estado, 'concluido');
     assert.equal(sofia.metricas.concluidas, 1);
@@ -171,11 +171,11 @@ test('fluxo de interface: Sofia trabalha primeiro, Peter aguarda, e a equipe con
 test('tarefa de revisão mostra o agente "em revisão"', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
-    const t = await api('POST', '/api/tarefas', { titulo: 'Revisar a tela', agente: 'natasha', tipo: 'revisao', iniciar: true });
+    const t = await api('POST', '/api/tarefas', { titulo: 'Revisar a tela', agente: 'sabrina', tipo: 'revisao', iniciar: true });
     assert.equal(t.status, 201);
     const vistos = new Set();
     await ate(r => {
-      vistos.add(r.equipe.find(a => a.id === 'natasha').estado.estado);
+      vistos.add(r.equipe.find(a => a.id === 'sabrina').estado.estado);
       return r.tarefas[0].status === 'concluida';
     });
     assert.ok(vistos.has('revisao'), `estados vistos: ${[...vistos].join(', ')}`);
@@ -185,7 +185,7 @@ test('tarefa de revisão mostra o agente "em revisão"', async () => {
   }
 });
 
-test('pedido ao Steve vira plano, e a regra do Design System entra sozinha', async () => {
+test('pedido à Sabrina vira plano, e a regra do Design System entra sozinha', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
     const pedido = await api('POST', '/api/pedidos', { pedido: 'Quero um painel novo', auto: false });
@@ -195,10 +195,10 @@ test('pedido ao Steve vira plano, e a regra do Design System entra sozinha', asy
     const doProjeto = r.tarefas.filter(t => t.projeto === 'Painel de teste' && t.tipo !== 'plano');
     assert.equal(doProjeto.length, 4, 'três do plano mais o Design System');
     const sofia = doProjeto.find(t => t.agente === 'sofia');
-    assert.ok(doProjeto.find(t => t.agente === 'peter').dependeDe.includes(sofia.id));
+    assert.ok(doProjeto.find(t => t.agente === 'karol').dependeDe.includes(sofia.id));
     assert.ok(r.historico.some(h => h.tipo === 'regra'));
     assert.ok(doProjeto.every(t => t.status === 'fila'), 'sem "auto", nada começa sozinho');
-    assert.ok(r.equipe.filter(a => a.id !== 'steve').every(a => a.estado.estado === 'disponivel'), 'tarefa planejada não é agente aguardando');
+    assert.ok(r.equipe.filter(a => a.id !== 'sabrina').every(a => a.estado.estado === 'disponivel'), 'tarefa planejada não é agente aguardando');
 
     const ligar = await api('POST', `/api/projetos/${encodeURIComponent('Painel de teste')}`, { auto: true });
     assert.equal(ligar.status, 200);
@@ -208,7 +208,7 @@ test('pedido ao Steve vira plano, e a regra do Design System entra sozinha', asy
   }
 });
 
-test('plano fora do formato deixa a tarefa do Steve com erro, sem criar nada', async () => {
+test('plano fora do formato deixa a tarefa da Sabrina com erro, sem criar nada', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
     await api('POST', '/api/pedidos', { pedido: 'SEMPLANO por favor' });
@@ -223,15 +223,15 @@ test('plano fora do formato deixa a tarefa do Steve com erro, sem criar nada', a
 test('erro numa tarefa: agente fica "com erro", a dependente trava e dá para tentar de novo', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
-    const a = (await api('POST', '/api/tarefas', { titulo: 'FALHAR de propósito', agente: 'bruce', auto: true })).dados;
-    const b = (await api('POST', '/api/tarefas', { titulo: 'Depende da primeira', agente: 'peter', dependeDe: [a.id], auto: true })).dados;
+    const a = (await api('POST', '/api/tarefas', { titulo: 'FALHAR de propósito', agente: 'karol', auto: true })).dados;
+    const b = (await api('POST', '/api/tarefas', { titulo: 'Depende da primeira', agente: 'sabrina', dependeDe: [a.id], auto: true })).dados;
     const r = await ate(x => x.tarefas[0].status === 'erro');
-    assert.equal(r.equipe.find(x => x.id === 'bruce').estado.estado, 'erro');
+    assert.equal(r.equipe.find(x => x.id === 'karol').estado.estado, 'erro');
     assert.match(r.tarefas[0].erro, /Falha simulada/);
     const dependente = r.tarefas.find(t => t.id === b.id);
     assert.equal(dependente.status, 'fila');
     assert.equal(dependente.travada, true);
-    assert.equal(r.equipe.find(x => x.id === 'peter').estado.estado, 'aguardando');
+    assert.equal(r.equipe.find(x => x.id === 'sabrina').estado.estado, 'aguardando');
 
     const direto = await api('POST', `/api/tarefas/${b.id}/iniciar`, {});
     assert.equal(direto.status, 422);
@@ -249,15 +249,15 @@ test('erro numa tarefa: agente fica "com erro", a dependente trava e dá para te
 test('um agente que chama outro aparece aguardando, e o chamado aparece trabalhando', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
-    await api('POST', '/api/tarefas', { titulo: 'Coordenar CHAMAR:sofia', agente: 'steve', iniciar: true });
+    await api('POST', '/api/tarefas', { titulo: 'Coordenar CHAMAR:sofia', agente: 'sabrina', iniciar: true });
     let cruzou = false;
     const r = await ate(x => {
-      const steve = x.equipe.find(a => a.id === 'steve').estado;
+      const sabrina = x.equipe.find(a => a.id === 'sabrina').estado;
       const sofia = x.equipe.find(a => a.id === 'sofia').estado;
-      if (steve.estado === 'aguardando' && steve.esperando.includes('sofia') && sofia.estado === 'trabalhando') cruzou = true;
+      if (sabrina.estado === 'aguardando' && sabrina.esperando.includes('sofia') && sofia.estado === 'trabalhando') cruzou = true;
       return x.tarefas[0].status === 'concluida';
     });
-    assert.ok(cruzou, 'Steve aguardou a Sofia enquanto ela trabalhava');
+    assert.ok(cruzou, 'Sabrina aguardou a Sofia enquanto ela trabalhava');
     assert.ok(r.historico.some(h => h.tipo === 'colaboracao'));
     assert.equal(r.equipe.find(a => a.id === 'sofia').metricas.execucoes, 1);
   } finally {
@@ -268,15 +268,15 @@ test('um agente que chama outro aparece aguardando, e o chamado aparece trabalha
 test('cancelar devolve a tarefa para a fila e o agente fica disponível', async () => {
   const { escritorio, api, ate } = await abrir();
   try {
-    const t = (await api('POST', '/api/tarefas', { titulo: 'DEMORAR bastante', agente: 'tony', iniciar: true })).dados;
-    await ate(x => x.equipe.find(a => a.id === 'tony').estado.estado !== 'disponivel');
-    const ocupado = await api('POST', '/api/tarefas', { titulo: 'Outra', agente: 'tony', iniciar: true });
+    const t = (await api('POST', '/api/tarefas', { titulo: 'DEMORAR bastante', agente: 'karol', iniciar: true })).dados;
+    await ate(x => x.equipe.find(a => a.id === 'karol').estado.estado !== 'disponivel');
+    const ocupado = await api('POST', '/api/tarefas', { titulo: 'Outra', agente: 'karol', iniciar: true });
     assert.equal(ocupado.status, 422);
     assert.match(ocupado.dados.erro, /já está em outra tarefa/);
     assert.equal((await api('DELETE', `/api/tarefas/${t.id}`, {})).status, 422);
     assert.equal((await api('POST', `/api/tarefas/${t.id}/cancelar`, {})).status, 200);
     const r = await ate(x => x.tarefas.find(y => y.id === t.id).status === 'fila');
-    assert.equal(r.equipe.find(a => a.id === 'tony').estado.estado, 'disponivel');
+    assert.equal(r.equipe.find(a => a.id === 'karol').estado.estado, 'disponivel');
     assert.equal(r.tarefas.find(y => y.id === t.id).auto, false);
   } finally {
     await escritorio.fechar();
@@ -287,7 +287,7 @@ test('limite de uso da conta vira erro claro', async () => {
   process.env.ESCRITORIO_FALSO_LIMITE = '1';
   const { escritorio, api, ate } = await abrir();
   try {
-    await api('POST', '/api/tarefas', { titulo: 'Qualquer', agente: 'wanda', iniciar: true });
+    await api('POST', '/api/tarefas', { titulo: 'Qualquer', agente: 'sabrina', iniciar: true });
     const r = await ate(x => x.tarefas[0].status === 'erro');
     assert.match(r.tarefas[0].erro, /Limite de uso/);
   } finally {
@@ -349,14 +349,14 @@ test('ganchos: execução do próprio escritório, agente de fora da equipe e se
 test('ganchos: conversa aberta direto com um agente, citando uma tarefa da fila, usa essa tarefa', async () => {
   const { escritorio, api } = await abrir();
   try {
-    const t = (await api('POST', '/api/tarefas', { titulo: 'Comparar bancos', agente: 'stephen' })).dados;
-    const gancho = corpo => api('POST', '/api/ganchos', { session_id: 'sessao-direta', agent_type: 'stephen', ...corpo });
+    const t = (await api('POST', '/api/tarefas', { titulo: 'Comparar bancos', agente: 'sabrina' })).dados;
+    const gancho = corpo => api('POST', '/api/ganchos', { session_id: 'sessao-direta', agent_type: 'sabrina', ...corpo });
     await gancho({ hook_event_name: 'UserPromptSubmit', prompt: `Faça a ${t.id}, por favor.` });
     await gancho({ hook_event_name: 'PreToolUse', tool_name: 'WebSearch', tool_input: { query: 'sqlite vs postgres' } });
     let r = (await api('GET', '/api/estado')).dados;
     assert.equal(r.tarefas.length, 1, 'não criou tarefa nova');
     assert.equal(r.tarefas[0].status, 'andamento');
-    assert.equal(r.equipe.find(a => a.id === 'stephen').estado.estado, 'pesquisando');
+    assert.equal(r.equipe.find(a => a.id === 'sabrina').estado.estado, 'pesquisando');
     await gancho({ hook_event_name: 'Stop', last_assistant_message: 'Recomendo SQLite.' });
     r = (await api('GET', '/api/estado')).dados;
     assert.equal(r.tarefas[0].status, 'concluida');
@@ -368,12 +368,12 @@ test('ganchos: conversa aberta direto com um agente, citando uma tarefa da fila,
 test('ganchos: execução sem sinal é encerrada como erro em vez de ficar trabalhando para sempre', async () => {
   const { escritorio, api } = await abrir({ semSinalMin: 0.00001 });
   try {
-    await api('POST', '/api/ganchos', { hook_event_name: 'SubagentStart', session_id: 's', agent_id: 'z1', agent_type: 'peter' });
+    await api('POST', '/api/ganchos', { hook_event_name: 'SubagentStart', session_id: 's', agent_id: 'z1', agent_type: 'karol' });
     await espera(5);
     escritorio.motor._interno.varrerSemSinal();
     const r = (await api('GET', '/api/estado')).dados;
     assert.equal(r.tarefas[0].status, 'erro');
-    assert.equal(r.equipe.find(a => a.id === 'peter').estado.estado, 'erro');
+    assert.equal(r.equipe.find(a => a.id === 'karol').estado.estado, 'erro');
   } finally {
     await escritorio.fechar();
   }
@@ -381,8 +381,8 @@ test('ganchos: execução sem sinal é encerrada como erro em vez de ficar traba
 
 test('as tarefas ficam guardadas, e o que rodava quando o escritório fechou volta marcado com erro', async () => {
   const primeiro = await abrir();
-  const t = (await primeiro.api('POST', '/api/tarefas', { titulo: 'DEMORAR muito', agente: 'bruce', iniciar: true })).dados;
-  await primeiro.api('POST', '/api/tarefas', { titulo: 'Fica na fila', agente: 'wanda' });
+  const t = (await primeiro.api('POST', '/api/tarefas', { titulo: 'DEMORAR muito', agente: 'karol', iniciar: true })).dados;
+  await primeiro.api('POST', '/api/tarefas', { titulo: 'Fica na fila', agente: 'sabrina' });
   await primeiro.ate(x => x.tarefas[0].status === 'andamento');
   const guardado = JSON.parse(fs.readFileSync(path.join(primeiro.pastaDados, 'tarefas.json'), 'utf8'));
   assert.equal(guardado.tarefas.length, 2);
@@ -445,7 +445,7 @@ test('página online: só o endereço configurado lê o estado e cria tarefas', 
 
     const leitura = await fetch(`${base}/api/estado`, { headers: { Origin: online } });
     assert.equal(leitura.headers.get('access-control-allow-origin'), online);
-    const criada = await fetch(`${base}/api/tarefas`, { method: 'POST', headers: { Origin: online, 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: 'Pela página online', agente: 'stephen' }) });
+    const criada = await fetch(`${base}/api/tarefas`, { method: 'POST', headers: { Origin: online, 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: 'Pela página online', agente: 'sabrina' }) });
     assert.equal(criada.status, 201);
     assert.equal(criada.headers.get('access-control-allow-origin'), online);
 
@@ -454,6 +454,145 @@ test('página online: só o endereço configurado lê o estado e cria tarefas', 
     assert.equal(lida.headers.get('access-control-allow-origin'), null, 'o navegador não deixa outro site ler o estado');
     assert.equal((await fetch(`${base}/api/tarefas`, { method: 'OPTIONS', headers: { Origin: intruso } })).status, 403);
     assert.equal((await fetch(`${base}/api/tarefas`, { method: 'POST', headers: { Origin: intruso, 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: 'x' }) })).status, 403);
+  } finally {
+    await escritorio.fechar();
+  }
+});
+
+// ---------- espelho na nuvem (ntfy.sh) ----------
+const N = await import('../servidor/nuvem.mjs');
+const P = await import('../web/js/nuvem.js');
+
+function retratoDeTeste(extra = {}) {
+  const agora = Date.now();
+  return {
+    agora,
+    hoje: { concluidas: 2, custoUsd: 0.12 },
+    equipe: [
+      { id: 'sofia', nome: 'Sofia', papel: 'Design', cor: '#e45c8f', descricao: 'x'.repeat(900), estado: { estado: 'trabalhando', desde: agora - 5000, atividade: 'Trabalhando no Figma', tarefaId: 'T-0001', esperando: [] } },
+      { id: 'karol', nome: 'Karol', papel: 'Desenvolvimento', cor: '#2f9a7a', estado: { estado: 'aguardando', desde: agora - 4000, atividade: 'Espera T-0001 (Sofia)', tarefaId: 'T-0002', esperando: ['sofia'], esperandoAgora: ['sofia'] } },
+      { id: 'sabrina', nome: 'Sabrina', papel: 'Coordenação', cor: '#f2b544', estado: { estado: 'disponivel', desde: null, atividade: null, tarefaId: null, esperando: [] } },
+    ],
+    tarefas: [
+      { id: 'T-0001', agente: 'sofia', titulo: 'Design System', status: 'andamento', projeto: 'Vitrine', dependeDe: [], tipo: 'entrega', criadaEm: agora - 9000, iniciadaEm: agora - 5000, descricao: 'segredo da descrição' },
+      { id: 'T-0002', agente: 'karol', titulo: 'Tela', status: 'fila', projeto: 'Vitrine', dependeDe: ['T-0001'], tipo: 'entrega', criadaEm: agora - 9000 },
+    ],
+    historico: [{ quando: agora - 5000, tipo: 'inicio', agente: 'sofia', texto: 'Sofia começou T-0001' }],
+    ...extra,
+  };
+}
+
+test('nuvem: o resumo cabe numa mensagem, não leva descrição nem entrega e volta ao formato da página', () => {
+  const r = retratoDeTeste();
+  const resumo = N.resumir(r, { origem: 'nuvem', instancia: 'abc' });
+  const texto = JSON.stringify(resumo);
+  assert.ok(Buffer.byteLength(texto) <= N.LIMITE_BYTES);
+  assert.ok(!texto.includes('segredo da descrição') && !texto.includes('xxxx'), 'nada além do estado e das tarefas');
+  const volta = P.remontar(resumo);
+  assert.deepEqual(volta.equipe.map(a => [a.id, a.estado.estado]), [['sofia', 'trabalhando'], ['karol', 'aguardando'], ['sabrina', 'disponivel']]);
+  assert.deepEqual(volta.tarefas.find(t => t.id === 'T-0002').bloqueadaPor, ['T-0001']);
+  assert.equal(volta.projetos[0].nome, 'Vitrine');
+  assert.equal(volta.nuvem.origem, 'nuvem');
+
+  // muitas tarefas e textos longos: corta até caber
+  const grande = retratoDeTeste({
+    tarefas: Array.from({ length: 80 }, (_, i) => ({ id: `T-${String(i).padStart(4, '0')}`, agente: 'karol', titulo: 'título comprido '.repeat(10), status: i % 2 ? 'fila' : 'concluida', projeto: 'Projeto com nome comprido demais', dependeDe: [], tipo: 'entrega', criadaEm: i, concluidaEm: i })),
+    historico: Array.from({ length: 50 }, (_, i) => ({ quando: i, tipo: 'x', agente: 'karol', texto: 'linha '.repeat(30) })),
+  });
+  assert.ok(Buffer.byteLength(JSON.stringify(N.resumir(grande, { origem: 'pc', instancia: 'b' }))) <= N.LIMITE_BYTES);
+});
+
+test('nuvem: o espelho só publica quando algo importante muda, e espera o intervalo entre envios', async () => {
+  let r = retratoDeTeste();
+  const enviados = [];
+  const espelho = N.criarEspelho({ topico: 'teste-escritorio-0123456789', retrato: () => r, intervaloMs: 120, enviar: async corpo => { enviados.push(JSON.parse(corpo)); return { ok: true }; } });
+  await espelho.abrir();
+  assert.equal(enviados.length, 1);
+  espelho.mudou();
+  await espera(30);
+  assert.equal(enviados.length, 1, 'mesma situação não sai de novo');
+  r = retratoDeTeste();
+  r.equipe[0].estado = { ...r.equipe[0].estado, estado: 'pesquisando', atividade: 'Outra frase' };
+  espelho.mudou();
+  await espera(200);
+  assert.equal(enviados.length, 1, 'trocar de pesquisando para trabalhando ou mudar a frase não gasta mensagem na hora');
+  r.equipe[0].estado = { ...r.equipe[0].estado, estado: 'concluido' };
+  espelho.mudou();
+  await espera(20);
+  assert.equal(enviados.length, 2, 'passado o intervalo, a mudança sai na hora');
+  r.equipe[2].estado = { ...r.equipe[2].estado, estado: 'trabalhando' };
+  espelho.mudou();
+  r.equipe[1].estado = { ...r.equipe[1].estado, estado: 'trabalhando' };
+  espelho.mudou();
+  await espera(30);
+  assert.equal(enviados.length, 2, 'dentro do intervalo espera');
+  await espera(200);
+  assert.equal(enviados.length, 3, 'as duas mudanças da espera saem numa mensagem só');
+  assert.equal(enviados[2].eq.sabrina[0], 'trabalhando');
+  assert.equal(enviados[2].eq.karol[0], 'trabalhando');
+  await espelho.fechar();
+  assert.equal(enviados.at(-1).fim, true);
+
+  // o refresco: a frase nova sai sozinha depois de frescorMs
+  let r2 = retratoDeTeste();
+  const env2 = [];
+  const e2 = N.criarEspelho({ topico: 'teste-escritorio-0123456789', retrato: () => r2, intervaloMs: 10, frescorMs: 150, enviar: async c => { env2.push(JSON.parse(c)); return { ok: true }; } });
+  await e2.abrir();
+  r2 = retratoDeTeste();
+  r2.equipe[0].estado = { ...r2.equipe[0].estado, atividade: 'Editando mapa.js' };
+  e2.mudou();
+  await espera(40);
+  assert.equal(env2.length, 1);
+  await espera(220);
+  assert.equal(env2.length, 2, 'o refresco levou a frase nova');
+  assert.equal(env2[1].eq.sofia[2], 'Editando mapa.js');
+  assert.throws(() => N.criarEspelho({ topico: 'curto', retrato: () => r }), /inválido/);
+});
+
+test('nuvem: o espelho respeita o limite do ntfy e a página escolhe o escritório em atividade', async () => {
+  let chamadas = 0;
+  const espelho = N.criarEspelho({ topico: 'teste-escritorio-0123456789', retrato: () => retratoDeTeste(), intervaloMs: 10, enviar: async () => { chamadas += 1; return { limite: 3600 }; }, registrar: () => {} });
+  await espelho.abrir();
+  assert.ok(espelho.situacao().pausadaAte > Date.now());
+  await espelho.abrir();
+  assert.equal(chamadas, 1, 'durante a pausa não tenta de novo');
+
+  const agora = Date.now();
+  const ocioso = { v: 1, i: 'pc', t: agora - 1000, eq: { sofia: ['disponivel'] } };
+  const ativo = { v: 1, i: 'nv', t: agora - 60_000, eq: { sofia: ['trabalhando'] } };
+  const fechado = { v: 1, i: 'x', t: agora, fim: true };
+  const velho = { v: 1, i: 'v', t: agora - 3_600_000, eq: { sofia: ['trabalhando'] } };
+  assert.equal(P.escolher(new Map([['pc', ocioso], ['nv', ativo], ['x', fechado], ['v', velho]]), agora), ativo);
+  assert.equal(P.escolher(new Map([['x', fechado], ['v', velho]]), agora), null);
+});
+
+test('página online: sem ninguém publicando, o escritório fica aberto com a equipe de verdade no lazer', async () => {
+  const { EQUIPE_PADRAO } = await import('../web/js/equipe-padrao.js');
+  const identidade = JSON.parse(fs.readFileSync(path.join(pastaProjeto, 'equipe.json'), 'utf8'));
+  assert.deepEqual(EQUIPE_PADRAO.map(a => a.id), identidade.ordem, 'a equipe padrão da página é a do equipe.json');
+  for (const a of EQUIPE_PADRAO) {
+    const real = identidade.agentes[a.id];
+    assert.deepEqual([a.nome, a.papel, a.cor], [real.nome, real.papel, real.cor], `${a.id} igual ao equipe.json`);
+  }
+  const folga = P.retratoDeFolga();
+  assert.equal(folga.nuvem.folga, true);
+  assert.ok(folga.equipe.every(a => a.estado.estado === 'disponivel'));
+  assert.equal(folga.tarefas.length, 0);
+});
+
+test('ganchos: agente que já trabalhava quando o escritório abriu aparece no primeiro passo', async () => {
+  const { escritorio, api } = await abrir();
+  try {
+    // o SubagentStart se perdeu (o escritório abriu depois); chega direto uma ferramenta dela
+    await api('POST', '/api/ganchos', { hook_event_name: 'PreToolUse', session_id: 's', agent_id: 'tardia', agent_type: 'sofia', tool_name: 'mcp__Figma__use_figma' });
+    let r = (await api('GET', '/api/estado')).dados;
+    assert.equal(r.equipe.find(a => a.id === 'sofia').estado.estado, 'trabalhando');
+    await api('POST', '/api/ganchos', { hook_event_name: 'SubagentStop', session_id: 's', agent_id: 'tardia', agent_type: 'sofia', last_assistant_message: 'ok' });
+    r = (await api('GET', '/api/estado')).dados;
+    assert.equal(r.equipe.find(a => a.id === 'sofia').estado.estado, 'concluido');
+    // de quem não é da equipe continua ignorado
+    await api('POST', '/api/ganchos', { hook_event_name: 'PreToolUse', session_id: 's', agent_id: 'x', agent_type: 'Explore', tool_name: 'Read' });
+    assert.equal((await api('GET', '/api/estado')).dados.tarefas.length, 1);
   } finally {
     await escritorio.fechar();
   }

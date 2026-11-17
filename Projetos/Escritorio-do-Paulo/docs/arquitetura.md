@@ -14,7 +14,12 @@ flowchart LR
   S -- arquivos JSON --> D[(dados/)]
   A[.claude/agents/*.md] -- equipe --> S
   E[equipe.json] -- identidade no escritório --> S
+  S -- resumo a cada mudança importante --> N[(ntfy.sh<br>tópico secreto)]
+  N -- histórico + SSE --> O[Página online<br>qualquer aparelho]
 ```
+
+Numa sessão do Claude na nuvem, o mesmo servidor roda dentro da sessão (o gancho de início o abre quando a variável
+`ESCRITORIO_NUVEM` existe) e publica no mesmo tópico; a página online mostra o escritório que tem alguém em atividade.
 
 ## Módulos
 
@@ -30,8 +35,11 @@ flowchart LR
 | `servidor/equipe.mjs` | lê `.claude/agents/*.md` e junta com `equipe.json` |
 | `servidor/loja.mjs` | arquivos JSON gravados com troca atômica; histórico em JSONL |
 | `servidor/fluxos.mjs` | planos prontos (interface nova, projeto de IA, pesquisa) |
+| `servidor/nuvem.mjs` | espelho na nuvem: resume o retrato e publica no ntfy.sh, com intervalo e respeito ao limite diário |
+| `web/js/nuvem.js` | lado da página: guarda o tópico do link, ouve o ntfy e remonta o retrato (só leitura) |
 | `ganchos/enviar.mjs` | gancho do Claude Code: repassa o evento ao servidor e sai em menos de meio segundo |
 | `web/` | a interface (HTML, CSS e JS sem build): mapa, figurinhas, tarefas, gaveta, diálogos |
+| `web/js/temas/` | os cenários do mapa (apartamento e escritório): salas, mesas, caminhos, lazer e desenho; `mapa.js` só anda, senta e desenha o que o tema manda |
 
 ## De onde vem cada estado
 
@@ -46,9 +54,9 @@ flowchart LR
 
 ## Contratos
 
-- **Plano** (resposta do Steve, `POST /api/planos`, `escritorio.mjs plano`):
+- **Plano** (resposta da Sabrina, a agente com `"coordena": true` no `equipe.json`; `POST /api/planos`, `escritorio.mjs plano`):
   `{ "projeto": "…", "tarefas": [{ "chave", "agente", "titulo", "descricao", "dependeDe": [chaves], "tipo": "entrega" | "revisao" }] }`.
-  Se alguma tarefa é de quem exige Design System (Peter) e não depende de uma tarefa da Sofia, o servidor acrescenta
+  Se alguma tarefa é de quem exige Design System (Karol) e não depende de uma tarefa da Sofia, o servidor acrescenta
   ou liga a tarefa da Sofia e registra o aviso no histórico.
 - **Pedido ao agente**: o prompt leva o número da tarefa (`T-0000`), o que fazer e as entregas completas das tarefas
   de que ela depende. A resposta termina com o bloco `ENTREGA` do `agentes/PROTOCOLO.md`; o texto inteiro fica em

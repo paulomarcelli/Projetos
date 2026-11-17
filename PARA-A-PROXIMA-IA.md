@@ -30,12 +30,20 @@ andamento (**Aurora**) tem uma passagem detalhada em
   lista de cópia desse workflow (já aconteceu: a pasta `fases/` da Aurora ficou de fora e foi corrigida).
 - `.claude/skills/`: skills instaladas no repositório. As de jogo são **`gamedev-skills`** (roteador com `level-design`,
   `platformer`, `pixijs-rendering` etc.) e **`2d-games`** (instalada nesta conversa, a pedido dele; `skills-lock.json`).
-- `.claude/agents/` e `agentes/`: o **time de agentes** (Steve, Sofia, Tony, Stephen, Peter, Bruce, Wanda, Natasha), com
-  memórias em `agentes/memoria/` e o protocolo em `agentes/PROTOCOLO.md`. A **Sofia** é a designer: todo projeto de
-  interface começa com o Design System dela no Figma. Para criar outro agente, use a skill `criar-agente`.
+- `.claude/agents/` e `agentes/`: o **time de agentes**, que são **só três** (o Paulo apagou os heróis antigos):
+  **Sofia** (agente 2, designer: todo projeto de interface começa com o Design System dela no Figma; o Figma é
+  sempre a ferramenta principal dela, então nunca peça para ela dispensar o Figma, só para não gastar créditos), **Karol**
+  (agente 1, desenvolvimento: arquitetura, front, back, dados e IA) e **Sabrina** (agente 3, coordenação, pesquisa e
+  QA; é quem monta os planos). Memórias em `agentes/memoria/` e protocolo em `agentes/PROTOCOLO.md`. No escritório
+  elas aparecem em pixel art com o visual dos retratos do Paulo: Sofia morena, Karol loira-mel, Sabrina loira clara.
+  **Nenhuma é ruiva** (o Paulo corrigiu isso). Os retratos animados ficam fora do git (`web/avatares/pessoais/`).
+  Para criar outro agente, use a skill `criar-agente`.
 - `Projetos/Escritorio-do-Paulo/`: o **Escritório do Paulo**, painel local da equipe (roda só na máquina dele:
   `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs iniciar`). `.claude/settings.json` tem os ganchos que avisam o
   escritório; se ele estiver fechado, os ganchos não fazem nada. Design System no Figma: `JFyZCMHbS1ASDzSdbGu6pC`.
+  **Nuvem:** o Paulo escolheu espelhar o escritório no ntfy.sh (tópico secreto) para a página online acompanhar de
+  qualquer lugar, inclusive as sessões na nuvem: com a variável `ESCRITORIO_NUVEM` no ambiente, o gancho de início
+  abre o escritório dentro da sessão e ele publica. Nunca ponha o tópico no repositório (é público) nem num commit.
 - `docs/capas/`: imagens de capa usadas no `README.md` da raiz e no perfil do GitHub.
 
 ## 3. O que foi feito nesta conversa (mais recente primeiro)
@@ -66,21 +74,25 @@ andamento (**Aurora**) tem uma passagem detalhada em
 - **Substack e LinkedIn** (calendário de posts no Notion): post do Karol × Samsung publicado; post "como estudo com IA"
   pronto, com a data de publicação a decidir; post do Una Noche Más pronto, falta o link depois de publicado.
 
+- **Canal E Se, Hein?** (`Projetos/E-Se-Hein/`): canal de vídeos curtos "E se…?" em 3D (TikTok, Shorts, Reels), narrados
+  pela Maia (voz do ElevenLabs). **Leia `Projetos/E-Se-Hein/docs/PASSAGEM.md`**: nome, @, bios, logo, voz, regras dos
+  roteiros, roteiros conferidos, estilo, como gerar vídeo e onde parou. Vídeo da Lua: versão 2 em produção.
+
 ## 5. Pendências que dependem do usuário
 - **Aurora:** ele jogar a Fase 1 e contar onde se perdeu, que salto errou mais de 3 vezes, que trecho foi chato ou
   injusto e quanto tempo levou.
-- **Landing da Sofia Carson** (ideia guardada no Notion, em "IDEIAS DE PROJETOS"): ele escolheu o modelo **Lusco**
-  (Profitize AI) e vai mandar o prompt do Lusco, o `.zip` e as fotos.
 - **Landing da Estela Marangoni** (sobre os ensinamentos dela, com ênfase no desapego): modelo **Sinal** recomendado;
   falta o prompt/`.zip` do Sinal e o conteúdo dela (transcrições ou frases).
-- **Radar de Leads:** falta a chave da API do Google, a cidade, o nome e o preço.
 
 ## 6. Próximos passos sugeridos (em ordem)
 1. **Aurora · Prólogo (A Noite das Lanças):** ligar a Aurora criança no jogo, criar a furtividade (soldados com campo
    de visão e esconderijos), gerar a arte dos soldados da Lança Dourada e do castelo, e montar as cenas do roteiro.
    O passo a passo está na passagem da Aurora (§6).
 2. Aurora: menu inicial, controles de toque, som e música; depois a Fase 2 (A Tinta que Escorre).
-3. Retomar as landings (Sofia Carson e Estela Marangoni) assim que ele mandar os materiais.
+3. Landing da Estela Marangoni assim que ele mandar os materiais (a da Sofia Carson está pronta e publicada).
+
+**Projetos descartados (não retomar nem sugerir):** Radar de Leads e Caçador de Vagas. Ele tirou os dois; o Caçador
+saiu do repositório e do README do perfil.
 
 ## 7. Verificação rápida antes de publicar
 ```bash

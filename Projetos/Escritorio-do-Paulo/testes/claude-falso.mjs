@@ -73,9 +73,9 @@ if (/Pedido do Paulo/.test(prompt)) {
         JSON.stringify({
           projeto: 'Painel de teste',
           tarefas: [
-            { chave: 'arq', agente: 'tony', titulo: 'Arquitetura', descricao: 'Definir a estrutura.', dependeDe: [] },
-            { chave: 'front', agente: 'peter', titulo: 'Implementar a tela', descricao: 'Fazer a tela.', dependeDe: ['arq'] },
-            { chave: 'qa', agente: 'natasha', titulo: 'Testar', descricao: 'Conferir tudo.', dependeDe: ['front'], tipo: 'revisao' },
+            { chave: 'arq', agente: 'karol', titulo: 'Arquitetura', descricao: 'Definir a estrutura.', dependeDe: [] },
+            { chave: 'front', agente: 'karol', titulo: 'Implementar a tela', descricao: 'Fazer a tela.', dependeDe: ['arq'] },
+            { chave: 'qa', agente: 'sabrina', titulo: 'Testar', descricao: 'Conferir tudo.', dependeDe: ['front'], tipo: 'revisao' },
           ],
         }),
         '```',

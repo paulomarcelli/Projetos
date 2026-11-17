@@ -65,7 +65,7 @@
         <label class="campo"><span>O pedido</span><textarea name="pedido" required placeholder="Ex.: uma página de inscrição para o meu curso, com formulário e versão para celular"></textarea></label>
         <fieldset class="opcoes">
           <legend>Quem monta o plano</legend>
-          <label class="opcao"><input type="radio" name="modo" value="steve" checked><div><b>O Steve planeja</b><span>O coordenador lê o pedido e decide as tarefas e a ordem.</span></div></label>
+          <label class="opcao"><input type="radio" name="modo" value="coordena" checked><div><b>A Sabrina planeja</b><span>A coordenadora lê o pedido e decide as tarefas e a ordem.</span></div></label>
           <div id="opcoes-fluxo"></div>
         </fieldset>
         <label class="campo" id="campo-projeto" hidden><span>Nome do projeto</span><input name="projeto" maxlength="80" placeholder="Ex.: Página do curso"></label>
@@ -116,7 +116,8 @@
       <p>No computador onde estão os agentes, ligue o início automático uma vez (ele passa a abrir sozinho quando o computador liga e quando você abre o Claude Code):</p>
       <pre class="fechado__comando">node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs autoiniciar instalar</pre>
       <p>Se o navegador perguntar se este site pode <b>acessar dispositivos da rede local</b>, clique em <b>Permitir</b>: é assim que a página encontra o Escritório no seu computador. Se você já tiver bloqueado, libere no cadeado ao lado do endereço.</p>
-      <p class="fechado__nota">Funciona no Chrome, no Edge e no Firefox do mesmo computador em que os agentes rodam. Em outro aparelho, o escritório aparece fechado: os agentes rodam só na sua máquina.</p>
+      <p class="fechado__nota">Funciona no Chrome, no Edge e no Firefox do mesmo computador em que os agentes rodam. Para ver de outro aparelho (ou acompanhar as sessões do Claude na nuvem), ligue a nuvem com <span class="mono">escritorio.mjs nuvem ligar</span> e abra o link que ele mostra.</p>
+      <p class="fechado__nota" id="fechado-nuvem" hidden>A nuvem está ligada neste navegador, mas nenhum escritório publicou nas últimas horas: o computador está desligado e não há sessão do Claude na nuvem trabalhando. A página volta sozinha quando alguém começar.</p>
       <button class="botao botao--principal" type="button" id="fechado-tentar">Tentar de novo</button>
     </div>
   </section>

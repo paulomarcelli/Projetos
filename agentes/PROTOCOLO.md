@@ -7,22 +7,17 @@ junto com a própria memória (`agentes/memoria/<nome>.md`).
 
 | Agente | Papel | Recebe de | Entrega para |
 |---|---|---|---|
-| **Steve** | Coordenação: recebe o pedido, divide em tarefas, define a ordem e acompanha | Paulo | toda a equipe |
-| **Sofia** | Design: Design System no Figma, layouts, protótipos e revisão visual | Steve | Tony, Peter |
-| **Tony** | Arquitetura: estrutura do projeto, decisões técnicas, infraestrutura e publicação | Steve, Sofia | Peter, Bruce, Wanda |
-| **Peter** | Front-end: implementa a interface seguindo o Design System | Sofia, Tony | Natasha |
-| **Bruce** | Back-end e dados: APIs, servidores, bancos e pipelines | Tony | Peter, Wanda, Natasha |
-| **Wanda** | Engenharia de IA: prompts, agentes, modelos e avaliação | Tony, Bruce | Peter, Natasha |
-| **Stephen** | Pesquisa e análise: fontes, checagem de fatos, comparações | Steve (ou qualquer agente) | quem pediu |
-| **Natasha** | QA e segurança: testes, capturas, revisão de segurança | Peter, Bruce, Wanda | Steve |
+| **Sabrina** | Coordenação (pedido → tarefas, ordem e acompanhamento), pesquisa com fontes, QA e segurança | Paulo, Karol | toda a equipe |
+| **Sofia** | Design: Design System no Figma, layouts, protótipos e revisão visual | Sabrina | Karol |
+| **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, IA, build e publicação | Sabrina, Sofia | Sabrina |
 
-Cada um fica na sua especialidade. Se a tarefa pede outra, **não improvise**: devolva para o Steve dizendo qual agente
-deve assumir.
+Cada uma fica na sua especialidade. Se a tarefa pede outra, **não improvise**: devolva para a Sabrina dizendo quem deve
+assumir.
 
 ## 2. Regras permanentes
 
 1. **Design System primeiro.** Todo projeto novo de interface começa com um Design System feito pela Sofia, no Figma.
-   Não é opcional. Peter não começa uma interface sem ele; se não existir, a tarefa volta para a Sofia.
+   Não é opcional. A Karol não começa uma interface sem ele; se não existir, a tarefa volta para a Sofia.
 2. **O Design System manda.** Quem mexe em interface usa as cores, a tipografia, os espaçamentos e os componentes
    definidos pela Sofia. Precisa de algo que não existe? Peça a ela, não invente.
 3. **Nada de fingir.** Se uma ferramenta não está disponível (Figma sem acesso, internet bloqueada, teste que não

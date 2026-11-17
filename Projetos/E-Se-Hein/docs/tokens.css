@@ -1,0 +1,167 @@
+/* E Se, Hein? · tokens dos vídeos. Gerado do Design System no Figma (okTGRiK8lTEXSoP9QDm0du).
+ * Mesmos nomes das variáveis do Figma: "mundo/ceu/topo" vira --mundo-ceu-topo.
+ * Não edite à mão: peça à Sofia para mudar no Figma e regerar. */
+
+:root {
+  /* Marca e rótulos */
+  --marca-laranja: #FF5A1F; /* Cor da marca: fundo do fechamento, destaque raro */
+  --marca-tinta: #111111; /* Contornos, texto sobre laranja e branco */
+  --marca-branco: #FFFFFF; /* Legenda, texto das pílulas, cartões */
+  --rotulo-vermelho: #E5383B; /* Pílula de problema, seta de queda (4,2:1 com branco) */
+  --rotulo-verde: #1A8F3F; /* Pílula de solução/estado bom, seta de subida (4,2:1 com branco) */
+  --rotulo-amarelo: #FFD21F; /* Texto preso a objeto, seta neutra, ícones dos cartões */
+  --rotulo-cartao: #FFFFFF; /* Fundo do cartão com ícone */
+  --rotulo-contorno: #111111; /* Contorno de legenda, pílulas, setas e textos presos */
+
+  /* Mundo · modo Dia (padrão) */
+  --mundo-ceu-topo: #3E8EF0;
+  --mundo-ceu-horizonte: #A9D8FF;
+  --mundo-ceu-brilho-cidade: #FFFFFF;
+  --mundo-nuvem-luz: #FFFFFF;
+  --mundo-nuvem-sombra: #D6E6FA;
+  --mundo-nevoa: #CFE6FF;
+  --mundo-predio-1: #F2A7B5;
+  --mundo-predio-2: #C7B3E6;
+  --mundo-predio-3: #B9E3B0;
+  --mundo-predio-4: #F4E6C4;
+  --mundo-predio-5: #A8D4F0;
+  --mundo-predio-6: #F6C79A;
+  --mundo-janela-apagada: #5B7FB8;
+  --mundo-janela-acesa: #FFD36B;
+  --mundo-telhado-base: #E2553D;
+  --mundo-telhado-sombra: #B63E2C;
+  --mundo-chao-grama: #7CC56A;
+  --mundo-chao-rua: #5A5F6B;
+  --mundo-chao-calcada: #E4DED0;
+  --mundo-agua-raso: #4FC3E8;
+  --mundo-agua-fundo: #2A7FD0;
+  --mundo-agua-espuma: #FFFFFF;
+  --mundo-areia-seca: #F2DDA4;
+  --mundo-areia-molhada: #D9BC7E;
+  --mundo-arvore-copa: #4FB04A;
+  --mundo-arvore-tronco: #8A5A35;
+  --mundo-lua-superficie: #F3EFE0;
+  --mundo-lua-cratera: #CFC8B0;
+  --mundo-espaco-fundo: #070B1F;
+  --mundo-espaco-estrela: #FFFFFF;
+  --mundo-terra-oceano: #2F7FE0;
+  --mundo-terra-continente: #62C35A;
+  --mundo-terra-gelo: #F4F8FF;
+  --mundo-personagem-pele: #F2C39B;
+  --mundo-personagem-cabelo: #4A2F1D;
+  --mundo-personagem-camiseta: #FFD21F;
+  --mundo-personagem-bermuda: #2D55C8;
+  --mundo-personagem-tenis: #2F6BE0;
+  --mundo-personagem-olho: #1B1B1B;
+  --mundo-sombra: #1F2D5A;
+  --mundo-vida-coral: #FF8A7A;
+  --mundo-vida-caranguejo: #F06A3A;
+  --mundo-vida-ave: #FFFFFF;
+  --mundo-vida-bico: #FFB020;
+
+  /* Medidas (px no quadro 1080 × 1920) */
+  --legenda-tamanho: 112px; /* Corpo da palavra (px no quadro 1080 × 1920) */
+  --legenda-tamanho-min: 84px; /* Menor corpo, quando a palavra não cabe na largura máxima */
+  --legenda-contorno-largura: 12px; /* Contorno escuro por fora da letra */
+  --legenda-sombra-y: 8px; /* Deslocamento da sombra dura para baixo */
+  --legenda-centro-x: 540px; /* Centro horizontal da palavra */
+  --legenda-centro-y: 1280px; /* Centro vertical da palavra (66,7% da altura) */
+  --legenda-largura-max: 720px; /* Largura máxima da palavra (x 180 a 900) */
+  --rotulo-pilula-g-altura: 88px; /* Pílula grande: altura */
+  --rotulo-pilula-g-fonte: 44px; /* Pílula grande: corpo do texto */
+  --rotulo-pilula-g-padding-x: 36px; /* Pílula grande: respiro lateral */
+  --rotulo-pilula-p-altura: 64px; /* Pílula pequena: altura */
+  --rotulo-pilula-p-fonte: 32px; /* Pílula pequena: corpo do texto */
+  --rotulo-pilula-p-padding-x: 26px; /* Pílula pequena: respiro lateral */
+  --rotulo-borda-largura: 5px; /* Borda branca da pílula e do cartão */
+  --rotulo-contorno-largura: 6px; /* Contorno escuro de pílula, seta e texto preso */
+  --rotulo-sombra-y: 8px; /* Sombra dura da pílula e do cartão */
+  --rotulo-texto-preso-fonte: 56px; /* Texto amarelo preso a objeto */
+  --rotulo-contexto-fonte: 44px; /* Rótulo de contexto do canto */
+  --rotulo-cartao-raio: 36px; /* Raio do cartão branco */
+  --rotulo-cartao-padding: 32px; /* Respiro interno do cartão */
+  --rotulo-cartao-icone: 168px; /* Lado do ícone no cartão */
+  --rotulo-seta-espessura: 28px; /* Espessura do corpo da seta */
+  --zona-topo: 210px; /* Faixa de cima coberta pela interface (abas, busca) */
+  --zona-base: 500px; /* Faixa de baixo coberta (descrição, música, botões) */
+  --zona-direita: 180px; /* Coluna da direita coberta (curtir, comentar, compartilhar), de y 700 a 1420 */
+  --zona-margem: 72px; /* Margem lateral mínima */
+
+  --fonte-video: 'Rubik', system-ui, sans-serif;
+}
+
+[data-modo="noite"] {
+  --mundo-ceu-topo: #0B1A45;
+  --mundo-ceu-horizonte: #3A5A9E;
+  --mundo-ceu-brilho-cidade: #6A5A8E;
+  --mundo-nuvem-luz: #8EA3D6;
+  --mundo-nuvem-sombra: #56689E;
+  --mundo-nevoa: #33508F;
+  --mundo-predio-1: #8E6F96;
+  --mundo-predio-2: #6E679E;
+  --mundo-predio-3: #5F8A86;
+  --mundo-predio-4: #8F8A8E;
+  --mundo-predio-5: #5D7FA6;
+  --mundo-predio-6: #93788A;
+  --mundo-janela-apagada: #2C3A63;
+  --mundo-telhado-base: #8E3B45;
+  --mundo-telhado-sombra: #5E2638;
+  --mundo-chao-grama: #355F5A;
+  --mundo-chao-rua: #2A2F45;
+  --mundo-chao-calcada: #6B7190;
+  --mundo-agua-raso: #2E5E9E;
+  --mundo-agua-fundo: #173F80;
+  --mundo-agua-espuma: #BFD0F0;
+  --mundo-areia-seca: #A99E8E;
+  --mundo-areia-molhada: #7F7A78;
+  --mundo-arvore-copa: #2F6B5A;
+  --mundo-arvore-tronco: #4A3A3F;
+  --mundo-personagem-pele: #C79A86;
+  --mundo-personagem-cabelo: #2E2028;
+  --mundo-personagem-camiseta: #D8B83A;
+  --mundo-personagem-bermuda: #253E8F;
+  --mundo-personagem-tenis: #2A55B0;
+  --mundo-sombra: #050A1E;
+  --mundo-vida-coral: #9A5A6A;
+  --mundo-vida-caranguejo: #9A4A3A;
+  --mundo-vida-ave: #AAB6D6;
+  --mundo-vida-bico: #A8803A;
+}
+
+[data-modo="breu"] {
+  --mundo-ceu-topo: #03060F;
+  --mundo-ceu-horizonte: #101A33;
+  --mundo-ceu-brilho-cidade: #7A4535;
+  --mundo-nuvem-luz: #1E2A47;
+  --mundo-nuvem-sombra: #141C33;
+  --mundo-nevoa: #0E1530;
+  --mundo-predio-1: #4B3D55;
+  --mundo-predio-2: #3E3A5C;
+  --mundo-predio-3: #34504F;
+  --mundo-predio-4: #4E4B52;
+  --mundo-predio-5: #33475E;
+  --mundo-predio-6: #50424F;
+  --mundo-janela-apagada: #1B2440;
+  --mundo-telhado-base: #4E2430;
+  --mundo-telhado-sombra: #33182A;
+  --mundo-chao-grama: #1A2E30;
+  --mundo-chao-rua: #151A28;
+  --mundo-chao-calcada: #353A50;
+  --mundo-agua-raso: #16325A;
+  --mundo-agua-fundo: #0B1E40;
+  --mundo-agua-espuma: #5E6F94;
+  --mundo-areia-seca: #5A544F;
+  --mundo-areia-molhada: #44403F;
+  --mundo-arvore-copa: #183A33;
+  --mundo-arvore-tronco: #2A2226;
+  --mundo-personagem-pele: #8E6E6A;
+  --mundo-personagem-cabelo: #1E151B;
+  --mundo-personagem-camiseta: #9C8740;
+  --mundo-personagem-bermuda: #1A2C66;
+  --mundo-personagem-tenis: #1E3C80;
+  --mundo-sombra: #000000;
+  --mundo-vida-coral: #4A2E3A;
+  --mundo-vida-caranguejo: #4E2A28;
+  --mundo-vida-ave: #3A4258;
+  --mundo-vida-bico: #5A4A2A;
+}

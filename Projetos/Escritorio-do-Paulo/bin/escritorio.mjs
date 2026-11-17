@@ -2,19 +2,21 @@
 // Comando do Escritório do Paulo.
 //   node bin/escritorio.mjs iniciar [--abrir] [--porta 4310]   abre o escritório nesta máquina
 //   node bin/escritorio.mjs tarefas                             lista as tarefas
-//   node bin/escritorio.mjs tarefa "Título" --agente peter [--descricao "…"] [--depende T-0001,T-0002] [--projeto "Nome"] [--iniciar]
-//   node bin/escritorio.mjs pedido "O que você quer" [--auto]   manda o pedido para o Steve planejar
+//   node bin/escritorio.mjs tarefa "Título" --agente karol [--descricao "…"] [--depende T-0001,T-0002] [--projeto "Nome"] [--iniciar]
+//   node bin/escritorio.mjs pedido "O que você quer" [--auto]   manda o pedido para a Sabrina planejar
 //   node bin/escritorio.mjs plano arquivo.json [--auto]         cria as tarefas de um plano
 //   node bin/escritorio.mjs ganchos instalar|remover|estado     liga o Claude Code ao escritório
 //   node bin/escritorio.mjs figurinhas <arquivo.zip | pasta>   instala as suas figurinhas (ficam fora do git)
 //   node bin/escritorio.mjs autoiniciar instalar|remover|estado  abre o escritório sozinho quando o computador liga
+//   node bin/escritorio.mjs nuvem ligar|link|desligar          espelha o escritório no ntfy.sh para a página online
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import zlib from 'node:zlib';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { criarServidor, lerConfig, acharRaiz, PASTA_PROJETO } from '../servidor/index.mjs';
+import { criarServidor, lerConfig, acharRaiz, lerTopicoNuvem, PASTA_PROJETO } from '../servidor/index.mjs';
+import { novoTopico, topicoValido } from '../servidor/nuvem.mjs';
 
 const [, , comando = 'iniciar', ...resto] = process.argv;
 const opcoes = {};
@@ -171,7 +173,9 @@ WantedBy=default.target
 
 async function principal() {
   if (comando === 'iniciar') {
-    const escritorio = criarServidor(opcoes.porta ? { config: { porta } } : {});
+    const topico = lerTopicoNuvem();
+    if (topico && !topicoValido(topico)) console.error('  O tópico da nuvem (ESCRITORIO_NUVEM ou dados/nuvem.json) é inválido; o espelho fica desligado.');
+    const escritorio = criarServidor({ ...(opcoes.porta ? { config: { porta } } : {}), nuvem: topicoValido(topico) ? topico : null });
     let portaReal;
     try {
       portaReal = await escritorio.ouvir(porta);
@@ -195,6 +199,7 @@ async function principal() {
     console.log(`  Equipe: ${r.equipe.map(a => a.nome).join(', ') || 'nenhum agente em .claude/agents'}`);
     console.log(`  Claude Code: ${r.sistema.executor.disponivel ? r.sistema.executor.versao : `não encontrado (${r.sistema.executor.motivo || 'instale e entre na conta'})`}`);
     console.log(`  Ganchos: ${r.sistema.ganchos.instalados ? 'instalados' : 'não instalados (rode: ganchos instalar)'}`);
+    console.log(`  Nuvem: ${escritorio.espelho ? `espelhando no ntfy.sh (${escritorio.espelho.origem}); veja de qualquer lugar pelo link de "nuvem link"` : 'desligada (rode: nuvem ligar)'}`);
     if (r.sistema.executor.simulacao) console.log('  ATENÇÃO: usando um Claude de simulação (ESCRITORIO_CLAUDE_BIN). As execuções não são reais.');
     console.log('\n  Ctrl+C fecha o escritório.\n');
     if (opcoes.abrir) {
@@ -212,6 +217,32 @@ async function principal() {
     process.on('SIGINT', encerrar);
     process.on('SIGTERM', encerrar);
     return;
+  }
+
+  if (comando === 'nuvem') {
+    const arquivo = path.join(PASTA_PROJETO, 'dados', 'nuvem.json');
+    const linkDe = t => `${config.enderecoOnline || 'https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/'}#nuvem=${t}`;
+    const acao = livres[0] || 'link';
+    if (acao === 'ligar') {
+      const atual = lerTopicoNuvem();
+      const topico = livres[1] || (topicoValido(atual) ? atual : novoTopico());
+      if (!topicoValido(topico)) return console.error('Tópico inválido: use de 16 a 64 letras, números, - ou _.');
+      fs.mkdirSync(path.dirname(arquivo), { recursive: true });
+      fs.writeFileSync(arquivo, JSON.stringify({ topico }, null, 2));
+      console.log('Nuvem ligada. Feche e abra o escritório para começar a espelhar.');
+      console.log(`Link da página online (guarde, ele é a chave): ${linkDe(topico)}`);
+      return console.log('Só sai o estado de cada agente e as tarefas; o texto das conversas e das entregas fica na sua máquina.');
+    }
+    if (acao === 'desligar') {
+      fs.rmSync(arquivo, { force: true });
+      return console.log(`Nuvem desligada neste computador.${process.env.ESCRITORIO_NUVEM ? ' A variável ESCRITORIO_NUVEM ainda está definida: tire-a também.' : ''}`);
+    }
+    if (acao === 'link') {
+      const topico = lerTopicoNuvem();
+      if (!topicoValido(topico)) return console.error('A nuvem está desligada. Ligue com: nuvem ligar');
+      return console.log(linkDe(topico));
+    }
+    return console.error('Use: nuvem ligar [tópico] | link | desligar');
   }
 
   if (comando === 'tarefas') {
@@ -337,7 +368,7 @@ async function principal() {
     return console.log(`Endereço: http://127.0.0.1:${porta} · online: ${config.enderecoOnline || ''}`);
   }
 
-  console.error('Comandos: iniciar, tarefas, tarefa, pedido, plano, ganchos, figurinhas, autoiniciar');
+  console.error('Comandos: iniciar, tarefas, tarefa, pedido, plano, ganchos, figurinhas, autoiniciar, nuvem');
   process.exit(1);
 }
 

@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { criarMotor } from './motor.mjs';
 import { ErroDeTarefa } from './tarefas.mjs';
+import { criarEspelho, topicoValido } from './nuvem.mjs';
 
 const aqui = path.dirname(fileURLToPath(import.meta.url));
 export const PASTA_PROJETO = path.resolve(aqui, '..');
@@ -24,6 +25,16 @@ export function lerConfig(pastaProjeto = PASTA_PROJETO) {
   }
   if (process.env.ESCRITORIO_PORTA) config.porta = Number(process.env.ESCRITORIO_PORTA);
   return { porta: 4310, permissao: 'acceptEdits', paralelas: 2, tempoMaximoMin: 30, concluidoPorMin: 10, semSinalMin: 15, ...config };
+}
+
+// Tópico do espelho na nuvem (ntfy.sh): a variável ESCRITORIO_NUVEM ou dados/nuvem.json (fora do git).
+export function lerTopicoNuvem(pastaDados = path.join(PASTA_PROJETO, 'dados')) {
+  if (process.env.ESCRITORIO_NUVEM) return process.env.ESCRITORIO_NUVEM.trim();
+  try {
+    return JSON.parse(fs.readFileSync(path.join(pastaDados, 'nuvem.json'), 'utf8')).topico || null;
+  } catch {
+    return null;
+  }
 }
 
 // A raiz do repositório é a pasta que tem .claude/agents, subindo a partir do projeto.
@@ -71,6 +82,22 @@ export function criarServidor(opcoes = {}) {
   const pastaDados = opcoes.pastaDados || process.env.ESCRITORIO_DADOS || path.join(pastaProjeto, 'dados');
   const pastaWeb = path.join(pastaProjeto, 'web');
   const motor = criarMotor({ raizRepo, pastaProjeto, pastaDados, config });
+
+  // Espelho na nuvem: só quando quem abre o escritório pede (bin/escritorio.mjs iniciar), nunca nos testes.
+  let espelho = null;
+  let varreduraNuvem = null;
+  if (opcoes.nuvem && topicoValido(opcoes.nuvem)) {
+    espelho = criarEspelho({
+      topico: opcoes.nuvem,
+      retrato: motor.retrato,
+      origem: process.env.CLAUDE_CODE_REMOTE === 'true' ? 'nuvem' : 'pc',
+      registrar: texto => console.log(`[escritório] ${texto}`),
+    });
+    motor.assinar(() => espelho.mudou());
+    // "concluído" vira "disponível" com o tempo, sem evento: confere de minuto em minuto (só publica se mudou)
+    varreduraNuvem = setInterval(() => espelho.mudou(), 60_000);
+    varreduraNuvem.unref();
+  }
 
   // Proteções de um servidor local: só aceita pedidos endereçados a esta máquina, e só altera estado com JSON
   // vindo da própria página ou do endereço online do escritório (config "origensPermitidas"). Um site qualquer
@@ -193,16 +220,22 @@ export function criarServidor(opcoes = {}) {
   return {
     servidor,
     motor,
+    espelho,
     config,
     raizRepo,
     pastaDados,
     ouvir(porta = config.porta) {
       return new Promise((resolver, rejeitar) => {
         servidor.once('error', rejeitar);
-        servidor.listen(porta, '127.0.0.1', () => resolver(servidor.address().port));
+        servidor.listen(porta, '127.0.0.1', () => {
+          espelho?.abrir();
+          resolver(servidor.address().port);
+        });
       });
     },
-    fechar() {
+    async fechar() {
+      clearInterval(varreduraNuvem);
+      if (espelho) await Promise.race([espelho.fechar(), new Promise(r => setTimeout(r, 1500))]);
       motor.fechar();
       return new Promise(resolver => {
         servidor.closeAllConnections?.();

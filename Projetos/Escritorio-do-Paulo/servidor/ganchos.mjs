@@ -38,7 +38,13 @@ export function criarTradutorDeGanchos({ ehDaEquipe, iniciar, atividade, termina
         iniciar({ chave, agente: tipo, titulo: chamada?.descricao || 'Tarefa pedida no Claude Code', prompt: chamada?.prompt || '' });
         return { ok: true };
       }
-      const chave = subagentes.get(id);
+      let chave = subagentes.get(id);
+      // O escritório abriu (ou reabriu) com ela já trabalhando: o início se perdeu, mas ela aparece assim mesmo.
+      if (!chave && (evento === 'PreToolUse' || evento === 'PostToolUse')) {
+        chave = `g-${id}`;
+        subagentes.set(id, chave);
+        iniciar({ chave, agente: tipo, titulo: 'Tarefa pedida no Claude Code', prompt: '' });
+      }
       if (!chave) return { ignorado: true };
       if (evento === 'PreToolUse') {
         const t = traduzirFerramenta(p.tool_name, p.tool_input);

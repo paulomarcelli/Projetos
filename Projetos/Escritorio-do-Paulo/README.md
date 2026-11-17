@@ -14,52 +14,48 @@
 
 <br>
 
-<img src="docs/escritorio.webp" alt="O Escritório do Paulo: um escritório em pixel art visto de cima, com oito figurinhas nas mesas e crachás com o estado de cada um; ao lado, a lista de tarefas e a atividade da equipe" width="900">
+<img src="docs/escritorio.webp" alt="O Escritório do Paulo: um escritório em pixel art visto de cima, com seis salas (equipe, lounge, reunião, jogos, estúdio e copa) e um jardim, as três agentes em pixel art e crachás com o estado de cada uma; ao lado, a lista de tarefas e a atividade da equipe" width="900">
 
 </div>
 
 <br>
 
 > [!NOTE]
-> Os agentes rodam **só no seu computador**. O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/)
-> mostra, ao vivo, o escritório aberto nesse mesmo computador; sem ele, a página avisa que está fechado. As figurinhas são desenhos originais inspirados nos
-> Vingadores, feitos para este projeto pessoal; a Sofia tem identidade própria. As capturas desta página usam o Claude de
-> simulação dos testes, por isso aparece a faixa "Simulação".
+> O [endereço online](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/) fica sempre aberto:
+> sem ninguém trabalhando, mostra a equipe no lazer; com o escritório aberto no seu computador, mostra ele ao vivo. Com a **nuvem** ligada, ele mostra também de qualquer aparelho, inclusive o
+> que as agentes fazem nas sessões do Claude na nuvem (veja a seção "Ver de qualquer lugar", mais abaixo). As agentes
+> são três personagens minhas (Sofia, Karol e Sabrina), desenhadas em pixel art a partir dos retratos delas. As capturas
+> desta página usam o Claude de simulação dos testes, por isso aparece a faixa "Simulação".
 
 ## ✨ A ideia
 
 Os agentes de IA trabalham escondidos no terminal. Aqui eles ganham um escritório: cada um tem a sua mesa, a sua
-figurinha e um crachá com o estado. Quando a Sofia está no Figma, o monitor dela acende e ela se mexe; quando o Peter
-espera o Design System, ele fica com a ampulheta e um fio tracejado até a mesa dela.
+personagem em pixel art e um crachá com o estado. Quando a Sofia está no Figma, o monitor dela acende; quando a Karol
+espera o Design System, ela fica com a ampulheta e um fio tracejado até a mesa dela.
 
-**O escritório é vivo, mas não finge.** Quem está disponível passeia: toma café, abre a geladeira, para no quadro da
-sala de reunião, visita a mesa de um colega e volta para a sua. Quando termina uma tarefa, leva a entrega andando até
+**O escritório é vivo, mas não finge.** Quem está disponível fica no lazer (nunca parada na mesa à toa) e se diverte: joga pingue-pongue em dupla, senta no sofá
+para jogar videogame, joga fliperama, lê no lounge, toma café na copa, rega as plantas e passeia no jardim. Quando termina uma tarefa, leva a entrega andando até
 quem continua o trabalho. Mas um agente só aparece trabalhando, pensando ou pesquisando enquanto existe uma execução
 real dele no Claude Code: nessa hora ele larga o que estava fazendo e volta para a mesa. Esperando outra tarefa, fica
 na mesa aguardando; quando falha, com erro.
 
-## 🦸 A equipe
+## 👩‍💻 A equipe
 
-| | Agente | Papel | Inspiração |
+| | Agente | Papel | No mapa |
 |---|---|---|---|
-| 🛡️ | **Steve** | Coordenação: divide o pedido em tarefas e define a ordem | Capitão América |
-| 🎨 | **Sofia** | Design: Design System no Figma antes de qualquer interface | identidade própria |
-| ⚙️ | **Tony** | Arquitetura: estrutura, tecnologias, publicação | Homem de Ferro |
-| 🔮 | **Stephen** | Pesquisa e análise: fontes, checagem, comparações | Doutor Estranho |
-| 🕸️ | **Peter** | Front-end: implementa a interface a partir do Design System | Homem-Aranha |
-| 🧪 | **Bruce** | Back-end e dados: servidores, APIs, bancos e pipelines | Hulk |
-| ✨ | **Wanda** | Engenharia de IA: prompts, agentes, modelos e avaliação | Feiticeira Escarlate |
-| 🕵️ | **Natasha** | QA e segurança: testes, capturas, revisão de segurança | Viúva Negra |
+| 🎨 | **Sofia** | Design: Design System no Figma antes de qualquer interface, direção de arte, revisão visual | cabelo castanho-escuro comprido, vestido preto |
+| 💻 | **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, engenharia de IA, publicação | loira-mel, jaqueta verde, short coral, bota amarela |
+| 📋 | **Sabrina** | Coordenação, pesquisa e QA: monta o plano, checa fatos, testa e revisa antes de publicar | loira clara com laço preto, blusa preta |
 
 Os agentes são de verdade: cada um tem o seu arquivo em [`.claude/agents/`](../../.claude/agents), com instruções,
 ferramentas, critério de qualidade e regras de colaboração, uma memória em [`agentes/memoria/`](../../agentes/memoria)
 e o [protocolo da equipe](../../agentes/PROTOCOLO.md). Foram criados com a skill `criar-agente`.
 
-<img src="docs/gaveta.webp" alt="A gaveta do Tony aberta: estado Pesquisando, a tarefa em andamento, o passo a passo ao vivo, a especialidade e o desempenho" width="100%">
+<img src="docs/gaveta.webp" alt="A gaveta da Karol aberta: estado Pesquisando, a tarefa em andamento, o passo a passo ao vivo, a especialidade e o desempenho" width="100%">
 
 ## 🎬 O que dá para fazer
 
-- **Novo pedido:** escreva o que você quer. O Steve monta o plano (ou use um fluxo pronto: interface nova, projeto de
+- **Novo pedido:** escreva o que você quer. A Sabrina monta o plano (ou use um fluxo pronto: interface nova, projeto de
   IA, pesquisa) e as tarefas aparecem na **mesa de projeto**, em colunas pela ordem das dependências.
 - **Executar projeto:** cada tarefa começa sozinha quando as anteriores terminam, e cada agente recebe as entregas das
   tarefas de que depende.
@@ -71,7 +67,19 @@ e o [protocolo da equipe](../../agentes/PROTOCOLO.md). Foram criados com a skill
 - **Conversas comuns também aparecem:** com os ganchos ligados, quando você chama um agente no VS Code ou no terminal,
   ele aparece trabalhando no escritório e a tarefa entra na lista.
 
-<img src="docs/mapa.webp" alt="O mapa do escritório: sala de reunião, copa e a sala da equipe com duas fileiras de mesas; Tony pensando com o monitor aceso, Sofia e Stephen concluídos, Peter e Natasha aguardando" width="100%">
+<img src="docs/mapa.webp" alt="O mapa do escritório em pixel art: sala da equipe, lounge, reunião, sala de jogos com pingue-pongue, videogame e fliperama, estúdio, copa e jardim, com as três agentes" width="100%">
+
+**Dois cenários.** O botão no canto do mapa troca entre os **Apartamentos 19 e 20** (o padrão) e o **Escritório** de
+sempre. Os apartamentos seguem a planta que os fãs desenharam do set do sitcom, redesenhada em pixel art como
+homenagem: à esquerda o do Joey e do Chandler (os dois quartos, o sofá amarelo, as poltronas reclináveis viradas para a
+TV, o balcão com banquetas, o pebolim e o banheiro), no meio o corredor do prédio com a escada e as portas 19 e 20, e à
+direita o da Monica e da Rachel (a cozinha no canto em ângulo com a bancada turquesa, a mesa redonda, o sofá, o banheiro
+xadrez, o armário "?", o banco da janela, a varanda e os quartos das duas). Elas trabalham na mesa redonda, na
+escrivaninha do Chandler, na mesinha do banco da janela e na escrivaninha da Rachel; no lazer, cozinham, jogam
+pebolim, veem TV nas reclináveis, sentam nos sofás, abrem o armário "?", põem um disco e vão para a varanda. A escolha
+fica guardada no navegador.
+
+<img src="docs/apartamento.webp" alt="Os apartamentos 19 e 20 em pixel art vistos de cima: à esquerda o do Joey e do Chandler, no meio o corredor com a escada, à direita o da Monica e da Rachel, com as três agentes" width="100%">
 
 ## ▶️ Rodar
 
@@ -113,23 +121,50 @@ node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs pedido "Uma página de insc
 As tarefas, o histórico e as entregas ficam em `dados/` (fora do git). Os ajustes ficam em `escritorio.config.json`:
 porta, modelo, modo de permissão, comandos liberados para os agentes e quantos rodam ao mesmo tempo.
 
+### ☁️ Ver de qualquer lugar (nuvem)
+
+Os agentes podem trabalhar no seu computador ou numa sessão do Claude na nuvem (claude.ai/code, app). Para a página
+online acompanhar os dois, de qualquer aparelho, o escritório espelha um resumo num tópico do
+[ntfy.sh](https://ntfy.sh) (serviço gratuito de retransmissão, sem conta). Ligue uma vez no computador:
+
+```bash
+node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs nuvem ligar
+```
+
+Ele cria um tópico secreto (guardado em `dados/nuvem.json`, fora do git) e mostra o link da página, do jeito
+`…/Escritorio-do-Paulo/#nuvem=<tópico>`. Abra esse link uma vez em cada aparelho: a página guarda o tópico e tira ele
+do endereço. Para as sessões na nuvem, coloque o mesmo tópico na variável `ESCRITORIO_NUVEM` do ambiente da nuvem
+(Settings do Claude Code na web → o ambiente → variáveis): a cada sessão nova, o gancho de início abre o escritório
+dentro da sessão e ele passa a publicar. `nuvem link` mostra o link de novo; `nuvem desligar` desliga.
+
+- **O que sai:** o estado de cada agente (com a frase curta do que está fazendo, como "Editando mapa.js"), as tarefas
+  (título, dona, situação) e as últimas linhas do histórico. **Não saem** o texto das conversas, as descrições das
+  tarefas, as entregas nem o conteúdo de arquivos.
+- **Quem vê:** quem tiver o link. O tópico é a chave: não publique o link.
+- **Só acompanhamento:** pela nuvem a página não cria nem altera tarefas; isso continua no escritório do computador.
+  Se o escritório do computador estiver aberto, ele tem prioridade.
+- **Limite:** o ntfy.sh gratuito aceita 250 mensagens por dia por endereço de internet (e o da nuvem é compartilhado).
+  Por isso o espelho só publica quando alguém começa, passa a esperar, termina ou falha, no máximo uma vez a cada
+  20 s, e a frase do que está fazendo atualiza a cada 3 min. Um projeto de três tarefas gasta umas 5 mensagens.
+
 ### Figurinhas pessoais
 
-As figurinhas no estilo sticker (as sete da folha que escolhi e a da Sofia, feita no mesmo estilo) ficam fora do
+Os retratos animados das três (as ilustrações originais, com respiração, cabeça e cabelo em movimento) ficam fora do
 repositório, que é público. Para usar, instale o pacote `figurinhas-pessoais.zip` uma vez:
 
 ```bash
 node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs figurinhas caminho/para/figurinhas-pessoais.zip
 ```
 
-Elas vão para `web/avatares/pessoais/` (fora do git) e aparecem no mapa e na gaveta. Também dá para apontar uma pasta
-com arquivos `steve.png`, `sofia.png`, `tony.png`… (o nome é o do agente). Sem elas, o escritório usa os desenhos de
-`web/js/avatares.js`, no mesmo jeito de figurinha.
+Eles vão para `web/avatares/pessoais/` (fora do git) e aparecem na gaveta de cada agente. Também dá para apontar uma
+pasta com arquivos `sofia.webp`, `karol.webp`, `sabrina.webp` (o nome é o da agente; aceita png, jpg e webp). Sem eles,
+a gaveta mostra a personagem em pixel art ampliada.
 
 ### Agente novo
 
 Crie o agente com a skill `criar-agente` (arquivo em `.claude/agents/`). Ele aparece no escritório sozinho, numa mesa
-livre; para dar cor, figurinha e papel, acrescente a entrada dele em `equipe.json` e o desenho em `web/js/avatares.js`.
+livre, com um visual padrão; para dar cor e papel, acrescente a entrada dele em `equipe.json`, e o visual em pixel art
+(cabelo, pele, roupa, acessório) em `VISUAIS`, no `web/js/sprites.js`.
 
 ## 🧰 Como foi feito
 
@@ -138,10 +173,18 @@ livre; para dar cor, figurinha e papel, acrescente a entrada dele em `equipe.jso
 - **Ganchos do Claude Code:** `ganchos/enviar.mjs` repassa os eventos das conversas comuns (`SubagentStart`,
   `PreToolUse`, `SubagentStop`…) para o servidor e sai em menos de meio segundo; nunca atrapalha a conversa.
 - **Servidor Node sem dependências:** HTTP só em 127.0.0.1, eventos por SSE, dados em JSON com gravação atômica.
-- **Mapa em pixel art desenhado por código** (canvas de 336 × 176 ampliado sem suavização) e figurinhas em SVG por cima.
+- **Espelho na nuvem:** `servidor/nuvem.mjs` resume o retrato (até 3,9 KB) e publica no ntfy.sh só quando algo
+  importante muda; `web/js/nuvem.js` ouve o tópico (histórico das últimas horas + SSE) e remonta o retrato que a
+  página já sabe desenhar.
+- **Mapa em pixel art desenhado por código** (canvas de 480 × 272 ampliado sem suavização), em **temas** trocáveis ao
+  vivo (`web/js/temas/`: `apartamento.js` e `escritorio.js`; cada um traz as salas, as mesas, a rede de caminhos, os
+  lugares de lazer, o desenho do cenário e o que se mexe nele). No escritório: seis salas e um jardim,
+  caminhos ligados num grafo (as agentes andam pelo caminho mais curto, Dijkstra) e uma tabela de atividades de lazer
+  (onde, em que pose, virada para onde e por quanto tempo). As personagens são sprites de 12 × 20 pixels com contorno,
+  quatro direções, passos e pose sentada, desenhados por código em `web/js/sprites.js`.
 - **Design System no Figma** feito pela Sofia: variáveis de cor, estado e medida, estilos de texto, componentes
   (botão, chip de estado, crachá, tarefa, nó da mesa, marco, figurinha), animações e padrões de interação. Os tokens do
   CSS têm os mesmos nomes. Detalhes em [`docs/design-system.md`](docs/design-system.md).
 - **Arquitetura:** [`docs/arquitetura.md`](docs/arquitetura.md).
-- **Testes:** `npm test` (23 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
-  persistência e segurança). Conferido também com execuções reais do Claude Code, pelo painel e por uma conversa comum.
+- **Testes:** `npm test` (28 testes: tarefas, planos, regra do Design System, estados, colaboração, cancelamento, ganchos,
+  persistência, segurança e o espelho na nuvem). Conferido também com execuções reais do Claude Code, pelo painel e por uma conversa comum.

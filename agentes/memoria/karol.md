@@ -49,6 +49,19 @@ aqui.
   do servidor chega por variável.
 - **Segredos.** Só em variável de ambiente. Nunca em arquivo versionado.
 
+### Do que era vídeo (Remotion)
+- **17/11/2026 · E Se, Hein?** Remotion 4 + `@remotion/three`. Sem GPU, transcrição com `@remotion/install-whisper-cpp`
+  (CPU, modelo `small`, ~40 s para 60 s de áudio); o `whisper-webgpu` da skill exige GPU. Downloads do Node atrás do
+  proxy precisam de `NODE_USE_ENV_PROXY=1` (whisper e o navegador do Remotion).
+- **Whisper estica palavras por cima das pausas.** Corrigir com o `silencedetect` do ffmpeg: o recomeço da fala é
+  confiável. Cuidado com três casos (palavra dentro da pausa perto do início, perto do fim, e palavra que mal começou
+  quando a pausa começa). Conferir comparando o início das palavras com o fim das pausas, não só olhando.
+- **Enquadramento com legenda fixa.** Legenda a 68 % da altura cobre o rosto se a câmera olhar muito para cima;
+  câmera na altura do personagem, quase reta, deixa a cabeça acima da legenda.
+- **Rótulos 2D presos ao 3D:** projetar com uma `PerspectiveCamera` igual à do mundo, calculada pela mesma função
+  pura do quadro. Sem drei.
+- **Folha de contato** (`scripts/quadros.sh`) acha defeito de enquadramento rápido; um quadro leva ~3 s.
+
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
   ele é chamado; um agente novo só carrega em sessão nova. Use a skill `criar-agente`.
@@ -63,3 +76,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | Data | Pedido | Resultado | Tempo | Custo | O que melhorar |
 |---|---|---|---|---|---|
 | 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
+| 17/11/2026 | Base do projeto de vídeo E Se, Hein? + vídeo da Lua | a avaliar | ~3 h | sem crédito pago | Estilo mudou no meio (referência da grua): fazer o mundo contínuo desde o início quando houver referência de câmera |

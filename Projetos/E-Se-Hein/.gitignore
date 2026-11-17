@@ -1,0 +1,22 @@
+# Dependências e saídas
+node_modules
+dist
+out/
+.cache/
+
+# Arquivos grandes (o repositório é público)
+public/audio/
+*.mp3
+*.wav
+*.m4a
+*.mp4
+*.mov
+*.png
+!public/marca/*.png
+
+# whisper.cpp compilado e modelos
+whisper.cpp/
+*.bin
+
+.DS_Store
+.env

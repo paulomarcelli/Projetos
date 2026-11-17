@@ -31,6 +31,7 @@ aqui.
 | Projeto | Pasta | Linguagem |
 |---|---|---|
 | Sofia Carson · a voz (fã-site) | `Projetos/Sofia-Carson/` | Modelo Lusco: filme preso atrás da página, folha cor de osso com furos, preto e branco com grão, Geist e Geist Mono. Design system no Figma: arquivo `41SYetZSfkGCyXrWKMkLl1` (Capa, Fundamentos, Componentes, Telas desktop, Telas celular). |
+| E Se, Hein? (vídeos) | `Projetos/E-Se-Hein/` | Mundo 3D de brinquedo low-poly, câmera contínua, legenda de uma palavra em Rubik Black 112 com contorno tinta, rótulos (pílula, seta, texto preso, cartão) e fechamento laranja. Design System no Figma: arquivo `okTGRiK8lTEXSoP9QDm0du` (Capa, Fundamentos, Componentes, Personagem, Fechamento, Storyboard · Lua); documento em `docs/design-system.md` + `docs/tokens.css` e `tokens.json`. Logo definitiva (conceito A, "E?") no arquivo `tQIfaeQgkOZhwh60i6Y5fH`. |
 | Escritório do Paulo | `Projetos/Escritorio-do-Paulo/` | Escritório escuro com a cor nos estados; mapa em pixel art visto de cima e figurinhas da equipe no estilo sticker (cabeça grande, contorno branco). Barlow Condensed, Geist e Geist Mono. Design System no Figma: arquivo `JFyZCMHbS1ASDzSdbGu6pC` (Capa, Fundamentos, Componentes, Ambiente e personagens, Telas); documento em `docs/design-system.md`. |
 | Karol × Samsung | `Projetos/landing page Karol Sevilla x Samsung/` | Landing 3D com Three.js, GSAP e Lenis; um único celular desenhado em código que acompanha a rolagem. |
 
@@ -104,6 +105,20 @@ aqui.
 - **16/11/2026 · Mapa do Escritório.** Ponto de lazer = pés da agente; ela ocupa 14 × 22 px acima do ponto. Móvel que
   muda de lugar leva junto o ponto de lazer. O vão de porta precisa de piso, senão aparece o fundo da cidade.
 
+
+- **17/11/2026 · Figma: `figma.group` e opacidade.** No helper `R(par,nome,x,y,w,h,cor,raio,opacidade)` passei a opacidade
+  na posição do raio e a água ficou opaca, escondendo os corais. Use objeto de opções ou confira a ordem dos
+  argumentos. Opacidade dentro da pintura ligada a variável (`{...paint, opacity}`) não pegou: use `node.opacity`.
+- **17/11/2026 · Figma: SVG com traço aberto.** Vetor criado por `createNodeFromSvg` pode vir com o traço alinhado por
+  dentro, e linha aberta some. Ponha `strokeAlign = 'CENTER'` em todo vetor com traço.
+- **17/11/2026 · Figma: modos de variável no storyboard.** Desenhar a cena ligada às variáveis e pôr o modo no quadro
+  (`setExplicitVariableModeForCollection`) mostra Dia, Noite e Breu com o mesmo desenho. Gradiente aceita variável na
+  parada (`boundVariables.color` em `gradientStops`).
+- **17/11/2026 · Vídeo vertical.** Zonas que a interface cobre (pior caso TikTok, Reels e Shorts): topo 0 a 210, base
+  1420 a 1920, direita x 900 a 1080 entre y 700 e 1420. Legenda de uma palavra precisa encolher pela largura real:
+  em 112 px, palavras com mais de 11 letras passam de 720 px.
+- **17/11/2026 · Verde de rótulo.** `#2FB24A` com texto branco dá 2,8:1; `#1A8F3F` dá 4,2:1.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -115,3 +130,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 15/11/2026 | T-0001 · Análise de design do fã-site Sofia Carson · a voz (só análise, com capturas do site no ar) | aguardando o retorno do Paulo | cerca de 1 h | — | Figma sem autorização: não deu para comparar com o Design System. Faltou Safari, Firefox e aparelho de verdade. |
 | 15/11/2026 | Folha Figma "Referências · Design systems" com 5 estilos, comparação e coleção Tema (5 modos) | aguardando o retorno do Paulo | cerca de 1 h | sem créditos de IA | Primeira captura do teste de tema mostrou fundo branco nos quadros internos; já criar quadros com `fills = []`. |
 | 16/11/2026 | Corrigir o apartamento da Monica e da Rachel no mapa (paredes, cozinha, móveis, caminhos) a partir da planta | aguardando o retorno do Paulo | cerca de 1 h 30 | — | Alinhar a planta com OpenCV logo no começo: medir no olho custou tempo. |
+| 17/11/2026 | Design System dos vídeos do E Se, Hein? no Figma (tokens em 3 modos, legenda, zonas seguras, rótulos, personagem, fechamento, storyboard da Lua) + `docs/design-system.md` e logo definitiva no arquivo da logo | aguardando o retorno do Paulo | cerca de 3 h (com uma pausa por limite de uso) | sem créditos de IA | Conferir a ordem dos argumentos dos helpers antes de desenhar 8 quadros; 4 defeitos vieram de opacidade e traço. |

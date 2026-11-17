@@ -1,0 +1,1152 @@
+{
+  "titulo": "E se a Lua desaparecesse?",
+  "audio": "audio/lua.wav",
+  "duracaoAudio": 60.186,
+  "roteiro": "[mysterious] E se, hoje à noite, a Lua simplesmente desaparecesse? Sem explosão. Sem barulho. Ela só... não estaria mais lá.\n\nA primeira coisa que você ia notar é o escuro. Longe das cidades, as noites ficariam pretas de verdade.\n\n[calm] Depois, o mar. A Lua é a principal responsável pelas marés. Sem ela, as marés ficariam com mais ou menos um terço do tamanho.\n\nE isso muda a vida na costa. Caranguejos e aves que dependem da maré perderiam o ritmo. E muitos corais, que soltam seus ovos guiados pela luz da lua, perderiam o sinal.\n\n[mysterious] Mas o pior vem devagar. A Lua estabiliza a inclinação da Terra. Sem ela, ao longo de milhões de anos, o eixo do planeta poderia balançar... e as estações ficariam extremas.\n\nOu seja: a Lua não é só bonita. Ela segura o nosso mundo no lugar.\n\n[curious] E você? Ia sentir mais falta da lua cheia ou das marés? Me conta aqui nos comentários.",
+  "pergunta": "Você ia sentir mais falta da lua cheia ou das marés?",
+  "trechos": [
+    {
+      "texto": "E se, hoje à noite, a Lua simplesmente desaparecesse? Sem explosão. Sem barulho. Ela só... não estaria mais lá.",
+      "inicio": 0.14,
+      "fim": 9.575,
+      "cena": "lua-some"
+    },
+    {
+      "texto": "A primeira coisa que você ia notar é o escuro. Longe das cidades, as noites ficariam pretas de verdade.",
+      "inicio": 10.224,
+      "fim": 16.86,
+      "cena": "noite-escura"
+    },
+    {
+      "texto": "Depois, o mar. A Lua é a principal responsável pelas marés. Sem ela, as marés ficariam com mais ou menos um terço do tamanho.",
+      "inicio": 17.342,
+      "fim": 26.15,
+      "cena": "mares"
+    },
+    {
+      "texto": "E isso muda a vida na costa. Caranguejos e aves que dependem da maré perderiam o ritmo. E muitos corais, que soltam seus ovos guiados pela luz da lua, perderiam o sinal.",
+      "inicio": 26.531,
+      "fim": 37.275,
+      "cena": "costa"
+    },
+    {
+      "texto": "Mas o pior vem devagar. A Lua estabiliza a inclinação da Terra. Sem ela, ao longo de milhões de anos, o eixo do planeta poderia balançar... e as estações ficariam extremas.",
+      "inicio": 37.772,
+      "fim": 49.387,
+      "cena": "eixo-terra"
+    },
+    {
+      "texto": "Ou seja: a Lua não é só bonita. Ela segura o nosso mundo no lugar.",
+      "inicio": 49.74,
+      "fim": 54.259,
+      "cena": "terra-lua"
+    },
+    {
+      "texto": "E você? Ia sentir mais falta da lua cheia ou das marés? Me conta aqui nos comentários.",
+      "inicio": 54.671,
+      "fim": 59.963,
+      "cena": "pergunta"
+    }
+  ],
+  "palavras": [
+    {
+      "texto": "E",
+      "paragrafo": 0,
+      "inicioMs": 140,
+      "fimMs": 140,
+      "casou": true
+    },
+    {
+      "texto": "se,",
+      "paragrafo": 0,
+      "inicioMs": 140,
+      "fimMs": 420,
+      "casou": true
+    },
+    {
+      "texto": "hoje",
+      "paragrafo": 0,
+      "inicioMs": 420,
+      "fimMs": 728,
+      "casou": true
+    },
+    {
+      "texto": "à",
+      "paragrafo": 0,
+      "inicioMs": 923,
+      "fimMs": 1270,
+      "casou": true
+    },
+    {
+      "texto": "noite,",
+      "paragrafo": 0,
+      "inicioMs": 1270,
+      "fimMs": 1880,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 0,
+      "inicioMs": 2115,
+      "fimMs": 2120,
+      "casou": true
+    },
+    {
+      "texto": "Lua",
+      "paragrafo": 0,
+      "inicioMs": 2120,
+      "fimMs": 2360,
+      "casou": true
+    },
+    {
+      "texto": "simplesmente",
+      "paragrafo": 0,
+      "inicioMs": 2360,
+      "fimMs": 3460,
+      "casou": true
+    },
+    {
+      "texto": "desaparecesse?",
+      "paragrafo": 0,
+      "inicioMs": 3460,
+      "fimMs": 4422,
+      "casou": true
+    },
+    {
+      "texto": "Sem",
+      "paragrafo": 0,
+      "inicioMs": 4942,
+      "fimMs": 5070,
+      "casou": true
+    },
+    {
+      "texto": "explosão.",
+      "paragrafo": 0,
+      "inicioMs": 5070,
+      "fimMs": 5744,
+      "casou": true
+    },
+    {
+      "texto": "Sem",
+      "paragrafo": 0,
+      "inicioMs": 6163,
+      "fimMs": 6300,
+      "casou": true
+    },
+    {
+      "texto": "barulho.",
+      "paragrafo": 0,
+      "inicioMs": 6300,
+      "fimMs": 6859,
+      "casou": true
+    },
+    {
+      "texto": "Ela",
+      "paragrafo": 0,
+      "inicioMs": 7331,
+      "fimMs": 7940,
+      "casou": true
+    },
+    {
+      "texto": "só...",
+      "paragrafo": 0,
+      "inicioMs": 7940,
+      "fimMs": 8134,
+      "casou": true
+    },
+    {
+      "texto": "não",
+      "paragrafo": 0,
+      "inicioMs": 8637,
+      "fimMs": 8740,
+      "casou": true
+    },
+    {
+      "texto": "estaria",
+      "paragrafo": 0,
+      "inicioMs": 8740,
+      "fimMs": 9140,
+      "casou": true
+    },
+    {
+      "texto": "mais",
+      "paragrafo": 0,
+      "inicioMs": 9140,
+      "fimMs": 9358,
+      "casou": true
+    },
+    {
+      "texto": "lá.",
+      "paragrafo": 0,
+      "inicioMs": 9358,
+      "fimMs": 9575,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 1,
+      "inicioMs": 10224,
+      "fimMs": 10230,
+      "casou": true
+    },
+    {
+      "texto": "primeira",
+      "paragrafo": 1,
+      "inicioMs": 10230,
+      "fimMs": 10770,
+      "casou": true
+    },
+    {
+      "texto": "coisa",
+      "paragrafo": 1,
+      "inicioMs": 10770,
+      "fimMs": 11140,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 1,
+      "inicioMs": 11140,
+      "fimMs": 11360,
+      "casou": true
+    },
+    {
+      "texto": "você",
+      "paragrafo": 1,
+      "inicioMs": 11360,
+      "fimMs": 11730,
+      "casou": true
+    },
+    {
+      "texto": "ia",
+      "paragrafo": 1,
+      "inicioMs": 11730,
+      "fimMs": 11880,
+      "casou": true
+    },
+    {
+      "texto": "notar",
+      "paragrafo": 1,
+      "inicioMs": 11880,
+      "fimMs": 12240,
+      "casou": true
+    },
+    {
+      "texto": "é",
+      "paragrafo": 1,
+      "inicioMs": 12240,
+      "fimMs": 12390,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 1,
+      "inicioMs": 12390,
+      "fimMs": 12470,
+      "casou": true
+    },
+    {
+      "texto": "escuro.",
+      "paragrafo": 1,
+      "inicioMs": 12470,
+      "fimMs": 12799,
+      "casou": true
+    },
+    {
+      "texto": "Longe",
+      "paragrafo": 1,
+      "inicioMs": 13270,
+      "fimMs": 13560,
+      "casou": true
+    },
+    {
+      "texto": "das",
+      "paragrafo": 1,
+      "inicioMs": 13560,
+      "fimMs": 13810,
+      "casou": true
+    },
+    {
+      "texto": "cidades,",
+      "paragrafo": 1,
+      "inicioMs": 13810,
+      "fimMs": 14590,
+      "casou": true
+    },
+    {
+      "texto": "as",
+      "paragrafo": 1,
+      "inicioMs": 14590,
+      "fimMs": 14680,
+      "casou": true
+    },
+    {
+      "texto": "noites",
+      "paragrafo": 1,
+      "inicioMs": 14680,
+      "fimMs": 15150,
+      "casou": true
+    },
+    {
+      "texto": "ficariam",
+      "paragrafo": 1,
+      "inicioMs": 15150,
+      "fimMs": 15780,
+      "casou": true
+    },
+    {
+      "texto": "pretas",
+      "paragrafo": 1,
+      "inicioMs": 15780,
+      "fimMs": 16250,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 1,
+      "inicioMs": 16250,
+      "fimMs": 16410,
+      "casou": true
+    },
+    {
+      "texto": "verdade.",
+      "paragrafo": 1,
+      "inicioMs": 16410,
+      "fimMs": 16860,
+      "casou": true
+    },
+    {
+      "texto": "Depois,",
+      "paragrafo": 2,
+      "inicioMs": 17342,
+      "fimMs": 18099,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 2,
+      "inicioMs": 18283,
+      "fimMs": 18330,
+      "casou": true
+    },
+    {
+      "texto": "mar.",
+      "paragrafo": 2,
+      "inicioMs": 18330,
+      "fimMs": 18773,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 2,
+      "inicioMs": 19198,
+      "fimMs": 19200,
+      "casou": true
+    },
+    {
+      "texto": "Lua",
+      "paragrafo": 2,
+      "inicioMs": 19200,
+      "fimMs": 19370,
+      "casou": true
+    },
+    {
+      "texto": "é",
+      "paragrafo": 2,
+      "inicioMs": 19370,
+      "fimMs": 19520,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 2,
+      "inicioMs": 19520,
+      "fimMs": 19590,
+      "casou": true
+    },
+    {
+      "texto": "principal",
+      "paragrafo": 2,
+      "inicioMs": 19590,
+      "fimMs": 20370,
+      "casou": true
+    },
+    {
+      "texto": "responsável",
+      "paragrafo": 2,
+      "inicioMs": 20370,
+      "fimMs": 21260,
+      "casou": true
+    },
+    {
+      "texto": "pelas",
+      "paragrafo": 2,
+      "inicioMs": 21260,
+      "fimMs": 21590,
+      "casou": true
+    },
+    {
+      "texto": "marés.",
+      "paragrafo": 2,
+      "inicioMs": 21590,
+      "fimMs": 22013,
+      "casou": true
+    },
+    {
+      "texto": "Sem",
+      "paragrafo": 2,
+      "inicioMs": 22363,
+      "fimMs": 22580,
+      "casou": true
+    },
+    {
+      "texto": "ela,",
+      "paragrafo": 2,
+      "inicioMs": 22580,
+      "fimMs": 22972,
+      "casou": true
+    },
+    {
+      "texto": "as",
+      "paragrafo": 2,
+      "inicioMs": 23182,
+      "fimMs": 23210,
+      "casou": true
+    },
+    {
+      "texto": "marés",
+      "paragrafo": 2,
+      "inicioMs": 23210,
+      "fimMs": 23530,
+      "casou": true
+    },
+    {
+      "texto": "ficariam",
+      "paragrafo": 2,
+      "inicioMs": 23530,
+      "fimMs": 24060,
+      "casou": true
+    },
+    {
+      "texto": "com",
+      "paragrafo": 2,
+      "inicioMs": 24060,
+      "fimMs": 24200,
+      "casou": true
+    },
+    {
+      "texto": "mais",
+      "paragrafo": 2,
+      "inicioMs": 24200,
+      "fimMs": 24540,
+      "casou": true
+    },
+    {
+      "texto": "ou",
+      "paragrafo": 2,
+      "inicioMs": 24540,
+      "fimMs": 24620,
+      "casou": true
+    },
+    {
+      "texto": "menos",
+      "paragrafo": 2,
+      "inicioMs": 24620,
+      "fimMs": 24960,
+      "casou": true
+    },
+    {
+      "texto": "um",
+      "paragrafo": 2,
+      "inicioMs": 24960,
+      "fimMs": 25100,
+      "casou": true
+    },
+    {
+      "texto": "terço",
+      "paragrafo": 2,
+      "inicioMs": 25100,
+      "fimMs": 25520,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 2,
+      "inicioMs": 25520,
+      "fimMs": 25700,
+      "casou": true
+    },
+    {
+      "texto": "tamanho.",
+      "paragrafo": 2,
+      "inicioMs": 25700,
+      "fimMs": 26150,
+      "casou": true
+    },
+    {
+      "texto": "E",
+      "paragrafo": 3,
+      "inicioMs": 26531,
+      "fimMs": 26651,
+      "casou": true
+    },
+    {
+      "texto": "isso",
+      "paragrafo": 3,
+      "inicioMs": 26651,
+      "fimMs": 26880,
+      "casou": true
+    },
+    {
+      "texto": "muda",
+      "paragrafo": 3,
+      "inicioMs": 26880,
+      "fimMs": 27080,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 3,
+      "inicioMs": 27080,
+      "fimMs": 27150,
+      "casou": true
+    },
+    {
+      "texto": "vida",
+      "paragrafo": 3,
+      "inicioMs": 27150,
+      "fimMs": 27470,
+      "casou": true
+    },
+    {
+      "texto": "na",
+      "paragrafo": 3,
+      "inicioMs": 27470,
+      "fimMs": 27610,
+      "casou": true
+    },
+    {
+      "texto": "costa.",
+      "paragrafo": 3,
+      "inicioMs": 27610,
+      "fimMs": 28220,
+      "casou": true
+    },
+    {
+      "texto": "Caranguejos",
+      "paragrafo": 3,
+      "inicioMs": 28577,
+      "fimMs": 29060,
+      "casou": true
+    },
+    {
+      "texto": "e",
+      "paragrafo": 3,
+      "inicioMs": 29060,
+      "fimMs": 29120,
+      "casou": true
+    },
+    {
+      "texto": "aves",
+      "paragrafo": 3,
+      "inicioMs": 29120,
+      "fimMs": 29430,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 3,
+      "inicioMs": 29430,
+      "fimMs": 29660,
+      "casou": true
+    },
+    {
+      "texto": "dependem",
+      "paragrafo": 3,
+      "inicioMs": 29660,
+      "fimMs": 30280,
+      "casou": true
+    },
+    {
+      "texto": "da",
+      "paragrafo": 3,
+      "inicioMs": 30280,
+      "fimMs": 30430,
+      "casou": true
+    },
+    {
+      "texto": "maré",
+      "paragrafo": 3,
+      "inicioMs": 30430,
+      "fimMs": 30810,
+      "casou": true
+    },
+    {
+      "texto": "perderiam",
+      "paragrafo": 3,
+      "inicioMs": 30810,
+      "fimMs": 31540,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 3,
+      "inicioMs": 31540,
+      "fimMs": 31580,
+      "casou": true
+    },
+    {
+      "texto": "ritmo.",
+      "paragrafo": 3,
+      "inicioMs": 31580,
+      "fimMs": 31965,
+      "casou": true
+    },
+    {
+      "texto": "E",
+      "paragrafo": 3,
+      "inicioMs": 32315,
+      "fimMs": 32330,
+      "casou": true
+    },
+    {
+      "texto": "muitos",
+      "paragrafo": 3,
+      "inicioMs": 32330,
+      "fimMs": 32820,
+      "casou": true
+    },
+    {
+      "texto": "corais,",
+      "paragrafo": 3,
+      "inicioMs": 32820,
+      "fimMs": 33490,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 3,
+      "inicioMs": 33490,
+      "fimMs": 33590,
+      "casou": true
+    },
+    {
+      "texto": "soltam",
+      "paragrafo": 3,
+      "inicioMs": 33590,
+      "fimMs": 34040,
+      "casou": true
+    },
+    {
+      "texto": "seus",
+      "paragrafo": 3,
+      "inicioMs": 34040,
+      "fimMs": 34330,
+      "casou": true
+    },
+    {
+      "texto": "ovos",
+      "paragrafo": 3,
+      "inicioMs": 34330,
+      "fimMs": 34670,
+      "casou": true
+    },
+    {
+      "texto": "guiados",
+      "paragrafo": 3,
+      "inicioMs": 34670,
+      "fimMs": 35150,
+      "casou": true
+    },
+    {
+      "texto": "pela",
+      "paragrafo": 3,
+      "inicioMs": 35150,
+      "fimMs": 35450,
+      "casou": true
+    },
+    {
+      "texto": "luz",
+      "paragrafo": 3,
+      "inicioMs": 35450,
+      "fimMs": 35670,
+      "casou": true
+    },
+    {
+      "texto": "da",
+      "paragrafo": 3,
+      "inicioMs": 35670,
+      "fimMs": 35820,
+      "casou": true
+    },
+    {
+      "texto": "lua,",
+      "paragrafo": 3,
+      "inicioMs": 35820,
+      "fimMs": 36015,
+      "casou": true
+    },
+    {
+      "texto": "perderiam",
+      "paragrafo": 3,
+      "inicioMs": 36277,
+      "fimMs": 36860,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 3,
+      "inicioMs": 36860,
+      "fimMs": 36930,
+      "casou": true
+    },
+    {
+      "texto": "sinal.",
+      "paragrafo": 3,
+      "inicioMs": 36930,
+      "fimMs": 37275,
+      "casou": true
+    },
+    {
+      "texto": "Mas",
+      "paragrafo": 4,
+      "inicioMs": 37772,
+      "fimMs": 37940,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 4,
+      "inicioMs": 37940,
+      "fimMs": 38090,
+      "casou": true
+    },
+    {
+      "texto": "pior",
+      "paragrafo": 4,
+      "inicioMs": 38090,
+      "fimMs": 38440,
+      "casou": true
+    },
+    {
+      "texto": "vem",
+      "paragrafo": 4,
+      "inicioMs": 38440,
+      "fimMs": 38740,
+      "casou": true
+    },
+    {
+      "texto": "devagar.",
+      "paragrafo": 4,
+      "inicioMs": 38740,
+      "fimMs": 39413,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 4,
+      "inicioMs": 39812,
+      "fimMs": 39830,
+      "casou": true
+    },
+    {
+      "texto": "Lua",
+      "paragrafo": 4,
+      "inicioMs": 39830,
+      "fimMs": 40040,
+      "casou": true
+    },
+    {
+      "texto": "estabiliza",
+      "paragrafo": 4,
+      "inicioMs": 40040,
+      "fimMs": 40740,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 4,
+      "inicioMs": 40740,
+      "fimMs": 40810,
+      "casou": true
+    },
+    {
+      "texto": "inclinação",
+      "paragrafo": 4,
+      "inicioMs": 40810,
+      "fimMs": 41650,
+      "casou": true
+    },
+    {
+      "texto": "da",
+      "paragrafo": 4,
+      "inicioMs": 41650,
+      "fimMs": 41790,
+      "casou": true
+    },
+    {
+      "texto": "Terra.",
+      "paragrafo": 4,
+      "inicioMs": 41790,
+      "fimMs": 42156,
+      "casou": true
+    },
+    {
+      "texto": "Sem",
+      "paragrafo": 4,
+      "inicioMs": 42453,
+      "fimMs": 42620,
+      "casou": true
+    },
+    {
+      "texto": "ela,",
+      "paragrafo": 4,
+      "inicioMs": 42620,
+      "fimMs": 43020,
+      "casou": true
+    },
+    {
+      "texto": "ao",
+      "paragrafo": 4,
+      "inicioMs": 43020,
+      "fimMs": 43230,
+      "casou": true
+    },
+    {
+      "texto": "longo",
+      "paragrafo": 4,
+      "inicioMs": 43230,
+      "fimMs": 43590,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 4,
+      "inicioMs": 43590,
+      "fimMs": 43750,
+      "casou": true
+    },
+    {
+      "texto": "milhões",
+      "paragrafo": 4,
+      "inicioMs": 43750,
+      "fimMs": 44410,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 4,
+      "inicioMs": 44410,
+      "fimMs": 44570,
+      "casou": true
+    },
+    {
+      "texto": "anos,",
+      "paragrafo": 4,
+      "inicioMs": 44570,
+      "fimMs": 44848,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 4,
+      "inicioMs": 45041,
+      "fimMs": 45140,
+      "casou": true
+    },
+    {
+      "texto": "eixo",
+      "paragrafo": 4,
+      "inicioMs": 45140,
+      "fimMs": 45370,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 4,
+      "inicioMs": 45370,
+      "fimMs": 45500,
+      "casou": true
+    },
+    {
+      "texto": "planeta",
+      "paragrafo": 4,
+      "inicioMs": 45500,
+      "fimMs": 46000,
+      "casou": true
+    },
+    {
+      "texto": "poderia",
+      "paragrafo": 4,
+      "inicioMs": 46000,
+      "fimMs": 46550,
+      "casou": true
+    },
+    {
+      "texto": "balançar...",
+      "paragrafo": 4,
+      "inicioMs": 46550,
+      "fimMs": 47002,
+      "casou": true
+    },
+    {
+      "texto": "e",
+      "paragrafo": 4,
+      "inicioMs": 47403,
+      "fimMs": 47523,
+      "casou": true
+    },
+    {
+      "texto": "as",
+      "paragrafo": 4,
+      "inicioMs": 47523,
+      "fimMs": 47540,
+      "casou": true
+    },
+    {
+      "texto": "estações",
+      "paragrafo": 4,
+      "inicioMs": 47540,
+      "fimMs": 48250,
+      "casou": true
+    },
+    {
+      "texto": "ficariam",
+      "paragrafo": 4,
+      "inicioMs": 48250,
+      "fimMs": 48850,
+      "casou": true
+    },
+    {
+      "texto": "extremas.",
+      "paragrafo": 4,
+      "inicioMs": 48850,
+      "fimMs": 49387,
+      "casou": true
+    },
+    {
+      "texto": "Ou",
+      "paragrafo": 5,
+      "inicioMs": 49740,
+      "fimMs": 49820,
+      "casou": true
+    },
+    {
+      "texto": "seja:",
+      "paragrafo": 5,
+      "inicioMs": 49820,
+      "fimMs": 50049,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 5,
+      "inicioMs": 50049,
+      "fimMs": 50277,
+      "casou": true
+    },
+    {
+      "texto": "Lua",
+      "paragrafo": 5,
+      "inicioMs": 50609,
+      "fimMs": 50630,
+      "casou": true
+    },
+    {
+      "texto": "não",
+      "paragrafo": 5,
+      "inicioMs": 50630,
+      "fimMs": 50960,
+      "casou": true
+    },
+    {
+      "texto": "é",
+      "paragrafo": 5,
+      "inicioMs": 50960,
+      "fimMs": 51120,
+      "casou": true
+    },
+    {
+      "texto": "só",
+      "paragrafo": 5,
+      "inicioMs": 51120,
+      "fimMs": 51370,
+      "casou": true
+    },
+    {
+      "texto": "bonita.",
+      "paragrafo": 5,
+      "inicioMs": 51370,
+      "fimMs": 52035,
+      "casou": true
+    },
+    {
+      "texto": "Ela",
+      "paragrafo": 5,
+      "inicioMs": 52300,
+      "fimMs": 52440,
+      "casou": true
+    },
+    {
+      "texto": "segura",
+      "paragrafo": 5,
+      "inicioMs": 52440,
+      "fimMs": 52910,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 5,
+      "inicioMs": 52910,
+      "fimMs": 52990,
+      "casou": true
+    },
+    {
+      "texto": "nosso",
+      "paragrafo": 5,
+      "inicioMs": 52990,
+      "fimMs": 53380,
+      "casou": true
+    },
+    {
+      "texto": "mundo",
+      "paragrafo": 5,
+      "inicioMs": 53380,
+      "fimMs": 53770,
+      "casou": true
+    },
+    {
+      "texto": "no",
+      "paragrafo": 5,
+      "inicioMs": 53770,
+      "fimMs": 53920,
+      "casou": true
+    },
+    {
+      "texto": "lugar.",
+      "paragrafo": 5,
+      "inicioMs": 53920,
+      "fimMs": 54259,
+      "casou": true
+    },
+    {
+      "texto": "E",
+      "paragrafo": 6,
+      "inicioMs": 54671,
+      "fimMs": 54680,
+      "casou": true
+    },
+    {
+      "texto": "você?",
+      "paragrafo": 6,
+      "inicioMs": 54680,
+      "fimMs": 55159,
+      "casou": true
+    },
+    {
+      "texto": "Ia",
+      "paragrafo": 6,
+      "inicioMs": 55522,
+      "fimMs": 55662,
+      "casou": true
+    },
+    {
+      "texto": "sentir",
+      "paragrafo": 6,
+      "inicioMs": 55662,
+      "fimMs": 55870,
+      "casou": true
+    },
+    {
+      "texto": "mais",
+      "paragrafo": 6,
+      "inicioMs": 55870,
+      "fimMs": 56170,
+      "casou": true
+    },
+    {
+      "texto": "falta",
+      "paragrafo": 6,
+      "inicioMs": 56170,
+      "fimMs": 56560,
+      "casou": true
+    },
+    {
+      "texto": "da",
+      "paragrafo": 6,
+      "inicioMs": 56560,
+      "fimMs": 56720,
+      "casou": true
+    },
+    {
+      "texto": "lua",
+      "paragrafo": 6,
+      "inicioMs": 56720,
+      "fimMs": 56950,
+      "casou": true
+    },
+    {
+      "texto": "cheia",
+      "paragrafo": 6,
+      "inicioMs": 56950,
+      "fimMs": 57340,
+      "casou": true
+    },
+    {
+      "texto": "ou",
+      "paragrafo": 6,
+      "inicioMs": 57340,
+      "fimMs": 57500,
+      "casou": true
+    },
+    {
+      "texto": "das",
+      "paragrafo": 6,
+      "inicioMs": 57500,
+      "fimMs": 57750,
+      "casou": true
+    },
+    {
+      "texto": "marés?",
+      "paragrafo": 6,
+      "inicioMs": 57750,
+      "fimMs": 58264,
+      "casou": true
+    },
+    {
+      "texto": "Me",
+      "paragrafo": 6,
+      "inicioMs": 58587,
+      "fimMs": 58707,
+      "casou": true
+    },
+    {
+      "texto": "conta",
+      "paragrafo": 6,
+      "inicioMs": 58707,
+      "fimMs": 58820,
+      "casou": true
+    },
+    {
+      "texto": "aqui",
+      "paragrafo": 6,
+      "inicioMs": 58820,
+      "fimMs": 59040,
+      "casou": true
+    },
+    {
+      "texto": "nos",
+      "paragrafo": 6,
+      "inicioMs": 59040,
+      "fimMs": 59200,
+      "casou": true
+    },
+    {
+      "texto": "comentários.",
+      "paragrafo": 6,
+      "inicioMs": 59200,
+      "fimMs": 59963,
+      "casou": true
+    }
+  ]
+}

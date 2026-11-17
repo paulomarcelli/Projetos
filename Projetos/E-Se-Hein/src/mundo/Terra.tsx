@@ -1,98 +1,87 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 import { sorteador } from "./aleatorio";
-import { geometriaLua } from "./Lua";
-import { mundo } from "./paleta";
+import { DiscoLua } from "./Lua";
+import { corMundo } from "./paleta";
 
-// Terra de brinquedo flutuando no céu noturno, acima do mar.
-export const TERRA_POS: [number, number, number] = [0, 300, -420];
+// Terra de brinquedo no espaço, bem acima do mundo (a névoa esconde o chão lá embaixo).
+export const TERRA_POS: [number, number, number] = [0, 2600, -300];
 export const TERRA_RAIO = 26;
 export const INCLINACAO = (23.4 * Math.PI) / 180;
+/** Lua no espaço (Q6): 27% do diâmetro da Terra; distância fora de escala. */
+export const LUA_ESPACO_OFFSET: [number, number, number] = [74, 52, -20];
+export const LUA_ESPACO_DIAMETRO = TERRA_RAIO * 2 * 0.27;
+
+const fixo = { dia: 1, noite: 0, breu: 0 };
 
 function geometriaTerra() {
-  const g = new THREE.IcosahedronGeometry(1, 3).toNonIndexed();
+  const g = new THREE.IcosahedronGeometry(1, 4).toNonIndexed();
   const r = sorteador(11);
-  const manchas = Array.from({ length: 9 }, () => ({
-    c: new THREE.Vector3(r() - 0.5, (r() - 0.5) * 1.4, r() - 0.5).normalize(),
-    raio: 0.32 + r() * 0.35,
+  const manchas = Array.from({ length: 8 }, () => ({
+    c: new THREE.Vector3(r() - 0.5, (r() - 0.5) * 1.2, r() - 0.5).normalize(),
+    raio: 0.3 + r() * 0.3,
   }));
   const pos = g.getAttribute("position");
   const cores: number[] = [];
-  const mar = new THREE.Color(mundo.terraMar);
-  const terra = new THREE.Color(mundo.terraContinente);
-  const gelo = new THREE.Color(mundo.terraGelo);
+  const mar = new THREE.Color(corMundo("mundo/terra/oceano", fixo));
+  const terra = new THREE.Color(corMundo("mundo/terra/continente", fixo));
+  const gelo = new THREE.Color(corMundo("mundo/terra/gelo", fixo));
   const v = new THREE.Vector3();
   for (let i = 0; i < pos.count; i += 3) {
     v.set(0, 0, 0);
     for (let k = 0; k < 3; k++) v.add(new THREE.Vector3().fromBufferAttribute(pos, i + k));
     v.normalize();
-    let cor = mar;
-    if (Math.abs(v.y) > 0.86) cor = gelo;
-    else if (manchas.some((m) => v.distanceTo(m.c) < m.raio)) cor = terra;
+    const cor = Math.abs(v.y) > 0.9 ? gelo : manchas.some((m) => v.distanceTo(m.c) < m.raio) ? terra : mar;
     for (let k = 0; k < 3; k++) cores.push(cor.r, cor.g, cor.b);
   }
   g.setAttribute("color", new THREE.Float32BufferAttribute(cores, 3));
   return g;
 }
 
-/** Lua pequena em órbita, relativa ao centro da Terra. */
-const orbita = (tempo: number): [number, number, number] => {
-  const a = tempo * 0.6;
-  return [Math.cos(a) * TERRA_RAIO * 2, Math.sin(a) * TERRA_RAIO * 2 * 0.12, Math.sin(a) * TERRA_RAIO * 2];
-};
+/** Elipse tracejada que passa pela Lua (vista meio de lado). */
+function orbita() {
+  const u = new THREE.Vector3(...LUA_ESPACO_OFFSET);
+  const v = new THREE.Vector3().crossVectors(u, new THREE.Vector3(0, 1, 0)).normalize().multiplyScalar(u.length() * 0.6);
+  const pts = Array.from({ length: 129 }, (_, i) => {
+    const a = (i / 128) * Math.PI * 2;
+    return u.clone().multiplyScalar(Math.cos(a)).add(v.clone().multiplyScalar(Math.sin(a)));
+  });
+  const g = new THREE.BufferGeometry().setFromPoints(pts);
+  const l = new THREE.Line(g, new THREE.LineDashedMaterial({ color: "#ffffff", dashSize: 3, gapSize: 3, transparent: true, opacity: 0.55, fog: false }));
+  l.computeLineDistances();
+  return l;
+}
 
-/** Posição da Lua pequena no mundo (para prender o rótulo). */
-export const posicaoLuaOrbita = (tempo: number): [number, number, number] => {
-  const o = orbita(tempo);
-  return [TERRA_POS[0] + o[0], TERRA_POS[1] + o[1], TERRA_POS[2] + o[2]];
-};
+type Props = { tempo: number; balanco: number; luaEspaco: number; visivel: number };
 
-type Props = {
-  tempo: number;
-  /** Balanço do eixo em radianos, somado à inclinação de 23,4°. */
-  balanco: number;
-  /** Lua pequena em órbita (0 = sem Lua). */
-  luaOrbita: number;
-  visivel: number;
-};
-
-export const Terra: React.FC<Props> = ({ tempo, balanco, luaOrbita, visivel }) => {
+export const Terra: React.FC<Props> = ({ tempo, balanco, luaEspaco, visivel }) => {
   const geo = useMemo(geometriaTerra, []);
-  const geoLua = useMemo(() => geometriaLua(2), []);
+  const matTerra = useMemo(() => new THREE.MeshLambertMaterial({ vertexColors: true, fog: false }), []);
+  const matEixo = useMemo(() => new THREE.MeshBasicMaterial({ color: "#ffffff", fog: false }), []);
+  const linha = useMemo(orbita, []);
   if (visivel <= 0.001) return null;
+  const luaPos: [number, number, number] = [TERRA_POS[0] + LUA_ESPACO_OFFSET[0], TERRA_POS[1] + LUA_ESPACO_OFFSET[1], TERRA_POS[2] + LUA_ESPACO_OFFSET[2]];
   return (
-    <group position={TERRA_POS} scale={visivel}>
-      <group rotation={[0, 0, INCLINACAO + balanco]}>
-        <mesh geometry={geo} scale={TERRA_RAIO} rotation={[0, tempo * 0.35, 0]}>
-          <meshLambertMaterial vertexColors flatShading emissive="#1d2f55" />
-        </mesh>
-        {/* Eixo */}
-        <mesh>
-          <cylinderGeometry args={[0.7, 0.7, TERRA_RAIO * 2.9, 8]} />
-          <meshLambertMaterial color="#ffd21f" emissive="#6b5400" />
-        </mesh>
-        {[1, -1].map((l) => (
-          <mesh key={l} position={[0, l * TERRA_RAIO * 1.45, 0]}>
-            <sphereGeometry args={[1.5, 10, 8]} />
-            <meshLambertMaterial color="#ffd21f" emissive="#6b5400" />
-          </mesh>
-        ))}
-      </group>
-      {luaOrbita > 0.01 ? (
-        <group>
-          <mesh rotation={[Math.PI / 2 - 0.12, 0, 0]}>
-            <torusGeometry args={[TERRA_RAIO * 2, 0.25, 6, 96]} />
-            <meshBasicMaterial color="#ffffff" transparent opacity={0.35 * luaOrbita} />
-          </mesh>
-          <mesh
-            geometry={geoLua}
-            position={orbita(tempo)}
-            scale={7 * luaOrbita}
-          >
-            <meshLambertMaterial vertexColors flatShading emissive="#6f6b5c" />
+    <group>
+      <group position={TERRA_POS}>
+        <group rotation={[0, 0, -(INCLINACAO + balanco)]}>
+          <mesh geometry={geo} material={matTerra} scale={TERRA_RAIO} rotation={[0, tempo * 0.25, 0]} />
+          <mesh material={matEixo}>
+            <cylinderGeometry args={[0.35, 0.35, TERRA_RAIO * 3, 6]} />
           </mesh>
         </group>
-      ) : null}
+        {luaEspaco > 0.01 ? (
+          <primitive object={linha} />
+        ) : null}
+      </group>
+      <DiscoLua position={luaPos} diametro={LUA_ESPACO_DIAMETRO} opacidade={luaEspaco} />
     </group>
   );
+};
+
+/** Ponta do eixo (polo norte) no mundo, para prender rótulos. */
+export const poloNorte = (balanco: number): [number, number, number] => {
+  const a = -(INCLINACAO + balanco);
+  const h = TERRA_RAIO * 1.5;
+  return [TERRA_POS[0] - Math.sin(a) * h, TERRA_POS[1] + Math.cos(a) * h, TERRA_POS[2]];
 };

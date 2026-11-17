@@ -1,42 +1,45 @@
-import { useCurrentFrame, useVideoConfig } from "remotion";
+import { Easing, useCurrentFrame, useVideoConfig } from "remotion";
 import { FONTE } from "../fontes";
-import { formatarPalavra, palavraAtiva } from "../lib/tempo";
-import type { Palavra } from "../tipos";
+import { ehDestaque, formatarPalavra, palavraAtiva, tamanhoLegenda } from "../lib/tempo";
+import { medidas as M, rotulo } from "../mundo/paleta";
+import type { Palavra, Trecho } from "../tipos";
+import { larguraTexto } from "./medir";
 
-// Uma palavra por vez, branca, grossa, com contorno escuro, a ~68 % da altura.
-// Faixa horizontal 110–910 px: fora da coluna de botões do TikTok (direita).
-const CENTRO_Y = 0.68;
-const ESQUERDA = 110;
-const LARGURA = 800;
+// Legenda de uma palavra (Design System): centro x 540, y 1280; Rubik 900 112 px, encolhe medindo a largura
+// real até caber em 720 px (mínimo 84); contorno 12 px por fora, sombra dura; destaque amarelo.
+const entrada = Easing.bezier(0.34, 1.56, 0.64, 1);
 
-export const Legenda: React.FC<{ palavras: Palavra[]; inicioVoz: number }> = ({ palavras, inicioVoz }) => {
+export const Legenda: React.FC<{ palavras: Palavra[]; trechos: Trecho[]; inicioVoz: number }> = ({ palavras, trechos, inicioVoz }) => {
   const frame = useCurrentFrame();
-  const { fps, height } = useVideoConfig();
+  const { fps } = useVideoConfig();
   const ms = (frame / fps - inicioVoz) * 1000;
   const i = palavraAtiva(palavras, ms);
   if (i < 0) return null;
   const texto = formatarPalavra(palavras[i].texto);
-  const tamanho = Math.min(108, LARGURA / (texto.length * 0.68));
-  const desde = Math.min(1, (ms - palavras[i].inicioMs) / 110);
-  const escala = 0.84 + 0.16 * (1 - Math.pow(1 - desde, 3));
+  const tamanho = tamanhoLegenda((t) => larguraTexto(texto, t, 900, -0.01));
+  const quadros = Math.max(0, ((ms - palavras[i].inicioMs) / 1000) * fps);
+  const escala = 0.86 + 0.14 * entrada(Math.min(1, quadros / 4));
   return (
     <div
       style={{
         position: "absolute",
-        left: ESQUERDA,
-        width: LARGURA,
-        top: height * CENTRO_Y,
+        left: M["legenda/centro-x"] - 540,
+        width: 1080,
+        top: M["legenda/centro-y"],
         translate: "0 -50%",
         textAlign: "center",
         fontFamily: FONTE,
-        fontWeight: 800,
+        fontWeight: 900,
         fontSize: tamanho,
         lineHeight: 1,
-        color: "#fff",
-        WebkitTextStroke: `${Math.round(tamanho * 0.16)}px #141414`,
+        letterSpacing: "-0.01em",
+        color: ehDestaque(palavras, i, trechos) ? rotulo.amarelo : "#fff",
+        WebkitTextStroke: `${M["legenda/contorno-largura"] * 2}px ${rotulo.contorno}`,
         paintOrder: "stroke fill",
-        textShadow: "0 7px 0 rgba(0,0,0,0.35)",
+        strokeLinejoin: "round",
+        textShadow: `0 ${M["legenda/sombra-y"]}px 0 rgba(17,17,17,0.35)`,
         scale: String(escala),
+        opacity: Math.min(1, quadros / 2),
         whiteSpace: "nowrap",
       }}
     >

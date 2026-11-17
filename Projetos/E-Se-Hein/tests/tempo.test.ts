@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { criarAos, formatarPalavra, limitesDasCenas, misturaDeCenas, palavraAtiva } from "../src/lib/tempo";
+import { criarAos, ehDestaque, formatarPalavra, limitesDasCenas, misturaDeCenas, palavraAtiva, tamanhoLegenda } from "../src/lib/tempo";
 
 const p = (texto: string, inicioMs: number, fimMs: number) => ({ texto, inicioMs, fimMs, casou: true, paragrafo: 0 });
 
@@ -11,13 +11,13 @@ describe("palavraAtiva", () => {
     expect(palavraAtiva(palavras, 260)).toBe(1);
   });
 
-  test("segura a palavra até a próxima quando a pausa é curta", () => {
+  test("pausa curta (até 0,35 s): fica até a próxima palavra", () => {
     expect(palavraAtiva(palavras, 220)).toBe(0);
   });
 
-  test("some no silêncio longo, depois de um respiro", () => {
-    expect(palavraAtiva(palavras, 700)).toBe(1);
-    expect(palavraAtiva(palavras, 1200)).toBe(-1);
+  test("pausa longa: sai 4 quadros (133 ms) depois do fim da fala", () => {
+    expect(palavraAtiva(palavras, 620)).toBe(1);
+    expect(palavraAtiva(palavras, 640)).toBe(-1);
     expect(palavraAtiva(palavras, 2100)).toBe(2);
   });
 
@@ -28,11 +28,44 @@ describe("palavraAtiva", () => {
 });
 
 describe("formatarPalavra", () => {
-  test("tira a pontuação das pontas e põe a primeira letra em maiúscula", () => {
-    expect(formatarPalavra("desaparecesse?")).toBe("Desaparecesse");
-    expect(formatarPalavra("só...")).toBe("Só");
-    expect(formatarPalavra("seja:")).toBe("Seja");
-    expect(formatarPalavra("à")).toBe("À");
+  test("mantém a caixa do roteiro e o ? ou ! do fim; tira vírgula, ponto, dois-pontos e reticências", () => {
+    expect(formatarPalavra("desaparecesse?")).toBe("desaparecesse?");
+    expect(formatarPalavra("marés?")).toBe("marés?");
+    expect(formatarPalavra("só...")).toBe("só");
+    expect(formatarPalavra("seja:")).toBe("seja");
+    expect(formatarPalavra("Lua,")).toBe("Lua");
+    expect(formatarPalavra("lugar.")).toBe("lugar");
+  });
+});
+
+describe("tamanhoLegenda", () => {
+  const medir = (letras: number) => (tamanho: number) => letras * tamanho * 0.6;
+
+  test("palavra que cabe fica em 112 px", () => {
+    expect(tamanhoLegenda(medir(5))).toBe(112);
+  });
+
+  test("palavra larga encolhe de 2 em 2 px até caber em 720 px", () => {
+    // 12 letras: 12 * t * 0,6 <= 720 -> t <= 100
+    expect(tamanhoLegenda(medir(12))).toBe(100);
+  });
+
+  test("nunca fica menor que 84 px", () => {
+    expect(tamanhoLegenda(medir(30))).toBe(84);
+  });
+});
+
+describe("ehDestaque", () => {
+  const palavras = [
+    { texto: "noites", inicioMs: 0, fimMs: 1, casou: true, paragrafo: 1 },
+    { texto: "pretas", inicioMs: 1, fimMs: 2, casou: true, paragrafo: 1 },
+    { texto: "pretas.", inicioMs: 3, fimMs: 4, casou: true, paragrafo: 1 },
+    { texto: "pretas", inicioMs: 5, fimMs: 6, casou: true, paragrafo: 2 },
+  ];
+  const trechos = [{ destaque: "x" }, { destaque: "pretas" }, {}];
+
+  test("só a primeira ocorrência da palavra de destaque do trecho", () => {
+    expect(palavras.map((_, i) => ehDestaque(palavras, i, trechos))).toEqual([false, true, false, false]);
   });
 });
 

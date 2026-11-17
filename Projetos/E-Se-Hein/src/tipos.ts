@@ -18,6 +18,8 @@ export type Trecho = {
   fim: number;
   /** Nome da cena em src/cenas/index.ts. */
   cena: string;
+  /** Palavra da legenda em destaque amarelo neste trecho (no máximo uma). */
+  destaque?: string;
 };
 
 export type DadosVideo = {
@@ -26,7 +28,7 @@ export type DadosVideo = {
   audio: string;
   duracaoAudio: number;
   roteiro: string;
-  /** Pergunta que fica na tela no fechamento. */
+  /** Pergunta curta que fica na tela no fechamento (ex.: "Lua cheia ou marés?"). */
   pergunta: string;
   trechos: Trecho[];
   palavras: Palavra[];

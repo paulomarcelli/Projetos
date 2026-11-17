@@ -1,10 +1,6 @@
 import { Img, staticFile } from "remotion";
 
-// Símbolo "E?" branco, discreto, no canto de cima à direita
-// (abaixo da lupa do TikTok e acima da coluna de botões).
+// Símbolo "E?" branco, 72 px, a 70%, em x 936 y 232. O vídeo todo menos o fechamento.
 export const MarcaDagua: React.FC<{ opacidade: number }> = ({ opacidade }) => (
-  <Img
-    src={staticFile("marca/marca-dagua-branca.svg")}
-    style={{ position: "absolute", top: 196, right: 64, width: 92, height: 92, opacity: 0.55 * opacidade }}
-  />
+  <Img src={staticFile("marca/marca-dagua-branca.svg")} style={{ position: "absolute", left: 936, top: 232, width: 72, height: 72, opacity: 0.7 * opacidade }} />
 );

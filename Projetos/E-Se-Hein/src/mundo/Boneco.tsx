@@ -1,54 +1,33 @@
-import { boneco as cor } from "./paleta";
+import { mat } from "./materiais";
 
-// "Você": boneco de brinquedo (cabeça redonda, camiseta amarela, bermuda e tênis azuis).
-// Origem nos pés, de frente para +z. Altura ≈ 3,6.
+// "Você": boneco de brinquedo com as medidas da Sofia (1,80 m), cores pelos tokens do modo.
+// Origem nos pés, de frente para +z. Pisca a cada ~4 s e respira (tronco sobe 1%).
 
 type Props = {
   position: [number, number, number];
-  /** Giro em torno do eixo vertical (radianos). */
   giro?: number;
   /** 0 = olha para a frente; 1 = olha para o céu. */
   olharCima?: number;
-  /** Ângulo dos braços (radianos, 0 = para baixo). Positivo levanta para o lado. */
+  /** Braços abertos para o lado (radianos). */
   bracoDireito?: number;
   bracoEsquerdo?: number;
   /** Braço direito apontando para a frente (0 a 1). */
   apontar?: number;
-  /** Pulo ou balanço (altura extra). */
+  /** Ombros encolhidos (0 a 1). */
+  ombros?: number;
   pulo?: number;
-  escala?: number;
+  tempo?: number;
 };
 
-const Braco: React.FC<{ lado: 1 | -1; abrir: number; frente: number }> = ({ lado, abrir, frente }) => (
-  <group position={[0.62 * lado, 2.28, 0]} rotation={[-frente * 1.5, 0, abrir * lado]}>
-    <mesh position={[0, -0.18, 0]} castShadow>
-      <cylinderGeometry args={[0.22, 0.24, 0.42, 8]} />
-      <meshLambertMaterial color={cor.camiseta} />
-    </mesh>
-    <mesh position={[0, -0.62, 0]} castShadow>
-      <cylinderGeometry args={[0.14, 0.14, 0.6, 8]} />
-      <meshLambertMaterial color={cor.pele} />
-    </mesh>
-    <mesh position={[0, -0.98, 0]} castShadow>
-      <sphereGeometry args={[0.17, 10, 8]} />
-      <meshLambertMaterial color={cor.pele} />
-    </mesh>
-  </group>
-);
+const ESCALA = 1.8 / 1.93;
 
-const Perna: React.FC<{ lado: 1 | -1 }> = ({ lado }) => (
-  <group position={[0.24 * lado, 0, 0]}>
-    <mesh position={[0, 0.7, 0]} castShadow>
-      <cylinderGeometry args={[0.15, 0.15, 0.8, 8]} />
-      <meshLambertMaterial color={cor.pele} />
+const Braco: React.FC<{ lado: 1 | -1; abrir: number; frente: number }> = ({ lado, abrir, frente }) => (
+  <group position={[0.31 * lado, 1.3, 0]} rotation={[-frente * 1.5, 0, abrir * lado]}>
+    <mesh position={[0.02 * lado, -0.06, 0]} material={mat("mundo/personagem/camiseta")} castShadow>
+      <boxGeometry args={[0.17, 0.24, 0.24]} />
     </mesh>
-    <mesh position={[0, 0.16, 0.1]} castShadow>
-      <boxGeometry args={[0.36, 0.32, 0.62]} />
-      <meshLambertMaterial color={cor.tenis} />
-    </mesh>
-    <mesh position={[0, 0.04, 0.12]}>
-      <boxGeometry args={[0.38, 0.08, 0.66]} />
-      <meshLambertMaterial color="#ffffff" />
+    <mesh position={[0.02 * lado, -0.36, 0]} material={mat("mundo/personagem/pele")} castShadow>
+      <cylinderGeometry args={[0.055, 0.055, 0.48, 6]} />
     </mesh>
   </group>
 );
@@ -57,47 +36,67 @@ export const Boneco: React.FC<Props> = ({
   position,
   giro = 0,
   olharCima = 0,
-  bracoDireito = 0.12,
-  bracoEsquerdo = 0.12,
+  bracoDireito = 0.08,
+  bracoEsquerdo = 0.08,
   apontar = 0,
+  ombros = 0,
   pulo = 0,
-  escala = 1,
-}) => (
-  <group position={[position[0], position[1] + pulo, position[2]]} rotation={[0, giro, 0]} scale={escala}>
-    <Perna lado={1} />
-    <Perna lado={-1} />
-    {/* Bermuda */}
-    <mesh position={[0, 1.28, 0]} castShadow>
-      <boxGeometry args={[0.92, 0.52, 0.58]} />
-      <meshLambertMaterial color={cor.bermuda} />
-    </mesh>
-    {/* Camiseta */}
-    <mesh position={[0, 1.95, 0]} castShadow>
-      <capsuleGeometry args={[0.5, 0.55, 4, 12]} />
-      <meshLambertMaterial color={cor.camiseta} />
-    </mesh>
-    <Braco lado={1} abrir={bracoDireito} frente={apontar} />
-    <Braco lado={-1} abrir={bracoEsquerdo} frente={0} />
-    {/* Cabeça (inclina para olhar o céu) */}
-    <group position={[0, 2.62, 0]} rotation={[-olharCima * 0.65, 0, 0]}>
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <sphereGeometry args={[0.62, 18, 14]} />
-        <meshLambertMaterial color={cor.pele} />
-      </mesh>
-      <mesh position={[0, 0.62, -0.04]} rotation={[-0.25, 0, 0]}>
-        <sphereGeometry args={[0.65, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2.1]} />
-        <meshLambertMaterial color={cor.cabelo} />
-      </mesh>
+  tempo = 0,
+}) => {
+  const ciclo = (tempo % 4.1) / 4.1;
+  const piscando = ciclo > 0.96;
+  const respira = 1 + 0.01 * Math.sin(tempo * 2.2);
+  const olho = mat("mundo/personagem/olho");
+  return (
+    <group position={[position[0], position[1] + pulo, position[2]]} rotation={[0, giro, 0]} scale={ESCALA}>
       {[1, -1].map((l) => (
-        <mesh key={l} position={[0.22 * l, 0.5, 0.57]}>
-          <sphereGeometry args={[0.075, 8, 6]} />
-          <meshBasicMaterial color={cor.olho} />
-        </mesh>
+        <group key={l} position={[0.115 * l, 0, 0]}>
+          <mesh position={[0, 0.06, 0.03]} material={mat("mundo/personagem/tenis")} castShadow>
+            <boxGeometry args={[0.2, 0.12, 0.26]} />
+          </mesh>
+          <mesh position={[0, 0.29, 0]} material={mat("mundo/personagem/pele")} castShadow>
+            <cylinderGeometry args={[0.075, 0.075, 0.34, 6]} />
+          </mesh>
+        </group>
       ))}
-      <mesh position={[0, 0.3, 0.58]} rotation={[0, 0, Math.PI]}>
-        <torusGeometry args={[0.12, 0.03, 6, 12, Math.PI]} />
-        <meshBasicMaterial color="#8a3b2a" />
+      <mesh position={[0, 0.635, 0]} material={mat("mundo/personagem/bermuda")} castShadow>
+        <boxGeometry args={[0.52, 0.35, 0.32]} />
       </mesh>
+      <group position={[0, 0.81, 0]} scale={[1, respira, 1]}>
+        <mesh position={[0, 0.28, 0]} material={mat("mundo/personagem/camiseta")} castShadow>
+          <boxGeometry args={[0.56, 0.56, 0.34]} />
+        </mesh>
+      </group>
+      <group position={[0, ombros * 0.06, 0]}>
+        <Braco lado={1} abrir={bracoDireito + ombros * 0.5} frente={apontar} />
+        <Braco lado={-1} abrir={bracoEsquerdo + ombros * 0.5} frente={0} />
+      </group>
+      <mesh position={[0, 1.405, 0]} material={mat("mundo/personagem/pele")}>
+        <cylinderGeometry args={[0.06, 0.06, 0.07, 6]} />
+      </mesh>
+      {/* Cabeça: cilindro de 8 lados; inclina para olhar o céu */}
+      <group position={[0, 1.44 - ombros * 0.03, 0]} rotation={[-olharCima * 0.6, 0, 0]}>
+        <mesh position={[0, 0.245, 0]} rotation={[0, Math.PI / 8, 0]} material={mat("mundo/personagem/pele")} castShadow>
+          <cylinderGeometry args={[0.24, 0.24, 0.49, 8]} />
+        </mesh>
+        <mesh position={[0, 0.47, -0.02]} scale={[1, 0.42, 1]} material={mat("mundo/personagem/cabelo")} castShadow>
+          <sphereGeometry args={[0.255, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        </mesh>
+        <mesh position={[0, 0.34, -0.17]} material={mat("mundo/personagem/cabelo")}>
+          <boxGeometry args={[0.46, 0.28, 0.12]} />
+        </mesh>
+        <mesh position={[0.1, 0.44, 0.2]} rotation={[0.3, 0, -0.2]} material={mat("mundo/personagem/cabelo")}>
+          <boxGeometry args={[0.24, 0.08, 0.1]} />
+        </mesh>
+        {[1, -1].map((l) => (
+          <mesh key={l} position={[0.09 * l, 0.27, 0.235]} scale={[1, piscando ? 0.15 : 1, 1]} material={olho}>
+            <circleGeometry args={[0.035, 10]} />
+          </mesh>
+        ))}
+        <mesh position={[0, 0.14, 0.236]} material={olho}>
+          <planeGeometry args={[0.09, 0.025]} />
+        </mesh>
+      </group>
     </group>
-  </group>
-);
+  );
+};

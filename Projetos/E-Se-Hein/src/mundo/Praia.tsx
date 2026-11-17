@@ -1,29 +1,36 @@
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
-import { sorteador } from "./aleatorio";
 import { ORLA_Z } from "./Cidade";
-import { mundo } from "./paleta";
+import { MARE_AMP_COM_LUA, MARE_AMP_SEM_LUA } from "./ambiente";
+import { corToken, mat } from "./materiais";
+import { rotulo } from "./paleta";
 
-// A areia desce do calçadão (y = 0) até y = -3 em 36 m; o mar sobe e desce nessa rampa.
+// A areia desce do calçadão (y = 0) até y = -3 em 36 m; a água sobe e desce nessa rampa.
 export const AREIA_INICIO_Z = ORLA_Z - 8;
-const AREIA_FIM_Z = AREIA_INICIO_Z - 36;
+const AREIA_COMPR = 36;
 const AREIA_QUEDA = 3;
-/** Nível da água para uma maré de `mare` metros. */
-export const nivelAgua = (mare: number) => -2.2 + mare;
-/** Altura da areia em z. */
-export const alturaAreia = (z: number) => -AREIA_QUEDA * Math.min(1, Math.max(0, (AREIA_INICIO_Z - z) / (AREIA_INICIO_Z - AREIA_FIM_Z)));
+const AREIA_FIM_Z = AREIA_INICIO_Z - AREIA_COMPR;
 
-/** Onde fica a régua da maré (para os rótulos). */
-export const REGUA: [number, number, number] = [16, 0, AREIA_INICIO_Z - 28];
+/** Altura da areia em z. */
+export const alturaAreia = (z: number) => -AREIA_QUEDA * Math.min(1, Math.max(0, (AREIA_INICIO_Z - z) / AREIA_COMPR));
+/** z da linha d'água para o nível `y`. */
+export const linhaDagua = (y: number) => AREIA_INICIO_Z + (y / AREIA_QUEDA) * AREIA_COMPR;
+
+/** Período da maré na tela (acelerado: horas viram segundos). */
+const PERIODO = 3.4;
+export const nivelAgua = (tempo: number, centro: number, amp: number) => centro + amp * Math.sin((tempo * 2 * Math.PI) / PERIODO);
+
+/** Régua de maré fincada na água (Q3), perto do morro. */
+export const REGUA: [number, number, number] = [-300, 0, AREIA_INICIO_Z - 30];
 
 function geometriaMar() {
-  const colunas = 90;
-  const linhas = 46;
+  const colunas = 110;
+  const linhas = 50;
   const pos: number[] = [];
   const idx: number[] = [];
   for (let k = 0; k <= linhas; k++) {
-    const z = AREIA_INICIO_Z + 2 - Math.pow(k / linhas, 2.2) * 1700;
-    for (let i = 0; i <= colunas; i++) pos.push(-900 + (i / colunas) * 1800, 0, z);
+    const z = AREIA_INICIO_Z + 2 - Math.pow(k / linhas, 2.2) * 2400;
+    for (let i = 0; i <= colunas; i++) pos.push(-1500 + (i / colunas) * 3000, 0, z);
   }
   for (let k = 0; k < linhas; k++) {
     for (let i = 0; i < colunas; i++) {
@@ -33,89 +40,83 @@ function geometriaMar() {
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(pos.length), 3));
   g.setIndex(idx);
   return g;
 }
 
-function texturaCaminhoLuar() {
-  const c = document.createElement("canvas");
-  c.width = 64;
-  c.height = 512;
-  const g = c.getContext("2d")!;
-  const r = sorteador(3);
-  for (let y = 0; y < 512; y += 6) {
-    const forca = 0.15 + 0.85 * (1 - y / 512);
-    const larg = 10 + r() * 40 * (1 - y / 600);
-    g.fillStyle = `rgba(255,245,210,${(0.35 + r() * 0.5) * forca})`;
-    g.fillRect(32 - larg / 2 + (r() - 0.5) * 10, y, larg, 3);
-  }
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
+const Rampa: React.FC<{ zIni: number; zFim: number; acima: number; material: THREE.Material }> = ({ zIni, zFim, acima, material }) => {
+  const y0 = alturaAreia(zIni);
+  const y1 = alturaAreia(zFim);
+  const compr = Math.hypot(zIni - zFim, y0 - y1);
+  return (
+    <mesh position={[0, (y0 + y1) / 2 + acima, (zIni + zFim) / 2]} rotation={[-Math.PI / 2 - Math.atan(AREIA_QUEDA / AREIA_COMPR), 0, 0]} material={material} receiveShadow>
+      <planeGeometry args={[3000, compr]} />
+    </mesh>
+  );
+};
 
-type Props = { tempo: number; mare: number; luar: number; reguaVisivel: number };
+type Props = { tempo: number; centro: number; amp: number; regua: number };
 
-export const Praia: React.FC<Props> = ({ tempo, mare, luar, reguaVisivel }) => {
+export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua }) => {
   const geo = useMemo(geometriaMar, []);
   const base = useMemo(() => Float32Array.from(geo.getAttribute("position").array as Float32Array), [geo]);
-  const luarTex = useMemo(texturaCaminhoLuar, []);
   useEffect(() => () => geo.dispose(), [geo]);
+  const matMar = useMemo(() => new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), []);
 
-  // Ondas guiadas pelo tempo do vídeo (nunca pelo relógio), para o render sair igual.
-  const nivel = nivelAgua(mare);
+  // Ondas e cor (raso perto da areia, fundo longe), guiadas pelo tempo do vídeo.
+  const nivel = nivelAgua(tempo, centro, amp);
+  const raso = corToken("mundo/agua/raso");
+  const fundo = corToken("mundo/agua/fundo");
   const attr = geo.getAttribute("position") as THREE.BufferAttribute;
+  const cor = geo.getAttribute("color") as THREE.BufferAttribute;
+  const c = new THREE.Color();
   for (let i = 0; i < attr.count; i++) {
     const x = base[i * 3];
     const z = base[i * 3 + 2];
-    const y =
-      0.32 * Math.sin(x * 0.11 + tempo * 1.1 + z * 0.05) +
-      0.22 * Math.sin(z * 0.17 - tempo * 1.6) +
-      0.12 * Math.sin((x + z) * 0.3 + tempo * 2.3);
-    attr.setY(i, nivel + y);
+    const perto = Math.min(1, Math.max(0, 1 - (AREIA_INICIO_Z - z) / 90));
+    const onda = (0.18 + 0.2 * (1 - perto)) * (Math.sin(x * 0.11 + tempo * 1.1 + z * 0.05) + 0.6 * Math.sin(z * 0.17 - tempo * 1.6));
+    attr.setY(i, nivel + onda);
+    c.copy(fundo).lerp(raso, perto);
+    cor.setXYZ(i, c.r, c.g, c.b);
   }
   attr.needsUpdate = true;
+  cor.needsUpdate = true;
   geo.computeVertexNormals();
 
-  const marcas = [0, 1, 2, 3];
+  const zAlta = linhaDagua(centro + MARE_AMP_COM_LUA);
+  const zLinha = linhaDagua(nivel);
+  const baseRegua = -AREIA_QUEDA - 0.5;
   return (
     <group>
-      {/* Areia em rampa */}
-      <mesh position={[0, -AREIA_QUEDA / 2, (AREIA_INICIO_Z + AREIA_FIM_Z) / 2]} rotation={[-Math.PI / 2 - Math.atan(AREIA_QUEDA / 36), 0, 0]} receiveShadow>
-        <planeGeometry args={[1800, Math.hypot(36, AREIA_QUEDA) + 0.5]} />
-        <meshLambertMaterial color={mundo.areia} />
+      <Rampa zIni={AREIA_INICIO_Z} zFim={AREIA_FIM_Z} acima={0} material={mat("mundo/areia/seca")} />
+      <Rampa zIni={Math.min(AREIA_INICIO_Z, zAlta + 0.6)} zFim={AREIA_FIM_Z} acima={0.03} material={mat("mundo/areia/molhada")} />
+      <mesh position={[0, -AREIA_QUEDA - 0.01, AREIA_FIM_Z - 600]} rotation={[-Math.PI / 2, 0, 0]} material={mat("mundo/areia/molhada")}>
+        <planeGeometry args={[3000, 1200]} />
       </mesh>
-      <mesh position={[0, -AREIA_QUEDA - 0.01, AREIA_FIM_Z - 400]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1800, 800]} />
-        <meshLambertMaterial color="#b9a26a" />
+      <mesh geometry={geo} material={matMar} receiveShadow />
+      {/* Espuma na linha da água */}
+      <mesh position={[0, nivel + 0.12, zLinha - 0.4]} rotation={[-Math.PI / 2, 0, 0]} material={mat("mundo/agua/espuma")}>
+        <planeGeometry args={[3000, 1.3]} />
       </mesh>
-      {/* Mar */}
-      <mesh geometry={geo} receiveShadow>
-        <meshLambertMaterial color={mundo.mar} flatShading />
-      </mesh>
-      {/* Caminho de luar na água */}
-      {luar > 0.01 ? (
-        <mesh position={[-14, nivel + 0.45, AREIA_INICIO_Z - 330]} rotation={[-Math.PI / 2, 0, -0.1]}>
-          <planeGeometry args={[70, 600]} />
-          <meshBasicMaterial map={luarTex} transparent opacity={0.6 * luar} depthWrite={false} blending={THREE.AdditiveBlending} />
-        </mesh>
-      ) : null}
-      {/* Régua da maré */}
-      {reguaVisivel > 0.01 ? (
-        <group position={[REGUA[0], -AREIA_QUEDA, REGUA[2]]} scale={[1, reguaVisivel, 1]}>
-          <mesh position={[0, 2.6, 0]} castShadow>
-            <boxGeometry args={[0.7, 5.2, 0.3]} />
-            <meshLambertMaterial color="#ffffff" />
+      {regua > 0.01 ? (
+        <group position={[REGUA[0], 0, REGUA[2]]} scale={[1, regua, 1]}>
+          <mesh position={[0, baseRegua + 3.5, 0]} material={mat("mundo/agua/espuma")} castShadow>
+            <boxGeometry args={[0.5, 7, 0.25]} />
           </mesh>
-          {marcas.map((m) => (
-            <mesh key={m} position={[0, 0.8 + m, 0.17]}>
-              <boxGeometry args={[0.72, 0.5, 0.04]} />
-              <meshLambertMaterial color={m % 2 === 0 ? "#e5383b" : "#1a1a1a"} />
+          {Array.from({ length: 14 }, (_, k) => (
+            <mesh key={k} position={[0.05, baseRegua + 0.25 + k * 0.5, 0.13]} material={mat("mundo/chao/rua")}>
+              <boxGeometry args={[k % 2 ? 0.2 : 0.35, 0.06, 0.02]} />
             </mesh>
           ))}
-          <mesh position={[0, 5.3, 0]}>
-            <boxGeometry args={[1.4, 0.3, 0.4]} />
-            <meshLambertMaterial color="#ffd21f" />
+          {/* Faixa verde: quanto a água sobe e desce com a Lua. Vermelha: sem a Lua (~46%). */}
+          <mesh position={[-0.4, centro, 0.1]}>
+            <boxGeometry args={[0.18, MARE_AMP_COM_LUA * 2, 0.05]} />
+            <meshBasicMaterial color={rotulo.verde} />
+          </mesh>
+          <mesh position={[-0.65, centro, 0.1]}>
+            <boxGeometry args={[0.18, MARE_AMP_SEM_LUA * 2, 0.05]} />
+            <meshBasicMaterial color={rotulo.vermelho} />
           </mesh>
         </group>
       ) : null}

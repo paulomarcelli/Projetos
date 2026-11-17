@@ -74,7 +74,10 @@ const trechosNovos = montarTrechos(palavras);
 
 const destino = path.resolve("videos", `${tema}.json`);
 const anterior = existsSync(destino) ? JSON.parse(readFileSync(destino, "utf8")) : null;
-const trechos = trechosNovos.map((t, i) => ({ ...t, cena: anterior?.trechos?.[i]?.cena ?? "provisoria" }));
+const trechos = trechosNovos.map((t, i) => {
+  const velho = anterior?.trechos?.[i];
+  return { ...t, cena: velho?.cena ?? "provisoria", ...(velho?.destaque ? { destaque: velho.destaque } : {}) };
+});
 
 const frases = roteiro.replace(/\[[^\]]*\]/g, "").split(/(?<=[?.!])\s+/).map((f) => f.trim());
 const dados = {

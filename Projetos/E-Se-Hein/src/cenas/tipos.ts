@@ -11,6 +11,7 @@ export type PoseBoneco = {
   bracoDireito: number;
   bracoEsquerdo: number;
   apontar: number;
+  ombros: number;
   pulo: number;
 };
 
@@ -28,6 +29,8 @@ export type PropsCena = {
   peso: number;
   /** Segundo (desde o começo da cena) em que a palavra é dita no trecho. `vez` = 1ª, 2ª ocorrência… */
   aos: (palavra: string, vez?: number) => number;
+  /** Até quando os rótulos podem ficar (saem antes da passagem de câmera). */
+  saida: number;
 };
 
 export type Projetar = (v: Vec3) => { x: number; y: number; visivel: boolean };
@@ -42,8 +45,10 @@ export type Cena = {
   ambiente: (props: PropsCena) => Ambiente;
   /** Pose do boneco "você", ou null quando ele não aparece. */
   boneco?: (props: PropsCena) => PoseBoneco | null;
-  /** Rótulo pequeno do canto de cima ("1ª NOITE"). */
-  contexto?: (props: PropsCena) => string;
+  /** Rótulo de contexto do canto de cima. `tempo: true` = variante com relógio. */
+  contexto?: (props: PropsCena) => { texto: string; tempo?: boolean };
+  /** Na passagem para a próxima cena, quanto o alvo da câmera sobe (tilt para o céu), em metros. */
+  passagemAlvoSobe?: number;
   /** Objetos 3D só desta cena (dentro do canvas). */
   Objetos?: React.FC<PropsCena>;
   /** Rótulos 2D presos aos objetos (pílulas, setas, textos, cartões). */

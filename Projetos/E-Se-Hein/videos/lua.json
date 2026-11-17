@@ -3,7 +3,7 @@
   "audio": "audio/lua.wav",
   "duracaoAudio": 60.186,
   "roteiro": "[mysterious] E se, hoje à noite, a Lua simplesmente desaparecesse? Sem explosão. Sem barulho. Ela só... não estaria mais lá.\n\nA primeira coisa que você ia notar é o escuro. Longe das cidades, as noites ficariam pretas de verdade.\n\n[calm] Depois, o mar. A Lua é a principal responsável pelas marés. Sem ela, as marés ficariam com mais ou menos um terço do tamanho.\n\nE isso muda a vida na costa. Caranguejos e aves que dependem da maré perderiam o ritmo. E muitos corais, que soltam seus ovos guiados pela luz da lua, perderiam o sinal.\n\n[mysterious] Mas o pior vem devagar. A Lua estabiliza a inclinação da Terra. Sem ela, ao longo de milhões de anos, o eixo do planeta poderia balançar... e as estações ficariam extremas.\n\nOu seja: a Lua não é só bonita. Ela segura o nosso mundo no lugar.\n\n[curious] E você? Ia sentir mais falta da lua cheia ou das marés? Me conta aqui nos comentários.",
-  "pergunta": "Você ia sentir mais falta da lua cheia ou das marés?",
+  "pergunta": "Lua cheia ou marés?",
   "trechos": [
     {
       "texto": "E se, hoje à noite, a Lua simplesmente desaparecesse? Sem explosão. Sem barulho. Ela só... não estaria mais lá.",
@@ -15,31 +15,36 @@
       "texto": "A primeira coisa que você ia notar é o escuro. Longe das cidades, as noites ficariam pretas de verdade.",
       "inicio": 10.224,
       "fim": 16.86,
-      "cena": "noite-escura"
+      "cena": "noite-escura",
+      "destaque": "pretas"
     },
     {
       "texto": "Depois, o mar. A Lua é a principal responsável pelas marés. Sem ela, as marés ficariam com mais ou menos um terço do tamanho.",
       "inicio": 17.342,
       "fim": 26.15,
-      "cena": "mares"
+      "cena": "mares",
+      "destaque": "terço"
     },
     {
       "texto": "E isso muda a vida na costa. Caranguejos e aves que dependem da maré perderiam o ritmo. E muitos corais, que soltam seus ovos guiados pela luz da lua, perderiam o sinal.",
       "inicio": 26.531,
       "fim": 37.275,
-      "cena": "costa"
+      "cena": "costa",
+      "destaque": "ritmo"
     },
     {
       "texto": "Mas o pior vem devagar. A Lua estabiliza a inclinação da Terra. Sem ela, ao longo de milhões de anos, o eixo do planeta poderia balançar... e as estações ficariam extremas.",
       "inicio": 37.772,
       "fim": 49.387,
-      "cena": "eixo-terra"
+      "cena": "eixo-terra",
+      "destaque": "extremas"
     },
     {
       "texto": "Ou seja: a Lua não é só bonita. Ela segura o nosso mundo no lugar.",
       "inicio": 49.74,
       "fim": 54.259,
-      "cena": "terra-lua"
+      "cena": "terra-lua",
+      "destaque": "lugar"
     },
     {
       "texto": "E você? Ia sentir mais falta da lua cheia ou das marés? Me conta aqui nos comentários.",

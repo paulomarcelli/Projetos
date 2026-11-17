@@ -1,45 +1,48 @@
-import { Pilula, Seta, TextoPreso } from "../camadas/rotulos";
-import { ambientePadrao } from "../mundo/ambiente";
-import { alturaAreia, nivelAgua, REGUA } from "../mundo/Praia";
-import type { Cena } from "./tipos";
-import { bonecoParado, deslize, entra, lerp, lerp3 } from "./util";
+import { Cartao, Pilula } from "../camadas/rotulos";
+import { IconeMareAlta, IconeMareBaixa } from "../camadas/icones";
+import { ambienteNoite, MARE_AMP_COM_LUA, MARE_AMP_SEM_LUA, MARE_CENTRO } from "../mundo/ambiente";
+import { alturaAreia, REGUA } from "../mundo/Praia";
+import type { Cena, PropsCena, Vec3 } from "./tipos";
+import { bonecoParado, entra, janela, lerp, lerp3 } from "./util";
 
-// Trecho 3: "Depois, o mar… as marés ficariam com mais ou menos um terço do tamanho."
-// Régua da maré na água; o nível desce até 1/3.
-export const MARE_CHEIA = 1.9;
-export const MARE_TERCO = MARE_CHEIA / 3;
+// Q3 · Marés (Dia). Corte lateral da praia: mar à esquerda, areia subindo à direita, régua na água.
+// Primeiro a água varia a faixa verde (com Lua); em "Sem ela", só a vermelha (~46%, conferido pela Sabrina).
+export const semLua = ({ seg, aos }: Pick<PropsCena, "seg" | "aos">) => entra(seg, aos("sem"), 1.2);
 
-const descida = (seg: number, aos: (p: string) => number) => entra(seg, aos("ficariam"), 2.4);
+const CAMERA: Vec3 = [REGUA[0] - 26, 0.9, REGUA[2] + 11];
+const ALVO: Vec3 = [REGUA[0] + 6, -1.6, REGUA[2] + 7];
+export const BONECO_PRAIA: Vec3 = [REGUA[0] + 3, alturaAreia(REGUA[2] + 19), REGUA[2] + 19];
 
 export const mares: Cena = {
-  camera: ({ p }) => {
-    const d = deslize(p);
-    return { pos: lerp3([22.5, 0.9, -54], [21, 1.3, -53], d), alvo: lerp3([14, -0.6, -66], [13.5, -0.4, -66], d), fov: 50 };
-  },
-  ambiente: ({ seg, aos }) => ({
-    ...ambientePadrao,
+  camera: ({ p }) => ({ pos: lerp3(CAMERA, [CAMERA[0] + 1.2, CAMERA[1], CAMERA[2]], p), alvo: ALVO, fov: 40 }),
+  ambiente: (props) => ({
+    ...ambienteNoite,
+    dia: 1,
     lua: 0,
-    luar: 0,
-    breu: 0.5,
-    estrelas: 0.9,
-    mare: lerp(MARE_CHEIA, MARE_TERCO, descida(seg, aos)),
+    estrelas: 0,
+    mareCentro: MARE_CENTRO,
+    mareAmp: lerp(MARE_AMP_COM_LUA, MARE_AMP_SEM_LUA, semLua(props)),
   }),
-  boneco: ({ seg, aos }) => ({
-    ...bonecoParado([11.5, alturaAreia(-53), -53], Math.PI * 0.8),
-    apontar: entra(seg, aos("marés"), 0.4) * (1 - entra(seg, aos("tamanho"), 0.6)),
-  }),
-  contexto: () => "SEM LUA",
-  Rotulos: ({ seg, aos, projetar }) => {
-    const alto = projetar([REGUA[0] - 2.5, nivelAgua(MARE_CHEIA), REGUA[2]]);
-    const baixo = projetar([REGUA[0] - 2.5, nivelAgua(MARE_TERCO), REGUA[2]]);
-    const topo = projetar([REGUA[0], 3, REGUA[2]]);
-    const terco = entra(seg, aos("terço") - 0.2, 0.35);
+  boneco: () => bonecoParado(BONECO_PRAIA, Math.PI),
+  contexto: () => ({ texto: "Marés" }),
+  Rotulos: (props) => {
+    const { seg, aos, projetar } = props;
+    const verde = projetar([REGUA[0], MARE_CENTRO + MARE_AMP_COM_LUA, REGUA[2]]);
+    const vermelha = projetar([REGUA[0], MARE_CENTRO + MARE_AMP_SEM_LUA * 0.3, REGUA[2]]);
     return (
       <>
-        <TextoPreso texto="Maré" x={topo.x} y={topo.y - 60} aparece={entra(seg, aos("marés") - 0.2)} />
-        <Pilula texto="Com Lua" cor="verde" x={alto.x - 190} y={alto.y} aparece={entra(seg, aos("marés")) * (1 - terco)} />
-        <Seta de={[alto.x - 40, alto.y]} para={[baixo.x - 40, baixo.y]} cor="vermelho" aparece={entra(seg, aos("ficariam"), 2.4)} />
-        <Pilula texto="Maré 1/3" cor="vermelho" x={baixo.x - 210} y={baixo.y + 10} aparece={terco} />
+        <Cartao
+          tipo="antes-depois"
+          y={470}
+          seg={seg}
+          janela={janela(props, aos("marés"))}
+          itens={[
+            { icone: <IconeMareAlta />, texto: "Com Lua" },
+            { icone: <IconeMareBaixa />, texto: "Sem Lua" },
+          ]}
+        />
+        <Pilula texto="Com Lua" cor="verde" tamanho="P" x={verde.x + 150} y={verde.y - 10} seg={seg} janela={janela(props, aos("marés"))} />
+        <Pilula texto="Sem Lua: ~metade" cor="vermelho" tamanho="P" x={vermelha.x + 220} y={vermelha.y + 50} seg={seg} janela={janela(props, aos("sem"))} />
       </>
     );
   },

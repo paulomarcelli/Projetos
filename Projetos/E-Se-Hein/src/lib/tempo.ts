@@ -2,25 +2,48 @@
 
 type ComTempo = { inicioMs: number; fimMs: number };
 
-/** Quanto a palavra pode ficar na tela depois de dita, se a próxima demorar. */
-const RESPIRO_MS = 400;
+/** Pausa a partir da qual a palavra sai antes da próxima (Design System: 0,35 s). */
+const PAUSA_LONGA_MS = 350;
+/** Em pausa longa, a palavra sai 4 quadros depois do fim da fala. */
+const SAIDA_MS = 4000 / 30;
 
 /** Índice da palavra que aparece no tempo `ms` do áudio, ou -1. */
 export function palavraAtiva(palavras: ComTempo[], ms: number): number {
   for (let i = 0; i < palavras.length; i++) {
     const atual = palavras[i];
     const proxima = palavras[i + 1];
-    const limite = Math.min(proxima ? proxima.inicioMs : Infinity, atual.fimMs + RESPIRO_MS);
-    if (ms >= atual.inicioMs && ms < limite) return i;
+    const limite = proxima && proxima.inicioMs - atual.fimMs <= PAUSA_LONGA_MS ? proxima.inicioMs : atual.fimMs + SAIDA_MS;
+    if (ms >= atual.inicioMs && ms < Math.min(limite, proxima ? proxima.inicioMs : Infinity)) return i;
     if (ms < atual.inicioMs) return -1;
   }
   return -1;
 }
 
-/** "desaparecesse?" -> "Desaparecesse": sem pontuação nas pontas, primeira letra maiúscula. */
+/** Como no roteiro: mantém a caixa e o ? ou ! do fim; tira vírgula, ponto, dois-pontos e reticências. */
 export function formatarPalavra(texto: string): string {
-  const limpo = texto.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
-  return limpo.charAt(0).toLocaleUpperCase("pt-BR") + limpo.slice(1);
+  return texto.replace(/^[^\p{L}\p{N}¿¡]+/u, "").replace(/[^\p{L}\p{N}?!]+$/u, "").replace(/[.,:;…]+(?=[?!]$)/u, "");
+}
+
+export const LEGENDA = { tamanho: 112, minimo: 84, larguraMax: 720 };
+
+/** Corpo da legenda: 112 px, encolhendo de 2 em 2 pela largura medida até caber em 720 px (mínimo 84). */
+export function tamanhoLegenda(medir: (tamanho: number) => number): number {
+  let t = LEGENDA.tamanho;
+  while (t > LEGENDA.minimo && medir(t) > LEGENDA.larguraMax) t -= 2;
+  return t;
+}
+
+/** A palavra i é a de destaque (amarela) do trecho dela? Só a primeira ocorrência. */
+export function ehDestaque(
+  palavras: { texto: string; paragrafo: number }[],
+  i: number,
+  trechos: { destaque?: string }[],
+): boolean {
+  const alvo = trechos[palavras[i].paragrafo]?.destaque;
+  if (!alvo) return false;
+  const n = normalizar(alvo);
+  const primeira = palavras.findIndex((p) => p.paragrafo === palavras[i].paragrafo && normalizar(p.texto) === n);
+  return primeira === i;
 }
 
 /** Cada cena vai do meio da pausa anterior ao meio da pausa seguinte. */

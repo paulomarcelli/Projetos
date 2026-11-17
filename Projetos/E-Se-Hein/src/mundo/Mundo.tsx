@@ -88,15 +88,23 @@ function reflexos(tex: Texturas, dia: number) {
  */
 const GPU = process.env.REMOTION_GPU === "1";
 
-const Efeitos: React.FC<{ espaco: number }> = ({ espaco }) => (
-  <EffectComposer multisampling={GPU ? 4 : 0}>
-    {GPU ? <N8AO aoRadius={3} distanceFalloff={1.2} intensity={espaco > 0.5 ? 0 : 2.2} quality="high" /> : <></>}
-    <Bloom mipmapBlur luminanceThreshold={0.82} luminanceSmoothing={0.15} intensity={0.7} radius={0.7} />
-    <ToneMapping mode={ToneMappingMode.NEUTRAL} />
-    <Vignette offset={0.32} darkness={0.42} />
-    {GPU ? <></> : <SMAA />}
-  </EffectComposer>
-);
+/**
+ * No espaço (Q5 e Q6) a qualidade máxima fica só na Terra: com MSAA 4× na GPU (ANGLE/Direct3D), parte dos
+ * quadros do espaço saía inteira preta (17/11/2026, quadros 1263, 1680 e 1761 do vídeo da Lua). Lá vale o
+ * mesmo da nuvem: SMAA e sem oclusão (não há chão para sombrear).
+ */
+const Efeitos: React.FC<{ espaco: number }> = ({ espaco }) => {
+  const maxima = GPU && espaco <= 0.5;
+  return (
+    <EffectComposer multisampling={maxima ? 4 : 0}>
+      {maxima ? <N8AO aoRadius={3} distanceFalloff={1.2} intensity={2.2} quality="high" /> : <></>}
+      <Bloom mipmapBlur luminanceThreshold={0.82} luminanceSmoothing={0.15} intensity={0.7} radius={0.7} />
+      <ToneMapping mode={ToneMappingMode.NEUTRAL} />
+      <Vignette offset={0.32} darkness={0.42} />
+      {maxima ? <></> : <SMAA />}
+    </EffectComposer>
+  );
+};
 
 /**
  * O Remotion pede o desenho do canvas quando ele nasce e a cada quadro novo, mas o EffectComposer só fica

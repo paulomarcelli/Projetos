@@ -60,7 +60,19 @@ $env:REMOTION_GPU = "1"
 npx remotion render lua out/lua-v2.mp4 --codec=h264 --crf=18 --gl=angle --concurrency=4
 ```
 
-Sem `REMOTION_GPU`, o vídeo sai com SMAA e sem oclusão, como na nuvem.
+Sem `REMOTION_GPU`, o vídeo sai com SMAA e sem oclusão, como na nuvem. Nas cenas no espaço (Q5 e Q6) é sempre
+assim, mesmo com GPU: com MSAA 4× o 3D saía preto em parte dos quadros.
+
+**Tempo com GPU** (RTX 5050, `--concurrency=4`): 69 s para o vídeo da Lua inteiro (2.075 quadros, ~0,03 s por
+quadro). Para confirmar que a GPU está em uso, rode `nvidia-smi` durante o render: o `chrome-headless-shell.exe` tem
+que aparecer na lista. O `npx remotion gpu` não serve aqui, porque o navegador sem janela não abre `chrome://gpu`.
+
+**Conferir quadros pretos:** um quadro que sai vazio no meio de uma cena não aparece na folha de contato se cair
+fora dos quadros escolhidos. Meça o brilho de todos e procure quedas bruscas:
+
+```bash
+ffmpeg -v error -i out/lua-v2.mp4 -vf "scale=108:192,signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=out/yavg.txt" -f null -
+```
 
 ## Testes
 

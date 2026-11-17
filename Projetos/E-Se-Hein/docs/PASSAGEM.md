@@ -199,20 +199,33 @@ Veja o `README.md` do projeto. Em resumo:
 
 - **Vídeo da Lua, versão 1:** renderizado, mas é só prévia, não vai ao ar. Tinha o roteiro antigo ("um terço") e cenas
   provisórias.
-- **Vídeo da Lua, versão 2: pronta para o render final (17/11/2026, fim do dia).** Já tem:
+- **Vídeo da Lua, versão 2: renderizada no PC do Paulo (17/11/2026), esperando a aprovação dele.** Tem:
   - o Design System da Sofia;
   - o realismo ligado ao mundo 3D: relevo PBR no chão, areia e asfalto; água e areia molhada refletindo o céu HDRI;
     Lua e Terra com as fotos da NASA; brilho, tone mapping neutro e vinheta;
   - o áudio novo (`audio/lua-maia-v2.mp3`) e os rótulos corrigidos;
-  - os enquadramentos conferidos contra o storyboard (Q1 a Q7) por folha de contato.
+  - qualidade máxima com a GPU (RTX 5050, `REMOTION_GPU=1`, `--gl=angle`): oclusão de ambiente e MSAA 4× nas cenas
+    na Terra; SMAA nas cenas no espaço (veja abaixo).
 
-  **O render final não foi feito.** Na nuvem, sem GPU, levaria ~1 hora (1,5 s por quadro) e foi pausado para rodar no
-  PC do Paulo, que tem placa de vídeo (RTX 5050). Lá, o render usa a GPU (`--gl=angle`) e a qualidade máxima
-  (`REMOTION_GPU=1`: oclusão de ambiente e MSAA 4×); os comandos estão no `README.md`, seção "Render".
+  **Render:** `out/lua-v2.mp4` no PC do Paulo (fora do git), em **69 s** para 2.075 quadros (~0,03 s por quadro; na
+  nuvem levaria ~1 hora). Conferido: 1080 × 1920, 30 fps, 69,2 s, h264 + AAC estéreo 48 kHz; voz em **-13,98 LUFS**
+  (pico -1,48 dBTP); legenda em sincronia (nas 22 pausas, o recomeço da fala no MP4 bate com o início da palavra da
+  legenda, diferença máxima de 3 ms). Folha de contato (Q1 a Q8) e comparação lado a lado com o storyboard em
+  `out/quadros-v2/` (fora do git).
 
-  Depois do render: conferir o MP4 (1080 × 1920, 30 fps, ~69 s, voz em -14 LUFS, legenda em sincronia com a voz) e
-  montar uma folha de contato com um quadro de cada cena (Q1 a Q8) para a Sofia comparar com o storyboard
-  (`docs/imagens/storyboard-lua.jpg`). Em seguida o Paulo aprova e posta. O MP4 não vai para o git.
+  **Defeito achado e corrigido:** no primeiro render com GPU, cerca de 120 quadros das cenas no espaço (Q5 e Q6) saíram com o
+  3D todo preto. A causa era o MSAA 4× do pós-processamento na GPU (ANGLE/Direct3D). Agora o espaço usa SMAA e sem
+  oclusão, como na nuvem (`src/mundo/Mundo.tsx`, `Efeitos`). Depois da correção, a varredura do brilho quadro a
+  quadro só acha as passagens de cena, sem quadro preto.
+
+  **Para a Sofia olhar** (diferenças do vídeo para o storyboard, nenhuma quebra a história):
+  - Q1: a cidade quase não aparece atrás do "você" (só a laje e o céu).
+  - Q2: o "você" fica cortado na borda direita, olhando para cima.
+  - Q3: sem o "você" pequeno na areia e sem a areia em diagonal; a régua e os rótulos estão lá.
+  - Q4: caranguejos e corais aparecem um depois do outro no travelling, nunca juntos; a ave não aparece.
+  - Q6: a pílula diz "ESTABILIZA O EIXO" (rótulo corrigido pela Sabrina) e sai antes de "estável".
+
+  **Próximo:** o Paulo assiste, aprova e posta. O MP4 não vai para o git.
 - **Pendente:**
   - os roteiros dos temas 1 e 3 a 7, com conferência de fatos;
   - o corte curto (35 s) de cada vídeo;

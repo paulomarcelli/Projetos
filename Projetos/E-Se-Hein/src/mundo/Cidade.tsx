@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { sorteador } from "./aleatorio";
 import { corToken, mat } from "./materiais";
+import { Plano } from "./Plano";
 import type { TokenMundo } from "./paleta";
 
 // Cidade de brinquedo à beira-mar. O mar fica para o lado -z; a cidade cresce para +z.
@@ -20,7 +21,7 @@ const PREDIOS: TokenMundo[] = ["mundo/predio/1", "mundo/predio/2", "mundo/predio
 
 // Fachada: a textura é uma máscara (R = parede, G = vidro apagado, B = janela acesa).
 // O shader pinta com as cores do modo atual; a janela acesa é emissiva e não muda com a luz.
-const cacheFachada = new Map<string, THREE.MeshLambertMaterial>();
+const cacheFachada = new Map<string, THREE.MeshStandardMaterial>();
 
 function fachada(predio: number, colunas: number, andares: number, semente: number) {
   const chave = `${predio}-${colunas}-${andares}-${semente % 4}`;
@@ -56,7 +57,7 @@ function fachada(predio: number, colunas: number, andares: number, semente: numb
   mascara.magFilter = THREE.NearestFilter;
   const brilho = new THREE.CanvasTexture(acesas);
   brilho.magFilter = THREE.NearestFilter;
-  const m = new THREE.MeshLambertMaterial({ map: mascara, emissiveMap: brilho, emissive: corToken("mundo/janela/acesa") });
+  const m = new THREE.MeshStandardMaterial({ map: mascara, emissiveMap: brilho, emissive: corToken("mundo/janela/acesa"), emissiveIntensity: 1.6, roughness: 0.8, metalness: 0 });
   const parede = corToken(PREDIOS[predio]);
   const vidro = corToken("mundo/janela/apagada");
   m.onBeforeCompile = (shader) => {
@@ -199,20 +200,20 @@ export const Cidade: React.FC<{ domo: number }> = ({ domo }) => {
     <group>
       {/* Terreno, ruas e calçadão */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, ORLA_Z + 600]} material={mat("mundo/chao/grama")} receiveShadow>
-        <planeGeometry args={[3000, 1200]} />
+        <Plano w={3000} h={1200} metros={14} />
       </mesh>
       {Array.from({ length: 19 }, (_, i) => (
         <mesh key={`rx${i}`} rotation={[-Math.PI / 2, 0, 0]} position={[(i - 9) * CELULA + CELULA / 2, 0.02, ORLA_Z + 130]} material={rua} receiveShadow>
-          <planeGeometry args={[5, 270]} />
+          <Plano w={5} h={270} metros={5} />
         </mesh>
       ))}
       {Array.from({ length: 14 }, (_, i) => (
         <mesh key={`rz${i}`} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, ORLA_Z + 5 + i * CELULA]} material={rua} receiveShadow>
-          <planeGeometry args={[340, 5]} />
+          <Plano w={340} h={5} metros={5} />
         </mesh>
       ))}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, ORLA_Z - 4]} material={mat("mundo/chao/calcada")} receiveShadow>
-        <planeGeometry args={[3000, 8]} />
+        <Plano w={3000} h={8} metros={4} />
       </mesh>
       {orla.map((a, i) => (
         <Arvore key={`o${i}`} x={a.x} z={ORLA_Z - 1} tam={a.tam} />

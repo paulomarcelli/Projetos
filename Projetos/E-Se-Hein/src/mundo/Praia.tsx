@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { ORLA_Z } from "./Cidade";
 import { MARE_AMP_COM_LUA, MARE_AMP_SEM_LUA } from "./ambiente";
 import { corToken, mat } from "./materiais";
+import { Plano } from "./Plano";
 import { rotulo } from "./paleta";
 
 // A areia desce do calçadão (y = 0) até y = -3 em 36 m; a água sobe e desce nessa rampa.
@@ -27,10 +28,15 @@ function geometriaMar() {
   const colunas = 110;
   const linhas = 50;
   const pos: number[] = [];
+  const uv: number[] = [];
   const idx: number[] = [];
   for (let k = 0; k <= linhas; k++) {
     const z = AREIA_INICIO_Z + 2 - Math.pow(k / linhas, 2.2) * 2400;
-    for (let i = 0; i <= colunas; i++) pos.push(-1500 + (i / colunas) * 3000, 0, z);
+    for (let i = 0; i <= colunas; i++) {
+      const x = -1500 + (i / colunas) * 3000;
+      pos.push(x, 0, z);
+      uv.push(x / 9, z / 9);
+    }
   }
   for (let k = 0; k < linhas; k++) {
     for (let i = 0; i < colunas; i++) {
@@ -41,6 +47,7 @@ function geometriaMar() {
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(pos.length), 3));
+  g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx);
   return g;
 }
@@ -51,18 +58,23 @@ const Rampa: React.FC<{ zIni: number; zFim: number; acima: number; material: THR
   const compr = Math.hypot(zIni - zFim, y0 - y1);
   return (
     <mesh position={[0, (y0 + y1) / 2 + acima, (zIni + zFim) / 2]} rotation={[-Math.PI / 2 - Math.atan(AREIA_QUEDA / AREIA_COMPR), 0, 0]} material={material} receiveShadow>
-      <planeGeometry args={[3000, compr]} />
+      <Plano w={3000} h={compr} metros={5} />
     </mesh>
   );
 };
 
-type Props = { tempo: number; centro: number; amp: number; regua: number };
+type Props = { tempo: number; centro: number; amp: number; regua: number; normaisAgua: THREE.Texture };
 
-export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua }) => {
+export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua, normaisAgua }) => {
   const geo = useMemo(geometriaMar, []);
   const base = useMemo(() => Float32Array.from(geo.getAttribute("position").array as Float32Array), [geo]);
   useEffect(() => () => geo.dispose(), [geo]);
-  const matMar = useMemo(() => new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), []);
+  // Água: cor do token (raso/fundo) + normais de água em movimento, refletindo o HDRI.
+  const matMar = useMemo(
+    () => new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.14, metalness: 0.15, normalMap: normaisAgua, normalScale: new THREE.Vector2(0.6, 0.6), envMapIntensity: 1.3 }),
+    [normaisAgua],
+  );
+  normaisAgua.offset.set(tempo * 0.018, tempo * 0.011);
 
   // Ondas e cor (raso perto da areia, fundo longe), guiadas pelo tempo do vídeo.
   const nivel = nivelAgua(tempo, centro, amp);
@@ -92,7 +104,7 @@ export const Praia: React.FC<Props> = ({ tempo, centro, amp, regua }) => {
       <Rampa zIni={AREIA_INICIO_Z} zFim={AREIA_FIM_Z} acima={0} material={mat("mundo/areia/seca")} />
       <Rampa zIni={Math.min(AREIA_INICIO_Z, zAlta + 0.6)} zFim={AREIA_FIM_Z} acima={0.03} material={mat("mundo/areia/molhada")} />
       <mesh position={[0, -AREIA_QUEDA - 0.01, AREIA_FIM_Z - 600]} rotation={[-Math.PI / 2, 0, 0]} material={mat("mundo/areia/molhada")}>
-        <planeGeometry args={[3000, 1200]} />
+        <Plano w={3000} h={1200} metros={5} />
       </mesh>
       <mesh geometry={geo} material={matMar} receiveShadow />
       {/* Espuma na linha da água */}

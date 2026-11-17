@@ -50,8 +50,17 @@ npx remotion render <tema> out/<tema>.mp4 --codec=h264 --crf=18 --concurrency=1
 Na primeira vez o Remotion baixa o navegador dele. Atrás de proxy, rode com `NODE_USE_ENV_PROXY=1`.
 
 **Tempo de render sem GPU** (WebGL por software, 4 núcleos): cerca de 1,5 s por quadro, perto de 1 hora para um vídeo
-de 69 s. Mais de uma aba (`--concurrency`) não acelera: o WebGL por software já usa todos os núcleos. A oclusão de
-ambiente (`OCLUSAO` em `src/mundo/Mundo.tsx`) fica desligada por isso; num computador com GPU, ligue.
+de 69 s. Mais de uma aba (`--concurrency`) não acelera: o WebGL por software já usa todos os núcleos.
+
+**Com placa de vídeo (PC com Windows e NVIDIA):** use a GPU no navegador do Remotion (`--gl=angle`) e ligue a
+qualidade máxima (oclusão de ambiente e MSAA 4×) com `REMOTION_GPU=1`. No PowerShell:
+
+```powershell
+$env:REMOTION_GPU = "1"
+npx remotion render lua out/lua-v2.mp4 --codec=h264 --crf=18 --gl=angle --concurrency=4
+```
+
+Sem `REMOTION_GPU`, o vídeo sai com SMAA e sem oclusão, como na nuvem.
 
 ## Testes
 

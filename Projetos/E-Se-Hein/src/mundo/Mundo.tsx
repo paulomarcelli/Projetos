@@ -82,19 +82,19 @@ function reflexos(tex: Texturas, dia: number) {
  * sorteio: o mesmo quadro sai sempre igual.
  */
 /**
- * Oclusão de ambiente (N8AO). Sem GPU (render na nuvem, WebGL por software) ela custa ~1,8 s por quadro e
- * quase dobra o tempo do vídeo; as sombras já assentam os objetos. Num computador com GPU, ligue.
+ * Qualidade máxima com placa de vídeo: `REMOTION_GPU=1` liga a oclusão de ambiente (N8AO) e o MSAA 4×.
+ * Sem GPU (render na nuvem, WebGL por software) os dois custam ~3 s por quadro e quase triplicam o tempo
+ * do vídeo; aí ficam o SMAA e as sombras.
  */
-const OCLUSAO = false;
+const GPU = process.env.REMOTION_GPU === "1";
 
 const Efeitos: React.FC<{ espaco: number }> = ({ espaco }) => (
-  // Antisserrilhado pelo SMAA (o MSAA do composer custa ~1 s por quadro sem GPU).
-  <EffectComposer multisampling={0}>
-    {OCLUSAO ? <N8AO aoRadius={3} distanceFalloff={1.2} intensity={espaco > 0.5 ? 0 : 2.2} quality="medium" halfRes /> : <></>}
+  <EffectComposer multisampling={GPU ? 4 : 0}>
+    {GPU ? <N8AO aoRadius={3} distanceFalloff={1.2} intensity={espaco > 0.5 ? 0 : 2.2} quality="high" /> : <></>}
     <Bloom mipmapBlur luminanceThreshold={0.82} luminanceSmoothing={0.15} intensity={0.7} radius={0.7} />
     <ToneMapping mode={ToneMappingMode.NEUTRAL} />
     <Vignette offset={0.32} darkness={0.42} />
-    <SMAA />
+    {GPU ? <></> : <SMAA />}
   </EffectComposer>
 );
 

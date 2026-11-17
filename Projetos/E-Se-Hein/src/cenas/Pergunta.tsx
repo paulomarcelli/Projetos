@@ -13,7 +13,8 @@ const CAMERA: Vec3 = somar(BONECO_LAJE, [1.8, 1.05, 8.8]);
 export const pergunta: Cena = {
   camera: ({ p, seg, aos }) => {
     const ida = entra(seg, aos("comentários") - 0.1, 0.9);
-    const pos = lerp3(CAMERA, somar(CAMERA, [-0.3, 0.05, -0.5]), p);
+    // Na ida até a Lua a câmera sobe e passa por cima do "você", que sai do quadro por baixo.
+    const pos = lerp3(lerp3(CAMERA, somar(CAMERA, [-0.3, 0.05, -0.5]), p), somar(CAMERA, [-1.2, 2.6, -9]), ida);
     const alvo = lerp3(mirar(pos, 11.4, 6.5), POSICAO_LUA, ida);
     return { pos, alvo, fov: lerp(50, 16, ida) };
   },

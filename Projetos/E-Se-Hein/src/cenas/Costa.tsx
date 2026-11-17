@@ -27,7 +27,7 @@ export const costa: Cena = {
     const x = xCamera(p);
     return { pos: [x, -0.15, -44.2], alvo: [x - 1.2, -1.9, -56], fov: 50 };
   },
-  ambiente: () => ({ ...ambienteNoite, dia: 1, lua: 0, estrelas: 0, mareCentro: MARE_CENTRO, mareAmp: MARE_AMP_SEM_LUA }),
+  ambiente: () => ({ ...ambienteNoite, dia: 1, lua: 0, estrelas: 0, mareCentro: MARE_CENTRO - 0.6, mareAmp: MARE_AMP_SEM_LUA }),
   boneco: () => null,
   contexto: () => ({ texto: "Litoral" }),
   Objetos: ({ tempo, seg, aos }) => {
@@ -50,7 +50,7 @@ export const costa: Cena = {
     const coral = projetar([CORAIS[0][0], alturaAreia(CORAIS[0][2]) + 1.2, CORAIS[0][2]]);
     return (
       <>
-        <TextoPreso texto="Caranguejo" guia x={car.x} y={car.y} seg={seg} janela={janela(props, aos("caranguejos"))} />
+        <TextoPreso texto="Caranguejo" guia x={car.x} y={car.y} seg={seg} janela={janela(props, aos("caranguejos"), aos("corais"))} />
         <TextoPreso texto="Corais" guia x={coral.x} y={coral.y} seg={seg} janela={janela(props, aos("corais"))} />
         <Pilula texto="Sem ritmo" cor="vermelho" giro={4} x={700} y={420} seg={seg} janela={janela(props, aos("ritmo"), aos("sinal"))} />
       </>

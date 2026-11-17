@@ -9,12 +9,15 @@ import { bonecoParado, entra, janela, lerp, lerp3 } from "./util";
 // Primeiro a água varia a faixa verde (com Lua); em "Sem ela", só a vermelha (~46%, conferido pela Sabrina).
 export const semLua = ({ seg, aos }: Pick<PropsCena, "seg" | "aos">) => entra(seg, aos("sem"), 1.2);
 
-const CAMERA: Vec3 = [REGUA[0] - 26, 0.9, REGUA[2] + 11];
-const ALVO: Vec3 = [REGUA[0] + 6, -1.6, REGUA[2] + 7];
-export const BONECO_PRAIA: Vec3 = [REGUA[0] + 3, alturaAreia(REGUA[2] + 19), REGUA[2] + 19];
+// Corte lateral: a câmera fica 22 m ao lado da régua, olhando para +x (mar à esquerda, areia subindo à
+// direita), com a régua um pouco à esquerda do centro e os rótulos à direita dela. A praia é rasa (3 m em
+// 36 m), então o "você", na areia seca, fica fora do quadro ou bem pequeno na borda.
+export const BONECO_PRAIA: Vec3 = [REGUA[0] + 3, alturaAreia(REGUA[2] + 18), REGUA[2] + 18];
+const CAMERA: Vec3 = [REGUA[0] - 22, 0.3, REGUA[2] + 2];
+const ALVO: Vec3 = [REGUA[0] + 4, -1.0, REGUA[2] + 2];
 
 export const mares: Cena = {
-  camera: ({ p }) => ({ pos: lerp3(CAMERA, [CAMERA[0] + 1.2, CAMERA[1], CAMERA[2]], p), alvo: ALVO, fov: 40 }),
+  camera: ({ p }) => ({ pos: lerp3(CAMERA, [CAMERA[0] + 1.2, CAMERA[1], CAMERA[2]], p), alvo: ALVO, fov: 50 }),
   ambiente: (props) => ({
     ...ambienteNoite,
     dia: 1,

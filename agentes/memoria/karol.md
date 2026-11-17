@@ -61,6 +61,14 @@ aqui.
 - **Rótulos 2D presos ao 3D:** projetar com uma `PerspectiveCamera` igual à do mundo, calculada pela mesma função
   pura do quadro. Sem drei.
 - **Folha de contato** (`scripts/quadros.sh`) acha defeito de enquadramento rápido; um quadro leva ~3 s.
+- **17/11/2026 · Quadro vazio no @remotion/three.** Duas causas: (1) cena que depende de algo assíncrono (texturas)
+  tem que esperar fora do `ThreeCanvas` e só criar o canvas com tudo pronto; (2) `EffectComposer` monta depois do
+  primeiro desenho, então é preciso redesenhar com `advance()` num `useEffect` e segurar com `delayRender`. Para
+  depurar, pôr um texto na tela (`COM TEX`) é mais rápido que procurar o `console.log`, que o `still` não mostra.
+- **17/11/2026 · Custo sem GPU.** Por quadro, em 1080 × 1920: cena ~1,2 s, N8AO +1,8 s, MSAA 4× +1,1 s. Usar SMAA e
+  deixar a oclusão desligada na nuvem. `--concurrency` maior que 1 não ajuda (o WebGL por software já usa os 4 núcleos).
+- **17/11/2026 · Tone mapping.** O ACES lava as cores dos tokens (céu azul vira cinza); o `NEUTRAL` mantém o Design
+  System.
 
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
@@ -77,3 +85,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 |---|---|---|---|---|---|
 | 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
 | 17/11/2026 | Base do projeto de vídeo E Se, Hein? + vídeo da Lua | a avaliar | ~3 h | sem crédito pago | Estilo mudou no meio (referência da grua): fazer o mundo contínuo desde o início quando houver referência de câmera |
+| 17/11/2026 | Vídeo da Lua v2: realismo ligado ao mundo, enquadramentos pelo storyboard, render final (continuação, outra sessão) | a avaliar | ~1 h + 1 h de render | sem crédito pago | Conferir a folha de contato contra o storyboard antes de cada render longo |

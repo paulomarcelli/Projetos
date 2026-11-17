@@ -44,10 +44,14 @@ bash scripts/quadros.sh <tema> 30 300 900 1500
 npx remotion render <tema> out/<tema>-previa.mp4 --scale=0.5
 
 # Final 1080 × 1920
-npx remotion render <tema> out/<tema>.mp4 --codec=h264 --crf=18
+npx remotion render <tema> out/<tema>.mp4 --codec=h264 --crf=18 --concurrency=1
 ```
 
 Na primeira vez o Remotion baixa o navegador dele. Atrás de proxy, rode com `NODE_USE_ENV_PROXY=1`.
+
+**Tempo de render sem GPU** (WebGL por software, 4 núcleos): cerca de 1,5 s por quadro, perto de 1 hora para um vídeo
+de 69 s. Mais de uma aba (`--concurrency`) não acelera: o WebGL por software já usa todos os núcleos. A oclusão de
+ambiente (`OCLUSAO` em `src/mundo/Mundo.tsx`) fica desligada por isso; num computador com GPU, ligue.
 
 ## Testes
 
@@ -69,5 +73,6 @@ npm run lint    # eslint + tsc
 | `src/camadas/` | Camadas 2D: legenda, rótulos, contexto, marca-d'água, fechamento |
 | `docs/` | Plano e arquitetura |
 
-O visual 3D, as cores do mundo (`src/mundo/paleta.ts`) e a fonte (`src/fontes.ts`) são **provisórios** até o Design
-System da Sofia.
+As cores do mundo (`src/mundo/paleta.ts`), a fonte e os componentes 2D seguem o Design System da Sofia
+(`docs/design-system.md`). O realismo (texturas, céus HDRI, pós-processamento) está em `src/mundo/texturas.ts`,
+`src/mundo/materiais.ts` e `src/mundo/Mundo.tsx`; as licenças, em `public/texturas/LICENCAS.md`.

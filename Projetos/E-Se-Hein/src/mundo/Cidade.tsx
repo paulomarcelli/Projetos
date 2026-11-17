@@ -11,7 +11,8 @@ const CELULA = 18;
 const ANDAR = 3;
 
 /** Prédio alto com laje onde o "você" fica no Q1 e no Q7. */
-export const LAJE = { x: 0, z: ORLA_Z + 14 + 4 * CELULA, lado: 14, andares: 5 };
+// 9 andares: mais alta que qualquer prédio entre ela e o mar (no máximo 7), para a Lua aparecer inteira no Q1.
+export const LAJE = { x: 0, z: ORLA_Z + 14 + 4 * CELULA, lado: 14, andares: 9 };
 export const ALTURA_LAJE = LAJE.andares * ANDAR;
 export const BONECO_LAJE: [number, number, number] = [LAJE.x, ALTURA_LAJE, LAJE.z - 3.5];
 /** Centro da cidade, para o domo de luz e o rótulo "CIDADE". */

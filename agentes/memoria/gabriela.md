@@ -34,8 +34,19 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
     marcados como Pronto e 3 já publicados) estão na lixeira do Notion por 30 dias, se ele quiser recuperar algum.
   - O primeiro vídeo do canal ("E se a Lua desaparecesse?") foi postado em 17/11/2026: 45 visualizações e 2 curtidas
     nos primeiros ~15 minutos.
-- **Skills de terceiros.** As skills `viral-*` vinham com uma seção que recomendava um produto pago; ela foi retirada.
-  Não recomende ferramenta paga.
+- **Skills de terceiros (17/11/2026).** São 11, todas com licença MIT e o LICENSE na pasta. Vêm de:
+  - coreyhaines31/marketingskills;
+  - vyralcontent/content-skills;
+  - sergebulaev/linkedin-skills;
+  - blader/humanizer;
+  - samber/cc-skills.
+
+  Ajustes:
+  - as `viral-*` vinham com uma seção que recomendava um produto pago; ela foi retirada. Não recomende ferramenta paga;
+  - a `linkedin-humanizer` ficou de fora, porque depende de APIs pagas de detectores de IA. Use a `humanizer`;
+  - as referências das skills de LinkedIn ficam em `.claude/skills/linkedin-referencias/`.
+- **Perfil de voz.** `.claude/skills/linkedin-referencias/voice-profile.md` ainda está vazio: preencha com o Paulo a
+  partir de 3 a 5 posts reais dele.
 
 ## Registro de tarefas
 

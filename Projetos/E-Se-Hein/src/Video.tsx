@@ -14,6 +14,7 @@ import { criarAos, limitesDasCenas, misturaDeCenas } from "./lib/tempo";
 import { misturarAmbiente } from "./mundo/ambiente";
 import { POSICAO_LUA } from "./mundo/Lua";
 import { Mundo } from "./mundo/Mundo";
+import { useTexturas } from "./mundo/texturas";
 import type { DadosVideo } from "./tipos";
 
 /** Segundos antes da voz. O Design System sugeriu começar direto no Q1. */
@@ -63,6 +64,7 @@ export const VideoEseHein: React.FC<{ dados: DadosVideo }> = ({ dados }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const fontes = useFontesProntas();
+  const tex = useTexturas();
   const tempo = frame / fps;
   const tVoz = Math.min(dados.duracaoAudio, Math.max(0, tempo - ABERTURA));
   const fimVoz = ABERTURA + dados.duracaoAudio;
@@ -115,10 +117,12 @@ export const VideoEseHein: React.FC<{ dados: DadosVideo }> = ({ dados }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#0b1a45" }}>
-      <Mundo pose={pose} amb={amb} tempo={tempo} boneco={boneco} width={width} height={height}>
-        {ObjetosA ? <ObjetosA {...propsA} /> : null}
-        {ObjetosB && propsB ? <ObjetosB {...propsB} /> : null}
-      </Mundo>
+      {tex ? (
+        <Mundo tex={tex} pose={pose} amb={amb} tempo={tempo} boneco={boneco} width={width} height={height}>
+          {ObjetosA ? <ObjetosA {...propsA} /> : null}
+          {ObjetosB && propsB ? <ObjetosB {...propsB} /> : null}
+        </Mundo>
+      ) : null}
 
       {fontes ? (
         <>

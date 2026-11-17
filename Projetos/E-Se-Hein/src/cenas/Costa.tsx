@@ -25,7 +25,7 @@ const xCamera = (p: number) => lerp(-263, -282, p);
 export const costa: Cena = {
   camera: ({ p }) => {
     const x = xCamera(p);
-    return { pos: [x, -0.15, -44.2], alvo: [x - 1.2, -1.9, -56], fov: 50 };
+    return { pos: [x, -0.45, -45.6], alvo: [x - 1.2, -1.9, -56], fov: 50 };
   },
   ambiente: () => ({ ...ambienteNoite, dia: 1, lua: 0, estrelas: 0, mareCentro: MARE_CENTRO, mareAmp: MARE_AMP_SEM_LUA }),
   boneco: () => null,
@@ -35,7 +35,7 @@ export const costa: Cena = {
     return (
       <group>
         {CARANGUEJOS.map((c, i) => (
-          <Caranguejo key={i} position={naAreia(c)} tempo={tempo + i * 0.7} giro={0.3 + i * 0.5 + perdeu * Math.sin(tempo * (1.5 + i)) * 1.6} agitado={1 - perdeu * 0.8} escala={i === 1 ? 1.4 : 1} />
+          <Caranguejo key={i} position={naAreia(c)} tempo={tempo + i * 0.7} giro={0.3 + i * 0.5 + perdeu * Math.sin(tempo * (1.5 + i)) * 1.6} agitado={1 - perdeu * 0.8} escala={i === 1 ? 2.4 : 1.7} />
         ))}
         <Ave position={AVE} tempo={tempo} giro={-Math.PI / 2 + perdeu * Math.sin(tempo * 2) * 0.8} />
         {CORAIS.map((c, i) => (

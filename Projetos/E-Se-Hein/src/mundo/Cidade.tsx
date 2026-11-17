@@ -93,7 +93,8 @@ function planejar(): Lote[] {
       if (ix === 0 && iz === 4) continue; // a laje
       if (sorte < 0.1) {
         lotes.push({ tipo: "praca", x, z, arvores: Array.from({ length: 3 }, () => [x + (r() - 0.5) * 10, z + (r() - 0.5) * 10, 1.6 + r() * 1.2]) });
-      } else if (iz < 2 || sorte < 0.45) {
+      } else if (iz < 2 || sorte < 0.45 || (Math.abs(ix) <= 1 && iz < 4)) {
+        // Casas baixas na frente da laje: a vista para a Lua fica livre.
         lotes.push({ tipo: "casa", x, z, w: 8 + Math.round(r() * 2) * 2, d: 8, andares: 1 + Math.round(r()), cor, semente, giro: r() < 0.5 ? 0 : Math.PI / 2 });
       } else {
         const alto = Math.min(9, 3 + Math.floor(r() * (3 + iz * 0.4)));

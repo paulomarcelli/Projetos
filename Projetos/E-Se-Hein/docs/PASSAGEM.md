@@ -195,17 +195,22 @@ Veja o `README.md` do projeto. Em resumo:
   - só música da biblioteca da plataforma;
   - evitar conteúdo repetitivo, que corta a monetização.
 
-## 7. Onde parou (17/11/2026)
+## 7. Onde parou (17/11/2026, 21h40 UTC)
 
-- **Vídeo da Lua, versão 1:** renderizado, mas é só prévia, não vai ao ar. Tinha o roteiro antigo ("um terço") e cenas
-  provisórias.
-- **Vídeo da Lua, versão 2: em andamento (Karol).** Leva:
-  - o Design System da Sofia;
-  - o realismo;
-  - o áudio novo (`audio/lua-maia-v2.mp3`);
-  - os rótulos corrigidos.
-
-  Depois do render, a Sofia confere contra o storyboard, e o Paulo aprova e posta.
+- **Vídeo da Lua, versão 1:** só prévia, não vai ao ar. Tem o roteiro antigo ("um terço") e cenas provisórias.
+- **Vídeo da Lua, versão 2: em andamento (Karol).** Já está no código:
+  - o Design System da Sofia: Rubik, legenda medida, rótulos, contexto, marca-d'água e fechamento;
+  - o áudio novo (`audio/lua-maia-v2.mp3`), com o roteiro corrigido e os rótulos corrigidos;
+  - texturas reais: HDRI do Poly Haven, Lua da NASA (LRO), Terra Blue Marble, areia e asfalto PBR, normais de água;
+  - mudanças nas cenas e no mundo.
+- **Último passo em depuração:** o pós-processamento (`EffectComposer` do `@react-three/postprocessing`) não estava
+  aparecendo no render do Remotion, e não dava erro no console. A hipótese em teste era renderizar sem o compositor
+  para isolar a causa. Se não resolver, faça o vídeo sem o `EffectComposer`: o realismo vem das texturas, do HDRI e
+  da luz. Isso já basta.
+- **Depois do render da v2:**
+  - folha de contato comparando com a v1 e com o storyboard (`docs/imagens/storyboard-lua.jpg`);
+  - a Sofia confere o visual;
+  - o Paulo aprova e posta.
 - **Pendente:**
   - os roteiros dos temas 1 e 3 a 7, com conferência de fatos;
   - o corte curto (35 s) de cada vídeo;

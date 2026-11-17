@@ -25,7 +25,7 @@ export const terraLua: Cena = {
     const terra = projetar(TERRA_POS);
     const borda = projetar(somar(TERRA_POS, [TERRA_RAIO * 0.75, -TERRA_RAIO * 1.1, 0]));
     const polo = projetar(poloNorte(balanco(seg)));
-    const segura = janela(props, aos("segura"));
+    const segura = janela(props, aos("ajuda"));
     return (
       <>
         <LinhaPontilhada de={[lua.x, lua.y]} para={[terra.x, terra.y]} seg={seg} janela={janela(props, 0.2)} />

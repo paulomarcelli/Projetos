@@ -9,12 +9,12 @@ import { bonecoParado, entra, janela, lerp, lerp3 } from "./util";
 // Primeiro a água varia a faixa verde (com Lua); em "Sem ela", só a vermelha (~46%, conferido pela Sabrina).
 export const semLua = ({ seg, aos }: Pick<PropsCena, "seg" | "aos">) => entra(seg, aos("sem"), 1.2);
 
-const CAMERA: Vec3 = [REGUA[0] - 26, 0.9, REGUA[2] + 11];
-const ALVO: Vec3 = [REGUA[0] + 6, -1.6, REGUA[2] + 7];
+const CAMERA: Vec3 = [REGUA[0] - 24, 0.9, REGUA[2] + 10];
+const ALVO: Vec3 = [REGUA[0] + 8, -1.5, REGUA[2] + 8.5];
 export const BONECO_PRAIA: Vec3 = [REGUA[0] + 3, alturaAreia(REGUA[2] + 19), REGUA[2] + 19];
 
 export const mares: Cena = {
-  camera: ({ p }) => ({ pos: lerp3(CAMERA, [CAMERA[0] + 1.2, CAMERA[1], CAMERA[2]], p), alvo: ALVO, fov: 40 }),
+  camera: ({ p }) => ({ pos: lerp3(CAMERA, [CAMERA[0] + 1.2, CAMERA[1], CAMERA[2]], p), alvo: ALVO, fov: 50 }),
   ambiente: (props) => ({
     ...ambienteNoite,
     dia: 1,

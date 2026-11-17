@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 import { sorteador } from "./aleatorio";
-import { DiscoLua } from "./Lua";
-import { corMundo } from "./paleta";
+import { EsferaLua } from "./Lua";
 
-// Terra de brinquedo no espaço, bem acima do mundo (a névoa esconde o chão lá embaixo).
+// Terra no espaço com o NASA Blue Marble (domínio público), nuvens leves e atmosfera fina.
+// Fica bem acima do mundo; a névoa esconde o chão lá embaixo.
 export const TERRA_POS: [number, number, number] = [0, 2600, -300];
 export const TERRA_RAIO = 26;
 export const INCLINACAO = (23.4 * Math.PI) / 180;
@@ -12,30 +12,54 @@ export const INCLINACAO = (23.4 * Math.PI) / 180;
 export const LUA_ESPACO_OFFSET: [number, number, number] = [74, 52, -20];
 export const LUA_ESPACO_DIAMETRO = TERRA_RAIO * 2 * 0.27;
 
-const fixo = { dia: 1, noite: 0, breu: 0 };
-
-function geometriaTerra() {
-  const g = new THREE.IcosahedronGeometry(1, 4).toNonIndexed();
-  const r = sorteador(11);
-  const manchas = Array.from({ length: 8 }, () => ({
-    c: new THREE.Vector3(r() - 0.5, (r() - 0.5) * 1.2, r() - 0.5).normalize(),
-    raio: 0.3 + r() * 0.3,
-  }));
-  const pos = g.getAttribute("position");
-  const cores: number[] = [];
-  const mar = new THREE.Color(corMundo("mundo/terra/oceano", fixo));
-  const terra = new THREE.Color(corMundo("mundo/terra/continente", fixo));
-  const gelo = new THREE.Color(corMundo("mundo/terra/gelo", fixo));
-  const v = new THREE.Vector3();
-  for (let i = 0; i < pos.count; i += 3) {
-    v.set(0, 0, 0);
-    for (let k = 0; k < 3; k++) v.add(new THREE.Vector3().fromBufferAttribute(pos, i + k));
-    v.normalize();
-    const cor = Math.abs(v.y) > 0.9 ? gelo : manchas.some((m) => v.distanceTo(m.c) < m.raio) ? terra : mar;
-    for (let k = 0; k < 3; k++) cores.push(cor.r, cor.g, cor.b);
+/** Nuvens geradas (manchas suaves); não há mapa de nuvens pequeno em domínio público à mão. */
+function texturaNuvens() {
+  const c = document.createElement("canvas");
+  c.width = 1024;
+  c.height = 512;
+  const g = c.getContext("2d")!;
+  const r = sorteador(13);
+  for (let i = 0; i < 520; i++) {
+    const y = 60 + r() * 392;
+    const x = r() * 1024;
+    const raio = 6 + r() * 26;
+    const grad = g.createRadialGradient(x, y, 0, x, y, raio);
+    grad.addColorStop(0, `rgba(255,255,255,${0.22 + r() * 0.3})`);
+    grad.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = grad;
+    g.beginPath();
+    g.ellipse(x, y, raio * 2.2, raio, 0, 0, Math.PI * 2);
+    g.fill();
   }
-  g.setAttribute("color", new THREE.Float32BufferAttribute(cores, 3));
-  return g;
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function materialAtmosfera() {
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    fog: false,
+    vertexShader: /* glsl */ `
+      varying vec3 vNormal;
+      varying vec3 vVista;
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vVista = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */ `
+      varying vec3 vNormal;
+      varying vec3 vVista;
+      void main() {
+        float borda = pow(clamp(1.0 + dot(vNormal, vVista) * 1.0, 0.0, 1.0), 3.0);
+        gl_FragColor = vec4(vec3(0.35, 0.65, 1.0) * borda * 1.4, borda);
+      }`,
+  });
 }
 
 /** Elipse tracejada que passa pela Lua (vista meio de lado). */
@@ -52,11 +76,12 @@ function orbita() {
   return l;
 }
 
-type Props = { tempo: number; balanco: number; luaEspaco: number; visivel: number };
+type Props = { tempo: number; balanco: number; luaEspaco: number; visivel: number; terra: THREE.Texture; lua: THREE.Texture };
 
-export const Terra: React.FC<Props> = ({ tempo, balanco, luaEspaco, visivel }) => {
-  const geo = useMemo(geometriaTerra, []);
-  const matTerra = useMemo(() => new THREE.MeshLambertMaterial({ vertexColors: true, fog: false }), []);
+export const Terra: React.FC<Props> = ({ tempo, balanco, luaEspaco, visivel, terra, lua }) => {
+  const matTerra = useMemo(() => new THREE.MeshStandardMaterial({ map: terra, roughness: 0.75, metalness: 0, fog: false }), [terra]);
+  const matNuvens = useMemo(() => new THREE.MeshStandardMaterial({ map: texturaNuvens(), transparent: true, depthWrite: false, roughness: 1, fog: false }), []);
+  const matAtmosfera = useMemo(materialAtmosfera, []);
   const matEixo = useMemo(() => new THREE.MeshBasicMaterial({ color: "#ffffff", fog: false }), []);
   const linha = useMemo(orbita, []);
   if (visivel <= 0.001) return null;
@@ -65,16 +90,22 @@ export const Terra: React.FC<Props> = ({ tempo, balanco, luaEspaco, visivel }) =
     <group>
       <group position={TERRA_POS}>
         <group rotation={[0, 0, -(INCLINACAO + balanco)]}>
-          <mesh geometry={geo} material={matTerra} scale={TERRA_RAIO} rotation={[0, tempo * 0.25, 0]} />
+          <mesh material={matTerra} rotation={[0, -1.2 + tempo * 0.12, 0]}>
+            <sphereGeometry args={[TERRA_RAIO, 96, 64]} />
+          </mesh>
+          <mesh material={matNuvens} rotation={[0, tempo * 0.16, 0]}>
+            <sphereGeometry args={[TERRA_RAIO * 1.012, 96, 64]} />
+          </mesh>
           <mesh material={matEixo}>
-            <cylinderGeometry args={[0.35, 0.35, TERRA_RAIO * 3, 6]} />
+            <cylinderGeometry args={[0.3, 0.3, TERRA_RAIO * 3, 8]} />
           </mesh>
         </group>
-        {luaEspaco > 0.01 ? (
-          <primitive object={linha} />
-        ) : null}
+        <mesh material={matAtmosfera}>
+          <sphereGeometry args={[TERRA_RAIO * 1.07, 64, 48]} />
+        </mesh>
+        {luaEspaco > 0.01 ? <primitive object={linha} /> : null}
       </group>
-      <DiscoLua position={luaPos} diametro={LUA_ESPACO_DIAMETRO} opacidade={luaEspaco} />
+      {luaEspaco > 0.01 ? <EsferaLua position={luaPos} raio={LUA_ESPACO_DIAMETRO / 2} textura={lua} opacidade={1} /> : null}
     </group>
   );
 };

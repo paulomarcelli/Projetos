@@ -74,6 +74,10 @@ andamento (**Aurora**) tem uma passagem detalhada em
 - **Substack e LinkedIn** (calendário de posts no Notion): post do Karol × Samsung publicado; post "como estudo com IA"
   pronto, com a data de publicação a decidir; post do Una Noche Más pronto, falta o link depois de publicado.
 
+- **Canal E Se, Hein?** (`Projetos/E-Se-Hein/`): canal de vídeos curtos "E se…?" em 3D (TikTok, Shorts, Reels), narrados
+  pela Maia (voz do ElevenLabs). **Leia `Projetos/E-Se-Hein/docs/PASSAGEM.md`**: nome, @, bios, logo, voz, regras dos
+  roteiros, roteiros conferidos, estilo, como gerar vídeo e onde parou. Vídeo da Lua: versão 2 em produção.
+
 ## 5. Pendências que dependem do usuário
 - **Aurora:** ele jogar a Fase 1 e contar onde se perdeu, que salto errou mais de 3 vezes, que trecho foi chato ou
   injusto e quanto tempo levou.

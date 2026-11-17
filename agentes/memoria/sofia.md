@@ -42,6 +42,10 @@ aqui.
   projeto de interface começa com a criação ou a atualização do Design System, documentado em
   `Projetos/<projeto>/docs/design-system.md` e entregue à Karol. Sem Figma disponível, dizer isso e não
   fingir.
+- **17/11/2026 · Pedido do Paulo: sempre o Figma.** Todo trabalho da Sofia passa pelo Figma, inclusive logo, capa e
+  revisão de cenário: o resultado final fica num arquivo do Figma, com vetores editáveis, e o link vai na entrega. Se
+  um pedido disser para dispensar o Figma, confirme antes com o Paulo. A proibição é só gastar créditos (Weave e
+  geração de imagem), não usar o Figma.
 - **14/11/2026 · Figma nas execuções pelo painel.** Quando a tarefa roda pelo Escritório (`claude -p`), o Figma pode
   aparecer como "precisa de autorização". Confira antes de prometer.
 

@@ -31,7 +31,8 @@ andamento (**Aurora**) tem uma passagem detalhada em
 - `.claude/skills/`: skills instaladas no repositório. As de jogo são **`gamedev-skills`** (roteador com `level-design`,
   `platformer`, `pixijs-rendering` etc.) e **`2d-games`** (instalada nesta conversa, a pedido dele; `skills-lock.json`).
 - `.claude/agents/` e `agentes/`: o **time de agentes**, que são **só três** (o Paulo apagou os heróis antigos):
-  **Sofia** (agente 2, designer: todo projeto de interface começa com o Design System dela no Figma), **Karol**
+  **Sofia** (agente 2, designer: todo projeto de interface começa com o Design System dela no Figma; o Figma é
+  sempre a ferramenta principal dela, então nunca peça para ela dispensar o Figma, só para não gastar créditos), **Karol**
   (agente 1, desenvolvimento: arquitetura, front, back, dados e IA) e **Sabrina** (agente 3, coordenação, pesquisa e
   QA; é quem monta os planos). Memórias em `agentes/memoria/` e protocolo em `agentes/PROTOCOLO.md`. No escritório
   elas aparecem em pixel art com o visual dos retratos do Paulo: Sofia morena, Karol loira-mel, Sabrina loira clara.

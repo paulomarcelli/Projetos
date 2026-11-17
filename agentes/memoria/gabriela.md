@@ -34,6 +34,17 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
     marcados como Pronto e 3 já publicados) estão na lixeira do Notion por 30 dias, se ele quiser recuperar algum.
   - O primeiro vídeo do canal ("E se a Lua desaparecesse?") foi postado em 17/11/2026: 45 visualizações e 2 curtidas
     nos primeiros ~15 minutos.
+- **17/11/2026 · Primeira semana do TikTok (18 a 22/11).**
+  - Conte as palavras com um script, sem as marcações. Curto: até ~90 palavras, porque o fechamento soma 4 s (90
+    palavras ≈ 35 s de voz + 4 s ≈ 39 s). Longo: de 165 a 180.
+  - Escreva os números por extenso no roteiro ("mil e setecentos"): a Maia lê melhor e a conta do tempo fica certa.
+  - O roteiro da Lua e o rascunho do tema 1 na PASSAGEM tinham 4 marcações; a regra é no máximo 3. Confira sempre.
+  - Confira a lógica interna do roteiro, não só os fatos: o rascunho do tema 1 dizia "o celular não tem sinal" e
+    "a luz ainda acende" no mesmo dia.
+  - No Notion, a propriedade Tipo do TikTok é "Vídeo"; curto ou longo vai no título ("· curto", "· longo").
+  - O Escritório estava fechado: o plano ficou salvo em `agentes/planos/`, sem envio. Avise o Paulo.
+  - O vídeo da Lua ainda não tem página no calendário: crie quando chegarem os números de 48 h, não com o dado de
+    15 minutos.
 - **Skills de terceiros (17/11/2026).** São 11, todas com licença MIT e o LICENSE na pasta. Vêm de:
   - coreyhaines31/marketingskills;
   - vyralcontent/content-skills;
@@ -55,3 +66,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | Data | Pedido | Resultado | Tempo | Custo | O que melhorar |
 |---|---|---|---|---|---|
 | 17/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
+| 17/11/2026 | 5 roteiros do TikTok de 18 a 22/11 (3 curtos, 2 longos), 5 páginas no Notion, plano para Sabrina e Sofia, relatório | aguardando o Paulo | ~1 sessão | não medido | O Escritório estava fechado (plano não enviado). Pedir os números da Lua em 48 h. Prazo da quarta é apertado: roteiro do dia seguinte precisa sair com 2 dias de folga. |

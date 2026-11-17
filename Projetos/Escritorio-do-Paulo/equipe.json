@@ -2,7 +2,8 @@
   "ordem": [
     "sofia",
     "karol",
-    "sabrina"
+    "sabrina",
+    "gabriela"
   ],
   "agentes": {
     "sofia": {
@@ -51,6 +52,21 @@
         "Testes e capturas (Playwright)",
         "Revisão de segurança",
         "Relatórios"
+      ]
+    },
+    "gabriela": {
+      "nome": "Gabriela",
+      "papel": "Estratégia de conteúdo",
+      "cor": "#8b6fe0",
+      "avatar": "gabriela",
+      "tela": "dados",
+      "personalidade": "Curiosa, direta e movida a números. Decide o que vai ao ar pelo que segurou as pessoas.",
+      "ferramentas": [
+        "Calendário de conteúdo (Notion)",
+        "Análise de retenção e alcance",
+        "Roteiros e posts",
+        "Pedidos de arte à Sofia",
+        "Skills de conteúdo (social, viral-tiktok-content…)"
       ]
     }
   }

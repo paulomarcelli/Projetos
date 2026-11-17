@@ -10,9 +10,11 @@ comuns estão no [protocolo da equipe](PROTOCOLO.md). Para criar outro, peça "c
 | 🎤 **Sabrina** | Coordenação (plano em tarefas, ordem e dependências), pesquisa com fontes, QA e segurança | [`sabrina.md`](../.claude/agents/sabrina.md) | [`sabrina.md`](memoria/sabrina.md) |
 | 🎨 **Sofia** | Design: Design System no Figma, layouts, revisão visual | [`sofia.md`](../.claude/agents/sofia.md) | [`sofia.md`](memoria/sofia.md) |
 | 💻 **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, IA, publicação | [`karol.md`](../.claude/agents/karol.md) | [`karol.md`](memoria/karol.md) |
+| 📈 **Gabriela** | Estratégia de conteúdo: escolhe e escreve os posts da semana (TikTok E Se, Hein?, LinkedIn e Substack) pelos números, cuida do calendário no Notion e pede as artes à Sofia | [`gabriela.md`](../.claude/agents/gabriela.md) | [`gabriela.md`](memoria/gabriela.md) |
 
-Por que três: o Paulo quis uma equipe pequena, só com elas. Quem desenha (Sofia) fica separada de quem constrói (Karol)
-e de quem planeja e confere (Sabrina): assim ninguém revisa o próprio trabalho.
+Por que quatro: o Paulo quis uma equipe pequena, só com elas. Quem desenha (Sofia) fica separada de quem constrói (Karol)
+e de quem planeja e confere (Sabrina): assim ninguém revisa o próprio trabalho. A Gabriela (17/11/2026) cuida do que
+vai ao ar nas redes: escolhe e escreve, mas a arte é da Sofia e os fatos científicos passam pela Sabrina.
 
 ## Como acionar
 

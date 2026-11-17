@@ -9,11 +9,13 @@
   },
   "private": true,
   "dependencies": {
+    "@fontsource/rubik": "5.3.0",
     "@react-three/fiber": "9.8.2",
     "@remotion/captions": "4.0.544",
     "@remotion/cli": "4.0.544",
     "@remotion/fonts": "4.0.544",
     "@remotion/install-whisper-cpp": "4.0.544",
+    "@remotion/layout-utils": "4.0.544",
     "@remotion/media": "4.0.544",
     "@remotion/three": "4.0.544",
     "react": "19.3.1",
@@ -22,7 +24,6 @@
     "three": "0.187.0"
   },
   "devDependencies": {
-    "@fontsource/montserrat": "5.2.8",
     "@remotion/eslint-config-flat": "4.0.544",
     "@types/react": "19.3.0",
     "@types/three": "0.187.0",

@@ -41,3 +41,24 @@ contexto e pergunta final. O script `scripts/preparar.mjs` gera esse arquivo a p
 - Palavra que o Whisper escreve diferente ("1/3" em vez de "um terço") não pode deslocar as seguintes.
 - Pausas longas: a palavra não fica na tela durante o silêncio.
 - Render sem GPU (WebGL por software): medir o tempo por quadro antes do render completo.
+
+---
+
+# Plano v2: Design System da Sofia e storyboard (17/11/2026)
+
+Fonte: `docs/design-system.md` (seção "O que muda no código atual"), `docs/tokens.json` e o storyboard da Lua.
+
+1. **Texto (TDD)** — `src/lib/tempo.ts`: a legenda mantém a caixa do roteiro e o `?`/`!` do fim; em pausa maior que
+   0,35 s sai 4 quadros depois da fala; palavra de destaque por trecho (`destaque` no JSON). Tamanho da legenda medido
+   pela largura real (112 a 84 px, de 2 em 2), testado com uma função de medida injetada.
+2. **Tokens** — `src/mundo/paleta.ts` lê `docs/tokens.json`; `src/mundo/materiais.ts` guarda um material por token e
+   troca a cor a cada quadro pela mistura dos modos Dia, Noite e Breu (e Espaço). A luz fica fixa e neutra.
+3. **Mundo** — laje alta na cidade (Q1 e Q7), morro fora da cidade com domo de luz (Q2), praia em corte com régua e
+   faixas de maré (Q3), costa com caranguejos, ave e corais (Q4), Terra e Lua no espaço bem acima do mundo (Q5 e Q6),
+   com a névoa escondendo o chão. Nuvens de 3 ou 4 esferas achatadas. Lua redonda, lisa, com crateras simples.
+   Boneco com as medidas da Sofia (1,80 m), piscando e respirando.
+4. **Componentes 2D** — Rubik 800/900; legenda; pílulas G e P; texto preso com guia; setas reta e curva; ícones
+   amarelos de 168 px; cartões Um, Dois e Antes e depois; contexto (Texto e Tempo); marca-d'água; fechamento novo
+   (círculo laranja nascendo da Lua). Rótulos com entrada e saída dos tokens de movimento, no máximo 3 na tela.
+5. **Cenas** — reescrever as 7 cenas pelo storyboard; sem abertura (começa no Q1); passagem de 45 quadros.
+6. **Conferência** — folha de contato comparada ao storyboard, testes, lint, render em `lua-v2.mp4`, LUFS e sincronia.

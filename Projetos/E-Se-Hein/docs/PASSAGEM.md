@@ -199,13 +199,20 @@ Veja o `README.md` do projeto. Em resumo:
 
 - **Vídeo da Lua, versão 1:** renderizado, mas é só prévia, não vai ao ar. Tinha o roteiro antigo ("um terço") e cenas
   provisórias.
-- **Vídeo da Lua, versão 2: em andamento (Karol).** Leva:
+- **Vídeo da Lua, versão 2: pronta para o render final (17/11/2026, fim do dia).** Já tem:
   - o Design System da Sofia;
-  - o realismo;
-  - o áudio novo (`audio/lua-maia-v2.mp3`);
-  - os rótulos corrigidos.
+  - o realismo ligado ao mundo 3D: relevo PBR no chão, areia e asfalto; água e areia molhada refletindo o céu HDRI;
+    Lua e Terra com as fotos da NASA; brilho, tone mapping neutro e vinheta;
+  - o áudio novo (`audio/lua-maia-v2.mp3`) e os rótulos corrigidos;
+  - os enquadramentos conferidos contra o storyboard (Q1 a Q7) por folha de contato.
 
-  Depois do render, a Sofia confere contra o storyboard, e o Paulo aprova e posta.
+  **O render final não foi feito.** Na nuvem, sem GPU, levaria ~1 hora (1,5 s por quadro) e foi pausado para rodar no
+  PC do Paulo, que tem placa de vídeo (RTX 5050). Lá, o render usa a GPU (`--gl=angle`) e a qualidade máxima
+  (`REMOTION_GPU=1`: oclusão de ambiente e MSAA 4×); os comandos estão no `README.md`, seção "Render".
+
+  Depois do render: conferir o MP4 (1080 × 1920, 30 fps, ~69 s, voz em -14 LUFS, legenda em sincronia com a voz) e
+  montar uma folha de contato com um quadro de cada cena (Q1 a Q8) para a Sofia comparar com o storyboard
+  (`docs/imagens/storyboard-lua.jpg`). Em seguida o Paulo aprova e posta. O MP4 não vai para o git.
 - **Pendente:**
   - os roteiros dos temas 1 e 3 a 7, com conferência de fatos;
   - o corte curto (35 s) de cada vídeo;

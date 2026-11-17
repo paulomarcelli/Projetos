@@ -7,6 +7,104 @@
       "skillPath": "skills/game-development/2d-games/SKILL.md",
       "computedHash": "958e34c070f744ebc0cf9708c6dca13243f68768e457e56c4bc583bf7286499a"
     },
+    "blender-product-polish": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "product-polish/SKILL.md",
+      "computedHash": "6ecd475eaac0430500da36ba115542c56a2942addfae49b12085273b891a4799"
+    },
+    "blender-threejs-export": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "threejs-export/SKILL.md",
+      "computedHash": "66845a67939873657b1e92b892100ac5fe14bc6063d40fa6e7c7e32944b335e3"
+    },
+    "blender-toolkit": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "blender-toolkit/SKILL.md",
+      "computedHash": "3203d3aa8f59982b8d4124411b4788ea1fcda5b9aecf2ef56f6ab7d9bf9eeb53"
+    },
+    "crane-shot": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "crane-shot/SKILL.md",
+      "computedHash": "dc38c4066ae4a3e24607d8ae4f7713948bda8dcf15c2647f551ab513bc14e7cc"
+    },
+    "dolly-rotate": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "dolly-rotate/SKILL.md",
+      "computedHash": "b07053235dafa9c0306275c7d590be20f5eb1af8614740ce27282febdd3ce4e9"
+    },
+    "dynamic-full-loop": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "dynamic-full-loop/SKILL.md",
+      "computedHash": "03d499224f693ccf88885af8298ee6eb5c153cd399040764ac0576f1c705b925"
+    },
+    "image-to-3d": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "image-to-3d/SKILL.md",
+      "computedHash": "c62c39d5e73cc60b64357d972c42eff59e6096e1e2695f49fe1cf237144e09b3"
+    },
+    "multi-image-to-3d": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "multi-image-to-3d/SKILL.md",
+      "computedHash": "b9dd8dfe3ecb3f33fdb1b4a921894b1a0d5a9c0eef6476e60e8c0bbd05c24dd0"
+    },
+    "perfect-loop": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "perfect-loop/SKILL.md",
+      "computedHash": "3e412ac6b92e01c77e95d862814a5c9a66e35a07bfb244a64f70d7fbf0e81371"
+    },
+    "polyhaven-hdri-showcase": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "polyhaven-hdri-showcase/SKILL.md",
+      "computedHash": "6cb78cbb84ff61ea9e210c2726ad9fefe9b98dbaa87c30ba80552472f2b4532d"
+    },
+    "polyhaven-material-swap": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "polyhaven-material-swap/SKILL.md",
+      "computedHash": "4bc2f5ca0166c0bad4ac095465878cd13bd639a5e4cddefec5ff6b55d649b1be"
+    },
+    "polyhaven-scene-builder": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "polyhaven-scene-builder/SKILL.md",
+      "computedHash": "185916cacb571c27f45dc47e0370e339837f4fad607dfcb87a8b1f0be26eaa28"
+    },
+    "polyhaven-studio-setup": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "polyhaven-studio-setup/SKILL.md",
+      "computedHash": "4f01bc3ed6fa539095fcc0d8023365d08a13ccfb2fc4f13006a6d3066968cd73"
+    },
+    "polyhaven-texture-apply": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "polyhaven-texture-apply/SKILL.md",
+      "computedHash": "5abd47addd71b9f56a418bcdcf1874fb6d4291de11eac343f2237484271067d8"
+    },
     "remotion-best-practices": {
       "source": "remotion-dev/skills",
       "commit": "3e20ac75161bc34468845df714701cc9bf6075f4",
@@ -97,6 +195,20 @@
       "sourceType": "github",
       "skillPath": "skills/remotion-upgrade/SKILL.md",
       "computedHash": "e469c92611c08ca705bd510965650e249a983d54703b1b5ca7cfb7165deb0f8f"
+    },
+    "slow-zoom": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "slow-zoom/SKILL.md",
+      "computedHash": "e28b9bfc4682541d6565f1b1f78fabde9359ba84c559a827ac6cb989b52fee86"
+    },
+    "turntable": {
+      "source": "kevinbadi/blender-skills",
+      "commit": "b2f0f816d320b56ae86d52597a35284e0e6cc929",
+      "sourceType": "github",
+      "skillPath": "turntable/SKILL.md",
+      "computedHash": "c82bcc6f18b639d907031e13331ec0cf4b145fbe981fc204e66bf3f691b8f142"
     }
   }
 }

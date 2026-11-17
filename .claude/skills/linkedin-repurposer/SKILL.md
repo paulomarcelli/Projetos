@@ -30,7 +30,7 @@ Not for a blank-page draft (use `linkedin-post-writer`) and not for reviewing a 
 6. **Fix links and artifacts.** Move any external link to the first comment (in-body links suppress reach). Strip off-platform artifacts: hashtag walls, "link in bio", "smash subscribe", X @-handles, "as I tweeted" throat-clearing. 0 to 2 hashtags at the end.
 7. **Humanizer pass.** Run the scrub: 2026 AI vocab by density, em dashes above the cap (about one per 100 words), stacked rule-of-three triads, generic openers and reveal bridges. Keep the user's real numbers and named entities from the source.
 8. **Approval card.** Show: source -> LinkedIn mapping (what became what), formula used, char count, suggested posting window (Tue/Wed/Thu 7:30 to 9:00 AM local), the link-in-first-comment note.
-9. **On approval.** Do not publish or schedule anything. Hand the approved text to Paulo, who posts it himself (on the Paulo team, publishing is always manual).
+9. **Depois da aprovação.** Não publique nem agende nada. Entregue o texto aprovado ao Paulo, que posta ele mesmo (na equipe do Paulo, a publicação é sempre manual).
 
 ## Native-fit rules (source -> LinkedIn)
 

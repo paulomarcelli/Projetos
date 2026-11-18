@@ -128,6 +128,10 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   - Lista de cena para a Karol: tempo de cada palavra com o script (2,6 palavras por segundo) e o aviso de que o tempo
     certo sai do alinhamento da voz. Escreva também o que **não** pode aparecer (floresta, túnel cheio).
 
+- **18/11/2026 · Tema já postado, mantido.** "Última pessoa do mundo" já tinha vídeos grandes (até 25 mi em português),
+  e o Paulo decidiu manter para 19/11, apostando na Paulista real e no contador como diferencial. A regra "ninguém
+  postou ainda" serve para escolher; quando um tema já pronto não passa nela, mostre os números e o Paulo decide.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.

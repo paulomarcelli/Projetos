@@ -1,0 +1,244 @@
+# HELA · Fase 1: auditoria e plano
+
+Data: 18/11/2026. Este documento fecha a Fase 1 do prompt mestre: a auditoria do ambiente, a conferência da
+documentação oficial, a arquitetura, a divisão do trabalho entre os agentes e as skills, e o plano das Fases 2 a 7. A
+Parte C do handoff (sessão anterior) foi o ponto de partida. Abaixo, o que foi confirmado, o que mudou e o que foi
+decidido.
+
+## 1. Auditoria deste ambiente
+
+| Item | Resultado |
+|---|---|
+| Python | 3.13.17 |
+| Node / npm | 22.22 / 10.9.4 |
+| Claude Code | 2.1.327 |
+| SQLite (Python) | 3.45.1, **FTS5 disponível** (testado criando uma tabela `fts5`) |
+| uv | 0.11.32 (o instalador usa o `uv` se existir, senão `python -m venv`) |
+| Já instalados | numpy 2.5.3, networkx 3.7, uvicorn 0.54, pydantic 2.13, scikit-learn 1.9.1 (fica de fora: ver 3.5) |
+| No PyPI | fastapi 0.164, pydantic 2.14, pytest 9.2, httpx 0.28, **mcp 2.3.0** |
+| No npm | three 0.187, vite 8.3, react 19.3 |
+| `~/.claude/settings.json` | sem hooks hoje. O instalador **mescla**, com backup, e nunca sobrescreve |
+
+## 2. Documentação oficial conferida (code.claude.com/docs, 18/11/2026)
+
+Confirmado o que está na Parte C.3, com dois acréscimos:
+
+- **Eventos usados:**
+  - `SessionStart`, com `source` ∈ startup | resume | clear | compact | fork;
+  - `UserPromptSubmit`, com `prompt`;
+  - `PostToolUse` e `PostToolUseFailure`, com `tool_name`, `tool_input`, `tool_response` e `tool_use_id`;
+  - `Stop`, com `last_assistant_message`;
+  - `SessionEnd`, com `reason`.
+
+  Existem mais 27 eventos (`PostToolBatch`, `SubagentStop`, `PreCompact`…) que a HELA não usa na v1.
+- **Campos comuns:** `session_id`, `prompt_id`, `transcript_path`, `cwd`, `scratchpad_dir` (novo), `permission_mode`,
+  `effort`, `hook_event_name`, e `agent_id`/`agent_type` em subagentes.
+- **Saída:** `{"hookSpecificOutput": {"hookEventName": "...", "additionalContext": "..."}}`. O limite é de **10.000
+  caracteres**; acima disso, o texto vai para um arquivo e o Claude vê só 2.000. O texto chega como system reminder, por
+  isso deve ser **factual, não imperativo**.
+- **Timeouts:**
+  - `command` tem 600 s de padrão, mas **30 s em `UserPromptSubmit`**;
+  - os hooks de `SessionEnd` **dividem 1,5 s**;
+  - hooks `async: true` não têm timeout.
+- **Exit codes:**
+  - **0** é sucesso. JSON é aplicado; texto puro vira contexto em `SessionStart` e `UserPromptSubmit`.
+  - **2** bloqueia. **A HELA nunca usa.**
+  - Outros são erro não bloqueante.
+- **Stop:** `additionalContext` ou `decision: "block"` fazem o Claude continuar o turno. **O hook `Stop` da HELA não
+  imprime nada.**
+- **Skills:**
+  - `~/.claude/skills/<nome>/SKILL.md`, com o frontmatter na primeira linha;
+  - `description` + `when_to_use` até 1.536 caracteres;
+  - o corpo com menos de ~500 linhas.
+- **MCP:** `claude mcp add --scope user hela -- <comando>`. As ferramentas aparecem como `mcp__hela__hela_recall` etc.
+- **Tokens do provedor:** `message.usage` nas linhas `type: "assistant"` do transcript JSONL. Uma mesma mensagem se
+  repete com o mesmo `message.id`, por isso **deduplicar por `message.id`** antes de somar.
+
+## 3. Arquitetura (validação da Parte C.4)
+
+As 17 decisões da Parte C.4 ficam valendo, com estes ajustes:
+
+### 3.1 Pacote e processos
+- **Um pacote Python, `hela`, com quatro entrypoints:**
+  - `hela`: CLI para `dashboard`, `status`, `export`, `import`, `procedure` e `doctor`;
+  - `hela-mcp`: o servidor MCP, em stdio;
+  - `hela-hook <evento>`: um só executável para todos os hooks;
+  - `hela-api`: FastAPI + uvicorn, que também serve o build do dashboard na mesma origem.
+- **Todos usam o mesmo `hela.core.Engine`,** sobre o mesmo `~/.hela/hela.db` (SQLite em modo WAL, `busy_timeout` de 3
+  s). Não há serviço obrigatório rodando: o MCP e os hooks abrem o banco direto. A API só é necessária para o dashboard.
+  Isso mantém a integração **fail-open** e simples.
+- **Hooks rápidos:** o `hela-hook` importa só `sqlite3`, `json` e o módulo do evento. Numpy e NetworkX são carregados
+  só quando o roteador precisa, e o grafo é cacheado em disco. A meta é menos de 300 ms em `UserPromptSubmit`.
+
+### 3.2 Dados
+- `~/.hela/`, que pode ser trocado por `HELA_HOME`: `hela.db`, `config.json`, `graph.cache` e `logs/` (com redação).
+- O esquema é o da Parte C.4.2, com migrações versionadas (`schema_version`).
+
+### 3.3 Busca
+- **Vetores por feature hashing:** 512 dimensões, n-gramas de palavras (1 a 2) e de caracteres (3 a 5), em numpy
+  float32.
+- **Busca híbrida:**
+  - BM25 do FTS5;
+  - cosseno dos vetores;
+  - ativação no grafo;
+  - recência;
+  - qualidade.
+
+  Os sinais são combinados por **Reciprocal Rank Fusion**.
+- **Interface `Embedder` plugável:** se o `sentence-transformers` estiver instalado, ele entra no lugar.
+- **Documentação honesta:** é similaridade léxico-semântica, não embedding neural.
+
+### 3.4 Grafo
+- NetworkX montado a partir de `relationships`, com o cache invalidado por um contador de versão no banco.
+
+### 3.5 Aprendizado
+- **Task Classifier:** começa por regras. Passa para **Naive Bayes multinomial em numpy** só com rótulos que **não
+  vieram das regras** (`label_source` ∈ `explicit` | `feedback`), com N mínimo por classe e validação cruzada. O
+  scikit-learn existe neste ambiente, mas não entra como dependência, porque não é garantido em outras máquinas e o NB
+  em numpy é pequeno e auditável.
+- **Strategy Ranker:** limite inferior de Wilson mais custos normalizados, com os pesos versionados. É **rotulado como
+  heurística estatística**.
+- **Evolution Engine:** cada proposta é testada por replay (Brier score), e só a que melhora é recomendada. Toda proposta
+  aplicada gera um snapshot, com rollback.
+
+### 3.6 Segurança
+- Igual à Parte C.4.12:
+  - redação na entrada;
+  - quarentena por prompt injection;
+  - invólucro "dados, não instruções";
+  - API em 127.0.0.1 com checagem do `Host` e `X-HELA-Token` nas escritas, sem CORS.
+- **A HELA nunca executa scripts sozinha.**
+
+### 3.7 Métricas
+- **Provedor:** os tokens do transcript.
+- **Estimado:** chars/4.
+- **Potencial:** procedimentos reutilizáveis disponíveis.
+- **Comprovado:** assistido contra não assistido, em tarefas equivalentes, com IC por bootstrap. Se o IC não excluir
+  zero, o resultado aparece como "inconclusivo".
+
+### 3.8 Dashboard
+- React 19 + TypeScript + Vite + `three` puro.
+- **Paleta Hela (Parte B):**
+  - preto profundo;
+  - verde-esmeralda;
+  - verde neon "tóxico";
+  - prata fria e grafite.
+
+  **Sem azul e sem roxo.**
+- A identidade visual é original, sem nada da Marvel e sem elmo de chifres.
+- Gráficos em SVG próprio, seguindo a skill `dataviz`.
+
+## 4. Agentes e skills: quem faz o quê
+
+Agentes disponíveis em `.claude/agents/`: **Karol** (desenvolvimento), **Sofia** (design), **Sabrina** (coordenação,
+pesquisa e QA) e **Gabriela** (conteúdo, que fica fora deste projeto). Skills relevantes: `superpowers`,
+`design-skills`, `dataviz`, `skill-creator`, `security-review`, `code-review`, `simplify` e `logo-design`.
+
+| Fase | Quem | Skills |
+|---|---|---|
+| 1. Auditoria e plano | eu (sessão principal) | `superpowers` (writing-plans) |
+| 2. Cognitive Core | **Karol** | `superpowers` (TDD, plans, verification) |
+| 3. Intelligence | **Karol** | `superpowers` (TDD, systematic-debugging) |
+| 4. Integração (Skill, MCP, Hooks) | **Karol** | `skill-creator` (SKILL.md), `superpowers` |
+| 5a. Identidade e Design System do dashboard | **Sofia**, no Figma, em paralelo com as Fases 2 a 4 | `design-skills`, `logo-design` |
+| 5b. Dashboard (React + Three.js) | **Karol**, a partir do DS da Sofia e do contrato da API | `dataviz` (Performance Center), `design-skills` |
+| 6. Instalador | **Karol** | `superpowers` |
+| 7. Validação | **Sabrina** (testes, revisão, segurança) e **Sofia** (revisão visual) | `security-review`, `code-review`, `superpowers` (verification) |
+
+O **contrato da API** (`docs/api.md`) é escrito pela Karol no fim da Fase 3, antes da Fase 5b, para o dashboard e o MCP
+seguirem o mesmo formato.
+
+## 5. Estrutura do repositório
+
+O projeto fica em `Projetos/HELA/` (repositório público `paulomarcelli/Projetos`). **Nenhum dado de memória vai para o
+git:** tudo fica em `~/.hela/`.
+
+```
+Projetos/HELA/
+├── .claude/skills/hela/SKILL.md   # a skill instalada pelo instalador
+├── hela/
+│   ├── core/          # Engine, config, eventos
+│   ├── memory/        # Memory Engine, busca híbrida, embedder, grafo
+│   ├── learning/      # classificador, ranker, feedback, evolução
+│   ├── integration/   # MCP server, hooks, leitura do transcript
+│   ├── execution/     # Execution Intelligence, validador de scripts
+│   ├── storage/       # SQLite, migrações, repositórios
+│   ├── security/      # redação, injeção, invólucro
+│   └── api/           # FastAPI
+├── dashboard/         # React + TS + Vite + three
+├── installer/         # install.sh, install.py, uninstall
+├── tests/
+├── scripts/
+├── config/            # config padrão e pesos do ranker
+├── docs/              # plano, arquitetura, api, segurança, métricas
+├── pyproject.toml
+└── README.md
+```
+
+A pasta `security/` foi acrescentada à estrutura do prompt, para isolar a redação, a detecção de injeção e o
+invólucro, que o MCP, os hooks e a API usam.
+
+## 6. Plano por fase (critério de pronto)
+
+1. **Fase 2, Core.** Pronto quando:
+   - o `pyproject` estiver configurado;
+   - o banco tiver esquema, migrações e WAL;
+   - os repositórios estiverem prontos;
+   - o Memory Engine fizer CRUD, deduplicação por `content_hash`, FTS5, embedder por hashing, busca híbrida, consolidação,
+     expiração e export/import;
+   - a redação de segredos estiver na entrada;
+   - houver testes de tudo isso.
+2. **Fase 3, Intelligence.** Pronto quando:
+   - existirem o classificador (regras e NB com rótulos legítimos), o ranker (Wilson e custos), o Feedback Learner, o
+     Evolution Engine (propostas, replay, snapshot e rollback), o Cognitive Router (os 9 passos, o limiar "experiência
+     insuficiente" e o log em `retrievals`), o Context Optimizer (orçamento de tokens, sem cortar código, comandos,
+     caminhos ou erros) e o Execution Intelligence (as 4 classes e o validador estático);
+   - o `docs/api.md` estiver escrito;
+   - houver testes.
+3. **Fase 4, Integração.** Pronto quando:
+   - o `SKILL.md` estiver escrito;
+   - o MCP tiver as 8 ferramentas, com validação e erros, e import compatível com mcp v1 e v2;
+   - o `hela-hook` atender os 6 eventos, fail-open, com Stop silencioso;
+   - a contabilidade de tokens vier do transcript, deduplicada;
+   - os testes cobrirem o JSON real dos hooks;
+   - houver um teste com o `claude` de verdade, num HOME isolado.
+4. **Fase 5, Dashboard.** Pronto quando:
+   - a Sofia tiver entregue o DS da Hela no Figma;
+   - o FastAPI estiver pronto;
+   - as telas Brain Overview (cérebro 3D com memórias reais), Neural Explorer, Performance Center, Memory Management e
+     Engine Monitor estiverem funcionando, com dados reais e polling ou SSE;
+   - o build for servido pela API.
+5. **Fase 6, Instalador.** Pronto quando:
+   - existirem o `install.sh` e o `install.py`, com venv, build e banco;
+   - a skill estiver copiada para `~/.claude/skills/hela`;
+   - o `claude mcp add` estiver feito;
+   - os hooks estiverem mesclados com backup e de forma idempotente;
+   - o comando `hela` existir;
+   - o `uninstall` estiver pronto, com `--purge` confirmado;
+   - tudo tiver sido testado com HOME temporário.
+6. **Fase 7, Validação.** Pronto quando:
+   - houver um ponta a ponta com tarefas reais simuladas;
+   - a persistência entre sessões estiver conferida;
+   - a latência dos hooks estiver medida;
+   - a revisão de segurança e de código estiver feita;
+   - as correções estiverem aplicadas;
+   - o README estiver escrito.
+
+## 7. Riscos e limites conhecidos
+
+- **Limite de uso da conta:** as sessões da equipe já pararam duas vezes pelo limite de 5 horas. Cada fase termina com
+  commit e push, e com o estado registrado em `docs/plano.md` (seção 8), para outra sessão continuar.
+- **Teste real com o `claude`:** depende do CLI autenticado neste ambiente. Se não estiver, o teste ponta a ponta usa
+  o JSON real dos hooks e o cliente MCP do SDK, e o teste no `claude` fica para o PC do Paulo.
+- **Vetores por hashing:** pegam bem sinônimos de forma, mas não de sentido. Isso fica documentado, com o `Embedder`
+  plugável como saída.
+
+## 8. Estado
+
+- [x] Fase 1: auditoria e plano (este documento)
+- [ ] Fase 2: Core
+- [ ] Fase 3: Intelligence
+- [ ] Fase 4: Integração
+- [ ] Fase 5: Dashboard (5a DS da Sofia; 5b app)
+- [ ] Fase 6: Instalador
+- [ ] Fase 7: Validação

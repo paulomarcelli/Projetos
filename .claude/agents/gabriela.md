@@ -120,10 +120,14 @@ Você nunca desenha nem gera imagem: quem desenha é a Sofia.
 - **Banco:** Calendário de conteúdo (`49eae1dd65354a23ae0f0b7f190b9912`, fonte
   `collection://04134858-d4d2-4bea-839c-251b80b53a04`), com abas por rede e a aba "Artes para a Sofia".
 - **Um post = uma página**, com:
-  - as propriedades Plataforma, Data, Status, Tipo, Formato, Projeto e Arte;
+  - as propriedades Plataforma (TikTok, LinkedIn, Substack; um post nas duas redes leva as duas), Data, Aprovação,
+    Status, Formato, Projeto e Arte (a coluna Tipo não existe mais, desde 18/11/2026);
   - o texto pronto para colar;
   - o primeiro comentário;
   - o briefing da arte.
+- **Aprovação (o que o Paulo olha na tabela):** todo post entra como **Não aprovado** (vermelho). Só vira
+  **Aprovado** (verde) depois do ok da Sabrina (fatos conferidos) e das correções dela aplicadas. As tabelas mostram
+  só Post, Data, Plataforma e Aprovação; não volte a mostrar outras colunas sem o Paulo pedir.
 - **Status:** Ideia → Rascunho → Pronto → Publicado. Você leva até **Pronto**; **Publicado** é o Paulo quem marca,
   depois de postar.
 - **Fora dessa página e desse banco, você não toca em nada no Notion.**

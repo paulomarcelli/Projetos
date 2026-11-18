@@ -226,7 +226,19 @@ Veja o `README.md` do projeto. Em resumo:
   - Q6: a pílula diz "ESTABILIZA O EIXO" (rótulo corrigido pela Sabrina) e sai antes de "estável".
 
   **Próximo:** o Paulo assiste, aprova e posta. O MP4 não vai para o git.
-- **Vídeo do Sol ("E se o Sol se apagasse agora?", vai ao ar em 18/11/2026): cenas prontas, falta o render.**
+- **Vídeo do Sol ("E se o Sol se apagasse agora?", vai ao ar em 18/11/2026): renderizado e conferido no PC do Paulo
+  (18/11/2026), pronto para postar.**
+  - **Render:** `out/sol.mp4` (fora do git) em 38 s com a GPU (`REMOTION_GPU=1`, `--gl=angle`). Conferido: 1080 × 1920,
+    30 fps, 33,6 s, voz em -13,98 LUFS, legenda em sincronia (9 pausas, até 13 ms) e nenhum quadro preto (brilho de
+    todos os quadros medido; as 4 quedas são passagens de cena). Folhas em `out/quadros-sol-mp4/`.
+  - **"Apaga" (ponto a):** não é só a passagem. O Sol fica aceso até "apaga" de propósito e some em 24 quadros com
+    ease-in (token `mov/lua-some`), então ainda brilha ~0,5 s depois do 0:00 e da pílula "SEM LUZ". Ficou como está;
+    apagar mais rápido é decisão da Sofia. Nota para a Sabrina: Lua cheia perto do Sol não acontece no céu de verdade.
+  - **Pergunta final (ponto b):** o Sol aceso conta a história certa (os últimos oito minutos de luz, antes do
+    apagão) e vira o círculo laranja do fechamento, como a Lua no outro vídeo. Fica como está.
+  - Relatório: `agentes/relatorios/karol/2026-11-18-video-sol.md`.
+
+  O que a nuvem deixou pronto (cenas, voz e legenda):
   - **Pronto:**
     - roteiro final conferido pela Sabrina (`videos/sol.roteiro.txt`);
     - voz da Maia (`audio/sol-maia.mp3`, 29,6 s, normalizada em -13,94 LUFS);
@@ -235,13 +247,6 @@ Veja o `README.md` do projeto. Em resumo:
     o cronômetro de 8:00 e o termômetro.
   - **Conferido:** testes (37) e lint passando; a Lua continua igual pixel a pixel; a folha de contato do Sol está em
     `out/quadros-sol/` (fora do git).
-  - **O render foi parado na nuvem para rodar no PC do Paulo (RTX 5050):**
-    `REMOTION_GPU=1` e `npx remotion render sol out/sol.mp4 --codec=h264 --crf=18 --gl=angle --concurrency=4`.
-  - **Conferir no MP4:**
-    - formato, duração (~33,6 s), -14 LUFS, sincronia e quadro preto;
-    - na cena do "apaga", o Sol ainda aparece aceso junto com a Lua (ver se é só a passagem);
-    - na pergunta final, o Sol volta a aparecer aceso; a câmera vai até ele no fechamento. Ver se isso conta a história
-      certa ou se o fim deve ficar sem Sol.
   - **Sem arte da Sofia** (capa e storyboard): as cenas seguiram o roteiro de cenas da Gabriela, no Design System do
     canal.
 - **Pendente:**

@@ -85,6 +85,19 @@ aqui.
   (em `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*`) no PATH do comando. No filtro do ffmpeg, um caminho
   com `C:` quebra a sintaxe: grave em caminho relativo.
 
+- **18/11/2026 · HELA (Python + SQLite).** FTS5 com conteúdo externo precisa de rowid estável: `rid INTEGER PRIMARY
+  KEY` + `id TEXT UNIQUE`. Apagar do FTS5 só grava uma marca; o termo some do disco com `optimize`, e o `-wal` só com
+  `wal_checkpoint(TRUNCATE)` (`secure_delete` sozinho não basta: medido com sentinela nos bytes). Migração atômica:
+  conexão em autocommit e o script inteiro entre `BEGIN IMMEDIATE` e `COMMIT`.
+- **Mensagem do pydantic vaza a entrada.** `str(ValidationError)` traz `input_value=...`; para erro ao usuário, montar
+  a mensagem só com `loc` e `msg`.
+- **`pip install -e` cedo demais.** Instalar o pacote editável antes de existirem os `__init__.py` grava tudo como
+  namespace, e o comando instalado quebra ("unknown location"). Reinstalar depois de criar os pacotes.
+- **Scratchpad compartilhado.** Outras sessões deixam pastas lá (havia uma `hela/`), e o Python põe a pasta do script
+  no `sys.path`: rodar script de medição numa subpasta própria, com `python -I`.
+- **Repositório compartilhado em paralelo.** Com outras agentes escrevendo no mesmo projeto, `git add` só nos meus
+  caminhos (nunca a pasta inteira), e conferir `git status` antes de cada commit.
+
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
   ele é chamado; um agente novo só carrega em sessão nova. Use a skill `criar-agente`.
@@ -102,3 +115,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17/11/2026 | Base do projeto de vídeo E Se, Hein? + vídeo da Lua | a avaliar | ~3 h | sem crédito pago | Estilo mudou no meio (referência da grua): fazer o mundo contínuo desde o início quando houver referência de câmera |
 | 17/11/2026 | Vídeo da Lua v2: realismo ligado ao mundo, enquadramentos pelo storyboard, render final (continuação, outra sessão) | a avaliar | ~1 h + 1 h de render | sem crédito pago | Conferir a folha de contato contra o storyboard antes de cada render longo |
 | 17/11/2026 | Render final da Lua v2 no PC do Paulo com GPU: Node e ffmpeg instalados (com aprovação), teste de 60 quadros, render, conferência e folha Q1–Q8 contra o storyboard | a avaliar | ~40 min (2 renders de 70 s) | sem crédito pago | O caminho com GPU nunca tinha rodado: renderizar e varrer o brilho de todos os quadros já no teste, não só 60 quadros do começo (o defeito estava no espaço, aos 42 s) |
+| 18/11/2026 | HELA Fase 2 (Cognitive Core): pacote, SQLite WAL com esquema completo, segurança, Memory Engine com busca híbrida, grafo, consolidação, export/import, Engine e CLI; reforços do seguranca.md | a avaliar | ~5 h (com uma pausa pelo limite de uso) | sem crédito pago | Commitei a pasta inteira e levei arquivos da Sabrina pela metade: só os meus caminhos daqui em diante. Testes de segurança: escrever e ver falhar antes, ou fazer mutação logo |

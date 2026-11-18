@@ -64,7 +64,7 @@ def test_consulta_sem_relacao_volta_vazia_ou_curta(svc: MemoryService) -> None:
 
 
 def test_caracteres_especiais_nao_quebram_o_fts(svc: MemoryService) -> None:
-    for consulta in ['"pytest', "pytest*", "NOT AND OR", "a:b (c", "-x ^y", "nada'; DROP TABLE memories;--"]:
+    for consulta in ['"pytest', "pytest*", "NOT AND OR", "NEAR(pytest wal)", "testes NEAR/2 pytest", "a:b (c", "-x ^y", "nada'; DROP TABLE memories;--"]:
         HybridSearch(svc).search(consulta)  # não pode levantar erro
     assert svc.db.conn.execute("SELECT COUNT(*) FROM memories").fetchone()[0] == len(CORPUS)
 

@@ -167,6 +167,19 @@ O boneco, os rótulos e a legenda seguem o Design System. As licenças das textu
 As skills do Blender (`.claude/skills/`, de kevinbadi/blender-skills) só funcionam com o Blender aberto e o
 complemento blender-mcp. Elas servem para realismo de filme num computador com Blender.
 
+**Cenas no Blender, sempre (desde 18/11/2026).** Decisão do Paulo (18/11/2026): o canal continua só com "E se…?", com a conferência da Sabrina. A técnica da skill
+`how-its-built-starter` (Morrow Studio) passa a ser usada **sempre** para as cenas 3D:
+- **Cenas no Blender:** montadas por um `spec.json` (palco, câmera, peças que entram na palavra que as nomeia) e
+  renderizadas no PC do Paulo, com o Blender 4.2 ou mais novo e a RTX 5050. Na nuvem não há Blender.
+- **O que vale da skill:** a técnica (cena montada por dados, peças que chegam no tempo da fala, uma câmera, corte
+  quando ajuda a explicar). O roteiro em cadeia "Se você… Mas… Então…" é de outro formato e não vale aqui.
+- **O que continua igual:** a voz da Maia, a legenda de uma palavra por vez, os rótulos, o fechamento e o Design
+  System do canal. A sugestão é pôr essas camadas por cima do vídeo do Blender no Remotion.
+- **Começo:** o primeiro vídeo feito assim (a partir do de 19/11, "E se você fosse a última pessoa do mundo?") testa o
+  caminho; o que der certo vira regra no README.
+- **Realismo:** a skill sai com cor chapada (é um rascunho). Ele vem de ajustar o `scene.py` e das skills do Blender e
+  do Poly Haven que já estão no repositório.
+
 ## 5. Como gerar um vídeo
 
 Veja o `README.md` do projeto. Em resumo:

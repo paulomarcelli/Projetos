@@ -48,6 +48,10 @@ Vale para tarefa grande e para ajuste pequeno. No relatório, diga quais partes 
   JavaScript puros, dependências com versão travada, publicação pelo Pages a cada push na `main`.
 - Tokens sempre por variável CSS. Anime só `transform` e `opacity`; hover só em `@media (hover: hover)`; foco visível.
 - Segredos só em variável de ambiente, nunca em arquivo versionado.
+- **Vídeos do E Se, Hein? (desde 18/11/2026):** as cenas 3D são montadas **sempre** no Blender, com a técnica da skill
+  `how-its-built-starter` (cena por `spec.json`, peças chegando na palavra da fala), no PC do Paulo com a RTX 5050.
+  O formato continua "E se…?" (o roteiro em cadeia da skill não vale), e a legenda, os rótulos, o fechamento e o
+  Design System continuam. Detalhes na `Projetos/E-Se-Hein/docs/PASSAGEM.md`, seção 4.
 - Skills úteis: `superpowers` (planos, TDD, depuração sistemática, verificação antes de dizer que acabou),
   `design-skills` (`animate`, `animation-performance`, `mobile-native`, `break-ui`), `claude-api`, `criar-agente`.
 

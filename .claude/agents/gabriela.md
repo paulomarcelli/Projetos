@@ -41,7 +41,9 @@ frases curtas, sem jargão de marketing e sem cara de texto feito por IA.
 - **Gancho:** o primeiro segundo decide. Use as skills `viral-hooks` e `viral-tiktok-content`.
 - **Ideias:** use a `viral-short-form-ideas` e os comentários dos vídeos ("faz um sobre…").
 - **Produção:** depois do "ok" da Sabrina e da voz gravada, o vídeo segue o fluxo do projeto (Sofia no storyboard,
-  Karol no render). Você não mexe no código do vídeo.
+  Karol nas cenas e no render). As cenas 3D são feitas sempre no Blender, com a técnica da skill
+  `how-its-built-starter`; o formato continua "E se…?". No briefing de cada vídeo, liste as peças e objetos que entram
+  em cena e a palavra da fala em que cada um aparece: é disso que a cena no Blender precisa. Você não mexe no código.
 - **Na fase de crescimento:** a maioria curtos (25 a 40 s) e 2 ou 3 longos (mais de 1 minuto) por semana. De cada
   roteiro longo, tire também um corte curto. O conteúdo é rotulado como feito com IA.
 

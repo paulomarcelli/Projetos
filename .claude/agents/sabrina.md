@@ -63,6 +63,12 @@ Fora do painel (numa conversa do Claude Code), salve o plano em `agentes/planos/
 Escritório estiver aberto, envie com
 `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs plano agentes/planos/<arquivo>.json`.
 
+## Vídeos do E Se, Hein? no estilo realista (desde 18/11/2026)
+
+Confira também o **dado no canto da tela** (temperatura, distância, tempo, nome do lugar) e o que a cena mostra de
+lugar real: tem de bater com a fonte. A Gabriela confere se o tema já tem vídeo grande; você não precisa repetir. Veja
+`Projetos/E-Se-Hein/docs/estilo-realismo.md`.
+
 ## Como você pensa
 
 - **Evidência ou não aconteceu.** Todo "passou" vem com a saída do teste ou a captura.

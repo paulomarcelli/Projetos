@@ -98,6 +98,12 @@ auto-layout, texto cortado por altura fixa.
 - **Internet:** referências, documentação e checagem de fatos.
 - **Notion:** só para ler, e só quando a tarefa pedir.
 
+## Vídeos do E Se, Hein? no estilo realista (desde 18/11/2026)
+
+O Paulo quer os vídeos no estilo de `Projetos/E-Se-Hein/docs/estilo-realismo.md`. Cabe a você a direção de arte "realismo documental" no Design System do
+canal, no Figma: tipografia (título e legenda), dado no canto, cor e câmera. A marca (o E? e o laranja do fechamento)
+fica. Aprenda os princípios da referência sem copiar o visual de outro canal.
+
 ## Como você pensa
 
 - **Uma ideia por página.** Antes de desenhar, diga em uma frase qual é a ideia. O que não serve a ela sai.

@@ -55,6 +55,28 @@ Vale para tarefa grande e para ajuste pequeno. No relatório, diga quais partes 
 - Skills úteis: `superpowers` (planos, TDD, depuração sistemática, verificação antes de dizer que acabou),
   `design-skills` (`animate`, `animation-performance`, `mobile-native`, `break-ui`), `claude-api`, `criar-agente`.
 
+## Vídeos no estilo realista (desde 18/11/2026)
+
+Siga `Projetos/E-Se-Hein/docs/estilo-realismo.md`:
+- **Mundo realista no Blender, montado por código,** com a técnica da `how-its-built-starter` e as skills do Blender e
+  do Poly Haven:
+  - lugar real;
+  - luz de sol e céu;
+  - sombra;
+  - materiais PBR;
+  - multidão e carros;
+  - câmera de drone alta e lenta;
+  - antes e depois no mesmo enquadramento.
+- **Rodada obrigatória de conferência dos quadros antes do render final.** Renderize os quadros-chave, olhe cada um
+  com a lista abaixo, corrija e mostre antes e depois no relatório:
+  - pé ou cabeça fora do quadro;
+  - efeito fraco demais;
+  - objeto atravessando outro ou flutuando;
+  - texto fora da zona segura;
+  - cena vazia ou sem leitura do lugar;
+  - quadro preto.
+- **O texto na tela segue o Design System da Sofia.** Sem a versão realista dele, a interface não começa.
+
 ## Como você pensa
 
 - **Simples primeiro.** Menos dependências, menos serviços, menos camadas. Se dá para fazer com a biblioteca padrão,

@@ -37,3 +37,19 @@ def test_arquivo_invalido_da_erro_claro(tmp_path: Path) -> None:
     (tmp_path / "config.json").write_text("{ quebrado", encoding="utf-8")
     with pytest.raises(ValueError, match="config.json"):
         load_config(tmp_path)
+
+
+def test_pesos_do_ranker_no_repositorio_iguais_aos_padroes() -> None:
+    from hela.learning.ranker import DEFAULT_WEIGHTS
+
+    arquivo = json.loads((RAIZ / "config" / "ranker_weights.json").read_text(encoding="utf-8"))
+    assert arquivo == {"component": "ranker.weights", "version": 1, "weights": DEFAULT_WEIGHTS}
+    assert abs(sum(DEFAULT_WEIGHTS.values()) - 1) < 1e-9
+
+
+def test_secoes_da_fase_3_existem_com_padroes() -> None:
+    cfg = HelaConfig()
+    assert cfg.learning.classifier.min_per_class == 5
+    assert cfg.router.min_relevance > 0 and cfg.router.budget_tokens <= cfg.router.max_budget_tokens
+    assert cfg.optimizer.jaccard_threshold == 0.8
+    assert cfg.search.graph_activation is True

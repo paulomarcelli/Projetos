@@ -150,3 +150,27 @@ def test_relacao_consigo_mesma_e_recusada(tmp_path: Path) -> None:
             "INSERT INTO relationships (source_id, target_id, type, created_at, updated_at)"
             " VALUES ('a', 'a', 'related', 'x', 'x')"
         )
+
+
+# --- Fase 3: migração 2 -----------------------------------------------------------------
+
+def _colunas(conn: sqlite3.Connection, tabela: str) -> set[str]:
+    return {r[1] for r in conn.execute(f"PRAGMA table_info({tabela})")}
+
+
+def test_migracao_2_preserva_dados_de_um_banco_v1(tmp_path: Path) -> None:
+    caminho = tmp_path / "v1.db"
+    conn = connect(caminho)
+    apply_migrations(conn, [m for m in MIGRATIONS if m.version == 1])
+    _nova_memoria(conn, "m1", "memória que já existia na versão 1")
+    conn.execute("INSERT INTO tasks (id, prompt, created_at) VALUES ('t1', 'p', '2026-01-01T00:00:00+00:00')")
+    conn.execute("INSERT INTO outcomes (task_id, success, created_at) VALUES ('t1', 1, '2026-01-01T00:00:00+00:00')")
+    conn.close()
+
+    db = Database(caminho)  # aplica a 2
+    assert current_version(db.conn) == 2
+    assert db.conn.execute("SELECT content FROM memories WHERE id = 'm1'").fetchone()[0].startswith("memória")
+    assert db.conn.execute("SELECT success FROM outcomes").fetchone()[0] == 1
+    assert "compute_cost" in _colunas(db.conn, "outcomes")
+    assert "sum_compute" in _colunas(db.conn, "strategy_metrics")
+    assert {"tokens_raw", "tokens_optimized"} <= _colunas(db.conn, "retrievals")

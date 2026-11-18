@@ -17,7 +17,10 @@
       "quality": 0.3,
       "importance": 0.3,
       "graph": 0.5
-    }
+    },
+    "graph_activation": true,
+    "activation_steps": 2,
+    "activation_decay": 0.5
   },
   "memory": {
     "max_chars": 20000,
@@ -37,5 +40,58 @@
   },
   "storage": {
     "busy_timeout_ms": 3000
+  },
+  "learning": {
+    "classifier": {
+      "min_per_class": 5,
+      "min_classes": 2,
+      "cv_folds": 5,
+      "alpha": 1.0,
+      "min_cv_accuracy": 0.6,
+      "max_vocab": 5000
+    },
+    "ranker": {
+      "z": 1.96,
+      "quality_prior": 0.5,
+      "quality_prior_weight": 2.0,
+      "min_obs": 3,
+      "thompson": false
+    },
+    "feedback": {
+      "reinforce_quality": 0.05,
+      "reinforce_confidence": 0.05,
+      "decay_quality": 0.08,
+      "decay_confidence": 0.05
+    },
+    "evolution": {
+      "min_outcomes": 20,
+      "weight_step": 0.1,
+      "min_improvement": 0.002,
+      "promote_min_obs": 5,
+      "promote_min_wilson": 0.6,
+      "deprecate_min_obs": 5,
+      "duplicate_threshold": 0.9
+    }
+  },
+  "router": {
+    "min_relevance": 0.35,
+    "min_trust": 0.1,
+    "limit_per_step": 5,
+    "budget_tokens": 1200,
+    "max_budget_tokens": 2400,
+    "max_strategies": 3
+  },
+  "optimizer": {
+    "shingle_size": 3,
+    "jaccard_threshold": 0.8,
+    "primary_count": 3,
+    "chars_per_token": 4
+  },
+  "execution": {
+    "allowed_hosts": [
+      "localhost",
+      "127.0.0.1",
+      "::1"
+    ]
   }
 }

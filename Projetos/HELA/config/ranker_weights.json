@@ -1,0 +1,12 @@
+{
+  "component": "ranker.weights",
+  "version": 1,
+  "weights": {
+    "success": 0.45,
+    "quality": 0.2,
+    "tokens": 0.1,
+    "duration": 0.1,
+    "attempts": 0.1,
+    "compute": 0.05
+  }
+}

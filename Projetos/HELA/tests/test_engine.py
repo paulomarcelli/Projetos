@@ -61,7 +61,7 @@ def test_stats(tmp_path: Path) -> None:
         assert s["memories"]["total"] == 2
         assert s["memories"]["by_kind"] == {"episodic": 1, "semantic": 1}
         assert s["memories"]["by_status"] == {"active": 2}
-        assert s["schema_version"] == 1 and s["journal_mode"] == "wal"
+        assert s["schema_version"] == 2 and s["journal_mode"] == "wal"
         assert s["embedder"] == "hashing-512-v1"
         assert s["embedding_models"] == {"hashing-512-v1": 2}
         assert s["events"] >= 2

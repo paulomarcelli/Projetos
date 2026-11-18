@@ -1,0 +1,671 @@
+{
+  "titulo": "E se o Sol se apagasse agora?",
+  "audio": "audio/sol.wav",
+  "duracaoAudio": 29.571,
+  "roteiro": "[mysterious] E se o Sol se apagasse agora? Você não ia perceber. Pelo menos por oito minutos.\n\nA luz do Sol leva uns oito minutos para chegar aqui. Nesse tempo, você ainda veria no céu a luz de um Sol que já apagou.\n\n[calm] Depois, tudo apaga. Até a Lua, que só brilha com a luz do Sol.\n\nEm poucos dias, os continentes já estariam abaixo de zero. Só o mar resistiria.\n\n[curious] Se soubesse que eram os últimos oito minutos de luz, o que você ia fazer? Me conta aqui nos comentários.",
+  "pergunta": "O que você faria em 8 minutos?",
+  "trechos": [
+    {
+      "texto": "E se o Sol se apagasse agora? Você não ia perceber. Pelo menos por oito minutos.",
+      "inicio": 0.08,
+      "fim": 5.394,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "A luz do Sol leva uns oito minutos para chegar aqui. Nesse tempo, você ainda veria no céu a luz de um Sol que já apagou.",
+      "inicio": 5.745,
+      "fim": 12.847,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Depois, tudo apaga. Até a Lua, que só brilha com a luz do Sol.",
+      "inicio": 13.246,
+      "fim": 17.812,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Em poucos dias, os continentes já estariam abaixo de zero. Só o mar resistiria.",
+      "inicio": 18.146,
+      "fim": 23.158,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Se soubesse que eram os últimos oito minutos de luz, o que você ia fazer? Me conta aqui nos comentários.",
+      "inicio": 23.573,
+      "fim": 29.387,
+      "cena": "provisoria"
+    }
+  ],
+  "palavras": [
+    {
+      "texto": "E",
+      "paragrafo": 0,
+      "inicioMs": 80,
+      "fimMs": 110,
+      "casou": true
+    },
+    {
+      "texto": "se",
+      "paragrafo": 0,
+      "inicioMs": 110,
+      "fimMs": 240,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 0,
+      "inicioMs": 240,
+      "fimMs": 320,
+      "casou": true
+    },
+    {
+      "texto": "Sol",
+      "paragrafo": 0,
+      "inicioMs": 320,
+      "fimMs": 570,
+      "casou": true
+    },
+    {
+      "texto": "se",
+      "paragrafo": 0,
+      "inicioMs": 570,
+      "fimMs": 730,
+      "casou": true
+    },
+    {
+      "texto": "apagasse",
+      "paragrafo": 0,
+      "inicioMs": 730,
+      "fimMs": 1380,
+      "casou": true
+    },
+    {
+      "texto": "agora?",
+      "paragrafo": 0,
+      "inicioMs": 1380,
+      "fimMs": 1861,
+      "casou": true
+    },
+    {
+      "texto": "Você",
+      "paragrafo": 0,
+      "inicioMs": 2313,
+      "fimMs": 2480,
+      "casou": true
+    },
+    {
+      "texto": "não",
+      "paragrafo": 0,
+      "inicioMs": 2480,
+      "fimMs": 2730,
+      "casou": true
+    },
+    {
+      "texto": "ia",
+      "paragrafo": 0,
+      "inicioMs": 2730,
+      "fimMs": 2920,
+      "casou": true
+    },
+    {
+      "texto": "perceber.",
+      "paragrafo": 0,
+      "inicioMs": 2920,
+      "fimMs": 3452,
+      "casou": true
+    },
+    {
+      "texto": "Pelo",
+      "paragrafo": 0,
+      "inicioMs": 3794,
+      "fimMs": 3950,
+      "casou": true
+    },
+    {
+      "texto": "menos",
+      "paragrafo": 0,
+      "inicioMs": 3950,
+      "fimMs": 4390,
+      "casou": true
+    },
+    {
+      "texto": "por",
+      "paragrafo": 0,
+      "inicioMs": 4390,
+      "fimMs": 4540,
+      "casou": true
+    },
+    {
+      "texto": "oito",
+      "paragrafo": 0,
+      "inicioMs": 4540,
+      "fimMs": 4830,
+      "casou": true
+    },
+    {
+      "texto": "minutos.",
+      "paragrafo": 0,
+      "inicioMs": 4830,
+      "fimMs": 5394,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 1,
+      "inicioMs": 5745,
+      "fimMs": 5885,
+      "casou": true
+    },
+    {
+      "texto": "luz",
+      "paragrafo": 1,
+      "inicioMs": 5885,
+      "fimMs": 5885,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 1,
+      "inicioMs": 5880,
+      "fimMs": 6010,
+      "casou": true
+    },
+    {
+      "texto": "Sol",
+      "paragrafo": 1,
+      "inicioMs": 6010,
+      "fimMs": 6270,
+      "casou": true
+    },
+    {
+      "texto": "leva",
+      "paragrafo": 1,
+      "inicioMs": 6270,
+      "fimMs": 6510,
+      "casou": true
+    },
+    {
+      "texto": "uns",
+      "paragrafo": 1,
+      "inicioMs": 6510,
+      "fimMs": 6720,
+      "casou": true
+    },
+    {
+      "texto": "oito",
+      "paragrafo": 1,
+      "inicioMs": 6720,
+      "fimMs": 7000,
+      "casou": true
+    },
+    {
+      "texto": "minutos",
+      "paragrafo": 1,
+      "inicioMs": 7000,
+      "fimMs": 7500,
+      "casou": true
+    },
+    {
+      "texto": "para",
+      "paragrafo": 1,
+      "inicioMs": 7500,
+      "fimMs": 7780,
+      "casou": true
+    },
+    {
+      "texto": "chegar",
+      "paragrafo": 1,
+      "inicioMs": 7780,
+      "fimMs": 8210,
+      "casou": true
+    },
+    {
+      "texto": "aqui.",
+      "paragrafo": 1,
+      "inicioMs": 8210,
+      "fimMs": 8554,
+      "casou": true
+    },
+    {
+      "texto": "Nesse",
+      "paragrafo": 1,
+      "inicioMs": 8907,
+      "fimMs": 9120,
+      "casou": true
+    },
+    {
+      "texto": "tempo,",
+      "paragrafo": 1,
+      "inicioMs": 9120,
+      "fimMs": 9730,
+      "casou": true
+    },
+    {
+      "texto": "você",
+      "paragrafo": 1,
+      "inicioMs": 9730,
+      "fimMs": 9980,
+      "casou": true
+    },
+    {
+      "texto": "ainda",
+      "paragrafo": 1,
+      "inicioMs": 9980,
+      "fimMs": 10300,
+      "casou": true
+    },
+    {
+      "texto": "veria",
+      "paragrafo": 1,
+      "inicioMs": 10300,
+      "fimMs": 10610,
+      "casou": true
+    },
+    {
+      "texto": "no",
+      "paragrafo": 1,
+      "inicioMs": 10610,
+      "fimMs": 10730,
+      "casou": true
+    },
+    {
+      "texto": "céu",
+      "paragrafo": 1,
+      "inicioMs": 10730,
+      "fimMs": 11020,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 1,
+      "inicioMs": 11020,
+      "fimMs": 11100,
+      "casou": true
+    },
+    {
+      "texto": "luz",
+      "paragrafo": 1,
+      "inicioMs": 11100,
+      "fimMs": 11340,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 1,
+      "inicioMs": 11340,
+      "fimMs": 11500,
+      "casou": true
+    },
+    {
+      "texto": "um",
+      "paragrafo": 1,
+      "inicioMs": 11500,
+      "fimMs": 11650,
+      "casou": true
+    },
+    {
+      "texto": "Sol",
+      "paragrafo": 1,
+      "inicioMs": 11650,
+      "fimMs": 11900,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 1,
+      "inicioMs": 11900,
+      "fimMs": 12140,
+      "casou": true
+    },
+    {
+      "texto": "já",
+      "paragrafo": 1,
+      "inicioMs": 12140,
+      "fimMs": 12380,
+      "casou": true
+    },
+    {
+      "texto": "apagou.",
+      "paragrafo": 1,
+      "inicioMs": 12380,
+      "fimMs": 12847,
+      "casou": true
+    },
+    {
+      "texto": "Depois,",
+      "paragrafo": 2,
+      "inicioMs": 13246,
+      "fimMs": 13930,
+      "casou": true
+    },
+    {
+      "texto": "tudo",
+      "paragrafo": 2,
+      "inicioMs": 14271,
+      "fimMs": 14350,
+      "casou": true
+    },
+    {
+      "texto": "apaga.",
+      "paragrafo": 2,
+      "inicioMs": 14350,
+      "fimMs": 14974,
+      "casou": true
+    },
+    {
+      "texto": "Até",
+      "paragrafo": 2,
+      "inicioMs": 15328,
+      "fimMs": 15500,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 2,
+      "inicioMs": 15500,
+      "fimMs": 15570,
+      "casou": true
+    },
+    {
+      "texto": "Lua,",
+      "paragrafo": 2,
+      "inicioMs": 15570,
+      "fimMs": 15940,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 2,
+      "inicioMs": 16192,
+      "fimMs": 16200,
+      "casou": true
+    },
+    {
+      "texto": "só",
+      "paragrafo": 2,
+      "inicioMs": 16200,
+      "fimMs": 16380,
+      "casou": true
+    },
+    {
+      "texto": "brilha",
+      "paragrafo": 2,
+      "inicioMs": 16380,
+      "fimMs": 16830,
+      "casou": true
+    },
+    {
+      "texto": "com",
+      "paragrafo": 2,
+      "inicioMs": 16830,
+      "fimMs": 17050,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 2,
+      "inicioMs": 17050,
+      "fimMs": 17120,
+      "casou": true
+    },
+    {
+      "texto": "luz",
+      "paragrafo": 2,
+      "inicioMs": 17120,
+      "fimMs": 17400,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 2,
+      "inicioMs": 17400,
+      "fimMs": 17480,
+      "casou": true
+    },
+    {
+      "texto": "Sol.",
+      "paragrafo": 2,
+      "inicioMs": 17480,
+      "fimMs": 17812,
+      "casou": true
+    },
+    {
+      "texto": "Em",
+      "paragrafo": 3,
+      "inicioMs": 18146,
+      "fimMs": 18160,
+      "casou": true
+    },
+    {
+      "texto": "poucos",
+      "paragrafo": 3,
+      "inicioMs": 18160,
+      "fimMs": 18690,
+      "casou": true
+    },
+    {
+      "texto": "dias,",
+      "paragrafo": 3,
+      "inicioMs": 18690,
+      "fimMs": 19110,
+      "casou": true
+    },
+    {
+      "texto": "os",
+      "paragrafo": 3,
+      "inicioMs": 19110,
+      "fimMs": 19290,
+      "casou": true
+    },
+    {
+      "texto": "continentes",
+      "paragrafo": 3,
+      "inicioMs": 19290,
+      "fimMs": 19970,
+      "casou": true
+    },
+    {
+      "texto": "já",
+      "paragrafo": 3,
+      "inicioMs": 19970,
+      "fimMs": 20230,
+      "casou": true
+    },
+    {
+      "texto": "estariam",
+      "paragrafo": 3,
+      "inicioMs": 20230,
+      "fimMs": 20680,
+      "casou": true
+    },
+    {
+      "texto": "abaixo",
+      "paragrafo": 3,
+      "inicioMs": 20680,
+      "fimMs": 21060,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 3,
+      "inicioMs": 21060,
+      "fimMs": 21210,
+      "casou": true
+    },
+    {
+      "texto": "zero.",
+      "paragrafo": 3,
+      "inicioMs": 21210,
+      "fimMs": 21549,
+      "casou": true
+    },
+    {
+      "texto": "Só",
+      "paragrafo": 3,
+      "inicioMs": 21805,
+      "fimMs": 21960,
+      "casou": false
+    },
+    {
+      "texto": "o",
+      "paragrafo": 3,
+      "inicioMs": 21960,
+      "fimMs": 22040,
+      "casou": true
+    },
+    {
+      "texto": "mar",
+      "paragrafo": 3,
+      "inicioMs": 22040,
+      "fimMs": 22300,
+      "casou": true
+    },
+    {
+      "texto": "resistiria.",
+      "paragrafo": 3,
+      "inicioMs": 22300,
+      "fimMs": 23158,
+      "casou": true
+    },
+    {
+      "texto": "Se",
+      "paragrafo": 4,
+      "inicioMs": 23573,
+      "fimMs": 23610,
+      "casou": true
+    },
+    {
+      "texto": "soubesse",
+      "paragrafo": 4,
+      "inicioMs": 23610,
+      "fimMs": 24160,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 4,
+      "inicioMs": 24160,
+      "fimMs": 24330,
+      "casou": true
+    },
+    {
+      "texto": "eram",
+      "paragrafo": 4,
+      "inicioMs": 24330,
+      "fimMs": 24590,
+      "casou": true
+    },
+    {
+      "texto": "os",
+      "paragrafo": 4,
+      "inicioMs": 24590,
+      "fimMs": 24740,
+      "casou": true
+    },
+    {
+      "texto": "últimos",
+      "paragrafo": 4,
+      "inicioMs": 24740,
+      "fimMs": 25250,
+      "casou": true
+    },
+    {
+      "texto": "oito",
+      "paragrafo": 4,
+      "inicioMs": 25250,
+      "fimMs": 25510,
+      "casou": true
+    },
+    {
+      "texto": "minutos",
+      "paragrafo": 4,
+      "inicioMs": 25510,
+      "fimMs": 25980,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 4,
+      "inicioMs": 25980,
+      "fimMs": 26110,
+      "casou": true
+    },
+    {
+      "texto": "luz,",
+      "paragrafo": 4,
+      "inicioMs": 26110,
+      "fimMs": 26560,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 4,
+      "inicioMs": 26560,
+      "fimMs": 26620,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 4,
+      "inicioMs": 26620,
+      "fimMs": 26760,
+      "casou": true
+    },
+    {
+      "texto": "você",
+      "paragrafo": 4,
+      "inicioMs": 26760,
+      "fimMs": 27100,
+      "casou": true
+    },
+    {
+      "texto": "ia",
+      "paragrafo": 4,
+      "inicioMs": 27100,
+      "fimMs": 27250,
+      "casou": true
+    },
+    {
+      "texto": "fazer?",
+      "paragrafo": 4,
+      "inicioMs": 27250,
+      "fimMs": 27628,
+      "casou": true
+    },
+    {
+      "texto": "Me",
+      "paragrafo": 4,
+      "inicioMs": 27938,
+      "fimMs": 27940,
+      "casou": true
+    },
+    {
+      "texto": "conta",
+      "paragrafo": 4,
+      "inicioMs": 27940,
+      "fimMs": 28300,
+      "casou": true
+    },
+    {
+      "texto": "aqui",
+      "paragrafo": 4,
+      "inicioMs": 28300,
+      "fimMs": 28580,
+      "casou": true
+    },
+    {
+      "texto": "nos",
+      "paragrafo": 4,
+      "inicioMs": 28580,
+      "fimMs": 28790,
+      "casou": true
+    },
+    {
+      "texto": "comentários.",
+      "paragrafo": 4,
+      "inicioMs": 28790,
+      "fimMs": 29387,
+      "casou": true
+    }
+  ]
+}

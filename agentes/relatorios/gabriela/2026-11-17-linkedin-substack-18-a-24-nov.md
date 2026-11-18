@@ -5,11 +5,15 @@ Gabriela · escrito em 17 e 18/11/2026 · pedido do Paulo: "prepare os posts do 
 > **Atualizado em 18/11 (tarde):** o tema de quinta trocou de F.R.E.Y.A. para Aurora, porque o Paulo já tinha
 > publicado sobre a F.R.E.Y.A., e os posts de segunda e o carrossel deixaram a agente Sofia de lado, porque o Paulo vai
 > publicar um post próprio sobre ela. O que mudou e por quê está na seção 11, "Troca de quinta (18/11)".
+>
+> **Atualizado em 18/11 (noite):** o Paulo decidiu não fazer posts da Aurora ainda e deixar a quinta sem post longo.
+> As duas páginas de quinta ficaram guardadas (Ideia, sem data). O calendário final está na seção 12, "Quinta sem post
+> longo (18/11)".
 
 ## 1. A semana em uma linha
 
-7 posts: 5 no LinkedIn (um por dia útil, com 1 carrossel) e 2 no Substack (longo na quinta, curto na segunda). O
-objetivo é começar o perfil profissional com projetos reais, sempre com o erro e a correção, e juntar os primeiros
+5 posts (era 7 até a noite de 18/11): 4 no LinkedIn (com 1 carrossel) e 1 no Substack (curto na segunda). A quinta
+ficou sem post por decisão do Paulo (seção 12). O objetivo é começar o perfil profissional com projetos reais, sempre com o erro e a correção, e juntar os primeiros
 números.
 
 ## 2. Os números da semana anterior
@@ -25,23 +29,22 @@ Substack, visualizações, aberturas e inscritos novos. Com 4 posts por rede eu 
 ## 3. O calendário da semana
 
 **Hoje é quarta, 18/11, e o post de hoje vai no fim do dia (sugestão: 18h a 19h).** Escolhi um post só de texto, sem
-arte, que dá para revisar e postar hoje. Se não der, ele **cai** e não passa para quinta: quinta já tem o Substack longo
-e o post da Aurora, e dois posts no mesmo dia competem entre si. Sem ele, a semana fica com 4 posts no LinkedIn,
-dentro da meta de 4 a 5.
+arte, que dá para revisar e postar hoje. Se não der, ele **cai** e não passa para quinta: a quinta fica sem post por
+decisão do Paulo (seção 12). Sem ele, a semana fica com 3 posts no LinkedIn.
 
 | Dia | Rede | Título | Formato | Objetivo | Por quê |
 |---|---|---|---|---|---|
 | Qua 18/11 (fim do dia) | LinkedIn | 280 verificações num jogo de faculdade | Só texto · Explicação | Comentários de estudantes e devs | Número no gancho e uma ideia que se leva para casa (o teste que joga o jogo). Sem arte: é o único que dá para fazer hoje. |
-| Qui 19/11 | Substack | A personagem que encolhia ao correr | Longo · Diário | Leitores e inscritos | **Trocado em 18/11** (a F.R.E.Y.A. já foi publicada). A melhor história de erro e correção ainda não publicada, com números de antes e depois no repositório. Veja a seção 11. |
-| Qui 19/11 (8h30) | LinkedIn | 320 pixels em pé, 258 correndo | Post com imagem · Comparação | Comentários e cliques no Substack | O longo de quinta em versão curta (`linkedin-repurposer`), com o link no primeiro comentário. |
+| ~~Qui 19/11~~ guardado | Substack | ~~A personagem que encolhia ao correr~~ | Longo · Diário | Leitores e inscritos | **Trocado em 18/11** (a F.R.E.Y.A. já foi publicada). A melhor história de erro e correção ainda não publicada, com números de antes e depois no repositório. Veja a seção 11. |
+| ~~Qui 19/11 (8h30)~~ guardado | LinkedIn | ~~320 pixels em pé, 258 correndo~~ | Post com imagem · Comparação | Comentários e cliques no Substack | O longo de quinta em versão curta (`linkedin-repurposer`), com o link no primeiro comentário. |
 | Sex 20/11 (8h30) | LinkedIn | Carrossel · Dei um escritório para os meus agentes de IA | Carrossel (8 slides) · Passo a passo | Salvamentos | O carrossel da semana. O Escritório é o projeto mais visual e já tem prints reais. |
 | Seg 23/11 (manhã) | Substack | O caderno de erros dos meus agentes | Curto · Perguntas e respostas | Leitores | Fecha o arco da semana (conferir, ver e lembrar o trabalho da IA). Formato diferente do longo. |
 | Seg 23/11 (12h) | LinkedIn | 4 agentes, 4 arquivos de memória | Só texto · Bastidores | Comentários | Leva o Substack curto para o LinkedIn, com um erro real (o conflito na memória). |
 | Ter 24/11 (8h30) | LinkedIn | A Iris está no ar sem o motor | Só texto · Diário | Comentários | Uma escolha que divide opinião (publicar pela metade) e o mesmo posicionamento por outro projeto. |
 
-**Pilares da semana:** manter igual o que a IA desenha (quinta), trabalhar com agentes (sexta e segunda), projetos da
+**Pilares da semana** (sem a quinta, desde a noite de 18/11): trabalhar com agentes (sexta e segunda), projetos da
 faculdade (quarta) e IA que mostra a fonte (terça). **Metas por reação** (`linkedin-content-planner`): comentários (qua,
-qui, seg, ter) e salvamentos (sex). Nenhuma fórmula de gancho se repete: número na primeira linha (qua, qui, seg),
+seg, ter) e salvamentos (sex). Nenhuma fórmula de gancho se repete: número na primeira linha (qua, seg),
 confissão com data (sex) e fato desconfortável (ter). Nenhum post abre com pergunta.
 
 **O que mudou no meio do caminho:** o primeiro tema de quarta era o dos dois títulos que sumiram no fã-site da Sofia
@@ -99,6 +102,8 @@ Notion: https://app.notion.com/p/41cf9dd1501f816ca775fbeebbcd3917
 > O código e os testes: https://github.com/paulomarcelli/Projetos/tree/main/Projetos/Tarefa-POO-JavaScript
 
 ### Quinta 19/11 · LinkedIn · 320 pixels em pé, 258 correndo
+
+> **Guardado em 18/11 (noite):** sem data, em Ideia. O Paulo vai decidir quando falar da Aurora (seção 12).
 
 Notion: https://app.notion.com/p/41cf9dd1501f81979efcdabf16a5938a
 (mesma página do post antigo da F.R.E.Y.A., reescrita em 18/11)
@@ -209,6 +214,8 @@ Notion: https://app.notion.com/p/41cf9dd1501f81288641fe1a62bb45d5
 > O README, com o que existe e o que falta: https://github.com/paulomarcelli/Projetos/tree/main/Projetos/Iris
 
 ### Quinta 19/11 · Substack longo · A personagem que encolhia ao correr
+
+> **Guardado em 18/11 (noite):** sem data, em Ideia. O Paulo vai decidir quando falar da Aurora (seção 12).
 
 Notion: https://app.notion.com/p/41cf9dd1501f812f8787db11a1eeb33a
 (mesma página do post antigo da F.R.E.Y.A., reescrita em 18/11)
@@ -337,35 +344,30 @@ números dos projetos vêm dos próprios documentos do repositório (fonte ao la
 |---|---|---|---|
 | 1 | Sex (carrossel, slide 8) | O Claude Code roda com `claude -p --agent <nome> --output-format stream-json` e devolve cada ferramenta usada, o tempo e o custo. | `Projetos/Escritorio-do-Paulo/README.md`, memória da Karol |
 | 2 | Seg (Substack) | Um agente novo do Claude Code só carrega numa sessão nova. | memória da Karol, `agentes/README.md` |
-| 3 | Qui (Substack) | O gerador de imagens que o Paulo usava no Figma, em 14/11/2026, recebia só texto, sem a imagem da personagem como referência. | `Projetos/Aurora-Jogo/docs/PARA-A-PROXIMA-IA.md` (seções 2 e "Terceira rodada") |
-| 4 | Qui (Substack) | A arte da Aurora veio do Gemini e do gerador do Figma. | `Projetos/Aurora-Jogo/README.md` (Tecnologias) |
 
-As afirmações da F.R.E.Y.A. (antigas 3 a 7) saíram com a troca de quinta.
-
-Prioridade: o post de quinta (itens 3 e 4). Ele vai ao ar amanhã.
+As afirmações da F.R.E.Y.A. saíram com a troca de quinta. As da Aurora (antigas 3 e 4: o gerador do Figma que
+recebia só texto; a arte do Gemini e do Figma) saíram em 18/11 à noite, com o post guardado. Voltam para a Sabrina
+quando o Paulo marcar a data da Aurora.
 
 ## 6. Pedidos
 
 | Pedido | Para | Post | Status |
 |---|---|---|---|
-| Capa, corrida antes e depois e o sentar lado a lado, da Aurora (3 peças, 1080 × 1350) | Sofia | Qui 19/11 (Substack e LinkedIn) | Briefing no Notion (trocado em 18/11). **Urgente: é para hoje, o post sai amanhã.** |
 | Carrossel do Escritório (8 slides em PDF, prints reais de `Projetos/Escritorio-do-Paulo/docs/`) | Sofia | Sex 20/11 | Briefing no Notion |
 | Capa do Substack curto | Sofia | Seg 23/11 | Briefing no Notion |
-| Conferência das 4 afirmações da seção 5 | Sabrina | Qui, sex e seg | No plano (atualizado em 18/11) |
+| Conferência das 2 afirmações da seção 5 | Sabrina | Sex e seg | No plano (atualizado em 18/11, noite) |
 | Sem arte, com o motivo escrito na página | — | Qua 18 (prazo de hoje), seg 23 no LinkedIn (texto; a capa do Substack pode ser reaproveitada), ter 24 (os prints da Iris mostram um exemplo político) | — |
 
-**Plano:** `agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json` (1 tarefa para a Sabrina e 3 para a Sofia,
-no formato do plano anterior). **O Escritório foi desligado em 18/11 a pedido do Paulo**, então o plano só ficou salvo:
+**Plano:** `agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json` (1 tarefa para a Sabrina e 2 para a Sofia
+desde a noite de 18/11, no formato do plano anterior). **O Escritório foi desligado em 18/11 a pedido do Paulo**, então o plano só ficou salvo:
 não foi enviado nem vai ser por mim.
 
 **Frases prontas para o Paulo pedir:**
 
-- "Sofia, faça hoje as artes da Aurora para quinta (capa, corrida antes e depois e o sentar lado a lado), seguindo o
-  briefing da página 'A personagem que encolhia ao correr' no Calendário de conteúdo. O post sai amanhã."
 - "Sofia, faça o carrossel do Escritório para sexta e a capa do Substack de segunda, pelos briefings das páginas no
   Calendário de conteúdo."
-- "Sabrina, confira as 4 afirmações da seção 5 do relatório da Gabriela de 18 a 24/11, começando pelas do post de
-  quinta (Aurora)."
+- "Sabrina, confira as 2 afirmações da seção 5 do relatório da Gabriela de 18 a 24/11 (carrossel de sexta e Substack
+  de segunda)."
 
 ## 7. O que repetir, o que mudar e o que parar
 
@@ -373,7 +375,7 @@ Sem números ainda: isto é o que eu vou observar, não uma conclusão.
 
 - **Repetir (aposta):** o erro real com a correção e os números do próprio projeto. É o diferencial que a página do
   Notion já apontava, e esta semana inteira foi feita assim.
-- **Testar:** carrossel (sexta) contra post com imagem (quinta) contra só texto (quarta, segunda e terça). Vou comparar
+- **Testar:** carrossel (sexta) contra só texto (quarta, segunda e terça). O post com imagem saiu com a quinta. Vou comparar
   comentários e seguidores, antes de reações.
 - **Mudar se der pouco:** o post de quarta sai no fim do dia, fora do horário sugerido. Se for o mais fraco, não leio
   isso como tema ruim antes de testar o horário.
@@ -388,8 +390,8 @@ Sem números ainda: isto é o que eu vou observar, não uma conclusão.
 2. **A quarta agente.** O Substack de segunda e o post de segunda dizem que a equipe tem uma área de "conteúdo". Quer
    mostrar isso? O carrossel de sexta mostra só as três do print.
 3. ~~A Manus.~~ Não vale mais: o post da F.R.E.Y.A. saiu da semana.
-4. **Opiniões em seu nome.** Confirme duas: "A IA desenha bem um quadro de cada vez" (quinta, Aurora) e "esconder
-   que a análise é de exemplo seria o primeiro erro dele" (terça, Iris).
+4. **Opinião em seu nome.** Confirme "esconder que a análise é de exemplo seria o primeiro erro dele" (terça, Iris).
+   A da Aurora ("A IA desenha bem um quadro de cada vez") espera junto com o post guardado.
 5. **Iris.** O link do primeiro comentário leva ao README, cujos prints mostram um exemplo político (um governo
    hipotético). Se preferir, tiro o link.
 6. ~~A memória da Sofia com marcas de conflito.~~ Já foi consertada em 18/11 (commit `4ef85ee`). Os posts de segunda
@@ -556,4 +558,74 @@ de gravar; JSON do plano validado; nenhum post fala de F.R.E.Y.A., LUNA MIND, Ge
 Pendências: o Paulo listar o que mais já publicou (se a Aurora já foi, a reserva é o KFKA); confirmar a opinião "A IA
 desenha bem um quadro de cada vez"; Escritório desligado (plano só salvo).
 Próximo: Sofia faz as 3 artes da Aurora hoje; Sabrina confere as afirmações 3 e 4 da seção 5; Paulo revisa e posta.
+```
+
+## 12. Quinta sem post longo (18/11)
+
+### O que o Paulo decidiu
+
+Na noite de quarta, 18/11: "Não vou fazer posts da Aurora ainda". Perguntado sobre a quinta, escolheu "sem post longo
+nesta quinta". A semana fica sem Substack longo e sem LinkedIn na quinta, e nenhum outro tema entra no lugar.
+
+### O que mudou
+
+- **As duas páginas da Aurora ficaram guardadas, não apagadas:** "A personagem que encolhia ao correr" (Substack) e
+  "320 pixels em pé, 258 correndo" (LinkedIn). Em cada uma: Data vazia, Status = Ideia e, no topo, "Guardado: o Paulo
+  vai decidir quando falar da Aurora (18/11/2026)". O texto, o primeiro comentário, o Note e o briefing continuam lá.
+  O prazo do briefing virou "Em espera: não fazer agora".
+- **Plano** `agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json`: saiu a tarefa `arte-aurora`; a tarefa da
+  Sabrina ficou só com as afirmações do carrossel e do Substack de segunda.
+- **Posts que dependiam da quinta:** nenhum texto para colar citava o Substack de quinta nem o link dele. Ajustei só as
+  notas internas de duas páginas:
+  - quarta (Geometry Heroes): o aviso dizia "não empurre para quinta, que já tem o post da F.R.E.Y.A."; agora diz que a
+    quinta fica sem post por decisão sua, e que sem a quarta a semana tem 3 posts no LinkedIn. A nota da arte deixou de
+    citar a quinta;
+  - Substack de segunda: o "por que" falava do "arco da semana" começando na quinta e comparava o formato com o longo de
+    quinta. Tirei as duas menções.
+- **O que não mudou:** carrossel de sexta, o LinkedIn de segunda e a Iris não citavam a quinta. Os posts de segunda
+  dizem "a pasta das fases do meu jogo já ficou de fora uma vez" (o caso é da Aurora), sem o nome do jogo: mantive. Se
+  preferir tirar até essa menção, eu troco por outra regra da Karol.
+- **Este relatório:** seções 1, 3, 4, 5, 6, 7 e 8 atualizadas; as seções 10 e 11 ficam como registro.
+
+### O calendário final da semana
+
+| Dia | Rede | Título | Formato | Status | Arte |
+|---|---|---|---|---|---|
+| Qua 18/11 (fim do dia) | LinkedIn | 280 verificações num jogo de faculdade | Só texto · Explicação | Rascunho | Sem arte |
+| Qui 19/11 | — | sem post (decisão do Paulo) | — | — | — |
+| Sex 20/11 (8h30) | LinkedIn | Carrossel · Dei um escritório para os meus agentes de IA | Carrossel (8 slides) · Passo a passo | Rascunho | Precisa de arte (Sofia) |
+| Seg 23/11 (manhã) | Substack | O caderno de erros dos meus agentes | Curto · Perguntas e respostas | Rascunho | Precisa de arte (capa, Sofia) |
+| Seg 23/11 (12h) | LinkedIn | 4 agentes, 4 arquivos de memória | Só texto · Bastidores | Rascunho | Sem arte |
+| Ter 24/11 (8h30) | LinkedIn | A Iris está no ar sem o motor | Só texto · Diário | Rascunho | Sem arte |
+| sem data | Substack | A personagem que encolhia ao correr | Longo · Diário | Ideia (guardado) | briefing em espera |
+| sem data | LinkedIn | 320 pixels em pé, 258 correndo | Post com imagem · Comparação | Ideia (guardado) | briefing em espera |
+
+São 5 posts: 4 no LinkedIn e 1 no Substack. Se o de quarta não sair hoje, ele cai (não vai para a quinta) e ficam 4.
+A regra "um longo às quintas" fica de fora nesta semana por decisão sua. Com a quinta vazia, também some o risco de
+dois posts de jogo em dias seguidos (seção 11).
+
+**Um detalhe no Notion:** as duas páginas guardadas continuam com Arte = Precisa de arte, porque a arte ainda vai ser
+necessária quando o post sair. Por isso elas aparecem na aba "Artes para a Sofia", sem data e com o briefing marcado
+"em espera". Se preferir que sumam dessa aba até você decidir, me diga.
+
+### Frases prontas para você pedir
+
+- "Sofia, faça o carrossel do Escritório para sexta e a capa do Substack de segunda, pelos briefings das páginas no
+  Calendário de conteúdo. As artes da Aurora estão em espera: não precisa fazer."
+- "Sabrina, confira as 2 afirmações da seção 5 do relatório da Gabriela de 18 a 24/11 (carrossel de sexta e Substack
+  de segunda)."
+
+### Entrega da noite
+
+```text
+ENTREGA
+Resumo: Quinta 19/11 sem post, por decisão do Paulo. As 2 páginas da Aurora ficaram guardadas (Ideia, sem data, aviso
+no topo, briefing em espera), sem apagar nada. Plano sem a arte da Aurora e sem as afirmações dela. Notas internas de
+quarta e do Substack de segunda deixaram de citar a quinta. Semana final: 5 posts (4 LinkedIn, 1 Substack).
+Arquivos: agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md;
+agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json; agentes/memoria/gabriela.md; 4 páginas do Calendário.
+Conferido: consulta ao banco depois de gravar (Aurora em Ideia e sem data; os outros 5 em Rascunho com data); JSON
+validado; busca por "quinta" e "Aurora" nos textos para colar da semana.
+Pendências: Escritório desligado (plano só salvo); as páginas guardadas seguem na aba "Artes para a Sofia".
+Próximo: Sofia faz o carrossel e a capa de segunda; Sabrina confere as 2 afirmações; Paulo revisa e posta.
 ```

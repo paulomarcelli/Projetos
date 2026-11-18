@@ -5,17 +5,9 @@
       "chave": "fatos-semana",
       "agente": "sabrina",
       "titulo": "Conferir as afirmações sobre produtos reais nos posts de LinkedIn e Substack (18 a 24/11)",
-      "descricao": "Conferir, com fonte e nível de certeza, as afirmações listadas na seção 5 do relatório agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md (atualizada em 18/11). Prioridade 1: o post de quinta 19/11, que trocou de tema (agora a Aurora): \"o gerador de imagens que o Paulo usava no Figma, em 14/11/2026, recebia só texto, sem imagem de referência\" e \"a arte da Aurora veio do Gemini e do gerador do Figma\". Depois: o comando do Claude Code no carrossel de sexta e \"um agente novo só carrega numa sessão nova\" (Substack de segunda). As afirmações da F.R.E.Y.A. saíram: o post foi trocado porque o Paulo já tinha publicado sobre ela. Pronto quando cada afirmação estiver marcada como confirmada, ajustada (com o texto novo) ou retirada, e o ok vier escrito no relatório ou na página do Notion de cada post. Não há fato científico nesses posts.",
+      "descricao": "Conferir, com fonte e nível de certeza, as afirmações listadas na seção 5 do relatório agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md (atualizada em 18/11): o comando do Claude Code no carrossel de sexta 20/11 e \"um agente novo só carrega numa sessão nova\" (Substack de segunda 23/11). As afirmações da F.R.E.Y.A. saíram (o Paulo já tinha publicado sobre ela) e as da Aurora também: em 18/11 o Paulo decidiu não fazer posts da Aurora ainda, e as duas páginas de quinta ficaram guardadas como Ideia, sem data. Pronto quando cada afirmação estiver marcada como confirmada, ajustada (com o texto novo) ou retirada, e o ok vier escrito no relatório ou na página do Notion de cada post. Não há fato científico nesses posts.",
       "dependeDe": [],
       "tipo": "revisao"
-    },
-    {
-      "chave": "arte-aurora",
-      "agente": "sofia",
-      "titulo": "Artes da Aurora para quinta 19/11: capa do Substack, corrida antes e depois e o sentar lado a lado (para hoje, 18/11)",
-      "descricao": "Seguir o briefing das páginas do Notion \"A personagem que encolhia ao correr\" (Substack) e \"320 pixels em pé, 258 correndo\" (LinkedIn). Três peças em 1080 × 1350: (1) capa do Substack com a Aurora em pé e uma régua de altura; (2) a corrida antes e depois, os 7 quadros em duas fileiras com uma linha na altura dela parada, rótulos \"Antes: de 320 para 258 px\" e \"Depois: de 309 a 322 px\" (é também a imagem do LinkedIn); (3) o sentar gerado só com texto (Projetos/Aurora-Jogo/arte/figma/aurora_sentar_figma.png) ao lado do sentar dos desenhos dela (arte/sprites/sentar_folha.png). Quadros de depois: Projetos/Aurora-Jogo/arte/sprites/aurora_folha.png (animação \"correndo\" no aurora_folha.json); quadros de antes: a mesma folha antes do commit 2514403 (git show 2514403^:Projetos/Aurora-Jogo/arte/sprites/aurora_folha.png). Não retocar os desenhos. Rodapé \"Arte gerada com IA\" em toda peça com a Aurora. Cores da ficha (Projetos/Aurora-Jogo/docs/ficha-aurora.md) ou o que a Sofia definir para as redes profissionais. Números só os do briefing. É para hoje (18/11), porque o post sai amanhã: prioridade 1. Pronto quando as três peças estiverem no Figma, exportadas em PNG, com o link na página do Notion; aí a Gabriela marca Arte = Arte pronta.",
-      "dependeDe": [],
-      "tipo": "entrega"
     },
     {
       "chave": "arte-carrossel",

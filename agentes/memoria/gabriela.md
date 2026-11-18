@@ -104,6 +104,13 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
 - **18/11/2026 · Releia os fatos com data antes de reaproveitar um texto.** O post de segunda dizia que as marcas de
   conflito "ainda estavam lá"; tinham sido consertadas no mesmo dia (commit `4ef85ee`).
 
+- **18/11/2026 · A Aurora está guardada até o Paulo decidir.** Ele disse "Não vou fazer posts da Aurora ainda". As duas
+  páginas ("A personagem que encolhia ao correr" e "320 pixels em pé, 258 correndo") ficam em Ideia, sem data, com o
+  aviso no topo. Não sugira a Aurora de novo, nem como reserva de troca, sem ele pedir. Quando um post sai da semana:
+  guarde a página (Ideia, sem data, aviso), não apague; tire a tarefa de arte e as afirmações do plano; confira se outra
+  página cita o dia ou o link dele, inclusive nas notas internas ("não empurre para quinta…"). Nada entra no lugar
+  sem o Paulo dizer. Página guardada com Arte = Precisa de arte continua na aba "Artes para a Sofia".
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -115,3 +122,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 18/11/2026 | Aplicar a conferência da Sabrina nos 5 roteiros do TikTok (Notion em Pronto, roteiro final, recados para a Sofia) e seção "Depois da conferência" no relatório | aguardando o Paulo | ~30 min | não medido | A Terra precisou de duas tentativas no Notion (trecho repetido). Contar as palavras de todos com script antes de entregar. |
 | 18/11/2026 | LinkedIn e Substack de 18 a 24/11: 5 posts de LinkedIn (1 carrossel), 2 Substack, 7 páginas no Notion em Rascunho, plano para Sofia e Sabrina, relatório | aguardando o Paulo | ~2 sessões (com uma pausa por limite de uso) | não medido | Conferir a repetição com os posts antigos antes de escrever, não depois. O post de quarta saiu no próprio dia: pedir a semana com 2 dias de folga. |
 | 18/11/2026 | Trocar o tema de quinta (F.R.E.Y.A. já publicada) por outro projeto real e tirar a agente Sofia do centro dos posts da semana (o post sobre ela é do Paulo) | aguardando o Paulo | ~1 sessão | não medido | Pedir ao Paulo, antes de planejar a semana, a lista do que já foi publicado. A troca na véspera deixa a Sofia com menos de um dia para as artes. |
+| 18/11/2026 | Quinta 19/11 sem post (Aurora guardada): 2 páginas em Ideia sem data com aviso, plano sem a arte e as afirmações da Aurora, notas de quarta e do Substack de segunda ajustadas, seção 12 no relatório | aguardando o Paulo | ~20 min | não medido | A reserva do KFKA continua valendo para a próxima troca. Antes de pôr um tema na semana, perguntar ao Paulo se ele quer falar do projeto agora. |

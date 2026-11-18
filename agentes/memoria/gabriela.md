@@ -111,6 +111,11 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   página cita o dia ou o link dele, inclusive nas notas internas ("não empurre para quinta…"). Nada entra no lugar
   sem o Paulo dizer. Página guardada com Arte = Precisa de arte continua na aba "Artes para a Sofia".
 
+- **18/11/2026 · Calendário só com o TikTok.** O Paulo mandou excluir do Notion todos os posts de LinkedIn e de
+  Substack (inclusive os da semana de 18 a 24/11 e os da Aurora); ficaram só os 5 vídeos do TikTok. Os textos ainda
+  estão no relatório `agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md` e na lixeira do Notion
+  por 30 dias. Não recrie posts de LinkedIn ou de Substack no Notion sem o Paulo pedir.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.

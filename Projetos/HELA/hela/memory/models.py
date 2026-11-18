@@ -32,7 +32,7 @@ def _limpar_tags(tags: list[str]) -> list[str]:
     return limpas
 
 
-def _data_iso(valor: Any) -> Optional[str]:
+def data_iso(valor: Any) -> Optional[str]:
     if valor is None or valor == "":
         return None
     if isinstance(valor, datetime):
@@ -70,7 +70,7 @@ class MemoryCreate(_Entrada):
     @field_validator("expires_at", mode="before")
     @classmethod
     def _validar_expiracao(cls, v: Any) -> Optional[str]:
-        return _data_iso(v)
+        return data_iso(v)
 
 
 class MemoryUpdate(_Entrada):
@@ -96,7 +96,7 @@ class MemoryUpdate(_Entrada):
     @field_validator("expires_at", mode="before")
     @classmethod
     def _validar_expiracao(cls, v: Any) -> Optional[str]:
-        return _data_iso(v)
+        return data_iso(v)
 
 
 class Memory(BaseModel):

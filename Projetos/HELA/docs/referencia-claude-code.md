@@ -28,7 +28,7 @@ jeito mais rápido de reconferir.
 |---|---|---|---|
 | 1 | `from mcp.server.fastmcp import FastMCP` funciona como alternativa | No mcp 2.3.0 o módulo **existe só para dar erro**: importar levanta `ModuleNotFoundError` com a mensagem de migração. O import compatível tem de tentar **primeiro** o v2 e cair no v1 | [testado] |
 | 2 | Exceções são `ToolError` | No v2, **exceção que não é `ToolError` vira só `Error executing tool <nome>`**: a mensagem some. No v1 ela passava inteira. Erro previsto tem de ser `ToolError` | [testado] |
-| 3 | Deduplicar por `message.id` **ou `requestId`** | `requestId` falta em cerca de 5 a 20% das linhas `assistant`. Use **só `message.id`** | [testado] |
+| 3 | Deduplicar por `message.id` **ou `requestId`** | `requestId` faltou em 5% e em 22% das linhas `assistant` dos dois transcripts. Use **só `message.id`** | [testado] |
 | 4 | Tokens estão no transcript da sessão | Os de **subagentes** ficam em outro arquivo: `<sessão>/subagents/agent-*.jsonl` | [testado] [doc] |
 | 5 | Erro de ferramenta chega no `PostToolUseFailure` | Vale também para **Bash com saída diferente de 0**: não há `tool_response`, só `error` (texto que começa com `Exit code N`) | [testado] |
 | 6 | `suppressOutput` | A documentação atual diz: **"Has no effect"**. Não conte com ele | [doc] |
@@ -427,7 +427,7 @@ Instalado num venv temporário; `mcp<2` resolveu para 1.30.0 e foi usado para a 
 | `mcp.server.fastmcp` | **levanta `ModuleNotFoundError`** com mensagem de migração | funciona |
 | `ToolError` | `mcp.server.mcpserver.exceptions.ToolError` | `mcp.server.fastmcp.exceptions.ToolError` |
 | Exceção não prevista | vira `UnexpectedToolError("Error executing tool <nome>")`, sem a mensagem | a mensagem passa |
-| `@server.tool()` | igual; aceita `name`, `title`, `description`, `annotations`, `icons`, `meta`, `structured_output` | igual (sem `meta` em versões antigas) |
+| `@server.tool()` | igual; aceita `name`, `title`, `description`, `annotations`, `icons`, `meta`, `structured_output` | igual no 1.30.0 (mesma assinatura) |
 | `instructions=` no construtor | igual | igual |
 | `server.run("stdio")` | igual (`"stdio"`, `"sse"`, `"streamable-http"`) | igual |
 | Tipos | pacote separado `mcp_types`; atributos em snake_case (`is_error`, `structured_content`) | `mcp.types`; camelCase (`isError`) |
@@ -600,6 +600,16 @@ Cuidados:
 Linhas `user` que respondem a uma ferramenta trazem `toolUseResult` com o mesmo formato do `tool_response` do hook
 (seção 1.5). Em erro, `toolUseResult` é um texto que começa com `Error:`.
 
+### 4.6 Como provar que o contexto da HELA chegou ao Claude [testado]
+
+O transcript guarda linhas `type: "attachment"` para cada hook:
+
+- `attachment.type == "hook_additional_context"`, com `hookEvent`, `hookName` e `content` (o texto injetado);
+- `attachment.type == "hook_success"`, com `hookEvent`, `exitCode`, `durationMs`, `stdout` e `stderr`.
+
+No teste do `SessionStart`, o texto injetado apareceu nas duas. É a evidência objetiva para o ponta a ponta: "a
+sessão B recebeu a memória criada na sessão A". Lembrete de segurança: esse texto fica em claro no transcript.
+
 ## 5. Teste real com o `claude` neste ambiente [testado]
 
 - O `claude` 2.1.327 **está autenticado aqui** e funciona com `HOME` isolado. A autenticação vem do ambiente da sessão
@@ -643,7 +653,8 @@ env -u CLAUDECODE HOME="$T/home" claude mcp add --scope user hela -- <comando do
 3. O erro de validação do pydantic **repete o valor enviado** (`input_value=...`). Não registre esse texto em log sem
    passar pela redação.
 4. `PostToolUse` dispara também para `mcp__hela__*`: o `hela-hook` deve **ignorar as ferramentas da própria HELA**,
-   senão cada recall vira uma "experiência" e o banco se alimenta dele mesmo.
+   senão cada recall vira uma "experiência" e o banco se alimenta dele mesmo. Filtre no código (mais simples de
+   testar) ou use o matcher `^(?!mcp__hela__)` (regex JavaScript com *lookahead* negativo; [não testado]).
 5. Bash que falha não tem `tool_response` nem código de saída estruturado: leia `Exit code N` da primeira linha de
    `error`.
 6. `tool_response` de `Read`, `Write` e `Edit` traz arquivos inteiros (`content`, `originalFile`, `base64`): não

@@ -31,6 +31,7 @@ from hela.storage.repositories import EventRepository, MemoryFilter, MemoryRepos
 from hela.storage.repositories.memories import row_to_dict
 
 
+_PRESERVAVEIS = frozenset({"id", "status", "created_at", "updated_at", "access_count", "last_accessed"})
 _TIPO_RELACAO = re.compile(r"^[a-z][a-z0-9_]{0,39}$")
 
 
@@ -103,7 +104,17 @@ class MemoryService:
         return row_to_dict(row)
 
     # --- CRUD ----------------------------------------------------------------------------
-    def create(self, data: MemoryCreate) -> CreateResult:
+    def create(self, data: MemoryCreate, preserve: Optional[dict[str, Any]] = None) -> CreateResult:
+        """Cria uma memória (ou devolve a existente, se o texto normalizado for igual).
+
+        preserve: usado pela importação para manter id, status, datas e contagem de acessos
+        do arquivo. Mesmo assim a redação e a quarentena valem: uma memória suspeita entra
+        em quarentena qualquer que seja o status de origem.
+        """
+        preserve = preserve or {}
+        desconhecidos = set(preserve) - _PRESERVAVEIS
+        if desconhecidos:
+            raise InvalidInput(f"campos que não podem ser preservados: {sorted(desconhecidos)}")
         achados: list[str] = []
         title = self._redigir(data.title, achados)
         content = self._redigir(data.content, achados) or ""
@@ -131,16 +142,21 @@ class MemoryService:
             vetor = self._vetor(title, content, summary)
             quase = [] if quarentena else self.near_duplicates(vetor, data.kind)
             cfg = self.config.memory
-            mid = uuid.uuid4().hex
+            mid = preserve.get("id") or uuid.uuid4().hex
+            if self.memories.get(mid) is not None:
+                mid = uuid.uuid4().hex  # id já usado por outra memória neste banco
+            status = "quarantined" if quarentena else preserve.get("status", "active")
             self.memories.insert({
                 "id": mid, "kind": data.kind, "title": title, "content": content, "summary": summary,
                 "project": data.project, "tags": tags, "source": data.source,
-                "status": "quarantined" if quarentena else "active",
+                "status": status,
                 "content_hash": h, "embedding": to_blob(vetor), "embedding_model": self.embedder.name,
                 "importance": cfg.default_importance if data.importance is None else data.importance,
                 "quality": cfg.default_quality if data.quality is None else data.quality,
                 "confidence": cfg.default_confidence if data.confidence is None else data.confidence,
-                "created_at": agora, "updated_at": agora, "expires_at": data.expires_at,
+                "created_at": preserve.get("created_at", agora), "updated_at": preserve.get("updated_at", agora),
+                "access_count": int(preserve.get("access_count", 0)), "last_accessed": preserve.get("last_accessed"),
+                "expires_at": data.expires_at,
                 "session_id": data.session_id, "task_id": data.task_id,
                 "redactions": len(achados), "injection_score": inj.score, "metadata": metadata,
             })
@@ -240,6 +256,15 @@ class MemoryService:
             atual = self._carregar(memory_id)
             self.memories.delete(memory_id)
             self.events.log(self.now(), "memory.deleted", "memory", memory_id, {"kind": atual["kind"]})
+
+    def expire(self) -> list[str]:
+        """Marca como 'expired' as memórias ativas cujo expires_at já passou. Devolve os ids."""
+        with self.db.transaction():
+            agora = self.now()
+            ids = self.memories.expire_due(agora)
+            if ids:
+                self.events.log(agora, "memory.expired", "memory", None, {"count": len(ids), "ids": ids})
+        return ids
 
     def adjust_quality(self, memory_id: str, quality_delta: float = 0.0, confidence_delta: float = 0.0) -> Memory:
         """Ajusta qualidade e confiança (ex.: feedback), sempre dentro de [0, 1]."""

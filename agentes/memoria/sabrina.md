@@ -34,6 +34,19 @@ aqui.
 - **14/11/2026 · Sofia Carson.** "SC2" e o single "Her" não tinham fonte confiável: ficaram fora do site.
 - **Karol Sevilla × Samsung.** "Embaixadora oficial da Samsung" não foi confirmado em fonte oficial: não afirmar.
 - **Leia a página, não o resumo.** O trecho da busca engana; abra a fonte e anote a data.
+- **17/11/2026 · Roteiros "E se…?" (TikTok E Se, Hein?).** Os erros que mais aparecem:
+  - número de divulgação convertido e arredondado ("abaixo de 0 °F" virou "uns −18 °C");
+  - prazo mais longo do que as fontes dizem ("no primeiro dia a luz acende", quando as fontes falam em horas);
+  - consequência de outro cenário entrando na história (parada permanente × "um segundo"; Sol sumir × Sol apagar).
+  Sempre pergunte: "a fonte fala exatamente deste cenário?".
+- **Física de "e se": refaça a conta.** Velocidade no Equador, antípoda, túnel pela Terra (PREM: 38 min,
+  35.700 km/h) e recuo no pulo saem em minutos com um script, e a conta vale mais que um site de curiosidades.
+  Confira também as hipóteses escondidas (túnel sem ar, Terra sem rotação).
+- **Conte as palavras de novo.** A Gabriela errou uma contagem (93, não 90). Conto sem as marcações entre colchetes,
+  separando por espaço, e a frase corrigida mantém o número de palavras da original.
+- **Sites que bloqueiam leitura automática (403):** FSIS, FoodSafety.gov, IBGE e a página web da ONU. Para a ONU, o
+  PDF abre. NASA (science.nasa.gov) e Live Science abrem com `curl`; a extração do texto da Live Science começa em
+  `id="article-body"`.
 
 ### Do que era QA e segurança
 - **14/11/2026 · Texto invisível.** No fã-site da Sofia Carson, dois textos estavam no código e não apareciam na tela;
@@ -49,3 +62,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | Data | Pedido | Resultado | Tempo | Custo | O que melhorar |
 |---|---|---|---|---|---|
 | 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
+| 17-18/11/2026 | Conferência de fatos dos 5 roteiros do TikTok de 18 a 22/11 (Sol, Última pessoa, Terra para, Pulo, Buraco) | aguardando retorno do Paulo | cerca de 2 sessões (o limite de uso interrompeu antes de gravar) | não medido | Gravar o relatório mais cedo (por roteiro, começando pelo que vai ao ar primeiro), para não perder trabalho se a sessão parar. |

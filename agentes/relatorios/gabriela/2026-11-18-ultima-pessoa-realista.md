@@ -143,3 +143,48 @@ vai pelo Paulo. Frase pronta:
   Buraco) também não foram checados.
 - **Parar:** pôr num lugar real uma fonte que fala de outro lugar sem perguntar se vale ali (usinas dos EUA, metrô
   de Nova York).
+
+## Depois da conferência (18/11/2026)
+
+A Sabrina conferiu os dados do canto e as 5 perguntas (`agentes/relatorios/sabrina/2026-11-18-dados-ultima-pessoa.md`).
+O Paulo decidiu manter o tema. A fala não muda: Aprovação continua **Aprovado** e o Status continua **Pronto**. Na
+página do Notion, apliquei tudo, tirei o aviso de espera e registrei a conferência de 18/11.
+
+**Correção minha:** escrevi que a Paulista "fica no ponto mais alto da cidade". Ela fica numa das partes mais altas (o
+espigão); o ponto mais alto é o Pico do Jaraguá. Isso não entra em fala nem em legenda.
+
+### Dados do canto finais
+
+| Trecho | Dado no canto | Nível (Sabrina, 18/11) |
+|---|---|---|
+| 1 | POPULAÇÃO DO MUNDO · 8,3 BILHÕES → POPULAÇÃO DO MUNDO · 1 (em "última"); AVENIDA PAULISTA, SÃO PAULO em outra linha | Confirmado (ONU, WPP 2024: 8,30 bi em 1º/07/2026) |
+| 2 | POPULAÇÃO DO MUNDO · 1 (lugar em outra linha) | Premissa |
+| 3 | SOZINHO · PRIMEIRAS HORAS | Provável |
+| 4 | SOZINHO HÁ · POUCAS HORAS (sem "SÃO PAULO") | Provável para a rede em geral |
+| 5 | SOZINHO HÁ · POUCOS DIAS · METRÔ | Provável para um metrô qualquer |
+| 6 | GELADEIRA SEM ENERGIA · COMIDA SEGURA POR ~4 HORAS (desenho diferente do contador) | Confirmado (FDA) |
+| 7 | SOZINHO HÁ · ANOS · AVENIDA PAULISTA, SÃO PAULO | Provável |
+| 8 | PRIPYAT, UCRÂNIA · 49 MIL MORADORES · ESVAZIADA EM 27/04/1986 → SEM MORADORES HÁ 40 ANOS | 49 mil e data confirmados (UNSCEAR 2000, WNA); "sem moradores" provável |
+| 9 | POPULAÇÃO DO MUNDO · 1 (lugar em outra linha) | Premissa |
+
+Gancho e legenda conferidos: não sobrou "8,2". O gancho usa 8,3, e a legenda não tem número.
+
+### Lista de cena atualizada (só o que mudou)
+
+Os trechos 1, 2 e 9 continuam como na seção 4.
+
+| Trecho e tempo | Em cena | Palavra → o que acontece |
+|---|---|---|
+| 3 · 11,2 a 16,2 s | A mesma avenida, do dia para o fim da tarde | **"primeiras"** (~11,5 s): o sol desce → **"acende"** (~13,5 s): só os postes (relé de luz) e os letreiros com timer acendem; as janelas acesas são as que já estavam ligadas e só aparecem quando escurece. **Nenhuma janela "liga"** → **"feriado"** (~15 s): avenida acesa e vazia |
+| 4 · 16,2 a 26,5 s | **Opção A da Sabrina:** plano muito alto, à noite, de uma região com várias cidades sem marco reconhecível (manchas de luz no escuro). Nada de São Paulo nem da Paulista | **"usinas"** (~16,9 s): corte para o plano alto → **"parando"** (~23,1 s): as manchas começam a falhar → **"apagam, uma por uma"** (~25 a 26,2 s): as cidades apagam uma de cada vez |
+| 5 · 26,5 a 33,8 s | Corte do chão **genérico**: rua qualquer em cima, sem a Paulista, sem marco e sem nome de estação; túnel, trilhos, plataforma vazia, bomba no poço | **"túneis"** (~26,9 s): troca de plano para o corte (a câmera não desce pelo chão da Paulista) → **"bombas"** (~28,8 s) → **"desligadas"** (~31,9 s): a luz da bomba apaga → **"alagar"** (~33,5 s): a água cobre só os trilhos |
+| 6 · 33,8 a 40,4 s | Supermercado no escuro | **"geladeira"** (~35 s): a geladeira de vidro, **de porta fechada**, apaga; o resto igual |
+| 7 · 40,4 a 49,2 s | Paulista de dia, enquadramento da abertura | igual; **sem floresta**: só mato, estrago e algumas janelas quebradas |
+| 8 · 49,2 a 59,2 s | Pripyat | igual; a roda-gigante é modelada a partir de várias fotos, sem copiar uma; **ninguém em cena** |
+
+### Recados
+
+- **Sofia:** o dado da geladeira precisa de um desenho diferente do contador "SOZINHO HÁ", para não parecer que o
+  tempo voltou. Na capa, "POPULAÇÃO DO MUNDO · 1" com o lugar em outra linha.
+- **Karol:** trechos 3, 4, 5, 6 e 8 mudaram (tabela acima). Monta depois que o Paulo aprovar o visual da Sofia e a voz
+  for gravada.

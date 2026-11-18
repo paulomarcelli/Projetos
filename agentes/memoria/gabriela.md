@@ -127,6 +127,10 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   - Dado no canto: só número com fonte; quando não houver, use o tempo ("SOZINHO HÁ · POUCAS HORAS") ou a premissa.
   - Lista de cena para a Karol: tempo de cada palavra com o script (2,6 palavras por segundo) e o aviso de que o tempo
     certo sai do alinhamento da voz. Escreva também o que **não** pode aparecer (floresta, túnel cheio).
+  - Conferência da Sabrina (18/11): dado com número do mundo não leva o lugar na mesma linha ("POPULAÇÃO DO MUNDO ·
+    8,3 BILHÕES" e o lugar embaixo). Número de população: ano certo (8,2 era 2024; 2026 é 8,3). "Moradores" não é
+    "retirados" (Pripyat: 49 mil, não 45 mil). Na cena, nada "acende sozinho" que dependa de gente (janelas). A Paulista
+    fica numa das partes mais altas, não no ponto mais alto (é o Pico do Jaraguá).
 
 - **18/11/2026 · Tema já postado, mantido.** "Última pessoa do mundo" já tinha vídeos grandes (até 25 mi em português),
   e o Paulo decidiu manter para 19/11, apostando na Paulista real e no contador como diferencial. A regra "ninguém
@@ -145,3 +149,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 18/11/2026 | Trocar o tema de quinta (F.R.E.Y.A. já publicada) por outro projeto real e tirar a agente Sofia do centro dos posts da semana (o post sobre ela é do Paulo) | aguardando o Paulo | ~1 sessão | não medido | Pedir ao Paulo, antes de planejar a semana, a lista do que já foi publicado. A troca na véspera deixa a Sofia com menos de um dia para as artes. |
 | 18/11/2026 | Quinta 19/11 sem post (Aurora guardada): 2 páginas em Ideia sem data com aviso, plano sem a arte e as afirmações da Aurora, notas de quarta e do Substack de segunda ajustadas, seção 12 no relatório | aguardando o Paulo | ~20 min | não medido | A reserva do KFKA continua valendo para a próxima troca. Antes de pôr um tema na semana, perguntar ao Paulo se ele quer falar do projeto agora. |
 | 18/11/2026 | "Última pessoa" (qui 19/11) no estilo realista: busca de tema já postado (YouTube; TikTok sem leitura), lugar real, 9 dados do canto para a Sabrina, lista de cena para a Karol, Notion e relatório | aguardando o Paulo | ~1 sessão | não medido | O tema não passou na regra "ninguém postou": a busca tem de vir antes da escolha. Checar também Terra para, Pulo e Buraco. |
+| 18/11/2026 | Aplicar a conferência da Sabrina no "Última pessoa": 4 trocas de dado, cenas 3 a 8, gancho sem 8,2, aviso de espera retirado, seção "Depois da conferência" no relatório | aguardando o Paulo | ~20 min (com pausa por limite de uso) | não medido | Conferir o ano de todo número de população e a diferença entre moradores e retirados antes de mandar à Sabrina. |

@@ -54,6 +54,18 @@ aqui.
 - **14/11/2026 · Console e build.** Toda revisão de interface inclui `npm run build`, console sem erros e capturas em
   390 × 844, 1280 e 1920.
 - **Repositório público.** Procure e-mail, chave, `.env` e material pago em todo diff antes de liberar.
+- **18/11/2026 · HELA: conferir a documentação do Claude Code pelo `.md`.** `code.claude.com/docs/en/<página>.md`
+  abre em Markdown puro com `curl` (hooks, skills, mcp, settings, permissions, cli-reference). Mais rápido e completo
+  que o WebFetch.
+- **18/11/2026 · `claude -p` funciona aqui com `HOME` isolado.** `env -u CLAUDECODE HOME=<tmp> claude -p ...
+  --settings <arquivo> --output-format json --debug-file <log>`. Nunca `--bare` (desliga hooks e MCP). O `usage` do
+  `--output-format json` é o oráculo para a soma de tokens do transcript. Cada chamada curta custa de US$ 0,09 a 0,13.
+- **18/11/2026 · Transcript: só a estrutura.** Para analisar `~/.claude/projects/*.jsonl` sem copiar conversa, um
+  script que imprime chaves e tipos (nunca valores) e roda com `python3 -I`.
+- **18/11/2026 · Arquivo de teste com nome de pacote.** Um `attrs.py` na pasta do script sombreou o pacote `attrs` e
+  derrubou o servidor MCP. Scripts de teste com nomes que não colidem, sempre `python -I`.
+- **18/11/2026 · Chave falsa em teste.** Repositório público: montar a chave falsa em tempo de execução
+  (`"AKIA" + "X" * 16`), nunca literal, para não cair na proteção de push do GitHub.
 
 ## Registro de tarefas
 
@@ -63,3 +75,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 |---|---|---|---|---|---|
 | 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
 | 17-18/11/2026 | Conferência de fatos dos 5 roteiros do TikTok de 18 a 22/11 (Sol, Última pessoa, Terra para, Pulo, Buraco) | aguardando retorno do Paulo | cerca de 2 sessões (o limite de uso interrompeu antes de gravar) | não medido | Gravar o relatório mais cedo (por roteiro, começando pelo que vai ao ar primeiro), para não perder trabalho se a sessão parar. |
+| 18/11/2026 | HELA: preparar a Fase 7 (referência do Claude Code conferida e testada, modelo de ameaças, plano de testes, teste do `claude -p` com HOME isolado) | aguardando retorno | 1 sessão | cerca de US$ 0,34 em 3 chamadas de `claude -p` de teste | Conferir antes quantos arquivos a entrega pede e o nome de cada um. |

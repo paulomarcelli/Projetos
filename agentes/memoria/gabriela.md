@@ -87,6 +87,23 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   contagem do pulo (93, não 90). Para cada afirmação, pergunte: vale para este cenário exato? E rode o script de
   contagem em todos os roteiros.
 
+- **18/11/2026 · Já publicados: nunca repetir, nem com outro título.**
+  - F.R.E.Y.A. (o Paulo confirmou em 18/11: "Freya já postei na real");
+  - "Dá para confiar numa IA quando o assunto é saúde mental?" (LUNA MIND);
+  - "Uma IA consegue aplicar Gestalt?" (landing page Karol Sevilla);
+  - "Eu não baixei esse celular: desenhei um Galaxy S26 Ultra inteiro em código" (Karol × Samsung).
+
+  A lista veio em parte do calendário antigo, que o Paulo apagou: pode haver outros. Pedi a ele a lista completa (relatório
+  de 18 a 24/11, seção 11). Antes de escolher um tema, confira esta lista e pergunte se o projeto já foi ao ar.
+- **18/11/2026 · O post sobre a agente Sofia é do Paulo.** Ele mesmo vai publicar. Nos meus posts, a Sofia pode aparecer
+  só como parte da equipe, nunca como assunto principal nem dando nome a uma regra ou a uma história. Não escreva o post
+  dele. Quando ele disser a data, deixe o dia livre no calendário.
+- **18/11/2026 · Troca de tema em cima da hora.** Quinta trocou de F.R.E.Y.A. para Aurora na véspera. Funcionou porque o
+  repositório tinha o erro e a correção medidos num commit (`git log --format=%b`). Reserva para a próxima troca: o KFKA
+  (auditoria contra o PDF de requisitos), com cuidado: é projeto de equipe e de faculdade.
+- **18/11/2026 · Releia os fatos com data antes de reaproveitar um texto.** O post de segunda dizia que as marcas de
+  conflito "ainda estavam lá"; tinham sido consertadas no mesmo dia (commit `4ef85ee`).
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -97,3 +114,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17/11/2026 | 5 roteiros do TikTok de 18 a 22/11 (3 curtos, 2 longos), 5 páginas no Notion, plano para Sabrina e Sofia, relatório | aguardando o Paulo | ~1 sessão | não medido | O Escritório estava fechado (plano não enviado). Pedir os números da Lua em 48 h. Prazo da quarta é apertado: roteiro do dia seguinte precisa sair com 2 dias de folga. |
 | 18/11/2026 | Aplicar a conferência da Sabrina nos 5 roteiros do TikTok (Notion em Pronto, roteiro final, recados para a Sofia) e seção "Depois da conferência" no relatório | aguardando o Paulo | ~30 min | não medido | A Terra precisou de duas tentativas no Notion (trecho repetido). Contar as palavras de todos com script antes de entregar. |
 | 18/11/2026 | LinkedIn e Substack de 18 a 24/11: 5 posts de LinkedIn (1 carrossel), 2 Substack, 7 páginas no Notion em Rascunho, plano para Sofia e Sabrina, relatório | aguardando o Paulo | ~2 sessões (com uma pausa por limite de uso) | não medido | Conferir a repetição com os posts antigos antes de escrever, não depois. O post de quarta saiu no próprio dia: pedir a semana com 2 dias de folga. |
+| 18/11/2026 | Trocar o tema de quinta (F.R.E.Y.A. já publicada) por outro projeto real e tirar a agente Sofia do centro dos posts da semana (o post sobre ela é do Paulo) | aguardando o Paulo | ~1 sessão | não medido | Pedir ao Paulo, antes de planejar a semana, a lista do que já foi publicado. A troca na véspera deixa a Sofia com menos de um dia para as artes. |

@@ -2,6 +2,10 @@
 
 Gabriela · escrito em 17 e 18/11/2026 · pedido do Paulo: "prepare os posts do LinkedIn e do Substack".
 
+> **Atualizado em 18/11 (tarde):** o tema de quinta trocou de F.R.E.Y.A. para Aurora, porque o Paulo já tinha
+> publicado sobre a F.R.E.Y.A., e os posts de segunda e o carrossel deixaram a agente Sofia de lado, porque o Paulo vai
+> publicar um post próprio sobre ela. O que mudou e por quê está na seção 11, "Troca de quinta (18/11)".
+
 ## 1. A semana em uma linha
 
 7 posts: 5 no LinkedIn (um por dia útil, com 1 carrossel) e 2 no Substack (longo na quinta, curto na segunda). O
@@ -22,20 +26,20 @@ Substack, visualizações, aberturas e inscritos novos. Com 4 posts por rede eu 
 
 **Hoje é quarta, 18/11, e o post de hoje vai no fim do dia (sugestão: 18h a 19h).** Escolhi um post só de texto, sem
 arte, que dá para revisar e postar hoje. Se não der, ele **cai** e não passa para quinta: quinta já tem o Substack longo
-e o post da F.R.E.Y.A., e dois posts no mesmo dia competem entre si. Sem ele, a semana fica com 4 posts no LinkedIn,
+e o post da Aurora, e dois posts no mesmo dia competem entre si. Sem ele, a semana fica com 4 posts no LinkedIn,
 dentro da meta de 4 a 5.
 
 | Dia | Rede | Título | Formato | Objetivo | Por quê |
 |---|---|---|---|---|---|
 | Qua 18/11 (fim do dia) | LinkedIn | 280 verificações num jogo de faculdade | Só texto · Explicação | Comentários de estudantes e devs | Número no gancho e uma ideia que se leva para casa (o teste que joga o jogo). Sem arte: é o único que dá para fazer hoje. |
-| Qui 19/11 | Substack | Uma IA auditou o trabalho de outra, e o Thor era um filme | Longo · Comparação | Leitores e inscritos | A melhor história real do repositório com erro, correção e números de antes e depois. Liga com o posicionamento do portfólio ("IA que explica de onde vem cada resposta"). |
-| Qui 19/11 (8h30) | LinkedIn | 236 entidades, 269 relações e um Thor | Post com imagem · Comparação | Comentários e cliques no Substack | O longo de quinta em versão curta (`linkedin-repurposer`), com o link no primeiro comentário. |
+| Qui 19/11 | Substack | A personagem que encolhia ao correr | Longo · Diário | Leitores e inscritos | **Trocado em 18/11** (a F.R.E.Y.A. já foi publicada). A melhor história de erro e correção ainda não publicada, com números de antes e depois no repositório. Veja a seção 11. |
+| Qui 19/11 (8h30) | LinkedIn | 320 pixels em pé, 258 correndo | Post com imagem · Comparação | Comentários e cliques no Substack | O longo de quinta em versão curta (`linkedin-repurposer`), com o link no primeiro comentário. |
 | Sex 20/11 (8h30) | LinkedIn | Carrossel · Dei um escritório para os meus agentes de IA | Carrossel (8 slides) · Passo a passo | Salvamentos | O carrossel da semana. O Escritório é o projeto mais visual e já tem prints reais. |
 | Seg 23/11 (manhã) | Substack | O caderno de erros dos meus agentes | Curto · Perguntas e respostas | Leitores | Fecha o arco da semana (conferir, ver e lembrar o trabalho da IA). Formato diferente do longo. |
 | Seg 23/11 (12h) | LinkedIn | 4 agentes, 4 arquivos de memória | Só texto · Bastidores | Comentários | Leva o Substack curto para o LinkedIn, com um erro real (o conflito na memória). |
 | Ter 24/11 (8h30) | LinkedIn | A Iris está no ar sem o motor | Só texto · Diário | Comentários | Uma escolha que divide opinião (publicar pela metade) e o mesmo posicionamento por outro projeto. |
 
-**Pilares da semana:** conferir o trabalho da IA (quinta), trabalhar com agentes (sexta e segunda), projetos da
+**Pilares da semana:** manter igual o que a IA desenha (quinta), trabalhar com agentes (sexta e segunda), projetos da
 faculdade (quarta) e IA que mostra a fonte (terça). **Metas por reação** (`linkedin-content-planner`): comentários (qua,
 qui, seg, ter) e salvamentos (sex). Nenhuma fórmula de gancho se repete: número na primeira linha (qua, qui, seg),
 confissão com data (sex) e fato desconfortável (ter). Nenhum post abre com pergunta.
@@ -46,8 +50,8 @@ Carson. Ele **repete um post antigo do Substack** (as imagens dele estão em `su
 
 **Repetição com os posts antigos (que estão na lixeira):** pelo repositório, os temas antigos eram o Karol × Samsung,
 "como estudo com IA", o Una Noche Más e o fã-site da Sofia Carson. Nenhum post desta semana fala deles. Não abri a
-lixeira; se algum dos 3 posts já publicados no Substack tratou da F.R.E.Y.A., do Escritório, das memórias, do Geometry
-Heroes ou da Iris, me avise que eu troco.
+lixeira; se algum dos 3 posts já publicados no Substack tratou do Escritório, das memórias, do Geometry Heroes, da
+Aurora ou da Iris, me avise que eu troco. (Em 18/11 o Paulo confirmou que a F.R.E.Y.A. já foi publicada: veja a seção 11.)
 
 **Ficaram de fora, de propósito:** LUNA MIND (o Paulo pediu para não fazer posts sobre a Luna), ATLAS (não será
 publicado), Treta em Brasília (sátira política, arriscada num perfil profissional) e tudo o que é do canal do TikTok
@@ -62,11 +66,11 @@ Contagem feita com script.
 | Post | Letras | Primeira linha |
 |---|---|---|
 | Qua · Geometry Heroes | 1.279 | 114 |
-| Qui · F.R.E.Y.A. | 1.410 | 90 |
+| Qui · Aurora | 1.517 | 109 |
 | Sex · carrossel | 984 | 119 |
-| Seg · memórias | 1.225 | 133 |
+| Seg · memórias | 1.238 | 133 |
 | Ter · Iris | 1.075 | 111 |
-| Substack longo | 935 palavras | — |
+| Substack longo | 924 palavras | — |
 | Substack curto | 379 palavras | — |
 
 ### Quarta 18/11 · LinkedIn · 280 verificações num jogo de faculdade
@@ -94,30 +98,34 @@ Notion: https://app.notion.com/p/41cf9dd1501f816ca775fbeebbcd3917
 > Dá para jogar no navegador: https://paulomarcelli.github.io/Projetos/Projetos/Geometry-Heroes/
 > O código e os testes: https://github.com/paulomarcelli/Projetos/tree/main/Projetos/Tarefa-POO-JavaScript
 
-### Quinta 19/11 · LinkedIn · 236 entidades, 269 relações e um Thor
+### Quinta 19/11 · LinkedIn · 320 pixels em pé, 258 correndo
 
 Notion: https://app.notion.com/p/41cf9dd1501f81979efcdabf16a5938a
+(mesma página do post antigo da F.R.E.Y.A., reescrita em 18/11)
 
-> 236 entidades, 269 relações e um Thor que era, ao mesmo tempo, um filme e o filho de Odin.
+> 320 pixels em pé e 258 no menor quadro da corrida. A heroína do meu jogo encolhia toda vez que saía correndo.
 >
-> Assim estava a primeira versão da F.R.E.Y.A., um projeto meu que responde perguntas sobre o Universo Marvel no cinema e mostra a fonte de cada frase. Essa versão foi feita por um agente de IA autônomo. Antes de construir em cima, pedi ao Claude Code uma auditoria: ler o código inteiro, subir os três bancos de verdade e reproduzir os números da entrega.
+> O jogo é a Aurora, um plataforma 2D que faço com o Claude Code. Toda a arte da personagem é gerada por IA, em folhas de sprites: a mesma pose desenhada em vários quadros, que o jogo troca muitas vezes por segundo.
 >
-> Os números batiam e a busca funcionava. O defeito estava na identidade. A chave de cada nó era o nome em minúsculas, então o Thor personagem e o Thor filme viravam um nó só. Onze nomes tinham esse problema. E uma relação estava gravada à mão no código, só para a demonstração (Loki pega o Tesseract) dar certo.
+> A corrida tem 7 quadros, e 4 saíam menores. O gerador desenhou a folha em duas fileiras, e a de baixo veio uns 17% menor. Além disso, a bota de um quadro de cima encostava no elmo do quadro de baixo, e o recorte automático entregou as botas ao quadro errado.
 >
-> O que funcionava ficou. O resto foi corrigido: cada entidade ganhou um tipo na chave, as relações ganharam direção fixa e a base foi de 37 para 156 documentos, de 236 para 807 entidades e de 269 para 2.118 relações. Agora são 22 testes de unidade e 2 de integração.
+> A correção foi parte à mão, parte em código. Um script recorta a folha de novo, separa a bota do elmo por uma linha traçada à mão e amplia a fileira de baixo. Hoje os 7 quadros têm entre 309 e 322 pixels, e um teste falha se algum fugir do tamanho dela parada.
 >
-> Saí com um jeito de conferir trabalho de IA: rodar, reproduzir os números e procurar no banco o caso estranho. O resumo que a própria IA escreve eu leio por último.
+> Não foi a primeira vez. No mesmo projeto, o corpo dela esticava junto com o cabelo, ela flutuava ao sentar na fogueira e uma versão nova do sentar saiu com cara de outra personagem.
 >
-> O texto completo, com o antes e depois, está no Substack. O link vai no primeiro comentário.
+> A IA desenha bem um quadro de cada vez. Fazer o quadro seguinte ser a mesma pessoa, do mesmo tamanho e com os pés no mesmo chão ficou por minha conta. Eu olho o jogo rodando, e o código mede cada quadro.
 >
-> Quando uma IA te entrega um projeto pronto, qual é a primeira coisa que você confere?
+> Escrevi no Substack o diário desses três dias, defeito por defeito. O link vai no primeiro comentário.
 >
-> #InteligenciaArtificial #RAG #Python
+> Quem já usou imagem gerada por IA num projeto: o que deu mais trabalho para manter igual de uma imagem para a outra?
+>
+> #DesenvolvimentoDeJogos #InteligenciaArtificial #JavaScript
 
 **Primeiro comentário:**
 
-> O texto completo no Substack: [colar o link do post de quinta depois de publicar]
-> O código da F.R.E.Y.A.: https://github.com/paulomarcelli/Projetos/tree/main/Projetos/FREYA
+> O diário completo no Substack: [colar o link do post de quinta depois de publicar]
+> Dá para jogar no navegador: https://paulomarcelli.github.io/Projetos/Projetos/Aurora/
+> O código: https://github.com/paulomarcelli/Projetos/tree/main/Projetos/Aurora-Jogo
 
 ### Sexta 20/11 · LinkedIn · Carrossel · Dei um escritório para os meus agentes de IA
 
@@ -146,7 +154,7 @@ Notion: https://app.notion.com/p/41cf9dd1501f81238675f8d3f8322876
 1. Capa: "Dei um escritório para os meus agentes de IA" · "O caminho de um pedido, em 5 passos". Print `escritorio.webp`.
 2. A equipe: "Três agentes no Claude Code, cada uma na sua área." Sofia (design), Karol (desenvolvimento), Sabrina (coordenação, pesquisa e revisão). "Cada uma tem um arquivo de instruções, uma memória e o mesmo protocolo."
 3. Passo 1, o pedido vira plano: "Escrevo o que quero. A Sabrina quebra em tarefas, com a ordem e as dependências." Print da barra Vitrine.
-4. Passo 2, sem Design System, sem interface: "Projeto com tela começa pelo Design System da Sofia, no Figma. Se o plano esquecer, o escritório cria a tarefa dela e prende o front-end nela."
+4. Passo 2, sem Design System, sem interface: "Projeto com tela começa pelo Design System, no Figma. Se o plano esquecer, o escritório cria essa tarefa e prende o front-end nela." (ajuste de 18/11: sem o nome da Sofia)
 5. Passo 3, o painel não finge: "A agente só aparece trabalhando enquanto existe uma execução real dela no Claude Code. Sem execução, vai para o lazer." Print `mapa.webp`.
 6. Passo 4, a gaveta: "Clicou no crachá: o estado, a tarefa, o passo a passo ao vivo ("Lendo app.js"), as concluídas, os erros, o tempo médio e o custo." Print `gaveta.webp`.
 7. Passo 5, no fim a agente anota: "Cada tarefa termina com uma entrega padrão e uma linha na memória: perfeito, com ajustes ou falhou, e o que melhorar."
@@ -164,9 +172,9 @@ Notion: https://app.notion.com/p/41cf9dd1501f812a8f50d0c7d508251f
 >
 > "Leia a página, não o resumo. O trecho da busca engana; abra a fonte e anote a data." É da Sabrina, que pesquisa.
 >
-> Todo quadro interno criado com auto-layout no Figma precisa ter o fundo zerado, senão aparece um retângulo branco no tema escuro. É da Sofia, que desenha. Esse fundo branco chegou a esconder um botão.
+> Toda pasta nova que um site carrega precisa entrar na lista de cópia do workflow que publica no GitHub Pages. É da Karol, que programa. A pasta das fases do meu jogo já ficou de fora uma vez.
 >
-> O caderno também erra. Duas versões da memória da Sofia se cruzaram num merge, e o arquivo ficou com as marcas de conflito do git no meio do texto. Como é texto num repositório, deu para ver.
+> O caderno também erra. Duas versões da memória de uma das agentes se cruzaram num merge, e o arquivo ficou com as marcas de conflito do git no meio do texto. Como é texto num repositório, deu para ver e consertar.
 >
 > Ainda não sei medir quanto isso ajuda, porque tem pouca tarefa registrada. Escrevi no Substack como montei e o que estou olhando. O link vai no primeiro comentário.
 >
@@ -200,103 +208,77 @@ Notion: https://app.notion.com/p/41cf9dd1501f81288641fe1a62bb45d5
 
 > O README, com o que existe e o que falta: https://github.com/paulomarcelli/Projetos/tree/main/Projetos/Iris
 
-### Quinta 19/11 · Substack longo · Uma IA auditou o trabalho de outra, e o Thor era um filme
+### Quinta 19/11 · Substack longo · A personagem que encolhia ao correr
 
 Notion: https://app.notion.com/p/41cf9dd1501f812f8787db11a1eeb33a
+(mesma página do post antigo da F.R.E.Y.A., reescrita em 18/11)
 
-- **Título:** Uma IA auditou o trabalho de outra, e o Thor era um filme
-- **Outras opções:** "O dia em que o Thor virou um filme no meu banco de dados" · "Antes de construir em cima, rodei tudo de novo"
-- **Subtítulo:** A primeira versão da F.R.E.Y.A. veio de um agente autônomo. Conferi rodando de verdade: o que ficou, o que mudou e os números de antes e depois.
-- **Endereço sugerido:** auditoria-ia-freya
-- **Imagens:** 1 · capa (depois do segundo parágrafo); 2 · quadro antes e depois (abre a seção "Antes e depois"); 3 · print real `Projetos/FREYA/docs/readme/fotos/04-resposta.webp` numa moldura (depois do parágrafo do robots.txt).
-- **Note do Substack:** "Um nó chamado thor, do tipo filme, filho de Odin. Foi o que a auditoria achou na primeira versão da F.R.E.Y.A., feita por um agente autônomo. Os números de antes e depois estão no post de hoje."
+- **Título:** A personagem que encolhia ao correr
+- **Outras opções:** "Três dias tentando fazer a IA desenhar a mesma pessoa" · "320 pixels em pé, 258 correndo"
+- **Subtítulo:** Diário de três dias da Aurora, um jogo de plataforma com arte gerada por IA. Cada dia trouxe um defeito, e nenhum deles aparecia num desenho sozinho.
+- **Endereço sugerido:** aurora-personagem-encolhia
+- **Imagens:** 1 · capa (depois do segundo parágrafo); 2 · a corrida antes e depois (no dia 15); 3 · o sentar gerado só com texto ao lado do desenho dela (na seção final).
+- **Note do Substack:** "A heroína do meu jogo tinha 320 pixels em pé e 258 no menor quadro da corrida. A arte é gerada por IA, e o defeito só aparecia com um quadro ao lado do outro. Contei hoje os três dias de defeitos e como cada um foi consertado."
 
-Um nó chamado thor, do tipo filme, com a relação "filho de Odin".
+No dia 15 de novembro, a Aurora começou a encolher. Em pé, ela tinha 320 pixels de altura. No menor quadro da corrida, 258. Na tela, ela encolhia um pouco a cada passada e voltava ao tamanho certo logo depois.
 
-Esse foi um dos achados da auditoria que pedi na primeira versão da F.R.E.Y.A. O banco de dados guardava o personagem e o filme no mesmo lugar, e o filme tinha pai.
+A Aurora é a heroína de um jogo de plataforma 2D que estou fazendo, O Dízimo da Lua. O código eu escrevo com o Claude Code. A arte da personagem vem de geradores de imagem: primeiro o Gemini, depois o gerador do Figma. Este é o diário dos três dias em que mais aprendi sobre usar imagem de IA num jogo, contado pelos defeitos.
 
-[IMAGEM 1 · capa da Sofia]
+[IMAGEM 1 · capa]
 
-#### O projeto
+#### Antes de tudo: como um desenho vira animação
 
-A F.R.E.Y.A. é uma inteligência prospectiva sobre o Universo Marvel no cinema. Você pergunta algo como "como a relação entre Thor e Loki pode evoluir?" e ela devolve uma análise em texto corrido, ao lado do grafo dos personagens e das relações que sustentam a resposta. Cada parágrafo diz se é confirmado, inferência ou hipótese, e cada evidência abre a fonte original.
+Um jogo não usa uma ilustração solta. Usa uma folha de sprites: a mesma personagem desenhada em vários quadros, lado a lado, e o jogo troca de quadro muitas vezes por segundo. Cada animação (correr, pular, atirar com o arco, sentar) tem a sua folha.
 
-Para chegar lá, ela usa duas buscas. A primeira procura por sentido e por palavra ao mesmo tempo e junta as duas listas de resultado (é o tal Hybrid RAG). A segunda anda por um grafo de personagens, obras e relações guardado no Neo4j (o GraphRAG).
+A folha vem do gerador. Depois, scripts em Python recortam cada quadro, tiram o fundo, igualam a escala pela altura da cabeça e alinham os pés numa linha só. Só então o quadro entra no jogo.
 
-#### O que eu recebi
+#### 13 de novembro · O corpo que esticava
 
-A primeira versão veio pronta de um agente de IA autônomo: 11 arquivos, umas 500 linhas. O README dizia 37 registros, 39 trechos, 236 entidades, 269 relações e 6 testes passando.
+A primeira tentativa foi montar a Aurora como um boneco de 33 peças separadas. Ficou estranho, e o boneco foi arquivado.
 
-Dava para ler o README, ver a demonstração funcionar e seguir em frente. Preferi parar antes de construir em cima.
+A segunda foi usar os quadros desenhados e deixar o cabelo reagir ao vento e à corrida. Para isso, cada quadro inteiro virou uma malha, um tipo de tecido que o código consegue deformar. O cabelo balançava como eu queria. O corpo balançava junto e esticava a cada passo.
 
-#### Como foi a conferência
+A correção foi separar cada quadro em duas camadas. O corpo fica parado, por cima. Só o cabelo vai para a malha, por baixo. Um script decide, quadro a quadro, o que é cabelo e o que é corpo.
 
-Pedi ao Claude Code uma auditoria em quatro passos:
+#### 14 de novembro · A Aurora que flutuava e a que virou outra
 
-1. ler o código inteiro, e não só o README;
-2. subir os três serviços de verdade (Qdrant, Elasticsearch e Neo4j, pelo Docker) e carregar a base;
-3. rodar os testes e fazer consultas de prova;
-4. conferir as citações na fonte, em marvel.com.
+Na fogueira, a Aurora senta para descansar e salvar o jogo. Sentada, ela flutuava acima do chão.
 
-O resultado virou um documento com uma tabela para cada parte do sistema. Cada item recebeu uma nota (completo, parcial, ausente ou com erro) e a evidência que justifica a nota.
+O motivo estava no arco. Nos desenhos de sentar, ele fica deitado na frente dela, mais perto da câmera e mais baixo que o corpo. O script alinhava cada quadro pelo ponto mais baixo do desenho, que era o arco. O arco ficava no chão, e ela, no ar.
 
-#### O que estava certo
+A primeira tentativa foram quadros novos, gerados no Figma. Ela passou a sentar no chão, mas sentada já não era a mesma personagem. O gerador que eu usava no Figma recebia só texto, sem a imagem dela como referência, e o desenho saiu parecido, não igual.
 
-Começo por aqui, porque é a parte que some quando alguém fala de erro de IA.
+Voltamos aos desenhos dela. Cada quadro passou a descer o quanto precisava, um por um, até o quadril e as botas tocarem o chão e o arco ficar na neve, à frente. Daí saiu uma regra que ficou escrita no projeto: arte nova da Aurora só com a imagem dela como referência.
 
-Os números do README foram reproduzidos, um por um. A busca híbrida rodava e devolvia a fonte. Nas consultas de prova, o documento certo veio em primeiro lugar, em português e em inglês. E o grafo tinha uma regra boa: sem uma citação literal do texto de origem, a relação não entrava.
+No fim do mesmo dia, decidi redesenhar a Aurora adulta inteira no Figma, de uma vez. Para não cair no mesmo problema, as 12 folhas usaram a mesma descrição da personagem, repetida em todo pedido, e toda folha começa com uma pose dela em pé, que serve de régua para a escala. Mesmo assim, uma das folhas veio com a Aurora de botas de metal e precisou ser gerada de novo.
 
-O README não exagerava. O que existia era uma prova de conceito honesta.
+#### 15 de novembro · A Aurora que encolhia
 
-#### O que estava errado
+A corrida tem 7 quadros, e 4 saíam menores. Eram dois problemas juntos.
 
-A prova de conceito não aguentava o que eu queria construir em cima dela. Estes foram os problemas que mais pesaram:
+O gerador desenhou a folha da corrida em duas fileiras, e a fileira de baixo veio uns 17% menor, da cabeça aos pés. E a bota de um quadro de cima encostava no elmo do quadro de baixo. O recorte automático deu as botas ao quadro de baixo: um pedaço de bota aparecia acima da cabeça de um, e o outro ficava sem os pés.
 
-- A chave de cada nó era o nome em minúsculas. O Thor personagem e o Thor filme viravam um nó só, e o mesmo acontecia com outros 10 nomes. Daí o filme filho de Odin.
-- 70% das relações eram catálogo: lista da cronologia, direção, roteiro e elenco. Pouca coisa dizia quem era aliado ou inimigo de quem.
-- A base não tinha tempo. Nenhum ano, nenhuma fase, nenhuma ordem. Ela não sabia o que veio antes do quê.
-- "T'Challa" com o apóstrofo reto não encontrava "T’Challa" com o apóstrofo curvo.
-- Quando não havia caminho entre dois personagens, a busca devolvia as relações soltas de cada um. O resultado parecia uma ligação entre Thanos e Tony Stark que a base não tinha.
-- Uma linha fixa no código gravava "Loki pega o Tesseract", o caso usado na demonstração.
-- A senha de desenvolvimento do Neo4j estava escrita no código como valor padrão.
+A correção foi um script que recorta essa folha de novo. Ele separa a bota do elmo por uma linha traçada à mão, remenda o pedaço do elmo que a bota cobria, amplia a fileira de baixo em 1,19 vez e tira os vãos brancos entre as pernas.
 
-#### Antes e depois
+[IMAGEM 2 · a corrida antes e depois]
 
-[IMAGEM 2 · o quadro "antes e depois" da Sofia]
+Hoje os 7 quadros da corrida têm entre 309 e 322 pixels. Em pé, ela tem de 320 a 324. E entrou um teste: se algum quadro da corrida ficar abaixo de 94% da altura dela parada, ou acima de 103%, o teste falha.
 
-Os mesmos números, em texto, para quem lê no e-mail com as imagens bloqueadas:
+#### O que os três dias têm em comum
 
-- documentos: de 37 para 156;
-- entidades: de 236 para 807, cada uma com o tipo na chave;
-- relações: de 269 para 2.118, das quais 1.217 contam a história (595 alianças, 327 inimizades, 198 momentos de trajetória);
-- personagens com perfil completo: de nenhum para 50, entre 151;
-- testes: de 6 para 22 de unidade e 2 de integração;
-- páginas guardadas com data e hash, para conferir depois: de nenhuma para 130.
+Olhando para trás, nenhum desses defeitos aparecia numa imagem isolada. Eles surgiram quando um quadro foi colocado ao lado do outro, ou dentro do jogo, com chão, vento e câmera.
 
-O que funcionava continuou: Qdrant, Elasticsearch, Neo4j, a junção das duas buscas e a regra "sem citação, sem relação". A coleta nova respeitou o robots.txt de marvel.com, com 2 segundos entre uma página e a outra.
+[IMAGEM 3 · a Aurora sentada: o desenho original ao lado do gerado só com texto]
 
-[IMAGEM 3 · print real da F.R.E.Y.A.: a resposta sobre Thor e Loki, com o grafo à esquerda e a análise à direita]
+Por isso as regras do projeto mudaram. As folhas pedem poucos quadros, com bastante espaço entre eles. A descrição inteira da personagem vai em todo pedido. A altura de cada quadro é medida, e um teste vigia a corrida. E toda folha nova é conferida com a animação rodando no jogo, em capturas de tela, antes de ficar.
 
-Depois da correção, a pergunta sobre Thanos e Tony Stark passou a devolver uma inimizade direta, com a fonte. E, quando não existe caminho entre dois personagens, a F.R.E.Y.A. diz que não existe.
+A IA desenha bem um quadro de cada vez. Manter a mesma pessoa, do mesmo tamanho e com os pés no mesmo chão, de um quadro para o outro, ficou por minha conta.
 
-#### O que ainda não fecha
+O Prólogo e a primeira fase já dão para jogar no navegador. O link está aqui embaixo.
 
-- Duas citações da primeira versão não aparecem no HTML atual de marvel.com, e não há cópia da página para provar que estavam lá.
-- Quando a coleta rodou, 87 personagens não tinham perfil de cinema no site oficial. Eles ficam no grafo pelas aparições, sem a história.
-- "Captain America" é o Steve Rogers e também o Sam Wilson. Não juntei os dois. Fica anotado como pendência.
+Se você já usou imagem gerada por IA num projeto, responda este e-mail contando o que deu mais trabalho para manter igual.
 
-#### Como eu confiro agora
-
-Quando uma IA me entrega um projeto pronto, eu:
-
-1. rodo com os serviços de verdade;
-2. reproduzo os números que a entrega promete;
-3. procuro no banco o caso estranho (foi assim que o Thor apareceu);
-4. separo o que fica do que muda, antes de reescrever qualquer coisa.
-
-O resumo que a própria IA escreve eu leio por último. Neste caso ele estava certo, e mesmo assim não dizia nada sobre o Thor.
-
-Se você já recebeu um projeto pronto de uma IA e foi conferir, responda este e-mail contando o que encontrou.
+P.S. Para jogar: https://paulomarcelli.github.io/Projetos/Projetos/Aurora/ . A arte do jogo é gerada com IA, e o README do projeto diz isso.
 
 
 ### Segunda 23/11 · Substack curto · O caderno de erros dos meus agentes
@@ -311,7 +293,7 @@ Notion: https://app.notion.com/p/41cf9dd1501f81c6b6e0d85452a34784
 
 Tenho uma equipe de agentes de IA no Claude Code. Cada uma cuida de uma área (design, desenvolvimento, coordenação e revisão, conteúdo) e tem um arquivo de memória. Este post responde as perguntas que eu mesmo me fiz ao montar isso.
 
-[IMAGEM 1 · capa da Sofia]
+[IMAGEM 1 · capa]
 
 #### Onde fica a memória?
 
@@ -332,17 +314,15 @@ Duas coisas, no fim de cada tarefa:
 
 Da Sabrina, que pesquisa: "Leia a página, não o resumo. O trecho da busca engana; abra a fonte e anote a data."
 
-Da Sofia, que desenha no Figma: todo quadro interno criado com auto-layout nasce com fundo branco e precisa ter o fundo zerado. Ela aprendeu isso quando um fundo branco escondeu um botão no tema escuro.
-
-Da Karol, que programa: um agente novo só carrega numa sessão nova do Claude Code.
+Da Karol, que programa, duas. Toda pasta nova que um site carrega precisa entrar na lista de cópia do workflow que publica no GitHub Pages: a pasta das fases do meu jogo já ficou de fora uma vez. E um agente novo só carrega numa sessão nova do Claude Code.
 
 #### E quando a memória erra?
 
-Acontece. Duas versões da memória da Sofia se cruzaram num merge, e o arquivo ficou com as marcas de conflito do git no meio do texto. Quando escrevi este post, elas ainda estavam lá. Como é texto, dá para ver e consertar. Se a memória ficasse escondida dentro da ferramenta, eu nem saberia.
+Acontece. Duas versões da memória de uma das agentes se cruzaram num merge, e o arquivo ficou com as marcas de conflito do git no meio do texto. O conserto foi manter a versão que tinha as regras e o registro inteiros. Como é texto, deu para ver e consertar. Se a memória ficasse escondida dentro da ferramenta, eu nem saberia.
 
 #### Está funcionando?
 
-Ainda não sei. O registro tem poucas linhas, e a maioria espera a minha avaliação. A única fechada até agora é um "com ajustes": no primeiro Design System, a Sofia entregou cartões e rótulos cortados, viu na primeira captura e corrigiu. A regra que ficou foi conferir a captura de cada página antes de entregar.
+Ainda não sei. O registro tem poucas linhas, e quase todas ainda esperam a minha avaliação.
 
 Quando o registro tiver mais linhas, volto aqui com os números.
 
@@ -357,22 +337,21 @@ números dos projetos vêm dos próprios documentos do repositório (fonte ao la
 |---|---|---|---|
 | 1 | Sex (carrossel, slide 8) | O Claude Code roda com `claude -p --agent <nome> --output-format stream-json` e devolve cada ferramenta usada, o tempo e o custo. | `Projetos/Escritorio-do-Paulo/README.md`, memória da Karol |
 | 2 | Seg (Substack) | Um agente novo do Claude Code só carrega numa sessão nova. | memória da Karol, `agentes/README.md` |
-| 3 | Qui (Substack) | Hybrid RAG explicado como "procura por sentido e por palavra ao mesmo tempo e junta as duas listas" (Qdrant + BM25 + RRF). | `Projetos/FREYA/README.md` |
-| 4 | Qui (Substack) | A coleta respeitou o robots.txt de marvel.com, com 2 s entre as páginas. | `Projetos/FREYA/docs/RELATORIO.md` |
-| 5 | Qui (Substack) | Quando a coleta rodou, 87 personagens não tinham perfil de cinema em marvel.com. | `RELATORIO.md` (2/11/2026) |
-| 6 | Qui (Substack) | "Captain America" foi o Steve Rogers e também o Sam Wilson. | `RELATORIO.md` |
-| 7 | Qui (LinkedIn e Substack) | A primeira versão foi feita por "um agente de IA autônomo" (a Manus, segundo `docs/AUDITORIA.md`). O texto não diz o nome. Se o Paulo quiser citar, é uma crítica a um produto real e precisa do ok dela. | `Projetos/FREYA/docs/AUDITORIA.md` |
+| 3 | Qui (Substack) | O gerador de imagens que o Paulo usava no Figma, em 14/11/2026, recebia só texto, sem a imagem da personagem como referência. | `Projetos/Aurora-Jogo/docs/PARA-A-PROXIMA-IA.md` (seções 2 e "Terceira rodada") |
+| 4 | Qui (Substack) | A arte da Aurora veio do Gemini e do gerador do Figma. | `Projetos/Aurora-Jogo/README.md` (Tecnologias) |
 
-Prioridade: o post de quinta (itens 3 a 7). Ele vai ao ar amanhã.
+As afirmações da F.R.E.Y.A. (antigas 3 a 7) saíram com a troca de quinta.
+
+Prioridade: o post de quinta (itens 3 e 4). Ele vai ao ar amanhã.
 
 ## 6. Pedidos
 
 | Pedido | Para | Post | Status |
 |---|---|---|---|
-| Capa, quadro antes e depois e moldura do print da F.R.E.Y.A. (3 peças, 1080 × 1350) | Sofia | Qui 19/11 (Substack e LinkedIn) | Briefing no Notion. **Urgente: é para amanhã.** |
+| Capa, corrida antes e depois e o sentar lado a lado, da Aurora (3 peças, 1080 × 1350) | Sofia | Qui 19/11 (Substack e LinkedIn) | Briefing no Notion (trocado em 18/11). **Urgente: é para hoje, o post sai amanhã.** |
 | Carrossel do Escritório (8 slides em PDF, prints reais de `Projetos/Escritorio-do-Paulo/docs/`) | Sofia | Sex 20/11 | Briefing no Notion |
 | Capa do Substack curto | Sofia | Seg 23/11 | Briefing no Notion |
-| Conferência das 7 afirmações da seção 5 | Sabrina | Qui, sex e seg | No plano |
+| Conferência das 4 afirmações da seção 5 | Sabrina | Qui, sex e seg | No plano (atualizado em 18/11) |
 | Sem arte, com o motivo escrito na página | — | Qua 18 (prazo de hoje), seg 23 no LinkedIn (texto; a capa do Substack pode ser reaproveitada), ter 24 (os prints da Iris mostram um exemplo político) | — |
 
 **Plano:** `agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json` (1 tarefa para a Sabrina e 3 para a Sofia,
@@ -381,12 +360,12 @@ não foi enviado nem vai ser por mim.
 
 **Frases prontas para o Paulo pedir:**
 
-- "Sofia, faça as artes da F.R.E.Y.A. para quinta (capa, quadro antes e depois e moldura do print), seguindo o briefing
-  da página 'Uma IA auditou o trabalho de outra' no Calendário de conteúdo. É para amanhã."
+- "Sofia, faça hoje as artes da Aurora para quinta (capa, corrida antes e depois e o sentar lado a lado), seguindo o
+  briefing da página 'A personagem que encolhia ao correr' no Calendário de conteúdo. O post sai amanhã."
 - "Sofia, faça o carrossel do Escritório para sexta e a capa do Substack de segunda, pelos briefings das páginas no
   Calendário de conteúdo."
-- "Sabrina, confira as 7 afirmações da seção 5 do relatório da Gabriela de 18 a 24/11, começando pelas do post de
-  quinta."
+- "Sabrina, confira as 4 afirmações da seção 5 do relatório da Gabriela de 18 a 24/11, começando pelas do post de
+  quinta (Aurora)."
 
 ## 7. O que repetir, o que mudar e o que parar
 
@@ -408,15 +387,13 @@ Sem números ainda: isto é o que eu vou observar, não uma conclusão.
    faculdade e o seu trabalho nos posts? Por enquanto deixei de fora (só "faculdade", sem o nome).
 2. **A quarta agente.** O Substack de segunda e o post de segunda dizem que a equipe tem uma área de "conteúdo". Quer
    mostrar isso? O carrossel de sexta mostra só as três do print.
-3. **A Manus.** Quer citar pelo nome o agente que fez a primeira versão da F.R.E.Y.A.? O texto diz "um agente de IA
-   autônomo".
-4. **Opiniões em seu nome.** Confirme duas: "O resumo que a própria IA escreve eu leio por último" (quinta) e "esconder
+3. ~~A Manus.~~ Não vale mais: o post da F.R.E.Y.A. saiu da semana.
+4. **Opiniões em seu nome.** Confirme duas: "A IA desenha bem um quadro de cada vez" (quinta, Aurora) e "esconder
    que a análise é de exemplo seria o primeiro erro dele" (terça, Iris).
 5. **Iris.** O link do primeiro comentário leva ao README, cujos prints mostram um exemplo político (um governo
    hipotético). Se preferir, tiro o link.
-6. **A memória da Sofia** (`agentes/memoria/sofia.md`) está com as marcas de conflito do git (`<<<<<<< HEAD`). O post de
-   segunda conta isso como um erro real. Não mexi no arquivo, que não é meu: resolva quando puder (o texto continua
-   certo depois).
+6. ~~A memória da Sofia com marcas de conflito.~~ Já foi consertada em 18/11 (commit `4ef85ee`). Os posts de segunda
+   contam o caso sem dizer de quem era a memória.
 
 ## 9. Perfil de voz
 
@@ -433,6 +410,8 @@ Esses textos podem ter sido escritos com ajuda de IA, então valem como direçã
 5 posts seus, escritos por você.
 
 ## 10. Entrega
+
+Registro da entrega da manhã de 18/11. A troca de quinta e os ajustes da Sofia estão na seção 11, com a entrega nova.
 
 ```text
 ENTREGA
@@ -451,4 +430,130 @@ Pendências: Escritório desligado (plano só salvo); perfil de voz vazio; área
 seção 8; a memória da Sofia tem marcas de conflito do git (não mexi); nenhum número de LinkedIn ou Substack ainda.
 Próximo: Sofia faz as artes da F.R.E.Y.A. hoje (quinta é amanhã), depois o carrossel e a capa de segunda, e as artes
 do TikTok a começar pelo Sol; Sabrina confere as 7 afirmações da seção 5; Paulo revisa, responde a seção 8 e posta.
+```
+
+## 11. Troca de quinta (18/11)
+
+### O que aconteceu
+
+Na tarde de 18/11 chegaram dois recados do Paulo:
+
+1. **"Freya já postei na real."** O Substack longo de quinta e o post de LinkedIn do mesmo dia repetiriam algo que já
+   foi ao ar.
+2. **"Vou postar sobre a agente Sofia."** O post sobre a Sofia, a agente de design, é dele. Os meus não podem repetir
+   nem competir com esse assunto.
+
+### O que já foi publicado (não repetir, nem com outro título)
+
+| Tema | Post | De onde veio a informação |
+|---|---|---|
+| F.R.E.Y.A. | (título não informado) | o Paulo, em 18/11 |
+| LUNA MIND | "Dá para confiar numa IA quando o assunto é saúde mental?" | calendário antigo |
+| Landing page Karol Sevilla | "Uma IA consegue aplicar Gestalt?" | calendário antigo |
+| Karol Sevilla × Samsung | "Eu não baixei esse celular: desenhei um Galaxy S26 Ultra inteiro em código" | calendário antigo |
+| A agente Sofia | post do próprio Paulo (ainda vai sair) | o Paulo, em 18/11 |
+
+**Pedido ao Paulo:** a lista acima vem em parte do calendário antigo, que você apagou. Pode haver outros posts que já
+foram ao ar e que eu não conheço. **Me mande a lista do que mais você já publicou no LinkedIn e no Substack** (título ou
+só o tema basta), principalmente se algum falou da **Aurora**, do **Geometry Heroes**, do **Escritório**, da **memória dos
+agentes** ou da **Iris**, que são os temas desta semana. Se a Aurora já foi ao ar, a troca de reserva é o KFKA (abaixo).
+
+### O tema novo de quinta: a Aurora
+
+**Substack longo:** "A personagem que encolhia ao correr" (diário de 13 a 15/11).
+**LinkedIn:** "320 pixels em pé, 258 correndo" (a versão curta, com o link do Substack no primeiro comentário).
+
+Por que a Aurora (estratégia; ainda não há números de LinkedIn e Substack):
+
+- **Erro e correção com número.** O commit `2514403` (15/11) traz o defeito e a correção medidos: 4 dos 7 quadros da
+  corrida menores, a fileira de baixo cerca de 17% menor, de 320 para 258 px; hoje de 309 a 322 px. Rodei o teste que
+  confere a escala (`jogo/testes/folha.test.mjs`): passou.
+- **Assunto de IA por outro lado.** A F.R.E.Y.A. era "conferir código feito por IA". A Aurora é "manter igual o que a
+  IA desenha", então não repete o tema já publicado nem a fórmula do post dele.
+- **Ainda não foi ao ar, pelo que dá para ver.** A passagem de 14/11 (`PARA-A-PROXIMA-IA.md`, seção 4) lista os posts
+  daquela época (Karol × Samsung, "como estudo com IA", Una Noche Más) e não cita a Aurora. Não é prova: por isso o
+  pedido acima.
+- **Tem material visual real** para a Sofia (as folhas do gerador, a folha antes e depois do commit, o sentar dos dois
+  jeitos), sem desenhar nada novo.
+- **Formato diário**, diferente do Substack de segunda (perguntas e respostas) e da regra de estilo da página (sem
+  "Construí… e descobri que…", sem "O que deu errado", sem "Me conta nos comentários").
+
+Outros projetos que considerei:
+
+| Projeto | Por que ficou de fora |
+|---|---|
+| KFKA (protótipo do projeto interdisciplinar) | Boa história (auditoria contra o PDF de requisitos, contraste de 4,28:1 para 4,94:1), mas é projeto de faculdade como o de quarta, é de equipe (exige cuidado com o crédito) e repete o ângulo "auditar o trabalho da IA" da F.R.E.Y.A. **Fica de reserva.** |
+| Notion · Magia do Caos | Pouca IA no assunto e encosta no post antigo "como estudo com IA". |
+| Cenicienta, Site Karol Sevilla, Una Noche Más, Sofia Carson | Fã-sites: encostam em posts já publicados ou antigos. |
+| Joken-Po, Relógio de Estudos, pastas só com `docs/` | Pouco material de erro e correção. |
+| LUNA MIND, ATLAS, Treta em Brasília, E Se, Hein? | Fora dos posts profissionais (pedido do Paulo ou regra da agente). |
+
+**Um risco que fica:** quarta (Geometry Heroes) e quinta (Aurora) são dois jogos seguidos. Diminuí isso pelo ângulo:
+quarta é sobre testes que jogam o jogo; quinta é sobre arte gerada por IA, com hashtags diferentes. Se o post de quarta
+não sair hoje, ele cai (regra da semana), e o risco some.
+
+### Conferi os outros posts da semana
+
+| Post | Repetia um tema publicado? | Tinha a Sofia como assunto? | O que mudou |
+|---|---|---|---|
+| Qua 18 · Geometry Heroes | não | não | nada |
+| Sex 20 · Carrossel do Escritório | não | ela aparece como parte da equipe (slide 2) e dava nome à regra do Design System (slide 4) | o slide 4 ficou sem o nome dela; o slide 2 continua (é o retrato da equipe) |
+| Seg 23 · Substack "O caderno de erros dos meus agentes" | não | sim, em três trechos: a regra do auto-layout, o conflito na memória e o "com ajustes" do primeiro Design System | a regra dela virou uma regra da Karol (a pasta das fases da Aurora fora do Pages), o conflito ficou sem o nome dela e o exemplo do Design System saiu; a capa troca a figurinha da Sofia pela da Karol |
+| Seg 23 · LinkedIn "4 agentes, 4 arquivos de memória" | não | sim, a regra do auto-layout e o conflito na memória | as mesmas trocas do Substack (1.238 letras) |
+| Ter 24 · Iris | não | não | nada |
+
+Também corrigi um fato velho: o texto de segunda dizia que as marcas de conflito "ainda estavam lá". Elas foram
+consertadas em 18/11 (commit `4ef85ee`), e o texto agora diz que deu para consertar.
+
+Nenhum post da semana fala de LUNA MIND, Gestalt, Karol × Samsung ou F.R.E.Y.A.
+
+### Sugestão para o seu post sobre a Sofia
+
+Não escrevi o seu post. Só uma ideia de agenda: **quarta 25/11, de manhã (8h a 9h)**. Todos os dias úteis desta
+semana já têm um post meu, e dois posts no mesmo dia competem entre si. A semana que vem ainda não tem plano, então eu
+deixo a quarta livre para você. Ele conversa bem com a semana: o carrossel de sexta apresenta a equipe e o post de
+segunda mostra as memórias, então quem viu os dois já conhece a Sofia quando o seu sair. Se preferir postar nesta
+semana, o sábado 21/11 não bate com nada meu, mas a skill `linkedin-content-planner` diz que fim de semana costuma
+alcançar menos no LinkedIn (é direção, não número seu).
+
+### O que mudou nos arquivos e no Notion
+
+- **Notion (as mesmas páginas, nada apagado):** "236 entidades, 269 relações e um Thor" virou "320 pixels em pé, 258
+  correndo"; "Uma IA auditou o trabalho de outra, e o Thor era um filme" virou "A personagem que encolhia ao correr".
+  Em cada uma: título, texto, primeiro comentário, Note, briefing da Sofia, fontes, conferência da Sabrina e as
+  propriedades (Projeto = Aurora: O Dízimo da Lua; Formato = Diário no Substack e Comparação no LinkedIn; Arte = Precisa
+  de arte; Status = Rascunho). Também ajustei o carrossel de sexta e as duas páginas de segunda (Sofia).
+- **Plano** `agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json`: saiu a tarefa `arte-freya`; entrou
+  `arte-aurora` para a `sofia`, para hoje; a tarefa da Sabrina troca as afirmações da F.R.E.Y.A. pelas da Aurora (o
+  gerador do Figma que recebia só texto; a arte do Gemini e do Figma); as tarefas do carrossel e da capa de segunda
+  registram o ajuste da Sofia. O Escritório está desligado: o plano só ficou salvo.
+- **Este relatório:** seções 3, 4, 5, 6 e 8 atualizadas; a entrega da seção 10 ficou como registro da manhã.
+
+### Frases prontas para você pedir
+
+- "Sofia, faça hoje as artes da Aurora para quinta (capa, corrida antes e depois e o sentar lado a lado), seguindo o
+  briefing da página 'A personagem que encolhia ao correr' no Calendário de conteúdo. O post sai amanhã."
+- "Sabrina, confira as afirmações 3 e 4 da seção 5 do relatório da Gabriela de 18 a 24/11 (post de quinta, Aurora);
+  depois a 1 e a 2."
+
+Se a arte não ficar pronta a tempo, o LinkedIn de quinta pode sair só com texto, e o Substack sai com a capa simples
+ou sem imagem: os números estão no texto.
+
+### Entrega da troca
+
+```text
+ENTREGA
+Resumo: Quinta 19/11 trocou de F.R.E.Y.A. (já publicada) para Aurora: Substack longo "A personagem que encolhia ao
+correr" (diário, 924 palavras) e LinkedIn "320 pixels em pé, 258 correndo" (1.517 letras), nas mesmas páginas do
+Notion, em Rascunho. A Sofia saiu do centro dos posts de segunda e do slide 4 do carrossel, porque o post sobre ela é
+do Paulo. Plano com a arte da Aurora para hoje e a conferência da Sabrina atualizada.
+Arquivos: agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md;
+agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json; agentes/memoria/gabriela.md; 5 páginas do Calendário de
+conteúdo (2 de quinta reescritas, carrossel de sexta e as 2 de segunda ajustadas).
+Conferido: números da Aurora no commit 2514403 e no aurora_folha.json; teste folha.test.mjs rodado (2 de 2 passaram);
+letras, primeira linha, travessões e hashtags contados por script; página de quinta do LinkedIn relida no Notion depois
+de gravar; JSON do plano validado; nenhum post fala de F.R.E.Y.A., LUNA MIND, Gestalt ou Karol × Samsung.
+Pendências: o Paulo listar o que mais já publicou (se a Aurora já foi, a reserva é o KFKA); confirmar a opinião "A IA
+desenha bem um quadro de cada vez"; Escritório desligado (plano só salvo).
+Próximo: Sofia faz as 3 artes da Aurora hoje; Sabrina confere as afirmações 3 e 4 da seção 5; Paulo revisa e posta.
 ```

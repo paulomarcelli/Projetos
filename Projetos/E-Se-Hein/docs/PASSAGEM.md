@@ -262,7 +262,49 @@ Veja o `README.md` do projeto. Em resumo:
     `out/quadros-sol/` (fora do git).
   - **Sem arte da Sofia** (capa e storyboard): as cenas seguiram o roteiro de cenas da Gabriela, no Design System do
     canal.
+- **Estilo realista (v2): aprovado pelo Paulo em 18/11/2026.** É o padrão a partir do vídeo de 19/11.
+  - **Por quê:** referência de outro canal de "What if"; a análise está em `docs/estilo-realismo.md`.
+  - **Visual da Sofia:** Figma `okTGRiK8lTEXSoP9QDm0du`, página "Realismo documental (v2)"; seção "v2 · Realismo
+    documental" em `docs/design-system.md` (com "O que a Karol precisa para o código"), tokens em `docs/tokens.css` e
+    `docs/tokens.json`; relatório e prints em `agentes/relatorios/sofia/2026-11-18-realismo-documental.md`.
+  - **Resumo do visual:**
+    - lugar real do Brasil visto de drone (120–250 m, inclinado 35°–55°, lente 24–35 mm, um movimento lento por
+      plano, antes e depois no mesmo enquadramento);
+    - contador no canto (número grande e o lugar em outra linha);
+    - "fato" com desenho próprio;
+    - título em Newsreader;
+    - legenda de frase inteira em itálico;
+    - números em IBM Plex Sans;
+    - cor nos modos Dia, Noite e Frio;
+    - o "você" vira um ponto amarelo (#FFD21F) visto do alto.
+    - Saem as pílulas, setas, ícones e o boneco de perto. Ficam o E?, o fechamento laranja e as zonas seguras.
+  - **Como se produz:**
+    - **3D no Blender,** montado por código com a técnica da skill `how-its-built-starter` e as skills do Blender e do
+      Poly Haven, renderizado no PC do Paulo (RTX 5050);
+    - **as camadas 2D** (véu, contador, fato, título, legenda e fechamento) no Remotion, por cima do vídeo do Blender;
+    - **rodada obrigatória de conferência dos quadros** antes do render final (regra no arquivo da Karol).
+  - **Processo novo:** a Gabriela confere se o tema já tem vídeo grande no TikTok e no YouTube; a Sabrina confere
+    também o dado do canto.
+- **Vídeo de 19/11, "E se você fosse a última pessoa do mundo?": pronto para produzir no estilo realista.**
+  - **Roteiro:** aprovado pela Sabrina em 17/11; a fala não muda. Está na página do vídeo no Notion (Calendário de
+    conteúdo) e na seção 3 desta passagem.
+  - **Falta a voz da Maia:** gravar no ElevenLabs, salvar em `audio/ultima-pessoa-maia.mp3` e rodar o `preparar.mjs`.
+  - **Tema já postado:** há vídeos grandes do tema (até 25 milhões em português). O Paulo decidiu manter, com a Avenida
+    Paulista real e o contador como diferencial.
+  - **Lugar, dados do canto e lista de cena:** a lista diz o que aparece e some em cada palavra da fala. Está em
+    `agentes/relatorios/gabriela/2026-11-18-ultima-pessoa-realista.md`, seção "Depois da conferência", e na página
+    do Notion.
+  - **Dados conferidos pela Sabrina em 18/11** (`agentes/relatorios/sabrina/2026-11-18-dados-ultima-pessoa.md`):
+    - POPULAÇÃO DO MUNDO · 8,3 BILHÕES → 1, com "Avenida Paulista, São Paulo" em outra linha;
+    - SOZINHO · PRIMEIRAS HORAS;
+    - usinas sem "São Paulo", numa cena de várias cidades sem nome apagando à noite;
+    - metrô num corte genérico, sem nome de estação;
+    - geladeira ~4 horas (FDA);
+    - Pripyat com 49 mil moradores, esvaziada em 27/04/1986 e sem moradores há 40 anos;
+    - sem floresta tomando a avenida.
 - **Pendente:**
-  - os roteiros dos temas 1 e 3 a 7, com conferência de fatos;
+  - a voz e a produção do vídeo de 19/11 no estilo realista (no PC);
+  - os temas de 20 a 22/11 (Terra para, Pulo, Buraco): roteiros aprovados, mas ainda sem a busca de tema já postado,
+    sem lugar real e sem dado do canto;
   - o corte curto (35 s) de cada vídeo;
   - checar se o @ `esehein` está livre nas três redes.

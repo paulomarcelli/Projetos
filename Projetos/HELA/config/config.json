@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "embedder": {
+    "backend": "hashing",
+    "dim": 512,
+    "model": "sentence-transformers/all-MiniLM-L6-v2"
+  },
+  "search": {
+    "rrf_k": 60,
+    "candidates": 50,
+    "limit": 10,
+    "min_cosine": 0.15,
+    "weights": {
+      "bm25": 1.0,
+      "cosine": 1.0,
+      "recency": 0.3,
+      "quality": 0.3,
+      "importance": 0.3,
+      "graph": 0.5
+    }
+  },
+  "memory": {
+    "max_chars": 20000,
+    "default_importance": 0.5,
+    "default_quality": 0.5,
+    "default_confidence": 0.5,
+    "near_duplicate_threshold": 0.9
+  },
+  "consolidation": {
+    "threshold": 0.9
+  },
+  "security": {
+    "entropy_threshold": 4.2,
+    "entropy_min_length": 24,
+    "injection_threshold": 1.0,
+    "quarantine_on_injection": true
+  },
+  "storage": {
+    "busy_timeout_ms": 3000
+  }
+}

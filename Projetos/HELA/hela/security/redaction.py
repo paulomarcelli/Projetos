@@ -126,25 +126,26 @@ def redact(text: str, entropy_threshold: float = 4.2, entropy_min_length: int = 
     return RedactionResult(text, achados)
 
 
-def redact_value(valor: object, **kwargs: float) -> tuple[object, int]:
-    """Redige recursivamente strings dentro de dicts e listas (para o campo metadata)."""
+def redact_value(valor: object, **kwargs: float) -> tuple[object, list[str]]:
+    """Redige recursivamente as strings dentro de dicts e listas (para o campo metadata).
+
+    Devolve o valor limpo e o tipo de cada trecho trocado.
+    """
     if isinstance(valor, str):
         r = redact(valor, **kwargs)  # type: ignore[arg-type]
-        return r.text, r.count
+        return r.text, r.findings
+    achados: list[str] = []
     if isinstance(valor, dict):
-        total = 0
         saida = {}
         for k, v in valor.items():
-            novo, n = redact_value(v, **kwargs)
-            saida[k] = novo
-            total += n
-        return saida, total
+            saida[k], tipos = redact_value(v, **kwargs)
+            achados.extend(tipos)
+        return saida, achados
     if isinstance(valor, list):
-        total = 0
         lista = []
         for v in valor:
-            novo, n = redact_value(v, **kwargs)
+            novo, tipos = redact_value(v, **kwargs)
             lista.append(novo)
-            total += n
-        return lista, total
-    return valor, 0
+            achados.extend(tipos)
+        return lista, achados
+    return valor, achados

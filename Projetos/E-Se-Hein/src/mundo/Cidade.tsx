@@ -23,6 +23,8 @@ const PREDIOS: TokenMundo[] = ["mundo/predio/1", "mundo/predio/2", "mundo/predio
 // Fachada: a textura é uma máscara (R = parede, G = vidro apagado, B = janela acesa).
 // O shader pinta com as cores do modo atual; a janela acesa é emissiva e não muda com a luz.
 const cacheFachada = new Map<string, THREE.MeshStandardMaterial>();
+/** Geada no vidro apagado (0 a 1), igual para todas as fachadas; cor do token `mundo/terra/gelo`. */
+const uGeada = { value: 0 };
 
 function fachada(predio: number, colunas: number, andares: number, semente: number) {
   const chave = `${predio}-${colunas}-${andares}-${semente % 4}`;
@@ -64,11 +66,13 @@ function fachada(predio: number, colunas: number, andares: number, semente: numb
   m.onBeforeCompile = (shader) => {
     shader.uniforms.uParede = { value: parede };
     shader.uniforms.uVidro = { value: vidro };
+    shader.uniforms.uGeada = uGeada;
+    shader.uniforms.uGelo = { value: corToken("mundo/terra/gelo") };
     shader.fragmentShader = shader.fragmentShader
-      .replace("#include <common>", "#include <common>\nuniform vec3 uParede;\nuniform vec3 uVidro;")
+      .replace("#include <common>", "#include <common>\nuniform vec3 uParede;\nuniform vec3 uVidro;\nuniform float uGeada;\nuniform vec3 uGelo;")
       .replace(
         "#include <map_fragment>",
-        "#ifdef USE_MAP\n vec4 mascara = texture2D( map, vMapUv );\n diffuseColor.rgb = mascara.r * uParede + mascara.g * uVidro;\n#endif",
+        "#ifdef USE_MAP\n vec4 mascara = texture2D( map, vMapUv );\n diffuseColor.rgb = mascara.r * uParede + mascara.g * mix(uVidro, uGelo, uGeada);\n#endif",
       );
   };
   m.customProgramCacheKey = () => "fachada";
@@ -189,7 +193,8 @@ function texturaDomo() {
   return new THREE.CanvasTexture(c);
 }
 
-export const Cidade: React.FC<{ domo: number }> = ({ domo }) => {
+export const Cidade: React.FC<{ domo: number; geada?: number }> = ({ domo, geada = 0 }) => {
+  uGeada.value = geada;
   const lotes = useMemo(planejar, []);
   const texDomo = useMemo(texturaDomo, []);
   const orla = useMemo(() => {

@@ -9,31 +9,31 @@
       "texto": "E se o Sol se apagasse agora? Você não ia perceber. Pelo menos por oito minutos.",
       "inicio": 0.08,
       "fim": 5.394,
-      "cena": "provisoria"
+      "cena": "sol-agora"
     },
     {
       "texto": "A luz do Sol leva uns oito minutos para chegar aqui. Nesse tempo, você ainda veria no céu a luz de um Sol que já apagou.",
       "inicio": 5.745,
       "fim": 12.847,
-      "cena": "provisoria"
+      "cena": "sol-luz"
     },
     {
       "texto": "Depois, tudo apaga. Até a Lua, que só brilha com a luz do Sol.",
       "inicio": 13.246,
       "fim": 17.812,
-      "cena": "provisoria"
+      "cena": "sol-apaga"
     },
     {
       "texto": "Em poucos dias, os continentes já estariam abaixo de zero. Só o mar resistiria.",
       "inicio": 18.146,
       "fim": 23.158,
-      "cena": "provisoria"
+      "cena": "sol-frio"
     },
     {
       "texto": "Se soubesse que eram os últimos oito minutos de luz, o que você ia fazer? Me conta aqui nos comentários.",
       "inicio": 23.573,
       "fim": 29.387,
-      "cena": "provisoria"
+      "cena": "sol-pergunta"
     }
   ],
   "palavras": [

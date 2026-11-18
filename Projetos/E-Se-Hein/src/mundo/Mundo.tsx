@@ -15,6 +15,7 @@ import { aplicarModo, aplicarTexturas, corToken } from "./materiais";
 import { Morro } from "./Morro";
 import { Nuvens } from "./Nuvens";
 import { Praia } from "./Praia";
+import { SolNoCeu } from "./Sol";
 import { Terra } from "./Terra";
 import { type Texturas, useTexturas } from "./texturas";
 
@@ -70,10 +71,10 @@ const Sol: React.FC<{ pose: Pose; sombra: number }> = ({ pose, sombra }) => {
  * Céu real (HDRI do Poly Haven) só para os reflexos: a água e a areia molhada refletem o céu do modo
  * (Dia ou Noite). A cor dos objetos continua vindo dos tokens; o HDRI não ilumina a cena.
  */
-function reflexos(tex: Texturas, dia: number) {
+function reflexos(tex: Texturas, dia: number, forca = 1) {
   const hdri = dia >= 0.5 ? tex.hdriDia : tex.hdriNoite;
   hdri.mapping = THREE.EquirectangularReflectionMapping;
-  return { hdri, intensidade: dia >= 0.5 ? 0.9 : 2.2 };
+  return { hdri, intensidade: (dia >= 0.5 ? 0.9 : 2.2) * forca };
 }
 
 /**
@@ -159,14 +160,15 @@ export const Mundo: React.FC<Props> = ({ pose, amb, tempo, boneco, children, wid
       {naTerra ? (
         <>
           <LuaNoCeu visivel={amb.lua * (1 - amb.espaco)} mapa={tex.lua} />
+          {amb.sol > 0.001 ? <SolNoCeu visivel={amb.sol * (1 - amb.espaco)} /> : null}
           <Nuvens tempo={tempo} />
-          <Cidade domo={modo.breu} />
+          <Cidade domo={modo.breu * amb.domo} geada={amb.geada} />
           <Morro />
-          <Praia tempo={tempo} centro={amb.mareCentro} amp={amb.mareAmp} regua={1} normaisAgua={tex.agua} reflexo={reflexos(tex, modo.dia)} />
+          <Praia tempo={tempo} centro={amb.mareCentro} amp={amb.mareAmp} regua={1} normaisAgua={tex.agua} reflexo={reflexos(tex, modo.dia, amb.reflexo)} />
           {boneco ? <Boneco {...boneco} tempo={tempo} /> : null}
         </>
       ) : null}
-      <Terra tempo={tempo} balanco={amb.balanco} luaEspaco={amb.luaEspaco} visivel={amb.terra} mapaTerra={tex.terra} mapaLua={tex.lua} />
+      <Terra tempo={tempo} balanco={amb.balanco} eixo={amb.eixo} luaEspaco={amb.luaEspaco} visivel={amb.terra} mapaTerra={tex.terra} mapaLua={tex.lua} />
       {children}
       <Efeitos espaco={amb.espaco} />
       <Redesenhar />

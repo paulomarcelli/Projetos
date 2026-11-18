@@ -39,6 +39,8 @@ npm install
 ```bash
 # Quadros soltos + folha de contato (para conferir legenda e cenas)
 bash scripts/quadros.sh <tema> 30 300 900 1500
+# O mesmo com um bundle só (bem mais rápido: ~5 s por quadro na nuvem)
+NODE_USE_ENV_PROXY=1 node scripts/quadros.mjs <tema> out/quadros-<tema> 30 300 900 1500
 
 # Prévia leve (metade da resolução)
 npx remotion render <tema> out/<tema>-previa.mp4 --scale=0.5
@@ -89,9 +91,9 @@ npm run lint    # eslint + tsc
 | `scripts/preparar.mjs` | MP3 + roteiro → JSON (normaliza, transcreve, alinha) |
 | `scripts/lib/alinhar.mjs` | Alinhamento do roteiro com a transcrição |
 | `src/Video.tsx` | Composição: abertura (1 s), mundo 3D, rótulos, legenda, fechamento (4 s) |
-| `src/cenas/` | Uma cena por arquivo: câmera, clima, boneco, objetos e rótulos do trecho |
+| `src/cenas/` | Uma cena por arquivo: câmera, clima, boneco, objetos e rótulos do trecho (as do Sol começam com `Sol`) |
 | `src/mundo/` | Mundo 3D compartilhado: céu, Lua, cidade, praia e mar, boneco "você", Terra |
-| `src/camadas/` | Camadas 2D: legenda, rótulos, contexto, marca-d'água, fechamento |
+| `src/camadas/` | Camadas 2D: legenda, rótulos, contexto, marca-d'água, fechamento, cronômetro e termômetro |
 | `docs/` | Plano e arquitetura |
 
 As cores do mundo (`src/mundo/paleta.ts`), a fonte e os componentes 2D seguem o Design System da Sofia

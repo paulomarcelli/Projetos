@@ -5,6 +5,11 @@ import { mares } from "./Mares";
 import { noiteEscura } from "./NoiteEscura";
 import { pergunta } from "./Pergunta";
 import { provisoria } from "./Provisoria";
+import { solAgora } from "./SolAgora";
+import { solApaga } from "./SolApaga";
+import { solFrio } from "./SolFrio";
+import { solLuz } from "./SolLuz";
+import { solPergunta } from "./SolPergunta";
 import type { Cena } from "./tipos";
 import { terraLua } from "./TerraLua";
 
@@ -17,6 +22,11 @@ export const cenas: Record<string, Cena> = {
   "eixo-terra": eixoTerra,
   "terra-lua": terraLua,
   pergunta,
+  "sol-agora": solAgora,
+  "sol-luz": solLuz,
+  "sol-apaga": solApaga,
+  "sol-frio": solFrio,
+  "sol-pergunta": solPergunta,
   provisoria,
 };
 

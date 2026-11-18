@@ -99,3 +99,16 @@ export const IconeCoral: React.FC = () => (
     <path d="M 84 150 L 84 96 L 52 56 M 84 96 L 116 50 M 84 120 L 120 98" fill="none" stroke={A} strokeWidth={14} strokeLinecap="round" strokeLinejoin="round" />
   </Icone>
 );
+
+/** Cronômetro (vídeo do Sol): botão em cima, mostrador amarelo e ponteiros. */
+export const IconeCronometro: React.FC = () => (
+  <Icone>
+    <rect x={70} y={10} width={28} height={20} rx={6} fill={A} {...traco} />
+    <line x1={130} y1={42} x2={142} y2={30} {...traco} strokeWidth={10} />
+    <circle cx={84} cy={94} r={60} fill={A} {...traco} />
+    <line x1={84} y1={46} x2={84} y2={58} {...traco} />
+    <line x1={84} y1={94} x2={84} y2={60} {...traco} strokeWidth={10} />
+    <line x1={84} y1={94} x2={110} y2={108} {...traco} strokeWidth={10} />
+    <circle cx={84} cy={94} r={7} fill={T} />
+  </Icone>
+);

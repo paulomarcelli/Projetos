@@ -24,9 +24,9 @@ function orbita() {
   return l;
 }
 
-type Props = { tempo: number; balanco: number; luaEspaco: number; visivel: number; mapaTerra: THREE.Texture; mapaLua: THREE.Texture };
+type Props = { tempo: number; balanco: number; eixo?: number; luaEspaco: number; visivel: number; mapaTerra: THREE.Texture; mapaLua: THREE.Texture };
 
-export const Terra: React.FC<Props> = ({ tempo, balanco, luaEspaco, visivel, mapaTerra, mapaLua }) => {
+export const Terra: React.FC<Props> = ({ tempo, balanco, eixo = 1, luaEspaco, visivel, mapaTerra, mapaLua }) => {
   const matTerra = useMemo(() => new THREE.MeshStandardMaterial({ map: mapaTerra, roughness: 0.75, metalness: 0, fog: false }), [mapaTerra]);
   // Atmosfera: uma casca um pouco maior, azul, que brilha mais na borda.
   const matAr = useMemo(
@@ -70,9 +70,11 @@ export const Terra: React.FC<Props> = ({ tempo, balanco, luaEspaco, visivel, map
           <mesh material={matAr} scale={TERRA_RAIO * 1.06}>
             <sphereGeometry args={[1, 64, 32]} />
           </mesh>
-          <mesh material={matEixo}>
-            <cylinderGeometry args={[0.35, 0.35, TERRA_RAIO * 3, 6]} />
-          </mesh>
+          {eixo > 0.5 ? (
+            <mesh material={matEixo}>
+              <cylinderGeometry args={[0.35, 0.35, TERRA_RAIO * 3, 6]} />
+            </mesh>
+          ) : null}
         </group>
         {luaEspaco > 0.01 ? (
           <primitive object={linha} />

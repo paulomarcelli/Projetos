@@ -92,13 +92,13 @@ export const VideoEseHein: React.FC<{ dados: DadosVideo }> = ({ dados }) => {
 
   // Projeção 3D -> tela com a mesma câmera do mundo, para prender os rótulos aos objetos.
   const projetar = useMemo(() => criarProjecao(pose, width, height), [pose, width, height]);
-  // O círculo laranja do fechamento nasce da Lua, onde ela está no último quadro da voz.
+  // O círculo laranja do fechamento nasce da Lua (ou do ponto que a última cena escolher), onde ela está no último quadro da voz.
   const origemFechamento = useMemo(() => {
     const ultimo = buscarCena(dados.trechos[limites.length - 1].cena);
     const i = limites.length - 1;
     const pr = props(i, 1, 1);
     pr.seg = limites[i][1] - limites[i][0];
-    const p = criarProjecao(ultimo.camera(pr), width, height)(POSICAO_LUA);
+    const p = criarProjecao(ultimo.camera(pr), width, height)(ultimo.origemFechamento ?? POSICAO_LUA);
     return { x: Math.min(1080, Math.max(0, p.x)), y: Math.min(1920, Math.max(0, p.y)) };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dados, limites, width, height]);

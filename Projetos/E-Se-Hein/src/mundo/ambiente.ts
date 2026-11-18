@@ -20,6 +20,16 @@ export type Ambiente = {
   balanco: number;
   /** Lua no espaço, ao lado da Terra (0 a 1). */
   luaEspaco: number;
+  /** Sol no céu, visto da Terra (0 = não aparece; vídeo do Sol). */
+  sol: number;
+  /** Geada no vidro das janelas (0 a 1). */
+  geada: number;
+  /** Eixo branco da Terra no espaço (1 = aparece, como no vídeo da Lua). */
+  eixo: number;
+  /** Multiplica o domo de luz da cidade no Breu (1 = como no vídeo da Lua; 0 = sem domo, vista de dentro da cidade). */
+  domo: number;
+  /** Multiplica o reflexo do céu HDRI no mar (1 = como no vídeo da Lua). */
+  reflexo: number;
 };
 
 export const MARE_CENTRO = -1.2;
@@ -38,6 +48,11 @@ export const ambienteNoite: Ambiente = {
   terra: 0,
   balanco: 0,
   luaEspaco: 0,
+  sol: 0,
+  geada: 0,
+  eixo: 1,
+  domo: 1,
+  reflexo: 1,
 };
 
 export function misturarAmbiente(a: Ambiente, b: Ambiente, t: number): Ambiente {

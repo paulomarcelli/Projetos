@@ -51,6 +51,8 @@ export type Cena = {
   passagemAlvoSobe?: number;
   /** Objetos 3D só desta cena (dentro do canvas). */
   Objetos?: React.FC<PropsCena>;
+  /** Ponto 3D de onde nasce o círculo laranja do fechamento (só vale na última cena). Padrão: a Lua do céu. */
+  origemFechamento?: Vec3;
   /** Rótulos 2D presos aos objetos (pílulas, setas, textos, cartões). */
   Rotulos?: React.FC<PropsCena & { projetar: Projetar }>;
 };

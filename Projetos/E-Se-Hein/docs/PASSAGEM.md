@@ -226,6 +226,24 @@ Veja o `README.md` do projeto. Em resumo:
   - Q6: a pílula diz "ESTABILIZA O EIXO" (rótulo corrigido pela Sabrina) e sai antes de "estável".
 
   **Próximo:** o Paulo assiste, aprova e posta. O MP4 não vai para o git.
+- **Vídeo do Sol ("E se o Sol se apagasse agora?", vai ao ar em 18/11/2026): cenas prontas, falta o render.**
+  - **Pronto:**
+    - roteiro final conferido pela Sabrina (`videos/sol.roteiro.txt`);
+    - voz da Maia (`audio/sol-maia.mp3`, 29,6 s, normalizada em -13,94 LUFS);
+    - legenda alinhada (`videos/sol.json`, 89 de 90 palavras com tempo direto).
+  - **Cenas da Karol:** 5 cenas (`sol-agora`, `sol-luz`, `sol-apaga`, `sol-frio`, `sol-pergunta`) com o Sol no céu,
+    o cronômetro de 8:00 e o termômetro.
+  - **Conferido:** testes (37) e lint passando; a Lua continua igual pixel a pixel; a folha de contato do Sol está em
+    `out/quadros-sol/` (fora do git).
+  - **O render foi parado na nuvem para rodar no PC do Paulo (RTX 5050):**
+    `REMOTION_GPU=1` e `npx remotion render sol out/sol.mp4 --codec=h264 --crf=18 --gl=angle --concurrency=4`.
+  - **Conferir no MP4:**
+    - formato, duração (~33,6 s), -14 LUFS, sincronia e quadro preto;
+    - na cena do "apaga", o Sol ainda aparece aceso junto com a Lua (ver se é só a passagem);
+    - na pergunta final, o Sol volta a aparecer aceso; a câmera vai até ele no fechamento. Ver se isso conta a história
+      certa ou se o fim deve ficar sem Sol.
+  - **Sem arte da Sofia** (capa e storyboard): as cenas seguiram o roteiro de cenas da Gabriela, no Design System do
+    canal.
 - **Pendente:**
   - os roteiros dos temas 1 e 3 a 7, com conferência de fatos;
   - o corte curto (35 s) de cada vídeo;

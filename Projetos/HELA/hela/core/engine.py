@@ -22,6 +22,7 @@ from hela.core.clock import Clock, utcnow
 from hela.core.config import HelaConfig, load_config
 from hela.core.errors import InvalidInput, describe_validation_error
 from hela.core.paths import db_path, hela_home
+from hela.memory.activation import GraphActivation
 from hela.memory.consolidation import ConsolidationReport, consolidate
 from hela.memory.embedder import Embedder, make_embedder
 from hela.memory.graph import MemoryGraph
@@ -68,7 +69,10 @@ class Engine:
             raise
         self.memories = MemoryService(self.db, self.embedder, self.config, clock=clock)
         self.graph = MemoryGraph(self.db)
-        # activation: encaixe para a ativação no grafo (Fase 3). Sem ele, a busca usa os outros sinais.
+        # Ativação espalhada no grafo (Fase 3), lendo as arestas do SQLite sem networkx.
+        scfg = self.config.search
+        if activation is None and scfg.graph_activation:
+            activation = GraphActivation(self.db.conn, steps=scfg.activation_steps, decay=scfg.activation_decay)
         self.searcher = HybridSearch(self.memories, activation=activation)
 
     # --- ciclo de vida -------------------------------------------------------------------

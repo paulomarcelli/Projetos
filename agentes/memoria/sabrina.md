@@ -48,6 +48,19 @@ aqui.
   PDF abre. NASA (science.nasa.gov) e Live Science abrem com `curl`; a extração do texto da Live Science começa em
   `id="article-body"`.
 
+- **18/11/2026 · Dado no canto (estilo realista).** Três armadilhas novas:
+  - **rótulo ambíguo:** "POPULAÇÃO · 8,2 BILHÕES · AVENIDA PAULISTA" lê como a população da avenida. O número do mundo
+    leva "DO MUNDO", e o lugar vai em outra linha;
+  - **fonte de outro lugar:** usinas (EUA/Canadá) e metrô (Nova York) não viram fato de São Paulo. A fala geral fica,
+    mas a cena e o dado não levam o nome do lugar. Proponha a troca da cena, não da fala;
+  - **número da mesma fonte com dois sentidos:** a WNA diz 49 mil moradores e 45 mil retirados em Pripyat. Leia o
+    parágrafo inteiro antes de copiar o número.
+- **População mundial:** use a tabela da ONU (WPP 2024, CSV em `population.un.org/wpp/assets/Excel%20Files/...`),
+  que baixa com `curl`. 2026 = 8,30 bilhões (1º/07). A API da ONU pede chave (401).
+- **Mais sites bloqueados (403):** FDA às vezes abre (a de "Power Outages: Key Tips" abriu), CDC, ready.gov, USDA,
+  Agência Brasil, Diário do Transporte, Gazeta SP e Band pelo `curl`. O Wayback Machine derruba a conexão. A ferramenta
+  WebFetch abre Agência Brasil, Agência Gov e Diário do Transporte, mas devolve trechos, não a página: diga isso.
+
 ### Do que era QA e segurança
 - **14/11/2026 · Texto invisível.** No fã-site da Sofia Carson, dois textos estavam no código e não apareciam na tela;
   só a captura mostrou. Sempre confira com captura depois de rolar devagar, não só pelo DOM.
@@ -63,3 +76,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 |---|---|---|---|---|---|
 | 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
 | 17-18/11/2026 | Conferência de fatos dos 5 roteiros do TikTok de 18 a 22/11 (Sol, Última pessoa, Terra para, Pulo, Buraco) | aguardando retorno do Paulo | cerca de 2 sessões (o limite de uso interrompeu antes de gravar) | não medido | Gravar o relatório mais cedo (por roteiro, começando pelo que vai ao ar primeiro), para não perder trabalho se a sessão parar. |
+| 18/11/2026 | Dados do canto e 5 perguntas do vídeo "Última pessoa" no estilo realista (qui 19/11) | aguardando retorno do Paulo | 1 sessão | não medido | Gravei o relatório uma vez só, no fim; deu certo, mas num pedido maior vale gravar a tabela de vereditos primeiro. Conferir a ordem das colunas de gráfico em PDF antes de citar (quase troquei o gás pela solar no BEN). |

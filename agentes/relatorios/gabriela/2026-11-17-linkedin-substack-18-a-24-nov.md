@@ -376,14 +376,10 @@ Prioridade: o post de quinta (itens 3 a 7). Ele vai ao ar amanhã.
 | Sem arte, com o motivo escrito na página | — | Qua 18 (prazo de hoje), seg 23 no LinkedIn (texto; a capa do Substack pode ser reaproveitada), ter 24 (os prints da Iris mostram um exemplo político) | — |
 
 **Plano:** `agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json` (1 tarefa para a Sabrina e 3 para a Sofia,
-no formato do plano anterior). **O Escritório estava fechado**, então o plano ficou salvo e não foi enviado. Para enviar,
-com o Escritório aberto:
+no formato do plano anterior). **O Escritório foi desligado em 18/11 a pedido do Paulo**, então o plano só ficou salvo:
+não foi enviado nem vai ser por mim.
 
-```bash
-node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs plano agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json
-```
-
-**Sem o Escritório, frases prontas para pedir:**
+**Frases prontas para o Paulo pedir:**
 
 - "Sofia, faça as artes da F.R.E.Y.A. para quinta (capa, quadro antes e depois e moldura do print), seguindo o briefing
   da página 'Uma IA auditou o trabalho de outra' no Calendário de conteúdo. É para amanhã."
@@ -435,3 +431,24 @@ Usei como referência os textos seus que achei no repositório:
 
 Esses textos podem ter sido escritos com ajuda de IA, então valem como direção. Para o perfil de verdade, preciso de 3 a
 5 posts seus, escritos por você.
+
+## 10. Entrega
+
+```text
+ENTREGA
+Resumo: Semana de 18 a 24/11 pronta em Rascunho: 5 posts de LinkedIn (1 carrossel de 8 slides) e 2 do Substack
+(longo da F.R.E.Y.A. na quinta, curto sobre a memória dos agentes na segunda), 7 páginas no Notion com texto,
+primeiro comentário e briefing da Sofia. O post de hoje (quarta) vai no fim do dia, só texto; se não der, cai. Antes,
+apliquei a conferência da Sabrina nos 5 roteiros do TikTok: os 5 estão em Pronto, com o roteiro final no Notion.
+Arquivos: agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md;
+agentes/planos/2026-11-17-linkedin-substack-18-a-24-nov.json; agentes/relatorios/gabriela/2026-11-17-tiktok-18-a-22-nov.md
+(seção "Depois da conferência"); agentes/memoria/gabriela.md; 7 páginas novas e 5 páginas do TikTok atualizadas no
+Calendário de conteúdo.
+Conferido: letras, primeira linha, travessões e hashtags contados por script; palavras dos roteiros recontadas por
+script (90, 178, 90, 93, 178); todo número tirado de um arquivo do repositório (fonte em cada página); status e
+roteiros conferidos no Notion depois de gravar; JSON do plano validado.
+Pendências: Escritório desligado (plano só salvo); perfil de voz vazio; área do Paulo a confirmar; 6 perguntas na
+seção 8; a memória da Sofia tem marcas de conflito do git (não mexi); nenhum número de LinkedIn ou Substack ainda.
+Próximo: Sofia faz as artes da F.R.E.Y.A. hoje (quinta é amanhã), depois o carrossel e a capa de segunda, e as artes
+do TikTok a começar pelo Sol; Sabrina confere as 7 afirmações da seção 5; Paulo revisa, responde a seção 8 e posta.
+```

@@ -165,3 +165,86 @@
   --mundo-vida-ave: #3A4258;
   --mundo-vida-bico: #5A4A2A;
 }
+
+/* ===== v2 · Realismo documental (18/11/2026) =====
+ * Coleções "v2 · Cor" (modos Dia, Noite, Frio) e "v2 · Medidas" no Figma, página "Realismo documental (v2)".
+ * Use [data-v2-modo="noite"] ou [data-v2-modo="frio"] na raiz do vídeo para trocar o modo. */
+:root {
+  /* v2 · Cor · modo Dia (padrão) */
+  --v2-texto-claro: #F7F5F0; /* Texto sobre cena média ou escura (tom Claro) */
+  --v2-texto-escuro: #15171A; /* Texto sobre cena clara (tom Escuro) */
+  --v2-texto-sombra: #000000; /* Cor da sombra de leitura */
+  --v2-grade-sol: #FFF1DE; /* Luz principal e realces */
+  --v2-grade-ceu: #9CC3EE; /* Luz de preenchimento do céu */
+  --v2-grade-sombra: #2B3A55; /* Cor puxada nas sombras */
+  --v2-grade-neblina: #C9D6E3; /* Névoa de distância */
+  --v2-grade-exposicao: -0.1; /* Exposição em EV */
+  --v2-grade-saturacao: 0.92; /* Multiplicador de saturação */
+  --v2-grade-contraste: 1.06; /* Contraste em volta do cinza médio */
+  --v2-grade-ceu-nd: 0.55; /* Filtro degradê no céu (0 a 1) */
+  --v2-grade-mistura-sombra: 0.18; /* Força da cor de sombra */
+  --v2-grade-mistura-sol: 0.1; /* Força da cor de sol nos realces */
+
+  /* v2 · Medidas (px no quadro 1080 × 1920; câmera e movimento sem unidade) */
+  --v2-margem: 72px;
+  --v2-dado-x: 72px;
+  --v2-dado-y: 236px;
+  --v2-dado-rotulo: 28px;
+  --v2-dado-numero: 132px;
+  --v2-dado-unidade: 48px;
+  --v2-dado-lugar: 26px;
+  --v2-dado-espaco: 8px;
+  --v2-titulo-tamanho: 80px;
+  --v2-titulo-largura-max: 816px;
+  --v2-titulo-y: 540px;
+  --v2-legenda-tamanho: 50px;
+  --v2-legenda-largura-max: 720px;
+  --v2-legenda-base-y: 1380px;
+  --v2-legenda-linhas-max: 2;
+  --v2-sombra-raio: 28px;
+  --v2-fato-tamanho: 44px;
+  --v2-fato-base-y: 1180px;
+  --v2-fato-largura-max: 760px;
+  --v2-fato-fio: 4px;
+  --v2-camera-altura-m: 180;
+  --v2-camera-inclinacao: 45;
+  --v2-camera-lente-mm: 28;
+  --v2-camera-velocidade-max: 4;
+  --v2-plano-duracao-min: 3;
+  --v2-mov-texto-entrada: 12;
+  --v2-mov-texto-saida: 10;
+  --v2-mov-contagem: 36;
+
+  /* v2 · Tipografia */
+  --v2-fonte-serifa: 'Newsreader', Georgia, serif;
+  --v2-fonte-sem-serifa: 'IBM Plex Sans', system-ui, sans-serif;
+  --v2-sombra-leitura: 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 28px rgba(0, 0, 0, 0.35);
+  --v2-halo-claro: 0 0 24px rgba(255, 255, 255, 0.55);
+  --v2-veu: linear-gradient(to bottom, rgba(0, 0, 0, 0) 48%, rgba(0, 0, 0, 0.28) 68%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+[data-v2-modo="noite"] {
+  --v2-grade-sol: #FFC58A;
+  --v2-grade-ceu: #1C2B52;
+  --v2-grade-sombra: #0B1430;
+  --v2-grade-neblina: #2A3550;
+  --v2-grade-exposicao: -1.35;
+  --v2-grade-saturacao: 0.5;
+  --v2-grade-contraste: 1.1;
+  --v2-grade-ceu-nd: 0.45;
+  --v2-grade-mistura-sombra: 0.4;
+  --v2-grade-mistura-sol: 0.18;
+}
+
+[data-v2-modo="frio"] {
+  --v2-grade-sol: #EAF3FF;
+  --v2-grade-ceu: #D6E6F5;
+  --v2-grade-sombra: #5C7590;
+  --v2-grade-neblina: #E8EEF4;
+  --v2-grade-exposicao: 0.3;
+  --v2-grade-saturacao: 0.3;
+  --v2-grade-contraste: 0.84;
+  --v2-grade-ceu-nd: 0.08;
+  --v2-grade-mistura-sombra: 0.4;
+  --v2-grade-mistura-sol: 0.45;
+}

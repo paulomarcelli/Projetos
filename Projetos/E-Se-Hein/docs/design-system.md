@@ -7,7 +7,11 @@ seção "Definitiva · Conceito A".
 **Estado:** está no Figma (criado em 17/11/2026 pela Sofia). Este documento resume o arquivo para a Karol implementar.
 Se algo daqui e do Figma discordar, vale o Figma, e a Sofia corrige este documento.
 
-**A ideia:** um mundo de brinquedo que a câmera atravessa sem cortar; o texto é grosso, curto e fica sempre no mesmo
+**Duas versões.** A **v2 · Realismo documental** (18/11/2026, seção no fim deste documento) vale para os vídeos novos,
+a partir de "E se você fosse a última pessoa do mundo?". A **v1 · mundo de brinquedo** (logo abaixo) continua valendo
+para os vídeos já publicados e fica documentada como estava.
+
+**A ideia (v1):** um mundo de brinquedo que a câmera atravessa sem cortar; o texto é grosso, curto e fica sempre no mesmo
 lugar.
 
 ## Páginas do arquivo
@@ -20,6 +24,7 @@ lugar.
 | Personagem | "Você" de frente, de lado e de costas, medidas para o 3D e o boneco nos três modos. |
 | Fechamento | Componente dos 4 s finais e a conferência com as zonas seguras. |
 | Storyboard · Lua | Os 8 quadros-chave de "E se a Lua desaparecesse?" com as notas de câmera e transição. |
+| Realismo documental (v2) | A direção de arte v2: quadros de exemplo da Paulista (antes, depois, fechamento, contador e fato), Do v1 para o v2, Tipografia, Cor, Câmera, Movimento e os componentes v2. |
 
 Arquivos de código nesta pasta, gerados do mesmo lugar que o Figma:
 
@@ -341,3 +346,227 @@ Conferido em `src/` em 17/11/2026. Problema de visual, de conteúdo e de código
 - Abertura de 1 s (está no plano da Karol): ainda não desenhada. Sugestão: começar já no Q1, sem cartela.
 - Ícones para os próximos vídeos entram no componente Ícone conforme os roteiros.
 - Capa do projeto (`docs/capas/`, 960 × 540) e a capa de cada vídeo para o perfil: não pedidas nesta rodada.
+
+---
+
+# v2 · Realismo documental
+
+**Figma:** página [Realismo documental (v2)](https://www.figma.com/design/okTGRiK8lTEXSoP9QDm0du?node-id=28-23) do mesmo
+arquivo (`okTGRiK8lTEXSoP9QDm0du`). Criada em 18/11/2026 pela Sofia. Se este texto e o Figma discordarem, vale o Figma.
+
+**A ideia:** o lugar é a prova. Um lugar real do Brasil visto do alto, um número que muda quando a história muda e um
+texto que sai do caminho, como num documentário.
+
+Vem de um vídeo de referência de outro canal de "E se" (análise em `docs/estilo-realismo.md`). Dele tiramos os
+princípios: lugar real e reconhecível, luz de verdade, câmera de drone, pouco texto, antes e depois no mesmo
+enquadramento. Nenhum elemento visual dele foi copiado: as fontes, a cor, o dado e a composição são nossos. Os quadros
+da referência não entram no repositório.
+
+## O que tem na página do Figma
+
+| Bloco | O que é |
+|---|---|
+| Exemplo 1 · antes | A Paulista cheia, de dia (1080 × 1920): contador, título, legenda, véu e marca-d'água |
+| Exemplo 2 · depois | O mesmo enquadramento vazio: o contador vira "1", o título sai, um ponto amarelo (o "você") no meio da pista |
+| v2 / Fechamento | O fechamento laranja do v1 com a tipografia do v2 |
+| Exemplo 4 · contador e fato | O contador "Sozinho há · poucos dias" e o fato "Geladeira sem energia · Comida segura por ~4 horas" juntos (pedido da Sabrina) |
+| Exemplos · notas | De onde vem a foto, o que é retoque e o que é texto de exemplo |
+| Do v1 para o v2 · Tipografia v2 · Movimento v2 · Cor v2 · Câmera v2 | A documentação de cada parte |
+| Componentes | v2 / Dado no canto, v2 / Título, v2 / Legenda, v2 / Fato, v2 / Véu de leitura, v2 / Fechamento |
+
+Os fundos dos exemplos são a foto "Vista aérea de la Avenida Paulista de São Paulo 03", de ProtoplasmaKid, CC BY-SA
+4.0, Wikimedia Commons, recortada e tratada com a correção Dia. Servem **só para compor**: a cena de verdade é a Karol
+que faz, no Blender. A versão vazia é um retoque feito por código e tem defeitos pequenos (mancha clara perto da
+árvore de baixo, trecho da ciclovia sem sombra, pessoas minúsculas nas calçadas). Os textos dos exemplos são de exemplo:
+o roteiro é da Gabriela.
+
+## Do v1 para o v2
+
+| | O quê |
+|---|---|
+| **Sai** | Pílulas, setas, texto preso, cartão com ícone e ícones. Rubik 800 e 900 dentro do vídeo, contorno grosso e sombra dura. Legenda de uma palavra por vez. Boneco de brinquedo, câmera colada nele e as cores chapadas da coleção Mundo. A regra "nunca corte". |
+| **Fica** | O E? como marca-d'água (branca, 72 px, 70%, x 936, y 232). O fechamento laranja de 4 s com a assinatura e a pílula "Segue para mais" (só a fonte muda). As zonas seguras, com os mesmos números. A voz da Maia. A camiseta amarela do "você", agora a única cor de identidade dentro do mundo real. |
+| **Muda** | Os rótulos viram um elemento só: o contador no canto, mais o fato embaixo quando houver. A legenda vira frase inteira em itálico serifado. A cor vira correção de cor por modo (Dia, Noite, Frio). A câmera vira drone alto e lento. Pode cortar entre lugares. |
+
+**Decisão: legenda de frase inteira, e não de uma palavra por vez.** A palavra por vez é a gramática do mundo de
+brinquedo: pisca a cada 0,3 s e puxa o olho para baixo. Num plano de drone calmo, ela briga com o lugar, que é o
+assunto. A frase inteira se lê de uma vez e libera o olho para a imagem, como na legenda de documentário. Para quem
+assiste sem som ou depende da legenda, é melhor: a frase tem sentido completo, e não uma palavra solta.
+
+## Tokens
+
+Duas coleções novas no Figma. No código, os mesmos nomes viram variáveis CSS (`v2/grade/sol` vira `--v2-grade-sol`)
+no fim de `docs/tokens.css`, e a chave `v2` em `docs/tokens.json`. Os modos Noite e Frio ficam em
+`[data-v2-modo="noite"]` e `[data-v2-modo="frio"]`.
+
+**v2 · Cor** (modos Dia, Noite, Frio):
+
+| Token | Dia | Noite | Frio | Uso |
+|---|---|---|---|---|
+| `v2/texto/claro` | `#F7F5F0` | igual | igual | Texto sobre cena média ou escura (tom Claro). Branco quente: no vídeo o branco puro estoura |
+| `v2/texto/escuro` | `#15171A` | igual | igual | Texto sobre cena clara: neve, geada, céu branco (tom Escuro) |
+| `v2/texto/sombra` | `#000000` | igual | igual | Cor da sombra de leitura |
+| `v2/grade/sol` | `#FFF1DE` | `#FFC58A` | `#EAF3FF` | Luz principal e realces. Dia: sol quente. Noite: postes de sódio. Frio: luz branca fria |
+| `v2/grade/ceu` | `#9CC3EE` | `#1C2B52` | `#D6E6F5` | Luz de preenchimento que vem do céu (mundo do Blender) |
+| `v2/grade/sombra` | `#2B3A55` | `#0B1430` | `#5C7590` | Cor puxada nas sombras |
+| `v2/grade/neblina` | `#C9D6E3` | `#2A3550` | `#E8EEF4` | Névoa de distância |
+| `v2/grade/exposicao` | −0,1 | −1,35 | 0,3 | Exposição em pontos (EV) no tratamento final |
+| `v2/grade/saturacao` | 0,92 | 0,5 | 0,3 | Multiplicador de saturação (1 = original) |
+| `v2/grade/contraste` | 1,06 | 1,1 | 0,84 | Contraste em volta do cinza médio |
+| `v2/grade/ceu-nd` | 0,55 | 0,45 | 0,08 | Filtro degradê no céu: quanto o topo escurece, indo a zero na metade do quadro |
+| `v2/grade/mistura-sombra` | 0,18 | 0,4 | 0,4 | Força da cor de sombra |
+| `v2/grade/mistura-sol` | 0,1 | 0,18 | 0,45 | Força da cor de sol nos realces |
+
+**v2 · Medidas** (px no quadro 1080 × 1920):
+
+| Token | Valor | Uso |
+|---|---|---|
+| `v2/margem` | 72 | Margem lateral e x de todo texto alinhado à esquerda |
+| `v2/dado/x`, `v2/dado/y` | 72, 236 | Canto do contador |
+| `v2/dado/rotulo` · `numero` · `unidade` · `lugar` | 28 · 132 · 48 · 26 | Corpos do contador |
+| `v2/dado/espaco` | 8 | Espaço entre as linhas do contador |
+| `v2/titulo/tamanho` · `largura-max` · `y` | 80 · 816 · 540 | Título |
+| `v2/legenda/tamanho` · `largura-max` · `base-y` · `linhas-max` | 50 · 720 · 1380 · 2 | Legenda |
+| `v2/fato/tamanho` · `largura-max` · `base-y` · `fio` | 44 · 760 · 1180 · 4 | Fato |
+| `v2/sombra/raio` | 28 | Desfoque da sombra larga de leitura |
+| `v2/camera/altura-m` · `inclinacao` · `lente-mm` · `velocidade-max` | 180 · 45 · 28 · 4 | Câmera (m, graus, mm, % da largura por segundo) |
+| `v2/plano/duracao-min` | 3 | Segundos mínimos por plano |
+| `v2/mov/texto-entrada` · `texto-saida` · `contagem` | 12 · 10 · 36 | Quadros a 30 qps |
+
+## Tipografia
+
+Duas famílias, uma para cada voz. **Serifa é o que se diz** (a pergunta e a legenda): Newsreader, Production Type,
+licença OFL. **Sem serifa é o que se mede** (o contador e o fato): IBM Plex Sans, licença OFL, com algarismos
+tabulares, para o número contar sem tremer. As duas têm todos os acentos do português. No Remotion:
+`@fontsource/newsreader` (500 e 500 itálico) e `@fontsource/ibm-plex-sans` (400, 500 e 600), subconjuntos latin e
+latin-ext. A Rubik fica só no v1.
+
+| Estilo (Figma) | Fonte | Corpo | Entrelinha | Espaçamento | Caixa |
+|---|---|---|---|---|---|
+| `v2/Título` | Newsreader Medium | 80 | 104% | −1% | como escrito |
+| `v2/Legenda` | Newsreader Medium Italic | 50 | 120% | 0 | como escrito |
+| `v2/Legenda destaque` | Newsreader Medium (redondo) | 50 | 120% | 0 | uma palavra por frase |
+| `v2/Dado rótulo` | IBM Plex Sans SemiBold | 28 | 120% | +14% | alta |
+| `v2/Dado número` | IBM Plex Sans Regular, `tabular-nums` | 132 | 100% | −2% | como escrito |
+| `v2/Dado unidade` | IBM Plex Sans Regular | 48 | 100% | 0 | como escrito |
+| `v2/Dado lugar` | IBM Plex Sans Medium | 26 | 120% | +12% | alta |
+| `v2/Fato texto` | IBM Plex Sans Medium | 44 | 115% | 0 | como escrito |
+| `v2/Fechamento pergunta` | Newsreader Medium | 104 | 100% | −1,5% | como escrito |
+| `v2/Fechamento chamada` | IBM Plex Sans SemiBold | 34 | 120% | +6% | alta |
+
+Regras: o título e a legenda quebram por sentido (no CSS, `text-wrap: balance`; nada de palavra sozinha na última
+linha). Nada de negrito, cor ou caixa alta na legenda. Número com separador brasileiro (8,3 · 1.500 · −459,67).
+
+**Legibilidade sem caixa nem faixa.** Texto claro leva a **sombra de leitura** (`v2/Sombra de leitura`:
+`0 2px 6px rgba(0,0,0,.5), 0 0 28px rgba(0,0,0,.35)`). Texto escuro leva o **halo claro** (`v2/Halo claro`:
+`0 0 24px rgba(255,255,255,.55)`). No topo, quem segura o texto é o filtro degradê do céu (`v2/grade/ceu-nd`). Embaixo,
+é o **véu de leitura** (componente `v2 / Véu de leitura`: preto 0% em 48% da altura, 28% em 68% e 60% na base). Medido
+nos fundos dos exemplos com a correção Dia: o branco fica em 3,8:1 na média sobre o céu do contador, 5,5:1 atrás do
+título e 4,2:1 a 4,5:1 atrás da legenda com o véu. A sombra de leitura completa o contraste. **Tom do texto:** se a
+luminância média atrás do texto passar de 0,40, use o tom Escuro.
+
+## Componentes
+
+| Componente | Variantes e propriedades | Como é | Onde e quando |
+|---|---|---|---|
+| **v2 / Dado no canto** (o contador) | Tom (Claro, Escuro) · Rótulo, Número, Unidade, Lugar (texto) · Mostrar unidade, Mostrar lugar (sim/não) | Rótulo em caixa alta; número grande com unidade na mesma linha de base; um fio de 56 × 2 px e o lugar em outra linha, para não ler como se o número fosse do lugar | x 72, y 236, o vídeo todo, menos o fechamento. O número pode ser uma palavra curta (até 9 letras: "poucos", "anos"). Só ele conta o tempo. O número muda contando, em 36 quadros |
+| **v2 / Fato** | Tom (Claro, Escuro) · Rótulo, Texto | Fio vertical de 4 px, rótulo em caixa alta e a frase em caixa normal, sem número grande | x 72, base em y 1180, logo acima da legenda. Para fato com fonte que não é contagem (ex.: "Geladeira sem energia · Comida segura por ~4 horas"). O desenho diferente evita que pareça que o tempo voltou. Um fato por vez, no mínimo 3 s |
+| **v2 / Título** | Tom (Claro, Escuro) · Texto | Newsreader 80, até 3 linhas, largura até 816 | x 72, topo em y 540. Só no primeiro plano; sai antes da primeira virada |
+| **v2 / Legenda** | Tom (Claro, Escuro) · Frase | Newsreader itálico 50, centralizada, até 2 linhas e cerca de 60 caracteres | Centro em x 540, base em y 1380 (cresce para cima). Entra no começo da fala e troca com 6 quadros de fusão |
+| **v2 / Véu de leitura** | — | Degradê preto, 1080 × 1920 | Entre a cena e o texto, o vídeo todo |
+| **v2 / Fechamento** | Pergunta | O do v1 (laranja, assinatura, chamada, pílula), com pergunta em Newsreader 104 e chamada em IBM Plex Sans 34 | 4 s finais. Entra com um círculo laranja que cresce a partir do ponto amarelo do "você", em 12 quadros |
+| **Marca-d'água** (do v1) | — | Sem mudança | x 936, y 232 |
+
+Os textos do contador do vídeo de 19/11, conferidos pela Sabrina (`agentes/relatorios/sabrina/2026-11-18-dados-ultima-pessoa.md`):
+"População do mundo · 8,3 bilhões" com "Avenida Paulista, São Paulo" na linha do lugar, depois "População do mundo · 1";
+"Sozinho · primeiras horas"; "Sozinho há · poucas horas" (sem lugar); "Sozinho há · poucos dias" com "Metrô" no lugar;
+o fato "Geladeira sem energia · Comida segura por ~4 horas"; "Pripyat, Ucrânia · 49 mil moradores" e "Sem moradores há
+40 anos". A fonte de cada número vai na descrição do post, não na tela.
+
+## Cor (correção de cor)
+
+No v2 a cor vem da luz e da câmera, não do material. A cena é renderizada com luz natural (sol e céu, HDRI do Poly
+Haven) e depois passa por uma correção de cor por modo:
+
+- **Dia:** sol quente, sombra azulada, saturação um pouco abaixo do original e céu escurecido pelo filtro degradê.
+- **Noite:** postes de sódio quentes contra sombra azul profunda.
+- **Frio:** tudo perde cor, sobe para o branco e esfria. Serve para geada, neve e "a Terra congelou".
+
+Ordem da correção (é a que gerou as amostras no Figma): exposição → contraste em volta de 0,5 → saturação → cor de
+sombra (peso `1 − 2·luminância`, vezes `mistura-sombra`) → cor de sol (peso `2·luminância − 1`, vezes `mistura-sol`) →
+filtro degradê do céu (multiplica por `1 − ceu-nd · (1 − y/0,5)^1,1` na metade de cima). No Blender, o mesmo vale como
+ponto de partida no Compositor (nós Exposure, Bright/Contrast, Hue/Saturation e Color Balance) com a vista **AgX**.
+
+Regras: entre o antes e o depois muda uma coisa só (a multidão, a temperatura, a luz), nunca a correção inteira junto.
+Laranja da marca só no fechamento. A camiseta amarela do "você" (`#FFD21F`) é a única cor saturada que pode chamar o
+olho dentro da cena.
+
+## Câmera
+
+1. Drone de **120 a 250 m** acima do chão (180 no exemplo), inclinado **35° a 55°** para baixo (45 no exemplo). Nunca
+   90°: de cima, chapado, o lugar vira mapa e ninguém reconhece.
+2. Lente de **24 a 35 mm** (28 no exemplo). No Blender: sensor de 36 mm ajustado na vertical, quadro 1080 × 1920
+   (campo de visão vertical de 65,5° com 28 mm).
+3. **Um movimento por plano**, lento e linear: avanço, recuo ou órbita, no máximo 4% da largura do quadro por segundo.
+   Horizonte nivelado, sem tremor e sem zoom digital.
+4. **Antes e depois no mesmo plano:** a mesma câmera, no mesmo lugar e com o mesmo movimento. A virada acontece dentro
+   do plano (a multidão some, a geada cobre a rua) ou num corte seco no mesmo enquadramento, na palavra da virada. O
+   enquadramento nunca muda junto com o mundo.
+5. Cada plano dura no mínimo **3 s**. Entre lugares diferentes, corte seco.
+6. Composição: horizonte entre y 420 e 640; céu livre no canto de cima à esquerda para o contador; o assunto desce
+   pelo centro; nada importante na faixa da legenda (y 1240 a 1380) nem na zona de baixo.
+7. O **"você"** é uma pessoa em escala real, de camiseta amarela. Do alto vira um ponto amarelo.
+
+## Movimento (30 quadros por segundo)
+
+| O quê | Quadros | Como |
+|---|---|---|
+| Texto entra (título, legenda, contador, fato) | 12 | Opacidade 0 para 1 e sobe 12 px, `cubic-bezier(0.22, 1, 0.36, 1)` |
+| Texto sai | 10 | Só opacidade, `cubic-bezier(0.4, 0, 1, 1)`, antes da virada |
+| Troca de legenda | 6 | Fusão no mesmo lugar |
+| Contagem do número | 36 | Do valor antigo ao novo, `cubic-bezier(0.65, 0, 0.35, 1)`, algarismos tabulares. Rótulo e lugar parados |
+| Fechamento | 12 | Círculo laranja a partir do "você"; depois o tempo do fechamento do v1 |
+
+Nada pisca mais de 3 vezes por segundo.
+
+## Zonas seguras
+
+As mesmas do v1 (topo y 0 a 210, base y 1420 a 1920, botões x 900 a 1080 entre y 700 e 1420, margem 72). Conferido
+no Figma com a guia ligada: contador x 72 a 541 e y 236 a 477; título x 72 a 888 e y 540 a 789; legenda x 180 a 900 e
+y 1260 a 1380; fato x 72 a 662 e y 1085 a 1180. Tudo dentro da área livre. A faixa da legenda do v2 é y 1240 a 1380
+(a do v1 era 1210 a 1350).
+
+## O que a Karol precisa para o código
+
+**No Blender** (cena montada por `spec.json`, render no PC do Paulo):
+
+- Câmera pelos tokens `v2/camera/*`. Um movimento por plano. Para o antes e o depois, renderize a **mesma câmera duas
+  vezes** (mundo cheio e mundo mudado) ou anime a mudança dentro do plano.
+- Luz: sol (Sun) com `v2/grade/sol` e céu HDRI; sombras duras. Névoa de distância na cor `v2/grade/neblina`.
+- Vista **AgX** e a correção do modo no Compositor, ou exporte sem correção e aplique no Remotion (abaixo).
+- Gente e carros em escala real, montados por código. O "você" de camiseta `#FFD21F`, parado no centro da cena vazia,
+  fora da faixa da legenda.
+- Rodada de conferência dos quadros-chave antes do render inteiro (pé fora do quadro, efeito fraco, objeto
+  atravessando outro, texto fora da zona segura, cena vazia sem querer), com antes e depois de cada correção.
+
+**No Remotion** (camadas por cima do vídeo do Blender, nesta ordem):
+
+1. Vídeo do Blender.
+2. Correção de cor, se não veio do Blender: os números de `tokens.json → v2.cor`, por modo.
+3. `VeuDeLeitura`: `background: var(--v2-veu)`.
+4. `DadoNoCanto`, `Fato`, `Titulo` e `Legenda`, com `text-shadow: var(--v2-sombra-leitura)` no tom Claro e
+   `var(--v2-halo-claro)` no tom Escuro; `font-variant-numeric: tabular-nums` no número; `text-wrap: balance` no título
+   e na legenda.
+5. `MarcaDagua` (do v1, sem mudança).
+6. `Fechamento` com a pergunta em Newsreader.
+
+Os componentes do v1 (pílulas, setas, texto preso, cartões, ícones, legenda de uma palavra) **não entram** nos vídeos
+v2. Ficam no código para os vídeos antigos.
+
+## O que ainda falta (v2)
+
+- O protótipo de 10 s no Blender (Karol), para o Paulo aprovar o visual antes de virar padrão.
+- O fechamento ainda tem a transição descrita, não desenhada quadro a quadro.
+- Os modos Noite e Frio só foram vistos em foto tratada ("noite americana"); conferir com a cena de verdade e ajustar
+  os números.
+- O Code Connect entre os componentes do Figma e os do Remotion, quando eles existirem.

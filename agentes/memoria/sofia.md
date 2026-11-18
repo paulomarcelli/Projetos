@@ -119,6 +119,26 @@ aqui.
   em 112 px, palavras com mais de 11 letras passam de 720 px.
 - **17/11/2026 · Verde de rótulo.** `#2FB24A` com texto branco dá 2,8:1; `#1A8F3F` dá 4,2:1.
 
+- **18/11/2026 · E Se, Hein? v2 (realismo documental).** Página "Realismo documental (v2)" no arquivo
+  `okTGRiK8lTEXSoP9QDm0du`; coleções `v2 · Cor` (Dia, Noite, Frio) e `v2 · Medidas`; Newsreader (o que se diz) e IBM
+  Plex Sans (o que se mede). Contador no canto com o lugar em outra linha, depois de um fio; fato com fonte em outro
+  componente (`v2 / Fato`), para não parecer contagem. Vídeos novos usam o v2; o v1 fica para os antigos.
+- **18/11/2026 · Figma: variável em parada de degradê apaga a transparência.** Ligar a cor da parada a uma variável
+  preta deixou o véu opaco e o quadro todo preto. Para degradê com alfa, use cor solta com `a`.
+- **18/11/2026 · Figma: destaque dentro de texto de componente se perde.** O trecho em outro estilo (o "você" em
+  redondo) não sobreviveu à ligação com a propriedade de texto. Reaplique `setRangeTextStyleIdAsync` no componente e
+  na instância e confira com `getStyledTextSegments`.
+- **18/11/2026 · Texto sobre céu de drone.** Céu claro dá 2,4:1 com branco. A solução de fotografia (filtro degradê no
+  céu, `v2/grade/ceu-nd`) levou para 3,8:1 sem caixa nem faixa; embaixo, o véu de leitura. Meça na foto antes de
+  decidir o tom do texto.
+- **18/11/2026 · Retoque de foto por código tem limite.** Esvaziar a Paulista levou quatro técnicas (inpaint,
+  perspectiva com mediana, campo de luz, asfalto repintado). Só a última serviu, e com defeitos. Para referência de
+  composição, limite o tempo a uma hora e diga o que ficou imperfeito; a cena real é do Blender.
+- **18/11/2026 · Acervos abertos.** `taste-skill/scripts/assets.mjs` acha foto real com licença e crédito (Wikimedia,
+  Openverse). Chamar a API da Wikimedia direto deu 429, e trocar o User-Agent foi bloqueado: use o script.
+- **18/11/2026 · Legenda de frase inteira.** Quebre por sentido (`text-wrap: balance`). Palavra sozinha na última
+  linha apareceu duas vezes nos exemplos.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -131,3 +151,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 15/11/2026 | Folha Figma "Referências · Design systems" com 5 estilos, comparação e coleção Tema (5 modos) | aguardando o retorno do Paulo | cerca de 1 h | sem créditos de IA | Primeira captura do teste de tema mostrou fundo branco nos quadros internos; já criar quadros com `fills = []`. |
 | 16/11/2026 | Corrigir o apartamento da Monica e da Rachel no mapa (paredes, cozinha, móveis, caminhos) a partir da planta | aguardando o retorno do Paulo | cerca de 1 h 30 | — | Alinhar a planta com OpenCV logo no começo: medir no olho custou tempo. |
 | 17/11/2026 | Design System dos vídeos do E Se, Hein? no Figma (tokens em 3 modos, legenda, zonas seguras, rótulos, personagem, fechamento, storyboard da Lua) + `docs/design-system.md` e logo definitiva no arquivo da logo | aguardando o retorno do Paulo | cerca de 3 h (com uma pausa por limite de uso) | sem créditos de IA | Conferir a ordem dos argumentos dos helpers antes de desenhar 8 quadros; 4 defeitos vieram de opacidade e traço. |
+| 18/11/2026 | Direção de arte v2 "Realismo documental" dos vídeos do E Se, Hein? no Figma (página nova, 2 coleções de variáveis, 10 estilos de texto, 6 componentes, 4 quadros 1080 × 1920 da Paulista) + seção v2 no `docs/design-system.md` e tokens v2 em `tokens.css`/`tokens.json`; com as correções da Sabrina (8,3 bilhões, lugar em outra linha, componente Fato) | aguardando o retorno do Paulo | cerca de 4 h (com uma pausa por limite de uso) | sem créditos de IA | O retoque da Paulista vazia custou quase uma hora em quatro tentativas: limitar o tempo antes. Ligar variável em parada de degradê apagou o alfa. |

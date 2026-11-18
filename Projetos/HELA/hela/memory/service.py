@@ -266,6 +266,23 @@ class MemoryService:
                 self.events.log(agora, "memory.expired", "memory", None, {"count": len(ids), "ids": ids})
         return ids
 
+    def reembed(self, lote: int = 256) -> int:
+        """Recalcula os vetores feitos por outro embedder (ex.: depois de trocar o backend)."""
+        rows = self.db.conn.execute(
+            "SELECT id, title, content, summary FROM memories"
+            " WHERE embedding IS NULL OR embedding_model IS NOT ?", (self.embedder.name,)).fetchall()
+        for i in range(0, len(rows), lote):
+            parte = rows[i:i + lote]
+            vetores = self.embedder.embed([texto_para_vetor(r["title"], r["content"], r["summary"]) for r in parte])
+            with self.db.transaction():
+                for r, v in zip(parte, vetores):
+                    self.memories.update(r["id"], {"embedding": to_blob(v), "embedding_model": self.embedder.name})
+        if rows:
+            with self.db.transaction():
+                self.events.log(self.now(), "memory.reembedded", None, None,
+                                {"count": len(rows), "model": self.embedder.name})
+        return len(rows)
+
     def adjust_quality(self, memory_id: str, quality_delta: float = 0.0, confidence_delta: float = 0.0) -> Memory:
         """Ajusta qualidade e confiança (ex.: feedback), sempre dentro de [0, 1]."""
         with self.db.transaction():

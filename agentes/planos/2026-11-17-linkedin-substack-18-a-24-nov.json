@@ -1,0 +1,37 @@
+{
+  "projeto": "LinkedIn e Substack · 18 a 24/11",
+  "tarefas": [
+    {
+      "chave": "fatos-semana",
+      "agente": "sabrina",
+      "titulo": "Conferir as afirmações sobre produtos reais nos posts de LinkedIn e Substack (18 a 24/11)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 7 afirmações listadas na seção 5 do relatório agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md (Claude Code, Hybrid RAG, robots.txt de marvel.com, personagens sem perfil, Captain America). Prioridade 1: as afirmações do post de quinta 19/11 (F.R.E.Y.A.). Pronto quando cada afirmação estiver marcada como confirmada, ajustada (com o texto novo) ou retirada, e o ok vier escrito no relatório ou na página do Notion de cada post. Não há fato científico nesses posts.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "arte-freya",
+      "agente": "sofia",
+      "titulo": "Artes da F.R.E.Y.A. para quinta 19/11: capa do Substack, quadro antes e depois e moldura do print",
+      "descricao": "Seguir o briefing das páginas do Notion \"Uma IA auditou o trabalho de outra\" (Substack) e \"236 entidades, 269 relações e um Thor\" (LinkedIn). Três peças em 1080 × 1350: (1) capa do Substack; (2) quadro antes e depois, que vai no Substack e é a imagem do post de LinkedIn; (3) o print real Projetos/FREYA/docs/readme/fotos/04-resposta.webp numa moldura com legenda. Cores e marca da F.R.E.Y.A. (fundo #0a0a0b, escarlate #ff4d63, as três estrelas de Projetos/FREYA/docs/readme/capa.webp). Números só os do briefing, que vêm de Projetos/FREYA/docs/RELATORIO.md. É para amanhã: prioridade 1. Pronto quando as três peças estiverem no Figma, exportadas em PNG, com o link na página do Notion; aí a Gabriela marca Arte = Arte pronta.",
+      "dependeDe": [],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-carrossel",
+      "agente": "sofia",
+      "titulo": "Carrossel do Escritório do Paulo para sexta 20/11 (8 slides em PDF)",
+      "descricao": "Seguir o briefing da página do Notion \"Carrossel · Dei um escritório para os meus agentes de IA\": 8 slides de 1080 × 1350, com o texto de cada slide e os prints reais de Projetos/Escritorio-do-Paulo/docs/ (escritorio.webp, mapa.webp, gaveta.webp). Design System do Escritório no Figma (JFyZCMHbS1ASDzSdbGu6pC). Manter visível a faixa amarela de simulação nos prints (o texto do post explica). Não usar o cenário dos apartamentos. Pronto quando os 8 slides estiverem no Figma e exportados num PDF, com o link na página do Notion.",
+      "dependeDe": [],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-memoria",
+      "agente": "sofia",
+      "titulo": "Capa do Substack curto \"O caderno de erros dos meus agentes\" (segunda 23/11)",
+      "descricao": "Seguir o briefing da página do Notion \"O caderno de erros dos meus agentes\": uma capa 1080 × 1350 com o título e as duas regras reais citadas no texto, no Design System do Escritório (as figurinhas da Sabrina e da Sofia em pixel art podem aparecer). Pronto quando a capa estiver no Figma e exportada, com o link na página do Notion.",
+      "dependeDe": [],
+      "tipo": "entrega"
+    }
+  ]
+}

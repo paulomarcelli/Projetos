@@ -24,18 +24,18 @@ jeito mais rápido de reconferir.
 
 ## 0. O que mudou em relação à Parte C (leia primeiro)
 
-| # | Parte C dizia | O que vale | Certeza |
+| # | Parte C ou `plano.md` | O que vale | Certeza |
 |---|---|---|---|
 | 1 | `from mcp.server.fastmcp import FastMCP` funciona como alternativa | No mcp 2.3.0 o módulo **existe só para dar erro**: importar levanta `ModuleNotFoundError` com a mensagem de migração. O import compatível tem de tentar **primeiro** o v2 e cair no v1 | [testado] |
 | 2 | Exceções são `ToolError` | No v2, **exceção que não é `ToolError` vira só `Error executing tool <nome>`**: a mensagem some. No v1 ela passava inteira. Erro previsto tem de ser `ToolError` | [testado] |
 | 3 | Deduplicar por `message.id` **ou `requestId`** | `requestId` faltou em 5% e em 22% das linhas `assistant` dos dois transcripts. Use **só `message.id`** | [testado] |
 | 4 | Tokens estão no transcript da sessão | Os de **subagentes** ficam em outro arquivo: `<sessão>/subagents/agent-*.jsonl` | [testado] [doc] |
 | 5 | Erro de ferramenta chega no `PostToolUseFailure` | Vale também para **Bash com saída diferente de 0**: não há `tool_response`, só `error` (texto que começa com `Exit code N`) | [testado] |
-| 6 | `suppressOutput` | A documentação atual diz: **"Has no effect"**. Não conte com ele | [doc] |
-| 7 | Hooks em `settings.json` sempre rodam | Em sessão **interativa**, os hooks (até os do `~/.claude/settings.json`) **só rodam depois de aceitar a confiança da pasta**. No `-p` a pasta conta como confiável | [doc] |
+| 6 | `suppressOutput` (não tratava) | A documentação atual diz: **"Has no effect"**. Não conte com ele | [doc] |
+| 7 | Hooks no `settings.json` (não tratava a confiança da pasta) | Em sessão **interativa**, os hooks (até os do `~/.claude/settings.json`) **só rodam depois de aceitar a confiança da pasta**. No `-p` a pasta conta como confiável | [doc] |
 | 8 | Hooks `async: true` para tarefas longas | No `-p`, hook async ainda rodando no fim é **cancelado**. E, se imprimir `additionalContext`, ele **é entregue** no turno seguinte | [doc] |
 | 9 | As ferramentas MCP aparecem como `mcp__hela__hela_recall` | Certo, mas elas são **adiadas** (tool search): o Claude chama `ToolSearch` antes de usar. E os hooks `PostToolUse` **disparam também para as ferramentas da própria HELA** | [testado] |
-| 10 | `SessionStart` traz `model` | No `-p` o `SessionStart` veio **sem `model` e sem `permission_mode`** | [testado] |
+| 10 | Campos do `SessionStart` (não tratava `model`) | No `-p` o `SessionStart` veio **sem `model` e sem `permission_mode`** | [testado] |
 
 As armadilhas completas estão na seção 7.
 

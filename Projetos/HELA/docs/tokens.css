@@ -1,0 +1,179 @@
+/* HELA · tokens do Design System.
+ * Gerado a partir do Figma "HELA · Design System" (mesmos nomes: "/" vira "-").
+ * Fontes (Google Fonts): Sora 600, Inter 400/500, JetBrains Mono 400/500. */
+:root {
+  color-scheme: dark;
+
+  /* primitivos */
+  --breu-1000: #020403;
+  --breu-950: #050806;
+  --breu-900: #080D0A;
+  --breu-850: #0C130F;
+  --breu-800: #111A15;
+  --breu-700: #18231D;
+  --grafite-600: #222C26;
+  --grafite-500: #2E3933;
+  --grafite-400: #43504A;
+  --grafite-300: #5F6B65;
+  --prata-400: #8A9690;
+  --prata-300: #A9B4AE;
+  --prata-200: #C9D1CD;
+  --prata-100: #E6EBE8;
+  --prata-50: #F4F7F5;
+  --esmeralda-950: #021A10;
+  --esmeralda-900: #04291B;
+  --esmeralda-800: #063D29;
+  --esmeralda-700: #08573A;
+  --esmeralda-600: #0B7A50;
+  --esmeralda-500: #10A86B;
+  --esmeralda-400: #22C983;
+  --esmeralda-300: #5EDDA6;
+  --esmeralda-200: #9EEDC8;
+  --neon-900: #0F2A05;
+  --neon-700: #2E8A0E;
+  --neon-600: #4FC41A;
+  --neon-500: #7CFF2E;
+  --neon-400: #A2FF6B;
+  --neon-300: #C8FFA6;
+  --ambar-900: #2A1E06;
+  --ambar-500: #F5B53D;
+  --ambar-400: #FFCB66;
+  --vermelho-900: #2E0D0A;
+  --vermelho-500: #FF5C4D;
+  --vermelho-400: #FF8578;
+  --alfa-breu-72: rgb(2 4 3 / 0.72);
+  --alfa-neon-40: rgb(124 255 46 / 0.4);
+  --alfa-esmeralda-30: rgb(16 168 107 / 0.3);
+  --alfa-esmeralda-12: rgb(34 201 131 / 0.12);
+
+  /* semânticos (use estes nos componentes) */
+  --cor-fundo-base: var(--breu-1000);
+  --cor-fundo-painel: var(--breu-950);
+  --cor-fundo-veu: var(--alfa-breu-72);
+  --cor-superficie-1: var(--breu-900);
+  --cor-superficie-2: var(--breu-850);
+  --cor-superficie-3: var(--breu-800);
+  --cor-superficie-hover: var(--breu-700);
+  --cor-superficie-selecionada: var(--esmeralda-950);
+  --cor-borda-sutil: var(--grafite-600);
+  --cor-borda-padrao: var(--grafite-500);
+  --cor-borda-forte: var(--grafite-400);
+  --cor-borda-campo: var(--grafite-300);
+  --cor-borda-foco: var(--neon-500);
+  --cor-borda-selecionada: var(--esmeralda-500);
+  --cor-texto-principal: var(--prata-100);
+  --cor-texto-secundario: var(--prata-300);
+  --cor-texto-terciario: var(--prata-400);
+  --cor-texto-desabilitado: var(--grafite-300);
+  --cor-texto-sobre-primaria: var(--breu-1000);
+  --cor-texto-destaque: var(--neon-500);
+  --cor-texto-marca: var(--esmeralda-300);
+  --cor-primaria-padrao: var(--esmeralda-500);
+  --cor-primaria-hover: var(--esmeralda-400);
+  --cor-primaria-pressionada: var(--esmeralda-600);
+  --cor-primaria-suave: var(--esmeralda-900);
+  --cor-neon-padrao: var(--neon-500);
+  --cor-neon-suave: var(--neon-900);
+  --cor-neon-brilho: var(--alfa-neon-40);
+  --cor-prata-padrao: var(--prata-200);
+  --cor-estado-sucesso: var(--esmeralda-400);
+  --cor-estado-sucesso-fundo: var(--esmeralda-950);
+  --cor-estado-aviso: var(--ambar-500);
+  --cor-estado-aviso-fundo: var(--ambar-900);
+  --cor-estado-erro: var(--vermelho-500);
+  --cor-estado-erro-texto: var(--vermelho-400);
+  --cor-estado-erro-fundo: var(--vermelho-900);
+  --cor-estado-info: var(--prata-200);
+  --cor-estado-info-fundo: var(--grafite-600);
+  --cor-memoria-executiva: var(--neon-500);
+  --cor-memoria-episodica: var(--esmeralda-400);
+  --cor-memoria-semantica: var(--prata-200);
+  --cor-memoria-procedural: var(--esmeralda-600);
+  --cor-grafico-grade: var(--grafite-600);
+  --cor-grafico-eixo: var(--grafite-400);
+  --cor-grafico-serie-1: var(--esmeralda-400);
+  --cor-grafico-serie-2: var(--prata-200);
+  --cor-grafico-serie-3: var(--neon-500);
+  --cor-grafico-serie-4: var(--esmeralda-600);
+  --cor-grafico-area: var(--alfa-esmeralda-12);
+  --cor-economia-provedor: var(--prata-200);
+  --cor-economia-estimada: var(--prata-400);
+  --cor-economia-potencial: var(--esmeralda-600);
+  --cor-economia-comprovada: var(--neon-500);
+  --cor-economia-inconclusiva: var(--ambar-500);
+  --cor-cerebro-casca: var(--prata-400);
+  --cor-cerebro-contorno: var(--esmeralda-300);
+  --cor-cerebro-sinapse: var(--esmeralda-400);
+  --cor-cerebro-sinapse-ativa: var(--neon-500);
+  --cor-cerebro-pulso: var(--neon-300);
+
+  /* medidas (px) */
+  --espaco-0: 0px;
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 20px;
+  --espaco-6: 24px;
+  --espaco-8: 32px;
+  --espaco-10: 40px;
+  --espaco-12: 48px;
+  --espaco-16: 64px;
+  --raio-0: 0px;
+  --raio-sm: 4px;
+  --raio-md: 6px;
+  --raio-lg: 10px;
+  --raio-xl: 14px;
+  --raio-pilula: 999px;
+  --tamanho-nav: 240px;
+  --tamanho-topo: 64px;
+  --tamanho-painel: 360px;
+  --tamanho-controle: 36px;
+  --tamanho-controle-sm: 28px;
+  --tamanho-linha-tabela: 56px;
+  --tamanho-icone: 16px;
+  --borda-fina: 1px;
+  --borda-foco: 2px;
+
+  /* movimento */
+  --movimento-rapido: 120ms;
+  --movimento-base: 200ms;
+  --movimento-lento: 320ms;
+  --movimento-pulso: 1600ms;
+  --movimento-respiro: 4800ms;
+  --curva-saida: cubic-bezier(0.22, 1, 0.36, 1);
+  --curva-padrao: cubic-bezier(0.4, 0, 0.2, 1);
+  --curva-pulso: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* fontes */
+  --fonte-titulo: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --fonte-interface: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --fonte-dados: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* efeitos */
+  --sombra-elevacao-1: 0px 1px 2px 0px rgb(0 0 0 / 0.55);
+  --sombra-elevacao-2: 0px 8px 24px -4px rgb(0 0 0 / 0.6);
+  --sombra-modal: 0px 24px 64px -8px rgb(0 0 0 / 0.8);
+  --brilho-neon-sm: 0px 0px 8px 0px rgb(124 255 46 / 0.45);
+  --brilho-neon-md: 0px 0px 4px 0px rgb(124 255 46 / 0.55), 0px 0px 20px 0px rgb(124 255 46 / 0.35);
+  --brilho-esmeralda: 0px 0px 16px 0px rgb(16 168 107 / 0.35);
+  --brilho-foco: 0px 0px 0px 2px rgb(2 4 3 / 1), 0px 0px 0px 4px rgb(124 255 46 / 1);
+}
+
+/* estilos de texto */
+.texto-display-xl { font-family: var(--fonte-titulo); font-weight: 600; font-size: 48px; line-height: 56px; letter-spacing: -0.020em; }
+.texto-display-lg { font-family: var(--fonte-titulo); font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.010em; }
+.texto-titulo-md { font-family: var(--fonte-titulo); font-weight: 600; font-size: 18px; line-height: 26px; letter-spacing: -0.005em; }
+.texto-titulo-sm { font-family: var(--fonte-titulo); font-weight: 600; font-size: 15px; line-height: 22px; letter-spacing: 0.000em; }
+.texto-corpo-md { font-family: var(--fonte-interface); font-weight: 400; font-size: 14px; line-height: 22px; letter-spacing: 0.000em; }
+.texto-corpo-sm { font-family: var(--fonte-interface); font-weight: 400; font-size: 13px; line-height: 20px; letter-spacing: 0.000em; }
+.texto-rotulo-md { font-family: var(--fonte-interface); font-weight: 500; font-size: 13px; line-height: 16px; letter-spacing: 0.000em; }
+.texto-rotulo-sm { font-family: var(--fonte-interface); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.000em; }
+.texto-sobrelinha { font-family: var(--fonte-dados); font-weight: 500; font-size: 11px; line-height: 16px; letter-spacing: 0.080em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.texto-dado-xl { font-family: var(--fonte-dados); font-weight: 500; font-size: 30px; line-height: 36px; letter-spacing: -0.020em; font-variant-numeric: tabular-nums; }
+.texto-dado-md { font-family: var(--fonte-dados); font-weight: 400; font-size: 13px; line-height: 20px; letter-spacing: 0.000em; font-variant-numeric: tabular-nums; }
+.texto-dado-sm { font-family: var(--fonte-dados); font-weight: 400; font-size: 11px; line-height: 16px; letter-spacing: 0.000em; font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --movimento-pulso: 0ms; --movimento-respiro: 0ms; }
+}

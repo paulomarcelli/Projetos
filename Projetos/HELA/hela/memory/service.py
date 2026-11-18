@@ -11,6 +11,8 @@ O caminho de uma escrita é sempre o mesmo:
 
 from __future__ import annotations
 
+import math
+import re
 import uuid
 from typing import Any, Optional
 
@@ -27,6 +29,9 @@ from hela.security.redaction import redact, redact_value
 from hela.storage.db import Database
 from hela.storage.repositories import EventRepository, MemoryFilter, MemoryRepository, MetaRepository, RelationshipRepository
 from hela.storage.repositories.memories import row_to_dict
+
+
+_TIPO_RELACAO = re.compile(r"^[a-z][a-z0-9_]{0,39}$")
 
 
 def texto_para_vetor(title: Optional[str], content: str, summary: Optional[str]) -> str:
@@ -248,3 +253,36 @@ class MemoryService:
                             {"quality": round(q, 4), "confidence": round(c, 4)})
         return self.get(memory_id, record_access=False)
 
+
+    # --- relações (arestas do grafo) -----------------------------------------------------
+    def relate(self, source_id: str, target_id: str, type_: str, weight: float = 1.0,
+               evidence: Optional[str] = None) -> int:
+        """Cria ou atualiza a relação origem → destino de um tipo. Devolve o id da aresta."""
+        if source_id == target_id:
+            raise InvalidInput("uma memória não pode se relacionar com ela mesma")
+        if not _TIPO_RELACAO.match(type_ or ""):
+            raise InvalidInput("tipo de relação inválido: use minúsculas, números e _ (até 40), ex.: depends_on")
+        if not isinstance(weight, (int, float)) or not math.isfinite(weight) or weight < 0:
+            raise InvalidInput("o peso precisa ser um número >= 0")
+        achados: list[str] = []
+        evidencia = self._redigir(evidence[:1000] if evidence else None, achados)
+        with self.db.transaction():
+            for mid in (source_id, target_id):
+                self._carregar(mid)
+            agora = self.now()
+            rid = self.relationships.upsert(source_id, target_id, type_, float(weight), evidencia, agora)
+            self.events.log(agora, "relationship.created", "relationship", str(rid),
+                            {"source": source_id, "target": target_id, "type": type_, "weight": float(weight)})
+        return rid
+
+    def unrelate(self, source_id: str, target_id: str, type_: Optional[str] = None) -> int:
+        """Remove a relação (de um tipo, ou todas entre os dois). Devolve quantas saíram."""
+        with self.db.transaction():
+            n = self.relationships.delete(source_id, target_id, type_)
+            if n:
+                self.events.log(self.now(), "relationship.deleted", "relationship", None,
+                                {"source": source_id, "target": target_id, "type": type_, "count": n})
+        return n
+
+    def relations(self, memory_id: str) -> list[dict[str, Any]]:
+        return [dict(r) for r in self.relationships.for_memory(memory_id)]

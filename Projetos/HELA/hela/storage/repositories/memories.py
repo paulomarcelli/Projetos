@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Optional
 
@@ -80,13 +81,23 @@ class MemoryFilter:
 
 _TERMO = re.compile(r"\w+", re.UNICODE)
 
+# Palavras que aparecem em quase todo texto. Com OR, um "de" na consulta casaria com tudo.
+PALAVRAS_VAZIAS = frozenset("""
+a o as os um uma uns umas de da do das dos e em no na nos nas por para pra com sem que se ao aos
+como mais mas ou ja nao sim eu voce ele ela isso esse essa este esta foi ser sao tem ter sobre
+the of and or to in on for with is are was be by at it this that an as from how what why
+""".split())
+
 
 def fts_query(texto: str, max_termos: int = 32) -> Optional[str]:
     """Transforma texto livre numa consulta FTS5 segura: termos entre aspas, unidos por OR.
 
     Assim aspas, asteriscos, hífens e dois-pontos do usuário nunca viram sintaxe do FTS5.
+    Palavras vazias saem, a não ser que a consulta só tenha elas.
     """
-    termos = list(dict.fromkeys(t.lower() for t in _TERMO.findall(texto or "")))[:max_termos]
+    todos = list(dict.fromkeys(t.lower() for t in _TERMO.findall(texto or "")))
+    termos = [t for t in todos if _sem_acento(t) not in PALAVRAS_VAZIAS] or todos
+    termos = termos[:max_termos]
     if not termos:
         return None
     return " OR ".join(f'"{t}"' for t in termos)
@@ -185,6 +196,10 @@ _ORDENS = frozenset({
     "created_at DESC", "created_at ASC", "updated_at DESC", "last_accessed DESC",
     "access_count DESC", "quality DESC", "importance DESC",
 })
+
+
+def _sem_acento(texto: str) -> str:
+    return "".join(c for c in unicodedata.normalize("NFKD", texto) if not unicodedata.combining(c))
 
 
 def _para_sql(coluna: str, valor: Any) -> Any:

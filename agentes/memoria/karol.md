@@ -84,6 +84,12 @@ aqui.
   do Claude só vê o PATH novo depois de reiniciar; até lá, pôr `C:\Program Files\nodejs` e a pasta `bin` do ffmpeg
   (em `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*`) no PATH do comando. No filtro do ffmpeg, um caminho
   com `C:` quebra a sintaxe: grave em caminho relativo.
+- **18/11/2026 · Render com GPU virou rotina.** Vídeo de ~34 s: teste de 60 quadros em 10 s e render completo em
+  38 s. Com isso, conferir tudo de uma vez depois do render: ffprobe, loudnorm, silencedetect contra a legenda,
+  brilho de todos os quadros e tiras de quadros dos trechos duvidosos.
+- **Analisar antes de "corrigir".** Uma dúvida de cena ("o Sol aparece aceso") pede tira de quadros em volta da
+  palavra e leitura do código da cena (curva e duração). Se o efeito segue um token do Design System, a mudança é da
+  Sofia, não da Karol.
 
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
@@ -102,3 +108,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17/11/2026 | Base do projeto de vídeo E Se, Hein? + vídeo da Lua | a avaliar | ~3 h | sem crédito pago | Estilo mudou no meio (referência da grua): fazer o mundo contínuo desde o início quando houver referência de câmera |
 | 17/11/2026 | Vídeo da Lua v2: realismo ligado ao mundo, enquadramentos pelo storyboard, render final (continuação, outra sessão) | a avaliar | ~1 h + 1 h de render | sem crédito pago | Conferir a folha de contato contra o storyboard antes de cada render longo |
 | 17/11/2026 | Render final da Lua v2 no PC do Paulo com GPU: Node e ffmpeg instalados (com aprovação), teste de 60 quadros, render, conferência e folha Q1–Q8 contra o storyboard | a avaliar | ~40 min (2 renders de 70 s) | sem crédito pago | O caminho com GPU nunca tinha rodado: renderizar e varrer o brilho de todos os quadros já no teste, não só 60 quadros do começo (o defeito estava no espaço, aos 42 s) |
+| 18/11/2026 | Render final do vídeo do Sol no PC do Paulo com GPU, conferência do MP4 e análise do "apaga" e do fechamento | a avaliar | ~25 min (render de 38 s) | sem crédito pago | Nenhum defeito; deixar pronto um script único de conferência (formato, LUFS, sincronia, brilho, folha) em vez de montar os comandos a cada vídeo |

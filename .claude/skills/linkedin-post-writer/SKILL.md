@@ -91,7 +91,7 @@ If the user knows what they want the post to earn, start here, then narrow by to
 5. **Run audit.** Optionally invoke `humanizer --mode audit` for algorithm + voice checks before showing to user.
 6. **Optional illustration.** If the post would land better with a visual (or the user asks), offer one: draft an image and generate it with `lib.illustrate(prompt, kind="wide")`, pulling brand handle/color from Voice & Brand Profile §6 for the overlay. Show the returned `url` + `cost` in the approval card and attach it via `media_urls` on publish. For a **multi-image grid** (2-10 images in one post) use `lib.illustrate_set([p1, p2, ...], kind="wide", overlay=brand)` and pass every `url` in `media_urls=[...]`. For a **quote-card of the hook**, skip the model and typeset it: `lib.quote_card("<hook line>", handle="@handle", style="brand")` — crisp text, same `url` flow. Full workflow: `../humanizer/sub-skills/illustration.md`. No Pixfaro key -> it drafts the prompt for the user to generate manually.
 7. **Approval card.** Show: formula used, full draft, char count, suggested posting window (Tue/Wed/Thu 7:30-9:00 AM local), reaction targets from likely commenters, and the illustration (if any).
-8. **On approval.** Do not publish or schedule anything. Hand the approved text to Paulo, who posts it himself (on the Paulo team, publishing is always manual).
+8. **Depois da aprovação.** Não publique nem agende nada. Entregue o texto aprovado ao Paulo, que posta ele mesmo (na equipe do Paulo, a publicação é sempre manual).
 
 ## Hard rules (from user feedback)
 

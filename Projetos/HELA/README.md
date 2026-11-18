@@ -13,6 +13,8 @@ cd Projetos/HELA
 uv venv .venv && uv pip install --python .venv/bin/python -e ".[dev]"
 .venv/bin/pytest            # a suíte usa um HELA_HOME temporário
 .venv/bin/hela status       # banco em ~/.hela (ou em $HELA_HOME)
+.venv/bin/hela export --out minhas-memorias.json
+.venv/bin/hela import --dry-run minhas-memorias.json
 ```
 
 Os dados ficam só na sua máquina, em `~/.hela/` (ou na pasta indicada por `HELA_HOME`). Nada de memória vai para o git.

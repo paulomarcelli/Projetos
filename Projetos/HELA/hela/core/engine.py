@@ -197,7 +197,7 @@ class Engine:
     def import_file(self, path: Path, trusted: bool = False, dry_run: bool = False) -> ImportReport:
         caminho = Path(path)
         if not caminho.is_file():
-            raise InvalidInput(f"arquivo não encontrado: {caminho}")
+            raise InvalidInput(f"arquivo não encontrado (ou não é um arquivo comum): {caminho}")
         check_import_size(caminho.stat().st_size)  # recusa antes de ler o arquivo
         return self.import_data(caminho.read_bytes(), trusted=trusted, dry_run=dry_run)
 

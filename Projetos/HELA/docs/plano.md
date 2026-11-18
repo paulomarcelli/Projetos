@@ -236,7 +236,26 @@ invólucro, que o MCP, os hooks e a API usam.
 ## 8. Estado
 
 - [x] Fase 1: auditoria e plano (este documento)
-- [ ] Fase 2: Core
+- [x] Fase 2: Core (Karol, 18/11/2026). Decisões em `docs/arquitetura.md` (ADR-01 a ADR-11); plano de execução em
+  `docs/planos/2026-11-18-fase2-core.md`.
+  - **Pronto:** pacote `hela` (`pyproject.toml`, Python ≥ 3.11, numpy, networkx e pydantic); SQLite em WAL com o esquema
+    completo da Parte C.4.2 na migração 1; repositórios; redação de segredos, quarentena por injeção e invólucro;
+    Memory Engine (CRUD, deduplicação por hash, quase-duplicata, embedder por hashing plugável, busca híbrida por RRF,
+    grafo com cache por versão, consolidação, expiração, qualidade, acesso, export/import, eventos); `Engine`; CLI
+    `hela status | export | import`; reforços do `docs/seguranca.md` que cabem no Core (A1, A2, A3 e A5).
+  - **Testes:** 153 passando (`cd Projetos/HELA && .venv/bin/pytest -W error`).
+  - **Medido (10.000 memórias):** busca p50 81 ms e p95 104 ms; criar p50 9,6 ms; import do `Engine` ~149 ms, sem o
+    NetworkX.
+  - **Mudanças em relação a este plano:** (1) o grafo tem cache só em memória, não em disco (ADR-06); (2) o import trata
+    o arquivo como não confiável e ignora status, qualidade, confiança, contadores e origem, como pede o
+    `seguranca.md`; `hela import --trusted` mantém esses campos só para backup próprio (ADR-09, a revisar com a
+    Sabrina); (3) exclusão e edição de texto rodam `purge` (FTS5 `optimize` + checkpoint do WAL) para o texto sumir do
+    disco (ADR-08).
+  - **Para a Fase 3:** `ActivationProvider` (ativação no grafo) já tem o encaixe na busca; tabelas `tasks`, `outcomes`,
+    `strategies`, `strategy_metrics`, `retrievals`, `feedback`, `versions`, `evolution_proposals`, `classifier_models`
+    e `procedures` já existem; `MemoryService.adjust_quality()` está pronto para o Feedback Learner.
+  - **Para a Fase 4:** hooks com `busy_timeout` curto; não montar o grafo no `UserPromptSubmit`; se faltar folga nos
+    300 ms, cachear a matriz de vetores (ADR-05).
 - [ ] Fase 3: Intelligence
 - [ ] Fase 4: Integração
 - [ ] Fase 5: Dashboard (5a DS da Sofia; 5b app)

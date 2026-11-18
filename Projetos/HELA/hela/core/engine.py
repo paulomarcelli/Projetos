@@ -22,6 +22,11 @@ from hela.core.clock import Clock, utcnow
 from hela.core.config import HelaConfig, load_config
 from hela.core.errors import InvalidInput, describe_validation_error
 from hela.core.paths import db_path, hela_home
+from hela.core.router import CognitiveRouter
+from hela.execution.procedures import ProcedureService
+from hela.learning.classifier import TaskClassifier
+from hela.learning.feedback import FeedbackLearner
+from hela.learning.ranker import StrategyRanker
 from hela.memory.activation import GraphActivation
 from hela.memory.consolidation import ConsolidationReport, consolidate
 from hela.memory.embedder import Embedder, make_embedder
@@ -74,6 +79,13 @@ class Engine:
         if activation is None and scfg.graph_activation:
             activation = GraphActivation(self.db.conn, steps=scfg.activation_steps, decay=scfg.activation_decay)
         self.searcher = HybridSearch(self.memories, activation=activation)
+        # Fase 3: aprendizado, execução e roteador, todos sobre o mesmo banco.
+        self.classifier = TaskClassifier(self.db, self.config, clock=clock)
+        self.ranker = StrategyRanker(self.db, self.config, clock=clock)
+        self.learner = FeedbackLearner(self.memories, self.ranker, self.config, clock=clock)
+        self.procedures = ProcedureService(self.memories, self.config, searcher=self.searcher)
+        self.router = CognitiveRouter(self.memories, self.searcher, self.classifier, self.ranker, self.procedures,
+                                      self.config, clock=clock)
 
     # --- ciclo de vida -------------------------------------------------------------------
     def close(self) -> None:
@@ -152,6 +164,39 @@ class Engine:
             itens.append({"id": m.id, "kind": m.kind, "project": m.project, "title": m.title,
                           "score": round(h.score, 4) if isinstance(h, SearchHit) else None, "content": m.content})
         return wrap_as_data(itens)
+
+    # --- aprendizado (Fase 3) -------------------------------------------------------------
+    def feedback(self, task_id: Optional[str] = None, success: Optional[bool] = None,
+                 quality: Optional[float] = None, duration_ms: Optional[float] = None,
+                 attempts: Optional[int] = None, tokens: Optional[dict[str, int]] = None,
+                 token_source: Optional[str] = None, compute_cost: Optional[float] = None,
+                 strategy: Optional[str] = None, notes: Optional[str] = None,
+                 used_memory_ids: Optional[list[str]] = None, memory_id: Optional[str] = None,
+                 rating: Optional[int] = None, comment: Optional[str] = None, category: Optional[str] = None,
+                 label_source: str = "feedback", source: str = "claude") -> dict[str, Any]:
+        """Resultado de tarefa, nota de memória e/ou correção de categoria (pelo menos um)."""
+        resultado_pedido = any(v is not None for v in (success, quality, duration_ms, attempts, tokens,
+                                                       compute_cost, strategy, notes, used_memory_ids))
+        if not (resultado_pedido or rating is not None or category is not None):
+            raise InvalidInput("feedback vazio: informe o resultado da tarefa (success...), "
+                               "uma nota de memória (memory_id + rating) ou a categoria certa (category)")
+        if (resultado_pedido or category is not None) and not task_id:
+            raise InvalidInput("task_id é obrigatório para resultado de tarefa ou correção de categoria")
+        if (rating is None) != (memory_id is None):
+            raise InvalidInput("memory_id e rating vão juntos")
+        saida: dict[str, Any] = {"outcome": None, "rating": None, "label": None}
+        if category is not None:
+            saida["label"] = self.learner.correct_category(task_id, category, source=label_source)
+        if resultado_pedido:
+            saida["outcome"] = self.learner.record_outcome(
+                task_id, success=success, quality=quality, duration_ms=duration_ms, attempts=attempts, tokens=tokens,
+                token_source=token_source, compute_cost=compute_cost, strategy=strategy, notes=notes,
+                used_memory_ids=used_memory_ids, source=source)
+        if rating is not None:
+            fonte = source if source in ("user", "claude", "hook", "auto") else "claude"
+            saida["rating"] = self.learner.rate_memory(memory_id, rating, comment=comment, task_id=task_id,
+                                                       source=fonte)
+        return saida
 
     # --- grafo ---------------------------------------------------------------------------
     def relate(self, source_id: str, target_id: str, type_: str = "related", weight: float = 1.0,

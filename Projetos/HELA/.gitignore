@@ -1,0 +1,14 @@
+# ambiente e caches locais
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+# dados da HELA nunca vão para o git (ficam em ~/.hela)
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*

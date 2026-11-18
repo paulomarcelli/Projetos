@@ -18,8 +18,8 @@ vai ao ar nas redes: escolhe e escreve, mas a arte é da Sofia e os fatos cient�
 
 ## Como acionar
 
-Pelo **Escritório do Paulo** (`Projetos/Escritorio-do-Paulo/`): "Novo pedido" manda para a Sabrina planejar; "Nova
-tarefa" dá um trabalho direto a uma agente. Ou numa conversa do Claude Code, pelo nome:
+Numa conversa do Claude Code, pelo nome. O **Escritório do Paulo** está desligado desde 18/11/2026: os planos ficam salvos
+em `agentes/planos/` e as agentes são acionadas direto na conversa.
 
 ```text
 Sofia, revise o responsivo do fã-site da Sofia Carson e me traga os prints.
@@ -44,6 +44,5 @@ fazem pagamento, compra ou assinatura.
 
 ## Monitoramento
 
-O Escritório mostra, na gaveta de cada agente, quantas tarefas ele concluiu, quantas deram erro, o tempo médio e o
-custo. Cada agente também registra uma linha no **Registro de tarefas** da memória dele (resultado **perfeito**,
+Cada agente registra uma linha no **Registro de tarefas** da memória dele (resultado **perfeito**,
 **com ajustes** ou **falhou**, tempo, custo e o que melhorar). De tempos em tempos, leia e ajuste o arquivo do agente.

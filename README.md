@@ -155,11 +155,11 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
       <a href="https://paulomarcelli.github.io/Projetos/Projetos/Aurora/"><b>Jogar o protótipo ↗</b></a> · <a href="Projetos/Aurora-Jogo">Código e documentação</a>
     </td>
     <td width="50%" valign="top">
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/"><img src="docs/capas/escritorio.webp" alt="Escritório do Paulo: um escritório em pixel art visto de cima, com salas, sala de jogos e jardim, as três agentes em pixel art e crachás com o estado de cada uma"></a>
+      <a href="Projetos/Escritorio-do-Paulo"><img src="docs/capas/escritorio.webp" alt="Escritório do Paulo: um escritório em pixel art visto de cima, com salas, sala de jogos e jardim, as três agentes em pixel art e crachás com o estado de cada uma"></a>
       <h3>🏢 Escritório do Paulo</h3>
       O escritório da minha equipe de agentes de IA: cada figurinha mostra o que o seu agente está fazendo de verdade no Claude Code, com tarefas, dependências, entregas e custo.<br>
       <sub>Node sem dependências · Claude Code (agentes, ganchos) · Figma · roda localmente</sub><br><br>
-      <a href="https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/"><b>Abrir o escritório ↗</b></a> · <a href="Projetos/Escritorio-do-Paulo">Código</a> · <a href="https://www.figma.com/design/JFyZCMHbS1ASDzSdbGu6pC">Design System</a>
+      <b>Desligado desde 18/11/2026</b> · <a href="Projetos/Escritorio-do-Paulo">Código</a> · <a href="https://www.figma.com/design/JFyZCMHbS1ASDzSdbGu6pC">Design System</a>
     </td>
   </tr>
 </table>
@@ -182,7 +182,7 @@ Os sites são publicados sozinhos no GitHub Pages a cada atualização na `main`
 | [Joken-Po em Python](Projetos/Joken-Po-Python) | Python · Lógica de programação | 🟢 Concluído |
 | [LUNA MIND](Projetos/Luna-AI) | Python · Flask · OpenAI · Gemini API | 🟢 Publicado |
 | [Aurora: O Dízimo da Lua](Projetos/Aurora-Jogo) · [jogar ↗](https://paulomarcelli.github.io/Projetos/Projetos/Aurora/) | JavaScript · PixiJS 8 · Python (ferramentas de arte) | 🟡 Em desenvolvimento (protótipo jogável) |
-| [Escritório do Paulo](Projetos/Escritorio-do-Paulo) · [abrir ↗](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/) | Node · Claude Code (agentes e ganchos) · Figma | 🟢 Publicado (conecta ao escritório no computador) |
+| [Escritório do Paulo](Projetos/Escritorio-do-Paulo) | Node · Claude Code (agentes e ganchos) · Figma | ⏸️ Desligado (fora do ar desde 18/11/2026; código guardado) |
 | [Sofia Carson · a voz](Projetos/Sofia-Carson) · [abrir ↗](https://paulomarcelli.github.io/Projetos/Projetos/Sofia-Carson/) | Vite · JavaScript · Lenis · ffmpeg | 🟢 Publicado |
 
 > 🤖 **Para a próxima IA:** leia [`PARA-A-PROXIMA-IA.md`](PARA-A-PROXIMA-IA.md) (como o usuário trabalha, estado dos projetos e próximos passos).

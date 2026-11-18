@@ -105,10 +105,10 @@ Todo post que leva imagem, carrossel ou capa tem um **briefing para a Sofia** na
 
 Marque **Arte = Precisa de arte**. Para pedir:
 
-- **Pelo Escritório:** monte um plano em `agentes/planos/AAAA-MM-DD-artes-<semana>.json`, no formato do arquivo da
-  Sabrina, com uma tarefa por arte para a `sofia`, e envie com
-  `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs plano agentes/planos/<arquivo>.json`.
-- **Sem o Escritório aberto:** diga ao Paulo, na entrega, a frase pronta para ele pedir à Sofia.
+- **Sempre:** monte um plano em `agentes/planos/AAAA-MM-DD-artes-<semana>.json`, no formato do arquivo da
+  Sabrina, com uma tarefa por arte para a `sofia`.
+- **Na entrega:** diga ao Paulo a frase pronta para ele pedir à Sofia. O Escritório está desligado desde 18/11/2026;
+  não tente enviar o plano por ele.
 
 Os roteiros do TikTok seguem a mesma ideia: uma tarefa de conferência para a `sabrina` antes da voz.
 

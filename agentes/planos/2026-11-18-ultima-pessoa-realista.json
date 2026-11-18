@@ -1,0 +1,29 @@
+{
+  "projeto": "E Se, Hein? · \"E se você fosse a última pessoa do mundo?\" no estilo realista (qui 19/11)",
+  "tarefas": [
+    {
+      "chave": "dados-ultima-realista",
+      "agente": "sabrina",
+      "titulo": "Conferir os dados do canto e os lugares reais do vídeo \"Última pessoa\" (qui 19/11)",
+      "descricao": "O roteiro não mudou (já conferido em 17/11). Conferir só o que o estilo realista trouxe: os 9 dados do canto e as 5 perguntas da seção 3 do relatório agentes/relatorios/gabriela/2026-11-18-ultima-pessoa-realista.md (também na página do Notion https://app.notion.com/p/41bf9dd1501f8194b33ede7184647acd, seção \"Estilo realista\"). Pontos principais: população mundial em 2026 pela ONU (8,2 ou 8,3 bilhões); se \"usinas param em poucas horas\" vale para São Paulo, com a matriz do Brasil cheia de hidrelétricas; se o alagamento do metrô vale para um túnel sob a Avenida Paulista; o número do USDA de 4 horas na geladeira; Pripyat com 45 mil moradores, esvaziada em 27/04/1986. Pronto quando cada dado estiver confirmado, ajustado (com o texto novo) ou retirado, escrito na página. É o vídeo de amanhã: prioridade 1.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "arte-ultima-realista",
+      "agente": "sofia",
+      "titulo": "Direção de arte realista e quadros de exemplo da Paulista (em andamento)",
+      "descricao": "Já em andamento no Figma (pedido do Paulo de 18/11): dado no canto, título e legenda no estilo documental, com quadros da Avenida Paulista vista do alto, cheia e depois vazia. Usar a lista de cena e os dados do canto da página do Notion; só os dados que a Sabrina confirmar. Pronto quando o Paulo aprovar o visual.",
+      "dependeDe": [],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "cena-ultima-blender",
+      "agente": "karol",
+      "titulo": "Montar no Blender as cenas do vídeo \"Última pessoa\" (9 trechos + fechamento)",
+      "descricao": "Depois de o Paulo aprovar o visual da Sofia e da voz gravada. Seguir a lista de cena da seção 4 do relatório da Gabriela (o que está em cena e a palavra em que cada coisa aparece, some ou muda). Os tempos são estimados; os certos saem do alinhamento da voz. Não fechar os textos de tela, a cena do metrô sob a Paulista e a cena das usinas sobre São Paulo antes do ok da Sabrina. Rodada de conferência dos quadros-chave do estilo-realismo.md. Pronto quando o render passar na conferência e o Paulo aprovar.",
+      "dependeDe": ["dados-ultima-realista", "arte-ultima-realista"],
+      "tipo": "entrega"
+    }
+  ]
+}

@@ -116,6 +116,18 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   estão no relatório `agentes/relatorios/gabriela/2026-11-17-linkedin-substack-18-a-24-nov.md` e na lixeira do Notion
   por 30 dias. Não recrie posts de LinkedIn ou de Substack no Notion sem o Paulo pedir.
 
+- **18/11/2026 · Estilo realista: "Última pessoa" (qui 19/11).**
+  - Tema já postado: busque **antes** de escolher. "Última pessoa" tinha 25 mi (Giuliana Mafra, PT), 8,2 mi e 4,6 mi em
+    português no YouTube. O que funcionou para ler o YouTube: baixar a página de busca e ler o `ytInitialData`
+    (traz título, canal, visualizações e idade; os Shorts vêm no `accessibilityText`); o canal sai do oEmbed
+    (`youtube.com/oembed?url=...`). Um quadro do vídeo: `i.ytimg.com/vi/<id>/hq2.jpg`. A página do vídeo não abre.
+  - TikTok: a busca pede login e a página "discover" vem sem os vídeos do tema. Peça ao Paulo para olhar no app.
+  - Lugar real muda o fato: uma fonte sobre os EUA ou Nova York, posta numa cena de São Paulo, vira afirmação sobre São
+    Paulo. Pergunte à Sabrina se vale ali (usinas com hidrelétrica; metrô sob a Paulista, que fica no alto).
+  - Dado no canto: só número com fonte; quando não houver, use o tempo ("SOZINHO HÁ · POUCAS HORAS") ou a premissa.
+  - Lista de cena para a Karol: tempo de cada palavra com o script (2,6 palavras por segundo) e o aviso de que o tempo
+    certo sai do alinhamento da voz. Escreva também o que **não** pode aparecer (floresta, túnel cheio).
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -128,3 +140,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 18/11/2026 | LinkedIn e Substack de 18 a 24/11: 5 posts de LinkedIn (1 carrossel), 2 Substack, 7 páginas no Notion em Rascunho, plano para Sofia e Sabrina, relatório | aguardando o Paulo | ~2 sessões (com uma pausa por limite de uso) | não medido | Conferir a repetição com os posts antigos antes de escrever, não depois. O post de quarta saiu no próprio dia: pedir a semana com 2 dias de folga. |
 | 18/11/2026 | Trocar o tema de quinta (F.R.E.Y.A. já publicada) por outro projeto real e tirar a agente Sofia do centro dos posts da semana (o post sobre ela é do Paulo) | aguardando o Paulo | ~1 sessão | não medido | Pedir ao Paulo, antes de planejar a semana, a lista do que já foi publicado. A troca na véspera deixa a Sofia com menos de um dia para as artes. |
 | 18/11/2026 | Quinta 19/11 sem post (Aurora guardada): 2 páginas em Ideia sem data com aviso, plano sem a arte e as afirmações da Aurora, notas de quarta e do Substack de segunda ajustadas, seção 12 no relatório | aguardando o Paulo | ~20 min | não medido | A reserva do KFKA continua valendo para a próxima troca. Antes de pôr um tema na semana, perguntar ao Paulo se ele quer falar do projeto agora. |
+| 18/11/2026 | "Última pessoa" (qui 19/11) no estilo realista: busca de tema já postado (YouTube; TikTok sem leitura), lugar real, 9 dados do canto para a Sabrina, lista de cena para a Karol, Notion e relatório | aguardando o Paulo | ~1 sessão | não medido | O tema não passou na regra "ninguém postou": a busca tem de vir antes da escolha. Checar também Terra para, Pulo e Buraco. |

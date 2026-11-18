@@ -33,9 +33,14 @@ def _parser() -> argparse.ArgumentParser:
 
     ex = sub.add_parser("export", help="exporta as memórias em JSON versionado")
     ex.add_argument("--out", type=Path, help="arquivo de saída (sem ele, imprime no stdout)")
+    ex.add_argument("--include-quarantined", action="store_true",
+                    help="inclui as memórias em quarentena (fora por padrão)")
 
     im = sub.add_parser("import", help="importa um arquivo de exportação (a redação é reaplicada)")
     im.add_argument("arquivo", help="caminho do JSON, ou - para ler do stdin")
+    im.add_argument("--trusted", action="store_true",
+                    help="backup seu: mantém status, qualidade e contadores (a quarentena continua valendo)")
+    im.add_argument("--dry-run", action="store_true", help="mostra o que entraria, sem gravar nada")
 
     for nome, (fase, o_que) in _OUTRAS_FASES.items():
         sub.add_parser(nome, help=f"{o_que} ({fase})")
@@ -78,14 +83,18 @@ def main(argv: Optional[list[str]] = None) -> int:
                 _status(eng, args.json)
             elif args.comando == "export":
                 if args.out:
-                    n = eng.export_to_file(args.out)
+                    n = eng.export_to_file(args.out, include_quarantined=args.include_quarantined)
                     print(f"{n} memória{'s' if n != 1 else ''} exportada{'s' if n != 1 else ''} para {args.out}",
                           file=sys.stderr)
                 else:
-                    print(json.dumps(eng.export_data(), ensure_ascii=False, indent=2))
+                    print(json.dumps(eng.export_data(include_quarantined=args.include_quarantined),
+                                     ensure_ascii=False, indent=2))
             elif args.comando == "import":
-                rel = (eng.import_data(sys.stdin.buffer.read()) if args.arquivo == "-"
-                       else eng.import_file(Path(args.arquivo)))
+                opcoes = {"trusted": args.trusted, "dry_run": args.dry_run}
+                rel = (eng.import_data(sys.stdin.buffer.read(), **opcoes) if args.arquivo == "-"
+                       else eng.import_file(Path(args.arquivo), **opcoes))
+                if args.dry_run:
+                    print("simulação (nada foi gravado)")
                 print(f"criadas: {rel.created}, duplicadas: {rel.duplicates}, em quarentena: {rel.quarantined}, "
                       f"trechos redigidos: {rel.redactions}, relações: {rel.relationships} "
                       f"(puladas: {rel.skipped_relationships})")

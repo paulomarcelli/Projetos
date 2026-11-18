@@ -14,6 +14,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from hela.core.errors import describe_validation_error
 from hela.core.paths import config_path
 
 
@@ -100,5 +101,7 @@ def load_config(home: Path | None = None) -> HelaConfig:
         if not isinstance(dados, dict):
             raise ValueError("o arquivo precisa ser um objeto JSON")
         return HelaConfig.model_validate(_mesclar(HelaConfig().model_dump(), dados))
-    except (json.JSONDecodeError, ValidationError, ValueError) as erro:
+    except ValidationError as erro:
+        raise ValueError(f"config.json inválido em {caminho}: {describe_validation_error(erro)}") from None
+    except (json.JSONDecodeError, ValueError) as erro:
         raise ValueError(f"config.json inválido em {caminho}: {erro}") from erro

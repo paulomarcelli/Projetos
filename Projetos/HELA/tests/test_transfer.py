@@ -35,11 +35,22 @@ def _todas(s: MemoryService) -> list:
     return sorted(s.list(MemoryFilter(statuses=None)), key=lambda m: m.id)
 
 
-def test_ida_e_volta_preserva_tudo(origem: MemoryService, tmp_path: Path) -> None:
+def test_export_import_ida_e_volta(origem: MemoryService, tmp_path: Path) -> None:
+    """Arquivo de fora: as mesmas memórias ativas, sem herdar status, qualidade nem contadores."""
+    destino = novo_servico(tmp_path / "destino.db")
+    import_data(destino, export_data(origem))
+    def ativas(s: MemoryService) -> set:
+        return {(m.id, m.content, tuple(m.tags), m.project) for m in s.list()}
+
+    assert ativas(origem) <= ativas(destino)  # toda memória ativa chegou igual
+    assert all(m.source == "import" and m.access_count == 0 and m.quality == 0.5 for m in destino.list())
+
+
+def test_backup_confiavel_preserva_tudo(origem: MemoryService, tmp_path: Path) -> None:
     dados = export_data(origem)
     assert dados["format"] == EXPORT_FORMAT and dados["version"] == EXPORT_VERSION
     destino = novo_servico(tmp_path / "destino.db")
-    rel = import_data(destino, json.loads(json.dumps(dados)))
+    rel = import_data(destino, json.loads(json.dumps(dados)), trusted=True)
     assert (rel.created, rel.duplicates, rel.relationships) == (3, 0, 1)
     campos = ("id", "kind", "content", "tags", "project", "status", "quality", "access_count", "created_at", "metadata")
     assert [[getattr(m, c) for c in campos] for m in _todas(destino)] == \

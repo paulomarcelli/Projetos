@@ -12,12 +12,13 @@ O grafo é um MultiDiGraph: entre duas memórias pode haver mais de um tipo de r
 
 from __future__ import annotations
 
-from typing import Optional
-
-import networkx as nx
+from typing import TYPE_CHECKING, Optional
 
 from hela.storage.db import Database
 from hela.storage.repositories import MetaRepository, RelationshipRepository
+
+if TYPE_CHECKING:  # o networkx custa ~190 ms para importar: só entra quando o grafo é usado
+    import networkx as nx
 
 
 class MemoryGraph:
@@ -25,21 +26,23 @@ class MemoryGraph:
         self.db = db
         self._meta = MetaRepository(db.conn)
         self._rels = RelationshipRepository(db.conn)
-        self._grafo: Optional[nx.MultiDiGraph] = None
+        self._grafo: Optional["nx.MultiDiGraph"] = None
         self._versao: Optional[int] = None
         self.builds = 0  # quantas vezes o grafo foi montado (útil para testes e métricas)
 
     def version(self) -> int:
         return self._meta.graph_version()
 
-    def get(self) -> nx.MultiDiGraph:
+    def get(self) -> "nx.MultiDiGraph":
         versao = self.version()
         if self._grafo is None or versao != self._versao:
             self._grafo = self._montar()
             self._versao = versao
         return self._grafo
 
-    def _montar(self) -> nx.MultiDiGraph:
+    def _montar(self) -> "nx.MultiDiGraph":
+        import networkx as nx
+
         g = nx.MultiDiGraph()
         rows = self._rels.all()
         ids = {r["source_id"] for r in rows} | {r["target_id"] for r in rows}
@@ -55,6 +58,8 @@ class MemoryGraph:
 
     def neighbors(self, memory_id: str, depth: int = 1) -> set[str]:
         """Memórias a até `depth` passos, em qualquer direção (sem incluir a própria)."""
+        import networkx as nx
+
         g = self.get()
         if memory_id not in g:
             return set()

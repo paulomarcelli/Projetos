@@ -34,7 +34,11 @@ def test_export_e_import_pela_cli(hela_home_temporario: Path, tmp_path: Path,
     assert main(["export"]) == 0
     assert json.loads(capsys.readouterr().out)["format"] == "hela-export"
     monkeypatch.setenv("HELA_HOME", str(tmp_path / "outra"))
-    assert main(["import", str(arquivo)]) == 0
+    assert main(["import", "--dry-run", str(arquivo)]) == 0
+    assert "simulação" in capsys.readouterr().out
+    with Engine() as eng:
+        assert eng.stats()["memories"]["total"] == 0
+    assert main(["import", "--trusted", str(arquivo)]) == 0
     assert "criadas: 1" in capsys.readouterr().out
     with Engine() as eng:
         assert eng.stats()["memories"]["total"] == 1

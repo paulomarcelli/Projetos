@@ -20,7 +20,7 @@ from pydantic import BaseModel, ValidationError
 
 from hela.core.clock import Clock, utcnow
 from hela.core.config import HelaConfig, load_config
-from hela.core.errors import InvalidInput
+from hela.core.errors import InvalidInput, describe_validation_error
 from hela.core.paths import db_path, hela_home
 from hela.memory.consolidation import ConsolidationReport, consolidate
 from hela.memory.embedder import Embedder, make_embedder
@@ -28,7 +28,7 @@ from hela.memory.graph import MemoryGraph
 from hela.memory.models import CreateResult, Memory, MemoryCreate, MemoryUpdate
 from hela.memory.search import ActivationProvider, HybridSearch, SearchHit
 from hela.memory.service import MemoryService
-from hela.memory.transfer import ImportReport, export_data, export_to_file, import_data
+from hela.memory.transfer import ImportReport, check_import_size, export_data, export_to_file, import_data
 from hela.security.envelope import wrap_as_data
 from hela.storage.db import Database
 from hela.storage.migrations import current_version
@@ -41,10 +41,7 @@ def _validar(modelo: type[M], dados: dict[str, Any]) -> M:
     try:
         return modelo.model_validate(dados)
     except ValidationError as erro:
-        detalhes = "; ".join(
-            f"{'.'.join(str(p) for p in e['loc']) or 'entrada'}: {e['msg']}" for e in erro.errors()
-        )
-        raise InvalidInput(f"entrada inválida ({detalhes})") from erro
+        raise InvalidInput(f"entrada inválida ({describe_validation_error(erro)})") from None
 
 
 def _privado(caminho: Path, modo: int) -> None:
@@ -64,7 +61,11 @@ class Engine:
         self.db = Database(db_path(self.home), busy_timeout_ms=self.config.storage.busy_timeout_ms)
         _privado(self.db.path, 0o600)
         ecfg = self.config.embedder
-        self.embedder = embedder or make_embedder(ecfg.backend, ecfg.dim, ecfg.model)
+        try:
+            self.embedder = embedder or make_embedder(ecfg.backend, ecfg.dim, ecfg.model)
+        except BaseException:
+            self.db.close()
+            raise
         self.memories = MemoryService(self.db, self.embedder, self.config, clock=clock)
         self.graph = MemoryGraph(self.db)
         # activation: encaixe para a ativação no grafo (Fase 3). Sem ele, a busca usa os outros sinais.
@@ -183,20 +184,22 @@ class Engine:
         return {"expired": len(expiradas), "merged": rel.merged, "clusters": len(rel.clusters)}
 
     # --- transferência -------------------------------------------------------------------
-    def export_data(self) -> dict[str, Any]:
-        return export_data(self.memories)
+    def export_data(self, include_quarantined: bool = False) -> dict[str, Any]:
+        return export_data(self.memories, include_quarantined=include_quarantined)
 
-    def export_to_file(self, path: Path) -> int:
-        return export_to_file(self.memories, path)
+    def export_to_file(self, path: Path, include_quarantined: bool = False) -> int:
+        return export_to_file(self.memories, path, include_quarantined=include_quarantined)
 
-    def import_data(self, data: Union[str, bytes, dict[str, Any]]) -> ImportReport:
-        return import_data(self.memories, data)
+    def import_data(self, data: Union[str, bytes, dict[str, Any]], trusted: bool = False,
+                    dry_run: bool = False) -> ImportReport:
+        return import_data(self.memories, data, trusted=trusted, dry_run=dry_run)
 
-    def import_file(self, path: Path) -> ImportReport:
+    def import_file(self, path: Path, trusted: bool = False, dry_run: bool = False) -> ImportReport:
         caminho = Path(path)
         if not caminho.is_file():
             raise InvalidInput(f"arquivo não encontrado: {caminho}")
-        return self.import_data(caminho.read_bytes())
+        check_import_size(caminho.stat().st_size)  # recusa antes de ler o arquivo
+        return self.import_data(caminho.read_bytes(), trusted=trusted, dry_run=dry_run)
 
     # --- observação ----------------------------------------------------------------------
     def events(self, limit: int = 50, after_id: Optional[int] = None,

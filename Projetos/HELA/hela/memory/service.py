@@ -226,6 +226,8 @@ class MemoryService:
             self.events.log(agora, "memory.updated", "memory", memory_id,
                             {"fields": alterados, "redactions": len(achados),
                              "quarantined": campos.get("status") == "quarantined"})
+        if mudou_texto:
+            self.db.purge()  # o texto antigo não fica no índice nem no -wal
         return self.get(memory_id, record_access=False)
 
     def _mudar_status(self, memory_id: str, status: str, evento: str) -> Memory:
@@ -256,6 +258,7 @@ class MemoryService:
             atual = self._carregar(memory_id)
             self.memories.delete(memory_id)
             self.events.log(self.now(), "memory.deleted", "memory", memory_id, {"kind": atual["kind"]})
+        self.db.purge()  # exclusão de verdade: o texto some também do índice e do -wal
 
     def expire(self) -> list[str]:
         """Marca como 'expired' as memórias ativas cujo expires_at já passou. Devolve os ids."""

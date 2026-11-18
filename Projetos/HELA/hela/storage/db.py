@@ -37,6 +37,8 @@ def connect(path: Path, busy_timeout_ms: int = DEFAULT_BUSY_TIMEOUT_MS) -> sqlit
     # NORMAL é seguro com WAL: uma queda de energia pode perder a última transação, nunca corromper.
     conn.execute("PRAGMA synchronous = NORMAL")
     conn.execute("PRAGMA foreign_keys = ON")
+    # Conteúdo apagado é sobrescrito com zeros, em vez de ficar em páginas livres do arquivo.
+    conn.execute("PRAGMA secure_delete = ON")
     return conn
 
 
@@ -60,8 +62,12 @@ class Database:
 
         self.path = Path(path)
         self.conn = connect(self.path, busy_timeout_ms)
-        check_fts5(self.conn)
-        apply_migrations(self.conn)
+        try:
+            check_fts5(self.conn)
+            apply_migrations(self.conn)
+        except BaseException:
+            self.conn.close()  # não deixa conexão aberta se o banco não subiu
+            raise
 
     @contextmanager
     def transaction(self) -> Iterator[sqlite3.Connection]:
@@ -81,6 +87,21 @@ class Database:
             raise
         else:
             self.conn.execute("COMMIT")
+
+    def purge(self) -> None:
+        """Tira dos arquivos os restos de conteúdo apagado ou editado.
+
+        - FTS5: apagar só grava uma marca; o termo antigo fica no segmento até uma fusão.
+          'optimize' funde tudo e descarta os termos apagados.
+        - WAL: guarda as versões antigas das páginas até o checkpoint. TRUNCATE copia para o
+          banco e zera o arquivo -wal. Se outro processo estiver lendo, o checkpoint fica
+          parcial (não dá erro) e termina no próximo.
+        Custa uma reescrita do índice: usado em exclusão e edição de texto, que são raras.
+        """
+        if self.conn.in_transaction:
+            return
+        self.conn.execute("INSERT INTO memories_fts (memories_fts) VALUES ('optimize')")
+        self.conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
 
     def close(self) -> None:
         self.conn.close()

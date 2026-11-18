@@ -96,3 +96,15 @@ def test_config_do_usuario_e_lida(tmp_path: Path) -> None:
         eng.remember(kind="semantic", content="pytest um")
         eng.remember(kind="semantic", content="pytest dois")
         assert len(eng.search("pytest")) == 1
+
+
+def test_embedder_invalido_nao_deixa_banco_aberto(tmp_path: Path) -> None:
+    home = tmp_path / "h"
+    home.mkdir()
+    (home / "config.json").write_text('{"embedder": {"backend": "sentence-transformers"}}', encoding="utf-8")
+    import importlib.util
+
+    if importlib.util.find_spec("sentence_transformers") is not None:
+        pytest.skip("sentence-transformers instalado")
+    with pytest.raises(ValueError, match="não está instalado"):
+        Engine(home=home)

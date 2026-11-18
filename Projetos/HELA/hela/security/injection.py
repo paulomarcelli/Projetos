@@ -48,9 +48,6 @@ _PADROES: list[tuple[str, float, re.Pattern[str]]] = [
         r"(?:\.env\b|credentials|credenciais|api keys?|chaves? de api|ssh keys?)")),
 ]
 
-# Caracteres invisíveis usados para esconder palavras do detector.
-_INVISIVEIS = re.compile("[​-‏⁠-⁤﻿]")
-
 
 @dataclass
 class InjectionReport:
@@ -60,7 +57,10 @@ class InjectionReport:
 
 
 def _normalizar(texto: str) -> str:
-    texto = _INVISIVEIS.sub("", texto)
+    # Tira os caracteres de formatação invisíveis (categoria Cf: largura zero, hífen invisível,
+    # controle de direção como U+202E), usados para esconder palavras do detector.
+    texto = "".join(c for c in texto if unicodedata.category(c) != "Cf")
+    # NFKD desfaz letras de largura cheia e separa os acentos, que saem logo depois.
     texto = unicodedata.normalize("NFKD", texto)
     texto = "".join(c for c in texto if not unicodedata.combining(c))
     return texto.casefold()

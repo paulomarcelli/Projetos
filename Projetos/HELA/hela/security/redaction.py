@@ -42,6 +42,9 @@ _PADROES: list[tuple[str, re.Pattern[str]]] = [
     ("jwt", re.compile(r"\beyJ[A-Za-z0-9_\-]{5,}\.eyJ[A-Za-z0-9_\-]{5,}\.[A-Za-z0-9_\-]{5,}")),
 ]
 
+# URL com credencial: esquema://usuario:senha@host. Troca usuário e senha, mantém o resto.
+_URL_CREDENCIAL = re.compile(r"(?i)\b([a-z][a-z0-9+.\-]*://)[^/\s:@\[\]]+:[^/\s@\[\]]+@")
+
 # "Authorization: Bearer <valor>": troca só o valor.
 _BEARER = re.compile(r"(?i)(\bBearer\s+)([A-Za-z0-9._~+/=\-]{16,})")
 
@@ -95,6 +98,11 @@ def redact(text: str, entropy_threshold: float = 4.2, entropy_min_length: int = 
             achados.append(tipo)
             return MARCADOR.format(tipo)
         text = padrao.sub(_troca, text)
+
+    def _troca_url(m: re.Match[str]) -> str:
+        achados.append("url_credentials")
+        return m.group(1) + MARCADOR.format("url_credentials") + "@"
+    text = _URL_CREDENCIAL.sub(_troca_url, text)
 
     def _troca_bearer(m: re.Match[str]) -> str:
         if m.group(2).startswith("[REDACTED"):

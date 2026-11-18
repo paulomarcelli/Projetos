@@ -2,11 +2,6 @@
 
 # 🏢 Escritório do Paulo
 
-> **Desligado desde 18/11/2026, a pedido do Paulo.** Saíram os ganchos do Claude Code (`.claude/settings.json`), o
-> início automático e a página no GitHub Pages; o código fica guardado aqui. Para religar: devolver os ganchos ao
-> `.claude/settings.json` (estão no histórico do git), voltar o bloco do Escritório no `.github/workflows/pages.yml` e,
-> no computador, `node Projetos/Escritorio-do-Paulo/bin/escritorio.mjs autoiniciar instalar`.
-
 **O escritório da minha equipe de agentes de IA: cada figurinha mostra o que o seu agente está fazendo de verdade.**
 
 [![Abrir o escritório](https://img.shields.io/badge/ABRIR_O_ESCRIT%C3%93RIO-0a0d13?style=for-the-badge&logo=githubpages&logoColor=e9edf5)](https://paulomarcelli.github.io/Projetos/Projetos/Escritorio-do-Paulo/)

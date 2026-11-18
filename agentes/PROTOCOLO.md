@@ -53,9 +53,6 @@ Entregas longas vão também para `agentes/relatorios/<nome>/AAAA-MM-DD-<tema>.m
 
 ## 5. O Escritório (painel local)
 
-> **Desligado desde 18/11/2026**, a pedido do Paulo. Sem ele, salve os planos em `agentes/planos/` e diga na entrega
-> quem continua; o comando `escritorio.mjs` não precisa ser tentado. O texto abaixo vale se ele for religado.
-
 O Escritório do Paulo (`Projetos/Escritorio-do-Paulo/`) mostra o estado de cada agente a partir das execuções reais do
 Claude Code. Ninguém precisa "avisar" o painel: ele lê os eventos sozinho. Quando a tarefa veio do painel, o pedido
 chega com o número dela (`T-0000`) e com as entregas das tarefas de que ela depende: leia essas entregas antes de

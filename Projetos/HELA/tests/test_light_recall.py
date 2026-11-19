@@ -119,3 +119,22 @@ def _plano_usa_id(db, f) -> None:  # type: ignore[no-untyped-def]
     plano = " ".join(str(r[3]) for r in db.conn.execute(
         f"EXPLAIN QUERY PLAN SELECT * FROM memories m WHERE {where} ORDER BY m.created_at DESC LIMIT 5", args))
     assert "autoindex_memories" in plano and "kind_status" not in plano, plano
+
+
+def test_espera_pela_trava_respeita_o_prazo(eng: Engine) -> None:
+    """Com o banco ocupado e pouco prazo, o hook entrega o contexto sem esperar a trava (medição F3-A2)."""
+    import sqlite3
+
+    outro = sqlite3.connect(str(eng.db.path), isolation_level=None)
+    outro.execute("BEGIN IMMEDIATE")
+    try:
+        _leve(eng, "aquecer o cache")  # monta o cache antes de medir
+        inicio = time.perf_counter()
+        r = light_recall(eng.db, eng.home, load_light_config(eng.home), "transformar mp4 em gif",
+                         session_id="s", deadline=inicio + 0.045)
+        gasto = time.perf_counter() - inicio
+        assert r is not None and r["context"] and r["recorded"] is False
+        assert gasto < 0.045, gasto
+    finally:
+        outro.execute("ROLLBACK")
+        outro.close()

@@ -44,6 +44,7 @@ MAX_CONSULTA = 4000
 KINDS = ("episodic", "semantic", "procedural", "executive")
 GRUPOS = {"conhecimentos": ("semantic", "executive"), "experiencias": ("episodic",), "procedimentos": ("procedural",)}
 REGISTRO_BUSY_MS = 50
+MARGEM_DO_PRAZO_MS = 40  # o que sobra para fechar o banco, montar o JSON e sair
 
 
 class PrazoEstourado(Exception):
@@ -284,7 +285,13 @@ def _recall(db: Database, home: Path, cfg: dict[str, Any], query: str, project: 
                              "included": len(incluidos), "insufficient": insuficiente, "latency_ms": latencia,
                              "door": "hook"})))
 
-        gravou, _ = db.try_write(registrar, busy_timeout_ms=REGISTRO_BUSY_MS)
+        # A espera pela trava respeita o prazo: sem folga, o contexto sai sem registro (medição da F3-A2:
+        # com outro processo gravando, esperar 50 ms fixos levava o p95 para perto de 300 ms).
+        espera = REGISTRO_BUSY_MS
+        if deadline is not None:
+            espera = int(min(REGISTRO_BUSY_MS, (deadline - time.perf_counter()) * 1000 - MARGEM_DO_PRAZO_MS))
+        if espera >= 1:
+            gravou, _ = db.try_write(registrar, busy_timeout_ms=espera)
         task_id = novo_id if gravou else None
 
     return {"task_id": task_id, "recorded": gravou, "insufficient": insuficiente,

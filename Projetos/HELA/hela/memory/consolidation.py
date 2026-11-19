@@ -53,6 +53,25 @@ def _chave_vencedora(m: dict[str, Any]) -> tuple:
             len(m["content"]), m["created_at"])
 
 
+def merge_group(service: MemoryService, vencedora: dict[str, Any], outras: list[dict[str, Any]], agora: str) -> None:
+    """Junta as outras na vencedora (chamar dentro de uma transação). Usado também pelo Evolution Engine."""
+    repo = service.memories
+    grupo = [vencedora, *outras]
+    acessos = [m["last_accessed"] for m in grupo if m["last_accessed"]]
+    repo.update(vencedora["id"], {
+        "access_count": sum(int(m["access_count"]) for m in grupo),
+        "last_accessed": max(acessos) if acessos else None,
+        "tags": sorted({t for m in grupo for t in m["tags"]}),
+        "importance": max(float(m["importance"]) for m in grupo),
+        "confidence": max(float(m["confidence"]) for m in grupo),
+        "updated_at": agora,
+    })
+    for outra in outras:
+        repo.update(outra["id"], {"status": "merged", "merged_into": vencedora["id"], "updated_at": agora})
+        service.relationships.repoint(outra["id"], vencedora["id"], agora)
+        service.events.log(agora, "memory.merged", "memory", outra["id"], {"into": vencedora["id"]})
+
+
 def consolidate(service: MemoryService, threshold: Optional[float] = None, dry_run: bool = False) -> ConsolidationReport:
     limiar = service.config.consolidation.threshold if threshold is None else threshold
     repo = service.memories
@@ -98,20 +117,7 @@ def consolidate(service: MemoryService, threshold: Optional[float] = None, dry_r
     with service.db.transaction():
         agora = service.now()
         for vencedora, outras, _ in clusters:
-            grupo = [vencedora, *outras]
-            acessos = [m["last_accessed"] for m in grupo if m["last_accessed"]]
-            repo.update(vencedora["id"], {
-                "access_count": sum(int(m["access_count"]) for m in grupo),
-                "last_accessed": max(acessos) if acessos else None,
-                "tags": sorted({t for m in grupo for t in m["tags"]}),
-                "importance": max(float(m["importance"]) for m in grupo),
-                "confidence": max(float(m["confidence"]) for m in grupo),
-                "updated_at": agora,
-            })
-            for outra in outras:
-                repo.update(outra["id"], {"status": "merged", "merged_into": vencedora["id"], "updated_at": agora})
-                service.relationships.repoint(outra["id"], vencedora["id"], agora)
-                service.events.log(agora, "memory.merged", "memory", outra["id"], {"into": vencedora["id"]})
+            merge_group(service, vencedora, outras, agora)
         service.events.log(agora, "consolidation.run", None, None,
                            {"clusters": len(clusters), "merged": relatorio.merged, "threshold": limiar})
     return relatorio

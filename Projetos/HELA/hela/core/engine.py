@@ -25,6 +25,7 @@ from hela.core.paths import db_path, hela_home
 from hela.core.router import CognitiveRouter
 from hela.execution.procedures import ProcedureService
 from hela.learning.classifier import TaskClassifier
+from hela.learning.evolution import EvolutionEngine
 from hela.learning.feedback import FeedbackLearner
 from hela.learning.ranker import StrategyRanker
 from hela.memory.activation import GraphActivation
@@ -84,6 +85,7 @@ class Engine:
         self.ranker = StrategyRanker(self.db, self.config, clock=clock)
         self.learner = FeedbackLearner(self.memories, self.ranker, self.config, clock=clock)
         self.procedures = ProcedureService(self.memories, self.config, searcher=self.searcher)
+        self.evolution = EvolutionEngine(self.memories, self.ranker, self.procedures, self.config, clock=clock)
         self.router = CognitiveRouter(self.memories, self.searcher, self.classifier, self.ranker, self.procedures,
                                       self.config, clock=clock)
 

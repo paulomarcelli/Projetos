@@ -288,7 +288,14 @@ Veja o `README.md` do projeto. Em resumo:
 - **Vídeo de 19/11, "E se você fosse a última pessoa do mundo?": pronto para produzir no estilo realista.**
   - **Roteiro:** aprovado pela Sabrina em 17/11; a fala não muda. Está na página do vídeo no Notion (Calendário de
     conteúdo) e na seção 3 desta passagem.
-  - **Falta a voz da Maia:** gravar no ElevenLabs, salvar em `audio/ultima-pessoa-maia.mp3` e rodar o `preparar.mjs`.
+  - **Voz da Maia gravada (19/11):**
+    - `audio/ultima-pessoa-maia.mp3`, 65,6 s, normalizada para -13,95 LUFS em `public/audio/ultima-pessoa.wav` (fora do
+      git: gere de novo com `node scripts/normalizar.mjs audio/ultima-pessoa-maia.mp3 public/audio/ultima-pessoa.wav`);
+    - roteiro em `videos/ultima-pessoa.roteiro.txt`;
+    - legenda alinhada em `videos/ultima-pessoa.json` (9 trechos, 172 de 178 palavras com tempo direto). A fala bate
+      com o roteiro aprovado.
+    - Com o fechamento, o vídeo fica com ~69,6 s, mais de 1 minuto.
+    - Na legenda de frase inteira (v2), escrever o ano como "1986".
   - **Tema já postado:** há vídeos grandes do tema (até 25 milhões em português). O Paulo decidiu manter, com a Avenida
     Paulista real e o contador como diferencial.
   - **Lugar, dados do canto e lista de cena:** a lista diz o que aparece e some em cada palavra da fala. Está em

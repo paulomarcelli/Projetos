@@ -1,0 +1,1311 @@
+{
+  "titulo": "E se você fosse a última pessoa do mundo?",
+  "audio": "audio/ultima-pessoa.wav",
+  "duracaoAudio": 65.646,
+  "roteiro": "[mysterious] E se você acordasse amanhã e fosse a última pessoa do mundo?\n\nVocê manda mensagem e ninguém responde. A rua está vazia. Nenhum carro, nenhuma voz... só o vento.\n\nNas primeiras horas, a luz ainda acende. Parece só um feriado muito estranho.\n\nMas as usinas de energia precisam de gente. Sem ninguém para cuidar delas, em poucas horas elas vão parando, e as cidades se apagam, uma por uma.\n\nOs túneis do metrô dependem de bombas para tirar a água. Com as bombas desligadas, eles começam a alagar.\n\n[calm] A comida da geladeira estraga. O supermercado vira o seu estoque, mas a comida fresca dura pouco.\n\nCom os anos, o mato cresce nas rachaduras do asfalto. A chuva entra pelas janelas quebradas e vai estragando os prédios por dentro.\n\nE dá para ver isso hoje. Pripyat, a cidade esvaziada depois do acidente de Chernobyl, em mil novecentos e oitenta e seis, está tomada por árvores.\n\n[curious] E você? Qual seria a primeira coisa que você faria se acordasse sozinho no mundo? Me conta aqui nos comentários, que eu quero saber.",
+  "pergunta": "Você ficava na cidade ou ia embora?",
+  "trechos": [
+    {
+      "texto": "E se você acordasse amanhã e fosse a última pessoa do mundo?",
+      "inicio": 0.07,
+      "fim": 4.065,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Você manda mensagem e ninguém responde. A rua está vazia. Nenhum carro, nenhuma voz... só o vento.",
+      "inicio": 4.718,
+      "fim": 12.398,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Nas primeiras horas, a luz ainda acende. Parece só um feriado muito estranho.",
+      "inicio": 12.945,
+      "fim": 17.727,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Mas as usinas de energia precisam de gente. Sem ninguém para cuidar delas, em poucas horas elas vão parando, e as cidades se apagam, uma por uma.",
+      "inicio": 18.228,
+      "fim": 27.252,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Os túneis do metrô dependem de bombas para tirar a água. Com as bombas desligadas, eles começam a alagar.",
+      "inicio": 27.711,
+      "fim": 33.884,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "A comida da geladeira estraga. O supermercado vira o seu estoque, mas a comida fresca dura pouco.",
+      "inicio": 34.302,
+      "fim": 40.188,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "Com os anos, o mato cresce nas rachaduras do asfalto. A chuva entra pelas janelas quebradas e vai estragando os prédios por dentro.",
+      "inicio": 40.66,
+      "fim": 48.341,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "E dá para ver isso hoje. Pripyat, a cidade esvaziada depois do acidente de Chernobyl, em mil novecentos e oitenta e seis, está tomada por árvores.",
+      "inicio": 48.783,
+      "fim": 57.789,
+      "cena": "provisoria"
+    },
+    {
+      "texto": "E você? Qual seria a primeira coisa que você faria se acordasse sozinho no mundo? Me conta aqui nos comentários, que eu quero saber.",
+      "inicio": 58.158,
+      "fim": 65.461,
+      "cena": "provisoria"
+    }
+  ],
+  "palavras": [
+    {
+      "texto": "E",
+      "paragrafo": 0,
+      "inicioMs": 70,
+      "fimMs": 140,
+      "casou": true
+    },
+    {
+      "texto": "se",
+      "paragrafo": 0,
+      "inicioMs": 140,
+      "fimMs": 260,
+      "casou": true
+    },
+    {
+      "texto": "você",
+      "paragrafo": 0,
+      "inicioMs": 260,
+      "fimMs": 600,
+      "casou": true
+    },
+    {
+      "texto": "acordasse",
+      "paragrafo": 0,
+      "inicioMs": 600,
+      "fimMs": 1280,
+      "casou": true
+    },
+    {
+      "texto": "amanhã",
+      "paragrafo": 0,
+      "inicioMs": 1280,
+      "fimMs": 1802,
+      "casou": true
+    },
+    {
+      "texto": "e",
+      "paragrafo": 0,
+      "inicioMs": 1983,
+      "fimMs": 1990,
+      "casou": true
+    },
+    {
+      "texto": "fosse",
+      "paragrafo": 0,
+      "inicioMs": 1990,
+      "fimMs": 2430,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 0,
+      "inicioMs": 2430,
+      "fimMs": 2520,
+      "casou": true
+    },
+    {
+      "texto": "última",
+      "paragrafo": 0,
+      "inicioMs": 2520,
+      "fimMs": 3190,
+      "casou": true
+    },
+    {
+      "texto": "pessoa",
+      "paragrafo": 0,
+      "inicioMs": 3190,
+      "fimMs": 3760,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 0,
+      "inicioMs": 3760,
+      "fimMs": 3950,
+      "casou": true
+    },
+    {
+      "texto": "mundo?",
+      "paragrafo": 0,
+      "inicioMs": 3950,
+      "fimMs": 4065,
+      "casou": true
+    },
+    {
+      "texto": "Você",
+      "paragrafo": 1,
+      "inicioMs": 4718,
+      "fimMs": 4980,
+      "casou": true
+    },
+    {
+      "texto": "manda",
+      "paragrafo": 1,
+      "inicioMs": 4980,
+      "fimMs": 5350,
+      "casou": true
+    },
+    {
+      "texto": "mensagem",
+      "paragrafo": 1,
+      "inicioMs": 5350,
+      "fimMs": 6020,
+      "casou": true
+    },
+    {
+      "texto": "e",
+      "paragrafo": 1,
+      "inicioMs": 6020,
+      "fimMs": 6050,
+      "casou": true
+    },
+    {
+      "texto": "ninguém",
+      "paragrafo": 1,
+      "inicioMs": 6050,
+      "fimMs": 6630,
+      "casou": true
+    },
+    {
+      "texto": "responde.",
+      "paragrafo": 1,
+      "inicioMs": 6630,
+      "fimMs": 7197,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 1,
+      "inicioMs": 7660,
+      "fimMs": 7800,
+      "casou": true
+    },
+    {
+      "texto": "rua",
+      "paragrafo": 1,
+      "inicioMs": 7800,
+      "fimMs": 7860,
+      "casou": true
+    },
+    {
+      "texto": "está",
+      "paragrafo": 1,
+      "inicioMs": 7860,
+      "fimMs": 8300,
+      "casou": true
+    },
+    {
+      "texto": "vazia.",
+      "paragrafo": 1,
+      "inicioMs": 8300,
+      "fimMs": 8702,
+      "casou": true
+    },
+    {
+      "texto": "Nenhum",
+      "paragrafo": 1,
+      "inicioMs": 9135,
+      "fimMs": 9580,
+      "casou": true
+    },
+    {
+      "texto": "carro,",
+      "paragrafo": 1,
+      "inicioMs": 9580,
+      "fimMs": 9992,
+      "casou": true
+    },
+    {
+      "texto": "nenhuma",
+      "paragrafo": 1,
+      "inicioMs": 10232,
+      "fimMs": 10920,
+      "casou": true
+    },
+    {
+      "texto": "voz...",
+      "paragrafo": 1,
+      "inicioMs": 10920,
+      "fimMs": 11180,
+      "casou": true
+    },
+    {
+      "texto": "só",
+      "paragrafo": 1,
+      "inicioMs": 11565,
+      "fimMs": 11790,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 1,
+      "inicioMs": 11790,
+      "fimMs": 11900,
+      "casou": true
+    },
+    {
+      "texto": "vento.",
+      "paragrafo": 1,
+      "inicioMs": 11900,
+      "fimMs": 12398,
+      "casou": true
+    },
+    {
+      "texto": "Nas",
+      "paragrafo": 2,
+      "inicioMs": 12945,
+      "fimMs": 13140,
+      "casou": true
+    },
+    {
+      "texto": "primeiras",
+      "paragrafo": 2,
+      "inicioMs": 13140,
+      "fimMs": 13720,
+      "casou": true
+    },
+    {
+      "texto": "horas,",
+      "paragrafo": 2,
+      "inicioMs": 13720,
+      "fimMs": 14230,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 2,
+      "inicioMs": 14230,
+      "fimMs": 14300,
+      "casou": true
+    },
+    {
+      "texto": "luz",
+      "paragrafo": 2,
+      "inicioMs": 14300,
+      "fimMs": 14520,
+      "casou": true
+    },
+    {
+      "texto": "ainda",
+      "paragrafo": 2,
+      "inicioMs": 14520,
+      "fimMs": 14890,
+      "casou": true
+    },
+    {
+      "texto": "acende.",
+      "paragrafo": 2,
+      "inicioMs": 14890,
+      "fimMs": 15294,
+      "casou": true
+    },
+    {
+      "texto": "Parece",
+      "paragrafo": 2,
+      "inicioMs": 15725,
+      "fimMs": 16080,
+      "casou": true
+    },
+    {
+      "texto": "só",
+      "paragrafo": 2,
+      "inicioMs": 16080,
+      "fimMs": 16430,
+      "casou": true
+    },
+    {
+      "texto": "um",
+      "paragrafo": 2,
+      "inicioMs": 16430,
+      "fimMs": 16480,
+      "casou": true
+    },
+    {
+      "texto": "feriado",
+      "paragrafo": 2,
+      "inicioMs": 16480,
+      "fimMs": 17040,
+      "casou": true
+    },
+    {
+      "texto": "muito",
+      "paragrafo": 2,
+      "inicioMs": 17040,
+      "fimMs": 17430,
+      "casou": true
+    },
+    {
+      "texto": "estranho.",
+      "paragrafo": 2,
+      "inicioMs": 17430,
+      "fimMs": 17727,
+      "casou": true
+    },
+    {
+      "texto": "Mas",
+      "paragrafo": 3,
+      "inicioMs": 18228,
+      "fimMs": 18320,
+      "casou": true
+    },
+    {
+      "texto": "as",
+      "paragrafo": 3,
+      "inicioMs": 18320,
+      "fimMs": 18460,
+      "casou": true
+    },
+    {
+      "texto": "usinas",
+      "paragrafo": 3,
+      "inicioMs": 18460,
+      "fimMs": 18890,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 3,
+      "inicioMs": 18890,
+      "fimMs": 19030,
+      "casou": true
+    },
+    {
+      "texto": "energia",
+      "paragrafo": 3,
+      "inicioMs": 19030,
+      "fimMs": 19550,
+      "casou": true
+    },
+    {
+      "texto": "precisam",
+      "paragrafo": 3,
+      "inicioMs": 19550,
+      "fimMs": 20130,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 3,
+      "inicioMs": 20130,
+      "fimMs": 20270,
+      "casou": true
+    },
+    {
+      "texto": "gente.",
+      "paragrafo": 3,
+      "inicioMs": 20270,
+      "fimMs": 20678,
+      "casou": true
+    },
+    {
+      "texto": "Sem",
+      "paragrafo": 3,
+      "inicioMs": 21049,
+      "fimMs": 21140,
+      "casou": true
+    },
+    {
+      "texto": "ninguém",
+      "paragrafo": 3,
+      "inicioMs": 21140,
+      "fimMs": 21600,
+      "casou": true
+    },
+    {
+      "texto": "para",
+      "paragrafo": 3,
+      "inicioMs": 21600,
+      "fimMs": 21850,
+      "casou": true
+    },
+    {
+      "texto": "cuidar",
+      "paragrafo": 3,
+      "inicioMs": 21850,
+      "fimMs": 22200,
+      "casou": true
+    },
+    {
+      "texto": "delas,",
+      "paragrafo": 3,
+      "inicioMs": 22200,
+      "fimMs": 22710,
+      "casou": true
+    },
+    {
+      "texto": "em",
+      "paragrafo": 3,
+      "inicioMs": 22710,
+      "fimMs": 22790,
+      "casou": true
+    },
+    {
+      "texto": "poucas",
+      "paragrafo": 3,
+      "inicioMs": 22790,
+      "fimMs": 23250,
+      "casou": true
+    },
+    {
+      "texto": "horas",
+      "paragrafo": 3,
+      "inicioMs": 23250,
+      "fimMs": 23640,
+      "casou": true
+    },
+    {
+      "texto": "elas",
+      "paragrafo": 3,
+      "inicioMs": 23640,
+      "fimMs": 23950,
+      "casou": true
+    },
+    {
+      "texto": "vão",
+      "paragrafo": 3,
+      "inicioMs": 23950,
+      "fimMs": 24260,
+      "casou": true
+    },
+    {
+      "texto": "parando,",
+      "paragrafo": 3,
+      "inicioMs": 24260,
+      "fimMs": 24605,
+      "casou": true
+    },
+    {
+      "texto": "e",
+      "paragrafo": 3,
+      "inicioMs": 24971,
+      "fimMs": 25091,
+      "casou": true
+    },
+    {
+      "texto": "as",
+      "paragrafo": 3,
+      "inicioMs": 25091,
+      "fimMs": 25130,
+      "casou": true
+    },
+    {
+      "texto": "cidades",
+      "paragrafo": 3,
+      "inicioMs": 25130,
+      "fimMs": 25820,
+      "casou": true
+    },
+    {
+      "texto": "se",
+      "paragrafo": 3,
+      "inicioMs": 25820,
+      "fimMs": 25870,
+      "casou": true
+    },
+    {
+      "texto": "apagam,",
+      "paragrafo": 3,
+      "inicioMs": 25870,
+      "fimMs": 26211,
+      "casou": true
+    },
+    {
+      "texto": "uma",
+      "paragrafo": 3,
+      "inicioMs": 26472,
+      "fimMs": 26800,
+      "casou": true
+    },
+    {
+      "texto": "por",
+      "paragrafo": 3,
+      "inicioMs": 26800,
+      "fimMs": 27050,
+      "casou": true
+    },
+    {
+      "texto": "uma.",
+      "paragrafo": 3,
+      "inicioMs": 27050,
+      "fimMs": 27252,
+      "casou": true
+    },
+    {
+      "texto": "Os",
+      "paragrafo": 4,
+      "inicioMs": 27711,
+      "fimMs": 27730,
+      "casou": true
+    },
+    {
+      "texto": "túneis",
+      "paragrafo": 4,
+      "inicioMs": 27730,
+      "fimMs": 28220,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 4,
+      "inicioMs": 28220,
+      "fimMs": 28310,
+      "casou": true
+    },
+    {
+      "texto": "metrô",
+      "paragrafo": 4,
+      "inicioMs": 28310,
+      "fimMs": 28690,
+      "casou": true
+    },
+    {
+      "texto": "dependem",
+      "paragrafo": 4,
+      "inicioMs": 28690,
+      "fimMs": 29210,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 4,
+      "inicioMs": 29210,
+      "fimMs": 29340,
+      "casou": true
+    },
+    {
+      "texto": "bombas",
+      "paragrafo": 4,
+      "inicioMs": 29340,
+      "fimMs": 29730,
+      "casou": true
+    },
+    {
+      "texto": "para",
+      "paragrafo": 4,
+      "inicioMs": 29730,
+      "fimMs": 29990,
+      "casou": true
+    },
+    {
+      "texto": "tirar",
+      "paragrafo": 4,
+      "inicioMs": 29990,
+      "fimMs": 30310,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 4,
+      "inicioMs": 30310,
+      "fimMs": 30370,
+      "casou": true
+    },
+    {
+      "texto": "água.",
+      "paragrafo": 4,
+      "inicioMs": 30370,
+      "fimMs": 30652,
+      "casou": true
+    },
+    {
+      "texto": "Com",
+      "paragrafo": 4,
+      "inicioMs": 31068,
+      "fimMs": 31170,
+      "casou": true
+    },
+    {
+      "texto": "as",
+      "paragrafo": 4,
+      "inicioMs": 31170,
+      "fimMs": 31310,
+      "casou": true
+    },
+    {
+      "texto": "bombas",
+      "paragrafo": 4,
+      "inicioMs": 31310,
+      "fimMs": 31730,
+      "casou": true
+    },
+    {
+      "texto": "desligadas,",
+      "paragrafo": 4,
+      "inicioMs": 31730,
+      "fimMs": 32570,
+      "casou": true
+    },
+    {
+      "texto": "eles",
+      "paragrafo": 4,
+      "inicioMs": 32570,
+      "fimMs": 32850,
+      "casou": true
+    },
+    {
+      "texto": "começam",
+      "paragrafo": 4,
+      "inicioMs": 32850,
+      "fimMs": 33420,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 4,
+      "inicioMs": 33420,
+      "fimMs": 33490,
+      "casou": true
+    },
+    {
+      "texto": "alagar.",
+      "paragrafo": 4,
+      "inicioMs": 33490,
+      "fimMs": 33884,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 5,
+      "inicioMs": 34302,
+      "fimMs": 34320,
+      "casou": true
+    },
+    {
+      "texto": "comida",
+      "paragrafo": 5,
+      "inicioMs": 34320,
+      "fimMs": 34710,
+      "casou": true
+    },
+    {
+      "texto": "da",
+      "paragrafo": 5,
+      "inicioMs": 34710,
+      "fimMs": 34860,
+      "casou": true
+    },
+    {
+      "texto": "geladeira",
+      "paragrafo": 5,
+      "inicioMs": 34860,
+      "fimMs": 35540,
+      "casou": true
+    },
+    {
+      "texto": "estraga.",
+      "paragrafo": 5,
+      "inicioMs": 35540,
+      "fimMs": 36016,
+      "casou": true
+    },
+    {
+      "texto": "O",
+      "paragrafo": 5,
+      "inicioMs": 36401,
+      "fimMs": 36521,
+      "casou": true
+    },
+    {
+      "texto": "supermercado",
+      "paragrafo": 5,
+      "inicioMs": 36521,
+      "fimMs": 37170,
+      "casou": true
+    },
+    {
+      "texto": "vira",
+      "paragrafo": 5,
+      "inicioMs": 37170,
+      "fimMs": 37430,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 5,
+      "inicioMs": 37430,
+      "fimMs": 37480,
+      "casou": true
+    },
+    {
+      "texto": "seu",
+      "paragrafo": 5,
+      "inicioMs": 37480,
+      "fimMs": 37690,
+      "casou": true
+    },
+    {
+      "texto": "estoque,",
+      "paragrafo": 5,
+      "inicioMs": 37690,
+      "fimMs": 38180,
+      "casou": true
+    },
+    {
+      "texto": "mas",
+      "paragrafo": 5,
+      "inicioMs": 38466,
+      "fimMs": 38590,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 5,
+      "inicioMs": 38590,
+      "fimMs": 38700,
+      "casou": true
+    },
+    {
+      "texto": "comida",
+      "paragrafo": 5,
+      "inicioMs": 38700,
+      "fimMs": 39130,
+      "casou": true
+    },
+    {
+      "texto": "fresca",
+      "paragrafo": 5,
+      "inicioMs": 39130,
+      "fimMs": 39590,
+      "casou": true
+    },
+    {
+      "texto": "dura",
+      "paragrafo": 5,
+      "inicioMs": 39590,
+      "fimMs": 39900,
+      "casou": true
+    },
+    {
+      "texto": "pouco.",
+      "paragrafo": 5,
+      "inicioMs": 39900,
+      "fimMs": 40188,
+      "casou": true
+    },
+    {
+      "texto": "Com",
+      "paragrafo": 6,
+      "inicioMs": 40660,
+      "fimMs": 40780,
+      "casou": true
+    },
+    {
+      "texto": "os",
+      "paragrafo": 6,
+      "inicioMs": 40780,
+      "fimMs": 40910,
+      "casou": true
+    },
+    {
+      "texto": "anos,",
+      "paragrafo": 6,
+      "inicioMs": 40910,
+      "fimMs": 41340,
+      "casou": true
+    },
+    {
+      "texto": "o",
+      "paragrafo": 6,
+      "inicioMs": 41340,
+      "fimMs": 41420,
+      "casou": true
+    },
+    {
+      "texto": "mato",
+      "paragrafo": 6,
+      "inicioMs": 41420,
+      "fimMs": 41710,
+      "casou": true
+    },
+    {
+      "texto": "cresce",
+      "paragrafo": 6,
+      "inicioMs": 41710,
+      "fimMs": 42140,
+      "casou": true
+    },
+    {
+      "texto": "nas",
+      "paragrafo": 6,
+      "inicioMs": 42140,
+      "fimMs": 42360,
+      "casou": true
+    },
+    {
+      "texto": "rachaduras",
+      "paragrafo": 6,
+      "inicioMs": 42360,
+      "fimMs": 43080,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 6,
+      "inicioMs": 43080,
+      "fimMs": 43220,
+      "casou": true
+    },
+    {
+      "texto": "asfalto.",
+      "paragrafo": 6,
+      "inicioMs": 43220,
+      "fimMs": 43701,
+      "casou": true
+    },
+    {
+      "texto": "A",
+      "paragrafo": 6,
+      "inicioMs": 44127,
+      "fimMs": 44130,
+      "casou": true
+    },
+    {
+      "texto": "chuva",
+      "paragrafo": 6,
+      "inicioMs": 44130,
+      "fimMs": 44430,
+      "casou": true
+    },
+    {
+      "texto": "entra",
+      "paragrafo": 6,
+      "inicioMs": 44430,
+      "fimMs": 44770,
+      "casou": true
+    },
+    {
+      "texto": "pelas",
+      "paragrafo": 6,
+      "inicioMs": 44770,
+      "fimMs": 45100,
+      "casou": true
+    },
+    {
+      "texto": "janelas",
+      "paragrafo": 6,
+      "inicioMs": 45100,
+      "fimMs": 45560,
+      "casou": true
+    },
+    {
+      "texto": "quebradas",
+      "paragrafo": 6,
+      "inicioMs": 45560,
+      "fimMs": 46240,
+      "casou": true
+    },
+    {
+      "texto": "e",
+      "paragrafo": 6,
+      "inicioMs": 46240,
+      "fimMs": 46330,
+      "casou": true
+    },
+    {
+      "texto": "vai",
+      "paragrafo": 6,
+      "inicioMs": 46330,
+      "fimMs": 46500,
+      "casou": true
+    },
+    {
+      "texto": "estragando",
+      "paragrafo": 6,
+      "inicioMs": 46500,
+      "fimMs": 47170,
+      "casou": true
+    },
+    {
+      "texto": "os",
+      "paragrafo": 6,
+      "inicioMs": 47170,
+      "fimMs": 47360,
+      "casou": true
+    },
+    {
+      "texto": "prédios",
+      "paragrafo": 6,
+      "inicioMs": 47360,
+      "fimMs": 47830,
+      "casou": true
+    },
+    {
+      "texto": "por",
+      "paragrafo": 6,
+      "inicioMs": 47830,
+      "fimMs": 48030,
+      "casou": true
+    },
+    {
+      "texto": "dentro.",
+      "paragrafo": 6,
+      "inicioMs": 48030,
+      "fimMs": 48341,
+      "casou": true
+    },
+    {
+      "texto": "E",
+      "paragrafo": 7,
+      "inicioMs": 48783,
+      "fimMs": 48903,
+      "casou": true
+    },
+    {
+      "texto": "dá",
+      "paragrafo": 7,
+      "inicioMs": 48903,
+      "fimMs": 48970,
+      "casou": true
+    },
+    {
+      "texto": "para",
+      "paragrafo": 7,
+      "inicioMs": 48970,
+      "fimMs": 49260,
+      "casou": true
+    },
+    {
+      "texto": "ver",
+      "paragrafo": 7,
+      "inicioMs": 49260,
+      "fimMs": 49490,
+      "casou": true
+    },
+    {
+      "texto": "isso",
+      "paragrafo": 7,
+      "inicioMs": 49490,
+      "fimMs": 49770,
+      "casou": true
+    },
+    {
+      "texto": "hoje.",
+      "paragrafo": 7,
+      "inicioMs": 49770,
+      "fimMs": 50001,
+      "casou": true
+    },
+    {
+      "texto": "Pripyat,",
+      "paragrafo": 7,
+      "inicioMs": 50431,
+      "fimMs": 50940,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 7,
+      "inicioMs": 50940,
+      "fimMs": 51020,
+      "casou": true
+    },
+    {
+      "texto": "cidade",
+      "paragrafo": 7,
+      "inicioMs": 51020,
+      "fimMs": 51440,
+      "casou": true
+    },
+    {
+      "texto": "esvaziada",
+      "paragrafo": 7,
+      "inicioMs": 51440,
+      "fimMs": 52070,
+      "casou": true
+    },
+    {
+      "texto": "depois",
+      "paragrafo": 7,
+      "inicioMs": 52070,
+      "fimMs": 52530,
+      "casou": true
+    },
+    {
+      "texto": "do",
+      "paragrafo": 7,
+      "inicioMs": 52530,
+      "fimMs": 52630,
+      "casou": true
+    },
+    {
+      "texto": "acidente",
+      "paragrafo": 7,
+      "inicioMs": 52630,
+      "fimMs": 53190,
+      "casou": true
+    },
+    {
+      "texto": "de",
+      "paragrafo": 7,
+      "inicioMs": 53190,
+      "fimMs": 53330,
+      "casou": true
+    },
+    {
+      "texto": "Chernobyl,",
+      "paragrafo": 7,
+      "inicioMs": 53330,
+      "fimMs": 54040,
+      "casou": true
+    },
+    {
+      "texto": "em",
+      "paragrafo": 7,
+      "inicioMs": 54040,
+      "fimMs": 54300,
+      "casou": true
+    },
+    {
+      "texto": "mil",
+      "paragrafo": 7,
+      "inicioMs": 54300,
+      "fimMs": 54510,
+      "casou": false
+    },
+    {
+      "texto": "novecentos",
+      "paragrafo": 7,
+      "inicioMs": 54510,
+      "fimMs": 55210,
+      "casou": false
+    },
+    {
+      "texto": "e",
+      "paragrafo": 7,
+      "inicioMs": 55210,
+      "fimMs": 55280,
+      "casou": false
+    },
+    {
+      "texto": "oitenta",
+      "paragrafo": 7,
+      "inicioMs": 55280,
+      "fimMs": 55770,
+      "casou": false
+    },
+    {
+      "texto": "e",
+      "paragrafo": 7,
+      "inicioMs": 55770,
+      "fimMs": 55840,
+      "casou": false
+    },
+    {
+      "texto": "seis,",
+      "paragrafo": 7,
+      "inicioMs": 55840,
+      "fimMs": 55951,
+      "casou": false
+    },
+    {
+      "texto": "está",
+      "paragrafo": 7,
+      "inicioMs": 56212,
+      "fimMs": 56520,
+      "casou": true
+    },
+    {
+      "texto": "tomada",
+      "paragrafo": 7,
+      "inicioMs": 56520,
+      "fimMs": 56970,
+      "casou": true
+    },
+    {
+      "texto": "por",
+      "paragrafo": 7,
+      "inicioMs": 56970,
+      "fimMs": 57200,
+      "casou": true
+    },
+    {
+      "texto": "árvores.",
+      "paragrafo": 7,
+      "inicioMs": 57200,
+      "fimMs": 57789,
+      "casou": true
+    },
+    {
+      "texto": "E",
+      "paragrafo": 8,
+      "inicioMs": 58158,
+      "fimMs": 58210,
+      "casou": true
+    },
+    {
+      "texto": "você?",
+      "paragrafo": 8,
+      "inicioMs": 58210,
+      "fimMs": 58684,
+      "casou": true
+    },
+    {
+      "texto": "Qual",
+      "paragrafo": 8,
+      "inicioMs": 59058,
+      "fimMs": 59310,
+      "casou": true
+    },
+    {
+      "texto": "seria",
+      "paragrafo": 8,
+      "inicioMs": 59310,
+      "fimMs": 59630,
+      "casou": true
+    },
+    {
+      "texto": "a",
+      "paragrafo": 8,
+      "inicioMs": 59630,
+      "fimMs": 59680,
+      "casou": true
+    },
+    {
+      "texto": "primeira",
+      "paragrafo": 8,
+      "inicioMs": 59680,
+      "fimMs": 60250,
+      "casou": true
+    },
+    {
+      "texto": "coisa",
+      "paragrafo": 8,
+      "inicioMs": 60250,
+      "fimMs": 60600,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 8,
+      "inicioMs": 60600,
+      "fimMs": 60790,
+      "casou": true
+    },
+    {
+      "texto": "você",
+      "paragrafo": 8,
+      "inicioMs": 60790,
+      "fimMs": 61110,
+      "casou": true
+    },
+    {
+      "texto": "faria",
+      "paragrafo": 8,
+      "inicioMs": 61110,
+      "fimMs": 61470,
+      "casou": true
+    },
+    {
+      "texto": "se",
+      "paragrafo": 8,
+      "inicioMs": 61470,
+      "fimMs": 61560,
+      "casou": true
+    },
+    {
+      "texto": "acordasse",
+      "paragrafo": 8,
+      "inicioMs": 61560,
+      "fimMs": 62140,
+      "casou": true
+    },
+    {
+      "texto": "sozinho",
+      "paragrafo": 8,
+      "inicioMs": 62140,
+      "fimMs": 62590,
+      "casou": true
+    },
+    {
+      "texto": "no",
+      "paragrafo": 8,
+      "inicioMs": 62590,
+      "fimMs": 62720,
+      "casou": true
+    },
+    {
+      "texto": "mundo?",
+      "paragrafo": 8,
+      "inicioMs": 62720,
+      "fimMs": 62933,
+      "casou": true
+    },
+    {
+      "texto": "Me",
+      "paragrafo": 8,
+      "inicioMs": 63357,
+      "fimMs": 63380,
+      "casou": true
+    },
+    {
+      "texto": "conta",
+      "paragrafo": 8,
+      "inicioMs": 63380,
+      "fimMs": 63660,
+      "casou": true
+    },
+    {
+      "texto": "aqui",
+      "paragrafo": 8,
+      "inicioMs": 63660,
+      "fimMs": 63830,
+      "casou": true
+    },
+    {
+      "texto": "nos",
+      "paragrafo": 8,
+      "inicioMs": 63830,
+      "fimMs": 63970,
+      "casou": true
+    },
+    {
+      "texto": "comentários,",
+      "paragrafo": 8,
+      "inicioMs": 63970,
+      "fimMs": 64720,
+      "casou": true
+    },
+    {
+      "texto": "que",
+      "paragrafo": 8,
+      "inicioMs": 64720,
+      "fimMs": 64860,
+      "casou": true
+    },
+    {
+      "texto": "eu",
+      "paragrafo": 8,
+      "inicioMs": 64860,
+      "fimMs": 64930,
+      "casou": true
+    },
+    {
+      "texto": "quero",
+      "paragrafo": 8,
+      "inicioMs": 64930,
+      "fimMs": 65180,
+      "casou": true
+    },
+    {
+      "texto": "saber.",
+      "paragrafo": 8,
+      "inicioMs": 65180,
+      "fimMs": 65461,
+      "casou": true
+    }
+  ]
+}

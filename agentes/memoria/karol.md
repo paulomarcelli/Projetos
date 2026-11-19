@@ -114,6 +114,11 @@ aqui.
   arquivo depois de outro já gravado. Conferir com `grep` depois, ou checar tudo antes de escrever.
 - **Regra nova de redação quebra ids.** O hex solto pegou o uuid das memórias no export: rodar a suíte inteira, não só
   os testes do módulo, e excluir os formatos internos (uuid hex 32, commit 40).
+- **19/11/2026 · Melhor esforço com gerenciador de contexto não funciona** se o `BEGIN` falhar antes do `yield`
+  ("generator didn't yield"): usar uma função `try_write(fn)`. E procurar escritas escondidas em leituras (o
+  `WeightStore.active()` gravava a versão 1 na primeira leitura e travava o `recall`).
+- **A porta é do código, nunca do corpo.** `door=` no `Engine` para `learn`, `feedback` e `relationships`: origem,
+  teto de qualidade e rótulo explícito dependem de quem chama, não do que o JSON diz.
 
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
@@ -135,3 +140,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 18/11/2026 | HELA Fase 2 (Cognitive Core): pacote, SQLite WAL com esquema completo, segurança, Memory Engine com busca híbrida, grafo, consolidação, export/import, Engine e CLI; reforços do seguranca.md | a avaliar | ~5 h (com uma pausa pelo limite de uso) | sem crédito pago | Commitei a pasta inteira e levei arquivos da Sabrina pela metade: só os meus caminhos daqui em diante. Testes de segurança: escrever e ver falhar antes, ou fazer mutação logo |
 | 18–19/11/2026 | HELA Fase 3 (Intelligence): classificador (regras + Naive Bayes só com rótulos humanos), ranker (Wilson + custos), feedback, evolução (replay Brier, snapshot, rollback), router (9 passos, limiar medido), otimizador, execution intelligence, 8 operações do Engine, `docs/api.md` | a avaliar | ~6 h em duas sessões (pausa pelo limite de uso) | sem crédito pago | O conjunto-ouro foi escrito por mim: na Fase 7, medir com consultas reais. Mutação logo depois de cada teste de proteção funcionou bem (classificador e aprovação) |
 | 19/11/2026 | HELA: correção dos achados altos A-1 a A-7 da revisão da Fase 2 (migrações concorrentes, COMMIT, busca só leitura, ReDoS, lacunas da redação, injeção invisível, import e campos de confiança) | a avaliar | ~1,5 h | sem crédito pago | Os médios ficaram para depois (15 testes de ataque ainda vermelhos) |
+| 19/11/2026 | HELA: backup assinado (HMAC-SHA256, `--trusted` só no terminal e só na CLI) e revisão da Fase 3 (F3-A1, F3-A3, parte do F3-A4) | a avaliar | ~1,5 h | sem crédito pago | Parei antes da Fase 4 pelo tamanho da sessão: começar a Fase 4 numa sessão nova, pelo hook leve (F3-A2) |

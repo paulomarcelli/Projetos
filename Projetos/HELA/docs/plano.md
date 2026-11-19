@@ -288,7 +288,26 @@ invólucro, que o MCP, os hooks e a API usam.
   - **Experimento de economia não aprovado** (US$ 6 a 30): a Fase 7 entrega o cálculo testado com dados sintéticos e
     diz que a economia comprovada ainda não foi medida.
   - **Logo:** fica para decidir depois.
-- [ ] Fase 4: Integração
+- [x] Revisão da Fase 3 (Sabrina, `docs/revisoes/2026-11-19-fase3.md`), parte que cabe antes da Fase 4 (Karol,
+  19/11/2026, testes em `tests/test_revisao_fase3.py`; 437 testes no total):
+  - **F3-A1:** as gravações do Router (tarefa, classificação, `retrievals`) e a criação da versão 1 dos pesos viraram
+    melhor esforço (`Database.try_write`, espera de 50 ms); o `recall` devolve o contexto em menos de 300 ms com outro
+    processo segurando a escrita e diz `recorded: false`.
+  - **F3-A3:** o `feedback` recebe a porta (`door`) em vez de `source`; só memória `active` recebe nota; uma nota (ou
+    reforço) por memória por tarefa; o resultado só conta memórias que o Router devolveu para a tarefa; teto de 0,8
+    para reforço vindo do MCP e dos hooks; peso de relação pelo MCP até 1; `label_source = explicit` só por pessoa.
+  - **F3-A4 (parte do Core):** origem web comparada sem caixa e por conteúdo (`web`, `fetch`, `search`, `http`); a
+    aprovação pela CLI mostra linguagem, origem e o aviso "revise linha a linha".
+- [ ] Fase 4: Integração. **Onde parou (19/11/2026):** nada da Fase 4 começou. Ordem combinada com a Sabrina:
+  1. **F3-A2 (critério de pronto):** módulo leve para o hook, sem `Engine` e sem pydantic; vetores num `.npy` com
+     `mmap`, invalidado por contador em `meta`; prazo interno de 250 ms; p95 < 300 ms em processo novo, com 10.000
+     memórias e outro processo gravando. Peças leves já prontas: `learning.rules`, `core.optimizer`,
+     `execution.validator`, `memory.activation`, `Database.try_write`, `search(record=False)`.
+  2. **F3-A4 (parte da porta):** a origem vem do hook (a ferramenta que trouxe o texto) e o MCP marca como web quando a
+     sessão teve `WebFetch`/`WebSearch` recente.
+  3. Skill, MCP (8 ferramentas sobre `Engine.<op>(door="mcp")`, sem `trusted`, sem aprovar), hooks (6 eventos,
+     fail-open), tokens do transcript com `token_source = "provider"` e `compute_cost`.
+  4. Médios do validador: a aprovação inclui a linguagem no hash; tirar `approve` da lista de ações do contrato.
 - [ ] Fase 5: Dashboard (5a DS da Sofia; 5b app)
 - [ ] Fase 6: Instalador
 - [ ] Fase 7: Validação

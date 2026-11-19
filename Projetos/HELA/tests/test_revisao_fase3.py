@@ -120,3 +120,31 @@ def test_rotulo_explicito_nao_vem_do_mcp(eng: Engine) -> None:
 def test_door_desconhecida(eng: Engine) -> None:
     with pytest.raises(InvalidInput, match="door"):
         eng.feedback(door="hacker", task_id="x", success=True)
+
+
+# --- F3-A4 · origem web por conteúdo, sem depender da caixa --------------------------------
+from hela.execution.procedures import ProcedureService  # noqa: E402
+
+
+@pytest.mark.parametrize("origem", ["Tool:WebFetch", "tool:webfetch", "WebSearch", "https://exemplo.com/post",
+                                    "web", "fetch de uma página", "TOOL:WEBSEARCH"])
+def test_origem_web_em_qualquer_forma_nao_e_confiavel(origem: str) -> None:
+    assert ProcedureService.trusted({"source": "mcp", "metadata": {"origin": origem}}) is False
+
+
+def test_origem_sem_web_continua_confiavel() -> None:
+    assert ProcedureService.trusted({"source": "manual", "metadata": {"origin": "tool:Bash"}}) is True
+    assert ProcedureService.trusted({"source": "mcp", "metadata": {}}) is True  # a porta resolve na Fase 4
+
+
+def test_aprovacao_pela_cli_mostra_origem_e_aviso(tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+                                                   capsys: pytest.CaptureFixture[str]) -> None:
+    from hela.cli import main
+    from hela.execution.validator import script_sha256
+
+    monkeypatch.setenv("HELA_HOME", str(tmp_path / "h"))
+    with Engine() as e:
+        p = e.learn(kind="procedural", content="testes", procedure={"name": "testes", "script": "pytest -q"})
+    assert main(["procedure", "approve", p["procedure"]["id"], "--sha256", script_sha256("pytest -q")]) == 0
+    err = capsys.readouterr().err
+    assert "origem: mcp" in err and "revise linha a linha" in err

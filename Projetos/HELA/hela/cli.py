@@ -152,6 +152,12 @@ def main(argv: Optional[list[str]] = None) -> int:
                 elif args.acao == "show":
                     _json({k: v for k, v in eng.procedures.get(args.id).items() if k != "context"})
                 elif args.acao == "approve":
+                    atual = eng.procedures.get(args.id)
+                    print(f"procedimento: {atual['name']} | linguagem: {atual['script_language']} | "
+                          f"origem: {eng.get(atual['memory_id'], record_access=False).source}"
+                          f"{' / ' + atual['origin'] if atual['origin'] else ''}", file=sys.stderr)
+                    print("aviso: texto vindo do Claude ou de uma ferramenta; revise linha a linha antes de aprovar",
+                          file=sys.stderr)
                     _json(eng.procedures.approve(args.id, args.sha256, args.acknowledge_findings, approver="cli"))
                 else:
                     _json(eng.procedures.revoke(args.id))

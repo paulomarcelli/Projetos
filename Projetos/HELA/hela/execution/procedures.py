@@ -33,6 +33,7 @@ from hela.storage.repositories.memories import MemoryFilter
 MAX_SCRIPT = 20_000
 MAX_STEPS = 50
 ACEITAS = frozenset(LANGUAGES) | frozenset(LANGUAGE_ALIASES)
+MARCAS_WEB = ("web", "fetch", "search", "http")
 ORIGENS_NAO_CONFIAVEIS = ("tool:WebFetch", "tool:WebSearch", "web")
 
 
@@ -94,8 +95,11 @@ class ProcedureService:
             return False
         if memoria.get("source") == "import":
             return False
-        origem = str((memoria.get("metadata") or {}).get("origin") or "")
-        return not origem.startswith(ORIGENS_NAO_CONFIAVEIS)
+        # Comparação sem caixa e por conteúdo (revisão F3-A4): "Tool:WebFetch", "WebSearch" ou uma URL contam
+        # como web. A origem declarada pelo chamador é só uma parte: na Fase 4 a porta (hook) define a origem.
+        origem = str((memoria.get("metadata") or {}).get("origin") or "").casefold()
+        fonte = str(memoria.get("source") or "").casefold()
+        return not any(marca in texto for texto in (origem, fonte) for marca in MARCAS_WEB)
 
     def _memoria(self, memory_id: Optional[str]) -> Optional[dict[str, Any]]:
         if not memory_id:

@@ -66,6 +66,7 @@ def test_memorias_usadas_sobem_e_descem(fl: FeedbackLearner) -> None:
     assert [x["id"] for x in r["memories_adjusted"]] == [a.id]
     depois = fl.memories.get(a.id, record_access=False)
     assert depois.quality > a.quality and depois.confidence > a.confidence
+    _recuperacao(fl, t_ruim, [b.id])  # só conta memória que o Router devolveu para a tarefa (F3-A3)
     fl.record_outcome(t_ruim, success=False, used_memory_ids=[b.id])
     pior = fl.memories.get(b.id, record_access=False)
     assert pior.quality < b.quality and pior.confidence < b.confidence
@@ -77,7 +78,9 @@ def test_procedimento_usado_conta_sucesso(fl: FeedbackLearner) -> None:
     m = _mem(fl, kind="procedural", content="rodar pytest -q na raiz")
     fl.db.conn.execute("INSERT INTO procedures (id, memory_id, name, created_at, updated_at)"
                        " VALUES ('p1', ?, 'testes', 'x', 'x')", (m.id,))
-    fl.record_outcome(_tarefa(fl, "test"), success=True, used_memory_ids=[m.id])
+    t = _tarefa(fl, "test")
+    _recuperacao(fl, t, [m.id])
+    fl.record_outcome(t, success=True, used_memory_ids=[m.id])
     linha = fl.db.conn.execute("SELECT success_count, failure_count, last_used FROM procedures").fetchone()
     assert (linha["success_count"], linha["failure_count"]) == (1, 0) and linha["last_used"]
 

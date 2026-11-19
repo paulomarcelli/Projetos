@@ -51,6 +51,18 @@ from hela.storage.repositories.memories import MemoryFilter
 
 M = TypeVar("M", bound=BaseModel)
 
+# Portas que chamam o Engine. A porta é do código (servidor MCP, API, hook, CLI), nunca do corpo da requisição.
+DOORS = ("mcp", "api", "hook", "cli", "manual")
+MACHINE_DOORS = ("mcp", "hook")          # máquina: teto de qualidade, sem rótulo explícito, peso de relação ≤ 1
+SOURCE_OF_DOOR = {"mcp": "claude", "hook": "hook", "api": "user", "cli": "user", "manual": "user"}
+
+
+def _porta(door: str) -> str:
+    if door not in DOORS:
+        raise InvalidInput(f"door precisa ser uma de {', '.join(DOORS)}")
+    return door
+
+
 # As 8 operações do contrato (docs/api.md), na ordem das ferramentas MCP hela_<nome>.
 OPERATIONS = ("recall", "classify", "recommend", "learn", "feedback", "procedure", "relationships", "stats")
 
@@ -235,8 +247,7 @@ class Engine:
 
         door: a porta que chamou (mcp, api, hook, cli). É do código, nunca do corpo da requisição (A-7).
         """
-        if door not in ("mcp", "api", "hook", "cli", "manual"):
-            raise InvalidInput("door precisa ser mcp, api, hook, cli ou manual")
+        _porta(door)
         r = _validar(LearnRequest, entrada)
         procedimento = None
         if r.procedure is not None:
@@ -263,12 +274,26 @@ class Engine:
         if r.category is not None:
             if not r.task_id:
                 raise InvalidInput("category (rótulo explícito) precisa de task_id")
-            rotulo = self.learner.correct_category(r.task_id, r.category, source="explicit")
+            # Pelo MCP ou hook, a categoria é correção da máquina ('feedback'), nunca 'explicit' (revisão F3-A3).
+            rotulo = self.learner.correct_category(r.task_id, r.category,
+                                                   source="feedback" if door in MACHINE_DOORS else "explicit")
         return {"memory": memoria.model_dump(), **res, "procedure": procedimento, "label": rotulo}
 
-    def feedback(self, **entrada: Any) -> dict[str, Any]:
-        """Resultado de tarefa, nota de memória e/ou correção de categoria (pelo menos um)."""
+    def feedback(self, door: str = "mcp", **entrada: Any) -> dict[str, Any]:
+        """Resultado de tarefa, nota de memória e/ou correção de categoria (pelo menos um).
+
+        door: a porta que chamou. Pelo MCP e pelos hooks, o reforço tem teto
+        (learning.feedback.machine_quality_cap), a nota exige task_id e o rótulo não pode ser 'explicit'.
+        """
+        _porta(door)
         r = _validar(FeedbackRequest, entrada)
+        maquina = door in MACHINE_DOORS
+        fonte = SOURCE_OF_DOOR[door]
+        teto = self.config.learning.feedback.machine_quality_cap if maquina else None
+        if maquina and r.category is not None and r.label_source == "explicit":
+            raise InvalidInput("label_source='explicit' é só para pessoas (CLI ou dashboard); pelo MCP vale 'feedback'")
+        if maquina and r.rating is not None and not r.task_id:
+            raise InvalidInput("pelo MCP, a nota de uma memória precisa de task_id (uma nota por memória por tarefa)")
         resultado_pedido = any(v is not None for v in (r.success, r.quality, r.duration_ms, r.attempts, r.tokens,
                                                        r.compute_cost, r.strategy, r.notes, r.used_memory_ids))
         if not (resultado_pedido or r.rating is not None or r.category is not None):
@@ -286,10 +311,10 @@ class Engine:
             saida["outcome"] = self.learner.record_outcome(
                 r.task_id, success=r.success, quality=r.quality, duration_ms=r.duration_ms, attempts=r.attempts,
                 tokens=tokens, token_source=r.token_source, compute_cost=r.compute_cost, strategy=r.strategy,
-                notes=r.notes, used_memory_ids=r.used_memory_ids, source=r.source)
+                notes=r.notes, used_memory_ids=r.used_memory_ids, source=fonte, quality_cap=teto)
         if r.rating is not None:
             saida["rating"] = self.learner.rate_memory(r.memory_id, r.rating, comment=r.comment, task_id=r.task_id,
-                                                       source=r.source)
+                                                       source=fonte, quality_cap=teto)
         return saida
 
     def procedure(self, **entrada: Any) -> dict[str, Any]:
@@ -315,9 +340,12 @@ class Engine:
             raise InvalidInput("action='plan' precisa de text")
         return {"plan": self.classify(text=r.text, project=r.project)["plan"]}
 
-    def relationships(self, **entrada: Any) -> dict[str, Any]:
+    def relationships(self, door: str = "mcp", **entrada: Any) -> dict[str, Any]:
         """Lista, cria ou remove relações de uma memória; devolve as relações e os vizinhos."""
+        _porta(door)
         r = _validar(RelationshipsRequest, entrada)
+        if door in MACHINE_DOORS and r.action == "link" and r.weight > 1:
+            raise InvalidInput("pelo MCP, o peso de uma relação vai até 1 (pesos maiores só pela CLI ou dashboard)")
         self.memories.get(r.memory_id, record_access=False)  # NotFound se não existe
         if r.action in ("link", "unlink") and not r.target_id:
             raise InvalidInput(f"action='{r.action}' precisa de target_id")

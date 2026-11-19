@@ -49,7 +49,7 @@ def test_learn_com_procedimento(eng: Engine) -> None:
 
 def test_learn_com_categoria_explicita_vira_rotulo(eng: Engine) -> None:
     t = eng.recall(query="organizar os arquivos")["task_id"]
-    eng.learn(kind="episodic", content="Organizei os arquivos por data", task_id=t, category="media")
+    eng.learn(door="cli", kind="episodic", content="Organizei os arquivos por data", task_id=t, category="media")
     linha = eng.db.conn.execute("SELECT category, label_source FROM tasks WHERE id = ?", (t,)).fetchone()
     assert (linha["category"], linha["label_source"]) == ("media", "explicit")
 

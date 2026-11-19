@@ -61,7 +61,8 @@
       "reinforce_quality": 0.05,
       "reinforce_confidence": 0.05,
       "decay_quality": 0.08,
-      "decay_confidence": 0.05
+      "decay_confidence": 0.05,
+      "machine_quality_cap": 0.8
     },
     "evolution": {
       "min_outcomes": 20,

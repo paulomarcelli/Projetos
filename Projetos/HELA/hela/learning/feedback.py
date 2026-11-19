@@ -67,6 +67,20 @@ class FeedbackLearner:
             raise NotFound(f"tarefa não encontrada: {task_id}")
         return t
 
+    def _ajustar(self, memory_id: str, dq: float, dc: float, cap: Optional[float]) -> Any:
+        """adjust_quality com teto opcional para reforço (o decaimento nunca é limitado)."""
+        if cap is not None and (dq > 0 or dc > 0):
+            atual = self.memories.get(memory_id, record_access=False)
+            if dq > 0:
+                dq = max(0.0, min(dq, cap - atual.quality))
+            if dc > 0:
+                dc = max(0.0, min(dc, cap - atual.confidence))
+        return self.memories.adjust_quality(memory_id, dq, dc)
+
+    def _ja_avaliada(self, memory_id: str, task_id: str) -> bool:
+        return self.db.conn.execute("SELECT 1 FROM feedback WHERE memory_id = ? AND task_id = ? LIMIT 1",
+                                    (memory_id, task_id)).fetchone() is not None
+
     def used_memories(self, task_id: str) -> list[str]:
         """Memórias que entraram no contexto da tarefa (included=True nas recuperações dela)."""
         ids: list[str] = []
@@ -82,7 +96,7 @@ class FeedbackLearner:
                        tokens: Optional[dict[str, int]] = None, token_source: Optional[str] = None,
                        compute_cost: Optional[float] = None, strategy: Optional[str] = None,
                        notes: Optional[str] = None, used_memory_ids: Optional[Iterable[str]] = None,
-                       source: str = "claude") -> dict[str, Any]:
+                       source: str = "claude", quality_cap: Optional[float] = None) -> dict[str, Any]:
         _faixa("quality", quality, 0, 1)
         _faixa("duration_ms", duration_ms)
         _faixa("attempts", attempts)
@@ -101,7 +115,11 @@ class FeedbackLearner:
         tarefa = self._tarefa(task_id)
         categoria = tarefa["category"]
         sid = self.ranker.resolve(strategy, category=categoria) if strategy else None
-        usadas = list(dict.fromkeys(used_memory_ids)) if used_memory_ids is not None else self.used_memories(task_id)
+        # Só contam as memórias que o Router devolveu para esta tarefa (revisão F3-A3); o resto é ignorado.
+        devolvidas = self.used_memories(task_id)
+        pedidas = list(dict.fromkeys(used_memory_ids)) if used_memory_ids is not None else devolvidas
+        usadas = [m for m in pedidas if m in devolvidas]
+        ignoradas = [m for m in pedidas if m not in devolvidas]
         agora = to_iso(self.clock())
         sucesso = None if success is None else int(bool(success))
 
@@ -124,14 +142,15 @@ class FeedbackLearner:
         if sucesso is not None:
             fb = self.config.learning.feedback
             for mid in usadas:
-                if self.memories.memories.get(mid) is None:
-                    continue  # memória apagada depois da recuperação
+                linha = self.memories.memories.get(mid)
+                if linha is None or linha["status"] != "active" or self._ja_avaliada(mid, task_id):
+                    continue  # apagada, fora de 'active' ou já reforçada por esta tarefa
                 if sucesso:
                     peso = 1.0 if quality is None else quality
                     dq, dc, nota = fb.reinforce_quality * peso, fb.reinforce_confidence, 1
                 else:
                     dq, dc, nota = -fb.decay_quality, -fb.decay_confidence, -1
-                m = self.memories.adjust_quality(mid, dq, dc)
+                m = self._ajustar(mid, dq, dc, quality_cap)
                 with self.db.transaction():
                     self.db.conn.execute(
                         "INSERT INTO feedback (memory_id, task_id, rating, score, source, created_at)"
@@ -151,22 +170,29 @@ class FeedbackLearner:
             metricas = dict(linha) if linha else None
         return {"outcome_id": outcome_id, "task_id": task_id,
                 "task_status": self._tarefa(task_id)["status"], "strategy_id": sid, "strategy_metrics": metricas,
-                "memories_adjusted": ajustadas, "procedures_updated": procedimentos, "token_source": token_source}
+                "memories_adjusted": ajustadas, "ignored_memory_ids": ignoradas, "procedures_updated": procedimentos,
+                "token_source": token_source}
 
     # --- nota direta ----------------------------------------------------------------------
     def rate_memory(self, memory_id: str, rating: int, comment: Optional[str] = None,
-                    task_id: Optional[str] = None, source: str = "user") -> dict[str, Any]:
+                    task_id: Optional[str] = None, source: str = "user",
+                    quality_cap: Optional[float] = None) -> dict[str, Any]:
         if rating not in (-1, 0, 1) or isinstance(rating, bool):
             raise InvalidInput("rating precisa ser -1, 0 ou 1")
         if source not in FONTES:
             raise InvalidInput(f"source precisa ser um de {', '.join(FONTES)}")
-        if self.memories.memories.get(memory_id) is None:
+        linha = self.memories.memories.get(memory_id)
+        if linha is None:
             raise NotFound(f"memória não encontrada: {memory_id}")
+        if linha["status"] != "active":
+            raise InvalidInput(f"só memória 'active' recebe nota (esta está '{linha['status']}')")
         if task_id is not None:
             self._tarefa(task_id)
+            if self._ja_avaliada(memory_id, task_id):
+                raise InvalidInput("esta memória já recebeu nota (ou reforço) nesta tarefa: uma por tarefa")
         fb = self.config.learning.feedback
         if rating > 0:
-            m = self.memories.adjust_quality(memory_id, fb.reinforce_quality, fb.reinforce_confidence)
+            m = self._ajustar(memory_id, fb.reinforce_quality, fb.reinforce_confidence, quality_cap)
         elif rating < 0:
             m = self.memories.adjust_quality(memory_id, -fb.decay_quality, -fb.decay_confidence)
         else:

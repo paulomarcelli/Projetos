@@ -76,6 +76,8 @@ Saída:
 }
 ```
 
+- `recorded`: `false` quando o banco estava ocupado e a tarefa ou o registro em `retrievals` não foram gravados
+  (o contexto sai mesmo assim; `retrieval_id` vem `null`). Revisão F3-A1.
 - `relevance` = max(cosseno, cobertura dos termos da consulta); entra no contexto quem tem `relevance ≥ 0,35` e
   `trust = quality × confidence ≥ 0,1`. `mode`: `full` (memória principal inteira) ou `summary` (secundária resumida).
 - **Experiência insuficiente:** nada passou no limiar. `insufficient: true`, `memories: []`, `context: ""` e
@@ -171,7 +173,12 @@ Pelo menos uma de três coisas:
 3. **Categoria certa** (`task_id` + `category`, `label_source` `feedback` (padrão) ou `explicit`): vira rótulo de treino
    do classificador.
 
-`source` ∈ `user`, `claude` (padrão), `hook`, `auto`.
+Não há `source` na entrada: quem avaliou vem da porta (`Engine.feedback(door=...)`; MCP → `claude`, hook → `hook`,
+API e CLI → `user`). Regras da revisão da Fase 3 (F3-A3):
+- só memória `active` recebe nota, e só uma nota (ou reforço) por memória por tarefa; pelo MCP, a nota exige `task_id`;
+- no resultado da tarefa só contam as memórias que o Router devolveu para ela; as outras voltam em `ignored_memory_ids`;
+- pelo MCP e pelos hooks, o reforço para em `learning.feedback.machine_quality_cap` (0,8); acima disso, só nota humana;
+- `label_source: "explicit"` só pela CLI ou pelo dashboard.
 
 ```json
 {"outcome": {"outcome_id": 1, "task_id": "6b70…", "task_status": "done", "strategy_id": "0fe3…",
@@ -216,7 +223,7 @@ Procedimento:
 | `action` | texto | `list` (padrão), `link`, `unlink` |
 | `target_id` | texto | obrigatório em `link` e `unlink` |
 | `type` | texto | `^[a-z][a-z0-9_]{0,39}$`, padrão `related` (em `unlink`, sem `type` remove todos) |
-| `weight` | número | 0 a 100, padrão 1 |
+| `weight` | número | 0 a 100, padrão 1; **pelo MCP, até 1** (F3-A3) |
 | `evidence` | texto | até 1.000 (redigido) |
 | `depth` | inteiro | 1 a 3, para `neighbors` |
 

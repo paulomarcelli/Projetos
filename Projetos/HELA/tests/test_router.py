@@ -151,7 +151,7 @@ def test_segredo_na_consulta_e_redigido(eng: Engine) -> None:
 
 def test_rotulo_explicito_nao_e_sobrescrito(eng: Engine) -> None:
     r1 = eng.router.route("organizar os arquivos do projeto")
-    eng.feedback(task_id=r1["task_id"], category="media", label_source="explicit")
+    eng.feedback(door="cli", task_id=r1["task_id"], category="media", label_source="explicit")
     r2 = eng.router.route("organizar os arquivos do projeto", task_id=r1["task_id"])
     assert r2["task_id"] == r1["task_id"]
     t = eng.db.conn.execute("SELECT category, label_source FROM tasks WHERE id = ?", (r1["task_id"],)).fetchone()

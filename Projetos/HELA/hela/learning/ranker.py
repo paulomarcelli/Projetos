@@ -182,26 +182,35 @@ class WeightStore:
                 "parent_id": row["parent_id"], "active": bool(row["active"]), "note": row["note"],
                 "created_at": row["created_at"]}
 
+    def _ler_ativa(self) -> Any:
+        return self.db.conn.execute("SELECT * FROM versions WHERE component = ? AND active = 1"
+                                    " ORDER BY version DESC LIMIT 1", (WEIGHTS_COMPONENT,)).fetchone()
+
     def active(self) -> dict[str, Any]:
-        row = self.db.conn.execute("SELECT * FROM versions WHERE component = ? AND active = 1"
-                                   " ORDER BY version DESC LIMIT 1", (WEIGHTS_COMPONENT,)).fetchone()
+        """Versão ativa. Na primeira leitura grava a versão 1 (padrão); com o banco ocupado, devolve o
+        padrão em memória (id None) e grava numa próxima vez (revisão F3-A1)."""
+        row = self._ler_ativa()
+        if row is not None:
+            return self._linha(row)
+
+        def criar(conn: Any) -> None:
+            if self._ler_ativa() is not None:
+                return
+            if conn.execute("SELECT 1 FROM versions WHERE component = ? AND version = 1",
+                            (WEIGHTS_COMPONENT,)).fetchone() is None:
+                conn.execute("INSERT INTO versions (component, version, data, active, note, created_at)"
+                             " VALUES (?, 1, ?, 1, 'pesos padrão (config/ranker_weights.json)', ?)",
+                             (WEIGHTS_COMPONENT, json.dumps({"weights": DEFAULT_WEIGHTS}), to_iso(self.clock())))
+            else:
+                conn.execute("UPDATE versions SET active = 1 WHERE component = ? AND version = 1",
+                             (WEIGHTS_COMPONENT,))
+
+        ok, _ = self.db.try_write(criar)
+        row = self._ler_ativa() if ok else None
         if row is None:
-            with self.db.transaction():
-                row = self.db.conn.execute("SELECT * FROM versions WHERE component = ? AND active = 1"
-                                           " ORDER BY version DESC LIMIT 1", (WEIGHTS_COMPONENT,)).fetchone()
-                if row is None:
-                    existe = self.db.conn.execute("SELECT 1 FROM versions WHERE component = ? AND version = 1",
-                                                  (WEIGHTS_COMPONENT,)).fetchone()
-                    if existe is None:
-                        self.db.conn.execute(
-                            "INSERT INTO versions (component, version, data, active, note, created_at)"
-                            " VALUES (?, 1, ?, 1, 'pesos padrão (config/ranker_weights.json)', ?)",
-                            (WEIGHTS_COMPONENT, json.dumps({"weights": DEFAULT_WEIGHTS}), to_iso(self.clock())))
-                    else:
-                        self.db.conn.execute("UPDATE versions SET active = 1 WHERE component = ? AND version = 1",
-                                             (WEIGHTS_COMPONENT,))
-                    row = self.db.conn.execute("SELECT * FROM versions WHERE component = ? AND active = 1",
-                                               (WEIGHTS_COMPONENT,)).fetchone()
+            dados = json.dumps({"weights": DEFAULT_WEIGHTS})
+            return {"id": None, "version": 1, "weights": dict(DEFAULT_WEIGHTS), "data": dados, "parent_id": None,
+                    "active": True, "note": "padrão em memória (banco ocupado)", "created_at": None}
         return self._linha(row)
 
     def get(self, version_id: int) -> dict[str, Any]:

@@ -101,6 +101,8 @@ class FeedbackConfig(_Base):
     reinforce_confidence: float = Field(0.05, ge=0, le=0.5)
     decay_quality: float = Field(0.08, ge=0, le=0.5)
     decay_confidence: float = Field(0.05, ge=0, le=0.5)
+    # Teto para reforço vindo de máquina (MCP, hooks): daí para cima, só nota humana (revisão F3-A3).
+    machine_quality_cap: float = Field(0.8, ge=0, le=1)
 
 
 class EvolutionConfig(_Base):

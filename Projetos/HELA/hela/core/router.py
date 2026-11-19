@@ -112,18 +112,24 @@ class CognitiveRouter:
             raise InvalidInput(f"kind inválido: use {', '.join(KINDS)}")
         consulta = self._redigir(query.strip())
         agora = to_iso(self.clock())
+        gravou_tarefa = True
         if task_id is not None:
             tarefa = self.tasks.get(task_id)
             if tarefa is None:
                 raise NotFound(f"tarefa não encontrada: {task_id}")
         else:
             task_id = uuid.uuid4().hex
-            with self.db.transaction():
+
+            def criar(_conn: Any) -> None:
                 if session_id:
                     self.tasks.ensure_session(session_id, agora, project=project)
                 self.tasks.create(task_id, prompt=consulta, created_at=agora, session_id=session_id, project=project,
                                   prompt_hash=hashlib.sha256(normalize(consulta).encode()).hexdigest())
-            tarefa = self.tasks.get(task_id)
+
+            # Melhor esforço (revisão F3-A1): com o banco ocupado, o contexto sai mesmo assim, sem registro.
+            gravou_tarefa, _ = self.db.try_write(criar)
+            tarefa = self.tasks.get(task_id) if gravou_tarefa else {
+                "category": None, "label_source": None, "metadata": {}}
         passo("receber", task_id=task_id, new_task=tarefa["category"] is None)
 
         # 2. classificar (rótulo humano manda; regras e modelo só preenchem o que não tem rótulo)
@@ -134,9 +140,10 @@ class CognitiveRouter:
             origem = "rules" if cls["mode"] == "rules" else None
             meta = {**tarefa["metadata"], "classified_by": cls["mode"] if origem else
                     f"naive_bayes:v{cls['model_version']}"}
-            with self.db.transaction():
-                self.tasks.update(task_id, category=cls["category"], complexity=cls["complexity"], tools=cls["tools"],
-                                  label_source=origem, metadata=meta)
+            if gravou_tarefa:
+                self.db.try_write(lambda _c: self.tasks.update(
+                    task_id, category=cls["category"], complexity=cls["complexity"], tools=cls["tools"],
+                    label_source=origem, metadata=meta))
             cls = {**cls, "label_source": origem}
         categoria = cls["category"]
         passo("classificar", category=categoria, mode=cls["mode"])
@@ -223,7 +230,7 @@ class CognitiveRouter:
         latencia = round((time.perf_counter() - inicio) * 1000, 2)
         filtros = {"category": categoria, "mode": cls["mode"], "project": project, "kinds": tipos,
                    "budget_tokens": orcamento, "min_relevance": cfg.min_relevance, "min_trust": cfg.min_trust}
-        with self.db.transaction():
+        def registrar(_conn: Any) -> int:
             if session_id:
                 self.tasks.ensure_session(session_id, agora, project=project)
             cur = self.db.conn.execute(
@@ -233,12 +240,15 @@ class CognitiveRouter:
                 (task_id, session_id, consulta, json.dumps(filtros, ensure_ascii=False), json.dumps(resultados),
                  len(incluidos), int(insuficiente), latencia, oc.tokens_optimized if oc else 0,
                  oc.tokens_raw if oc else 0, oc.tokens_optimized if oc else 0, agora))
-            retrieval_id = int(cur.lastrowid)
+            rid = int(cur.lastrowid)
             if incluidos:
                 self.memories.memories.touch(incluidos, agora)
             self.memories.events.log(agora, "router.routed", "task", task_id, {
-                "retrieval_id": retrieval_id, "category": categoria, "included": len(incluidos),
+                "retrieval_id": rid, "category": categoria, "included": len(incluidos),
                 "insufficient": insuficiente, "latency_ms": latencia})
+            return rid
+
+        gravou, retrieval_id = self.db.try_write(registrar) if gravou_tarefa else (False, None)
         passo("registrar", retrieval_id=retrieval_id)
 
         memorias = []
@@ -250,7 +260,8 @@ class CognitiveRouter:
                                  "mode": r["mode"], "value": no_contexto[m.id]["value"]})
         memorias.sort(key=lambda x: (-x["value"], x["id"]))
         return {
-            "task_id": task_id, "retrieval_id": retrieval_id, "insufficient": insuficiente,
+            "task_id": task_id, "retrieval_id": retrieval_id, "recorded": bool(gravou and gravou_tarefa),
+            "insufficient": insuficiente,
             "message": INSUFICIENTE if insuficiente else (f"{len(memorias)} memória relevante no contexto" if len(memorias) == 1
                                                else f"{len(memorias)} memórias relevantes no contexto"),
             "classification": cls, "context": oc.text if (oc and not insuficiente) else "",

@@ -15,7 +15,9 @@ import sqlite3
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
+from typing import Callable, Iterator, Optional, TypeVar
+
+T = TypeVar("T")
 
 DEFAULT_BUSY_TIMEOUT_MS = 3000
 
@@ -117,6 +119,26 @@ class Database:
                 except sqlite3.Error:
                     pass  # o SQLite pode já ter desfeito sozinho (ex.: disco cheio); vale o erro original
             raise
+
+    def try_write(self, fn: Callable[[sqlite3.Connection], T], busy_timeout_ms: int = 50) -> tuple[bool, Optional[T]]:
+        """Gravação de melhor esforço (revisão F3-A1): espera no máximo busy_timeout_ms; com o banco
+        ocupado, desiste e devolve (False, None). Para registros (eventos, retrievals), nunca para dado
+        que o usuário mandou gravar.
+        """
+        if self.conn.in_transaction:  # dentro de outra transação: grava junto com ela
+            return True, fn(self.conn)
+        anterior = int(self.conn.execute("PRAGMA busy_timeout").fetchone()[0])
+        self.conn.execute(f"PRAGMA busy_timeout = {int(busy_timeout_ms)}")
+        try:
+            with self.transaction():
+                valor = fn(self.conn)
+            return True, valor
+        except sqlite3.OperationalError as erro:
+            if "locked" not in str(erro) and "busy" not in str(erro):
+                raise
+            return False, None
+        finally:
+            self.conn.execute(f"PRAGMA busy_timeout = {anterior}")
 
     def purge(self) -> None:
         """Tira dos arquivos os restos de conteúdo apagado ou editado.

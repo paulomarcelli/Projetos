@@ -92,7 +92,7 @@ class FeedbackRequest(_Req):
     comment: Optional[str] = Field(None, max_length=2000)
     category: Optional[str] = Categoria
     label_source: Literal["feedback", "explicit"] = "feedback"
-    source: Literal["user", "claude", "hook", "auto"] = "claude"
+    # Sem source: quem avaliou vem da porta (Engine.feedback(door=...)), nunca do corpo (revisão F3-A3).
 
 
 class ProcedureRequest(_Req):

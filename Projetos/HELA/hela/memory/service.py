@@ -24,7 +24,7 @@ from hela.core.errors import DuplicateContent, InvalidInput, NotFound
 from hela.memory.embedder import Embedder, to_blob
 from hela.memory.models import CreateResult, Memory, MemoryCreate, MemoryUpdate, NearDuplicate
 from hela.memory.normalize import content_hash
-from hela.security.injection import detect_injection
+from hela.security.injection import detect_injection, strip_invisible
 from hela.security.redaction import redact, redact_value
 from hela.storage.db import Database
 from hela.storage.repositories import EventRepository, MemoryFilter, MemoryRepository, MetaRepository, RelationshipRepository
@@ -56,8 +56,10 @@ class MemoryService:
         return to_iso(self.clock())
 
     def _redigir(self, texto: Optional[str], achados: list[str]) -> Optional[str]:
+        """Tira os caracteres invisíveis (revisão A-6) e redige os segredos."""
         if texto is None:
             return None
+        texto = strip_invisible(texto)
         sec = self.config.security
         r = redact(texto, entropy_threshold=sec.entropy_threshold, entropy_min_length=sec.entropy_min_length)
         achados.extend(r.findings)
@@ -140,7 +142,10 @@ class MemoryService:
                 return CreateResult(memory=self.get(atual["id"], record_access=False), created=False,
                                     duplicate_of=atual["id"], redactions=achados)
 
-            inj = self._injecao(title, content, summary)
+            # O texto original (antes de tirar os invisíveis) também é lido: tags Unicode escondidas
+            # mandam para a quarentena. project e tags vão para o contexto, então passam também.
+            inj = self._injecao(title, content, summary, project, " ".join(tags), data.title, data.content,
+                                data.summary)
             quarentena = inj.suspicious and self.config.security.quarantine_on_injection
             vetor = self._vetor(title, content, summary)
             quase = [] if quarentena else self.near_duplicates(vetor, data.kind)
@@ -218,7 +223,8 @@ class MemoryService:
                 campos["content_hash"] = h
                 campos["embedding"] = to_blob(self._vetor(novo["title"], novo["content"], novo["summary"]))
                 campos["embedding_model"] = self.embedder.name
-                inj = self._injecao(novo["title"], novo["content"], novo["summary"])
+                inj = self._injecao(novo["title"], novo["content"], novo["summary"], novo.get("project"),
+                                    " ".join(novo.get("tags") or []), data.title, data.content, data.summary)
                 campos["injection_score"] = inj.score
                 if inj.suspicious and self.config.security.quarantine_on_injection:
                     campos["status"] = "quarantined"

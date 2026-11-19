@@ -49,6 +49,44 @@ _PADROES: list[tuple[str, float, re.Pattern[str]]] = [
 ]
 
 
+_PADROES += [
+    # Sinônimos comuns de "ignore o que veio antes" (revisão A-6).
+    ("disregard_above", 1.0, re.compile(
+        r"\b(?:ignore|disregard|forget|override)\b[^.]{0,20}?\b(?:everything|anything|all|whatever)\b[^.]{0,15}?"
+        r"\b(?:above|before|previous|prior|said|earlier)\b|\b(?:desconsidere|ignore|esqueca)\b[^.]{0,15}?"
+        r"\btudo\b[^.]{0,15}?\b(?:acima|antes|anterior)\b")),
+    ("from_now_on", 0.6, re.compile(r"\bfrom (?:this point|now) on\b|\bdaqui (?:pra|para) frente\b")),
+    # Baixar e executar: sozinho é comum em instrução de instalação; junto de outro sinal, quarentena.
+    ("pipe_to_shell", 0.6, re.compile(r"\b(?:curl|wget)\b[^\n|]{0,200}\|\s*(?:sudo\s+)?(?:ba|z)?sh\b")),
+]
+
+# Caracteres invisíveis que escondem texto do detector (e que um modelo de linguagem ainda lê):
+# tags Unicode (U+E0000–E007F, "ASCII smuggling"), seletores de variação, CGJ, preenchimentos
+# hangul, largura zero e controles de direção. São tirados do texto GRAVADO, não só da cópia
+# que o detector lê (revisão A-6).
+_TAGS_UNICODE = re.compile("[\U000E0000-\U000E007F]")
+_INVISIVEIS = re.compile(
+    "[\U000E0000-\U000E007F\U000E0100-\U000E01EF\uFE00-\uFE0F\u034F\u115F\u1160\u3164\uFFA0"
+    "\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF\u00AD\u180E]")
+
+# Homóglifos mais comuns (cirílico e grego que parecem latinos), já em minúsculas.
+_HOMOGLIFOS = str.maketrans({
+    "а": "a", "в": "b", "е": "e", "к": "k", "м": "m", "н": "h", "о": "o", "р": "p", "с": "c", "т": "t",
+    "у": "y", "х": "x", "і": "i", "ј": "j", "ѕ": "s", "һ": "h", "ԁ": "d", "ӏ": "l", "ɡ": "g",
+    "α": "a", "β": "b", "ε": "e", "ι": "i", "κ": "k", "ν": "v", "ο": "o", "ρ": "p", "τ": "t", "υ": "u",
+    "χ": "x",
+})
+
+
+def has_unicode_tags(texto: str) -> bool:
+    return bool(texto) and bool(_TAGS_UNICODE.search(texto))
+
+
+def strip_invisible(texto: str) -> str:
+    """Tira os caracteres invisíveis usados para esconder texto (vale para o texto gravado)."""
+    return _INVISIVEIS.sub("", texto) if texto else texto
+
+
 @dataclass
 class InjectionReport:
     suspicious: bool
@@ -59,11 +97,13 @@ class InjectionReport:
 def _normalizar(texto: str) -> str:
     # Tira os caracteres de formatação invisíveis (categoria Cf: largura zero, hífen invisível,
     # controle de direção como U+202E), usados para esconder palavras do detector.
+    texto = _INVISIVEIS.sub("", texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Cf")
     # NFKD desfaz letras de largura cheia e separa os acentos, que saem logo depois.
     texto = unicodedata.normalize("NFKD", texto)
     texto = "".join(c for c in texto if not unicodedata.combining(c))
-    return texto.casefold()
+    # Quebra de linha vira espaço (os padrões não atravessam linha) e homóglifos viram latinos.
+    return re.sub(r"\s+", " ", texto.casefold()).translate(_HOMOGLIFOS)
 
 
 def detect_injection(text: str, threshold: float = LIMIAR_PADRAO) -> InjectionReport:
@@ -73,6 +113,11 @@ def detect_injection(text: str, threshold: float = LIMIAR_PADRAO) -> InjectionRe
     norm = _normalizar(text)
     nomes: list[str] = []
     score = 0.0
+    if has_unicode_tags(text):  # não existe uso legítimo de tags Unicode numa memória
+        nomes.append("unicode_tags")
+        score += 1.0
+        escondido = "".join(chr(ord(c) - 0xE0000) for c in _TAGS_UNICODE.findall(text))
+        norm = norm + " " + _normalizar(escondido)  # e o que estava escondido também é lido
     for nome, peso, padrao in _PADROES:
         if padrao.search(norm):
             nomes.append(nome)

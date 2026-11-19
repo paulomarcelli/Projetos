@@ -57,6 +57,9 @@ def apply_migrations(conn: sqlite3.Connection, migrations: list[Migration] | Non
     for mig in lista:
         if mig.version <= versao:
             continue
+        versao = current_version(conn)  # relê: outro processo pode ter avançado
+        if mig.version <= versao:
+            continue
         agora = datetime.now(timezone.utc).isoformat(timespec="microseconds")
         nome = mig.name.replace("'", "''")
         script = (
@@ -69,7 +72,15 @@ def apply_migrations(conn: sqlite3.Connection, migrations: list[Migration] | Non
             conn.executescript(script)
         except sqlite3.Error:
             if conn.in_transaction:
-                conn.execute("ROLLBACK")
+                try:
+                    conn.execute("ROLLBACK")
+                except sqlite3.Error:
+                    pass
+            # Outro processo pode ter aplicado esta migração entre a leitura da versão e a trava
+            # (revisão A-1). Se a versão já chegou lá, segue; senão o erro é de verdade.
+            if current_version(conn) >= mig.version:
+                versao = current_version(conn)
+                continue
             raise
         versao = mig.version
     return versao

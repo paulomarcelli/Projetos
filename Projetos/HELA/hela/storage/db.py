@@ -12,6 +12,7 @@ Decisões:
 from __future__ import annotations
 
 import sqlite3
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
@@ -23,6 +24,31 @@ class FTS5Indisponivel(RuntimeError):
     """O SQLite desta máquina foi compilado sem FTS5, que a busca textual exige."""
 
 
+def _garantir_wal(conn: sqlite3.Connection, busy_timeout_ms: int) -> None:
+    """Liga o WAL só se ainda não estiver ligado (revisão A-1).
+
+    Trocar o modo de diário exige trava exclusiva e não respeita o busy_timeout: com outro processo
+    abrindo o mesmo banco novo, a troca falha na hora com "database is locked". Por isso: ler o modo
+    primeiro (o WAL fica gravado no arquivo, então quase sempre já está ligado) e, na troca, tentar de
+    novo com espera curta até o busy_timeout (no mínimo 2 s).
+    """
+    if str(conn.execute("PRAGMA journal_mode").fetchone()[0]).lower() == "wal":
+        return
+    prazo = time.monotonic() + max(busy_timeout_ms, 2000) / 1000
+    while True:
+        try:
+            modo = conn.execute("PRAGMA journal_mode = WAL").fetchone()[0]
+        except sqlite3.OperationalError as erro:
+            if "locked" not in str(erro) and "busy" not in str(erro):
+                raise
+            modo = None
+        if str(modo).lower() == "wal":
+            return
+        if time.monotonic() >= prazo:
+            raise sqlite3.OperationalError(f"não foi possível ativar o modo WAL (ficou em {modo!r})")
+        time.sleep(0.02)
+
+
 def connect(path: Path, busy_timeout_ms: int = DEFAULT_BUSY_TIMEOUT_MS) -> sqlite3.Connection:
     """Abre uma conexão já configurada (WAL, busy_timeout, foreign keys, linhas por nome)."""
     path = Path(path)
@@ -30,10 +56,11 @@ def connect(path: Path, busy_timeout_ms: int = DEFAULT_BUSY_TIMEOUT_MS) -> sqlit
     conn = sqlite3.connect(str(path), isolation_level=None, timeout=busy_timeout_ms / 1000)
     conn.row_factory = sqlite3.Row
     conn.execute(f"PRAGMA busy_timeout = {int(busy_timeout_ms)}")
-    modo = conn.execute("PRAGMA journal_mode = WAL").fetchone()[0]
-    if str(modo).lower() != "wal":
+    try:
+        _garantir_wal(conn, busy_timeout_ms)
+    except BaseException:
         conn.close()
-        raise sqlite3.OperationalError(f"não foi possível ativar o modo WAL (ficou em {modo!r})")
+        raise
     # NORMAL é seguro com WAL: uma queda de energia pode perder a última transação, nunca corromper.
     conn.execute("PRAGMA synchronous = NORMAL")
     conn.execute("PRAGMA foreign_keys = ON")
@@ -82,11 +109,14 @@ class Database:
         self.conn.execute("BEGIN IMMEDIATE")
         try:
             yield self.conn
+            self.conn.execute("COMMIT")  # dentro do try: um COMMIT que falha também desfaz (revisão A-5)
         except BaseException:
-            self.conn.execute("ROLLBACK")
+            if self.conn.in_transaction:
+                try:
+                    self.conn.execute("ROLLBACK")
+                except sqlite3.Error:
+                    pass  # o SQLite pode já ter desfeito sozinho (ex.: disco cheio); vale o erro original
             raise
-        else:
-            self.conn.execute("COMMIT")
 
     def purge(self) -> None:
         """Tira dos arquivos os restos de conteúdo apagado ou editado.

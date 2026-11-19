@@ -97,6 +97,15 @@ aqui.
   no `sys.path`: rodar script de medição numa subpasta própria, com `python -I`.
 - **Repositório compartilhado em paralelo.** Com outras agentes escrevendo no mesmo projeto, `git add` só nos meus
   caminhos (nunca a pasta inteira), e conferir `git status` antes de cada commit.
+- **19/11/2026 · HELA Fase 3.** Regex com `re.IGNORECASE` contamina padrões que dependem de maiúsculas (`\bE[A-Z]{3,}\b`
+  para errno casava "esperar"): usar `(?-i:...)` no trecho. Achei pelo sintoma "frase repetida não sai"; olhar a
+  classificação do segmento antes de mexer no deduplicador.
+- **Limiar medido, não chutado.** Para "experiência insuficiente", medir a distribuição (relacionadas, sem relação e
+  **iscas com uma palavra em comum**) antes de escolher: 0,30 deixava passar 6 de 10 iscas; 0,35, nenhuma. Resultado
+  perfeito num conjunto escrito por mim é sinal para testar paráfrases difíceis (deram 2 de 10).
+- **Exemplos de documentação saem de execução real.** Rodar as operações num banco temporário e copiar a saída achou
+  dois defeitos (plural errado e "site" puxando WebFetch).
+- **Tempo da suíte oscila com cache frio** (22 s numa rodada, 4 s nas seguintes): repetir antes de caçar lentidão.
 
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
@@ -116,3 +125,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17/11/2026 | Vídeo da Lua v2: realismo ligado ao mundo, enquadramentos pelo storyboard, render final (continuação, outra sessão) | a avaliar | ~1 h + 1 h de render | sem crédito pago | Conferir a folha de contato contra o storyboard antes de cada render longo |
 | 17/11/2026 | Render final da Lua v2 no PC do Paulo com GPU: Node e ffmpeg instalados (com aprovação), teste de 60 quadros, render, conferência e folha Q1–Q8 contra o storyboard | a avaliar | ~40 min (2 renders de 70 s) | sem crédito pago | O caminho com GPU nunca tinha rodado: renderizar e varrer o brilho de todos os quadros já no teste, não só 60 quadros do começo (o defeito estava no espaço, aos 42 s) |
 | 18/11/2026 | HELA Fase 2 (Cognitive Core): pacote, SQLite WAL com esquema completo, segurança, Memory Engine com busca híbrida, grafo, consolidação, export/import, Engine e CLI; reforços do seguranca.md | a avaliar | ~5 h (com uma pausa pelo limite de uso) | sem crédito pago | Commitei a pasta inteira e levei arquivos da Sabrina pela metade: só os meus caminhos daqui em diante. Testes de segurança: escrever e ver falhar antes, ou fazer mutação logo |
+| 18–19/11/2026 | HELA Fase 3 (Intelligence): classificador (regras + Naive Bayes só com rótulos humanos), ranker (Wilson + custos), feedback, evolução (replay Brier, snapshot, rollback), router (9 passos, limiar medido), otimizador, execution intelligence, 8 operações do Engine, `docs/api.md` | a avaliar | ~6 h em duas sessões (pausa pelo limite de uso) | sem crédito pago | O conjunto-ouro foi escrito por mim: na Fase 7, medir com consultas reais. Mutação logo depois de cada teste de proteção funcionou bem (classificador e aprovação) |

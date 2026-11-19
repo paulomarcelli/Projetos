@@ -30,7 +30,7 @@ from typing import Any, Optional
 from hela.core.clock import to_iso, utcnow
 from hela.core.optimizer import ContextItem, optimize_context
 from hela.core.relevance import coverage, query_terms
-from hela.execution.assessment import assess_procedure
+from hela.execution.assessment import approval_valid, assess_procedure
 from hela.learning.rules import classify_by_rules
 from hela.learning.taxonomy import normalize
 from hela.memory.fusion import _ordem_recencia, _ordenar, rrf_fuse
@@ -150,7 +150,7 @@ def _procedimento(conn: Any, memory_id: str, allowed_hosts: list[str]) -> Option
     memoria = None if m is None else {"status": m["status"], "source": m["source"],
                                       "metadata": json.loads(m["metadata"] or "{}")}
     classe, motivos, _ = assess_procedure(row, memoria, allowed_hosts)
-    aprovado = bool(row["approved"]) and bool(row["script"]) and row["approved_sha256"] == row["script_sha256"]
+    aprovado = approval_valid(row)
     return {"id": row["id"], "memory_id": memory_id, "name": row["name"], "exec_class": classe,
             "exec_reasons": motivos, "approved": aprovado, "script_sha256": row["script_sha256"],
             "success_count": row["success_count"], "failure_count": row["failure_count"]}

@@ -51,7 +51,7 @@ FERRAMENTAS = ("Bash", "Read", "Write", "Edit", "MultiEdit", "Grep", "Glob", "We
 SOURCES = frozenset({"manual", "mcp", "hook", "import", "consolidation", "api", "cli"}
                     | {f"tool:{f}" for f in FERRAMENTAS})
 ORIGENS_WEB = ("tool:WebFetch", "tool:WebSearch", "web")
-CAMPOS_DE_APROVACAO = frozenset({"approved", "approved_sha256", "approved_at"})
+CAMPOS_DE_APROVACAO = frozenset({"approved", "approved_sha256", "approved_language", "approved_at"})
 ID_VALIDO = re.compile(r"^[0-9a-f]{32}$")
 
 

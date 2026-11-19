@@ -96,7 +96,8 @@ class FeedbackRequest(_Req):
 
 
 class ProcedureRequest(_Req):
-    action: Literal["get", "list", "validate", "plan", "approve"] = "get"
+    # Sem "approve" (revisão F3-B2): aprovar é decisão humana, só pela CLI ou pelo dashboard.
+    action: Literal["get", "list", "validate", "plan"] = "get"
     id: Optional[str] = Field(None, max_length=64)
     query: Optional[str] = Field(None, max_length=4000)
     project: Optional[str] = Field(None, max_length=200)

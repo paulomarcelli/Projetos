@@ -23,7 +23,7 @@ from typing import Any, Optional
 from hela.core.clock import to_iso
 from hela.core.config import HelaConfig
 from hela.core.errors import InvalidInput, NotFound
-from hela.execution.assessment import MARCAS_WEB, assess_procedure, trusted_origin  # noqa: F401
+from hela.execution.assessment import MARCAS_WEB, approval_valid, assess_procedure, trusted_origin  # noqa: F401
 from hela.execution.validator import LANGUAGE_ALIASES, LANGUAGES, detect_language, script_sha256, validate_script
 from hela.memory.models import MemoryCreate, MemoryUpdate
 from hela.memory.service import MemoryService
@@ -120,7 +120,7 @@ class ProcedureService:
             "id": row["id"], "memory_id": row["memory_id"], "name": row["name"], "description": row["description"],
             "steps": passos, "script_language": row["script_language"],
             "script": None if quarentena else row["script"], "script_sha256": row["script_sha256"],
-            "approved": bool(row["approved"]) and bool(row["script"]) and row["approved_sha256"] == row["script_sha256"],
+            "approved": approval_valid(row), "approved_language": row["approved_language"],
             "approved_sha256": row["approved_sha256"], "approved_at": row["approved_at"],
             "exec_class": classe, "exec_reasons": motivos, "validation": validacao,
             "trusted_origin": self.trusted(memoria), "origin": (memoria or {}).get("metadata", {}).get("origin"),
@@ -222,11 +222,12 @@ class ProcedureService:
                                "confirme que leu os achados (acknowledge_findings)")
         agora = self.memories.now()
         with self.db.transaction():
-            self.db.conn.execute("UPDATE procedures SET approved = 1, approved_sha256 = ?, approved_at = ?,"
-                                 " updated_at = ? WHERE id = ?", (row["script_sha256"], agora, agora, procedure_id))
+            self.db.conn.execute("UPDATE procedures SET approved = 1, approved_sha256 = ?, approved_language = ?,"
+                                 " approved_at = ?, updated_at = ? WHERE id = ?",
+                                 (row["script_sha256"], row["script_language"], agora, agora, procedure_id))
             v = self._salvar_classe(procedure_id)
             self.memories.events.log(agora, "procedure.approved", "procedure", procedure_id,
-                                     {"sha256": row["script_sha256"], "approver": approver,
+                                     {"sha256": row["script_sha256"], "language": row["script_language"], "approver": approver,
                                       "findings": len(validacao.findings)})
         return v
 
@@ -234,7 +235,7 @@ class ProcedureService:
         self._linha(procedure_id)
         agora = self.memories.now()
         with self.db.transaction():
-            self.db.conn.execute("UPDATE procedures SET approved = 0, approved_sha256 = NULL, approved_at = NULL,"
+            self.db.conn.execute("UPDATE procedures SET approved = 0, approved_sha256 = NULL, approved_language = NULL, approved_at = NULL,"
                                  " updated_at = ? WHERE id = ?", (agora, procedure_id))
             v = self._salvar_classe(procedure_id)
             self.memories.events.log(agora, "procedure.revoked", "procedure", procedure_id, {})

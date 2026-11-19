@@ -165,3 +165,31 @@ def test_origem_da_porta_prevalece_sobre_a_declarada(tmp_path):
         r2 = eng.learn(door="mcp", door_origin="mcp", kind="procedural", content="testes rápidos",
                        origin="https://exemplo.com", procedure={"name": "t", "script": "pytest -q"})
         assert eng.procedures.get(r2["procedure"]["id"])["trusted_origin"] is False
+
+
+# --- F3-M2 e F3-B2 (Fase 4) -------------------------------------------------------------------
+def test_aprovacao_amarra_a_linguagem(tmp_path):
+    from hela.core.engine import Engine
+    from hela.execution.validator import script_sha256
+
+    with Engine(home=tmp_path / "m2") as eng:
+        r = eng.learn(door="cli", kind="procedural", content="contar linhas",
+                      procedure={"name": "conta", "script": "print(len(open('a.txt').readlines()))",
+                                 "language": "python"})
+        pid = r["procedure"]["id"]
+        script = eng.procedures.get(pid)["script"]
+        v = eng.procedures.approve(pid, sha256=script_sha256(script))
+        assert v["approved"] is True and v["exec_class"] == "script"
+        mudado = eng.procedures.update_script(pid, script, language="shell")  # mesmo texto, outra linguagem
+        assert mudado["script_sha256"] == v["script_sha256"]
+        assert mudado["approved"] is False and mudado["exec_class"] == "human_approval"
+        assert any("linguagem" in m for m in mudado["exec_reasons"])
+        assert eng.stats()["procedures"]["approved"] == 0
+
+
+def test_contrato_do_procedure_nao_anuncia_approve():
+    from typing import get_args
+
+    from hela.core.contract import ProcedureRequest
+
+    assert "approve" not in get_args(ProcedureRequest.model_fields["action"].annotation)

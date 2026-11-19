@@ -32,6 +32,21 @@ def trusted_origin(memoria: Optional[dict[str, Any]]) -> bool:
     return not any(is_web_origin(v) for v in (meta.get("origin"), meta.get("door_origin"), memoria.get("source")))
 
 
+def approval_valid(row: Any) -> bool:
+    """Aprovação vale para este sha256 **e** esta linguagem (revisão F3-M2): o mesmo texto lido como outra
+    linguagem é outro programa. Aprovação antiga, sem linguagem gravada, deixa de valer (aprovar de novo)."""
+    try:
+        lingua = row["approved_language"]
+    except (IndexError, KeyError):
+        lingua = None
+    return (bool(row["approved"]) and bool(row["script"]) and row["approved_sha256"] == row["script_sha256"]
+            and lingua is not None and lingua == row["script_language"])
+
+
+APPROVAL_SQL = ("approved = 1 AND script IS NOT NULL AND approved_sha256 = script_sha256"
+                " AND approved_language = script_language")
+
+
 def assess_procedure(row: Any, memoria: Optional[dict[str, Any]],
                      allowed_hosts: Iterable[str]) -> tuple[str, list[str], Optional[dict]]:
     """(classe, motivos, validação). row: a linha de procedures; memoria: status, source e metadata."""
@@ -48,10 +63,13 @@ def assess_procedure(row: Any, memoria: Optional[dict[str, Any]],
         motivos.append("origem não confiável (web ou import): nunca sai como executável")
     if validacao["findings"]:
         motivos.append("o validador encontrou: " + ", ".join(validacao["rules"]))
-    aprovado = bool(row["approved"]) and row["approved_sha256"] == row["script_sha256"]
-    if not aprovado:
-        motivos.append("script sem aprovação humana para este sha256" if not row["approved_sha256"]
-                       else "o script mudou depois da aprovação (sha256 diferente)")
+    if not approval_valid(row):
+        if not row["approved_sha256"]:
+            motivos.append("script sem aprovação humana para este sha256")
+        elif row["approved_sha256"] != row["script_sha256"]:
+            motivos.append("o script mudou depois da aprovação (sha256 diferente)")
+        else:
+            motivos.append("a linguagem mudou depois da aprovação (ou a aprovação é anterior à linguagem gravada)")
     if motivos:
         return "human_approval", motivos, validacao
     return "script", ["aprovado por um humano, validador sem achados e origem confiável; "

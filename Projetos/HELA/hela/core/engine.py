@@ -28,6 +28,7 @@ from hela.core.contract import (
 )
 from hela.core.router import CognitiveRouter, coverage, query_terms
 from hela.execution.planner import classify_parts, split_task
+from hela.execution.assessment import APPROVAL_SQL
 from hela.execution.validator import validate_script
 from hela.security.backup_signature import load_key, load_or_create_key
 from hela.security.redaction import redact
@@ -324,10 +325,10 @@ class Engine:
 
     def procedure(self, **entrada: Any) -> dict[str, Any]:
         """Consulta procedimentos, valida um script ou separa uma tarefa nas 4 classes. Nunca aprova nem executa."""
-        r = _validar(ProcedureRequest, entrada)
-        if r.action == "approve":
+        if entrada.get("action") == "approve":  # não está no contrato (F3-B2); a mensagem explica por quê
             raise InvalidInput("aprovar um script é decisão humana: use 'hela procedure approve' na CLI ou o "
                                "dashboard; por aqui a HELA só consulta")
+        r = _validar(ProcedureRequest, entrada)
         if r.action == "get":
             if not r.id:
                 raise InvalidInput("action='get' precisa de id")
@@ -486,7 +487,7 @@ class Engine:
             },
             "procedures": {
                 "total": um("SELECT COUNT(*) FROM procedures"),
-                "approved": um("SELECT COUNT(*) FROM procedures WHERE approved = 1 AND approved_sha256 = script_sha256"),
+                "approved": um(f"SELECT COUNT(*) FROM procedures WHERE {APPROVAL_SQL}"),
                 "by_exec_class": classes,
             },
         }

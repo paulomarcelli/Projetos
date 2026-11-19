@@ -256,7 +256,27 @@ invólucro, que o MCP, os hooks e a API usam.
     e `procedures` já existem; `MemoryService.adjust_quality()` está pronto para o Feedback Learner.
   - **Para a Fase 4:** hooks com `busy_timeout` curto; não montar o grafo no `UserPromptSubmit`; se faltar folga nos
     300 ms, cachear a matriz de vetores (ADR-05).
-- [ ] Fase 3: Intelligence
+- [x] Fase 3: Intelligence (Karol, 18 e 19/11/2026). Decisões em `docs/arquitetura.md` (ADR-12 a ADR-20); plano de
+  execução em `docs/planos/2026-11-18-fase3-intelligence.md`; contrato em `docs/api.md`.
+  - **Pronto:** migração 2; Task Classifier (regras da taxonomia + Naive Bayes multinomial em numpy, treinado só com
+    `explicit`/`feedback`, N mínimo por classe, validação cruzada, ativo só se bater as regras, modo visível);
+    Strategy Ranker (Wilson + qualidade + custos, heurística estatística, pesos versionados em
+    `config/ranker_weights.json` e na tabela `versions`, Thompson opcional como exploração); Feedback Learner;
+    Evolution Engine (pesos por replay com Brier, depreciar estratégia, promover procedimento, mesclar duplicatas,
+    snapshot e rollback); Cognitive Router (9 passos, "experiência insuficiente", log em `retrievals`, ativação no
+    grafo); Context Optimizer; Execution Intelligence (validador estático, 4 classes, aprovação por sha256, nunca
+    executa); `Engine` com as 8 operações; CLI `hela procedure | classifier | evolution`.
+  - **Testes:** 343 passando (`cd Projetos/HELA && .venv/bin/pytest -W error`).
+  - **Medido:** conjunto-ouro recall@5 1,00, MRR 1,00, insuficiente em 100% das sem relação e das iscas; paráfrase sem
+    palavra comum só 2 de 10 (limite do hashing). `recall` p50 23 ms com 1.000 memórias e 114 ms (p95 151 ms) com
+    10.000. Import do `Engine` ~156 ms; dos módulos leves (regras, otimizador, validador, ativação) 3 a 21 ms.
+  - **Mudanças em relação a este plano:** (1) a ativação no grafo lê o SQLite e não usa NetworkX (ADR-20); (2)
+    previsões do NB gravam `label_source = NULL` (ADR-12); (3) router e otimizador ficaram em `hela/core/`.
+  - **Para a Fase 4:** os hooks podem usar `rules`, `optimizer`, `validator` e `activation` sem numpy; o
+    `UserPromptSubmit` completo (`Engine.recall`) passa dos 300 ms só no import (~156 ms) mais a busca: medir e, se
+    preciso, um caminho leve só com FTS5 + regras + otimizador; gravar `compute_cost` (chamadas de ferramenta) e
+    tokens do provedor com `token_source = "provider"`; MCP com as 8 ferramentas sobre `Engine.<operação>`, sem
+    ferramenta de aprovar ou aplicar.
 - [ ] Fase 4: Integração
 - [ ] Fase 5: Dashboard (5a DS da Sofia; 5b app)
 - [ ] Fase 6: Instalador

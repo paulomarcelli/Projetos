@@ -79,7 +79,7 @@ def test_comando_hela_instalado_roda(hela_home_temporario: Path) -> None:
     assert r.returncode == 0, r.stderr
     assert str(hela_home_temporario) in r.stdout
     r = subprocess.run([sys.executable, "-m", "hela", "--version"], capture_output=True, text=True, timeout=60)
-    assert r.returncode == 0 and "0.2.0" in r.stdout
+    assert r.returncode == 0 and "0.3.0" in r.stdout
 
 
 # --- Fase 3: procedimentos, classificador e evolução pela CLI ---------------------------

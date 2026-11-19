@@ -1,6 +1,6 @@
 [project]
 name = "hela"
-version = "0.2.0"
+version = "0.3.0"
 description = "HELA: memória cognitiva local (cérebro externo) para o Claude Code"
 requires-python = ">=3.11"
 readme = "README.md"

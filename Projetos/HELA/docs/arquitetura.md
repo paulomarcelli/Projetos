@@ -167,3 +167,138 @@ Rodar: `cd Projetos/HELA && uv venv .venv && uv pip install --python .venv/bin/p
   acima disso, o cache da matriz (ADR-05) passa a ser necessário.
 - A tabela `events` cresce sem limite; a rotação fica para a fase do dashboard.
 - Trocar de embedder exige `Engine.reembed()`; até lá, o sinal de cosseno só cobre as memórias do modelo atual.
+
+## Fase 3 · Intelligence (18 e 19/11/2026)
+
+### Visão geral
+
+```text
+recall ──► hela.core.router (9 passos) ──► classifier (regras | Naive Bayes) ── ranker (Wilson + custos)
+                │                           busca híbrida + GraphActivation    procedures (classe de execução)
+                ├──► hela.core.optimizer (shingles, frases, orçamento) ──► <hela_memories> (dados, não instruções)
+                └──► retrievals (tarefa, tokens brutos e otimizados)
+feedback ──► learning.feedback ──► outcomes, strategy_metrics, qualidade das memórias, rótulos 'feedback'
+evolution ──► propostas ──► replay (Brier) / Wilson / cosseno ──► apply (snapshot em versions) ──► rollback
+```
+
+| Pacote | O que faz | Tipo |
+|---|---|---|
+| `hela/learning/taxonomy.py`, `rules.py` | 14 categorias + `general`, complexidade, ferramentas prováveis | **regra** |
+| `hela/learning/naive_bayes.py`, `classifier.py` | Naive Bayes multinomial em numpy, validação cruzada, modo ativo | **modelo treinado** |
+| `hela/learning/ranker.py` | limite inferior de Wilson + qualidade + custos, pesos versionados, Thompson opcional | **heurística estatística** |
+| `hela/learning/feedback.py` | resultado → métricas, qualidade das memórias, procedimentos, rótulos | regra (passos fixos) |
+| `hela/learning/evolution.py` | propostas testadas offline, snapshot e rollback | heurística com teste offline |
+| `hela/core/router.py` | os 9 passos, limiar de "experiência insuficiente" | regra (limiar medido) |
+| `hela/core/optimizer.py` | quase-duplicatas, frases redundantes, empacotamento por valor/token | regra |
+| `hela/memory/activation.py` | ativação espalhada pelas arestas do SQLite | regra |
+| `hela/execution/` | validador estático, 4 classes, aprovação por sha256 | regra |
+| `hela/core/contract.py` + `Engine` | as 8 operações (`docs/api.md`) | — |
+
+### ADR-12 · Migração 2 só acrescenta
+
+- **Decisão.** `outcomes.compute_cost`, `strategy_metrics.sum_compute`, `retrievals.tokens_raw/tokens_optimized` e
+  índices, por `ALTER TABLE ADD COLUMN`. Nada existente muda; há teste que aplica a 2 sobre um banco v1 com dados.
+- **Detalhe.** `tasks.label_source` aceita só `rules`/`explicit`/`feedback` (CHECK do esquema 1). A previsão do Naive
+  Bayes grava `label_source = NULL` e `metadata.classified_by = "naive_bayes:v<n>"`, em vez de reconstruir a tabela
+  (que tem cinco chaves estrangeiras apontando para ela).
+
+### ADR-13 · Classificador: regras primeiro, Naive Bayes só com rótulos humanos e só se bater as regras
+
+- **Decisão.** O treino lê só `label_source IN ('explicit','feedback')` e o treinador recusa (`ValueError`) qualquer
+  exemplo de outra origem: são dois filtros. Classes com menos de 5 exemplos ficam fora; precisa de 2 classes. O modelo
+  é guardado em `classifier_models` sempre, mas só fica **ativo** se a acurácia da validação cruzada estratificada
+  (até 5 dobras, semente fixa) for ≥ 0,6 **e** maior que a acurácia das regras nos mesmos rótulos. Complexidade e
+  ferramentas continuam das regras.
+- **Prova.** `test_rotulos_das_regras_nao_treinam` (100 tarefas `rules` + 100 previsões com categorias exclusivas, e
+  um espião em `fit`), mais mutação: incluir `rules` na lista permitida ou no SQL faz o teste falhar.
+- **Descartado.** scikit-learn (não é dependência garantida) e regressão logística (mais parâmetros para poucos dados).
+- **Medido.** 480 exemplos em 8 classes: treino + validação cruzada em 158 ms.
+
+### ADR-14 · Strategy Ranker é heurística estatística, com pesos versionados
+
+- **Decisão.** `score = Σ peso·componente`, pesos somando 1 (padrão: sucesso 0,45, qualidade 0,2, tokens 0,1, duração
+  0,1, tentativas 0,1, custo computacional 0,05). Sucesso = limite inferior de Wilson (z 1,96): 0 observações valem 0;
+  1 em 1 vale 0,21; 10 em 10 vale 0,72. Qualidade com encolhimento para 0,5. Custos = `1 − x/(x + mediana dos
+  candidatos)`, desconhecido = 0,5.
+- **Versões.** Padrão em `config/ranker_weights.json` (teste de igualdade com o código); a versão ativa vive em
+  `versions` (`ranker.weights`), criada na primeira leitura.
+- **Exploração.** Thompson sampling (`thompson_pick`) existe, desligado (`learning.ranker.thompson`), e sai marcado
+  `exploration: true`.
+
+### ADR-15 · Feedback Learner com passos fixos
+
+- Sucesso: qualidade +0,05 × qualidade informada e confiança +0,05; falha: −0,08 e −0,05 (`learning.feedback`). As
+  memórias usadas são as que entraram no contexto (`retrievals.results[].included`). Correção de categoria vira rótulo
+  `feedback`. Tokens sem origem informada são gravados como `estimated`, nunca como do provedor.
+
+### ADR-16 · Evolution Engine: só recomenda o que melhora num teste offline
+
+- **Pesos:** busca por coordenadas (passar 0,1 de um componente para outro, 30 candidatos), cada um avaliado pelo
+  Brier do replay **prequencial** (cada resultado previsto só com o passado). Exige 20 resultados. Só vira `tested` se
+  melhorar o Brier em pelo menos 0,002; senão fica `rejected`, com os números.
+- **Depreciar estratégia:** teto de Wilson dela abaixo do piso da melhor da categoria (≥ 5 observações cada).
+- **Promover procedimento:** limite inferior de Wilson dos usos ≥ 0,6 com ≥ 5 usos, origem confiável. Promover sobe a
+  importância e põe a tag `promovido`; **nunca aprova script**.
+- **Mesclar duplicatas:** os grupos da consolidação (cosseno ≥ 0,9). O laço de mescla virou `merge_group()` na
+  consolidação, usado pelos dois.
+- **Aplicar e desfazer.** Nada é aplicado sozinho (só CLI e, na Fase 5, dashboard; nunca MCP). Pesos novos são uma
+  versão nova com `parent_id`; rollback reativa a anterior (os mesmos bytes, testado). Os outros tipos gravam o estado
+  anterior em `versions` (`snapshot:<tipo>`); o rollback da mescla restaura memórias e arestas (testado).
+
+### ADR-17 · Router: limiar absoluto medido, uma busca só
+
+- **Relevância** = max(cosseno, cobertura dos termos da consulta). O RRF só ordena; quem decide é o limiar
+  (`router.min_relevance` 0,35, `min_trust` 0,1).
+- **Medido no conjunto-ouro** (12 memórias, 12 consultas relacionadas, 20 sem relação, 10 iscas com uma palavra em
+  comum): recall@5 1,00, MRR 1,00, "insuficiente" em 100% das sem relação e das iscas. Relevância do acerto esperado
+  entre 0,67 e 1,0; sem relação até 0,22; iscas entre 0,25 e 0,33. Com limiar 0,30 passariam 6 de 10 iscas: por isso
+  0,35.
+- **Limite honesto.** Paráfrase sem palavra em comum quase não é recuperada: 2 de 10 numa bateria de paráfrases
+  ("banco travando com várias gravações" não acha a memória sobre WAL). É o limite do embedder por hashing (ADR-04); o
+  `Embedder` neural opcional é a saída. O conjunto-ouro foi escrito por mim: a Fase 7 deve usar consultas reais.
+- **Uma busca, quatro grupos.** Os passos 3 a 5 vêm de uma busca só (limite × 4), dividida por tipo, para ler os
+  vetores uma vez.
+- **Medido (este container).** `recall` com 1.000 memórias: p50 23 ms; com 10.000: p50 114 ms, p95 151 ms.
+
+### ADR-18 · Context Optimizer nunca corta o que é exato
+
+- Protegidos: blocos entre cercas, linhas de comando, de caminho, de erro e com código entre crases. Em resumo, código
+  sai inteiro ou vira `[código omitido: N linhas; íntegra na memória <id>]`; só a prosa encurta. Há um teste
+  aleatório (60 rodadas) que confere isso e o orçamento.
+- **Bug achado e corrigido.** O padrão de errno (`ENOENT`) estava sem distinção de maiúsculas e marcava "esperar"
+  como linha de erro; com isso a frase não era deduplicada. Teste de regressão incluído.
+
+### ADR-19 · Execution Intelligence: a HELA classifica e valida, nunca executa
+
+- Validador: regex por linha lógica para shell e PowerShell, AST para Python (com apelidos de import e as strings do
+  script passando pelas regras de shell). 43 scripts perigosos e 13 benignos no teste.
+- Classe de um procedimento calculada na hora: `script` só com aprovação para o sha256 atual, validador limpo e origem
+  confiável; `human_approval` no resto; `reuse` sem script. Origem web ou import nunca é aprovável.
+- Aprovar exige o sha256 revisado (e `acknowledge_findings` se houver achados); só pela CLI (`hela procedure approve`)
+  e, na Fase 5, pelo dashboard. `hela_procedure` com `action=approve` é recusado.
+
+### ADR-20 · Ativação no grafo sem NetworkX
+
+- A ativação lê as arestas do SQLite por fronteira (2 passos, decaimento 0,5, peso limitado a 1) e entra na busca como
+  o sinal `graph`. Não importa NetworkX (3,4 ms de import), então serve aos hooks. O `MemoryGraph` continua para
+  `neighbors()` e a exploração.
+
+### Leveza para a Fase 4
+
+| Módulo | Import (cumulativo, `-X importtime`) |
+|---|---|
+| `hela.memory.activation` | 3,4 ms |
+| `hela.learning.rules` | 10,6 ms |
+| `hela.core.optimizer` | 20,2 ms |
+| `hela.execution.validator` | 21,3 ms |
+| `hela.core.engine` (numpy + pydantic) | 156 ms |
+
+Os quatro primeiros têm teste que falha se carregarem numpy, networkx ou pydantic. O `Engine` não carrega networkx.
+
+### Limites conhecidos da Fase 3
+
+- Classificador por regras: palavras-chave fixas, português e inglês. O NB só aparece com rótulos humanos.
+- Relevância léxica: paráfrase sem palavra comum fica de fora (ADR-17).
+- Custo computacional (`compute_cost`) ainda não é preenchido por ninguém: a Fase 4 grava o número de chamadas de
+  ferramenta.
+- Procedimentos não entram no export/import (só memórias e relações); o import, portanto, nunca traz aprovação.

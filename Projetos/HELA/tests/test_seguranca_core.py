@@ -137,7 +137,7 @@ def test_import_ignora_campos_de_confianca(tmp_path: Path) -> None:
         m = eng.get("a" * 32, record_access=False)
         assert (m.status, m.quality, m.confidence, m.access_count, m.last_accessed, m.source) == \
                ("active", 0.5, 0.5, 0, None, "import")
-        assert m.importance == 0.7  # importância não é campo de confiança
+        assert m.importance == 0.5  # a importância também pesa no ranking: o arquivo não controla (revisão A-7)
     with Engine(home=tmp_path / "backup") as eng:  # backup próprio, pela CLI: --trusted mantém tudo
         eng.import_data(_doc([forjada]), trusted=True)
         m = eng.get("a" * 32, record_access=False)

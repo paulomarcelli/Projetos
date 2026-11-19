@@ -76,6 +76,39 @@ class MemoryCreate(_Entrada):
         return data_iso(v)
 
 
+class MemoryInput(_Entrada):
+    """Entrada pública (MCP, hooks, API, Engine.remember): sem campos de confiança (revisão A-7).
+
+    quality, confidence e source só vêm de caminhos internos (feedback, import confiável,
+    consolidação), pelo MemoryCreate. Assim nem o Claude nem uma injeção gravam "qualidade 1,0".
+    """
+
+    kind: Kind
+    content: str = Field(min_length=1)
+    title: Optional[str] = Field(None, max_length=300)
+    summary: Optional[str] = Field(None, max_length=2000)
+    project: Optional[str] = Field(None, max_length=200)
+    tags: list[str] = Field(default_factory=list)
+    importance: Optional[float] = Field(None, ge=0, le=1)
+    expires_at: Optional[str] = None
+    session_id: Optional[str] = None
+    task_id: Optional[str] = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("tags")
+    @classmethod
+    def _validar_tags(cls, v: list[str]) -> list[str]:
+        return _limpar_tags(v)
+
+    @field_validator("expires_at", mode="before")
+    @classmethod
+    def _validar_expiracao(cls, v: Any) -> Optional[str]:
+        return data_iso(v)
+
+    def to_create(self, source: str) -> "MemoryCreate":
+        return MemoryCreate(**self.model_dump(), source=source)
+
+
 class MemoryUpdate(_Entrada):
     """Só os campos enviados mudam (model_fields_set). expires_at=None apaga a validade."""
 

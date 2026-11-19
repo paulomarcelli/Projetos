@@ -22,6 +22,8 @@ Formato (versão 1):
 
 from __future__ import annotations
 
+import re
+
 import json
 import os
 import tempfile
@@ -42,6 +44,7 @@ EXPORT_FORMAT = "hela-export"
 EXPORT_VERSION = 1
 MAX_IMPORT_BYTES = 50 * 1024 * 1024
 MAX_IMPORT_ITEMS = 100_000
+ID_VALIDO = re.compile(r"^[0-9a-f]{32}$")
 
 
 class ExportedMemory(BaseModel):
@@ -206,11 +209,20 @@ def import_data(service: MemoryService, dados: Union[str, bytes, dict[str, Any]]
     try:
         entradas = []
         for m in doc.memories:
-            confianca = ({"source": m.source, "quality": m.quality, "confidence": m.confidence}
-                         if trusted else {"source": "import"})
+            # Sem --trusted, o arquivo não controla nada que pese no ranking (revisão A-7): importância,
+            # qualidade, confiança, origem e datas ficam com os valores locais; as datas originais
+            # ficam guardadas em metadata, só para consulta.
+            if trusted:
+                confianca = {"source": m.source, "quality": m.quality, "confidence": m.confidence,
+                             "importance": m.importance}
+                meta = m.metadata
+            else:
+                confianca = {"source": "import"}
+                meta = {**m.metadata, **{f"original_{k}": v for k, v in
+                                         (("created_at", m.created_at), ("updated_at", m.updated_at)) if v}}
             entradas.append((m, MemoryCreate(kind=m.kind, content=m.content, title=m.title, summary=m.summary,
-                                             project=m.project, tags=m.tags, importance=m.importance,
-                                             expires_at=m.expires_at, metadata=m.metadata, **confianca)))
+                                             project=m.project, tags=m.tags, expires_at=m.expires_at,
+                                             metadata=meta, **confianca)))
     except ValidationError as erro:
         raise InvalidInput(f"memória inválida no arquivo ({describe_validation_error(erro)})") from None
 
@@ -219,12 +231,13 @@ def import_data(service: MemoryService, dados: Union[str, bytes, dict[str, Any]]
     try:
         with service.db.transaction():
             for m, entrada in entradas:
-                preservar: dict[str, Any] = {"id": m.id}
-                if m.created_at:
-                    preservar["created_at"] = m.created_at
-                if m.updated_at:
-                    preservar["updated_at"] = m.updated_at
+                # id do arquivo só no formato da HELA (uuid4 em hex); senão, um novo (revisão A-7).
+                preservar: dict[str, Any] = {"id": m.id} if ID_VALIDO.match(m.id) else {}
                 if trusted:
+                    if m.created_at:
+                        preservar["created_at"] = m.created_at
+                    if m.updated_at:
+                        preservar["updated_at"] = m.updated_at
                     preservar.update(status=m.status, access_count=m.access_count, last_accessed=m.last_accessed)
                 r = service.create(entrada, preserve=preservar)
                 mapa[m.id] = r.memory.id

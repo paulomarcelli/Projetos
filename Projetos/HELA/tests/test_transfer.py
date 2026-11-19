@@ -130,7 +130,7 @@ def test_datas_do_arquivo_sao_normalizadas(origem: MemoryService, tmp_path: Path
     dados["memories"][0]["created_at"] = "2026-01-01T00:00:00Z"
     dados["memories"][0]["expires_at"] = "2030-01-01T09:00:00-03:00"
     destino = novo_servico(tmp_path / "d.db")
-    import_data(destino, dados)
+    import_data(destino, dados, trusted=True)  # sem --trusted a data do arquivo não é usada (revisão A-7)
     m = destino.get(dados["memories"][0]["id"], record_access=False)
     assert m.created_at == "2026-01-01T00:00:00.000000+00:00"
     assert m.expires_at == "2030-01-01T12:00:00.000000+00:00"

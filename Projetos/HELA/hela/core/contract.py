@@ -64,7 +64,7 @@ class LearnRequest(_Req):
     category: Optional[str] = Categoria   # rótulo explícito da tarefa (label_source = explicit)
     origin: Optional[str] = Field(None, max_length=80)  # ex.: tool:WebFetch (nunca vira executável)
     procedure: Optional[ProcedureSpec] = None
-    source: str = Field("mcp", max_length=40)
+    # Sem quality, confidence e source: a origem é a porta que chama (Engine.learn(door=...)), não o corpo (A-7).
 
 
 class Tokens(_Req):

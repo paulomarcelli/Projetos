@@ -39,7 +39,7 @@ from hela.memory.activation import GraphActivation
 from hela.memory.consolidation import ConsolidationReport, consolidate
 from hela.memory.embedder import Embedder, make_embedder
 from hela.memory.graph import MemoryGraph
-from hela.memory.models import CreateResult, Memory, MemoryCreate, MemoryUpdate
+from hela.memory.models import CreateResult, Memory, MemoryCreate, MemoryInput, MemoryUpdate
 from hela.memory.search import ActivationProvider, HybridSearch, SearchHit
 from hela.memory.service import MemoryService
 from hela.memory.transfer import ImportReport, check_import_size, export_data, export_to_file, import_data
@@ -111,8 +111,14 @@ class Engine:
 
     # --- memórias ------------------------------------------------------------------------
     def remember(self, data: Optional[MemoryCreate] = None, **campos: Any) -> CreateResult:
-        """Grava uma memória (redação, deduplicação e quarentena incluídas)."""
-        return self.memories.create(data or _validar(MemoryCreate, campos))
+        """Grava uma memória (redação, deduplicação e quarentena incluídas).
+
+        Por argumentos nomeados vale a entrada pública (MemoryInput, sem quality/confidence/source);
+        um MemoryCreate pronto é o caminho interno.
+        """
+        if data is not None:
+            return self.memories.create(data)
+        return self.memories.create(_validar(MemoryInput, campos).to_create("manual"))
 
     def get(self, memory_id: str, record_access: bool = True) -> Memory:
         return self.memories.get(memory_id, record_access=record_access)
@@ -223,8 +229,13 @@ class Engine:
         procs = self._procedimentos_relevantes(texto, r.project, r.limit) if texto else []
         return {**rank, "category": categoria, "procedures": procs}
 
-    def learn(self, **entrada: Any) -> dict[str, Any]:
-        """Guarda uma experiência, um conhecimento ou um procedimento (redação, deduplicação e quarentena)."""
+    def learn(self, door: str = "mcp", **entrada: Any) -> dict[str, Any]:
+        """Guarda uma experiência, um conhecimento ou um procedimento (redação, deduplicação e quarentena).
+
+        door: a porta que chamou (mcp, api, hook, cli). É do código, nunca do corpo da requisição (A-7).
+        """
+        if door not in ("mcp", "api", "hook", "cli", "manual"):
+            raise InvalidInput("door precisa ser mcp, api, hook, cli ou manual")
         r = _validar(LearnRequest, entrada)
         procedimento = None
         if r.procedure is not None:
@@ -233,7 +244,7 @@ class Engine:
             p = r.procedure
             procedimento = self.procedures.create(
                 name=p.name, description=p.description or r.content, steps=p.steps, script=p.script,
-                language=p.language, project=r.project, tags=r.tags, source=r.source, origin=r.origin,
+                language=p.language, project=r.project, tags=r.tags, source=door, origin=r.origin,
                 session_id=r.session_id, task_id=r.task_id)
             memoria = self.memories.get(procedimento["memory_id"], record_access=False)
             res = {"created": procedimento.pop("created"), "duplicate_of": None, "quarantined":
@@ -243,7 +254,7 @@ class Engine:
             cr = self.memories.create(_validar(MemoryCreate, {
                 "kind": r.kind, "content": r.content, "title": r.title, "summary": r.summary, "project": r.project,
                 "tags": r.tags, "importance": r.importance, "expires_at": r.expires_at, "session_id": r.session_id,
-                "task_id": r.task_id, "source": r.source, "metadata": meta}))
+                "task_id": r.task_id, "source": door, "metadata": meta}))
             memoria = cr.memory
             res = {"created": cr.created, "duplicate_of": cr.duplicate_of, "quarantined": cr.quarantined,
                    "redactions": len(cr.redactions), "near_duplicates": [n.model_dump() for n in cr.near_duplicates]}

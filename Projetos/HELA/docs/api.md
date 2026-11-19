@@ -144,7 +144,9 @@ não a recomendação.
 | `category` | texto | rótulo **explícito** da tarefa (`label_source = explicit`); exige `task_id` |
 | `origin` | texto | procedência, ex.: `tool:WebFetch` (origem web nunca vira script executável) |
 | `procedure` | objeto | `{name, description?, steps?, script?, language?}`; só com `kind = procedural` |
-| `source` | texto | padrão `mcp` |
+
+Não existem `quality`, `confidence` nem `source` na entrada (revisão A-7): a origem é a porta que chama
+(`Engine.learn(door="mcp" | "api" | "hook" | "cli", ...)`), definida no código do servidor, nunca no corpo.
 
 Saída:
 

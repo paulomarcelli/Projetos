@@ -18,6 +18,7 @@ então não precisa calibrar a escala do BM25 contra a do cosseno.
 
 from __future__ import annotations
 
+import sqlite3
 import time
 from dataclasses import replace
 from typing import Optional, Protocol
@@ -32,6 +33,7 @@ from hela.memory.service import MemoryService
 from hela.storage.repositories.memories import MemoryFilter, row_to_dict
 
 MAX_CONSULTA = 4000
+REGISTRO_BUSY_MS = 50  # espera máxima para gravar o registro de uma busca
 
 
 class ActivationProvider(Protocol):
@@ -70,7 +72,8 @@ class HybridSearch:
         self.activation = activation
 
     def search(self, query: str, filtro: Optional[MemoryFilter] = None, limit: Optional[int] = None,
-               record_access: bool = True) -> list[SearchHit]:
+               record_access: bool = True, record: bool = True) -> list[SearchHit]:
+        """record=False: só lê, não grava evento nem acesso (caminho do hook, revisão A-2)."""
         inicio = time.perf_counter()
         consulta = (query or "").strip()[:MAX_CONSULTA]
         if not consulta:
@@ -114,7 +117,7 @@ class HybridSearch:
                 candidatos |= set(ativacao)
 
         if not candidatos:
-            self._registrar([], inicio, record_access)
+            self._registrar([], inicio, record_access, record)
             return []
 
         # 3. Sinais que só reordenam os candidatos.
@@ -125,7 +128,7 @@ class HybridSearch:
 
         fundido = rrf_fuse(rankings, cfg.weights.model_dump(), cfg.rrf_k)
         escolhidos = [m for m in fundido if m in linhas][:limite]
-        self._registrar(escolhidos, inicio, record_access)
+        self._registrar(escolhidos, inicio, record_access, record)
 
         posicoes = {s: {m: i for i, m in enumerate(lista, start=1)} for s, lista in rankings.items()}
         atual = {r["id"]: r for r in repo.list(MemoryFilter(statuses=None, ids=escolhidos), limit=len(escolhidos))}
@@ -140,15 +143,29 @@ class HybridSearch:
                                   score=round(fundido[mid], 6), signals=sinais))
         return hits
 
-    def _registrar(self, ids: list[str], inicio: float, record_access: bool) -> None:
-        """Atualiza o acesso dos resultados e grava o evento (sem o texto da consulta)."""
-        with self.svc.db.transaction():
-            agora = self.svc.now()
-            if record_access:
-                self.svc.memories.touch(ids, agora)
-            self.svc.events.log(agora, "memory.searched", "search", None, {
-                "n_results": len(ids), "ids": ids, "latency_ms": round((time.perf_counter() - inicio) * 1000, 2),
-            })
+    def _registrar(self, ids: list[str], inicio: float, record_access: bool, record: bool = True) -> None:
+        """Atualiza o acesso dos resultados e grava o evento (sem o texto da consulta).
+
+        Melhor esforço (revisão A-2): a busca já está calculada; se outro processo segura a escrita,
+        o registro espera no máximo REGISTRO_BUSY_MS e é descartado, em vez de derrubar a busca.
+        """
+        if not record:
+            return
+        conn = self.svc.db.conn
+        anterior = int(conn.execute("PRAGMA busy_timeout").fetchone()[0])
+        conn.execute(f"PRAGMA busy_timeout = {REGISTRO_BUSY_MS}")
+        try:
+            with self.svc.db.transaction():
+                agora = self.svc.now()
+                if record_access:
+                    self.svc.memories.touch(ids, agora)
+                self.svc.events.log(agora, "memory.searched", "search", None, {
+                    "n_results": len(ids), "ids": ids, "latency_ms": round((time.perf_counter() - inicio) * 1000, 2),
+                })
+        except sqlite3.OperationalError:
+            pass  # banco ocupado: o resultado vale mais que o registro
+        finally:
+            conn.execute(f"PRAGMA busy_timeout = {anterior}")
 
 
 def _ordem_recencia(row) -> float:

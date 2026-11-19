@@ -104,3 +104,28 @@ def test_wal_nao_e_pedido_de_novo(tmp_path: Path) -> None:
     finally:
         trava.execute("ROLLBACK")
         trava.close()
+
+
+# --- A-2 · busca com outro processo gravando --------------------------------------------
+
+def test_busca_devolve_resultado_com_escrita_travada(tmp_path: Path) -> None:
+    with Engine(home=tmp_path / "h") as eng:  # busy_timeout padrão: 3 s
+        eng.remember(kind="procedural", content="rodar testes com pytest -q")
+        trava = sqlite3.connect(str(eng.db.path))
+        trava.execute("BEGIN IMMEDIATE")  # outro processo segurando a escrita
+        try:
+            inicio = time.perf_counter()
+            hits = eng.search("pytest")
+            assert (time.perf_counter() - inicio) < 0.3 and hits
+        finally:
+            trava.execute("ROLLBACK")
+            trava.close()
+
+
+def test_busca_sem_registro_nao_grava(tmp_path: Path) -> None:
+    with Engine(home=tmp_path / "h") as eng:
+        m = eng.remember(kind="procedural", content="rodar testes com pytest -q").memory
+        eventos = eng.memories.events.count()
+        assert eng.search("pytest", record=False)
+        assert eng.memories.events.count() == eventos
+        assert eng.get(m.id, record_access=False).access_count == 0

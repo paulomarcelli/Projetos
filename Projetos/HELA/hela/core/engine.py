@@ -163,9 +163,9 @@ class Engine:
     def search(self, query: str, kinds: Optional[Iterable[str]] = None, project: Optional[str] = None,
                include_global: bool = False, tags: Optional[Iterable[str]] = None,
                statuses: Optional[Iterable[str]] = ("active",), min_quality: Optional[float] = None,
-               limit: Optional[int] = None, record_access: bool = True) -> list[SearchHit]:
+               limit: Optional[int] = None, record_access: bool = True, record: bool = True) -> list[SearchHit]:
         filtro = self._filtro(kinds, project, include_global, tags, statuses, min_quality)
-        return self.searcher.search(query, filtro, limit=limit, record_access=record_access)
+        return self.searcher.search(query, filtro, limit=limit, record_access=record_access, record=record)
 
     @staticmethod
     def as_context(hits: Iterable[Union[SearchHit, Memory]]) -> str:

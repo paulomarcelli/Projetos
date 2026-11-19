@@ -43,22 +43,38 @@ _PADROES: list[tuple[str, re.Pattern[str]]] = [
 ]
 
 # URL com credencial: esquema://usuario:senha@host. Troca usuário e senha, mantém o resto.
-_URL_CREDENCIAL = re.compile(r"(?i)\b([a-z][a-z0-9+.\-]*://)[^/\s:@\[\]]+:[^/\s@\[\]]+@")
+_URL_CREDENCIAL = re.compile(r"(?i)\b([a-z][a-z0-9+.\-]{0,31}://)[^/\s:@\[\]]{1,256}:[^/\s\[\]]{1,256}@")
 
 # "Authorization: Bearer <valor>": troca só o valor.
 _BEARER = re.compile(r"(?i)(\bBearer\s+)([A-Za-z0-9._~+/=\-]{16,})")
 
 # Atribuições: nome terminado em uma palavra sensível, seguido de = ou :.
-# "max_tokens=1000" não casa porque o nome termina em "tokens", não em "token".
+# A busca começa pela palavra sensível (não pelo nome): tempo linear (revisão A-3).
+# "max_tokens=1000" não casa porque depois de "token" vem "s", não o separador.
 _ATRIBUICAO = re.compile(
     r"""(?ix)
-    (?P<chave>["']?\b[\w.\-]*?
-        (?:password|passwd|pwd|secret|token|api[_\-]?key|access[_\-]?key|private[_\-]?key|auth)
-    ["']?)
-    (?P<sep>\s*[:=]\s*)
-    (?P<valor>"[^"\n]*"|'[^'\n]*'|[^\s,;}\])]+)
+    (?P<chave>pass(?:word|wd|phrase)?|pwd|secret|token|api[_\-]?key|access[_\-]?key|private[_\-]?key|auth|cookie|
+       credentials?|[_\-]key)
+    (?P<sep>["']?\s*[:=]\s*)
+    (?P<valor>"[^"\n]{0,1024}"|'[^'\n]{0,1024}'|[^\s,;}\])]{1,1024})
     """
 )
+
+# "Authorization: Basic <base64>" e cabeçalho Cookie: troca só o valor.
+_BASIC = re.compile(r"(?i)(\bBasic\s+)([A-Za-z0-9+/]{8,512}={0,2})")
+_COOKIE = re.compile(r"(?im)^(\s*(?:set-)?cookie\s*:\s*)(\S[^\n]{0,4096})")
+
+# Linha de comando (revisão A-4): curl -u user:senha, --password X, mysql -pSENHA e o .netrc.
+_CLI_USER = re.compile(r"(?<!\S)(-u|--user)(\s+)([^\s:]{1,128}):([^\s@]{1,256})")
+_CLI_FLAG = re.compile(r"(?i)(?<!\S)(--(?:password|passwd|pass|token|secret|api-key|access-key))(\s+)(?!-)(\S{1,512})")
+_MYSQL_P = re.compile(r"(?i)\b((?:mysql|mysqldump|mysqladmin|mariadb)\b[^\n]{0,200}?\s-p)([^\s-][^\s]{0,255})")
+_NETRC = re.compile(r"(?im)((?:\blogin\s+\S{1,128}\s+|^\s*)password\s+)(\S{1,512})")
+_AWS_SECRET = re.compile(r"(?i)(\baws_secret(?:_access_key)?\b[\"']?\s*[:=]?\s*[\"']?)([A-Za-z0-9/+]{30,60})")
+
+# Hexadecimal longo solto (48+, ex.: segredo de webhook de 64). uuid em hex (32), hash de commit (40) e hashes com
+# rótulo (sha256, digest, md5, checksum) ficam de fora.
+_HEX = re.compile(r"(?<![\w:@])[0-9a-fA-F]{48,128}(?!\w)")
+_ROTULO_HASH = re.compile(r"(?i)(sha\d*|digest|md5|checksum|hash|commit)\W{0,3}$")
 
 # Valores que não são segredo: tipos, nulos, referências a variáveis e marcadores já trocados.
 _VALORES_INOFENSIVOS = re.compile(
@@ -83,8 +99,14 @@ def _parece_segredo(token: str, limiar: float) -> bool:
     # Precisa misturar letras e dígitos: nomes longos de função ficam de fora.
     if not (re.search(r"[A-Za-z]", token) and re.search(r"\d", token)):
         return False
+    e = _entropia(token)
     # Hash de commit e UUID são hexadecimais: entropia máxima de 4 bits, abaixo do limiar.
-    return _entropia(token) >= limiar
+    if e >= limiar:
+        return True
+    # Tokens curtos (24 a 31) têm entropia medida mais baixa mesmo sendo aleatórios (revisão A-4):
+    # aceitar 3,6 bits quando misturam maiúscula, minúscula e dígito.
+    mistura = re.search(r"[a-z]", token) and re.search(r"[A-Z]", token)
+    return bool(mistura) and len(token) < 32 and e >= 3.6
 
 
 def redact(text: str, entropy_threshold: float = 4.2, entropy_min_length: int = 24) -> RedactionResult:
@@ -110,6 +132,38 @@ def redact(text: str, entropy_threshold: float = 4.2, entropy_min_length: int = 
         achados.append("bearer_token")
         return m.group(1) + MARCADOR.format("bearer_token")
     text = _BEARER.sub(_troca_bearer, text)
+
+    def _troca_grupo(padrao: re.Pattern[str], tipo: str, grupo_valor: int) -> None:
+        nonlocal text
+
+        def _sub(m: re.Match[str]) -> str:
+            valor = m.group(grupo_valor)
+            if valor.startswith("[REDACTED") or _VALORES_INOFENSIVOS.match(valor):
+                return m.group(0)
+            achados.append(tipo)
+            inicio, fim = m.span(grupo_valor)
+            base = m.start(0)
+            return m.group(0)[: inicio - base] + MARCADOR.format(tipo) + m.group(0)[fim - base:]
+        text = padrao.sub(_sub, text)
+
+    _troca_grupo(_BASIC, "basic_auth", 2)
+    _troca_grupo(_COOKIE, "cookie", 2)
+    _troca_grupo(_CLI_USER, "cli_password", 4)
+    _troca_grupo(_CLI_FLAG, "cli_password", 3)
+    _troca_grupo(_MYSQL_P, "cli_password", 2)
+    _troca_grupo(_NETRC, "netrc_password", 2)
+    _troca_grupo(_AWS_SECRET, "aws_secret", 2)
+
+    def _troca_hex(m: re.Match[str]) -> str:
+        token = m.group(0)
+        antes = text_atual[max(0, m.start() - 16):m.start()]
+        if len(token) == 40 or _ROTULO_HASH.search(antes) or not re.search(r"[a-fA-F]", token) \
+                or not re.search(r"\d", token):
+            return token
+        achados.append("hex_secret")
+        return MARCADOR.format("hex_secret")
+    text_atual = text
+    text = _HEX.sub(_troca_hex, text)
 
     def _troca_atribuicao(m: re.Match[str]) -> str:
         valor = m.group("valor")
@@ -146,7 +200,12 @@ def redact_value(valor: object, **kwargs: float) -> tuple[object, list[str]]:
     if isinstance(valor, dict):
         saida = {}
         for k, v in valor.items():
-            saida[k], tipos = redact_value(v, **kwargs)
+            chave = k
+            if isinstance(k, str):  # as chaves também (revisão A-4)
+                rk = redact(k, **kwargs)  # type: ignore[arg-type]
+                chave = rk.text
+                achados.extend(rk.findings)
+            saida[chave], tipos = redact_value(v, **kwargs)
             achados.extend(tipos)
         return saida, achados
     if isinstance(valor, list):

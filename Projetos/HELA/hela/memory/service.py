@@ -115,12 +115,15 @@ class MemoryService:
         desconhecidos = set(preserve) - _PRESERVAVEIS
         if desconhecidos:
             raise InvalidInput(f"campos que não podem ser preservados: {sorted(desconhecidos)}")
+        self._checar_tamanho(data.content)  # antes da redação: texto grande não chega a ser varrido (A-3)
         achados: list[str] = []
         title = self._redigir(data.title, achados)
         content = self._redigir(data.content, achados) or ""
         summary = self._redigir(data.summary, achados)
         tags = sorted({self._redigir(t, achados) or "" for t in data.tags} - {""})
         metadata = self._redigir_valor(data.metadata, achados)
+        project = self._redigir(data.project, achados)
+        source = self._redigir(data.source, achados) or "manual"
         self._checar_tamanho(content)
         h = content_hash(content)
         agora = self.now()
@@ -133,7 +136,7 @@ class MemoryService:
                 if novas_tags != atual["tags"]:
                     self.memories.update(atual["id"], {"tags": novas_tags, "updated_at": agora})
                 self.events.log(agora, "memory.duplicate", "memory", atual["id"],
-                                {"kind": atual["kind"], "source": data.source})
+                                {"kind": atual["kind"], "source": source})
                 return CreateResult(memory=self.get(atual["id"], record_access=False), created=False,
                                     duplicate_of=atual["id"], redactions=achados)
 
@@ -148,7 +151,7 @@ class MemoryService:
             status = "quarantined" if quarentena else preserve.get("status", "active")
             self.memories.insert({
                 "id": mid, "kind": data.kind, "title": title, "content": content, "summary": summary,
-                "project": data.project, "tags": tags, "source": data.source,
+                "project": project, "tags": tags, "source": source,
                 "status": status,
                 "content_hash": h, "embedding": to_blob(vetor), "embedding_model": self.embedder.name,
                 "importance": cfg.default_importance if data.importance is None else data.importance,
@@ -161,7 +164,7 @@ class MemoryService:
                 "redactions": len(achados), "injection_score": inj.score, "metadata": metadata,
             })
             self.events.log(agora, "memory.quarantined" if quarentena else "memory.created", "memory", mid, {
-                "kind": data.kind, "source": data.source, "redactions": len(achados),
+                "kind": data.kind, "source": source, "redactions": len(achados),
                 "injection_matches": inj.matches, "near_duplicates": [n.id for n in quase],
             })
         return CreateResult(memory=self.get(mid, record_access=False), created=True, near_duplicates=quase,
@@ -185,6 +188,10 @@ class MemoryService:
             atual = self._carregar(memory_id)
             achados: list[str] = []
             campos: dict[str, Any] = {}
+            if "content" in enviados and data.content is not None:
+                self._checar_tamanho(data.content)
+            if "project" in enviados:
+                campos["project"] = self._redigir(data.project, achados)
             for nome in ("title", "content", "summary"):
                 if nome in enviados:
                     campos[nome] = self._redigir(getattr(data, nome), achados)
@@ -194,7 +201,7 @@ class MemoryService:
                 campos["tags"] = sorted({self._redigir(t, achados) or "" for t in (data.tags or [])} - {""})
             if "metadata" in enviados:
                 campos["metadata"] = self._redigir_valor(data.metadata or {}, achados)
-            for nome in ("kind", "project", "importance", "quality", "confidence", "expires_at"):
+            for nome in ("kind", "importance", "quality", "confidence", "expires_at"):
                 if nome in enviados:
                     valor = getattr(data, nome)
                     if nome == "kind" and valor is None:

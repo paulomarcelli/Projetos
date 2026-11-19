@@ -12,6 +12,7 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from hela.core.clock import parse_iso, to_iso
+from hela.security.redaction import redact
 
 Kind = Literal["episodic", "semantic", "procedural", "executive"]
 Status = Literal["active", "archived", "quarantined", "expired", "merged"]
@@ -24,7 +25,9 @@ MAX_TAG_LEN = 64
 
 def _limpar_tags(tags: list[str]) -> list[str]:
     """Minúsculas, sem espaços nas pontas, sem repetição, em ordem alfabética."""
-    limpas = sorted({t.strip().lower() for t in tags if isinstance(t, str) and t.strip()})
+    # Redige antes de passar para minúsculas: os padrões de chave dependem de maiúsculas (revisão A-4).
+    limpas = sorted({redact(t).text.strip().lower().replace("[redacted:", "[REDACTED:")
+                     for t in tags if isinstance(t, str) and t.strip()})
     if len(limpas) > MAX_TAGS:
         raise ValueError(f"no máximo {MAX_TAGS} tags")
     if any(len(t) > MAX_TAG_LEN for t in limpas):

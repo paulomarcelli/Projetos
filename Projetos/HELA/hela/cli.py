@@ -1,4 +1,4 @@
-"""CLI `hela` (Fase 2: status, export e import).
+"""CLI `hela`: status, export, import (Fase 2); procedure, classifier, evolution (Fase 3).
 
 Códigos de saída: 0 sucesso; 1 erro (mensagem em stderr); 3 comando de outra fase.
 """
@@ -19,7 +19,6 @@ from hela.core.errors import HelaError
 _OUTRAS_FASES = {
     "dashboard": ("Fase 5", "abrir o dashboard no navegador"),
     "doctor": ("Fase 6", "diagnóstico da instalação"),
-    "procedure": ("Fase 3", "procedimentos e scripts validados"),
 }
 
 
@@ -41,6 +40,28 @@ def _parser() -> argparse.ArgumentParser:
     im.add_argument("--trusted", action="store_true",
                     help="backup seu: mantém status, qualidade e contadores (a quarentena continua valendo)")
     im.add_argument("--dry-run", action="store_true", help="mostra o que entraria, sem gravar nada")
+
+    pr = sub.add_parser("procedure", help="procedimentos: listar, ver, aprovar script (decisão humana) e revogar")
+    prs = pr.add_subparsers(dest="acao", required=True)
+    prl = prs.add_parser("list", help="lista os procedimentos")
+    prl.add_argument("--query", help="busca pelo texto")
+    prs.add_parser("show", help="mostra um procedimento com o script e a validação").add_argument("id")
+    pra = prs.add_parser("approve", help="aprova o script revisado (exige o sha256 exato)")
+    pra.add_argument("id")
+    pra.add_argument("--sha256", required=True, help="sha256 do script que você revisou (mostrado em show)")
+    pra.add_argument("--acknowledge-findings", action="store_true",
+                     help="aprova mesmo com achados do validador (eles continuam pedindo um humano)")
+    prs.add_parser("revoke", help="revoga a aprovação").add_argument("id")
+
+    cl = sub.add_parser("classifier", help="classificador de tarefas: modo ativo e treino")
+    cl.add_argument("acao", choices=["status", "train"])
+
+    ev = sub.add_parser("evolution", help="propostas de melhoria: listar, propor, aplicar e desfazer")
+    evs = ev.add_subparsers(dest="acao", required=True)
+    evs.add_parser("list", help="lista as propostas")
+    evs.add_parser("propose", help="gera e testa propostas (nada é aplicado sozinho)")
+    evs.add_parser("apply", help="aplica uma proposta testada").add_argument("id", type=int)
+    evs.add_parser("rollback", help="desfaz uma proposta aplicada").add_argument("id", type=int)
 
     for nome, (fase, o_que) in _OUTRAS_FASES.items():
         sub.add_parser(nome, help=f"{o_que} ({fase})")
@@ -66,6 +87,10 @@ def _status(eng, como_json: bool) -> None:
     linhas.append(f"relações:     {s['relationships']}")
     linhas.append(f"eventos:      {s['events']}")
     print("\n".join(linhas))
+
+
+def _json(dados: object) -> None:
+    print(json.dumps(dados, ensure_ascii=False, indent=2, default=str))
 
 
 def main(argv: Optional[list[str]] = None) -> int:
@@ -98,6 +123,27 @@ def main(argv: Optional[list[str]] = None) -> int:
                 print(f"criadas: {rel.created}, duplicadas: {rel.duplicates}, em quarentena: {rel.quarantined}, "
                       f"trechos redigidos: {rel.redactions}, relações: {rel.relationships} "
                       f"(puladas: {rel.skipped_relationships})")
+            elif args.comando == "procedure":
+                if args.acao == "list":
+                    lista = eng.procedure(action="list", query=args.query, limit=50)["procedures"]
+                    _json([{k: p[k] for k in ("id", "name", "exec_class", "approved", "script_sha256")} for p in lista])
+                elif args.acao == "show":
+                    _json({k: v for k, v in eng.procedures.get(args.id).items() if k != "context"})
+                elif args.acao == "approve":
+                    _json(eng.procedures.approve(args.id, args.sha256, args.acknowledge_findings, approver="cli"))
+                else:
+                    _json(eng.procedures.revoke(args.id))
+            elif args.comando == "classifier":
+                _json(eng.classifier.status() if args.acao == "status" else eng.classifier.train().as_dict())
+            elif args.comando == "evolution":
+                if args.acao == "list":
+                    _json(eng.evolution.list())
+                elif args.acao == "propose":
+                    _json(eng.evolution.propose())
+                elif args.acao == "apply":
+                    _json(eng.evolution.apply(args.id))
+                else:
+                    _json(eng.evolution.rollback(args.id))
         return 0
     except (HelaError, ValueError) as erro:
         print(f"hela: erro: {erro}", file=sys.stderr)

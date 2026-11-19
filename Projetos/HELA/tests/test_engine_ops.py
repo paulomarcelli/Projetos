@@ -59,7 +59,7 @@ def test_learn_valida(eng: Engine) -> None:
         eng.learn(kind="sonho", content="x")
     with pytest.raises(InvalidInput):
         eng.learn(kind="semantic", content="x" * 20_001)
-    with pytest.raises(InvalidInput, match="extra"):
+    with pytest.raises(InvalidInput, match="approved"):
         eng.learn(kind="semantic", content="x", approved=True)
 
 

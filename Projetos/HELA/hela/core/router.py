@@ -49,7 +49,7 @@ INSUFICIENTE = ("experiência insuficiente: nenhuma memória relevante e confiá
                 "e hela_feedback.")
 
 
-def _termos(texto: str) -> list[str]:
+def query_terms(texto: str) -> list[str]:
     return list(dict.fromkeys(p for p in words(texto) if len(p) >= 2 and p not in STOPWORDS))
 
 
@@ -144,7 +144,7 @@ class CognitiveRouter:
         # 3 a 5. uma busca só (um custo de leitura dos vetores), dividida pelos tipos de memória
         filtro = MemoryFilter(kinds=tipos, project=project, include_global=include_global and project is not None)
         hits = self.searcher.search(consulta, filtro, limit=limite * 4, record_access=False)
-        termos = _termos(consulta)
+        termos = query_terms(consulta)
         avaliados: list[dict[str, Any]] = []
         for h in hits:
             m = h.memory

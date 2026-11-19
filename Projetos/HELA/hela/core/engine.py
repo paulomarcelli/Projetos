@@ -22,7 +22,14 @@ from hela.core.clock import Clock, utcnow
 from hela.core.config import HelaConfig, load_config
 from hela.core.errors import InvalidInput, describe_validation_error
 from hela.core.paths import db_path, hela_home
-from hela.core.router import CognitiveRouter
+from hela.core.contract import (
+    ClassifyRequest, FeedbackRequest, LearnRequest, ProcedureRequest, RecallRequest, RecommendRequest,
+    RelationshipsRequest,
+)
+from hela.core.router import CognitiveRouter, coverage, query_terms
+from hela.execution.planner import classify_parts, split_task
+from hela.execution.validator import validate_script
+from hela.security.redaction import redact
 from hela.execution.procedures import ProcedureService
 from hela.learning.classifier import TaskClassifier
 from hela.learning.evolution import EvolutionEngine
@@ -42,6 +49,9 @@ from hela.storage.migrations import current_version
 from hela.storage.repositories.memories import MemoryFilter
 
 M = TypeVar("M", bound=BaseModel)
+
+# As 8 operações do contrato (docs/api.md), na ordem das ferramentas MCP hela_<nome>.
+OPERATIONS = ("recall", "classify", "recommend", "learn", "feedback", "procedure", "relationships", "stats")
 
 
 def _validar(modelo: type[M], dados: dict[str, Any]) -> M:
@@ -167,38 +177,148 @@ class Engine:
                           "score": round(h.score, 4) if isinstance(h, SearchHit) else None, "content": m.content})
         return wrap_as_data(itens)
 
-    # --- aprendizado (Fase 3) -------------------------------------------------------------
-    def feedback(self, task_id: Optional[str] = None, success: Optional[bool] = None,
-                 quality: Optional[float] = None, duration_ms: Optional[float] = None,
-                 attempts: Optional[int] = None, tokens: Optional[dict[str, int]] = None,
-                 token_source: Optional[str] = None, compute_cost: Optional[float] = None,
-                 strategy: Optional[str] = None, notes: Optional[str] = None,
-                 used_memory_ids: Optional[list[str]] = None, memory_id: Optional[str] = None,
-                 rating: Optional[int] = None, comment: Optional[str] = None, category: Optional[str] = None,
-                 label_source: str = "feedback", source: str = "claude") -> dict[str, Any]:
+    # --- as 8 operações (docs/api.md): o MCP (Fase 4) e a API (Fase 5) chamam só estas -----
+    def recall(self, **entrada: Any) -> dict[str, Any]:
+        """Cognitive Router: contexto compacto para uma tarefa, ou "experiência insuficiente"."""
+        r = _validar(RecallRequest, entrada)
+        return self.router.route(r.query, project=r.project, session_id=r.session_id, task_id=r.task_id,
+                                 budget_tokens=r.budget_tokens, kinds=r.kinds, include_global=r.include_global,
+                                 limit_per_step=r.limit)
+
+    def _procedimentos_relevantes(self, texto: str, project: Optional[str], limite: int) -> list[dict[str, Any]]:
+        """Procedimentos que passam no mesmo limiar de relevância do roteador."""
+        termos = query_terms(texto)
+        saida = []
+        for p in self.procedures.list(query=texto, project=project, limit=limite):
+            m = self.memories.memories.get(p["memory_id"])
+            corpo = " ".join(x for x in (m["title"], m["content"], m["summary"]) if x) if m is not None else ""
+            rel = coverage(termos, corpo)
+            if rel >= self.config.router.min_relevance:
+                saida.append({k: p[k] for k in ("id", "memory_id", "name", "exec_class", "approved", "script_sha256",
+                                                "success_count", "failure_count")} | {"relevance": round(rel, 4)})
+        return saida
+
+    def classify(self, **entrada: Any) -> dict[str, Any]:
+        """Categoria, complexidade, ferramentas, procedimentos reutilizáveis e o plano de execução por partes."""
+        r = _validar(ClassifyRequest, entrada)
+        texto = self._redigir(r.text)
+        saida = self.classifier.classify(texto)
+        reutilizaveis = self._procedimentos_relevantes(texto, r.project, 5)
+
+        def procura(parte: str) -> Optional[dict[str, Any]]:
+            achados = self._procedimentos_relevantes(parte, r.project, 3)
+            return {"id": achados[0]["id"], "name": achados[0]["name"]} if achados else None
+
+        plano = classify_parts(split_task(texto), procedure_lookup=procura)
+        return {**saida, "classifier": self.classifier.status(), "reusable_procedures": reutilizaveis, "plan": plano}
+
+    def recommend(self, **entrada: Any) -> dict[str, Any]:
+        """Estratégias ranqueadas (heurística estatística) e procedimentos para a categoria da tarefa."""
+        r = _validar(RecommendRequest, entrada)
+        if not r.query and not r.category:
+            raise InvalidInput("informe query (a tarefa) ou category")
+        texto = self._redigir(r.query) if r.query else None
+        categoria = r.category or self.classifier.classify(texto or "")["category"]
+        rank = self.ranker.rank(categoria, limit=r.limit, persist=False)
+        procs = self._procedimentos_relevantes(texto, r.project, r.limit) if texto else []
+        return {**rank, "category": categoria, "procedures": procs}
+
+    def learn(self, **entrada: Any) -> dict[str, Any]:
+        """Guarda uma experiência, um conhecimento ou um procedimento (redação, deduplicação e quarentena)."""
+        r = _validar(LearnRequest, entrada)
+        procedimento = None
+        if r.procedure is not None:
+            if r.kind != "procedural":
+                raise InvalidInput("procedure só vale com kind='procedural'")
+            p = r.procedure
+            procedimento = self.procedures.create(
+                name=p.name, description=p.description or r.content, steps=p.steps, script=p.script,
+                language=p.language, project=r.project, tags=r.tags, source=r.source, origin=r.origin,
+                session_id=r.session_id, task_id=r.task_id)
+            memoria = self.memories.get(procedimento["memory_id"], record_access=False)
+            res = {"created": procedimento.pop("created"), "duplicate_of": None, "quarantined":
+                   memoria.status == "quarantined", "redactions": memoria.redactions, "near_duplicates": []}
+        else:
+            meta = {"origin": r.origin} if r.origin else {}
+            cr = self.memories.create(_validar(MemoryCreate, {
+                "kind": r.kind, "content": r.content, "title": r.title, "summary": r.summary, "project": r.project,
+                "tags": r.tags, "importance": r.importance, "expires_at": r.expires_at, "session_id": r.session_id,
+                "task_id": r.task_id, "source": r.source, "metadata": meta}))
+            memoria = cr.memory
+            res = {"created": cr.created, "duplicate_of": cr.duplicate_of, "quarantined": cr.quarantined,
+                   "redactions": len(cr.redactions), "near_duplicates": [n.model_dump() for n in cr.near_duplicates]}
+        rotulo = None
+        if r.category is not None:
+            if not r.task_id:
+                raise InvalidInput("category (rótulo explícito) precisa de task_id")
+            rotulo = self.learner.correct_category(r.task_id, r.category, source="explicit")
+        return {"memory": memoria.model_dump(), **res, "procedure": procedimento, "label": rotulo}
+
+    def feedback(self, **entrada: Any) -> dict[str, Any]:
         """Resultado de tarefa, nota de memória e/ou correção de categoria (pelo menos um)."""
-        resultado_pedido = any(v is not None for v in (success, quality, duration_ms, attempts, tokens,
-                                                       compute_cost, strategy, notes, used_memory_ids))
-        if not (resultado_pedido or rating is not None or category is not None):
+        r = _validar(FeedbackRequest, entrada)
+        resultado_pedido = any(v is not None for v in (r.success, r.quality, r.duration_ms, r.attempts, r.tokens,
+                                                       r.compute_cost, r.strategy, r.notes, r.used_memory_ids))
+        if not (resultado_pedido or r.rating is not None or r.category is not None):
             raise InvalidInput("feedback vazio: informe o resultado da tarefa (success...), "
                                "uma nota de memória (memory_id + rating) ou a categoria certa (category)")
-        if (resultado_pedido or category is not None) and not task_id:
+        if (resultado_pedido or r.category is not None) and not r.task_id:
             raise InvalidInput("task_id é obrigatório para resultado de tarefa ou correção de categoria")
-        if (rating is None) != (memory_id is None):
+        if (r.rating is None) != (r.memory_id is None):
             raise InvalidInput("memory_id e rating vão juntos")
         saida: dict[str, Any] = {"outcome": None, "rating": None, "label": None}
-        if category is not None:
-            saida["label"] = self.learner.correct_category(task_id, category, source=label_source)
+        if r.category is not None:
+            saida["label"] = self.learner.correct_category(r.task_id, r.category, source=r.label_source)
         if resultado_pedido:
+            tokens = r.tokens.model_dump(exclude_none=True) if r.tokens else None
             saida["outcome"] = self.learner.record_outcome(
-                task_id, success=success, quality=quality, duration_ms=duration_ms, attempts=attempts, tokens=tokens,
-                token_source=token_source, compute_cost=compute_cost, strategy=strategy, notes=notes,
-                used_memory_ids=used_memory_ids, source=source)
-        if rating is not None:
-            fonte = source if source in ("user", "claude", "hook", "auto") else "claude"
-            saida["rating"] = self.learner.rate_memory(memory_id, rating, comment=comment, task_id=task_id,
-                                                       source=fonte)
+                r.task_id, success=r.success, quality=r.quality, duration_ms=r.duration_ms, attempts=r.attempts,
+                tokens=tokens, token_source=r.token_source, compute_cost=r.compute_cost, strategy=r.strategy,
+                notes=r.notes, used_memory_ids=r.used_memory_ids, source=r.source)
+        if r.rating is not None:
+            saida["rating"] = self.learner.rate_memory(r.memory_id, r.rating, comment=r.comment, task_id=r.task_id,
+                                                       source=r.source)
         return saida
+
+    def procedure(self, **entrada: Any) -> dict[str, Any]:
+        """Consulta procedimentos, valida um script ou separa uma tarefa nas 4 classes. Nunca aprova nem executa."""
+        r = _validar(ProcedureRequest, entrada)
+        if r.action == "approve":
+            raise InvalidInput("aprovar um script é decisão humana: use 'hela procedure approve' na CLI ou o "
+                               "dashboard; por aqui a HELA só consulta")
+        if r.action == "get":
+            if not r.id:
+                raise InvalidInput("action='get' precisa de id")
+            return self.procedures.get(r.id)
+        if r.action == "list":
+            return {"procedures": self.procedures.list(query=r.query, project=r.project, limit=r.limit)}
+        if r.action == "validate":
+            if not r.script:
+                raise InvalidInput("action='validate' precisa de script")
+            roteiro = self._redigir(r.script)
+            return {"validation": validate_script(roteiro, r.language,
+                                                  allowed_hosts=self.config.execution.allowed_hosts).as_dict(),
+                    "executes": False}
+        if not r.text:
+            raise InvalidInput("action='plan' precisa de text")
+        return {"plan": self.classify(text=r.text, project=r.project)["plan"]}
+
+    def relationships(self, **entrada: Any) -> dict[str, Any]:
+        """Lista, cria ou remove relações de uma memória; devolve as relações e os vizinhos."""
+        r = _validar(RelationshipsRequest, entrada)
+        self.memories.get(r.memory_id, record_access=False)  # NotFound se não existe
+        if r.action in ("link", "unlink") and not r.target_id:
+            raise InvalidInput(f"action='{r.action}' precisa de target_id")
+        if r.action == "link":
+            self.relate(r.memory_id, r.target_id, r.type or "related", r.weight, r.evidence)
+        elif r.action == "unlink":
+            self.unrelate(r.memory_id, r.target_id, r.type)
+        return {"memory_id": r.memory_id, "relations": self.relations(r.memory_id),
+                "neighbors": sorted(self.neighbors(r.memory_id, r.depth)), "depth": r.depth}
+
+    def _redigir(self, texto: str) -> str:
+        sec = self.config.security
+        return redact(texto, entropy_threshold=sec.entropy_threshold, entropy_min_length=sec.entropy_min_length).text
 
     # --- grafo ---------------------------------------------------------------------------
     def relate(self, source_id: str, target_id: str, type_: str = "related", weight: float = 1.0,
@@ -277,4 +397,45 @@ class Engine:
             "relationships": self.memories.relationships.count(),
             "graph_version": self.graph.version(),
             "events": self.memories.events.count(),
+            **self._stats_fase3(),
+        }
+
+    def _stats_fase3(self) -> dict[str, Any]:
+        """Aprendizado, roteador e procedimentos. Tokens aqui são estimados (caracteres/4), nunca do provedor."""
+        c = self.db.conn
+
+        def um(sql: str) -> Any:
+            return c.execute(sql).fetchone()[0]
+
+        n_out = um("SELECT COUNT(*) FROM outcomes WHERE success IS NOT NULL")
+        sucessos = um("SELECT COALESCE(SUM(success), 0) FROM outcomes WHERE success IS NOT NULL")
+        n_ret = um("SELECT COUNT(*) FROM retrievals")
+        classes = {str(r[0]): int(r[1]) for r in c.execute(
+            "SELECT COALESCE(exec_class, 'none'), COUNT(*) FROM procedures GROUP BY 1")}
+        return {
+            "learning": {
+                "classifier": self.classifier.status(),
+                "tasks": {str(r[0]): int(r[1]) for r in c.execute("SELECT status, COUNT(*) FROM tasks GROUP BY 1")},
+                "outcomes": n_out,
+                "success_rate": round(sucessos / n_out, 4) if n_out else None,
+                "strategies": {str(r[0]): int(r[1]) for r in c.execute(
+                    "SELECT status, COUNT(*) FROM strategies GROUP BY 1")},
+                "ranker_weights_version": self.ranker.weights.active()["version"],
+                "proposals": {str(r[0]): int(r[1]) for r in c.execute(
+                    "SELECT status, COUNT(*) FROM evolution_proposals GROUP BY 1")},
+            },
+            "router": {
+                "retrievals": n_ret,
+                "insufficient_rate": round(um("SELECT COALESCE(SUM(insufficient), 0) FROM retrievals") / n_ret, 4)
+                if n_ret else None,
+                "mean_latency_ms": um("SELECT ROUND(AVG(latency_ms), 2) FROM retrievals"),
+                "tokens_raw": um("SELECT COALESCE(SUM(tokens_raw), 0) FROM retrievals"),
+                "tokens_optimized": um("SELECT COALESCE(SUM(tokens_optimized), 0) FROM retrievals"),
+                "token_source": "estimated",
+            },
+            "procedures": {
+                "total": um("SELECT COUNT(*) FROM procedures"),
+                "approved": um("SELECT COUNT(*) FROM procedures WHERE approved = 1 AND approved_sha256 = script_sha256"),
+                "by_exec_class": classes,
+            },
         }

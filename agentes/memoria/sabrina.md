@@ -80,6 +80,14 @@ aqui.
   ReDoS. Stdout de script longo fica no buffer: `flush=True` e `timeout` por caso.
 - **19/11/2026 · Skills de revisão.** `security-review` abre no diff da árvore de trabalho e pede subtarefas: aplico o
   método à mão. `code-review` precisa de diff: código novo inteiro vai com `git diff --no-index base-vazia head`.
+- **19/11/2026 · No reteste, separar defeito de teste velho.** Três "vermelhos" da Fase 2 eram do meu arquivo
+  (o contrato mudou: `quality` saiu da entrada pública). Ajusto o teste ao contrato novo sem afrouxar a afirmação e
+  conto de novo.
+- **19/11/2026 · Correção que fecha uma porta pode estar aberta em outra.** A-2 (a busca grava) voltou pelo Router;
+  A-7 (ranking forjado) voltou pelo `feedback`. Ao conferir uma correção, procuro o mesmo efeito por todas as portas
+  das 8 operações.
+- **19/11/2026 · Campo de procedência declarado por quem chama não vale.** Origem, `source` e `label_source` têm que
+  vir da porta (código), nunca do corpo; e comparação de origem com `casefold`.
 
 ## Registro de tarefas
 
@@ -91,3 +99,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17-18/11/2026 | Conferência de fatos dos 5 roteiros do TikTok de 18 a 22/11 (Sol, Última pessoa, Terra para, Pulo, Buraco) | aguardando retorno do Paulo | cerca de 2 sessões (o limite de uso interrompeu antes de gravar) | não medido | Gravar o relatório mais cedo (por roteiro, começando pelo que vai ao ar primeiro), para não perder trabalho se a sessão parar. |
 | 18/11/2026 | HELA: preparar a Fase 7 (referência do Claude Code conferida e testada, modelo de ameaças, plano de testes, teste do `claude -p` com HOME isolado) | aguardando retorno | 1 sessão | cerca de US$ 0,34 em 3 chamadas de `claude -p` de teste | Conferir antes quantos arquivos a entrega pede e o nome de cada um. |
 | 18-19/11/2026 | HELA: revisão de segurança e de código da Fase 2 (`docs/revisoes/2026-11-18-fase2.md`): 43 testes de ataque (39 defeitos), concorrência multiprocesso, desempenho com 10 mil memórias, veredito do `--trusted` | aguardando retorno | 2 sessões (o limite de uso interrompeu uma vez) | não medido | Escrever o relatório por partes, para não perder trabalho se o limite de uso cortar a sessão. |
+| 19/11/2026 | HELA: reteste dos 43 ataques (31/12, os 7 altos corrigidos) e revisão da Fase 3 (`docs/revisoes/2026-11-19-fase3.md`): 20 ataques novos, 4 altos, hook medido em 297 a 391 ms | aguardando retorno | 1 sessão | não medido | Rodar a `code-review` na Fase 3 também (desta vez ficou só a revisão manual). |

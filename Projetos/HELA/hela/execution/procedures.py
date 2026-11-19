@@ -23,6 +23,7 @@ from typing import Any, Optional
 from hela.core.clock import to_iso
 from hela.core.config import HelaConfig
 from hela.core.errors import InvalidInput, NotFound
+from hela.execution.assessment import MARCAS_WEB, assess_procedure, trusted_origin  # noqa: F401
 from hela.execution.validator import LANGUAGE_ALIASES, LANGUAGES, detect_language, script_sha256, validate_script
 from hela.memory.models import MemoryCreate, MemoryUpdate
 from hela.memory.service import MemoryService
@@ -33,8 +34,6 @@ from hela.storage.repositories.memories import MemoryFilter
 MAX_SCRIPT = 20_000
 MAX_STEPS = 50
 ACEITAS = frozenset(LANGUAGES) | frozenset(LANGUAGE_ALIASES)
-MARCAS_WEB = ("web", "fetch", "search", "http")
-ORIGENS_NAO_CONFIAVEIS = ("tool:WebFetch", "tool:WebSearch", "web")
 
 
 def _texto_da_memoria(name: str, description: Optional[str], steps: list[str], script: Optional[str],
@@ -91,15 +90,7 @@ class ProcedureService:
 
     @staticmethod
     def trusted(memoria: Optional[dict[str, Any]]) -> bool:
-        if memoria is None:
-            return False
-        if memoria.get("source") == "import":
-            return False
-        # Comparação sem caixa e por conteúdo (revisão F3-A4): "Tool:WebFetch", "WebSearch" ou uma URL contam
-        # como web. A origem declarada pelo chamador é só uma parte: na Fase 4 a porta (hook) define a origem.
-        origem = str((memoria.get("metadata") or {}).get("origin") or "").casefold()
-        fonte = str(memoria.get("source") or "").casefold()
-        return not any(marca in texto for texto in (origem, fonte) for marca in MARCAS_WEB)
+        return trusted_origin(memoria)
 
     def _memoria(self, memory_id: Optional[str]) -> Optional[dict[str, Any]]:
         if not memory_id:
@@ -114,26 +105,7 @@ class ProcedureService:
 
     def assess(self, row: Any, memoria: Optional[dict[str, Any]]) -> tuple[str, list[str], Optional[dict]]:
         """(classe, motivos, validação) de um procedimento, calculados na hora."""
-        if memoria is not None and memoria["status"] == "quarantined":
-            return "human_approval", ["a memória do procedimento está em quarentena (suspeita de injeção)"], None
-        script = row["script"]
-        if not script:
-            return "reuse", ["sem script: passos para o Claude seguir"], None
-        validacao = validate_script(script, row["script_language"],
-                                    allowed_hosts=self.config.execution.allowed_hosts).as_dict()
-        motivos = []
-        if not self.trusted(memoria):
-            motivos.append("origem não confiável (web ou import): nunca sai como executável")
-        if validacao["findings"]:
-            motivos.append("o validador encontrou: " + ", ".join(validacao["rules"]))
-        aprovado = bool(row["approved"]) and row["approved_sha256"] == row["script_sha256"]
-        if not aprovado:
-            motivos.append("script sem aprovação humana para este sha256" if not row["approved_sha256"]
-                           else "o script mudou depois da aprovação (sha256 diferente)")
-        if motivos:
-            return "human_approval", motivos, validacao
-        return "script", ["aprovado por um humano, validador sem achados e origem confiável; "
-                          "a HELA não executa: quem executa é o Claude ou o usuário"], validacao
+        return assess_procedure(row, memoria, self.config.execution.allowed_hosts)
 
     def view(self, row: Any) -> dict[str, Any]:
         memoria = self._memoria(row["memory_id"])

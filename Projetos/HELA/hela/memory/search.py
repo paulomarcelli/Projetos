@@ -26,8 +26,8 @@ from typing import Optional, Protocol
 import numpy as np
 from pydantic import BaseModel
 
-from hela.core.clock import parse_iso
 from hela.core.errors import InvalidInput
+from hela.memory.fusion import _ordem_recencia, _ordenar, rrf_fuse  # noqa: F401 (reexportados)
 from hela.memory.models import Memory
 from hela.memory.service import MemoryService
 from hela.storage.repositories.memories import MemoryFilter, row_to_dict
@@ -47,23 +47,6 @@ class SearchHit(BaseModel):
     memory: Memory
     score: float
     signals: dict[str, Optional[float]]
-
-
-def rrf_fuse(rankings: dict[str, list[str]], weights: dict[str, float], k: int) -> dict[str, float]:
-    """Funde listas ordenadas (melhor primeiro). Devolve id → score, do maior para o menor."""
-    scores: dict[str, float] = {}
-    for sinal, ids in rankings.items():
-        peso = weights.get(sinal, 0.0)
-        if peso <= 0:
-            continue
-        for posicao, mid in enumerate(ids, start=1):
-            scores[mid] = scores.get(mid, 0.0) + peso / (k + posicao)
-    return dict(sorted(scores.items(), key=lambda kv: (-kv[1], kv[0])))
-
-
-def _ordenar(valores: dict[str, float]) -> list[str]:
-    """Ids do maior valor para o menor (empate decidido pelo id, para ser determinístico)."""
-    return [mid for mid, _ in sorted(valores.items(), key=lambda kv: (-kv[1], kv[0]))]
 
 
 class HybridSearch:
@@ -166,9 +149,3 @@ class HybridSearch:
             pass  # banco ocupado: o resultado vale mais que o registro
         finally:
             conn.execute(f"PRAGMA busy_timeout = {anterior}")
-
-
-def _ordem_recencia(row) -> float:
-    """Valor para ordenar por recência: o mais novo entre último acesso e última edição."""
-    marcas = [m for m in (row["last_accessed"], row["updated_at"]) if m]
-    return max(parse_iso(m).timestamp() for m in marcas) if marcas else 0.0

@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 
 from hela.storage.schema_v1 import SCHEMA_V1
 from hela.storage.schema_v2 import SCHEMA_V2
+from hela.storage.schema_v3 import SCHEMA_V3
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,7 @@ class Migration:
 MIGRATIONS: list[Migration] = [
     Migration(1, "esquema inicial (Fase 2)", SCHEMA_V1),
     Migration(2, "aprendizado e roteador (Fase 3)", SCHEMA_V2),
+    Migration(3, "integração com o Claude Code (Fase 4)", SCHEMA_V3),
 ]
 
 _SCHEMA_VERSION_DDL = """

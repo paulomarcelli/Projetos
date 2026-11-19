@@ -168,7 +168,7 @@ def test_migracao_2_preserva_dados_de_um_banco_v1(tmp_path: Path) -> None:
     conn.close()
 
     db = Database(caminho)  # aplica a 2
-    assert current_version(db.conn) == 2
+    assert current_version(db.conn) == MIGRATIONS[-1].version
     assert db.conn.execute("SELECT content FROM memories WHERE id = 'm1'").fetchone()[0].startswith("memória")
     assert db.conn.execute("SELECT success FROM outcomes").fetchone()[0] == 1
     assert "compute_cost" in _colunas(db.conn, "outcomes")

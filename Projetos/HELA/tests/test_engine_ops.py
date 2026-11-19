@@ -121,7 +121,7 @@ def test_stats_com_aprendizado(eng: Engine) -> None:
     t = eng.recall(query="converter vídeo")["task_id"]
     eng.feedback(task_id=t, success=False, strategy="x")
     s = _json(eng.stats())
-    assert s["schema_version"] == 2
+    assert s["schema_version"] == 3
     assert s["learning"]["classifier"]["mode"] == "rules"
     assert s["learning"]["outcomes"] == 1 and s["learning"]["success_rate"] == 0.0
     assert s["router"]["retrievals"] == 1 and s["router"]["token_source"] == "estimated"

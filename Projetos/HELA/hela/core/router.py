@@ -30,10 +30,11 @@ from hela.core.clock import Clock, to_iso, utcnow
 from hela.core.config import HelaConfig
 from hela.core.errors import InvalidInput, NotFound
 from hela.core.optimizer import ContextItem, optimize_context
+from hela.core.relevance import coverage, query_terms  # noqa: F401 (reexportados)
 from hela.execution.procedures import ProcedureService
 from hela.learning.classifier import TaskClassifier
 from hela.learning.ranker import StrategyRanker
-from hela.learning.taxonomy import STOPWORDS, normalize, words
+from hela.learning.taxonomy import normalize
 from hela.memory.models import KINDS
 from hela.memory.search import MAX_CONSULTA, HybridSearch, SearchHit
 from hela.memory.service import MemoryService
@@ -47,20 +48,6 @@ GRUPOS = {"conhecimentos": ("semantic", "executive"), "experiencias": ("episodic
 INSUFICIENTE = ("experiência insuficiente: nenhuma memória relevante e confiável para esta tarefa. "
                 "O Claude pode criar uma solução nova; o resultado pode ser registrado depois com hela_learn "
                 "e hela_feedback.")
-
-
-def query_terms(texto: str) -> list[str]:
-    return list(dict.fromkeys(p for p in words(texto) if len(p) >= 2 and p not in STOPWORDS))
-
-
-def coverage(consulta: list[str], texto: str) -> float:
-    """Fração dos termos da consulta presentes no texto (prefixo de 5 letras para termos longos)."""
-    if not consulta:
-        return 0.0
-    palavras = set(normalize(texto).split())
-    prefixos = {p[:5] for p in palavras if len(p) >= 5}
-    achados = sum(1 for t in consulta if t in palavras or (len(t) >= 5 and t[:5] in prefixos))
-    return achados / len(consulta)
 
 
 class CognitiveRouter:

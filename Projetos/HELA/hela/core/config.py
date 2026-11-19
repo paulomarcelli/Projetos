@@ -142,6 +142,17 @@ class ExecutionConfig(_Base):
     allowed_hosts: list[str] = Field(default_factory=lambda: ["localhost", "127.0.0.1", "::1"])
 
 
+class IntegrationConfig(_Base):
+    """Hooks e MCP (Fase 4). O hook lê estas chaves sem pydantic (hela/integration/light_config.py)."""
+
+    enabled: bool = True                        # false: todos os hooks saem na hora, sem abrir o banco
+    hook_deadline_ms: int = Field(250, ge=50, le=5000)    # prazo interno do UserPromptSubmit (revisão F3-A2)
+    hook_busy_timeout_ms: int = Field(150, ge=0, le=2000)  # banco ocupado: desiste rápido (seguranca.md, A7)
+    hook_max_input_bytes: int = Field(5_000_000, ge=10_000, le=100_000_000)  # stdin maior que isso é ignorado
+    observation_max_chars: int = Field(300, ge=50, le=2000)  # teto de cada resumo de observação
+    web_taint_hours: float = Field(12, gt=0, le=720)  # janela em que um WebFetch/WebSearch marca a sessão como web
+
+
 class HelaConfig(_Base):
     version: int = 1
     embedder: EmbedderConfig = EmbedderConfig()
@@ -154,6 +165,7 @@ class HelaConfig(_Base):
     router: RouterConfig = RouterConfig()
     optimizer: OptimizerConfig = OptimizerConfig()
     execution: ExecutionConfig = ExecutionConfig()
+    integration: IntegrationConfig = IntegrationConfig()
 
     @model_validator(mode="after")
     def _orcamento(self) -> "HelaConfig":

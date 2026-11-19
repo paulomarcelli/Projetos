@@ -94,5 +94,13 @@
       "127.0.0.1",
       "::1"
     ]
+  },
+  "integration": {
+    "enabled": true,
+    "hook_deadline_ms": 250,
+    "hook_busy_timeout_ms": 150,
+    "hook_max_input_bytes": 5000000,
+    "observation_max_chars": 300,
+    "web_taint_hours": 12.0
   }
 }

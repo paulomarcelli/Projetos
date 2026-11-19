@@ -66,6 +66,7 @@ def test_ferramentas_provaveis() -> None:
     r = classify_by_rules("procure onde o erro acontece, corrija o arquivo e rode o pytest")
     assert {"Grep", "Edit", "Read", "Bash"} <= set(r.tools)
     assert "WebFetch" in classify_by_rules("leia a documentação em https://exemplo.dev").tools
+    assert "WebFetch" not in classify_by_rules("publique no site").tools  # "site" sozinho não é leitura da web
 
 
 def test_modulos_de_regras_nao_carregam_numpy_nem_pydantic() -> None:

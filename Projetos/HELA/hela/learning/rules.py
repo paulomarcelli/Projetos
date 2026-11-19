@@ -53,7 +53,7 @@ def _complexidade(texto: str, palavras: list[str], categoria: str) -> tuple[str,
     passos = len(match_keywords(palavras, STEP_MARKERS)) + len(_ENUMERACAO.findall(texto))
     if passos:
         pontos += min(3, passos)
-        sinais.append(f"{passos} passos")
+        sinais.append(f"{passos} passo{'s' if passos != 1 else ''}")
     arquivos = len(set(_ARQUIVO.findall(texto)))
     if arquivos >= 3:
         pontos += 1

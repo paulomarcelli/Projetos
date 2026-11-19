@@ -251,7 +251,8 @@ class CognitiveRouter:
         memorias.sort(key=lambda x: (-x["value"], x["id"]))
         return {
             "task_id": task_id, "retrieval_id": retrieval_id, "insufficient": insuficiente,
-            "message": INSUFICIENTE if insuficiente else f"{len(memorias)} memórias relevantes no contexto",
+            "message": INSUFICIENTE if insuficiente else (f"{len(memorias)} memória relevante no contexto" if len(memorias) == 1
+                                               else f"{len(memorias)} memórias relevantes no contexto"),
             "classification": cls, "context": oc.text if (oc and not insuficiente) else "",
             "memories": memorias if not insuficiente else [], "procedures": procedimentos,
             "strategies": estrategias,

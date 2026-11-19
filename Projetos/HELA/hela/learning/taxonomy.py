@@ -104,7 +104,7 @@ TOOL_HINTS: dict[str, tuple[str, ...]] = {
     "Bash": ("rod*", "run", "execut*", "instal*", "install*", "comando", "command", "terminal", "pytest", "npm",
              "pip", "git", "ffmpeg", "blender", "build", "compil*", "deploy*", "docker", "converter", "convert*",
              "render*"),
-    "WebFetch": ("http", "https", "url", "site", "pagina web", "web page", "link"),
+    "WebFetch": ("http", "https", "url", "pagina web", "web page", "link"),
     "WebSearch": ("pesquis*", "research", "internet", "google", "procure na web", "search the web"),
 }
 TOOL_ORDER: tuple[str, ...] = ("Read", "Grep", "Edit", "Write", "Bash", "WebFetch", "WebSearch")

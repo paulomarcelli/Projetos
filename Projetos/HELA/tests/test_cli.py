@@ -53,7 +53,7 @@ def test_erros_sao_claros(tmp_path: Path, capsys: pytest.CaptureFixture[str]) ->
     assert "inválido" in capsys.readouterr().err
 
 
-@pytest.mark.parametrize(("comando", "fase"), [("dashboard", "Fase 5"), ("doctor", "Fase 6"), ("procedure", "Fase 3")])
+@pytest.mark.parametrize(("comando", "fase"), [("dashboard", "Fase 5"), ("doctor", "Fase 6")])
 def test_comandos_de_outras_fases_avisam(comando: str, fase: str, capsys: pytest.CaptureFixture[str]) -> None:
     assert main([comando]) == 3
     assert fase in capsys.readouterr().err
@@ -80,3 +80,34 @@ def test_comando_hela_instalado_roda(hela_home_temporario: Path) -> None:
     assert str(hela_home_temporario) in r.stdout
     r = subprocess.run([sys.executable, "-m", "hela", "--version"], capture_output=True, text=True, timeout=60)
     assert r.returncode == 0 and "0.2.0" in r.stdout
+
+
+# --- Fase 3: procedimentos, classificador e evolução pela CLI ---------------------------
+
+def _procedimento():  # type: ignore[no-untyped-def]
+    from hela.core.engine import Engine
+
+    with Engine() as eng:
+        return eng.learn(kind="procedural", content="rodar testes",
+                         procedure={"name": "testes", "script": "pytest -q"})["procedure"]
+
+
+def test_cli_procedure_aprova_so_com_o_sha256(capsys: pytest.CaptureFixture[str]) -> None:
+    from hela.execution.validator import script_sha256
+
+    p = _procedimento()
+    assert main(["procedure", "list"]) == 0 and p["id"] in capsys.readouterr().out
+    assert main(["procedure", "show", p["id"]]) == 0 and "human_approval" in capsys.readouterr().out
+    assert main(["procedure", "approve", p["id"], "--sha256", "0" * 64]) == 1
+    assert "sha256" in capsys.readouterr().err
+    assert main(["procedure", "approve", p["id"], "--sha256", script_sha256("pytest -q")]) == 0
+    assert '"exec_class": "script"' in capsys.readouterr().out
+    assert main(["procedure", "revoke", p["id"]]) == 0
+
+
+def test_cli_classifier_e_evolution(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["classifier", "status"]) == 0 and '"mode": "rules"' in capsys.readouterr().out
+    assert main(["classifier", "train"]) == 0 and "insuficientes" in capsys.readouterr().out
+    assert main(["evolution", "propose"]) == 0 and "skipped" in capsys.readouterr().out
+    assert main(["evolution", "list"]) == 0
+    assert main(["evolution", "apply", "999"]) == 1

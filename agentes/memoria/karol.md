@@ -106,6 +106,14 @@ aqui.
 - **Exemplos de documentação saem de execução real.** Rodar as operações num banco temporário e copiar a saída achou
   dois defeitos (plural errado e "site" puxando WebFetch).
 - **Tempo da suíte oscila com cache frio** (22 s numa rodada, 4 s nas seguintes): repetir antes de caçar lentidão.
+- **19/11/2026 · Revisão da Fase 2 (A-1 a A-7).** Regex com `[\w.\-]*?` antes de uma alternância é quadrática:
+  procurar primeiro a palavra sensível. Conferir o tamanho **antes** de redigir. `PRAGMA journal_mode = WAL` não
+  respeita o `busy_timeout`: ler o modo antes e tentar de novo. Migração concorrente: reler a versão e tolerar "já
+  aplicada". `COMMIT` vai dentro do `try`. Invisíveis saem do texto **gravado**, não só da cópia do detector.
+- **Script de edição com `assert` no fim pode gravar só metade.** Duas vezes o `assert` final barrou a gravação de um
+  arquivo depois de outro já gravado. Conferir com `grep` depois, ou checar tudo antes de escrever.
+- **Regra nova de redação quebra ids.** O hex solto pegou o uuid das memórias no export: rodar a suíte inteira, não só
+  os testes do módulo, e excluir os formatos internos (uuid hex 32, commit 40).
 
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
@@ -126,3 +134,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17/11/2026 | Render final da Lua v2 no PC do Paulo com GPU: Node e ffmpeg instalados (com aprovação), teste de 60 quadros, render, conferência e folha Q1–Q8 contra o storyboard | a avaliar | ~40 min (2 renders de 70 s) | sem crédito pago | O caminho com GPU nunca tinha rodado: renderizar e varrer o brilho de todos os quadros já no teste, não só 60 quadros do começo (o defeito estava no espaço, aos 42 s) |
 | 18/11/2026 | HELA Fase 2 (Cognitive Core): pacote, SQLite WAL com esquema completo, segurança, Memory Engine com busca híbrida, grafo, consolidação, export/import, Engine e CLI; reforços do seguranca.md | a avaliar | ~5 h (com uma pausa pelo limite de uso) | sem crédito pago | Commitei a pasta inteira e levei arquivos da Sabrina pela metade: só os meus caminhos daqui em diante. Testes de segurança: escrever e ver falhar antes, ou fazer mutação logo |
 | 18–19/11/2026 | HELA Fase 3 (Intelligence): classificador (regras + Naive Bayes só com rótulos humanos), ranker (Wilson + custos), feedback, evolução (replay Brier, snapshot, rollback), router (9 passos, limiar medido), otimizador, execution intelligence, 8 operações do Engine, `docs/api.md` | a avaliar | ~6 h em duas sessões (pausa pelo limite de uso) | sem crédito pago | O conjunto-ouro foi escrito por mim: na Fase 7, medir com consultas reais. Mutação logo depois de cada teste de proteção funcionou bem (classificador e aprovação) |
+| 19/11/2026 | HELA: correção dos achados altos A-1 a A-7 da revisão da Fase 2 (migrações concorrentes, COMMIT, busca só leitura, ReDoS, lacunas da redação, injeção invisível, import e campos de confiança) | a avaliar | ~1,5 h | sem crédito pago | Os médios ficaram para depois (15 testes de ataque ainda vermelhos) |

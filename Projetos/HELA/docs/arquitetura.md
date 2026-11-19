@@ -302,3 +302,22 @@ Os quatro primeiros têm teste que falha se carregarem numpy, networkx ou pydant
 - Custo computacional (`compute_cost`) ainda não é preenchido por ninguém: a Fase 4 grava o número de chamadas de
   ferramenta.
 - Procedimentos não entram no export/import (só memórias e relações); o import, portanto, nunca traz aprovação.
+
+## Correções da revisão da Fase 2 (19/11/2026, achados altos A-1 a A-7)
+
+Revisão da Sabrina em `docs/revisoes/2026-11-18-fase2.md`. Cada correção tem teste em `tests/test_revisao_fase2.py`,
+escrito a partir dos testes de ataque dela e visto falhando antes.
+
+| Achado | Correção | Onde |
+|---|---|---|
+| A-1 migrações concorrentes | WAL só é pedido se ainda não estiver ligado, com nova tentativa até o `busy_timeout` (mín. 2 s); a versão é relida antes de cada migração e, se a migração falhar porque outro processo já a aplicou, segue. Teste com 4 processos em 6 bancos novos e 6 atualizações v1→v2 | `storage/db.py`, `storage/migrations.py` |
+| A-5 `COMMIT` que falha | `COMMIT` dentro do `try`; `ROLLBACK` só se ainda houver transação, sem esconder o erro original | `storage/db.py` |
+| A-2 busca que grava | o registro da busca é melhor esforço (espera no máximo 50 ms e é descartado se o banco estiver ocupado); `search(record=False)` não grava nada (caminho do hook). Medido: resultado em menos de 300 ms com outra conexão segurando a escrita | `memory/search.py` |
+| A-3 ReDoS | a atribuição procura a palavra sensível primeiro (sem varrer o nome); quantificadores limitados; tamanho conferido antes de redigir. Medido: 100 KB de `a.` em ~55 ms (antes: minutos) | `security/redaction.py`, `memory/service.py` |
+| A-4 segredos que escapavam | `-u user:senha`, `--password X`, `mysql -pX`, `.netrc`, `Basic`, `Cookie:`, `aws_secret`, `pass`/`cookie`/`credentials`/`*_key`, senha de URL até o último `@`, hex solto de 48+ (uuid e commit ficam), entropia 3,6 para 24–31 caracteres com maiúscula, minúscula e dígito; tags redigidas antes da caixa baixa, chaves de `metadata`, `project` e `source` redigidos | `security/redaction.py`, `memory/models.py`, `memory/service.py` |
+| A-6 injeção | caracteres invisíveis (tags Unicode, seletores de variação, CGJ, preenchimento hangul, largura zero, direção) saem do texto gravado; tag Unicode manda para a quarentena e o texto escondido é lido; `\n` vira espaço; homóglifos cirílicos e gregos; "disregard everything above"; `curl … \| sh` com peso 0,6; `project` e tags passam pelo detector | `security/injection.py`, `memory/service.py` |
+| A-7 import e campos de confiança | sem `--trusted`, o import ignora `importance` e as datas (as originais ficam em `metadata.original_*`); `id` só no formato `^[0-9a-f]{32}$`; `MemoryInput` é a entrada pública (sem `quality`, `confidence`, `source`), usada por `Engine.remember`; `learn` não aceita `source` (a porta vem de `door=`, no código) | `memory/transfer.py`, `memory/models.py`, `core/engine.py`, `core/contract.py` |
+
+Mudanças de decisão: (1) ADR-09 — a importância e as datas do arquivo deixam de valer no import padrão; (2) dois testes
+antigos que fixavam isso foram atualizados. Os achados **médios** da revisão ficam para depois (15 testes de ataque
+da Sabrina ainda falham, todos de achados médios).

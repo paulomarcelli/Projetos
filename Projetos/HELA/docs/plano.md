@@ -277,6 +277,10 @@ invólucro, que o MCP, os hooks e a API usam.
     preciso, um caminho leve só com FTS5 + regras + otimizador; gravar `compute_cost` (chamadas de ferramenta) e
     tokens do provedor com `token_source = "provider"`; MCP com as 8 ferramentas sobre `Engine.<operação>`, sem
     ferramenta de aprovar ou aplicar.
+- [x] Revisão da Fase 2 (Sabrina, `docs/revisoes/2026-11-18-fase2.md`): os 7 achados altos (A-1 a A-7) corrigidos pela
+  Karol em 19/11/2026, com testes em `tests/test_revisao_fase2.py` (396 testes no total). Resumo em
+  `docs/arquitetura.md`, seção "Correções da revisão da Fase 2". **Pendente:** os achados médios (15 testes de ataque
+  da Sabrina ainda vermelhos, nenhum alto).
 - [ ] Fase 4: Integração
 - [ ] Fase 5: Dashboard (5a DS da Sofia; 5b app)
 - [ ] Fase 6: Instalador

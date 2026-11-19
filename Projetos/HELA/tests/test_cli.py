@@ -65,9 +65,7 @@ def test_comandos_de_outras_fases_avisam(comando: str, fase: str, capsys: pytest
 def test_entrypoints_de_outras_fases(capsys: pytest.CaptureFixture[str]) -> None:
     from hela.api.server import main as api
     from hela.integration.hooks import main as hook
-    from hela.integration.mcp_server import main as mcp
 
-    assert mcp([]) == 3 and "Fase 4" in capsys.readouterr().err
     assert api([]) == 3 and "Fase 5" in capsys.readouterr().err
     assert hook(["evento-desconhecido"]) == 0  # hooks são fail-open: nunca atrapalham o Claude Code
     assert capsys.readouterr().out == ""

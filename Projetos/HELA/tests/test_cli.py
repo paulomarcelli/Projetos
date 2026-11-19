@@ -69,9 +69,8 @@ def test_entrypoints_de_outras_fases(capsys: pytest.CaptureFixture[str]) -> None
 
     assert mcp([]) == 3 and "Fase 4" in capsys.readouterr().err
     assert api([]) == 3 and "Fase 5" in capsys.readouterr().err
-    assert hook(["SessionStart"]) == 0  # hooks são fail-open: nunca atrapalham o Claude Code
-    capturado = capsys.readouterr()
-    assert capturado.out == "" and "Fase 4" in capturado.err
+    assert hook(["evento-desconhecido"]) == 0  # hooks são fail-open: nunca atrapalham o Claude Code
+    assert capsys.readouterr().out == ""
 
 
 def test_comando_hela_instalado_roda(hela_home_temporario: Path) -> None:

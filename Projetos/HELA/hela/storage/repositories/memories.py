@@ -47,9 +47,14 @@ class MemoryFilter:
         partes: list[str] = []
         args: list[Any] = []
 
+        # Com lista de ids, o "+" tira kind, status e projeto da escolha de índice: o SQLite usa o índice
+        # do id (poucas linhas) em vez de varrer todas as memórias de um tipo (medido na Fase 4: 51 ms → 1 ms).
+        mais = "+" if self.ids else ""
+
         def em(coluna: str, valores: Iterable[Any]) -> None:
             valores = list(valores)
-            partes.append(f"{alias}.{coluna} IN ({','.join('?' * len(valores))})")
+            prefixo = "" if coluna == "id" else mais
+            partes.append(f"{prefixo}{alias}.{coluna} IN ({','.join('?' * len(valores))})")
             args.extend(valores)
 
         if self.kinds:
@@ -63,9 +68,9 @@ class MemoryFilter:
                 em("id", self.ids)
         if self.project is not None:
             if self.include_global:
-                partes.append(f"({alias}.project = ? OR {alias}.project IS NULL)")
+                partes.append(f"({mais}{alias}.project = ? OR {alias}.project IS NULL)")
             else:
-                partes.append(f"{alias}.project = ?")
+                partes.append(f"{mais}{alias}.project = ?")
             args.append(self.project)
         for tag in self.tags or []:
             partes.append(f"EXISTS (SELECT 1 FROM json_each({alias}.tags) WHERE json_each.value = ?)")

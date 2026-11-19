@@ -48,6 +48,20 @@ class VectorCache:
     # --- leitura -------------------------------------------------------------------------
     def load(self, conn: sqlite3.Connection) -> tuple[list[str], np.ndarray]:
         """(ids, matriz n × dim) de todos os vetores do modelo, na ordem do rid."""
+        ids, blocos = self.load_blocks(conn)
+        if len(blocos) == 1:
+            return ids, blocos[0]
+        return ids, np.vstack([np.asarray(b) for b in blocos])
+
+    def scores(self, conn: sqlite3.Connection, vetor: np.ndarray) -> tuple[list[str], np.ndarray]:
+        """(ids, cosseno de cada vetor com `vetor`), sem copiar a matriz em mmap."""
+        ids, blocos = self.load_blocks(conn)
+        if not ids:
+            return ids, np.zeros(0, dtype=np.float32)
+        return ids, np.concatenate([np.asarray(b @ vetor) for b in blocos])
+
+    def load_blocks(self, conn: sqlite3.Connection) -> tuple[list[str], list[np.ndarray]]:
+        """(ids, [matriz do arquivo em mmap, linhas novas]): as linhas novas não são copiadas para o mmap."""
         versao, maior = conn.execute(
             "SELECT (SELECT CAST(value AS INTEGER) FROM meta WHERE key = 'vectors_version'),"
             " (SELECT COALESCE(MAX(rid), 0) FROM memories)").fetchone()
@@ -61,20 +75,20 @@ class VectorCache:
                 ids = list(meta["ids"])
                 if meta["max_rid"] == maior:
                     self.last_action = "mmap"
-                    return ids, matriz
+                    return ids, [matriz]
                 novos_rids, novos_ids, novos = self._linhas(conn, depois_de=meta["max_rid"])
                 self.last_action = "append"
                 if not novos_ids:
-                    return ids, matriz
+                    return ids, [matriz]
                 ids += novos_ids
-                matriz = np.vstack([np.asarray(matriz), novos])
                 if len(novos_ids) >= REGRAVAR_A_PARTIR_DE:
-                    self._gravar(ids, matriz, versao, max(novos_rids[-1], meta["max_rid"]))
-                return ids, matriz
+                    self._gravar(ids, np.vstack([np.asarray(matriz), novos]), versao,
+                                 max(novos_rids[-1], meta["max_rid"]))
+                return ids, [matriz, novos]
         rids, ids, matriz = self._linhas(conn, depois_de=None)
         self.last_action = "rebuild"
         self._gravar(ids, matriz, versao, rids[-1] if rids else 0)
-        return ids, matriz
+        return ids, [matriz]
 
     def _linhas(self, conn: sqlite3.Connection, depois_de: Optional[int]) -> tuple[list[int], list[str], np.ndarray]:
         sql = "SELECT rid, id, embedding FROM memories WHERE embedding_model = ? AND embedding IS NOT NULL"

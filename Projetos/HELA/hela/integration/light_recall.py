@@ -73,13 +73,12 @@ def _cosseno(conn: Any, home: Path, cfg: dict[str, Any], consulta: str, filtro: 
     vetor = emb.embed([consulta])[0]
     if not vetor.any():
         return {}
-    ids, matriz = VectorCache(home, emb.name, emb.dim).load(conn)
+    ids, valores = VectorCache(home, emb.name, emb.dim).scores(conn, vetor)
     _conferir_prazo(deadline)
     if not ids:
         return {}
     import numpy as np
 
-    valores = np.asarray(matriz @ vetor)
     minimo = cfg["search"]["min_cosine"]
     ordem = [int(i) for i in np.argsort(-valores) if valores[i] >= minimo]
     sims: dict[str, float] = {}

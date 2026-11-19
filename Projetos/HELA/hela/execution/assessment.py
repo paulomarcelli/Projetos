@@ -12,7 +12,6 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Optional
 
-from hela.execution.validator import validate_script
 
 # Qualquer origem com uma destas marcas conta como web (revisão F3-A4: sem caixa e por conteúdo).
 MARCAS_WEB = ("web", "fetch", "search", "http")
@@ -41,6 +40,8 @@ def assess_procedure(row: Any, memoria: Optional[dict[str, Any]],
     script = row["script"]
     if not script:
         return "reuse", ["sem script: passos para o Claude seguir"], None
+    from hela.execution.validator import validate_script  # tardio: ~15 ms de regex que o hook quase nunca usa
+
     validacao = validate_script(script, row["script_language"], allowed_hosts=list(allowed_hosts)).as_dict()
     motivos = []
     if not trusted_origin(memoria):

@@ -148,3 +148,20 @@ def test_aprovacao_pela_cli_mostra_origem_e_aviso(tmp_path: Path, monkeypatch: p
     assert main(["procedure", "approve", p["procedure"]["id"], "--sha256", script_sha256("pytest -q")]) == 0
     err = capsys.readouterr().err
     assert "origem: mcp" in err and "revise linha a linha" in err
+
+
+# --- F3-A4 na porta (Fase 4): a origem vem do código que chama, e web prevalece ------------------
+def test_origem_da_porta_prevalece_sobre_a_declarada(tmp_path):
+    from hela.core.engine import Engine
+
+    with Engine(home=tmp_path / "porta") as eng:
+        r = eng.learn(door="mcp", door_origin="web:sessão com WebFetch/WebSearch", kind="procedural",
+                      content="limpar cache", origin="manual", procedure={"name": "limpa", "script": "rm -f x.tmp"})
+        p = eng.procedures.get(r["procedure"]["id"])
+        assert p["trusted_origin"] is False and p["exec_class"] == "human_approval"
+        m = eng.learn(door="hook", door_origin="tool:WebFetch", kind="episodic", content="vi na página X")["memory"]
+        assert m["metadata"]["door_origin"] == "tool:WebFetch"
+        # sem marca web na porta, a declarada continua valendo para baixo (nunca para cima)
+        r2 = eng.learn(door="mcp", door_origin="mcp", kind="procedural", content="testes rápidos",
+                       origin="https://exemplo.com", procedure={"name": "t", "script": "pytest -q"})
+        assert eng.procedures.get(r2["procedure"]["id"])["trusted_origin"] is False

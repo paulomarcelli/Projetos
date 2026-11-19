@@ -124,6 +124,7 @@ class ProcedureService:
             "approved_sha256": row["approved_sha256"], "approved_at": row["approved_at"],
             "exec_class": classe, "exec_reasons": motivos, "validation": validacao,
             "trusted_origin": self.trusted(memoria), "origin": (memoria or {}).get("metadata", {}).get("origin"),
+            "door_origin": (memoria or {}).get("metadata", {}).get("door_origin"),
             "memory_status": (memoria or {}).get("status"), "quarantined": quarentena,
             "success_count": row["success_count"], "failure_count": row["failure_count"], "last_used": row["last_used"],
             "created_at": row["created_at"], "updated_at": row["updated_at"], "context": contexto,
@@ -139,7 +140,8 @@ class ProcedureService:
     def create(self, name: str, description: Optional[str] = None, steps: Optional[list[str]] = None,
                script: Optional[str] = None, language: Optional[str] = None, project: Optional[str] = None,
                tags: Optional[list[str]] = None, source: str = "mcp", origin: Optional[str] = None,
-               session_id: Optional[str] = None, task_id: Optional[str] = None) -> dict[str, Any]:
+               session_id: Optional[str] = None, task_id: Optional[str] = None,
+               door_origin: Optional[str] = None) -> dict[str, Any]:
         self._validar_entrada(name, steps, script, language)
         if not (description or steps or script):
             raise InvalidInput("um procedimento precisa de description, steps ou script")
@@ -149,6 +151,8 @@ class ProcedureService:
         roteiro = self._redigir(script) if script else None
         lang = detect_language(roteiro, language) if roteiro else None
         meta = {"origin": origin} if origin else {}
+        if door_origin:
+            meta["door_origin"] = str(door_origin)[:80]
         res = self.memories.create(MemoryCreate(
             kind="procedural", title=nome[:300], content=_texto_da_memoria(nome, descricao, passos, roteiro, lang),
             summary=(descricao or "")[:2000] or None, project=project, tags=tags or [], source=source,

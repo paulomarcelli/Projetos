@@ -92,3 +92,17 @@ def test_permissoes_privadas(tmp_path):
         if os.name == "posix":
             assert stat.S_IMODE(c.npy_path.stat().st_mode) == 0o600
             assert stat.S_IMODE(c.npy_path.parent.stat().st_mode) == 0o700
+
+
+def test_scores_iguais_com_e_sem_linhas_novas(tmp_path):
+    with Engine(home=tmp_path) as eng:
+        for i in range(4):
+            eng.remember(kind="semantic", content=f"memória {i} sobre docker e testes {i * 3}")
+        _cache(eng).load(eng.db.conn)
+        eng.remember(kind="semantic", content="memória nova sobre docker compose")
+        vetor = eng.embedder.embed(["docker compose"])[0]
+        c = _cache(eng)
+        ids, valores = c.scores(eng.db.conn, vetor)
+        assert c.last_action == "append" and len(ids) == 5
+        _, matriz = _cache(eng).load(eng.db.conn)
+        assert np.allclose(valores, matriz @ vetor)

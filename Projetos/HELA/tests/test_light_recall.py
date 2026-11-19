@@ -98,3 +98,24 @@ def test_consulta_redigida_antes_de_gravar(eng: Engine) -> None:
     t = eng.db.conn.execute("SELECT prompt FROM tasks WHERE id = ?", (r["task_id"],)).fetchone()
     q = eng.db.conn.execute("SELECT query FROM retrievals WHERE task_id = ?", (r["task_id"],)).fetchone()
     assert chave not in t["prompt"] and chave not in q["query"]
+
+
+def test_filtro_com_ids_usa_o_indice_do_id(tmp_path: Path) -> None:
+    """Com lista de ids, o SQLite ia pelo índice de kind/status e varria tudo (51 ms com 10 mil memórias)."""
+    from hela.storage.db import Database
+    from hela.storage.repositories.memories import MemoryFilter
+
+    db = Database(tmp_path / "p.db")
+    ids = [f"{i:032x}" for i in range(200)]  # o tamanho do bloco do cosseno no hook
+    tipos = ["episodic", "semantic", "procedural", "executive"]
+    for f in (MemoryFilter(kinds=tipos, ids=ids, not_expired_at="2026"),
+              MemoryFilter(kinds=tipos, project="x", include_global=True, ids=ids, not_expired_at="2026")):
+        _plano_usa_id(db, f)
+    db.close()
+
+
+def _plano_usa_id(db, f) -> None:  # type: ignore[no-untyped-def]
+    where, args = f.where()
+    plano = " ".join(str(r[3]) for r in db.conn.execute(
+        f"EXPLAIN QUERY PLAN SELECT * FROM memories m WHERE {where} ORDER BY m.created_at DESC LIMIT 5", args))
+    assert "autoindex_memories" in plano and "kind_status" not in plano, plano

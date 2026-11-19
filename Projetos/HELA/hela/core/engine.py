@@ -242,10 +242,13 @@ class Engine:
         procs = self._procedimentos_relevantes(texto, r.project, r.limit) if texto else []
         return {**rank, "category": categoria, "procedures": procs}
 
-    def learn(self, door: str = "mcp", **entrada: Any) -> dict[str, Any]:
+    def learn(self, door: str = "mcp", door_origin: Optional[str] = None, **entrada: Any) -> dict[str, Any]:
         """Guarda uma experiência, um conhecimento ou um procedimento (redação, deduplicação e quarentena).
 
         door: a porta que chamou (mcp, api, hook, cli). É do código, nunca do corpo da requisição (A-7).
+        door_origin: a procedência que a porta conhece (o hook sabe qual ferramenta trouxe o texto; o MCP
+        marca web quando a sessão teve WebFetch/WebSearch). Fica em metadata.door_origin e conta junto com
+        a origem declarada: qualquer uma das duas com marca web torna a origem não confiável (F3-A4).
         """
         _porta(door)
         r = _validar(LearnRequest, entrada)
@@ -257,12 +260,14 @@ class Engine:
             procedimento = self.procedures.create(
                 name=p.name, description=p.description or r.content, steps=p.steps, script=p.script,
                 language=p.language, project=r.project, tags=r.tags, source=door, origin=r.origin,
-                session_id=r.session_id, task_id=r.task_id)
+                session_id=r.session_id, task_id=r.task_id, door_origin=door_origin)
             memoria = self.memories.get(procedimento["memory_id"], record_access=False)
             res = {"created": procedimento.pop("created"), "duplicate_of": None, "quarantined":
                    memoria.status == "quarantined", "redactions": memoria.redactions, "near_duplicates": []}
         else:
             meta = {"origin": r.origin} if r.origin else {}
+            if door_origin:
+                meta["door_origin"] = str(door_origin)[:80]
             cr = self.memories.create(_validar(MemoryCreate, {
                 "kind": r.kind, "content": r.content, "title": r.title, "summary": r.summary, "project": r.project,
                 "tags": r.tags, "importance": r.importance, "expires_at": r.expires_at, "session_id": r.session_id,

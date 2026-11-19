@@ -139,7 +139,9 @@ def test_import_ignora_campos_de_confianca(tmp_path: Path) -> None:
                ("active", 0.5, 0.5, 0, None, "import")
         assert m.importance == 0.5  # a importância também pesa no ranking: o arquivo não controla (revisão A-7)
     with Engine(home=tmp_path / "backup") as eng:  # backup próprio, pela CLI: --trusted mantém tudo
-        eng.import_data(_doc([forjada]), trusted=True)
+        from hela.security.backup_signature import load_or_create_key, sign
+
+        eng.import_data(sign(_doc([forjada]), load_or_create_key(tmp_path / "backup")), trusted=True)
         m = eng.get("a" * 32, record_access=False)
         assert (m.status, m.quality, m.access_count, m.source) == ("archived", 1.0, 99, "manual")
 

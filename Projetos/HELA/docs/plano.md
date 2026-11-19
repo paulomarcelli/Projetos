@@ -281,6 +281,13 @@ invólucro, que o MCP, os hooks e a API usam.
   Karol em 19/11/2026, com testes em `tests/test_revisao_fase2.py` (396 testes no total). Resumo em
   `docs/arquitetura.md`, seção "Correções da revisão da Fase 2". **Pendente:** os achados médios (15 testes de ataque
   da Sabrina ainda vermelhos, nenhum alto).
+- **Decisões do Paulo (19/11/2026):**
+  - **Assinatura do backup aprovada:** `hela import --trusted` só com HMAC-SHA256 desta instalação, só no terminal
+    com confirmação e só na CLI (ADR-21, feito pela Karol, com testes).
+  - **Ponta a ponta da Fase 7 aprovado** (cerca de US$ 1 a 3 com `claude -p`).
+  - **Experimento de economia não aprovado** (US$ 6 a 30): a Fase 7 entrega o cálculo testado com dados sintéticos e
+    diz que a economia comprovada ainda não foi medida.
+  - **Logo:** fica para decidir depois.
 - [ ] Fase 4: Integração
 - [ ] Fase 5: Dashboard (5a DS da Sofia; 5b app)
 - [ ] Fase 6: Instalador

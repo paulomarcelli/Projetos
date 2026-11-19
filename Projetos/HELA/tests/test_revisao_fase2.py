@@ -321,8 +321,11 @@ def test_import_nao_confiavel_nao_controla_datas_nem_importancia(tmp_path: Path)
 
 def test_backup_confiavel_mantem_datas_e_importancia(tmp_path: Path) -> None:
     with Engine(home=tmp_path / "h") as eng:
-        eng.import_data(_doc([{"id": "e" * 32, "kind": "semantic", "content": "lição antiga",
-                               "created_at": "2025-01-01T00:00:00Z", "importance": 0.9}]), trusted=True)
+        from hela.security.backup_signature import load_or_create_key, sign
+
+        doc = _doc([{"id": "e" * 32, "kind": "semantic", "content": "lição antiga",
+                     "created_at": "2025-01-01T00:00:00Z", "importance": 0.9}])
+        eng.import_data(sign(doc, load_or_create_key(tmp_path / "h")), trusted=True)
         m = eng.get("e" * 32, record_access=False)
         assert m.created_at.startswith("2025-01-01") and m.importance == 0.9
 

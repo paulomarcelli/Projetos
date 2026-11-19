@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from hela.security.backup_signature import sign
+
 import json
 from pathlib import Path
 
@@ -47,10 +49,11 @@ def test_export_import_ida_e_volta(origem: MemoryService, tmp_path: Path) -> Non
 
 
 def test_backup_confiavel_preserva_tudo(origem: MemoryService, tmp_path: Path) -> None:
-    dados = export_data(origem)
+    chave = b"k" * 32  # a mesma instalação (a chave viaja junto com o backup)
+    dados = export_data(origem, key=chave)
     assert dados["format"] == EXPORT_FORMAT and dados["version"] == EXPORT_VERSION
     destino = novo_servico(tmp_path / "destino.db")
-    rel = import_data(destino, json.loads(json.dumps(dados)), trusted=True)
+    rel = import_data(destino, json.loads(json.dumps(dados)), trusted=True, key=chave)
     assert (rel.created, rel.duplicates, rel.relationships) == (3, 0, 1)
     campos = ("id", "kind", "content", "tags", "project", "status", "quality", "access_count", "created_at", "metadata")
     assert [[getattr(m, c) for c in campos] for m in _todas(destino)] == \
@@ -130,7 +133,8 @@ def test_datas_do_arquivo_sao_normalizadas(origem: MemoryService, tmp_path: Path
     dados["memories"][0]["created_at"] = "2026-01-01T00:00:00Z"
     dados["memories"][0]["expires_at"] = "2030-01-01T09:00:00-03:00"
     destino = novo_servico(tmp_path / "d.db")
-    import_data(destino, dados, trusted=True)  # sem --trusted a data do arquivo não é usada (revisão A-7)
+    chave = b"k" * 32
+    import_data(destino, sign(dados, chave), trusted=True, key=chave)  # sem --trusted a data não é usada (A-7)
     m = destino.get(dados["memories"][0]["id"], record_access=False)
     assert m.created_at == "2026-01-01T00:00:00.000000+00:00"
     assert m.expires_at == "2030-01-01T12:00:00.000000+00:00"

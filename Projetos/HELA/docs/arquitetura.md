@@ -321,3 +321,29 @@ escrito a partir dos testes de ataque dela e visto falhando antes.
 Mudanças de decisão: (1) ADR-09 — a importância e as datas do arquivo deixam de valer no import padrão; (2) dois testes
 antigos que fixavam isso foram atualizados. Os achados **médios** da revisão ficam para depois (15 testes de ataque
 da Sabrina ainda falham, todos de achados médios).
+
+### ADR-21 · Backup assinado e `hela import --trusted` (aprovado pelo Paulo em 19/11/2026)
+
+- **Contexto.** Com `--trusted`, o arquivo decide qualidade, confiança, contadores, status e origem. O risco é um
+  arquivo que não é do Paulo entrar como confiável, por exemplo uma injeção que manda o Claude rodar o import pelo
+  Bash (revisão da Fase 2, seção 3).
+- **Decisão (condições da Sabrina).**
+  1. O `hela export` assina o documento com **HMAC-SHA256**. A chave (`$HELA_HOME/backup.key`, 32 bytes de
+     `secrets.token_bytes`, **0600** desde a criação, com `O_EXCL`) é criada no primeiro export. A conferência usa
+     `hmac.compare_digest` sobre o JSON canônico do documento sem o campo `signature`. Para mudar de máquina, a chave é
+     copiada junto, de propósito.
+  2. `--trusted` só aceita assinatura válida **desta** instalação. Arquivo de outra máquina, sem assinatura ou alterado
+     é recusado (sem `--trusted` ele entra como não confiável). Na CLI, `--trusted` exige terminal interativo
+     (`sys.stdin.isatty()`), pede confirmação "[s/N]" e não lê do stdin. Export e import **não fazem parte** das 8
+     operações: o MCP e a API não expõem o modo. Há teste por porta: nenhum modelo do contrato tem `trusted`, toda
+     operação recusa `trusted=True` e nenhuma rota do `docs/api.md` é de import.
+  3. `source` só de uma lista fechada (`manual`, `mcp`, `hook`, `import`, `consolidation`, `api`, `cli` e
+     `tool:<ferramenta>` conhecidas); qualquer outra vira `import`. A procedência nunca sobe: memória com
+     `metadata.origin` web volta com `source` web.
+  4. Aprovação de script nunca é importada: `approved`, `approved_sha256` e `approved_at` saem da `metadata`, e a
+     tabela `procedures` nunca vem de arquivo.
+  5. A quarentena continua valendo.
+  6. O validador estático sinaliza `hela import --trusted` (regra `trusted_import`).
+- **Prova.** `tests/test_backup_assinado.py` (23 testes). Mutação: com `verify` aceitando tudo, os testes de arquivo
+  adulterado e de assinatura falham.
+- **Custo.** Quem perde a chave perde o modo `--trusted` para os backups antigos; o import comum continua funcionando.

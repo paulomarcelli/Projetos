@@ -38,7 +38,10 @@ def test_export_e_import_pela_cli(hela_home_temporario: Path, tmp_path: Path,
     assert "simulação" in capsys.readouterr().out
     with Engine() as eng:
         assert eng.stats()["memories"]["total"] == 0
-    assert main(["import", "--trusted", str(arquivo)]) == 0
+    # --trusted em outra instalação: a assinatura é de outra chave (e aqui não há terminal) → recusa
+    assert main(["import", "--trusted", str(arquivo)]) == 1
+    capsys.readouterr()
+    assert main(["import", str(arquivo)]) == 0
     assert "criadas: 1" in capsys.readouterr().out
     with Engine() as eng:
         assert eng.stats()["memories"]["total"] == 1

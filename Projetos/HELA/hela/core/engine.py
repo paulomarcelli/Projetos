@@ -29,6 +29,7 @@ from hela.core.contract import (
 from hela.core.router import CognitiveRouter, coverage, query_terms
 from hela.execution.planner import classify_parts, split_task
 from hela.execution.validator import validate_script
+from hela.security.backup_signature import load_key, load_or_create_key
 from hela.security.redaction import redact
 from hela.execution.procedures import ProcedureService
 from hela.learning.classifier import TaskClassifier
@@ -366,15 +367,21 @@ class Engine:
         return {"expired": len(expiradas), "merged": rel.merged, "clusters": len(rel.clusters)}
 
     # --- transferência -------------------------------------------------------------------
+    # Export e import NÃO fazem parte das 8 operações: só a CLI chama (o MCP e a API não expõem).
     def export_data(self, include_quarantined: bool = False) -> dict[str, Any]:
-        return export_data(self.memories, include_quarantined=include_quarantined)
+        """Documento assinado com a chave desta instalação (criada no primeiro uso)."""
+        return export_data(self.memories, include_quarantined=include_quarantined,
+                           key=load_or_create_key(self.home))
 
     def export_to_file(self, path: Path, include_quarantined: bool = False) -> int:
-        return export_to_file(self.memories, path, include_quarantined=include_quarantined)
+        return export_to_file(self.memories, path, include_quarantined=include_quarantined,
+                              key=load_or_create_key(self.home))
 
     def import_data(self, data: Union[str, bytes, dict[str, Any]], trusted: bool = False,
                     dry_run: bool = False) -> ImportReport:
-        return import_data(self.memories, data, trusted=trusted, dry_run=dry_run)
+        """trusted exige a assinatura desta instalação; a confirmação no terminal é da CLI."""
+        return import_data(self.memories, data, trusted=trusted, dry_run=dry_run,
+                           key=load_key(self.home) if trusted else None)
 
     def import_file(self, path: Path, trusted: bool = False, dry_run: bool = False) -> ImportReport:
         caminho = Path(path)

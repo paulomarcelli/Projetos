@@ -135,6 +135,7 @@ _HISTORY = [
     re.compile(r"\bHISTFILE=/dev/null\b"), re.compile(r"\bset\s+\+o\s+history\b"),
     re.compile(r"(>|\brm\b[^\n]*)\s*\S*\.bash_history\b"), re.compile(r"\bclear-history\b", _R),
 ]
+_TRUSTED_IMPORT = [re.compile(r"\bhela\s+import\b[^\n]*--trusted\b")]
 _NETWORK_CMD = re.compile(
     r"(^|[;&|(\s])(curl|wget|nc|ncat|netcat|socat|scp|rsync|sftp|ftp|telnet|ssh|iwr|irm|invoke-webrequest|"
     r"invoke-restmethod)\b", _R)
@@ -191,6 +192,8 @@ def _regras_de_texto(linha: str, n: int, allowed: Iterable[str]) -> list[Finding
            "toca em caminho de credenciais ou de configuração sensível (.ssh, .aws, .env, ~/.claude...)")
     checar(_PERSISTENCE, "persistence", "high", "instala algo que roda sozinho depois (cron, rc do shell, serviço)")
     checar(_HISTORY, "history_tamper", "high", "apaga ou desliga o histórico de comandos")
+    checar(_TRUSTED_IMPORT, "trusted_import", "high",
+           "importa memórias como confiáveis: só o usuário, no terminal, com o próprio backup")
     if _NETWORK_CMD.search(linha) or "/dev/tcp/" in linha:
         permitidos = {h.lower() for h in allowed}
         hosts = _hosts(linha)

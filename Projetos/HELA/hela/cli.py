@@ -38,7 +38,8 @@ def _parser() -> argparse.ArgumentParser:
     im = sub.add_parser("import", help="importa um arquivo de exportação (a redação é reaplicada)")
     im.add_argument("arquivo", help="caminho do JSON, ou - para ler do stdin")
     im.add_argument("--trusted", action="store_true",
-                    help="backup seu: mantém status, qualidade e contadores (a quarentena continua valendo)")
+                    help="backup seu, assinado por esta instalação: mantém status, qualidade e contadores "
+                         "(só em terminal interativo, com confirmação; a quarentena continua valendo)")
     im.add_argument("--dry-run", action="store_true", help="mostra o que entraria, sem gravar nada")
 
     pr = sub.add_parser("procedure", help="procedimentos: listar, ver, aprovar script (decisão humana) e revogar")
@@ -89,6 +90,25 @@ def _status(eng, como_json: bool) -> None:
     print("\n".join(linhas))
 
 
+def _confirmar_trusted(arquivo: str) -> bool:
+    """--trusted só para uma pessoa no terminal (revisão da Fase 2, seção 3).
+
+    O Bash do Claude não tem terminal: uma injeção que mande rodar `hela import --trusted` para aqui.
+    """
+    if arquivo == "-":
+        print("hela: erro: --trusted não lê do stdin; informe o arquivo do backup", file=sys.stderr)
+        return False
+    if not sys.stdin.isatty():
+        print("hela: erro: --trusted só funciona num terminal interativo (com uma pessoa confirmando)",
+              file=sys.stderr)
+        return False
+    resposta = input(f"O arquivo {arquivo} é um backup seu, feito pelo 'hela export' desta instalação? [s/N] ")
+    if resposta.strip().lower() not in ("s", "sim", "y", "yes"):
+        print("hela: import cancelado", file=sys.stderr)
+        return False
+    return True
+
+
 def _json(dados: object) -> None:
     print(json.dumps(dados, ensure_ascii=False, indent=2, default=str))
 
@@ -115,6 +135,8 @@ def main(argv: Optional[list[str]] = None) -> int:
                     print(json.dumps(eng.export_data(include_quarantined=args.include_quarantined),
                                      ensure_ascii=False, indent=2))
             elif args.comando == "import":
+                if args.trusted and not _confirmar_trusted(args.arquivo):
+                    return 1
                 opcoes = {"trusted": args.trusted, "dry_run": args.dry_run}
                 rel = (eng.import_data(sys.stdin.buffer.read(), **opcoes) if args.arquivo == "-"
                        else eng.import_file(Path(args.arquivo), **opcoes))

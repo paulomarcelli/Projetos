@@ -37,6 +37,7 @@ from hela.core.errors import InvalidInput, describe_validation_error
 from hela.memory.models import Kind, MemoryCreate, data_iso
 from hela.memory.service import MemoryService
 from hela.storage.migrations import current_version
+from hela.security.backup_signature import sign, verify
 from hela.security.redaction import redact_value
 from hela.storage.repositories.memories import MemoryFilter
 
@@ -44,6 +45,13 @@ EXPORT_FORMAT = "hela-export"
 EXPORT_VERSION = 1
 MAX_IMPORT_BYTES = 50 * 1024 * 1024
 MAX_IMPORT_ITEMS = 100_000
+# Origens aceitas de um arquivo (lista fechada). Qualquer outra vira 'import'.
+FERRAMENTAS = ("Bash", "Read", "Write", "Edit", "MultiEdit", "Grep", "Glob", "WebFetch", "WebSearch",
+               "NotebookEdit", "Task")
+SOURCES = frozenset({"manual", "mcp", "hook", "import", "consolidation", "api", "cli"}
+                    | {f"tool:{f}" for f in FERRAMENTAS})
+ORIGENS_WEB = ("tool:WebFetch", "tool:WebSearch", "web")
+CAMPOS_DE_APROVACAO = frozenset({"approved", "approved_sha256", "approved_at"})
 ID_VALIDO = re.compile(r"^[0-9a-f]{32}$")
 
 
@@ -119,7 +127,9 @@ def _redigido(service: MemoryService, valor: Any) -> Any:
     return novo
 
 
-def export_data(service: MemoryService, include_quarantined: bool = False) -> dict[str, Any]:
+def export_data(service: MemoryService, include_quarantined: bool = False,
+                key: Optional[bytes] = None) -> dict[str, Any]:
+    """Monta o documento. Com key, sai assinado (HMAC-SHA256), o que permite o import --trusted."""
     status = ["active", "archived", "expired"] + (["quarantined"] if include_quarantined else [])
     memorias = service.list(MemoryFilter(statuses=status), limit=10_000_000, order="created_at ASC")
     ids = {m.id for m in memorias}
@@ -141,17 +151,18 @@ def export_data(service: MemoryService, include_quarantined: bool = False) -> di
     with service.db.transaction():
         service.events.log(service.now(), "export.done", None, None,
                            {"memories": len(memorias), "relationships": len(relacoes),
-                            "include_quarantined": include_quarantined})
-    return dados
+                            "include_quarantined": include_quarantined, "signed": key is not None})
+    return sign(dados, key) if key is not None else dados
 
 
-def export_to_file(service: MemoryService, path: Path, include_quarantined: bool = False) -> int:
+def export_to_file(service: MemoryService, path: Path, include_quarantined: bool = False,
+                   key: Optional[bytes] = None) -> int:
     """Grava o JSON de forma atômica (temporário + rename), com permissão 0600.
 
     O mkstemp já cria o temporário em 0600; o rename mantém a permissão.
     Devolve quantas memórias foram.
     """
-    dados = export_data(service, include_quarantined=include_quarantined)
+    dados = export_data(service, include_quarantined=include_quarantined, key=key)
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix=".hela-export-", suffix=".tmp", dir=path.parent)
@@ -173,7 +184,7 @@ def check_import_size(tamanho: int) -> None:
                            f"limite {MAX_IMPORT_BYTES / 2**20:.0f} MB)")
 
 
-def _ler(dados: Union[str, bytes, dict[str, Any]]) -> ExportDocument:
+def _carregar(dados: Union[str, bytes, dict[str, Any]]) -> Any:
     if isinstance(dados, (str, bytes)):
         check_import_size(len(dados))
         try:
@@ -182,6 +193,10 @@ def _ler(dados: Union[str, bytes, dict[str, Any]]) -> ExportDocument:
             raise InvalidInput(f"o arquivo não é JSON válido (linha {erro.lineno}, coluna {erro.colno})") from None
     if not isinstance(dados, dict):
         raise InvalidInput("o arquivo precisa ser um objeto JSON no formato hela-export")
+    return dados
+
+
+def _ler(dados: Any) -> ExportDocument:
     memorias = dados.get("memories")
     if isinstance(memorias, list) and len(memorias) + len(dados.get("relationships") or []) > MAX_IMPORT_ITEMS:
         raise InvalidInput(f"itens demais no arquivo (limite {MAX_IMPORT_ITEMS})")
@@ -198,28 +213,44 @@ class _Simulacao(Exception):
         self.relatorio = relatorio
 
 
+def _origem_confiavel(fonte: str, metadata: dict[str, Any]) -> str:
+    """source do arquivo só de uma lista fechada; e a procedência nunca sobe (web continua web)."""
+    final = fonte if fonte in SOURCES else "import"
+    origem = str(metadata.get("origin") or "")
+    if origem.startswith(ORIGENS_WEB) and not final.startswith(ORIGENS_WEB):
+        final = origem if origem in SOURCES else "import"
+    return final
+
+
 def import_data(service: MemoryService, dados: Union[str, bytes, dict[str, Any]], trusted: bool = False,
-                dry_run: bool = False) -> ImportReport:
+                dry_run: bool = False, key: Optional[bytes] = None) -> ImportReport:
     """Importa um arquivo hela-export.
 
-    trusted: mantém status, qualidade, confiança, contadores e origem (só para backup próprio).
+    trusted: mantém status, qualidade, confiança, contadores e origem (só para backup próprio). Exige a
+             assinatura válida desta instalação (key). Só a CLI chama com trusted=True.
     dry_run: faz tudo dentro da transação e desfaz no fim; devolve o que entraria.
     """
-    doc = _ler(dados)
+    bruto = _carregar(dados)
+    if trusted and not verify(bruto, key):
+        raise InvalidInput("--trusted só aceita um backup com assinatura válida desta instalação "
+                           "(feito pelo 'hela export' daqui, sem alteração); importe sem --trusted")
+    doc = _ler(bruto)
     try:
         entradas = []
         for m in doc.memories:
             # Sem --trusted, o arquivo não controla nada que pese no ranking (revisão A-7): importância,
             # qualidade, confiança, origem e datas ficam com os valores locais; as datas originais
             # ficam guardadas em metadata, só para consulta.
+            # Aprovação de script nunca vem de arquivo, nem com --trusted (revisão, seção 3.5).
+            base_meta = {k: v for k, v in m.metadata.items() if k not in CAMPOS_DE_APROVACAO}
             if trusted:
-                confianca = {"source": m.source, "quality": m.quality, "confidence": m.confidence,
-                             "importance": m.importance}
-                meta = m.metadata
+                confianca = {"source": _origem_confiavel(m.source, base_meta), "quality": m.quality,
+                             "confidence": m.confidence, "importance": m.importance}
+                meta = base_meta
             else:
                 confianca = {"source": "import"}
-                meta = {**m.metadata, **{f"original_{k}": v for k, v in
-                                         (("created_at", m.created_at), ("updated_at", m.updated_at)) if v}}
+                meta = {**base_meta, **{f"original_{k}": v for k, v in
+                                        (("created_at", m.created_at), ("updated_at", m.updated_at)) if v}}
             entradas.append((m, MemoryCreate(kind=m.kind, content=m.content, title=m.title, summary=m.summary,
                                              project=m.project, tags=m.tags, expires_at=m.expires_at,
                                              metadata=meta, **confianca)))

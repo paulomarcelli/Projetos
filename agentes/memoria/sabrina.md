@@ -66,6 +66,20 @@ aqui.
   derrubou o servidor MCP. Scripts de teste com nomes que não colidem, sempre `python -I`.
 - **18/11/2026 · Chave falsa em teste.** Repositório público: montar a chave falsa em tempo de execução
   (`"AKIA" + "X" * 16`), nunca literal, para não cair na proteção de push do GitHub.
+- **19/11/2026 · Revisar o commit publicado, não a árvore.** A Karol trabalha nos mesmos arquivos enquanto reviso.
+  Extraio o commit com `git archive <sha> Projetos/HELA | tar -x -C <scratch>` e rodo o Python com `-I` e essa cópia na
+  frente do `sys.path`. O scratchpad tem uma pasta `hela` de outra sessão que sombreia o pacote: scripts sempre numa
+  subpasta minha.
+- **19/11/2026 · Teste de ataque afirma o comportamento seguro.** Teste vermelho = defeito reproduzido. Fica num
+  arquivo à parte, no scratchpad, nunca em `tests/` da dona.
+- **19/11/2026 · SQLite multiprocesso: o que olhar.** Migração com a versão lida antes da trava, `PRAGMA journal_mode =
+  WAL` sem espera, leitura que grava evento (perde o WAL), `COMMIT` sem `ROLLBACK` no erro, `purge`/checkpoint com
+  leitor aberto e manutenção que grava a partir de uma leitura velha. Reproduzo com `multiprocessing` `spawn` e barreira.
+- **19/11/2026 · Hook = processo novo.** Cache em memória não ajuda no hook; meço sempre na parede, com processo novo.
+- **19/11/2026 · Regex de redação: medir o tempo com `"a." * n`.** Quantificador sem limite antes de alternância vira
+  ReDoS. Stdout de script longo fica no buffer: `flush=True` e `timeout` por caso.
+- **19/11/2026 · Skills de revisão.** `security-review` abre no diff da árvore de trabalho e pede subtarefas: aplico o
+  método à mão. `code-review` precisa de diff: código novo inteiro vai com `git diff --no-index base-vazia head`.
 
 ## Registro de tarefas
 
@@ -76,3 +90,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 15/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
 | 17-18/11/2026 | Conferência de fatos dos 5 roteiros do TikTok de 18 a 22/11 (Sol, Última pessoa, Terra para, Pulo, Buraco) | aguardando retorno do Paulo | cerca de 2 sessões (o limite de uso interrompeu antes de gravar) | não medido | Gravar o relatório mais cedo (por roteiro, começando pelo que vai ao ar primeiro), para não perder trabalho se a sessão parar. |
 | 18/11/2026 | HELA: preparar a Fase 7 (referência do Claude Code conferida e testada, modelo de ameaças, plano de testes, teste do `claude -p` com HOME isolado) | aguardando retorno | 1 sessão | cerca de US$ 0,34 em 3 chamadas de `claude -p` de teste | Conferir antes quantos arquivos a entrega pede e o nome de cada um. |
+| 18-19/11/2026 | HELA: revisão de segurança e de código da Fase 2 (`docs/revisoes/2026-11-18-fase2.md`): 43 testes de ataque (39 defeitos), concorrência multiprocesso, desempenho com 10 mil memórias, veredito do `--trusted` | aguardando retorno | 2 sessões (o limite de uso interrompeu uma vez) | não medido | Escrever o relatório por partes, para não perder trabalho se o limite de uso cortar a sessão. |

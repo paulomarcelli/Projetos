@@ -8,9 +8,9 @@ junto com a própria memória (`agentes/memoria/<nome>.md`).
 | Agente | Papel | Recebe de | Entrega para |
 |---|---|---|---|
 | **Sabrina** | Coordenação (pedido → tarefas, ordem e acompanhamento), pesquisa com fontes, QA e segurança | Paulo, Karol | toda a equipe |
-| **Sofia** | Design: Design System no Figma, layouts, protótipos e revisão visual | Sabrina | Karol |
+| **Sofia** | Design: Design System no Figma, layouts, protótipos, revisão visual e produção 3D no Blender | Sabrina | Karol |
 | **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, IA, build e publicação | Sabrina, Sofia | Sabrina |
-| **Gabriela** | Conteúdo: escolhe e escreve os posts da semana (TikTok, LinkedIn, Substack) pelos números e cuida do calendário no Notion | Paulo | Sofia (artes), Sabrina (fatos dos roteiros) |
+| **Gabriela** | Marketing e conteúdo: escolhe e escreve posts e roteiros (TikTok, LinkedIn, Substack), analisa a performance e cuida do calendário no Notion | Paulo | Sofia (artes), Sabrina (fatos dos roteiros) |
 
 Cada uma fica na sua especialidade. Se a tarefa pede outra, **não improvise**: devolva para a Sabrina dizendo quem deve
 assumir.

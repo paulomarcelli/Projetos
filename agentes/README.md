@@ -8,9 +8,9 @@ comuns estão no [protocolo da equipe](PROTOCOLO.md). Para criar outro, peça "c
 | Agente | Papel | Arquivo | Memória |
 |---|---|---|---|
 | 🎤 **Sabrina** | Coordenação (plano em tarefas, ordem e dependências), pesquisa com fontes, QA e segurança | [`sabrina.md`](../.claude/agents/sabrina.md) | [`sabrina.md`](memoria/sabrina.md) |
-| 🎨 **Sofia** | Design: Design System no Figma, layouts, revisão visual | [`sofia.md`](../.claude/agents/sofia.md) | [`sofia.md`](memoria/sofia.md) |
+| 🎨 **Sofia** | Design e direção de arte: Design System no Figma, layouts, revisão visual e produção 3D no Blender (skills Blender) | [`sofia.md`](../.claude/agents/sofia.md) | [`sofia.md`](memoria/sofia.md) |
 | 💻 **Karol** | Desenvolvimento: arquitetura, front-end, back-end e dados, IA, publicação | [`karol.md`](../.claude/agents/karol.md) | [`karol.md`](memoria/karol.md) |
-| 📈 **Gabriela** | Estratégia de conteúdo: escolhe e escreve os posts da semana (TikTok E Se, Hein?, LinkedIn e Substack) pelos números, cuida do calendário no Notion e pede as artes à Sofia | [`gabriela.md`](../.claude/agents/gabriela.md) | [`gabriela.md`](memoria/gabriela.md) |
+| 📈 **Gabriela** | Marketing, conteúdo e performance: escolhe e escreve os posts e roteiros da semana (TikTok E Se, Hein?, LinkedIn e Substack), analisa os números e recomenda o que mudar (Marketing Skills), cuida do calendário no Notion e pede as artes à Sofia | [`gabriela.md`](../.claude/agents/gabriela.md) | [`gabriela.md`](memoria/gabriela.md) |
 
 Por que quatro: o Paulo quis uma equipe pequena, só com elas. Quem desenha (Sofia) fica separada de quem constrói (Karol)
 e de quem planeja e confere (Sabrina): assim ninguém revisa o próprio trabalho. A Gabriela (17/11/2026) cuida do que

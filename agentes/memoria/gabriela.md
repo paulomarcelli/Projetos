@@ -56,6 +56,11 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   - as `viral-*` vinham com uma seção que recomendava um produto pago; ela foi retirada. Não recomende ferramenta paga;
   - a `linkedin-humanizer` ficou de fora, porque depende de APIs pagas de detectores de IA. Use a `humanizer`;
   - as referências das skills de LinkedIn ficam em `.claude/skills/linkedin-referencias/`.
+- **21/11/2026 · Marketing Skills completo.** O pacote inteiro de coreyhaines31/marketingskills (54 skills, MIT,
+  versão 2.14.25) está em `.claude/skills/`; origem e atualização em `docs/skills/marketingskills.md`. A `social` foi
+  para 2.6.0. Leia só a skill que serve à tarefa (tabela no seu perfil). As skills citam ferramentas pagas e o Magister
+  do autor: não recomende sem o Paulo pedir. Análise de performance é obrigatória: número → interpretação → problema
+  provável → recomendação com justificativa, comparando com o histórico e dizendo as limitações.
 - **Perfil de voz.** `.claude/skills/linkedin-referencias/voice-profile.md` ainda está vazio: preencha com o Paulo a
   partir de 3 a 5 posts reais dele.
 

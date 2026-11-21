@@ -142,6 +142,11 @@ aqui.
 - **18/11/2026 · Logo: o conceito antes do kit.** A `logo-design` para nos conceitos; como subagente, entregue os
   conceitos com a recomendação e as variantes essenciais e deixe o kit completo para depois da escolha do Paulo.
 
+- **21/11/2026 · Especialização 3D no Blender.** O pacote arjun988/blender-skills (v1.3.0, MIT) está em
+  `.claude/skills/`; comece pela `blender-director`. Avalie antes se a tarefa pede 3D: interface simples fica no Figma.
+  O Blender complementa o Figma e o Design System, nunca substitui. Sem o Blender MCP conectado, use o Blender sem janela
+  por script e diga isso no relatório.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.

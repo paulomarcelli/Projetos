@@ -1,0 +1,131 @@
+{
+  "projeto": "E Se, Hein? · TikTok de 22 a 28/11 (20 a 30 s)",
+  "tarefas": [
+    {
+      "chave": "fatos-dom",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se a Terra parasse de girar por um segundo?\" (dom 22/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 7 afirmações e os rótulos com número listados no bloco \"Domingo 22/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). Aproveite a sua conferência de 17/11 (agentes/relatorios/sabrina/2026-11-17-fatos-tiktok-18-a-22-nov.md) e valide só o texto novo, mais curto. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 1. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "fatos-seg",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se todo mundo pulasse ao mesmo tempo?\" (seg 23/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 6 afirmações e os rótulos com número listados no bloco \"Segunda 23/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). Aproveite a sua conferência de 17/11 (agentes/relatorios/sabrina/2026-11-17-fatos-tiktok-18-a-22-nov.md) e valide só o texto novo, mais curto. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 2. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "fatos-ter",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se você pulasse num buraco que atravessa a Terra?\" (ter 24/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 7 afirmações e os rótulos com número listados no bloco \"Terça 24/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). Aproveite a sua conferência de 17/11 (agentes/relatorios/sabrina/2026-11-17-fatos-tiktok-18-a-22-nov.md) e valide só o texto novo, mais curto. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 3. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "fatos-qua",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se você ficasse uma semana sem dormir?\" (qua 25/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 6 afirmações e os rótulos com número listados no bloco \"Quarta 25/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). São fatos novos, sem conferência anterior: marque cada um como confirmado, ajustado (com o texto novo) ou retirado. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 4. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "fatos-qui",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se todo o gelo do mundo derretesse?\" (qui 26/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 6 afirmações e os rótulos com número listados no bloco \"Quinta 26/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). São fatos novos, sem conferência anterior: marque cada um como confirmado, ajustado (com o texto novo) ou retirado. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 5. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "fatos-sex",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se você ficasse sem traje no espaço?\" (sex 27/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 5 afirmações e os rótulos com número listados no bloco \"Sexta 27/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). São fatos novos, sem conferência anterior: marque cada um como confirmado, ajustado (com o texto novo) ou retirado. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 6. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "fatos-sab",
+      "agente": "sabrina",
+      "titulo": "Conferir os fatos do roteiro \"E se a Lua ficasse na metade da distância?\" (sáb 28/11, 20 a 30 s)",
+      "descricao": "Conferir, com fonte e nível de certeza, as 5 afirmações e os rótulos com número listados no bloco \"Sábado 28/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md (seção \"Fatos para a Sabrina conferir ANTES da voz\"). São fatos novos, sem conferência anterior: marque cada um como confirmado, ajustado (com o texto novo) ou retirado. Pronto quando cada afirmação estiver marcada e o ok ou não ok vier por escrito. Prioridade 7. Só depois do ok a voz da Maia é gravada.",
+      "dependeDe": [],
+      "tipo": "revisao"
+    },
+    {
+      "chave": "arte-dom",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se a Terra parasse de girar por um segundo?\" (dom 22/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Domingo 22/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 5 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Amanhã: e se todo mundo pulasse junto?\". Produção médio: Reaproveita costa, Terra e céu que já existem (confirmar com a Karol). Novo: Marco Zero e linha do Equador, seta de rotação e as barras de velocidade. Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-dom"
+      ],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-seg",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se todo mundo pulasse ao mesmo tempo?\" (seg 23/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Segunda 23/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 5 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Amanhã: e se você caísse pelo meio da Terra?\". Produção médio: Novo: multidão de bonecos (instâncias), balança, átomo. Terra e céu reaproveitados. Cuidado com o peso do render da multidão (a Karol decide a quantidade). Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-seg"
+      ],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-ter",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se você pulasse num buraco que atravessa a Terra?\" (ter 24/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Terça 24/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 4 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Amanhã: e se você ficasse 7 dias sem dormir?\". Precisa de um componente novo: a Terra cortada (crosta, manto, núcleo). Produção pesado: Componente novo da Sofia (Terra cortada) e três cenas novas (Paulista com buraco, túnel e núcleo, mar aberto). É o dia mais caro da semana: fazer cedo no lote. Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-ter"
+      ],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-qua",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se você ficasse uma semana sem dormir?\" (qua 25/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Quarta 25/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 5 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Amanhã: e se todo o gelo do mundo derretesse?\". Produção médio: Tudo é interior simples, mas são cenas novas (quarto, mesa, escuro). A piscada de tela é fácil no Remotion. Menos pesado que a terça. Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-qua"
+      ],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-qui",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se todo o gelo do mundo derretesse?\" (qui 26/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Quinta 26/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 5 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Amanhã: e se você ficasse sem traje no espaço?\". Produção pesado: Cenas novas: calota, orla com régua e água, mapa 3D do Brasil, Santos e Recife. A água já existe nas cenas do mar (a confirmar). Pesado como a terça: não deixe os dois sem folga na produção. Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-qui"
+      ],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-sex",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se você ficasse sem traje no espaço?\" (sex 27/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Sexta 27/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 5 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Amanhã: e se a Lua ficasse mais perto?\". Produção médio: O espaço e a Terra já existem nas cenas da Lua (a confirmar com a Karol). Novo: close de rosto com bolhas, barra de oxigênio e a câmara de vácuo. Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-sex"
+      ],
+      "tipo": "entrega"
+    },
+    {
+      "chave": "arte-sab",
+      "agente": "sofia",
+      "titulo": "Capa e storyboard de \"E se a Lua ficasse na metade da distância?\" (sáb 28/11)",
+      "descricao": "Seguir o plano cena a cena do bloco \"Sábado 28/11\" de agentes/relatorios/gabriela/2026-11-21-semana-22-a-28-nov-20-a-30s.md: capa 1080 × 1920 e storyboard das 5 cenas mais o fechamento, no Design System do E Se, Hein? (Figma okTGRiK8lTEXSoP9QDm0du). Pedir também a variante do cartão de fechamento com a linha \"Domingo: tem mais \"E se\"\". Produção leve: A Terra, a Lua e as marés já existem nas cenas do vídeo da Lua (TerraLua.tsx, Mares.tsx; a confirmar com a Karol). Novo: Copacabana, régua e tela dividida. É o mais barato da semana. Usar só os números que a Sabrina confirmou. Pronto quando a capa e o storyboard estiverem no Figma, com o link no relatório ou no calendário.",
+      "dependeDe": [
+        "fatos-sab"
+      ],
+      "tipo": "entrega"
+    }
+  ]
+}

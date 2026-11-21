@@ -63,6 +63,15 @@ Leia no começo de cada tarefa. No fim, acrescente o que aprendeu e uma linha no
   provável → recomendação com justificativa, comparando com o histórico e dizendo as limitações.
 - **Perfil de voz.** `.claude/skills/linkedin-referencias/voice-profile.md` ainda está vazio: preencha com o Paulo a
   partir de 3 a 5 posts reais dele.
+- **21/11/2026 · Semana de 22 a 28/11, foco em crescimento.**
+  - Decisão do Paulo: meta de **10 mil seguidores e 100 mil visualizações**, retenção no centro, vídeos de **20 a 30 s**. Isso vale mais que o "mais de 1 minuto" da PASSAGEM e do perfil. Não prometer monetização; confirmar na documentação oficial antes de falar de pagamento.
+  - Conta do tempo: 2,6 palavras/s + 4 s de fechamento. Para ficar até 30 s, no máximo 65 palavras (70 palavras = 30,9 s). Contar com script (não há Python na máquina: usei Node).
+  - Só há um dado real do canal: Lua, 45 visualizações e 2 curtidas em ~15 min. Estratégia = hipótese até chegarem os números de 48 h.
+  - O WebSearch não acha o TikTok: a checagem de "vídeo gigante" foi só no YouTube, com contagem de agregadores. Pedir ao Paulo a busca no TikTok.
+  - `docs/estilo-realismo.md`, citado no perfil, não existe no repositório.
+  - Notion: o Paulo autorizou, mas as ferramentas de escrita (excluir e criar páginas) foram recusadas pelo sistema de permissões da sessão. Deixei a lista exata no relatório. Não tente contornar.
+  - Antes de afirmar que um fato "já foi conferido", cite o relatório da Sabrina; o texto encurtado precisa de novo ok.
+  - Testes A/B com poucos vídeos: use pares e conte vitórias (6 de 6 = 1,6% de acaso; 4 de 4 = 6%). Chamar de indício, não de prova.
 
 ## Registro de tarefas
 
@@ -72,3 +81,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 |---|---|---|---|---|---|
 | 17/11/2026 | (criação da agente; nenhuma tarefa ainda) | — | — | — | — |
 | 17/11/2026 | 5 roteiros do TikTok de 18 a 22/11 (3 curtos, 2 longos), 5 páginas no Notion, plano para Sabrina e Sofia, relatório | aguardando o Paulo | ~1 sessão | não medido | O Escritório estava fechado (plano não enviado). Pedir os números da Lua em 48 h. Prazo da quarta é apertado: roteiro do dia seguinte precisa sair com 2 dias de folga. |
+| 21/11/2026 | Excluir a semana 18 a 22/11 (git rm do relatório e do plano), nova semana 22 a 28/11 com 7 roteiros de 20 a 30 s e estratégia para 10 mil seguidores e 100 mil visualizações | aguardando o Paulo (exclusão e criação no Notion recusadas pelas permissões) | ~1 sessão | não medido | Pedir os números da Lua, do Sol e da última pessoa antes de domingo. Mandar à Sabrina com 2 dias de folga. Conferir se o Notion tem permissão de escrita antes de começar. |

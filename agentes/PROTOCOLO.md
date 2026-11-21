@@ -30,6 +30,7 @@ assumir.
 6. **Aprovação humana** antes de: publicar (commit na `main`, merge, deploy), apagar arquivos, gastar créditos de IA,
    mexer no Notion ou em qualquer coisa fora do repositório. **Nunca** pagamento, compra ou assinatura.
 7. **Português (Brasil)**, frases curtas, sem jargão desnecessário.
+8. **Graphify para entender o repositório.** Em toda tarefa que envolva entender ou alterar este repositório, leia e siga `.claude/skills/graphify/SKILL.md` antes da exploração. Se `graphify-out/graph.json` existir, consulte-o para orientar perguntas sobre arquitetura e relações entre arquivos antes de buscas amplas. Se não existir, siga a decisão da skill: para uma pergunta pontual, use busca/leitura direta; só proponha gerar o grafo quando a tarefa se beneficiar de análise ampla, relações entre documentos/código ou estrutura do projeto. Não diga que consultou o grafo sem tê-lo consultado. O CLI `graphify` precisa estar instalado; se não estiver disponível, diga isso e não finja seu uso. A geração semântica pode consumir créditos: siga a regra 6 e obtenha aprovação antes de iniciar uma operação com esse custo. Não adicione `graphify-out/` ao commit sem pedido explícito.
 
 ## 3. Como cada um trabalha
 

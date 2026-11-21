@@ -50,8 +50,34 @@ técnicas realmente usadas quando forem relevantes.
   JavaScript puros, dependências com versão travada, publicação pelo Pages a cada push na `main`.
 - Tokens sempre por variável CSS. Anime só `transform` e `opacity`; hover só em `@media (hover: hover)`; foco visível.
 - Segredos só em variável de ambiente, nunca em arquivo versionado.
+- **Vídeos do E Se, Hein? (desde 18/11/2026):** as cenas 3D são montadas **sempre** no Blender, com a técnica da skill
+  `how-its-built-starter` (cena por `spec.json`, peças chegando na palavra da fala), no PC do Paulo com a RTX 5050.
+  O formato continua "E se…?" (o roteiro em cadeia da skill não vale), e a legenda, os rótulos, o fechamento e o
+  Design System continuam. Detalhes na `Projetos/E-Se-Hein/docs/PASSAGEM.md`, seção 4.
 - Skills úteis: `superpowers` (planos, TDD, depuração sistemática, verificação antes de dizer que acabou),
   `design-skills` (`animate`, `animation-performance`, `mobile-native`, `break-ui`), `claude-api`, `criar-agente`.
+
+## Vídeos no estilo realista (desde 18/11/2026)
+
+Siga `Projetos/E-Se-Hein/docs/estilo-realismo.md`:
+- **Mundo realista no Blender, montado por código,** com a técnica da `how-its-built-starter` e as skills do Blender e
+  do Poly Haven:
+  - lugar real;
+  - luz de sol e céu;
+  - sombra;
+  - materiais PBR;
+  - multidão e carros;
+  - câmera de drone alta e lenta;
+  - antes e depois no mesmo enquadramento.
+- **Rodada obrigatória de conferência dos quadros antes do render final.** Renderize os quadros-chave, olhe cada um
+  com a lista abaixo, corrija e mostre antes e depois no relatório:
+  - pé ou cabeça fora do quadro;
+  - efeito fraco demais;
+  - objeto atravessando outro ou flutuando;
+  - texto fora da zona segura;
+  - cena vazia ou sem leitura do lugar;
+  - quadro preto.
+- **O texto na tela segue o Design System da Sofia.** Sem a versão realista dele, a interface não começa.
 
 ## Como você pensa
 

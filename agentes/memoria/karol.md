@@ -91,6 +91,26 @@ aqui.
   palavra e leitura do código da cena (curva e duração). Se o efeito segue um token do Design System, a mudança é da
   Sofia, não da Karol.
 
+### Do que era vídeo realista (Blender + Remotion, v2)
+- **19/11/2026 · Blender sem janela, por código.** `blender -b --factory-startup -P blender/render.py -- <video>
+  <plano>`. Cycles com OptiX na RTX 5050: 2 a 3,5 s por quadro em 1080 × 1920 com 24 amostras; o Blender MCP não
+  precisa estar aberto. No Blender 5 as ações são em camadas (`layers → strips → channelbags → fcurves`), o EEVEE se
+  chama `BLENDER_EEVEE` e o céu físico é `MULTIPLE_SCATTERING`: leia os enums em vez de chutar.
+- **Mesma conta de quadros no Blender e no Remotion:** `round(fim·30) − round(início·30)` por plano. Um quadro a menos
+  vira quadro preto no corte.
+- **Conferência com o 2D por cima, sempre.** O 3D sozinho escondeu três defeitos (legenda em 3 linhas, texto sobre o
+  personagem, bomba na faixa da interface). `scripts/conferencia-v2.mjs` faz isso em minutos.
+- **Duas filas de render.** Com um processo, a GPU fica ociosa entre quadros (cena e gravação); dois processos em
+  planos diferentes a mantêm em ~96% sem estourar os 8 GB. Mais de dois não ajuda.
+- **Remotion e vídeo de entrada:** `OffthreadVideo` falhou com "No frame found at position" em MP4 feito de JPEG, mesmo
+  sem quadro B e em `yuv420p`. Ler os JPEG direto (um `<Img>` por quadro) é mais firme e evita a segunda compressão.
+- **Comando longo vai para segundo plano.** O render do Remotion passou de 10 min e o comando em primeiro plano foi
+  morto; rode em segundo plano com o log num arquivo.
+- **Graphify:** `graphify update .` monta o grafo de código sem LLM e sem crédito (pacote `graphifyy`); serve para
+  provar dependência ou independência entre partes (`graphify path "A" "B"`).
+- **Skills da Sofia para Blender** (`blender-director` e especializadas): ela sobe o acabamento sem mudar câmera nem
+  tempo quando o pedido deixa isso escrito. Diga o que não pode mudar e o teto de tempo por quadro.
+
 ### Do que era IA
 - **14/11/2026 · Agentes do Claude Code.** O arquivo fica em `.claude/agents/<nome>.md`; a `description` decide quando
   ele é chamado; um agente novo só carrega em sessão nova. Use a skill `criar-agente`.
@@ -109,3 +129,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 17/11/2026 | Vídeo da Lua v2: realismo ligado ao mundo, enquadramentos pelo storyboard, render final (continuação, outra sessão) | a avaliar | ~1 h + 1 h de render | sem crédito pago | Conferir a folha de contato contra o storyboard antes de cada render longo |
 | 17/11/2026 | Render final da Lua v2 no PC do Paulo com GPU: Node e ffmpeg instalados (com aprovação), teste de 60 quadros, render, conferência e folha Q1–Q8 contra o storyboard | a avaliar | ~40 min (2 renders de 70 s) | sem crédito pago | O caminho com GPU nunca tinha rodado: renderizar e varrer o brilho de todos os quadros já no teste, não só 60 quadros do começo (o defeito estava no espaço, aos 42 s) |
 | 18/11/2026 | Render final do vídeo do Sol no PC do Paulo com GPU, conferência do MP4 e análise do "apaga" e do fechamento | a avaliar | ~25 min (render de 38 s) | sem crédito pago | Nenhum defeito; deixar pronto um script único de conferência (formato, LUFS, sincronia, brilho, folha) em vez de montar os comandos a cada vídeo |
+| 19 a 21/11/2026 | Primeiro vídeo no estilo realista ("Última pessoa"): 7 planos no Blender por código, camadas 2D da v2, conferência com antes e depois, acabamento da Sofia, graphify, render com GPU em duas filas | com ajustes (o Paulo pediu Sofia e personagem depois da folha) | ~2 dias de sessão (render de 84 min) | sem crédito pago | Chamar a Sofia para o acabamento 3D antes da primeira folha, não depois; testar o vídeo do Blender dentro do Remotion num trecho curto antes do render longo |

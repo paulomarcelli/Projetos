@@ -20,3 +20,12 @@ whisper.cpp/
 
 .DS_Store
 .env
+
+# Renders do Blender (estilo realista): vídeos, quadros e posições ficam fora do git
+public/blender/
+*.blend
+*.blend1
+
+# Grafo da graphify (gerado; fica fora do git)
+graphify-out/
+__pycache__/

@@ -563,6 +563,31 @@ y 1260 a 1380; fato x 72 a 662 e y 1085 a 1180. Tudo dentro da área livre. A fa
 Os componentes do v1 (pílulas, setas, texto preso, cartões, ícones, legenda de uma palavra) **não entram** nos vídeos
 v2. Ficam no código para os vídeos antigos.
 
+## Acabamento 3D (Sofia, 21/11/2026)
+
+Regras de acabamento das cenas do Blender (`blender/*.py`), tiradas da rodada de 21/11. Valem para os próximos vídeos
+v2. Relatório: `agentes/relatorios/sofia/2026-11-21-ultima-pessoa-blender.md`.
+
+- **Céu:** o céu físico passa por um Hue/Saturation (saturação 1,45 de dia, 1,1 no corte do metrô) e aerossol 0,12.
+  Sem isso ele sai leitoso depois do AgX e a sombra fica cinza; com isso a sombra puxa para `v2/grade/sombra`.
+- **Chão até o horizonte:** o chão vai longe (30 km) para a névoa fechar o horizonte. Chão curto deixa o céu aparecer
+  embaixo do horizonte e lê como mar.
+- **Telhado é a maior área do drone:** laje escura (albedo baixo, 8 tons por prédio), manchas e juntas, platibanda em
+  toda caixa, casa de máquinas com caixa d'água, ar-condicionado, placas solares e mastro. Telhado claro e liso é o
+  que mais denuncia "3D de código".
+- **Fachada:** térreo escuro (lojas), coroamento sem janela, pilares a cada 3 a 7 colunas, tom por andar, sujeira que
+  escorre, vidro que reflete o céu (metal com o tom do vidro) e persiana em parte das janelas.
+- **Árvore:** tronco que afina, galhos aparentes e copa em 11 a 16 tufos irregulares com tom por tufo, relevo e a
+  parte de baixo mais escura. Nada de esfera lisa.
+- **Pessoa:** 1,75 m, 7,5 cabeças, pernas separadas, braços com cotovelo, camiseta de manga curta, cabelo e tênis. O
+  "você" usa a mesma malha: de perto, camiseta de tecido `#FFD21F` sem brilho; do alto, a mesma figura 6× (3× na
+  altura) com brilho leve, para virar o ponto amarelo. Nenhuma outra cor saturada perto dele (as placas do
+  supermercado saíram do amarelo).
+- **Interior e corte:** piso com placas e brilho, forro em placas, parede com rodapé e faixa. No corte de terra, luz
+  de preenchimento quente ligada só à terra (light linking), para o relevo aparecer sem acender o túnel.
+- **Boolean:** não cavar com Boolean em malha feita de caixas sobrepostas. O Boolean exato destruiu o túnel do metrô
+  (sumiram parede, piso e trilhos). Monte os blocos já com o vão.
+
 ## O que ainda falta (v2)
 
 - O protótipo de 10 s no Blender (Karol), para o Paulo aprovar o visual antes de virar padrão.

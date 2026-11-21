@@ -139,6 +139,25 @@ aqui.
 - **18/11/2026 · Legenda de frase inteira.** Quebre por sentido (`text-wrap: balance`). Palavra sozinha na última
   linha apareceu duas vezes nos exemplos.
 
+- **21/11/2026 · Blender por código: o que mais denuncia o "3D de código" é a maior área do quadro.** Do drone, é o
+  telhado (claro e liso), o céu (leitoso depois do AgX) e a árvore (esfera). Comece por eles: platibanda, casa de
+  máquinas e laje escura; Hue/Saturation no céu; copa em tufos irregulares com galho aparente.
+- **21/11/2026 · Blender: não mudar o sorteio aprovado.** Para acrescentar detalhe sem mexer no layout que o Paulo
+  aprovou, use um `random.Random(semente)` próprio e, se trocar um trecho que gastava `random` global, gaste o mesmo
+  número de sorteios.
+- **21/11/2026 · Blender: `bmesh.ops` em malha grande é quadrático.** `create_cube`/`create_icosphere` varrem a malha
+  inteira a cada chamada: 40 mil caixas travaram a montagem. Monte vértice a vértice (`caixa_rapida`) ou copie um
+  modelo. A montagem do P5 caiu de 157 s para 7 s.
+- **21/11/2026 · Blender: Boolean exato em malha de caixas sobrepostas destrói a geometria.** O túnel do metrô
+  estava sem parede, piso e trilhos e ninguém tinha notado na folha. Imprima o número de faces de cada objeto
+  avaliado (`evaluated_get(depsgraph)`) quando uma cena parecer estranha, e monte vãos em blocos.
+- **21/11/2026 · Blender: corte de terra na sombra vira parede azul.** A face só pega o céu. Luz de preenchimento
+  com light linking (`light_linking.receiver_collection`) só na terra resolve sem acender o resto.
+- **21/11/2026 · Personagem pequeno sobre texto.** Confira a projeção do personagem (`c.projetar`) contra as faixas
+  do fato (y 1085 a 1180) e da legenda (1240 a 1380) no plano inteiro, não só num quadro.
+- **21/11/2026 · Conferência: pasta com quadros velhos.** `out/conferencia/<video>/` guarda quadros de rodadas
+  antigas; rode de novo todos os tempos que for mostrar, senão a folha mistura antes e depois.
+
 ## Registro de tarefas
 
 Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** (o Paulo pediu mudança) ou **falhou**.
@@ -152,3 +171,4 @@ Uma linha por tarefa. Resultado: **perfeito** (sem retrabalho), **com ajustes** 
 | 16/11/2026 | Corrigir o apartamento da Monica e da Rachel no mapa (paredes, cozinha, móveis, caminhos) a partir da planta | aguardando o retorno do Paulo | cerca de 1 h 30 | — | Alinhar a planta com OpenCV logo no começo: medir no olho custou tempo. |
 | 17/11/2026 | Design System dos vídeos do E Se, Hein? no Figma (tokens em 3 modos, legenda, zonas seguras, rótulos, personagem, fechamento, storyboard da Lua) + `docs/design-system.md` e logo definitiva no arquivo da logo | aguardando o retorno do Paulo | cerca de 3 h (com uma pausa por limite de uso) | sem créditos de IA | Conferir a ordem dos argumentos dos helpers antes de desenhar 8 quadros; 4 defeitos vieram de opacidade e traço. |
 | 18/11/2026 | Direção de arte v2 "Realismo documental" dos vídeos do E Se, Hein? no Figma (página nova, 2 coleções de variáveis, 10 estilos de texto, 6 componentes, 4 quadros 1080 × 1920 da Paulista) + seção v2 no `docs/design-system.md` e tokens v2 em `tokens.css`/`tokens.json`; com as correções da Sabrina (8,3 bilhões, lugar em outra linha, componente Fato) | aguardando o retorno do Paulo | cerca de 4 h (com uma pausa por limite de uso) | sem créditos de IA | O retoque da Paulista vazia custou quase uma hora em quatro tentativas: limitar o tempo antes. Ligar variável em parada de degradê apagou o alfa. |
+| 21/11/2026 | Acabamento 3D do vídeo "E se você fosse a última pessoa do mundo?" (céu, telhados, fachadas, árvores, carros, P3 metrô refeito sem Boolean, P4 supermercado, P6 Pripyat) + personagem novo (o "você" e a multidão) + "você" fora do fato no P4; folha `out/conferencia/sofia-antes-depois.jpg` | aguardando o retorno do Paulo | cerca de 3 h | sem créditos de IA | Medir a montagem e o tempo por quadro logo no começo; olhar o número de faces dos objetos quando uma cena parece estranha (o túnel estava quebrado desde antes). |

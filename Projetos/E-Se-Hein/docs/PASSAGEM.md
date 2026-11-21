@@ -285,7 +285,24 @@ Veja o `README.md` do projeto. Em resumo:
     - **rodada obrigatória de conferência dos quadros** antes do render final (regra no arquivo da Karol).
   - **Processo novo:** a Gabriela confere se o tema já tem vídeo grande no TikTok e no YouTube; a Sabrina confere
     também o dado do canto.
-- **Vídeo de 19/11, "E se você fosse a última pessoa do mundo?": pronto para produzir no estilo realista.**
+- **Vídeo de 19/11, "E se você fosse a última pessoa do mundo?": renderizado no PC do Paulo em 21/11/2026, o primeiro
+  no estilo realista. Esperando o Paulo assistir e postar.**
+  - **MP4:** `out/ultima-pessoa.mp4` (fora do git; cópia em Downloads). Conferido: 1080 × 1920, 30 fps, 69,67 s,
+    voz em -14,01 LUFS, legenda em sincronia (20 pausas, até 2 ms) e nenhum quadro preto (as 9 quedas de brilho são
+    cortes e viradas). Folha final em `out/final/folha-final.jpg`.
+  - **Como foi feito** (passo a passo no README, seção "Vídeo no estilo realista"):
+    - 3D no Blender 5.3 por código, sem janela (`blender/`): 7 planos no `blender/ultima-pessoa.spec.json`, com os
+      eventos presos a palavras da fala;
+    - camadas 2D da v2 no Remotion (`src/v2/`), lendo os quadros do Blender (o MP4 dos planos deu erro no Remotion);
+    - rodada de conferência dos quadros com o 2D por cima, antes e depois, e a folha aprovada pelo Paulo;
+    - acabamento 3D e personagem da Sofia em 21/11, com as skills de Blender dela (relatório
+      `agentes/relatorios/sofia/2026-11-21-ultima-pessoa-blender.md`);
+    - render em duas filas de Blender em paralelo (GPU a 96%): 84 min para 1.999 quadros; Remotion em 131 s.
+  - **Graphify:** CLI instalado (pacote `graphifyy`); `graphify update .` monta o grafo de código sem crédito, em
+    `graphify-out/` (fora do git).
+  - **Para os próximos vídeos v2:** o "você" do alto é a pessoa em escala 6× (ponto amarelo do Design System); a
+    câmera do drone usa ~18° de inclinação, como no Figma, e não os 35° a 55° do texto. Relatório da Karol:
+    `agentes/relatorios/karol/2026-11-19-ultima-pessoa-realista.md`.
   - **Roteiro:** aprovado pela Sabrina em 17/11; a fala não muda. Está na página do vídeo no Notion (Calendário de
     conteúdo) e na seção 3 desta passagem.
   - **Voz da Maia gravada (19/11):**
@@ -310,7 +327,9 @@ Veja o `README.md` do projeto. Em resumo:
     - Pripyat com 49 mil moradores, esvaziada em 27/04/1986 e sem moradores há 40 anos;
     - sem floresta tomando a avenida.
 - **Pendente:**
-  - a voz e a produção do vídeo de 19/11 no estilo realista (no PC);
+  - o Paulo assistir e postar o vídeo de 19/11 (legenda e hashtags na página do Notion);
+  - pendências visuais da Sofia para o próximo v2: copas de Pripyat de perto, água do metrô, janelas quebradas vistas
+    do alto;
   - os temas de 20 a 22/11 (Terra para, Pulo, Buraco): roteiros aprovados, mas ainda sem a busca de tema já postado,
     sem lugar real e sem dado do canto;
   - o corte curto (35 s) de cada vídeo;

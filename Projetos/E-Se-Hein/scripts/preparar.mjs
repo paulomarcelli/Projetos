@@ -8,6 +8,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, renameSync, writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { ajustarAoSilencio, alinhar, extrairPalavras, montarTrechos } from "./lib/alinhar.mjs";
 
 const args = process.argv.slice(2);
@@ -40,7 +41,8 @@ const palavrasRoteiro = extrairPalavras(roteiro);
 if (palavrasRoteiro.length === 0) falhar("O roteiro está vazio.");
 
 const node = process.execPath;
-const aqui = path.dirname(new URL(import.meta.url).pathname);
+// fileURLToPath: no Windows, URL.pathname vira "/C:/..." e o caminho quebra.
+const aqui = path.dirname(fileURLToPath(import.meta.url));
 
 // 1. Voz normalizada (cópia em public/, o original fica intacto).
 const audioRel = `audio/${tema}.wav`;

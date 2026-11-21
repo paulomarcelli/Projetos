@@ -1,0 +1,63 @@
+{
+  "video": "ultima-pessoa",
+  "fps": 30,
+  "fechamento": 4,
+  "nota": "Um plano por cena. Os cortes ficam no meio da pausa entre dois trechos (videos/ultima-pessoa.json). Cada evento acontece na palavra dita; 'n' escolhe a ocorrência quando a palavra se repete no trecho.",
+  "planos": [
+    {
+      "id": "P1", "cena": "paulista", "trechos": [1, 2, 3], "modo": "dia",
+      "camera": "paulista", "movimento": {"recua": 70, "sobe": 18},
+      "eventos": [
+        {"o": "multidao_some", "palavra": "última", "trecho": 1},
+        {"o": "sol_desce", "palavra": "primeiras", "trecho": 3, "ate": "feriado"},
+        {"o": "luzes_acendem", "palavra": "acende.", "trecho": 3}
+      ]
+    },
+    {
+      "id": "P2", "cena": "cidades", "trechos": [4], "modo": "noite",
+      "eventos": [
+        {"o": "cidades_falham", "palavra": "parando,", "trecho": 4},
+        {"o": "cidades_apagam", "palavra": "apagam,", "trecho": 4, "ate": "uma."}
+      ]
+    },
+    {
+      "id": "P3", "cena": "metro", "trechos": [5], "modo": "dia",
+      "eventos": [
+        {"o": "bomba_destaque", "palavra": "bombas", "trecho": 5, "n": 1},
+        {"o": "bomba_desliga", "palavra": "desligadas,", "trecho": 5},
+        {"o": "agua_sobe", "palavra": "desligadas,", "trecho": 5, "ate": "alagar."}
+      ]
+    },
+    {
+      "id": "P4", "cena": "mercado", "trechos": [6], "modo": "noite",
+      "eventos": [
+        {"o": "geladeira_apaga", "palavra": "geladeira", "trecho": 6},
+        {"o": "frescos_murcham", "palavra": "fresca", "trecho": 6, "ate": "pouco."}
+      ]
+    },
+    {
+      "id": "P5", "cena": "paulista", "trechos": [7], "modo": "dia",
+      "camera": "paulista", "movimento": {"avanca": 40},
+      "vazia": true,
+      "eventos": [
+        {"o": "mato_cresce", "palavra": "mato", "trecho": 7, "ate": "asfalto."},
+        {"o": "asfalto_racha", "palavra": "rachaduras", "trecho": 7, "ate": "asfalto."},
+        {"o": "chuva", "palavra": "chuva", "trecho": 7},
+        {"o": "janelas_quebram", "palavra": "janelas", "trecho": 7, "ate": "quebradas"},
+        {"o": "predios_mancham", "palavra": "chuva", "trecho": 7, "ate": "dentro."}
+      ]
+    },
+    {
+      "id": "P6", "cena": "pripyat", "trechos": [8], "modo": "dia",
+      "eventos": [
+        {"o": "camera_sobe", "palavra": "árvores.", "trecho": 8}
+      ]
+    },
+    {
+      "id": "P7", "cena": "paulista", "trechos": [9], "modo": "dia",
+      "camera": "paulista", "movimento": {"sobe": 45, "recua": 30},
+      "vazia": true, "fim_do_video": true,
+      "eventos": []
+    }
+  ]
+}

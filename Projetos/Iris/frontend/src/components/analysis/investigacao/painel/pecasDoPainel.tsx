@@ -34,7 +34,7 @@ export function MaisDetalhes({ children }: { children: ReactNode }) {
 export function Bloco({ n, titulo, children }: { n?: number; titulo: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2 border-t border-linha pt-4">
-      <h3 className="flex items-baseline gap-2 text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">
+      <h3 className="flex items-baseline gap-2 text-micro font-medium text-texto-3">
         {n !== undefined && <span className="numeros font-dados">{n}</span>}
         {titulo}
       </h3>

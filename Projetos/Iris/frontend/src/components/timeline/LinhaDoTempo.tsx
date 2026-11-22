@@ -135,7 +135,7 @@ export function LinhaDoTempo() {
         {/* divisor: daqui em diante, tudo é hipótese condicional */}
         <div className="flex items-center gap-3 pl-1" role="separator" aria-label="Hoje. A partir daqui, futuro hipotético.">
           <span aria-hidden="true" className="size-3 rounded-full border-2 border-ambar bg-abismo" />
-          <span className="text-micro font-medium tracking-[0.08em] text-ambar uppercase">Hoje</span>
+          <span className="text-micro font-medium text-ambar">Hoje</span>
           <span aria-hidden="true" className="h-px flex-1 bg-gradient-to-r from-ambar/50 to-transparent" />
           <span className="flex items-center gap-1.5 text-micro text-texto-3">
             futuro hipotético · <Letra id={c.id} ativa /> {c.nome}

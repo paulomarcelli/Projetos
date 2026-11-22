@@ -1,31 +1,50 @@
-import { BookOpen, Printer } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
+import { Link } from "react-router";
+import { PREVIA } from "../../../config/env";
+import { ROTAS } from "../../../config/rotas";
+import { dataDoDia, Versao } from "../../common/Versao";
 import { useResultado } from "./contexto";
+import { versaoAtual } from "./versoes";
 
 /**
- * Cabeçalho da investigação: só o rótulo ("Iris · Investigação prospectiva") e a pergunta. A tela de análise está sendo
- * refeita por partes, e a abertura fica no essencial: o que foi perguntado.
- * Ações: só as que existem de fato (o método, no painel; impressão/PDF, que tem folha de estilo própria). A origem do
- * exemplo e as fontes ficam em "Como esta análise foi feita".
+ * Cabeçalho da investigação (tela "Investigação com o leque" do docs/design-system.md): a volta para a lista e as
+ * ações numa linha; a pergunta como título; embaixo, a versão em vigor, a data da revisão e a próxima revisão (o
+ * cenário é um objeto versionado). Ações só as que existem: o método, no painel, e a impressão/PDF.
  */
 export function CabecalhoDaInvestigacao() {
   const { r, selecionar } = useResultado();
   return (
-    <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
-        <p className="text-micro font-medium tracking-[0.12em] text-texto-3 uppercase">Iris · Investigação prospectiva</p>
-        <h1 className="max-w-[30ch] font-editorial text-[calc(1.75rem*var(--escala-titulo))] leading-[1.18] font-medium tracking-[-0.015em] text-balance text-texto sm:text-[calc(2.125rem*var(--escala-titulo))]">
+    <header className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <Link to={ROTAS.investigacoes} className="inline-flex min-h-11 w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto print:hidden">
+          <ArrowLeft size={14} aria-hidden="true" />
+          Investigações
+        </Link>
+        <div className="flex flex-wrap items-center gap-2 print:hidden">
+          {PREVIA && <span className="rounded-fino bg-grafite px-2 py-1 text-micro text-texto-2">Dados de exemplo</span>}
+          <button type="button" onClick={() => selecionar({ tipo: "metodo", id: "metodo" })} className="inline-flex min-h-11 items-center rounded-fino px-1 text-legenda text-ciano-texto underline-offset-4 hover:underline">
+            Como esta análise foi feita
+          </button>
+          <button type="button" onClick={() => window.print()} className="botao botao-secundario botao-pequeno">
+            <Printer size={15} aria-hidden="true" />
+            Imprimir ou salvar PDF
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <h1 className="m-0 max-w-[40ch] font-editorial text-[calc(1.5rem*var(--escala-titulo))] leading-[1.2] font-normal text-balance text-texto sm:text-titulo">
           {r.pergunta}
         </h1>
-      </div>
-      <div className="flex shrink-0 flex-wrap gap-2 print:hidden">
-        <button type="button" onClick={() => selecionar({ tipo: "metodo", id: "metodo" })} className="botao botao-secundario botao-pequeno">
-          <BookOpen size={15} aria-hidden="true" />
-          Como esta análise foi feita
-        </button>
-        <button type="button" onClick={() => window.print()} className="botao botao-fantasma botao-pequeno">
-          <Printer size={15} aria-hidden="true" />
-          Imprimir ou salvar PDF
-        </button>
+        <p className="m-0 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-micro text-texto-3">
+          <Versao numero={versaoAtual(r)} />
+          <span className="numeros font-dados">revisada em {dataDoDia(r.atualizadoEm)}</span>
+          {r.proximaRevisao && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="numeros font-dados">próxima revisão {dataDoDia(r.proximaRevisao)}</span>
+            </>
+          )}
+        </p>
       </div>
     </header>
   );

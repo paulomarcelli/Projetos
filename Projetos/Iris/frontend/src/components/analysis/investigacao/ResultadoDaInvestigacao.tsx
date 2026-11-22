@@ -3,9 +3,6 @@
  * estado compartilhado (ProvedorDoResultado), com o painel contextual ao lado. Quem carrega a investigação é a página
  * (pages/Analysis/PaginaAnalise).
  */
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router";
-import { ROTAS } from "../../../config/rotas";
 import type { ResultadoDeInvestigacao } from "../../../types/investigacao";
 import { AreaDeAnalise } from "../AreaDeAnalise";
 import { type Aba, ProvedorDoResultado, useResultado } from "./contexto";
@@ -19,11 +16,6 @@ function Conteudo() {
     // A página fica na largura de leitura (coluna editorial). O painel lateral (400 px) abre espaço à direita no
     // desktop para não cobrir o conteúdo; no celular é uma folha inferior.
     <article className={`flex flex-col gap-8 transition-[margin] duration-300 ${selecao ? "lg:mr-[400px] print:mr-0" : ""}`}>
-      <Link to={ROTAS.investigacoes} className="inline-flex w-fit items-center gap-1.5 text-legenda text-texto-2 hover:text-texto print:hidden">
-        <ArrowLeft size={14} aria-hidden="true" />
-        Investigações
-      </Link>
-
       <CabecalhoDaInvestigacao />
       <IndiceDaInvestigacao />
       <AreaDeAnalise />

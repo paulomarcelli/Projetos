@@ -10,6 +10,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, MemoryRouter } from "react-router";
 import { PREVIA } from "../config/env";
 import { App } from "./App";
+import { entradaDaPrevia } from "./entradaDaPrevia";
 import { ProvedorDeNotificacoes } from "./provedores/ProvedorDeNotificacoes";
 import { prepararImpressao } from "../utils/impressao";
 import { iniciarPreferencias } from "../store/preferencias";
@@ -18,17 +19,6 @@ import { iniciarPreferencias } from "../store/preferencias";
 // acompanhado (troca do tema do sistema) e reaplicado (prévia e testes).
 iniciarPreferencias();
 prepararImpressao();
-
-/** Na prévia (um arquivo só, sem servidor), o hash escolhe a tela de abertura. `#cenario-a` abre a análise do cenário A. */
-function entradaDaPrevia(hash: string) {
-  const exemplo = "/app/investigacoes/exemplo-flavio-2026";
-  const cenario = /^#cenario-([abc])$/i.exec(hash);
-  if (cenario) return `${exemplo}/cenarios/${cenario[1].toUpperCase()}`;
-  if (hash === "#investigacao") return exemplo;
-  if (hash === "#relacoes") return "/app/relacoes";
-  if (hash === "#app") return "/app";
-  return "/";
-}
 
 const raiz = document.getElementById("raiz");
 if (!raiz) throw new Error("Elemento #raiz não encontrado.");

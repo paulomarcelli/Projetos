@@ -53,7 +53,7 @@ export function Diagnostico() {
 function Linha({ rotulo, children }: { rotulo: string; children: ReactNode }) {
   return (
     <>
-      <dt className="text-micro font-medium text-texto-3 uppercase sm:pt-1">{rotulo}</dt>
+      <dt className="text-micro font-medium text-texto-3 sm:pt-1">{rotulo}</dt>
       <dd className="m-0 flex flex-col gap-2 text-corpo leading-[1.65] text-texto-2">{children}</dd>
     </>
   );

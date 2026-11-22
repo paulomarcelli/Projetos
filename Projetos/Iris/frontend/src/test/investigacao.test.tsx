@@ -7,6 +7,7 @@ import { abaDoEndereco, ProvedorDoResultado, relacaoNaVista } from "../component
 import { PainelContextual } from "../components/analysis/investigacao/PainelContextual";
 import { SecaoComparacao } from "../components/analysis/secoes/SecaoComparacao";
 import { SecaoMonitoramento } from "../components/analysis/secoes/SecaoMonitoramento";
+import { SecaoCenarios } from "../components/analysis/secoes/SecaoCenarios";
 import { SECOES } from "../components/analysis/investigacao/secoes";
 import { matrizAplicavel } from "../components/analysis/prospectiva/ComparacaoDeCenarios";
 import { MONITORAMENTO_DEMONSTRACAO } from "../previa/monitoramento-demonstracao";
@@ -123,10 +124,13 @@ describe("resultado de investigação", () => {
     expect(topo).not.toHaveAttribute("data-visivel"); // só aparece depois de rolar
   });
 
-  it("cabeçalho: só o rótulo e a pergunta (e as ações de método e impressão)", () => {
+  it("cabeçalho: a pergunta, a versão em vigor com a próxima revisão e as ações de método e impressão", () => {
     montar();
-    expect(screen.getByText("Iris · Investigação prospectiva")).toBeInTheDocument();
+    expect(screen.queryByText("Iris · Investigação prospectiva")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: r.pergunta })).toBeInTheDocument();
+    const cab = screen.getByRole("heading", { level: 1 }).closest("header")!;
+    expect(within(cab).getByText(`v${r.versao} · em vigor`)).toBeInTheDocument();
+    expect(cab).toHaveTextContent("próxima revisão 27/01/2027");
     expect(screen.getByRole("button", { name: "Como esta análise foi feita" })).toBeInTheDocument();
     expect(screen.queryByRole("list", { name: "A investigação em números" })).not.toBeInTheDocument();
   });
@@ -157,14 +161,28 @@ describe("resultado de investigação", () => {
     expect(within(sec).queryByText("Núcleo prospectivo")).not.toBeInTheDocument();
     expect(sec).toHaveTextContent("Duas escolhas separam os futuros");
     for (const i of r.incertezas) expect(sec.textContent?.toLowerCase()).toContain(i.nome.toLowerCase());
-    expect(within(sec).getByRole("heading", { level: 2, name: `Três trajetórias até ${r.horizonte.fim}` })).toBeInTheDocument();
+    expect(within(sec).getByRole("heading", { level: 2, name: `Três futuros até ${r.horizonte.fim}` })).toBeInTheDocument();
     for (const c of r.cenarios) {
       const cartao = within(sec).getByRole("link", { name: new RegExp(`^Cenário ${c.id}: ${c.nome}. Abrir a análise aprofundada`) });
       expect(cartao).toHaveAttribute("href", `/app/investigacoes/${r.id}/cenarios/${c.id}`);
       expect(within(sec).getByText(c.ideia)).toBeInTheDocument();
+      expect(cartao).toHaveTextContent(`v${r.versao} · em vigor`);
     }
+    // sem histórico de monitoramento, nada de faixa "Desde a vN" nem de ponto de sinal novo
+    expect(within(sec).queryByText(/^Desde a v/)).not.toBeInTheDocument();
     // sem probabilidade nem etiqueta de chance
     expect(sec.textContent).not.toMatch(/%|provável|possível\b/i);
+  });
+
+  it("02 com histórico: versão de cada cenário, faixa \"Desde a vN\" e o caminho para o monitoramento", () => {
+    montarEmPausa(<SecaoCenarios />, { ...r, monitoramento: MONITORAMENTO_DEMONSTRACAO });
+    const sec = screen.getByRole("region", { name: "Futuros possíveis" });
+    // o cenário B foi reescrito na v3; os outros ficam na versão do resultado
+    expect(within(sec).getByRole("link", { name: /^Cenário B:/ })).toHaveTextContent("v3 · em vigor");
+    expect(within(sec).getByRole("link", { name: /^Cenário A:/ })).toHaveTextContent(`v${r.versao} · em vigor`);
+    expect(within(sec).getByText(/^Desde a v2/)).toBeInTheDocument();
+    expect(sec).toHaveTextContent("1 cenário reescrito");
+    expect(within(sec).getByRole("button", { name: "Ver o monitoramento" })).toBeInTheDocument();
   });
 
   it("o cartão abre a análise do cenário numa página própria, ligada à investigação", async () => {

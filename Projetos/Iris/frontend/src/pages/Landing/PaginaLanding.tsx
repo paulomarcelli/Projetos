@@ -1,214 +1,234 @@
 /**
- * Landing pública da Iris (versão 5, out/2026): uma IA de relações internacionais, apresentada como as landings de
- * IA (ChatGPT, Gemini, Manus) — título curto, o campo de pergunta no centro, a interface encenada e o que ela entrega
- * — na paleta da diplomacia: azul-noite com ouro.
- *
- * Sequência: herói (globo de rotas diplomáticas + campo de pergunta) → temas → a Iris investigando (encenação) →
- * recursos → método → estado do projeto → chamada final. Movimento: Motion para entradas e encenação, CSS para os
- * laços curtos, canvas para o globo; tudo para fora da tela e respeita "reduzir movimento".
+ * Landing (revisão de design de 22/11/2026, docs/design-system.md, tela "Landing"): cinco blocos, na mesma linguagem
+ * da plataforma (tokens do sistema, sem paleta própria).
+ *   1. Herói: "Cenários que dizem de onde vieram.", o campo de pergunta e o leque (o componente real, com um exemplo).
+ *   2. Método em cinco etapas.
+ *   3. Observatório: entregas da turma com a versão do cenário usada.
+ *   4. IA declarada: o registro de uso de IA.
+ *   5. Fechamento com o nome.
+ * Sem selo em pílula, sem brilho, sem cartões com ícone. A separação entre blocos é um degrau de tom (abismo / mar),
+ * nunca uma linha. Tudo o que é exemplo diz que é exemplo. A menção ao lab é só texto: sem logo nem marca de ninguém.
  */
-import { ArrowRight } from "lucide-react";
-import { m, useReducedMotion, type Variants } from "motion/react";
-import { useEffect, useRef, type ReactNode } from "react";
+import { ArrowUp } from "lucide-react";
+import { useId, useState, type ReactNode } from "react";
 import { Link } from "react-router";
+import { LequeDosFuturos } from "../../components/analysis/prospectiva/LequeDosFuturos";
+import { LinhaDeEntrega } from "../../components/common/LinhaDeEntrega";
 import { Marca } from "../../components/common/Marca";
-import { Movimento } from "../../components/common/movimento";
+import { RegistroDeIA } from "../../components/common/RegistroDeIA";
 import { ROTAS } from "../../config/rotas";
-import { CampoDeConvite } from "../../components/landing/CampoDeConvite";
-import { Demonstracao } from "../../components/landing/Demonstracao";
-import { Camadas, EstadoDoProjeto } from "../../components/landing/Metodo";
-import { Navegacao } from "../../components/landing/Navegacao";
-import { Recursos } from "../../components/landing/Recursos";
-import { TEMAS } from "../../components/landing/conteudo";
-import { Globo } from "../../components/landing/globo/Globo";
-import "../../components/landing/landing.css";
+import { WORDMARK } from "../../config/marca-geometria";
+import { CENARIOS_EXEMPLO, CICLO_EXEMPLO, INCERTEZAS_EXEMPLO, REGISTROS_EXEMPLO } from "../../previa/observatorio-exemplo";
 
-const ANO = new Date().getFullYear();
-const SAIDA = [0.23, 1, 0.32, 1] as const;
+const LINKS = [
+  { href: "#metodo", rotulo: "Método" },
+  { href: "#observatorio", rotulo: "Observatório" },
+  { href: "#exemplo", rotulo: "Exemplo" },
+];
 
-const ENTRADA: Variants = {
-  oculto: {},
-  visivel: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-};
-const ITEM: Variants = {
-  oculto: { opacity: 0, y: 18 },
-  visivel: { opacity: 1, y: 0, transition: { duration: 0.8, ease: SAIDA } },
-};
+const ETAPAS = [
+  { nome: "Pergunta e horizonte", texto: "O que se quer saber, até quando e em que escopo." },
+  { nome: "Diagnóstico com fonte", texto: "Fatos, evidências e inferências, cada um com a sua marca." },
+  { nome: "Incertezas críticas", texto: "As duas ou três escolhas que separam os futuros." },
+  { nome: "Ramos e indicadores", texto: "Cada cenário com premissas e sinais para observar." },
+  { nome: "Revisão com data", texto: "Toda revisão vira uma versão nova, com o que mudou." },
+];
 
-/** Cabeçalho de seção que entra ao chegar na tela. */
-function Secao({ id, rotulo, titulo, texto, children }: { id: string; rotulo: string; titulo: ReactNode; texto?: string; children: ReactNode }) {
-  // Com "reduzir movimento" o cabeçalho já nasce no estado final (initial={false}), sem esperar a rolagem.
-  const reduzir = useReducedMotion();
+const Exemplo = () => <span className="rounded-fino bg-grafite px-2 py-1 text-micro text-texto-2">Dados de exemplo</span>;
+
+function Bloco({ id, tom, children }: { id?: string; tom: "abismo" | "mar"; children: ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`t-${id}`} data-animada className="mx-auto w-full max-w-6xl scroll-mt-20 px-5 py-24 sm:py-32">
-      <m.header initial={reduzir ? false : "oculto"} whileInView="visivel" viewport={{ once: true, margin: "-15% 0px" }} variants={ENTRADA} className="mx-auto mb-12 flex max-w-2xl flex-col items-center gap-4 text-center sm:mb-16">
-        <m.p variants={ITEM} className="lp-chip">
-          {rotulo}
-        </m.p>
-        <m.h2 id={`t-${id}`} variants={ITEM} className="lp-titulo lp-titulo-gradiente text-[clamp(2rem,4.4vw,3.25rem)]">
-          {titulo}
-        </m.h2>
-        {texto && (
-          <m.p variants={ITEM} className="text-[1.0625rem] leading-relaxed text-[color:var(--lp-texto-2)]">
-            {texto}
-          </m.p>
-        )}
-      </m.header>
-      {children}
+    <section id={id} aria-labelledby={id ? `t-${id}` : undefined} className={`scroll-mt-16 ${tom === "mar" ? "bg-mar" : "bg-abismo"}`}>
+      <div className="mx-auto w-full max-w-[67.5rem] px-4 py-16 sm:px-6 sm:py-24">{children}</div>
     </section>
   );
 }
 
-/** Pausa as animações em CSS das seções que saíram da tela (as que repintam custam mesmo invisíveis). */
-function usePausarForaDaTela(raiz: React.RefObject<HTMLElement | null>) {
-  useEffect(() => {
-    const el = raiz.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver((es) => es.forEach((e) => e.target.toggleAttribute("data-fora-da-tela", !e.isIntersecting)));
-    el.querySelectorAll("[data-animada]").forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, [raiz]);
+/** Campo de pergunta (componente Campo de pergunta): o botão de enviar fica dentro, à direita, e leva à plataforma. */
+function CampoDePergunta() {
+  const id = useId();
+  const [pergunta, setPergunta] = useState("");
+  const destino = pergunta.trim() ? `${ROTAS.inicio}?pergunta=${encodeURIComponent(pergunta.trim())}` : ROTAS.inicio;
+  return (
+    <div className="flex min-h-14 w-full max-w-[37rem] items-center gap-3 rounded-painel border border-linha-forte bg-institucional py-2 pr-2 pl-4 focus-within:border-ciano focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ciano">
+      <label htmlFor={id} className="sr-only">
+        Escreva uma pergunta sobre Relações Internacionais
+      </label>
+      <input
+        id={id}
+        value={pergunta}
+        onChange={(e) => setPergunta(e.target.value)}
+        placeholder="Como a eleição de 2026 pode mudar a política externa brasileira até 2030?"
+        className="min-w-0 flex-1 bg-transparent text-corpo text-texto outline-none placeholder:text-texto-3"
+      />
+      <Link
+        to={destino}
+        aria-label="Investigar esta pergunta na Iris"
+        className="grid size-10 shrink-0 place-items-center rounded-full bg-ciano text-abismo focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ciano"
+      >
+        <ArrowUp size={18} aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+
+/** O nome, grande, no fechamento: só o wordmark (sem o símbolo), em curvas, como na marca. */
+function NomeGrande() {
+  return (
+    <svg viewBox="41.6 10.2 48.6 13.9" role="img" aria-label="Iris" className="block h-auto w-full max-w-[22rem] fill-texto">
+      <path d={WORDMARK.d} transform={WORDMARK.transform} />
+    </svg>
+  );
 }
 
 export function PaginaLanding() {
-  const raiz = useRef<HTMLDivElement>(null);
-  const reduzir = useReducedMotion();
-  usePausarForaDaTela(raiz);
-
   return (
-    <Movimento>
-      <div ref={raiz} className="lp">
-        <a href="#conteudo" className="sr-only z-[60] rounded-full bg-[color:var(--lp-ouro)] px-4 py-2 text-[#0a1226] focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
-          Pular para o conteúdo
-        </a>
-        <Navegacao />
+    <div className="min-h-dvh bg-abismo text-texto">
+      <a href="#conteudo" className="sr-only z-[60] rounded-padrao bg-ciano px-4 py-2 text-abismo focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+        Pular para o conteúdo
+      </a>
+      <header className="bg-abismo">
+        <nav aria-label="Principal" className="mx-auto flex h-16 w-full max-w-[67.5rem] items-center gap-6 px-4 sm:px-6">
+          <Link to={ROTAS.landing} aria-label="Iris, início" className="shrink-0 rounded-fino">
+            <Marca altura={26} />
+          </Link>
+          <ul className="m-0 hidden list-none gap-6 p-0 md:flex">
+            {LINKS.map((l) => (
+              <li key={l.href}>
+                <a href={l.href} className="text-legenda text-texto-2 hover:text-texto">
+                  {l.rotulo}
+                </a>
+              </li>
+            ))}
+            <li>
+              <Link to={ROTAS.ajuda} className="text-legenda text-texto-2 hover:text-texto">
+                Ajuda
+              </Link>
+            </li>
+          </ul>
+          <div className="ml-auto flex items-center gap-2">
+            <Link to={ROTAS.entrar} className="inline-flex min-h-11 items-center rounded-padrao px-3 text-legenda text-ciano-texto hover:underline">
+              Entrar
+            </Link>
+            <Link to={ROTAS.inicio} className="botao botao-primario botao-pequeno">
+              Começar
+            </Link>
+          </div>
+        </nav>
+      </header>
 
-        <main id="conteudo">
-          {/* HERÓI */}
-          <section aria-labelledby="t-heroi" className="relative isolate overflow-hidden pt-14 pb-10 sm:pt-20">
-            <div aria-hidden="true" className="lp-ceu absolute inset-0 -z-10" />
-            <div aria-hidden="true" className="lp-grade absolute inset-0 -z-10" />
+      <main id="conteudo">
+        {/* 1. Herói */}
+        <section aria-labelledby="t-heroi" className="bg-abismo">
+          <div className="mx-auto flex w-full max-w-[67.5rem] flex-col gap-6 px-4 pt-12 pb-16 sm:px-6 sm:pt-16">
+            <h1 id="t-heroi" className="m-0 max-w-[17ch] text-[2.5rem] leading-[1.04] font-normal tracking-[-0.025em] text-texto sm:text-[4rem]">
+              Cenários que dizem de onde vieram.
+            </h1>
+            <p className="m-0 max-w-[37rem] text-corpo text-texto-2">
+              A Iris monta futuros possíveis para questões de Relações Internacionais, com a fonte de cada afirmação, a data de cada revisão e o
+              registro do que a IA fez.
+            </p>
+            <CampoDePergunta />
+            <p className="m-0 text-micro text-texto-3">
+              Pensado para laboratórios de prospectiva como o FutuRI Lab: ciclos, turmas e entregas com fonte rastreada.
+            </p>
+            <figure id="exemplo" aria-label="Exemplo de leque dos futuros" className="painel-leque m-0 mt-6 flex scroll-mt-16 flex-col gap-4 p-4 sm:p-6">
+              <div className="hidden md:block">
+                <LequeDosFuturos cenarios={CENARIOS_EXEMPLO} incertezas={INCERTEZAS_EXEMPLO} realce="B" rotuloDoFim="2030" sinaisNovos={["B"]} />
+              </div>
+              <div className="mx-auto w-full max-w-[22rem] md:hidden">
+                <LequeDosFuturos cenarios={CENARIOS_EXEMPLO} incertezas={INCERTEZAS_EXEMPLO} realce="B" rotuloDoFim="2030" sinaisNovos={["B"]} vertical />
+              </div>
+              <figcaption className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-micro text-texto-2">
+                <span>Exemplo ilustrativo: a disputa EUA–China e o comércio do Brasil até 2030.</span>
+                <span className="text-texto-3 md:ml-auto">Nenhum ramo tem peso ou chance.</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
 
-            <m.div initial="oculto" animate="visivel" variants={ENTRADA} className="mx-auto flex max-w-5xl flex-col items-center gap-7 px-5 text-center">
-              <m.p variants={ITEM}>
-                <Link to={ROTAS.inicio} className="lp-chip group transition-colors duration-150 hover:text-[color:var(--lp-texto)]">
-                  <span className="lp-pulso size-1.5 rounded-full bg-[color:var(--lp-ouro)]" />
-                  <span className="sm:hidden">IA para Relações Internacionais</span>
-                  <span className="hidden sm:inline">Inteligência artificial para Relações Internacionais</span>
-                  <ArrowRight size={13} aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5" />
-                </Link>
-              </m.p>
-              <m.h1 id="t-heroi" variants={ITEM} className="lp-titulo text-[clamp(2.6rem,7vw,5.25rem)]">
-                <span className="lp-titulo-gradiente block">Entenda o presente.</span>{" "}
-                <span className="block">
-                  <span className="lp-titulo-gradiente">Explore os</span>{" "}
-                  <span className="lp-ouro-texto">futuros.</span>
-                </span>
-              </m.h1>
-              <m.p variants={ITEM} className="max-w-2xl text-[1.125rem] leading-relaxed text-[color:var(--lp-texto-2)]">
-                Pergunte sobre uma questão internacional. A Iris explica o que está acontecendo, quem está envolvido e quais trajetórias são possíveis, com
-                a fonte de cada afirmação.
-              </m.p>
-              <m.div variants={ITEM} className="w-full max-w-2xl">
-                <CampoDeConvite />
-              </m.div>
-              <m.p variants={ITEM} className="text-[0.8125rem] text-[color:var(--lp-texto-3)]">
-                Projeto em desenvolvimento: a interface está pronta; o motor de investigação é a próxima fase.
-              </m.p>
-            </m.div>
+        {/* 2. Método */}
+        <Bloco id="metodo" tom="mar">
+          <h2 id="t-metodo" className="m-0 text-[1.75rem] leading-[1.15] font-normal text-texto sm:text-manchete">
+            Como um cenário é construído
+          </h2>
+          <p className="mt-3 mb-0 max-w-[37rem] text-corpo text-texto-2">
+            O método fica à vista em toda investigação. Nada de probabilidade sem método, nada de afirmação sem fonte.
+          </p>
+          <ol className="m-0 mt-10 grid list-none gap-0 p-0 sm:grid-cols-2 lg:grid-cols-5">
+            {ETAPAS.map((e, i) => (
+              <li key={e.nome} className={`flex flex-col gap-2 border-t pt-5 pr-6 pb-6 ${i === ETAPAS.length - 1 ? "border-ouro" : "border-linha-forte"}`}>
+                <h3 className="m-0 text-secao font-normal text-texto">{e.nome}</h3>
+                <p className="m-0 text-legenda text-texto-2">{e.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </Bloco>
 
-            {/* o planeta nascendo no horizonte, com as rotas diplomáticas acendendo */}
-            <m.div
-              aria-hidden="true"
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.6, delay: 0.5, ease: SAIDA }}
-              className="lp-horizonte relative -mt-4 h-[clamp(300px,46vw,600px)] w-[min(1240px,190vw)]"
-              style={{ marginLeft: "50%", translate: "-50% 0" }}
-            >
-              <Globo enquadramento="horizonte" />
-            </m.div>
-
-            {/* faixa de temas */}
-            <div data-animada className="lp-faixa -mt-10 overflow-hidden" aria-label="Temas que a Iris investiga">
-              <ul className="lp-faixa-trilho m-0 flex w-max list-none gap-3 p-0">
-                {[...TEMAS, ...TEMAS].map((t, i) => (
-                  <li key={i} aria-hidden={i >= TEMAS.length || undefined} className="lp-chip whitespace-nowrap !bg-transparent !px-4 !py-1.5 !text-[0.875rem]">
-                    {t}
-                  </li>
-                ))}
+        {/* 3. Observatório */}
+        <Bloco id="observatorio" tom="abismo">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-center">
+            <div className="flex flex-col gap-4">
+              <h2 id="t-observatorio" className="m-0 text-[1.75rem] leading-[1.15] font-normal text-texto sm:text-manchete">
+                Um observatório por turma
+              </h2>
+              <p className="m-0 text-corpo text-texto-2">
+                O ciclo do semestre, as equipes e as entregas num lugar só. Policy brief, dossiê e boletim partem da mesma investigação e citam a
+                versão do cenário que usaram.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-end">
+                <Exemplo />
+              </div>
+              <ul className="m-0 list-none rounded-painel border border-linha bg-institucional p-0">
+                {CICLO_EXEMPLO.entregas
+                  .filter((e) => e.id !== "e2")
+                  .map((e) => (
+                    <LinhaDeEntrega key={e.id} e={e} />
+                  ))}
               </ul>
             </div>
-          </section>
-
-          <Secao
-            id="demonstracao"
-            rotulo="Como funciona"
-            titulo="Uma pergunta. Uma investigação inteira."
-            texto="A Iris lê a pergunta, reúne evidências, mapeia os atores e desenha os futuros possíveis, tudo na mesma conversa."
-          >
-            <m.div initial={reduzir ? false : { opacity: 0, y: 40, scale: 0.98 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-10% 0px" }} transition={{ duration: 0.9, ease: SAIDA }}>
-              <Demonstracao />
-            </m.div>
-          </Secao>
-
-          <Secao id="recursos" rotulo="Recursos" titulo="Análise e prospectiva na mesma resposta." texto="Logo abaixo de cada análise, os cenários; depois, o mapa, a linha do tempo e as fontes para aprofundar.">
-            <Recursos />
-          </Secao>
-
-          <Secao id="metodo" rotulo="Método" titulo="Cada afirmação sabe o que é." texto="A Iris separa o que as fontes registram, o que se deduz delas e o que pode acontecer.">
-            <Camadas />
-          </Secao>
-
-          <Secao id="projeto" rotulo="Estado do projeto" titulo="O que já existe e o que vem a seguir." texto="Sem promessas: cada parte da investigação com o seu estado real.">
-            <EstadoDoProjeto />
-          </Secao>
-
-          {/* CHAMADA FINAL */}
-          <section aria-labelledby="t-chamada" className="relative isolate overflow-hidden px-5 py-28 sm:py-36">
-            <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_50%_100%,rgba(245,196,81,0.12),transparent_70%),radial-gradient(60%_60%_at_50%_0%,rgba(79,125,255,0.14),transparent_70%)]" />
-            <m.div initial={reduzir ? false : "oculto"} whileInView="visivel" viewport={{ once: true, margin: "-15% 0px" }} variants={ENTRADA} className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
-              <m.h2 id="t-chamada" variants={ITEM} className="lp-titulo lp-titulo-gradiente text-[clamp(2.2rem,5vw,3.75rem)]">
-                Faça a primeira pergunta.
-              </m.h2>
-              <m.div variants={ITEM} className="w-full">
-                <CampoDeConvite grande />
-              </m.div>
-              <m.p variants={ITEM} className="flex flex-wrap items-center justify-center gap-3">
-                <Link to={ROTAS.inicio} className="lp-botao lp-botao-ouro">
-                  Começar uma investigação
-                  <ArrowRight size={16} aria-hidden="true" />
-                </Link>
-                <Link to={ROTAS.entrar} className="lp-botao lp-botao-linha">
-                  Entrar
-                </Link>
-              </m.p>
-            </m.div>
-          </section>
-        </main>
-
-        <footer className="border-t border-[color:var(--lp-linha)]">
-          <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-2">
-              <Marca altura={22} />
-              <p className="text-[0.8125rem] text-[color:var(--lp-texto-3)]">Inteligência estratégica e prospectiva em Relações Internacionais. Projeto em desenvolvimento.</p>
-            </div>
-            <nav aria-label="Rodapé" className="flex flex-wrap gap-5 text-[0.875rem] text-[color:var(--lp-texto-2)]">
-              <Link to={ROTAS.inicio} className="hover:text-[color:var(--lp-texto)]">
-                Começar
-              </Link>
-              <Link to={ROTAS.entrar} className="hover:text-[color:var(--lp-texto)]">
-                Entrar
-              </Link>
-              <Link to={ROTAS.criarConta} className="hover:text-[color:var(--lp-texto)]">
-                Criar conta
-              </Link>
-            </nav>
-            <p className="text-[0.75rem] text-[color:var(--lp-texto-3)]">© {ANO} Iris</p>
           </div>
-        </footer>
-      </div>
-    </Movimento>
+        </Bloco>
+
+        {/* 4. IA declarada */}
+        <Bloco id="ia" tom="mar">
+          <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+            <div className="order-2 flex flex-col gap-3 lg:order-1">
+              <div className="flex justify-end">
+                <Exemplo />
+              </div>
+              {[...REGISTROS_EXEMPLO].reverse().map((r) => (
+                <RegistroDeIA key={r.id} r={r} />
+              ))}
+            </div>
+            <div className="order-1 flex flex-col gap-4 lg:order-2">
+              <h2 id="t-ia" className="m-0 text-[1.75rem] leading-[1.15] font-normal text-texto sm:text-manchete">
+                IA declarada, não escondida
+              </h2>
+              <p className="m-0 text-corpo text-texto-2">
+                A Iris ajuda a escrever o policy brief e o boletim. Tudo o que ela sugere fica marcado até alguém revisar, e o registro de uso de IA e
+                de fontes sai junto com o PDF, pronto para anexar.
+              </p>
+            </div>
+          </div>
+        </Bloco>
+
+        {/* 5. Fechamento */}
+        <section aria-label="Começar" className="bg-abismo">
+          <div className="mx-auto flex w-full max-w-[67.5rem] flex-col gap-8 px-4 py-16 sm:flex-row sm:items-end sm:justify-between sm:px-6 sm:py-24">
+            <NomeGrande />
+            <div className="flex flex-col items-start gap-3 sm:items-end">
+              <Link to={ROTAS.inicio} className="botao botao-primario">
+                Começar uma investigação
+              </Link>
+              <p className="m-0 text-micro text-texto-3">Projeto em desenvolvimento · ferramenta independente, sem vínculo institucional</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
 

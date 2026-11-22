@@ -5,7 +5,7 @@
  */
 export function RotuloDeSecao({ numero, nome, nucleo = false }: { numero: string; nome: string; nucleo?: boolean }) {
   return (
-    <p className="flex items-center gap-2 text-micro font-medium tracking-[0.12em] text-texto-3 uppercase">
+    <p className="flex items-center gap-2 text-micro font-medium text-texto-3">
       <span className={`numeros font-dados ${nucleo ? "text-ouro" : ""}`}>{numero}</span>
       <span aria-hidden="true">·</span>
       <span>{nome}</span>

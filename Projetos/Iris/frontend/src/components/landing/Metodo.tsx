@@ -36,7 +36,7 @@ export function Camadas() {
             <span className="grid size-11 place-items-center rounded-full border bg-[color:var(--lp-noite)] font-mono text-[0.875rem]" style={{ color: COR[c.rotulo as keyof typeof COR], borderColor: `${COR[c.rotulo as keyof typeof COR]}66` }}>
               {i + 1}
             </span>
-            <p className="text-[0.75rem] tracking-[0.08em] uppercase" style={{ color: COR[c.rotulo as keyof typeof COR] }}>
+            <p className="text-[0.75rem]" style={{ color: COR[c.rotulo as keyof typeof COR] }}>
               {c.rotulo}
             </p>
             <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[color:var(--lp-texto)]">{c.titulo}</h3>

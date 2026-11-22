@@ -47,6 +47,12 @@
   --color-ambar-suave: rgb(233 180 91 / 0.12);
   /* Acento de detalhe (o ouro da landing): traços e marcadores, sem significado próprio. */
   --color-ouro: #f2c45a;
+  /* Revisão de 22/11/2026 (docs/design-system.md): o ouro é o cenário como objeto, sempre cheio (selo, versão em
+     vigor, filete do núcleo); o âmbar é hipótese, sempre traço. Ouro-suave fica de reserva para a faixa de cenários. */
+  --color-ouro-suave: rgb(242 196 90 / 0.1);
+  /* Folha do documento: sempre clara, sobre a mesa escura (modo Claro aplicado só nela). */
+  --color-folha: #f3f4f1;
+  --color-folha-tinta: #15181d;
   /* Cartografia da seção Relações */
   --color-terra: #121c29;
   --color-terra-envolvida: #1e2e41;
@@ -102,6 +108,18 @@
   --radius-fino: 3px;
   --radius-padrao: 6px;
   --radius-painel: 10px;
+
+  /* Espaçamento (coleção Medida do Figma): 4, 8, 12, 16, 24, 32, 48, 64, 96, 128. */
+  --espaco-1: 0.25rem;
+  --espaco-2: 0.5rem;
+  --espaco-3: 0.75rem;
+  --espaco-4: 1rem;
+  --espaco-5: 1.5rem;
+  --espaco-6: 2rem;
+  --espaco-7: 3rem;
+  --espaco-8: 4rem;
+  --espaco-9: 6rem;
+  --espaco-10: 8rem;
 
   /* Movimento (rápido e preciso; nada de entretenimento) */
   --ease-saida: cubic-bezier(0.23, 1, 0.32, 1);

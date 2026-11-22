@@ -19,6 +19,8 @@ import { PaginaAjuda, PaginaMonitoramento, PaginaNoticias } from "../pages/Modul
 
 const PaginaAnalise = lazy(() => import("../pages/Analysis/PaginaAnalise"));
 const PaginaCenario = lazy(() => import("../pages/Analysis/PaginaCenario"));
+const PaginaObservatorio = lazy(() => import("../pages/Observatorio/PaginaObservatorio"));
+const PaginaDocumentos = lazy(() => import("../pages/Documentos/PaginaDocumentos"));
 const PaginaRelacoes = lazy(() => import("../pages/Relations/PaginaRelacoes"));
 
 // Landing e telas de conta usam a biblioteca Motion: carregadas sob demanda, para que ela não
@@ -94,6 +96,22 @@ function Plataforma() {
         <Route path="cenarios" element={<Navigate to={ROTAS.investigacoes} replace />} />
         <Route path="sinais" element={<Navigate to={ROTAS.investigacoes} replace />} />
         <Route path="monitoramento" element={<PaginaMonitoramento />} />
+        <Route
+          path="observatorio"
+          element={
+            <Suspense fallback={<LinhasEsqueleto linhas={6} />}>
+              <PaginaObservatorio />
+            </Suspense>
+          }
+        />
+        <Route
+          path="documentos/:id?"
+          element={
+            <Suspense fallback={<LinhasEsqueleto linhas={6} />}>
+              <PaginaDocumentos />
+            </Suspense>
+          }
+        />
         <Route path="noticias" element={<PaginaNoticias />} />
         <Route path="ajuda" element={<PaginaAjuda />} />
         <Route path="favoritos" element={<PaginaFavoritos />} />

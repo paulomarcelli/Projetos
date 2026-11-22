@@ -861,12 +861,10 @@ const DS_CSS = `
 .ds-group__heading {
   margin-bottom: 4px;
   padding: 0 10px;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--ds-muted) 50%, transparent);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ds-muted);
 }
 .ds-footer {
   display: flex;

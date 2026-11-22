@@ -16,7 +16,7 @@ export function PainelEvidencia({ id }: { id: string }) {
         {n}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-0.5">
-        <p className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">{titulo}</p>
+        <p className="text-micro font-medium text-texto-3">{titulo}</p>
         {conteudo}
       </div>
     </li>

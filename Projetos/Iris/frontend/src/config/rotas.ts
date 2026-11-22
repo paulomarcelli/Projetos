@@ -26,6 +26,11 @@ export const ROTAS = {
   cenarios: "/app/cenarios",
   sinais: "/app/sinais",
   monitoramento: "/app/monitoramento",
+  /** Ciclos, linha do semestre, entregas da turma e cenários acompanhados (revisão de design de 22/11/2026). */
+  observatorio: "/app/observatorio",
+  /** Documentos escritos a partir de uma investigação (policy brief, boletim, dossiê). */
+  documentos: "/app/documentos",
+  documento: (id: string) => `/app/documentos/${encodeURIComponent(id)}`,
   noticias: "/app/noticias",
   ajuda: "/app/ajuda",
   favoritos: "/app/favoritos",

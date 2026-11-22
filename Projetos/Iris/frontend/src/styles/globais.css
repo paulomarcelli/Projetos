@@ -731,6 +731,8 @@ body {
   --color-ambar: #8a5600;
   --color-ambar-suave: rgb(178 112 0 / 0.12);
   --color-ouro: #8a6a00;
+  --color-ouro-suave: rgb(138 106 0 / 0.1);
+  --color-folha: #ffffff;
   --color-positivo: #1b6f45;
   --color-positivo-suave: rgb(27 111 69 / 0.1);
   --color-negativo: #a8352a;
@@ -780,6 +782,8 @@ body {
   --color-ambar: #8a5600;
   --color-ambar-suave: rgb(178 112 0 / 0.12);
   --color-ouro: #8a6a00;
+  --color-ouro-suave: rgb(138 106 0 / 0.1);
+  --color-folha: #ffffff;
   --color-positivo: #1b6f45;
   --color-positivo-suave: rgb(27 111 69 / 0.1);
   --color-negativo: #a8352a;
@@ -957,5 +961,77 @@ body {
   }
   .indice-traco {
     transition: none;
+  }
+}
+
+/* ================================================================== leque (revisão de 22/11/2026)
+   O leque é a imagem principal da seção 02: um painel institucional com o filete de ouro do núcleo no topo. No
+   celular ele fica vertical e se revela de cima para baixo (o tempo desce). */
+@keyframes leque-revelar-vertical {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.leque-futuros[data-vertical]:not([data-compacto]) {
+  animation-name: leque-revelar-vertical;
+}
+/* "Reduzir movimento" por último: vence as duas revelações do leque, seja qual for a ordem acima. */
+@media (prefers-reduced-motion: reduce) {
+  .leque-futuros:not([data-compacto]),
+  .leque-futuros[data-vertical]:not([data-compacto]) {
+    animation: none;
+  }
+}
+.painel-leque {
+  border: 1px solid var(--color-linha);
+  border-top: 2px solid var(--color-ouro);
+  border-radius: var(--radius-painel);
+  background: var(--color-institucional);
+}
+.painel-leque .rotulo-sobre-fundo {
+  stroke: var(--color-institucional);
+}
+.painel-leque .leque-futuros rect.fill-abismo {
+  fill: var(--color-institucional);
+}
+
+/* ================================================================== folha do documento (revisão de 22/11/2026)
+   A folha é sempre clara (o que vai ser entregue), sobre a mesa escura: aplica o modo Claro só nela, redefinindo os
+   tokens. Os utilitários (text-texto, border-linha…) leem as variáveis e passam a valer o modo Claro aqui dentro. */
+.folha {
+  --color-abismo: #f1f3f6;
+  --color-institucional: #ffffff;
+  --color-grafite: #e5e9ef;
+  --color-grafite-alto: #d9dfe7;
+  --color-texto: #15181d;
+  --color-texto-2: #3a4759;
+  --color-texto-3: #556276;
+  --color-linha: rgb(11 18 32 / 0.12);
+  --color-linha-forte: rgb(11 18 32 / 0.22);
+  --color-ciano: #0a6f91;
+  --color-ciano-suave: rgb(10 111 145 / 0.1);
+  --color-ciano-texto: #075b78;
+  --color-ambar: #8a5600;
+  --color-ambar-suave: rgb(178 112 0 / 0.12);
+  --color-ouro: #8a6a00;
+  --color-positivo: #1b6f45;
+  background: var(--color-folha);
+  color: var(--color-texto);
+  color-scheme: light;
+}
+:root[data-tema="claro"] .folha {
+  --color-folha: #ffffff;
+}
+/* O texto sugerido pela IA: fundo âmbar-suave e filete âmbar até alguém aceitar, editar ou descartar. */
+.trecho-sugerido {
+  border-left: 2px solid var(--color-ambar);
+  background: var(--color-ambar-suave);
+}
+@media print {
+  .folha {
+    box-shadow: none !important;
   }
 }

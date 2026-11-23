@@ -13,23 +13,18 @@
  */
 import type { Cenario, CenarioId, IncertezaCritica } from "../../../types/cenario";
 
-/** O que o leque lê de um cenário (a landing desenha um leque ilustrativo só com isso). */
-export type CenarioDoLeque = Pick<Cenario, "id" | "nome" | "posicao">;
-/** O que o leque lê de uma incerteza. */
-export type IncertezaDoLeque = Pick<IncertezaCritica, "id" | "nome" | "polos">;
-
 type No =
-  | { tipo: "folha"; c: CenarioDoLeque }
-  | { tipo: "bifurcacao"; incerteza: IncertezaDoLeque | null; ramos: { polo: string | null; no: No }[] };
+  | { tipo: "folha"; c: Cenario }
+  | { tipo: "bifurcacao"; incerteza: IncertezaCritica | null; ramos: { polo: string | null; no: No }[] };
 
 /** A primeira parte do polo ("Limitado: comércio e inteligência" → "Limitado"). */
 const poloCurto = (p: string) => p.split(":")[0].trim();
 
-function montar(cenarios: CenarioDoLeque[], incertezas: IncertezaDoLeque[]): No {
+function montar(cenarios: Cenario[], incertezas: IncertezaCritica[]): No {
   if (cenarios.length === 1) return { tipo: "folha", c: cenarios[0] };
   const candidatas = incertezas
     .map((i) => {
-      const grupos = new Map<0 | 1 | null, CenarioDoLeque[]>();
+      const grupos = new Map<0 | 1 | null, Cenario[]>();
       for (const c of cenarios) {
         const v = c.posicao[i.id] ?? null;
         grupos.set(v, [...(grupos.get(v) ?? []), c]);
@@ -55,108 +50,83 @@ const profundidade = (n: No): number => (n.tipo === "folha" ? 0 : 1 + Math.max(.
 const folhas = (n: No): CenarioId[] => (n.tipo === "folha" ? [n.c.id] : n.ramos.flatMap((r) => folhas(r.no)));
 
 interface Traco {
-  /** Pontos de controle da curva no eixo (tempo, espalhamento), antes de virar x/y. */
-  p: [number, number][];
+  d: string;
   folhas: CenarioId[];
-  /** Ponto de chegada do ramo (para o rótulo do polo) e o cenário a que ele chega, se chega a um. */
-  chegada: [number, number];
-  folha: CenarioId | null;
-  polo: string | null;
+  /** Ponto do meio do traço (para o rótulo do polo). */
+  meio?: { x: number; y: number; texto: string };
 }
-
-/** Ponto da curva cúbica em `t` (0 a 1). */
-const naCurva = (p: [number, number][], t: number): [number, number] => {
-  const u = 1 - t;
-  const k = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
-  return [0, 1].map((e) => p.reduce((a, q, i) => a + k[i] * q[e], 0)) as [number, number];
-};
 
 /**
  * `realce`: cenário a acender (o resto apaga). `compacto`: versão do trilho lateral, só com as letras (sem nomes nem
- * polos), para caber em 240 px. `vertical`: a versão do celular (o tempo desce e os selos ficam embaixo).
- * `sinaisNovos`: cenários com sinal novo desde a última versão; ganham um ponto ciano no ramo.
+ * polos), para caber em 240 px.
  */
 export function LequeDosFuturos({
   cenarios,
   incertezas,
   realce = null,
   compacto = false,
-  vertical = false,
   rotuloDoFim,
-  sinaisNovos = [],
 }: {
-  cenarios: CenarioDoLeque[];
-  incertezas: IncertezaDoLeque[];
+  cenarios: Cenario[];
+  incertezas: IncertezaCritica[];
   realce?: CenarioId | null;
   compacto?: boolean;
-  vertical?: boolean;
   rotuloDoFim?: string;
-  sinaisNovos?: CenarioId[];
 }) {
   if (cenarios.length === 0) return null;
   const raiz = montar(cenarios, incertezas);
   const niveis = profundidade(raiz);
-  const completo = !compacto;
 
-  // Tudo é calculado em (tempo, espalhamento) e só no fim vira (x, y): na horizontal o tempo anda para a direita; na
-  // vertical, para baixo.
-  const W = compacto ? 240 : vertical ? 340 : 1040;
-  const n = cenarios.length;
-  const passo = compacto ? 34 : vertical ? (W - 16) / n : 94;
-  const topo = compacto ? 14 : vertical ? 8 : 64; // onde começa o espalhamento
-  const t0 = compacto ? 10 : vertical ? 40 : 24;
-  const tFim = compacto ? W - 28 : vertical ? t0 + (niveis + 1) * 130 : W - 270;
-  const H = compacto ? topo + n * passo : vertical ? tFim + 84 : topo + n * passo;
-  const dt = (tFim - t0) / (niveis + 1);
-  const P = (t: number, e: number): [number, number] => (vertical ? [e, t] : [t, e]);
+  const W = compacto ? 240 : 760;
+  const passo = compacto ? 34 : 62;
+  // no completo, o topo guarda o cabeçalho das colunas (hoje · escolha 1 · escolha 2 · fim do horizonte)
+  const topo = compacto ? 14 : 58;
+  const H = topo + cenarios.length * passo;
+  const x0 = compacto ? 10 : 24;
+  const xFim = compacto ? W - 28 : W - 250;
+  const dx = (xFim - x0) / (niveis + 1);
 
   const ordem = folhas(raiz);
-  const eDaFolha = (id: CenarioId) => topo + ordem.indexOf(id) * passo + passo / 2;
-  const eDe = (no: No): number => (no.tipo === "folha" ? eDaFolha(no.c.id) : no.ramos.map((r) => eDe(r.no)).reduce((a, b) => a + b, 0) / no.ramos.length);
+  const yDaFolha = (id: CenarioId) => topo + ordem.indexOf(id) * passo + passo / 2;
+  const yDe = (n: No): number => (n.tipo === "folha" ? yDaFolha(n.c.id) : n.ramos.map((r) => yDe(r.no)).reduce((a, b) => a + b, 0) / n.ramos.length);
 
   const tracos: Traco[] = [];
-  const nos: { t: number; e: number; nome: string | null; nivel: number }[] = [];
-  const percorrer = (no: No, nivel: number) => {
-    if (no.tipo === "folha") return;
-    const t = t0 + (nivel + 1) * dt;
-    const e = eDe(no);
-    nos.push({ t, e, nome: no.incerteza?.nome ?? null, nivel });
-    for (const r of no.ramos) {
-      const t2 = r.no.tipo === "folha" ? tFim : t0 + (nivel + 2) * dt;
-      const e2 = eDe(r.no);
+  const nos: { x: number; y: number; nome: string | null; nivel: number }[] = [];
+  const curva = (x1: number, y1: number, x2: number, y2: number) => {
+    const xm = x1 + (x2 - x1) * 0.55;
+    return `M${x1} ${y1} C${xm} ${y1} ${x1 + (x2 - x1) * 0.45} ${y2} ${x2} ${y2}`;
+  };
+  const percorrer = (n: No, nivel: number) => {
+    if (n.tipo === "folha") return;
+    const x = x0 + (nivel + 1) * dx;
+    const y = yDe(n);
+    nos.push({ x, y, nome: n.incerteza?.nome ?? null, nivel });
+    for (const r of n.ramos) {
+      const x2 = r.no.tipo === "folha" ? xFim : x0 + (nivel + 2) * dx;
+      const y2 = yDe(r.no);
+      // o polo fica junto da chegada do ramo (antes do próximo losango ou da letra), acima do trecho já reto
       tracos.push({
-        p: [
-          [t, e],
-          [t + (t2 - t) * 0.55, e],
-          [t + (t2 - t) * 0.45, e2],
-          [t2, e2],
-        ],
+        d: curva(x, y, x2, y2),
         folhas: folhas(r.no),
-        chegada: [t2, e2],
-        folha: r.no.tipo === "folha" ? r.no.c.id : null,
-        polo: r.polo,
+        meio: r.polo && !compacto ? { x: x2 - (r.no.tipo === "folha" ? 22 : 14), y: y2 - 9, texto: r.polo } : undefined,
       });
       percorrer(r.no, nivel + 1);
     }
   };
   percorrer(raiz, 0);
-  const eRaiz = eDe(raiz);
-  const tRaiz = t0 + dt;
-  const caminho = (p: [number, number][]) => {
-    const [a, b, c, d] = p.map(([t, e]) => P(t, e));
-    return `M${a[0]} ${a[1]} C${b[0]} ${b[1]} ${c[0]} ${c[1]} ${d[0]} ${d[1]}`;
-  };
-  // Cada nível de escolha vira uma coluna (uma faixa, na vertical) com o nome da incerteza, quando todos os losangos do
-  // nível são da mesma incerteza (o caso comum). Se um nível misturar incertezas, o nome vai junto de cada losango.
-  const colunas = [...new Set(nos.map((x) => x.nivel))].map((nivel) => {
-    const doNivel = nos.filter((x) => x.nivel === nivel);
-    const nomes = new Set(doNivel.map((x) => x.nome));
-    return { nivel, t: doNivel[0].t, nome: nomes.size === 1 ? doNivel[0].nome : null };
+  const yRaiz = yDe(raiz);
+  const xRaiz = x0 + dx;
+  // Cada nível de escolha vira uma coluna com o nome da incerteza no cabeçalho, quando todos os losangos do nível são
+  // da mesma incerteza (o caso comum). Se um nível misturar incertezas, o nome desce para baixo de cada losango.
+  const colunas = [...new Set(nos.map((n) => n.nivel))].map((nivel) => {
+    const doNivel = nos.filter((n) => n.nivel === nivel);
+    const nomes = new Set(doNivel.map((n) => n.nome));
+    return { nivel, x: doNivel[0].x, nome: nomes.size === 1 ? doNivel[0].nome : null };
   });
   const nomeNoCabecalho = (nivel: number) => colunas.find((c) => c.nivel === nivel)?.nome != null;
-  const quebrar = (texto: string, max = 22) => {
+  const quebrar = (t: string, max = 22) => {
     const linhas: string[] = [];
-    for (const p of texto.split(" ")) {
+    for (const p of t.split(" ")) {
       const ult = linhas[linhas.length - 1];
       if (ult !== undefined && (ult + " " + p).length <= max) linhas[linhas.length - 1] = `${ult} ${p}`;
       else linhas.push(p);
@@ -165,9 +135,6 @@ export function LequeDosFuturos({
   };
   const ativo = (fs: CenarioId[]) => realce === null || fs.includes(realce);
   const realcado = (fs: CenarioId[]) => realce !== null && fs.includes(realce);
-  const lado = compacto ? 18 : 24;
-  const [xRaiz, yRaiz] = P(t0, eRaiz);
-  const [xPrimeira, yPrimeira] = P(tRaiz, eRaiz);
 
   return (
     <svg
@@ -175,41 +142,33 @@ export function LequeDosFuturos({
       viewBox={`0 0 ${W} ${H}`}
       width={W}
       height={H}
-      className={`leque-futuros block h-auto overflow-visible ${compacto ? "max-w-full" : "w-full"}`}
+      className="leque-futuros block h-auto max-w-full overflow-visible"
       data-compacto={compacto || undefined}
-      data-vertical={vertical || undefined}
     >
-      {completo && (
+      {!compacto && (
         <g>
-          <text x={vertical ? 0 : t0} y={14} className="fill-texto-3 font-dados text-[12px]">
-            Hoje
-          </text>
-          {rotuloDoFim && (
-            <text
-              x={vertical ? 0 : tFim}
-              y={vertical ? tFim - 14 : 14}
-              textAnchor={vertical ? "start" : "middle"}
-              className="numeros fill-ambar font-dados text-[12px]"
-            >
-              {rotuloDoFim}
+          <g className="fill-texto-3 font-dados text-[11px] tracking-[0.08em]">
+            <text x={x0} y={14}>
+              HOJE
             </text>
-          )}
-          {/* as escolhas, uma por coluna, com uma guia pontilhada que atravessa o leque */}
+            {rotuloDoFim && (
+              <text x={xFim} y={14} textAnchor="middle" className="numeros">
+                {rotuloDoFim}
+              </text>
+            )}
+          </g>
+          {/* as escolhas, uma por coluna, com uma guia pontilhada até o losango */}
           {colunas.map((c) =>
             c.nome ? (
               <g key={c.nivel}>
-                <text x={vertical ? 0 : c.t} y={vertical ? c.t + 26 : 14} textAnchor={vertical ? "start" : "middle"} className="fill-texto-2 text-[13px]">
-                  {quebrar(c.nome, vertical ? 18 : 28).map((l, i) => (
-                    <tspan key={i} x={vertical ? 0 : c.t} dy={i === 0 ? 0 : 16}>
+                <text x={c.x} y={14} textAnchor="middle" className="fill-texto-2 text-[12px]">
+                  {quebrar(c.nome).map((l, i) => (
+                    <tspan key={i} x={c.x} dy={i === 0 ? 0 : 15}>
                       {l}
                     </tspan>
                   ))}
                 </text>
-                {vertical ? (
-                  <line x1={0} x2={W} y1={c.t} y2={c.t} className="stroke-linha-forte" strokeDasharray="1 4" strokeLinecap="round" />
-                ) : (
-                  <line x1={c.t} x2={c.t} y1={topo - 14} y2={H} className="stroke-linha-forte" strokeDasharray="1 4" strokeLinecap="round" />
-                )}
+                <line x1={c.x} x2={c.x} y1={topo - 14} y2={H} className="stroke-linha-forte" strokeDasharray="1 4" strokeLinecap="round" />
               </g>
             ) : null,
           )}
@@ -217,13 +176,13 @@ export function LequeDosFuturos({
       )}
 
       {/* presente: um traço sólido até a primeira escolha */}
-      <path d={`M${xRaiz} ${yRaiz} L${xPrimeira} ${yPrimeira}`} className="stroke-texto" strokeWidth={1.5} fill="none" />
+      <path d={`M${x0} ${yRaiz} L${xRaiz} ${yRaiz}`} className="stroke-texto-3" strokeWidth={1.5} fill="none" />
 
       {/* futuros: âmbar e tracejado; o caminho em realce passa a ciano */}
       {tracos.map((t, i) => (
         <path
           key={i}
-          d={caminho(t.p)}
+          d={t.d}
           fill="none"
           strokeWidth={realcado(t.folhas) ? 2 : 1.5}
           strokeDasharray="5 5"
@@ -232,87 +191,67 @@ export function LequeDosFuturos({
         />
       ))}
 
-      {/* sinal novo desde a última versão: um ponto ciano no ramo que chega ao cenário */}
-      {completo &&
-        tracos
-          .filter((t) => t.folha !== null && sinaisNovos.includes(t.folha))
-          .map((t) => {
-            const [x, y] = P(...naCurva(t.p, 0.3));
-            return <circle key={`s${t.folha}`} cx={x} cy={y} r={4} className="fill-ciano" />;
-          })}
-
-      {/* rótulo de cada polo, junto da chegada do ramo, em itálico (é hipótese) */}
-      {completo &&
-        tracos.map((t, i) => {
-          if (!t.polo) return null;
-          const [tc, ec] = t.chegada;
-          const desce = t.p[0][1] <= ec;
-          const [x, y] = vertical ? [ec + (desce ? 8 : -8), tc - 40] : [tc - (t.folha ? 26 : 16), ec - 10];
-          return (
-            <text
-              key={`p${i}`}
-              x={x}
-              y={y}
-              textAnchor={vertical && desce ? "start" : "end"}
-              className={`rotulo-sobre-fundo text-[13px] italic transition-opacity duration-200 ${realcado(t.folhas) ? "fill-ciano-texto" : "fill-ambar"} ${ativo(t.folhas) ? "opacity-100" : "opacity-40"}`}
-            >
-              {t.polo}
-            </text>
-          );
-        })}
+      {/* rótulo de cada polo, sobre o meio do traço, com um contorno da cor do fundo para não brigar com a linha */}
+      {tracos.map((t, i) =>
+        t.meio ? (
+          <text
+            key={`p${i}`}
+            x={t.meio.x}
+            y={t.meio.y}
+            textAnchor="end"
+            className={`rotulo-sobre-fundo text-[12px] transition-opacity duration-200 ${realcado(t.folhas) ? "fill-ciano-texto" : "fill-texto-2"} ${ativo(t.folhas) ? "opacity-100" : "opacity-40"}`}
+          >
+            {t.meio.texto}
+          </text>
+        ) : null,
+      )}
 
       {/* o presente */}
-      <circle cx={xRaiz} cy={yRaiz} r={compacto ? 3.5 : 5} className="fill-texto" />
+      <circle cx={x0} cy={yRaiz} r={compacto ? 3.5 : 5} className="fill-texto" />
 
-      {/* as escolhas: losango âmbar em traço (incerteza) */}
-      {nos.map((no, i) => {
-        const [x, y] = P(no.t, no.e);
-        return (
-          <g key={`n${i}`}>
-            <rect
-              x={x - (compacto ? 3.5 : 6)}
-              y={y - (compacto ? 3.5 : 6)}
-              width={compacto ? 7 : 12}
-              height={compacto ? 7 : 12}
-              transform={`rotate(45 ${x} ${y})`}
-              className="fill-abismo stroke-ambar"
-              strokeWidth={1.5}
-            />
-            {no.nome && completo && !nomeNoCabecalho(no.nivel) && (
-              <text x={x} y={y + 24} textAnchor="middle" className="rotulo-sobre-fundo fill-texto-3 text-[12px]">
-                {no.nome.length > 34 ? `${no.nome.slice(0, 32)}…` : no.nome}
-              </text>
-            )}
-          </g>
-        );
-      })}
+      {/* as escolhas: losango âmbar (incerteza), com o nome da incerteza acima */}
+      {nos.map((n, i) => (
+        <g key={`n${i}`}>
+          <rect
+            x={n.x - (compacto ? 3.5 : 5)}
+            y={n.y - (compacto ? 3.5 : 5)}
+            width={compacto ? 7 : 10}
+            height={compacto ? 7 : 10}
+            transform={`rotate(45 ${n.x} ${n.y})`}
+            className="fill-abismo stroke-ambar"
+            strokeWidth={1.5}
+          />
+          {n.nome && !compacto && !nomeNoCabecalho(n.nivel) && (
+            <text x={n.x} y={n.y + 22} textAnchor="middle" className="rotulo-sobre-fundo fill-texto-3 text-[11.5px]">
+              {n.nome.length > 34 ? `${n.nome.slice(0, 32)}…` : n.nome}
+            </text>
+          )}
+        </g>
+      ))}
 
-      {/* os futuros, no fim do horizonte: selo de ouro cheio com a letra; em realce, anel ciano */}
+      {/* os futuros, no fim do horizonte */}
       {cenarios.map((c) => {
-        const [x, y] = P(tFim, eDaFolha(c.id));
+        const y = yDaFolha(c.id);
         const on = realcado([c.id]);
-        // na vertical o selo fica logo abaixo do fim do ramo; na horizontal, centrado nele
-        const yc = vertical ? y + lado / 2 : y;
         return (
           <g key={c.id} className={`transition-opacity duration-200 ${ativo([c.id]) ? "opacity-100" : "opacity-40"}`}>
-            <rect x={x - lado / 2} y={yc - lado / 2} width={lado} height={lado} rx={3} className={on ? "fill-ouro stroke-ciano" : "fill-ouro"} strokeWidth={on ? 2 : 0} />
-            <text x={x} y={yc + (compacto ? 4 : 4.5)} textAnchor="middle" className={`font-medium ${compacto ? "text-[11px]" : "text-[13px]"} fill-abismo`}>
+            <rect
+              x={xFim - (compacto ? 9 : 12)}
+              y={y - (compacto ? 9 : 12)}
+              width={compacto ? 18 : 24}
+              height={compacto ? 18 : 24}
+              rx={3}
+              className={on ? "fill-ciano-suave stroke-ciano" : "fill-abismo stroke-linha-forte"}
+              strokeWidth={1}
+            />
+            <text x={xFim} y={y + (compacto ? 4 : 4.5)} textAnchor="middle" className={`font-dados ${compacto ? "text-[11px]" : "text-[13px]"} fill-ambar`}>
               {c.id}
             </text>
-            {completo &&
-              (vertical ? (
-                <text x={x} y={yc + lado / 2 + 20} textAnchor="middle" className={`text-[13px] ${on ? "fill-texto font-medium" : "fill-texto-2"}`}>
-                  {quebrar(c.nome, 14).map((l, i) => (
-                    <tspan key={i} x={x} dy={i === 0 ? 0 : 17}>
-                      {l}
-                    </tspan>
-                  ))}
-                </text>
-              ) : (
-                <text x={x + 24} y={y + 5} className={`text-[16px] fill-texto ${on ? "font-medium" : ""}`}>
-                  {c.nome}
-                </text>
-              ))}
+            {!compacto && (
+              <text x={xFim + 22} y={y + 4.5} className={`text-[14px] ${on ? "fill-texto font-medium" : "fill-texto-2"}`}>
+                {c.nome}
+              </text>
+            )}
           </g>
         );
       })}

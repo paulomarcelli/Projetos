@@ -96,7 +96,7 @@ export function Complemento({ intencao }: { intencao: Intencao }) {
             {c.eventos.map((e) => (
               <li key={e.id} className="relative">
                 <span aria-hidden="true" className="absolute top-2 -left-[21px] size-2 rounded-full border border-linha-forte bg-abismo" />
-                <span className="mr-2 font-dados text-micro text-texto-3">{e.data}</span>
+                <span className="mr-2 font-dados text-micro text-texto-3 uppercase">{e.data}</span>
                 {e.texto}
                 <Citacoes ids={e.evidencias} />
                 {e.atores.length > 0 && <span className="mt-1 block text-micro text-texto-3">{e.atores.map((id) => ix.atores.get(id)?.curto ?? id).join(" · ")}</span>}

@@ -61,8 +61,6 @@ export interface ResultadoDeInvestigacao {
   origem: string;
   atualizadoEm: string;
   versao: number;
-  /** Data marcada para rever os cenários ("2027-02-12"). Opcional: sem ela, o cabeçalho não mostra a próxima revisão. */
-  proximaRevisao?: string;
   avisoDeContexto: Afirmacao;
   /** Título do diagnóstico, numa frase curta ("Um equilíbrio estratégico sob pressão"). Opcional: sem ele, a seção
    *  abre direto na síntese. */

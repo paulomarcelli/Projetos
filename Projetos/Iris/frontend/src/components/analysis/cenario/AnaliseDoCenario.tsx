@@ -167,7 +167,7 @@ function Cabecalho({ c }: { c: Cenario }) {
     <header className="flex flex-col gap-6">
       {/* trilha: de onde se veio (a análise principal) e onde se está (este cenário) */}
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <nav aria-label="Trilha" className="text-micro font-medium text-texto-3">
+        <nav aria-label="Trilha" className="text-micro font-medium tracking-[0.12em] text-texto-3 uppercase">
           <ol className="m-0 flex list-none flex-wrap items-center gap-2 p-0">
             <li>
               <Link to={ROTAS.investigacao(r.id)} className="hover:text-texto">

@@ -72,7 +72,7 @@ export function PaginaAjuda() {
         Como a Iris monta uma investigação e as regras que ela segue.
       </CabecalhoDePagina>
       <section aria-label="Princípios" className="flex max-w-3xl flex-col gap-6">
-        <h2 className="flex items-center gap-2 text-micro font-medium text-texto-3">
+        <h2 className="flex items-center gap-2 text-micro font-medium tracking-[0.12em] text-texto-3 uppercase">
           <BookOpen size={14} aria-hidden="true" />
           Princípios
         </h2>

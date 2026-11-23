@@ -24,8 +24,6 @@ export const INVESTIGACAO_EXEMPLO: ResultadoDeInvestigacao = {
     "Exemplo elaborado pelo assistente de IA (Claude) a pedido do usuário, com pesquisa na web em 27/10/2026. Não foi produzido pelo motor do Iris.",
   atualizadoEm: "2026-10-27",
   versao: 2,
-  // Data de exemplo (a prévia inteira é marcada como dados de exemplo): mostra onde a próxima revisão aparece.
-  proximaRevisao: "2027-01-27",
 
   avisoDeContexto: {
     tipo: "fato",

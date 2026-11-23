@@ -129,7 +129,7 @@ e reprovaria no AA.
 | `ciano` | `#52C7E8` | `#0A6F91` | interação, ação principal, **seleção**, conexão, ator em foco |
 | `ciano-texto` | `#8FDAF0` | `#075B78` | links e números de citação |
 | `ciano-suave` | ciano a 12% | ciano a 10% | fundo de seleção (cenário ativo, item escolhido) |
-| `ambar` | `#E9B45B` | `#8A5600` | incerteza, hipótese, horizonte, "o que mudou": sempre em traço, tracejado ou itálico |
+| `ambar` | `#E9B45B` | `#8A5600` | incerteza, hipótese, cenário (letra A/B/C), horizonte, "o que mudou" |
 | `ambar-suave` | âmbar a 12% | âmbar a 12% | fundo de incerteza analítica (painel "O que ainda não se sabe", aviso `incerteza`) |
 | `positivo` | `#6CCB9A` | `#1B6F45` | só estado real (API no ar, regra cumprida) |
 | `negativo` | `#EF8A7C` | `#A8352A` | só erro real |
@@ -143,10 +143,9 @@ e reprovaria no AA.
   - no escuro, texto `abismo` sobre `ciano` (9,5:1);
   - no claro, texto `abismo` (papel) sobre `#0A6F91` (5,2:1).
 
-**Selo de cenário (`Letra`)** (revisão de 22/11/2026, `docs/design-system.md` na raiz do projeto):
-- quadrado cheio de ouro com a letra em `abismo` (cerca de 12:1): o ouro é o cenário como objeto, sempre cheio;
-- o âmbar fica só em traço (ramos, horizonte, hipótese), para os dois amarelos não competirem;
-- quando o cenário está selecionado, ganha um anel ciano de 2 px.
+**Selo de cenário (`Letra`):**
+- a letra é sempre âmbar, porque o cenário é hipotético;
+- quando o cenário está selecionado, ganha borda e fundo ciano.
 
 **Teoria das cores aplicada (revisão de outubro de 2026):**
 - **Harmonia:** a base é azul-marinho (matiz ~220°) com ciano análogo (~193°): frio, estável,

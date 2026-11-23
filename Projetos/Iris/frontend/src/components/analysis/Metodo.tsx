@@ -10,7 +10,7 @@ const APLICACAO: Record<Metodo["aplicacao"], { rotulo: string; icone: typeof Che
 };
 
 function Titulo({ children }: { children: string }) {
-  return <h3 className="text-micro font-medium text-texto-3">{children}</h3>;
+  return <h3 className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">{children}</h3>;
 }
 
 /**

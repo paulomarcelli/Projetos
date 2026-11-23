@@ -65,13 +65,13 @@ export function SecaoMonitoramento({
         <aside aria-label="Estado do acompanhamento" className="cartao flex min-w-0 flex-col gap-5 self-start p-5 lg:col-span-4">
           <Estado />
           <section aria-labelledby="t-historico" className="flex flex-col gap-3 border-t border-linha pt-4">
-            <h3 id="t-historico" className="text-micro font-medium text-texto-3">
+            <h3 id="t-historico" className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">
               Histórico de versões
             </h3>
             <Historico />
           </section>
           <section aria-labelledby="t-legenda-efeitos" className="flex flex-col gap-2 border-t border-linha pt-4">
-            <h3 id="t-legenda-efeitos" className="text-micro font-medium text-texto-3">
+            <h3 id="t-legenda-efeitos" className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">
               Como ler os efeitos
             </h3>
             <Legenda />

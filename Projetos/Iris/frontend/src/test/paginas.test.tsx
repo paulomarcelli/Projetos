@@ -173,40 +173,44 @@ describe("landing", () => {
       </MemoryRouter>,
     );
 
-  it("herói: o título novo, o campo de pergunta e os dois caminhos: começar e entrar", () => {
+  it("título, campo de pergunta no centro e os dois caminhos: começar e entrar", () => {
     landing();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveAccessibleName("Cenários que dizem de onde vieram.");
-    expect(screen.getByLabelText(/Escreva uma pergunta/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveAccessibleName("Entenda o presente. Explore os futuros.");
+    expect(screen.getAllByLabelText(/Escreva uma pergunta/).length).toBeGreaterThan(0);
     for (const l of screen.getAllByRole("link", { name: /Começar/ })) expect(l).toHaveAttribute("href", "/app");
-    expect(screen.getByRole("link", { name: "Entrar" })).toHaveAttribute("href", "/entrar");
+    expect(screen.getAllByRole("link", { name: "Entrar" })[0]).toHaveAttribute("href", "/entrar");
   });
 
-  it("cinco blocos na ordem: herói, método em cinco etapas, observatório, IA declarada e fechamento", () => {
-    landing();
-    const titulos = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(titulos).toEqual(["Como um cenário é construído", "Um observatório por turma", "IA declarada, não escondida"]);
-    expect(within(screen.getByRole("region", { name: "Como um cenário é construído" })).getAllByRole("listitem")).toHaveLength(5);
-    expect(screen.getByRole("region", { name: "Começar" })).toBeInTheDocument();
-  });
-
-  it("o que é exemplo diz que é exemplo; o lab só em texto; sem número de marketing nem link para página que não existe", () => {
+  it("estado real do projeto e nenhum número de marketing nem link para página que não existe", () => {
     const { container } = landing();
-    expect(screen.getAllByText("Dados de exemplo").length).toBeGreaterThanOrEqual(2);
-    expect(screen.getByText(/Exemplo ilustrativo/)).toBeInTheDocument();
-    expect(screen.getByText(/laboratórios de prospectiva como o FutuRI Lab/)).toBeInTheDocument();
-    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getAllByText("Disponível")).toHaveLength(1);
+    expect(screen.getAllByText("Próxima fase")).toHaveLength(1);
+    expect(screen.getAllByText("Planejada")).toHaveLength(4);
+    expect(screen.getByText(/o motor de investigação é a próxima fase/)).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/\d+\s?%|\+\s?\d{2,}/);
     expect(screen.queryByRole("link", { name: /privacidade|termos|contato/i })).not.toBeInTheDocument();
+  });
+
+  it("a demonstração é ilustração: cenários A, B e C sem probabilidade e nenhum caso real", () => {
+    landing();
+    expect(screen.getByText("Ilustração da interface")).toBeInTheDocument();
+    for (const id of ["A", "B", "C"]) expect(screen.getByText(`Cenário ${id}`)).toBeInTheDocument();
+    expect(screen.getAllByText("Sem probabilidade")).toHaveLength(3);
     expect(screen.queryByText(/Flávio|Bolsonaro/)).not.toBeInTheDocument();
   });
 
-  it("a pergunta escrita vai para a plataforma", async () => {
+  it("a pergunta escrita vai para a plataforma; os atalhos preenchem o campo", async () => {
     const u = userEvent.setup();
     landing();
-    await u.type(screen.getByLabelText(/Escreva uma pergunta/), "Como a OTAN pode afetar a ordem regional?");
-    expect(screen.getByRole("link", { name: "Investigar esta pergunta na Iris" })).toHaveAttribute(
+    const campo = screen.getAllByLabelText(/Escreva uma pergunta/)[0];
+    await u.type(campo, "Como a OTAN pode afetar a ordem regional?");
+    expect(screen.getAllByRole("link", { name: "Investigar esta pergunta na Iris" })[0]).toHaveAttribute(
       "href",
       "/app?pergunta=Como%20a%20OTAN%20pode%20afetar%20a%20ordem%20regional%3F",
+    );
+    await u.click(screen.getAllByRole("button", { name: "Mercosul e UE" })[1]);
+    expect(screen.getAllByLabelText(/Escreva uma pergunta/)[1]).toHaveValue(
+      "O acordo Mercosul–União Europeia muda o peso da América do Sul na economia mundial?",
     );
   });
 });
@@ -223,12 +227,10 @@ describe("rotas", () => {
     );
   }
 
-  it("Documentos volta ao menu como escrita (grupo Escrita) e o Observatório entra; a gestão do acervo fica em Configurações", async () => {
+  it("Documentos saiu do menu; gestão do acervo fica em Configurações", async () => {
     em("/app/configuracoes");
     const menu = screen.getAllByRole("complementary", { name: "Menu lateral" })[0];
-    expect(menu).toHaveTextContent("Escrita");
-    expect(menu).toHaveTextContent("Documentos");
-    expect(menu).toHaveTextContent("Observatório");
+    expect(menu).not.toHaveTextContent("Documentos");
     expect(await screen.findByRole("link", { name: /Abrir a gestão do acervo/ })).toHaveAttribute("href", "/app/configuracoes/acervo");
   });
 

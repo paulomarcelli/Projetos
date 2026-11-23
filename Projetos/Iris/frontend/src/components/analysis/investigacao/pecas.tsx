@@ -67,9 +67,8 @@ export function Letra({ id, ativa = false, tamanho = "normal" }: { id: CenarioId
   return (
     <span
       aria-hidden="true"
-      // Selo de cenário (design-system.md): quadrado cheio de ouro com a letra escura; selecionado, anel ciano de 2 px.
-      className={`inline-grid shrink-0 place-items-center rounded-fino bg-ouro font-medium text-abismo ${tamanho === "grande" ? "size-7 text-corpo" : "size-6 text-micro"} ${
-        ativa ? "ring-2 ring-ciano ring-offset-2 ring-offset-institucional" : ""
+      className={`inline-grid shrink-0 place-items-center rounded-fino border font-dados text-ambar ${tamanho === "grande" ? "size-9 text-corpo" : "size-6 text-micro"} ${
+        ativa ? "border-ciano bg-ciano-suave" : "border-linha-forte"
       }`}
     >
       {id}

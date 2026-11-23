@@ -1,8 +1,7 @@
 /**
  * O menu lateral da plataforma, sobre o SidebarNav (components/common/dashboard-sidebar.tsx):
  *   Nova investigação (uma conversa nova), sem título de grupo;
- *   Inteligência: Investigações, Observatório, Monitoramento, Exploração geopolítica (o mapa de relações);
- *   Escrita: Documentos (policy brief, boletim e dossiê escritos a partir de uma investigação);
+ *   Inteligência: Investigações, Monitoramento, Exploração geopolítica (o mapa de relações);
  *   Conhecimento: Central de notícias, Base de conhecimento;
  *   Sistema: Configurações (⌘,), Ajuda e metodologia.
  * No pé, o usuário e o papel. O tema saiu do menu: é o ícone de sol/lua na barra do topo (layout/Cabecalho), à vista em
@@ -10,7 +9,7 @@
  *
  * No topo vai a marca Iris. As cores vêm dos tokens da Iris (.iris-menu, em styles/globais.css), nos dois temas.
  */
-import { CalendarRange, CircleHelp, Earth, FileText, FolderSearch, Library, Newspaper, Plus, Radar, Settings } from "lucide-react";
+import { CircleHelp, Earth, FolderSearch, Library, Newspaper, Plus, Radar, Settings } from "lucide-react";
 import { useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { usePreferencias } from "../../store/preferencias";
@@ -22,8 +21,6 @@ import { SidebarNav, type NavGroupData } from "../common/dashboard-sidebar";
 const DESTINOS = new Map<string, string>([
   ["nova", ROTAS.inicio],
   ["investigacoes", ROTAS.investigacoes],
-  ["observatorio", ROTAS.observatorio],
-  ["documentos", ROTAS.documentos],
   ["monitoramento", ROTAS.monitoramento],
   ["exploracao", ROTAS.relacoes],
   ["noticias", ROTAS.noticias],
@@ -38,12 +35,10 @@ const GRUPOS: NavGroupData[] = [
     heading: "Inteligência",
     items: [
       { id: "investigacoes", title: "Investigações", icon: FolderSearch },
-      { id: "observatorio", title: "Observatório", icon: CalendarRange },
       { id: "monitoramento", title: "Monitoramento", icon: Radar },
       { id: "exploracao", title: "Exploração geopolítica", icon: Earth },
     ],
   },
-  { heading: "Escrita", items: [{ id: "documentos", title: "Documentos", icon: FileText }] },
   {
     heading: "Conhecimento",
     items: [

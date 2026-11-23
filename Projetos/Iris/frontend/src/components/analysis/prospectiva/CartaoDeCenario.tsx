@@ -62,7 +62,7 @@ export function CartaoDeCenario({ c, indice }: { c: Cenario; indice: number }) {
 
       {primeiroSinal && (
         <div className="mt-auto flex flex-col gap-1 border-t border-linha pt-3.5">
-          <p className="text-micro font-medium text-texto-3">Primeiro sinal a observar</p>
+          <p className="text-micro font-medium tracking-[0.06em] text-texto-3 uppercase">Primeiro sinal a observar</p>
           <p className="text-legenda font-medium text-texto">{primeiroSinal.sinal}</p>
           {primeiroSinal.quando && <p className="numeros font-dados text-micro text-ambar">{primeiroSinal.quando}</p>}
         </div>

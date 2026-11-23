@@ -44,7 +44,7 @@ export function Prospectiva({ gerando, aoVerNoMapa }: { gerando: boolean; aoVerN
         </CabecalhoDeParte>
         {principal && (
           <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-legenda text-texto-2">
-            <span className="text-micro font-medium text-ambar">O que separa os futuros</span>
+            <span className="text-micro font-medium text-ambar uppercase">O que separa os futuros</span>
             <span className="text-texto">{principal.pergunta}</span>
           </p>
         )}
@@ -102,7 +102,7 @@ function Seletor({ ativo, aoEscolher }: { ativo: string; aoEscolher: (id: Cenari
           >
             <span className="flex items-center gap-2">
               <Letra id={c.id} ativa={on} />
-              <span className="text-micro text-texto-3">{c.arquetipo}</span>
+              <span className="text-micro text-texto-3 uppercase">{c.arquetipo}</span>
             </span>
             <span className={`text-corpo font-medium ${on ? "text-texto" : "text-texto-2"}`}>{c.nome}</span>
             <span className="text-micro leading-snug text-texto-3">{c.ideia}</span>
@@ -124,7 +124,7 @@ function Cenario({ c, aoVerNoMapa }: { c: Cenario; aoVerNoMapa: () => void }) {
       <div className="flex flex-col gap-2">
         <p className="font-editorial text-leitura text-texto">{c.ideia}</p>
         <p className="text-corpo leading-[1.7] text-texto-2">
-          <span className="mr-1.5 text-micro font-medium text-texto-3">Trajetória possível</span>
+          <span className="mr-1.5 text-micro font-medium text-texto-3 uppercase">Trajetória possível</span>
           {c.sintese}
         </p>
       </div>
@@ -167,19 +167,19 @@ function Cenario({ c, aoVerNoMapa }: { c: Cenario; aoVerNoMapa: () => void }) {
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {c.gatilhos.map((t, i) => (
               <li key={`g${i}`}>
-                <span className="mr-1.5 text-micro text-ambar">Gatilho</span>
+                <span className="mr-1.5 text-micro text-ambar uppercase">Gatilho</span>
                 {t}
               </li>
             ))}
             {c.incertezas.map((t, i) => (
               <li key={`i${i}`}>
-                <span className="mr-1.5 text-micro text-texto-3">Incerteza</span>
+                <span className="mr-1.5 text-micro text-texto-3 uppercase">Incerteza</span>
                 {t}
               </li>
             ))}
             {c.limitacoes.map((t, i) => (
               <li key={`l${i}`} className="text-texto-3">
-                <span className="mr-1.5 text-micro">Limite</span>
+                <span className="mr-1.5 text-micro uppercase">Limite</span>
                 {t}
               </li>
             ))}
@@ -197,13 +197,13 @@ function Cenario({ c, aoVerNoMapa }: { c: Cenario; aoVerNoMapa: () => void }) {
       <div className="flex flex-col gap-3 border-t border-linha pt-4 text-legenda text-texto-2">
         {evidencias.length > 0 && (
           <p>
-            <span className="mr-1.5 text-micro font-medium text-texto-3">Evidências relacionadas</span>
+            <span className="mr-1.5 text-micro font-medium text-texto-3 uppercase">Evidências relacionadas</span>
             {evidencias.length} {evidencias.length === 1 ? "evidência" : "evidências"} <Citacoes ids={evidencias} />
             {sinais.length > 0 && <span className="text-texto-3"> · {sinais.length} indicadores a acompanhar, em Monitoramento</span>}
           </p>
         )}
         <p>
-          <span className="mr-1.5 text-micro font-medium text-texto-3">Probabilidade</span>
+          <span className="mr-1.5 text-micro font-medium text-texto-3 uppercase">Probabilidade</span>
           {c.estimativa ? (
             <>
               <span className="text-texto">{c.estimativa.valor}</span> · método: {c.estimativa.metodo}. <span className="text-texto-3">Limites: {c.estimativa.limitacoes}</span>
@@ -236,7 +236,7 @@ function Horizonte() {
   const fases = r.horizontes.length ? r.horizontes : [{ id: "todo", nome: "Horizonte", inicio: r.horizonte.inicio, fim: r.horizonte.fim }];
   return (
     <figure className="m-0 flex flex-col gap-1.5">
-      <figcaption className="text-micro font-medium text-texto-3">
+      <figcaption className="text-micro font-medium text-texto-3 uppercase">
         Horizonte temporal · {r.horizonte.inicio}–{r.horizonte.fim}
       </figcaption>
       <div className="flex gap-1">
@@ -302,7 +302,7 @@ function Bloco({ titulo, tom, children }: { titulo: string; tom?: "favor" | "con
   const marca = tom === "favor" ? "bg-ciano" : tom === "contra" ? "bg-texto-3" : tom === "risco" ? "bg-ambar" : "bg-linha-forte";
   return (
     <div className="flex flex-col gap-2">
-      <h5 className="flex items-center gap-2 text-micro font-medium text-texto-3">
+      <h5 className="flex items-center gap-2 text-micro font-medium text-texto-3 uppercase">
         <span aria-hidden="true" className={`size-1.5 rounded-full ${marca}`} />
         {titulo}
       </h5>
